@@ -66,7 +66,7 @@ Please read manual here:
 | MacOSX | link:{codebase}{artifactId}-{version}.zip[Download] | link:{codebase}{artifactId}-{version}-java11-mac.zip[Download]
 |===
 
-link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library)
+link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
 
 link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (standalone)
 
