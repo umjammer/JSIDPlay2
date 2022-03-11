@@ -355,13 +355,14 @@ tr.row1>td {
 
 	<p id="alarmmsg"></p>
 
-	<div class="keyboard">
+	<div class="keyboard" style="position: relative;">
+		<div style="position: absolute; top: 0px; right: -$barcodeImgWidthpx;">$barcodeImg</div>
+	
 		<div class="logo">C= Commodore &nbsp;&nbsp;&nbsp;&nbsp; 64</div>
 
 		<div class="lights">
 			<span>&nbsp;</span>
 		</div>
-
 
 		<div class="section-a">
 
@@ -530,9 +531,10 @@ tr.row1>td {
 	</table>
 
 	<p>
-		<b>Keep in mind:</b> Key presses are delayed a few seconds. If video
-		gets stopped, make sure to continue within $notYetPlayedTimeout
-		seconds,<br /> otherwise it quits automatically!
+		<b>Keep in mind:</b><br/>
+		Start Video within $notYetPlayedTimeout seconds or it terminates, if so please reload page for a new try.
+		 If video gets stopped, make sure to continue playing within $notYetPlayedTimeout
+		seconds. Key presses are delayed a few seconds.
 	</p>
 
 </body>

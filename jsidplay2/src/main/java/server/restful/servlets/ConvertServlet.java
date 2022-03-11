@@ -65,6 +65,7 @@ import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.ServletParameters;
+import server.restful.common.barcode.BarCode;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -192,9 +193,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
 						response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
 
+						String rtmpUrl = getRTMPUrl(request.getRemoteAddr(), uuid);
 						Map<String, String> replacements = new HashMap<>();
 						replacements.put("$uuid", uuid.toString());
-						replacements.put("$rtmp", getRTMPUrl(request.getRemoteAddr(), uuid));
+						replacements.put("$barcodeImg", BarCode.createBarCodeImage(rtmpUrl, "UTF-8", 320, 320));
+						replacements.put("$barcodeImgWidth", String.valueOf(320));
+						replacements.put("$rtmp", rtmpUrl);
 						replacements.put("$waitForRTMP", String.valueOf(WAIT_FOR_RTMP));
 						replacements.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 						replacements.put("$filename", file.getName());
