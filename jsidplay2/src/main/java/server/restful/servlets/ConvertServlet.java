@@ -333,6 +333,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
 		IC1541Section c1541Section = player.getConfig().getC1541Section();
 
+		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
+		if (servletParameters.getReuSize() != null) {
+			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
+		}
 		File root = configuration.getSidplay2Section().getHvsc();
 		if (root != null) {
 			sidplay2Section.setHvsc(root);
@@ -342,10 +346,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setDefaultLengthInRecordMode(false);
 		player.setCheckLoopOffInRecordMode(false);
 		player.setForceCheckSongLength(true);
-
-		if (servletParameters.getReuSize() != null)
-			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
-		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
 
 		addPressSpaceListener(player);
 		Convenience convenience = new Convenience(player);
@@ -360,6 +360,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
 		IC1541Section c1541Section = player.getConfig().getC1541Section();
 
+		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
+		if (servletParameters.getReuSize() != null) {
+			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
+		}
 		sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_LENGTH));
 
 		File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), sidplay2Section.getTmpDir());
@@ -370,10 +374,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setDefaultLengthInRecordMode(true);
 		player.setCheckLoopOffInRecordMode(false);
 		player.setForceCheckSongLength(true);
-
-		if (servletParameters.getReuSize() != null)
-			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
-		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
 
 		addPressSpaceListener(player);
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
