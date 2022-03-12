@@ -15,6 +15,9 @@ public class ServletParameters {
 	@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD")
 	private Boolean download = Boolean.FALSE;
 
+	@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS")
+	private Boolean jiffydos = Boolean.FALSE;
+
 	@ParametersDelegate
 	private IniConfig config = new IniConfig();
 
@@ -26,6 +29,10 @@ public class ServletParameters {
 
 	public Boolean getDownload() {
 		return download;
+	}
+
+	public Boolean getJiffydos() {
+		return jiffydos;
 	}
 
 	public IniConfig getConfig() {

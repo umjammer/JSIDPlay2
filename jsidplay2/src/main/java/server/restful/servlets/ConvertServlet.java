@@ -57,6 +57,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.common.Event;
+import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
@@ -327,6 +328,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	private void convert2liveVideo(UUID uuid, Player player, File file, AudioDriver driver,
 			ServletParameters servletParameters) throws IOException, SidTuneError {
+		IC1541Section c1541Section = player.getConfig().getC1541Section();
+
 		File root = configuration.getSidplay2Section().getHvsc();
 		if (root != null) {
 			player.getConfig().getSidplay2Section().setHvsc(root);
@@ -338,6 +341,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setForceCheckSongLength(true);
 
 		addPressSpaceListener(player);
+		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
 		Convenience convenience = new Convenience(player);
 		convenience.autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
 		create(uuid, player, file, resourceBundle);
