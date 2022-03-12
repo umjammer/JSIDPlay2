@@ -18,6 +18,9 @@ public class ServletParameters {
 	@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS")
 	private Boolean jiffydos = Boolean.FALSE;
 
+	@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE")
+	private Integer reuSize = null;
+
 	@ParametersDelegate
 	private IniConfig config = new IniConfig();
 
@@ -33,6 +36,10 @@ public class ServletParameters {
 
 	public Boolean getJiffydos() {
 		return jiffydos;
+	}
+
+	public Integer getReuSize() {
+		return reuSize;
 	}
 
 	public IniConfig getConfig() {

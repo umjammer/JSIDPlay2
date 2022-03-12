@@ -57,6 +57,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.common.Event;
+import libsidplay.components.cart.CartridgeType;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
@@ -220,7 +221,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 								+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
 					}
-					File videoFile = convert2videoFile(config, file, driver);
+					Player player = new Player(config);
+					File videoFile = convert2videoFile(player, file, driver, servletParameters);
 					copy(videoFile, response.getOutputStream());
 					videoFile.delete();
 				}
@@ -328,11 +330,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	private void convert2liveVideo(UUID uuid, Player player, File file, AudioDriver driver,
 			ServletParameters servletParameters) throws IOException, SidTuneError {
+		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
 		IC1541Section c1541Section = player.getConfig().getC1541Section();
 
 		File root = configuration.getSidplay2Section().getHvsc();
 		if (root != null) {
-			player.getConfig().getSidplay2Section().setHvsc(root);
+			sidplay2Section.setHvsc(root);
 			player.setSidDatabase(new SidDatabase(root));
 		}
 		player.setAudioDriver(driver);
@@ -340,8 +343,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(false);
 		player.setForceCheckSongLength(true);
 
-		addPressSpaceListener(player);
+		if (servletParameters.getReuSize() != null)
+			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
 		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
+
+		addPressSpaceListener(player);
 		Convenience convenience = new Convenience(player);
 		convenience.autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
 		create(uuid, player, file, resourceBundle);
@@ -349,19 +355,25 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.stopC64(false);
 	}
 
-	private File convert2videoFile(IConfig config, File file, AudioDriver driver) throws IOException, SidTuneError {
-		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
+	private File convert2videoFile(Player player, File file, AudioDriver driver, ServletParameters servletParameters)
+			throws IOException, SidTuneError {
+		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
+		IC1541Section c1541Section = player.getConfig().getC1541Section();
+
 		sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_LENGTH));
 
 		File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), sidplay2Section.getTmpDir());
 		videoFile.deleteOnExit();
 
-		Player player = new Player(config);
 		player.setRecordingFilenameProvider(tune -> PathUtils.getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
 		player.setAudioDriver(driver);
 		player.setDefaultLengthInRecordMode(true);
 		player.setCheckLoopOffInRecordMode(false);
 		player.setForceCheckSongLength(true);
+
+		if (servletParameters.getReuSize() != null)
+			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
+		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
 
 		addPressSpaceListener(player);
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
