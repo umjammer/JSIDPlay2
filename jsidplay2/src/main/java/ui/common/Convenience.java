@@ -214,8 +214,7 @@ public class Convenience {
 				memberFile.deleteOnExit();
 			}
 			if (memberFile.isFile() && isSupportedMedia(memberFile)) {
-				if (memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")
-						|| memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".bin")) {
+				if (memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
 					try {
 						player.insertCartridge(CartridgeType.REU, memberFile);
 					} catch (IOException e) {
