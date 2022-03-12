@@ -13,7 +13,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.RTMPPlayerWithStatus;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -46,7 +45,9 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			UUID uuid = UUID.fromString(request.getParameter("name"));
 
 			info(String.format("insertNextDisk: RTMP stream of: %s", uuid));
-			update(uuid, RTMPPlayerWithStatus::insertNextDisk);
+			StringBuilder diskImageName = new StringBuilder();
+			update(uuid, rtmpPlayerWithStatus -> diskImageName.append(rtmpPlayerWithStatus.insertNextDisk().getName()));
+			setOutput(request, response, diskImageName.toString(), String.class);
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());

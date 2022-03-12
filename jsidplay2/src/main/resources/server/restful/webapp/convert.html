@@ -211,11 +211,15 @@ body {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
+				let result = this.responseText;
+				let filename = result.substring(1, result.length-1);
+				document.getElementsByClassName('my-filename')[0].innerHTML = filename;
 				printMsg('Next disk has been inserted!');
 				startVideo();
 			}
 		};
 		xhttp.open("POST", "/static/insert_next_disk?name=$uuid", true);
+		xhttp.setRequestHeader("Accept", "application/json;charset=UTF-8");
 		xhttp.send();
 	}
 	function setDefaultSidModel6581() {
@@ -323,7 +327,7 @@ body {
 <body onload="startVideo()">
 	<h1>C64 Jukebox</h1>
 	<div>
-		<b>JSIDPlay2 presents: $filename</b>
+		<b>JSIDPlay2 presents: <span class="my-filename">$filename</span></b>
 	</div>
 
 	<p id="alarmmsg"></p>

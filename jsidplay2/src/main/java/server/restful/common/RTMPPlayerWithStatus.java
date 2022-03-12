@@ -73,13 +73,14 @@ public final class RTMPPlayerWithStatus {
 		player.quit();
 	}
 
-	public void insertNextDisk() {
+	public File insertNextDisk() {
 		try {
 			setNextDiskImage();
 			player.insertDisk(extract());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return diskImage;
 	}
 
 	public void setDefaultSidModel6581() {
