@@ -32,10 +32,6 @@ body {
 	margin: 16px 16px;
 }
 
-tr.row1>td {
-	padding-bottom: 1em;
-}
-
 .keyboard {
 	width: 750px;
 	height: 280px;
@@ -336,28 +332,11 @@ tr.row1>td {
 		<b>JSIDPlay2 presents: $filename</b>
 	</div>
 
-	<table class="switches">
-		<tbody>
-			<tr class="row1">
-				<td><a href="javascript:setDefaultSidModel6581()"
-					class="button">6581</a></td>
-				<td><a href="javascript:setDefaultSidModel8580()"
-					class="button">8580</a></td>
-				<td><a href="javascript:setDefaultEmulationReSid()"
-					class="button">RESID</a></td>
-				<td><a href="javascript:setDefaultEmulationReSidFp()"
-					class="button">RESIDFP</a></td>
-				<td><a href="javascript:insertDisk()" class="button">insert
-						next disk</a></td>
-			</tr>
-		</tbody>
-	</table>
-
 	<p id="alarmmsg"></p>
 
 	<div class="keyboard" style="position: relative;">
 		<div style="position: absolute; top: 0px; right: -$barcodeImgWidthpx;">$barcodeImg</div>
-	
+
 		<div class="logo">C= Commodore &nbsp;&nbsp;&nbsp;&nbsp; 64</div>
 
 		<div class="lights">
@@ -521,7 +500,19 @@ tr.row1>td {
 
 	<table class="switches">
 		<tbody>
-			<tr class="row1">
+			<tr>
+				<td><a href="javascript:setDefaultSidModel6581()"
+					class="button">6581</a></td>
+				<td><a href="javascript:setDefaultSidModel8580()"
+					class="button">8580</a></td>
+				<td><a href="javascript:setDefaultEmulationReSid()"
+					class="button">RESID</a></td>
+				<td><a href="javascript:setDefaultEmulationReSidFp()"
+					class="button">RESIDFP</a></td>
+				<td><a href="javascript:insertDisk()" class="button">insert
+						next disk</a></td>
+			</tr>
+			<tr>
 				<td><a href="javascript:setJoyBtn(0, 16)" class="button">Joy1
 						Btn</a></td>
 				<td><a href="javascript:setJoyBtn(1, 16)" class="button"
@@ -532,20 +523,21 @@ tr.row1>td {
 
 	<h3>Scan Barcode to watch the video</h3>
 	<p>
-		<ol>
+	<ol>
 		<li>Please install VLC player or MXPlayer on your phone, first!
 		<li>Scan the barcode and open URL to watch the video.
-		</ol>
+	</ol>
 	</p>
 	<h3>Regarding timeouts</h3>
 	<p>
-		<ul>
-		<li>Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.
-		<li>If video gets stopped, make sure to continue playing within $notYetPlayedTimeout
-		seconds.
+	<ul>
+		<li>Start video within $notYetPlayedTimeout seconds or it will be
+			terminated, if so please reload page for a new try.
+		<li>If video gets stopped, make sure to continue playing within
+			$notYetPlayedTimeout seconds.
 		<li>Key presses are delayed a few seconds.
 		<li>Maximum play time is 1 hour.
-		</ul>
+	</ul>
 	</p>
 
 </body>
