@@ -70,6 +70,8 @@ link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) 
 
 link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (standalone)
 
+link:{codebase}jsidplay2app.apk[Download jsidplay2app] (app for android)
+
 == Minimum System Requirement
 
 |===
