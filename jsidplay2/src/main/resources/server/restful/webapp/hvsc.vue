@@ -54,7 +54,7 @@
 				if (type == 'directory') {
 					axios({
 						method: 'get',
-						url: '/jsidplay2service/JSIDPlay2REST/' + type + encodeURI(entry).replace(/\+/g,'%2B') + '?filter=.*%5C.(sid%7Cdat%7Cmus%7Cstr%7Cmp3%7Cmp4%7Cdv%7Cvob%7Ctxt%7Cjpg%7Cprg%7Cd64%7Cg64%7Cnib%7Creu%7Ccrt%7Ctap%7Ct64%7Cp00)$',
+						url: '/jsidplay2service/JSIDPlay2REST/' + type + encodeURI(entry).replace(/\+/g,'%2B') + '?filter=.*%5C.(sid%7Cdat%7Cmus%7Cstr%7Cmp3%7Cmp4%7Cdv%7Cvob%7Ctxt%7Cjpg%7Cprg%7Cd64%7Cg64%7Cnib%7Creu%7Cima%7Ccrt%7Cimg%7Ctap%7Ct64%7Cp00)$',
 						auth: {
 						  username: 'jsidplay2',
 						  password: 'jsidplay2!'

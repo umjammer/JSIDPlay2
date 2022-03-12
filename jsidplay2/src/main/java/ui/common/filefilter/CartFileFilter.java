@@ -8,7 +8,7 @@ import java.util.Locale;
 
 public final class CartFileFilter implements FileFilter {
 
-	private static final String DEFAULT_FILE_NAME_EXT[] = new String[] { ".reu", ".crt" };
+	private static final String DEFAULT_FILE_NAME_EXT[] = new String[] { ".reu", ".ima", ".crt", ".img" };
 
 	@Override
 	public boolean accept(File file) {

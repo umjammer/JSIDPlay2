@@ -154,7 +154,7 @@ public class Status {
 				return String.format("%s: %02d", resourceBundle.getString("FLOPPY_TRACK"), halfTrack >> 1);
 			}
 		} else {
-			return c1541.getDiskController().isMotorOn() ? "*" : " ";
+			return c1541.getDiskController().isMotorOn() ? "*" : "";
 		}
 		return "";
 	}
@@ -166,7 +166,7 @@ public class Status {
 				return String.format("%s: %03d", resourceBundle.getString("DATASETTE_COUNTER"), datasette.getCounter());
 			}
 		} else {
-			return datasette.getMotor() ? "+" : " ";
+			return datasette.getMotor() ? "+" : "";
 		}
 		return "";
 	}
