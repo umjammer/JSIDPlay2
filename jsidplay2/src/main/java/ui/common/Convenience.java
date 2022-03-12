@@ -141,14 +141,10 @@ public class Convenience {
 			zipEntry.deleteOnExit();
 			TFile.cp_rp(zip, zipEntry, TArchiveDetector.ALL);
 			// search media file to attach
-			toAttach = getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> {
-				return false;
-			}, null, false);
+			getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> false, null, false);
 			toAttach = zipEntry;
 		} else if (isSupportedMedia(file)) {
-			toAttach = getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> {
-				return false;
-			}, null, false);
+			getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> false, null, false);
 			toAttach = file;
 		}
 		if (toAttach != null) {
@@ -218,7 +214,8 @@ public class Convenience {
 				memberFile.deleteOnExit();
 			}
 			if (memberFile.isFile() && isSupportedMedia(memberFile)) {
-				if (memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
+				if (memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")
+						|| memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".bin")) {
 					try {
 						player.insertCartridge(CartridgeType.REU, memberFile);
 					} catch (IOException e) {
