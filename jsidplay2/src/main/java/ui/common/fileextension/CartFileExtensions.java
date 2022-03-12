@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CartFileExtensions {
 
-	List<String> EXTENSIONS = addUpperCase(asList("*.reu", "*.ima", "*.crt", "*.img"));
+	List<String> EXTENSIONS = addUpperCase(asList("*.reu", "*.ima", "*.crt", "*.img", "*.bin"));
 
 	String DESCRIPTION = "C64 Cartridges";
 }
