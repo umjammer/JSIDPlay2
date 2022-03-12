@@ -230,6 +230,8 @@ public final class RTMPPlayerWithStatus {
 		StringBuilder result = new StringBuilder();
 
 		String determinePSID64 = status.determinePSID64();
+		String determineCartridge = status.determineCartridge();
+
 		result.append(status.determineTime(false));
 		result.append(", ");
 		result.append(status.determineVideoNorm());
@@ -238,6 +240,7 @@ public final class RTMPPlayerWithStatus {
 		result.append(", ");
 		result.append(status.determineEmulations());
 		result.append(determinePSID64.isEmpty() ? "" : ", " + determinePSID64);
+		result.append(determineCartridge.isEmpty() ? "" : ", " + determineCartridge);
 		result.append(", ");
 		result.append(status.determineTapeActivity(false));
 		result.append(status.determineDiskActivity(false));

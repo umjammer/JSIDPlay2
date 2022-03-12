@@ -186,6 +186,7 @@ public class StatusBar extends C64VBox implements UIPart {
 		String determineSongLength = status.determineSongLength(true);
 		String determineRecording = status.determineRecording();
 		String determinePSID64 = status.determinePSID64();
+		String determineCartridge = status.determineCartridge();
 		String determineTuneSpeed = status.determineTuneSpeed();
 		String determineSong = status.determineSong();
 
@@ -197,6 +198,7 @@ public class StatusBar extends C64VBox implements UIPart {
 		line.append(status.determineEmulations());
 		line.append(playerId);
 		line.append(determinePSID64.isEmpty() ? "" : ", " + determinePSID64);
+		line.append(determineCartridge.isEmpty() ? "" : ", " + determineCartridge);
 		line.append(determineTuneSpeed.isEmpty() ? "" : ", " + determineTuneSpeed);
 		line.append(determineSong.isEmpty() ? "" : ", " + determineSong);
 		line.append(determineDiskActivity.isEmpty() ? "" : ", " + determineDiskActivity);

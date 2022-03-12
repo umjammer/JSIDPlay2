@@ -15,8 +15,8 @@
 		<form>
 			<div>
 				<span>REU:</span>
-				<input type="radio" id="noReu" value="noReu" v-model="reuSize">
-				<label for="noReu">None</label>
+				<input type="radio" id="auto" value="auto" v-model="reuSize">
+				<label for="auto">Autodetect</label>
 				<input type="radio" id="kb64" value="kb64" v-model="reuSize">
 				<label for="kb64">64kb</label>
 				<input type="radio" id="kb128" value="kb128" v-model="reuSize">
@@ -78,7 +78,7 @@
 			directory: '',
 			imgData: [],
 			defaultModel: 'MOS8580',
-			reuSize: 'noReu'
+			reuSize: 'auto'
 		},
 		computed: {
 			reu: function () {

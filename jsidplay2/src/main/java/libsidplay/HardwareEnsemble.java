@@ -290,13 +290,13 @@ public class HardwareEnsemble implements Ultimate64 {
 
 		// Reset Floppies
 		for (final C1541 floppy : floppies) {
-			floppy.setFloppyType(c1541Section.getFloppyType());
 			floppy.setRamExpansion(0, c1541Section.isRamExpansion(0));
 			floppy.setRamExpansion(1, c1541Section.isRamExpansion(1));
 			floppy.setRamExpansion(2, c1541Section.isRamExpansion(2));
 			floppy.setRamExpansion(3, c1541Section.isRamExpansion(3));
 			floppy.setRamExpansion(4, c1541Section.isRamExpansion(4));
 			floppy.setCustomKernalRom(c1541Section.isJiffyDosInstalled() ? JIFFYDOS_C1541 : null);
+			floppy.setFloppyType(c1541Section.getFloppyType());
 			floppy.reset();
 		}
 		enableFloppyDiskDrives(c1541Section.isDriveOn());

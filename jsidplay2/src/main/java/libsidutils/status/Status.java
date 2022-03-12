@@ -15,6 +15,7 @@ import libsidplay.common.Emulation;
 import libsidplay.common.SIDChip;
 import libsidplay.components.c1530.Datasette;
 import libsidplay.components.c1541.C1541;
+import libsidplay.components.cart.Cartridge;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneInfo;
@@ -167,6 +168,14 @@ public class Status {
 			}
 		} else {
 			return datasette.getMotor() ? "+" : "";
+		}
+		return "";
+	}
+
+	public String determineCartridge() {
+		Cartridge cartridge = player.getC64().getCartridge();
+		if (cartridge != null) {
+			return cartridge.toString();
 		}
 		return "";
 	}

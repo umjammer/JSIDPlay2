@@ -334,9 +334,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		IC1541Section c1541Section = player.getConfig().getC1541Section();
 
 		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
-		if (servletParameters.getReuSize() != null) {
-			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
-		}
 		File root = configuration.getSidplay2Section().getHvsc();
 		if (root != null) {
 			sidplay2Section.setHvsc(root);
@@ -350,6 +347,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		addPressSpaceListener(player);
 		Convenience convenience = new Convenience(player);
 		convenience.autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
+		if (servletParameters.getReuSize() != null) {
+			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
+		}
 		create(uuid, player, file, resourceBundle);
 		servletParameters.setStarted(true);
 		player.stopC64(false);
@@ -361,9 +361,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		IC1541Section c1541Section = player.getConfig().getC1541Section();
 
 		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
-		if (servletParameters.getReuSize() != null) {
-			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
-		}
 		sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_LENGTH));
 
 		File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), sidplay2Section.getTmpDir());
@@ -377,6 +374,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		addPressSpaceListener(player);
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
+		if (servletParameters.getReuSize() != null) {
+			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
+		}
 		player.stopC64(false);
 
 		return videoFile;
