@@ -1,7 +1,9 @@
 package server.restful.servlets;
 
+import static java.lang.String.format;
 import static java.lang.Thread.getAllStackTraces;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static libsidplay.components.keyboard.KeyTableEntry.SPACE;
 import static libsidutils.PathUtils.getFilenameSuffix;
 import static libsidutils.PathUtils.getFilenameWithoutSuffix;
@@ -24,6 +26,7 @@ import static server.restful.common.IServletSystemProperties.RTMP_INTERNAL_DOWNL
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_RTMP;
+import static server.restful.common.QrCode.createBarCodeImage;
 import static sidplay.audio.Audio.AAC;
 import static sidplay.audio.Audio.AVI;
 import static sidplay.audio.Audio.FLAC;
@@ -34,6 +37,7 @@ import static sidplay.audio.Audio.SID_DUMP;
 import static sidplay.audio.Audio.SID_REG;
 import static sidplay.audio.Audio.WAV;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,9 +52,12 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+
 import org.apache.http.HttpHeaders;
 
 import com.beust.jcommander.JCommander;
+import com.google.zxing.WriterException;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
@@ -67,7 +74,6 @@ import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.ServletParameters;
-import server.restful.common.barcode.BarCode;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -194,18 +200,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						}
 						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
 						response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
-
-						String rtmpUrl = getRTMPUrl(request.getRemoteAddr(), uuid);
-						Map<String, String> replacements = new HashMap<>();
-						replacements.put("$uuid", uuid.toString());
-						replacements.put("$barcodeImg", BarCode.createBarCodeImage(rtmpUrl, "UTF-8", 320, 320));
-						replacements.put("$barcodeImgWidth", String.valueOf(320));
-						replacements.put("$rtmp", rtmpUrl);
-						replacements.put("$waitForRTMP", String.valueOf(WAIT_FOR_RTMP));
-						replacements.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
-						replacements.put("$filename", file.getName());
-
 						response.setContentType(MIME_TYPE_HTML.toString());
+
+						Map<String, String> replacements = createReplacements(request, file, uuid);
+
 						try (InputStream is = SidTune.class
 								.getResourceAsStream("/server/restful/webapp/convert.html")) {
 							response.getWriter().println(convertStreamToString(is, UTF_8.name(), replacements));
@@ -326,6 +324,30 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		case MP4:
 			return new MP4FileDriver();
 		}
+	}
+
+	private Map<String, String> createReplacements(HttpServletRequest request, File file, UUID uuid)
+			throws IOException, WriterException {
+		String rtmpUrl = getRTMPUrl(request.getRemoteAddr(), uuid);
+		String createQrCodeImgTag = createQrCodeImgTag(rtmpUrl, "UTF-8", "png", 320, 320);
+
+		Map<String, String> result = new HashMap<>();
+		result.put("$uuid", uuid.toString());
+		result.put("$barcodeImg", createQrCodeImgTag);
+		result.put("$barcodeImgTop", "8px");
+		result.put("$barcodeImgRight", "-328px");
+		result.put("$rtmp", rtmpUrl);
+		result.put("$waitForRTMP", String.valueOf(WAIT_FOR_RTMP));
+		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
+		result.put("$filename", file.getName());
+		return result;
+	}
+
+	private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)
+			throws IOException, WriterException {
+		ByteArrayOutputStream qrCodeImgData = new ByteArrayOutputStream();
+		ImageIO.write(createBarCodeImage(data, charset, width, height), imgFormat, qrCodeImgData);
+		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
 	}
 
 	private void convert2liveVideo(UUID uuid, Player player, File file, AudioDriver driver,
