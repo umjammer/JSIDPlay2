@@ -185,12 +185,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							.count() < MAX_RTMP_IN_PARALLEL) {
 						new Thread(() -> {
 							try {
-								Player player = new Player(config);
 								info("START RTMP stream of: " + uuid);
-								convert2liveVideo(uuid, player, file, driver, servletParameters);
+								convert2video(config, file, driver, servletParameters, uuid);
 								info("END RTMP stream of: " + uuid);
 							} catch (IOException | SidTuneError e) {
-								log("ERROR RTMP stream of: " + uuid + ":", e);
+								log("ERROR RTMP stream of: " + uuid, e);
 							} finally {
 								servletParameters.setStarted(true);
 							}
@@ -203,8 +202,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						response.setContentType(MIME_TYPE_HTML.toString());
 
 						Map<String, String> replacements = createReplacements(request, file, uuid);
-
-						try (InputStream is = SidTune.class
+						try (InputStream is = ConvertServlet.class
 								.getResourceAsStream("/server/restful/webapp/convert.html")) {
 							response.getWriter().println(convertStreamToString(is, UTF_8.name(), replacements));
 						}
@@ -219,8 +217,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 								+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
 					}
-					Player player = new Player(config);
-					File videoFile = convert2videoFile(player, file, driver, servletParameters);
+					File videoFile = convert2video(config, file, driver, servletParameters, null);
 					copy(videoFile, response.getOutputStream());
 					videoFile.delete();
 				}
@@ -283,10 +280,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	private void convert2audio(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters)
 			throws IOException, SidTuneError {
 		Player player = new Player(config);
-		File root = configuration.getSidplay2Section().getHvsc();
-		if (root != null) {
-			player.setSidDatabase(new SidDatabase(root));
-		}
+		setSIDDatabase(player);
 		player.setAudioDriver(driver);
 		player.setDefaultLengthInRecordMode(true);
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
@@ -326,72 +320,25 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private Map<String, String> createReplacements(HttpServletRequest request, File file, UUID uuid)
-			throws IOException, WriterException {
-		String rtmpUrl = getRTMPUrl(request.getRemoteAddr(), uuid);
-		String createQrCodeImgTag = createQrCodeImgTag(rtmpUrl, "UTF-8", "png", 320, 320);
+	private File convert2video(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters,
+			UUID liveVideoUuid) throws IOException, SidTuneError {
+		File videoFile = null;
 
-		Map<String, String> result = new HashMap<>();
-		result.put("$uuid", uuid.toString());
-		result.put("$barcodeImg", createQrCodeImgTag);
-		result.put("$barcodeImgTop", "8px");
-		result.put("$barcodeImgRight", "-328px");
-		result.put("$rtmp", rtmpUrl);
-		result.put("$waitForRTMP", String.valueOf(WAIT_FOR_RTMP));
-		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
-		result.put("$filename", file.getName());
-		return result;
-	}
-
-	private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)
-			throws IOException, WriterException {
-		ByteArrayOutputStream qrCodeImgData = new ByteArrayOutputStream();
-		ImageIO.write(createBarCodeImage(data, charset, width, height), imgFormat, qrCodeImgData);
-		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
-	}
-
-	private void convert2liveVideo(UUID uuid, Player player, File file, AudioDriver driver,
-			ServletParameters servletParameters) throws IOException, SidTuneError {
-		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
-		IC1541Section c1541Section = player.getConfig().getC1541Section();
+		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
+		IC1541Section c1541Section = config.getC1541Section();
 
 		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
-		File root = configuration.getSidplay2Section().getHvsc();
-		if (root != null) {
-			sidplay2Section.setHvsc(root);
-			player.setSidDatabase(new SidDatabase(root));
+
+		Player player = new Player(config);
+		if (liveVideoUuid != null) {
+			setSIDDatabase(player);
+		} else {
+			sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_LENGTH));
+			videoFile = createVideoFile(player, driver);
 		}
 		player.setAudioDriver(driver);
-		player.setDefaultLengthInRecordMode(false);
-		player.setCheckLoopOffInRecordMode(false);
-		player.setForceCheckSongLength(true);
-
-		addPressSpaceListener(player);
-		Convenience convenience = new Convenience(player);
-		convenience.autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
-		if (servletParameters.getReuSize() != null) {
-			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
-		}
-		create(uuid, player, file, resourceBundle);
-		servletParameters.setStarted(true);
-		player.stopC64(false);
-	}
-
-	private File convert2videoFile(Player player, File file, AudioDriver driver, ServletParameters servletParameters)
-			throws IOException, SidTuneError {
-		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
-		IC1541Section c1541Section = player.getConfig().getC1541Section();
-
-		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
-		sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_LENGTH));
-
-		File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), sidplay2Section.getTmpDir());
-		videoFile.deleteOnExit();
-
-		player.setRecordingFilenameProvider(tune -> PathUtils.getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
-		player.setAudioDriver(driver);
-		player.setDefaultLengthInRecordMode(true);
-		player.setCheckLoopOffInRecordMode(false);
+		player.setDefaultLengthInRecordMode(liveVideoUuid == null);
+		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
 		player.setForceCheckSongLength(true);
 
 		addPressSpaceListener(player);
@@ -399,8 +346,27 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (servletParameters.getReuSize() != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
 		}
+		if (liveVideoUuid != null) {
+			create(liveVideoUuid, player, file, resourceBundle);
+			servletParameters.setStarted(true);
+		}
 		player.stopC64(false);
+		return videoFile;
+	}
 
+	private void setSIDDatabase(Player player) throws IOException {
+		File root = configuration.getSidplay2Section().getHvsc();
+		if (root != null) {
+			player.setSidDatabase(new SidDatabase(root));
+		}
+	}
+
+	private File createVideoFile(Player player, AudioDriver driver) throws IOException {
+		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
+
+		File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), sidplay2Section.getTmpDir());
+		videoFile.deleteOnExit();
+		player.setRecordingFilenameProvider(tune -> PathUtils.getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
 		return videoFile;
 	}
 
@@ -428,6 +394,30 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				}, PRESS_SPACE_INTERVALL * (long) player.getC64().getClock().getCpuFrequency());
 			}
 		});
+	}
+
+	private Map<String, String> createReplacements(HttpServletRequest request, File file, UUID uuid)
+			throws IOException, WriterException {
+		String rtmpUrl = getRTMPUrl(request.getRemoteAddr(), uuid);
+		String createQrCodeImgTag = createQrCodeImgTag(rtmpUrl, "UTF-8", "png", 320, 320);
+
+		Map<String, String> result = new HashMap<>();
+		result.put("$uuid", uuid.toString());
+		result.put("$barcodeImg", createQrCodeImgTag);
+		result.put("$barcodeImgTop", "8px");
+		result.put("$barcodeImgRight", "-328px");
+		result.put("$rtmp", rtmpUrl);
+		result.put("$waitForRTMP", String.valueOf(WAIT_FOR_RTMP));
+		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
+		result.put("$filename", file.getName());
+		return result;
+	}
+
+	private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)
+			throws IOException, WriterException {
+		ByteArrayOutputStream qrCodeImgData = new ByteArrayOutputStream();
+		ImageIO.write(createBarCodeImage(data, charset, width, height), imgFormat, qrCodeImgData);
+		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
 	}
 
 	private String getRTMPUrl(String remoteAddress, UUID uuid) {
