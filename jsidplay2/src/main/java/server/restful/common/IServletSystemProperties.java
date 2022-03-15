@@ -79,7 +79,7 @@ public interface IServletSystemProperties {
 	 * Video download: Maximum length in seconds the video download process is
 	 * running.
 	 */
-	int MAX_LENGTH = valueOf(getProperty("jsidplay2.rtmp.max_seconds", "600"));
+	int MAX_DOWNLOAD_LENGTH = valueOf(getProperty("jsidplay2.rtmp.max_seconds", "600"));
 
 	//
 	// WhatsSIDServlet

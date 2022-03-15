@@ -18,7 +18,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
-import static server.restful.common.IServletSystemProperties.MAX_LENGTH;
+import static server.restful.common.IServletSystemProperties.MAX_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXTERNAL_DOWNLOAD_URL;
@@ -280,7 +280,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	private void convert2audio(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters)
 			throws IOException, SidTuneError {
 		Player player = new Player(config);
-		setSIDDatabase(player);
+		File root = configuration.getSidplay2Section().getHvsc();
+		if (root != null) {
+			player.setSidDatabase(new SidDatabase(root));
+		}
 		player.setAudioDriver(driver);
 		player.setDefaultLengthInRecordMode(true);
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
@@ -321,7 +324,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private File convert2video(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters,
-			UUID liveVideoUuid) throws IOException, SidTuneError {
+			UUID uuid) throws IOException, SidTuneError {
 		File videoFile = null;
 
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
@@ -330,14 +333,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
 
 		Player player = new Player(config);
-		if (liveVideoUuid != null) {
-			setSIDDatabase(player);
-		} else {
-			sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_LENGTH));
+		if (Boolean.TRUE.equals(servletParameters.getDownload())) {
+			sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_DOWNLOAD_LENGTH));
 			videoFile = createVideoFile(player, driver);
 		}
 		player.setAudioDriver(driver);
-		player.setDefaultLengthInRecordMode(liveVideoUuid == null);
+		player.setDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
 		player.setForceCheckSongLength(true);
 
@@ -346,19 +347,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (servletParameters.getReuSize() != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
 		}
-		if (liveVideoUuid != null) {
-			create(liveVideoUuid, player, file, resourceBundle);
+		if (uuid != null) {
+			create(uuid, player, file, resourceBundle);
 			servletParameters.setStarted(true);
 		}
 		player.stopC64(false);
 		return videoFile;
-	}
-
-	private void setSIDDatabase(Player player) throws IOException {
-		File root = configuration.getSidplay2Section().getHvsc();
-		if (root != null) {
-			player.setSidDatabase(new SidDatabase(root));
-		}
 	}
 
 	private File createVideoFile(Player player, AudioDriver driver) throws IOException {
