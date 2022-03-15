@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -156,16 +157,17 @@ public final class RTMPPlayerWithStatus {
 
 	private void setNextDiskImage() {
 		if (diskImage != null) {
-			Iterator<File> asListIt = Arrays.asList(
-					Optional.ofNullable(diskImage.getParentFile().listFiles(DISK_FILE_FILTER)).orElse(new File[0]))
-					.stream().sorted().iterator();
-			while (asListIt.hasNext()) {
-				File siblingFile = asListIt.next();
-				if (siblingFile.equals(diskImage) && asListIt.hasNext()) {
-					diskImage = asListIt.next();
-					break;
+			File[] files = diskImage.getParentFile().listFiles(DISK_FILE_FILTER);
+			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0]));
+			Iterator<File> fileIterator = filesList.stream().sorted().iterator();
+			while (fileIterator.hasNext()) {
+				File siblingFile = fileIterator.next();
+				if (siblingFile.equals(diskImage) && fileIterator.hasNext()) {
+					diskImage = fileIterator.next();
+					return;
 				}
 			}
+			diskImage = filesList.stream().sorted().findFirst().orElse(diskImage);
 		}
 	}
 
@@ -174,10 +176,10 @@ public final class RTMPPlayerWithStatus {
 			TFile file = new TFile(diskImage);
 			if (file.isEntry()) {
 				File tmpDir = player.getConfig().getSidplay2Section().getTmpDir();
-				File zipEntry = new File(tmpDir, file.getName());
-				zipEntry.deleteOnExit();
-				TFile.cp_rp(file, zipEntry, TArchiveDetector.ALL);
-				return new File(tmpDir, file.getName());
+				File tmpFile = new File(tmpDir, file.getName());
+				tmpFile.deleteOnExit();
+				TFile.cp_rp(file, tmpFile, TArchiveDetector.ALL);
+				return tmpFile;
 			}
 		}
 		return diskImage;
