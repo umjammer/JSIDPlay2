@@ -1,7 +1,8 @@
 Release Notes:
 ==============
 
-HardSID4U, HardSID UNO and HardSID UPlay now supported on ALL platforms
+HardSID4U, HardSID UNO and HardSID UPlay now supported on ALL platforms (MAC not working though)
+new java-based drivers for HardSID and SIDBlaster (only depending on libusb and ftdi)
 
 JSIDPlay2Server:
 Live videos: can be controlled by web-page
