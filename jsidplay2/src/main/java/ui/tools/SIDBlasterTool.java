@@ -1,11 +1,10 @@
 package ui.tools;
 
-import static builder.sidblaster.SIDBlasterBuilder.getSerialNumbers;
-import static builder.sidblaster.SIDBlasterBuilder.getSidType;
-import static builder.sidblaster.SIDBlasterBuilder.setSerial;
-import static builder.sidblaster.SIDBlasterBuilder.setSidType;
-import static builder.sidblaster.SIDBlasterBuilder.uninitialize;
-import static builder.sidblaster.SIDType.SIDTYPE_NONE;
+import static builder.jsidblaster.JSIDBlasterBuilder.getSerialNumbers;
+import static builder.jsidblaster.JSIDBlasterBuilder.getSidType;
+import static builder.jsidblaster.JSIDBlasterBuilder.setSerial;
+import static builder.jsidblaster.JSIDBlasterBuilder.setSidType;
+import static builder.jsidblaster.JSIDBlasterBuilder.uninitialize;
 import static ui.common.util.VersionUtil.VERSION;
 
 import java.io.IOException;
@@ -16,9 +15,8 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-import builder.sidblaster.SIDBlasterBuilder;
-import builder.sidblaster.SIDType;
-import libsidplay.common.OS;
+import builder.jsidblaster.JSIDBlasterBuilder;
+import builder.jsidblaster.SIDType;
 import sidplay.ini.IniConfig;
 import ui.common.util.DebugUtil;
 
@@ -43,7 +41,7 @@ public class SIDBlasterTool {
 	private int deviceId;
 
 	@Parameter(names = { "--sidType", "-t" }, descriptionKey = "SID_TYPE", order = 3)
-	private SIDType sidType = SIDTYPE_NONE;
+	private SIDType sidType = SIDType.NONE;
 
 	@Parameter(names = { "--serial", "-s" }, descriptionKey = "SERIAL", order = 4)
 	private String serialNo;
@@ -71,7 +69,7 @@ public class SIDBlasterTool {
 
 			if (serialNumbers.length == 0) {
 				System.out.println(RESOURCE_BUNDLE.getString("NO_SIDBLASTER_DEVICES_DETECTED"));
-				SIDBlasterBuilder.printInstallationHint();
+				JSIDBlasterBuilder.printInstallationHint();
 				exit(1);
 			}
 			if (deviceId >= serialNumbers.length) {
@@ -132,24 +130,25 @@ public class SIDBlasterTool {
 				break;
 
 			case RUN_ON_WINDOWS:
-				if (OS.get() != OS.WINDOWS) {
-					System.out.println(RESOURCE_BUNDLE.getString("MUST_BE_RUN_ON_WINDOWS"));
-					exit(1);
-				}
-				System.out.printf(RESOURCE_BUNDLE.getString("RUN_ON_WINDOWS"), deviceId);
-				switch (proceed()) {
-				case 'y':
-				case 'Y':
-					System.out.printf("RC=%d\n", setSidType(deviceId, getSidType(deviceId)));
-					System.out.println(RESOURCE_BUNDLE.getString("DONE"));
-					break;
-
-				default:
-					System.out.println(RESOURCE_BUNDLE.getString("ABORTED"));
-					break;
-
-				}
-				break;
+				throw new RuntimeException("No longer supported!");
+//				if (OS.get() != OS.WINDOWS) {
+//					System.out.println(RESOURCE_BUNDLE.getString("MUST_BE_RUN_ON_WINDOWS"));
+//					exit(1);
+//				}
+//				System.out.printf(RESOURCE_BUNDLE.getString("RUN_ON_WINDOWS"), deviceId);
+//				switch (proceed()) {
+//				case 'y':
+//				case 'Y':
+//					System.out.printf("RC=%d\n", setSidType(deviceId, getSidType(deviceId)));
+//					System.out.println(RESOURCE_BUNDLE.getString("DONE"));
+//					break;
+//
+//				default:
+//					System.out.println(RESOURCE_BUNDLE.getString("ABORTED"));
+//					break;
+//
+//				}
+//				break;
 			}
 		} finally {
 			uninitialize();
@@ -157,7 +156,7 @@ public class SIDBlasterTool {
 	}
 
 	private void triggerFetchSerialNumbers() {
-		new SIDBlasterBuilder(null, config, null);
+		new JSIDBlasterBuilder(null, config, null);
 	}
 
 	private String credits() {

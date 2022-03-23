@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 
 import javax.sound.sampled.Mixer.Info;
 
+import builder.jsidblaster.JSIDBlasterBuilder;
 import builder.netsiddev.NetSIDDevConnection;
-import builder.sidblaster.SIDBlasterBuilder;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -429,15 +429,15 @@ public class ToolBar extends C64VBox implements UIPart {
 	private void autodetect() {
 		final EmulationSection emulationSection = util.getConfig().getEmulationSection();
 		try {
-			if (SIDBlasterBuilder.getSerialNumbers() == null) {
+			if (JSIDBlasterBuilder.getSerialNumbers() == null) {
 				triggerFetchSerialNumbers();
 			}
 			// overwrite device list
 			emulationSection.getSidBlasterDeviceList().clear();
 			sidBlasterDeviceParent.getChildren().clear();
-			for (int i = 0; i < SIDBlasterBuilder.getSerialNumbers().length; i++) {
-				String serialNumber = SIDBlasterBuilder.getSerialNumbers()[i];
-				ChipModel chipModel = SIDBlasterBuilder.getSidType(i).asChipModel();
+			for (int i = 0; i < JSIDBlasterBuilder.getSerialNumbers().length; i++) {
+				String serialNumber = JSIDBlasterBuilder.getSerialNumbers()[i];
+				ChipModel chipModel = JSIDBlasterBuilder.getSidType(i).asChipModel();
 				DeviceMapping deviceMapping = new DeviceMapping(serialNumber, chipModel, true);
 				emulationSection.getSidBlasterDeviceList().add(deviceMapping);
 				addSidBlasterDeviceMapping(deviceMapping);
@@ -689,7 +689,7 @@ public class ToolBar extends C64VBox implements UIPart {
 			} else {
 				testPlayer.stopC64();
 			}
-			if (SIDBlasterBuilder.getSerialNumbers() == null) {
+			if (JSIDBlasterBuilder.getSerialNumbers() == null) {
 				triggerFetchSerialNumbers();
 			}
 			if (isSelected) {
@@ -707,13 +707,13 @@ public class ToolBar extends C64VBox implements UIPart {
 	}
 
 	private void triggerFetchSerialNumbers() {
-		new SIDBlasterBuilder(null, util.getConfig(), null);
+		new JSIDBlasterBuilder(null, util.getConfig(), null);
 	}
 
 	private void setActiveSidBlasterDevices(Mixer mixer) {
 		List<String> serialNumbers = new ArrayList<>();
-		if (mixer instanceof SIDBlasterBuilder) {
-			SIDBlasterBuilder sidBlasterBuilder = (SIDBlasterBuilder) mixer;
+		if (mixer instanceof JSIDBlasterBuilder) {
+			JSIDBlasterBuilder sidBlasterBuilder = (JSIDBlasterBuilder) mixer;
 			for (int sidNum = 0; sidNum < MAX_SIDS; sidNum++) {
 				serialNumbers.add(sidBlasterBuilder.getDeviceName(sidNum));
 			}

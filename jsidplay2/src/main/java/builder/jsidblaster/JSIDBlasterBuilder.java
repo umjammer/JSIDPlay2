@@ -1,19 +1,12 @@
-package builder.sidblaster;
+package builder.jsidblaster;
 
-import static libsidplay.common.Engine.SIDBLASTER;
 import static libsidplay.components.pla.PLA.MAX_SIDS;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.sun.jna.DefaultTypeMapper;
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.platform.EnumConverter;
 
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
@@ -27,6 +20,8 @@ import libsidplay.config.IAudioSection;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
+import sidblaster.hardsid.HardSID;
+import sidblaster.hardsid.HardSIDImpl;
 import sidplay.audio.AudioDriver;
 
 /**
@@ -36,9 +31,9 @@ import sidplay.audio.AudioDriver;
  * @author Ken Händel
  *
  */
-public class SIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
+public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 
-	private static final short REGULAR_DELAY = 4096;
+	private static final short REGULAR_DELAY = 512;
 
 	/**
 	 * System event context.
@@ -81,40 +76,30 @@ public class SIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 
 	private int[] delayInCycles = new int[MAX_SIDS];
 
-	public SIDBlasterBuilder(EventScheduler context, IConfig config, CPUClock cpuClock) {
+	public JSIDBlasterBuilder(EventScheduler context, IConfig config, CPUClock cpuClock) {
 		this.context = context;
 		this.config = config;
 		this.cpuClock = cpuClock;
 		if (hardSID == null) {
-			try {
-				hardSID = Native.load("hardsid", HardSID.class, createOptions());
-				init();
-			} catch (UnsatisfiedLinkError e) {
-				System.err.println("Error: Windows, Linux or OSX is required to use " + SIDBLASTER + " soundcard!");
-				printInstallationHint();
-				throw e;
-			}
+			hardSID = new HardSIDImpl();
+			init();
 		}
-	}
-
-	private Map<String, Object> createOptions() {
-		Map<String, Object> options = new HashMap<String, Object>();
-		options.put(Library.OPTION_TYPE_MAPPER, new DefaultTypeMapper() {
-			{
-				addTypeConverter(WState.class, new EnumConverter<WState>(WState.class));
-				addTypeConverter(SIDType.class, new EnumConverter<SIDType>(SIDType.class));
-			}
-		});
-		return options;
 	}
 
 	private void init() {
-		hardSID.HardSID_SetWriteBufferSize((byte) config.getEmulationSection().getSidBlasterWriteBufferSize());
 		deviceCount = hardSID.HardSID_Devices();
+		hardSID.HardSID_SetWriteBufferSize((byte) config.getEmulationSection().getSidBlasterWriteBufferSize());
 		serialNumbers = new String[deviceCount];
 		for (byte deviceId = 0; deviceId < deviceCount; deviceId++) {
-			serialNumbers[deviceId] = hardSID.GetSerial(deviceId);
+			serialNumbers[deviceId] = hardSID.HardSID_GetSerial(deviceId);
 		}
+
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> uninitialize()));
+	}
+
+	@Override
+	public void destroy() {
+//		uninitialize();		see shutdown hook
 	}
 
 	public static void printInstallationHint() {
@@ -206,11 +191,13 @@ public class SIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 	}
 
 	public static SIDType getSidType(int deviceId) {
-		return hardSID.HardSID_GetSIDType((byte) deviceId);
+		sidblaster.SIDType hardSID_GetSIDType = hardSID.HardSID_GetSIDType((byte) deviceId);
+		return SIDType.to(hardSID_GetSIDType);
 	}
 
 	public static int setSidType(int deviceId, SIDType sidType) {
-		return hardSID.HardSID_SetSIDType((byte) deviceId, sidType);
+		sidblaster.SIDType hardSID_GetSIDType = SIDType.from(sidType);
+		return hardSID.HardSID_SetSIDType((byte) deviceId, hardSID_GetSIDType);
 	}
 
 	public static int setSerial(int deviceId, String serialNo) {

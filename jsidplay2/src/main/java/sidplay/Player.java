@@ -41,10 +41,10 @@ import javax.sound.sampled.LineUnavailableException;
 
 import builder.exsid.ExSIDBuilder;
 import builder.jhardsid.JHardSIDBuilder;
+import builder.jsidblaster.JSIDBlasterBuilder;
 import builder.netsiddev.NetSIDDevBuilder;
 import builder.resid.ReSIDBuilder;
 import builder.resid.SIDMixer;
-import builder.sidblaster.SIDBlasterBuilder;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
@@ -803,7 +803,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		case JHARDSID:
 			return new JHardSIDBuilder(c64.getEventScheduler(), config, cpuClock);
 		case SIDBLASTER:
-			return new SIDBlasterBuilder(c64.getEventScheduler(), config, cpuClock);
+			return new JSIDBlasterBuilder(c64.getEventScheduler(), config, cpuClock);
 		case EXSID:
 			return new ExSIDBuilder(c64.getEventScheduler(), config, cpuClock);
 		default:
@@ -1348,7 +1348,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		credits.append(builder.resid.resid.ReSID.credits());
 		credits.append(builder.resid.residfp.ReSIDfp.credits());
 		credits.append(builder.exsid.ExSIDEmu.credits());
-		credits.append(builder.sidblaster.SIDBlasterEmu.credits());
+		credits.append(builder.jsidblaster.SIDBlasterEmu.credits());
 		credits.append(builder.jhardsid.JHardSIDEmu.credits());
 		return credits.toString();
 	}

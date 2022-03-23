@@ -14,8 +14,8 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
-import builder.sidblaster.SIDBlasterBuilder;
-import builder.sidblaster.SIDType;
+import builder.jsidblaster.JSIDBlasterBuilder;
+import builder.jsidblaster.SIDType;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
@@ -38,6 +38,7 @@ import sidplay.ini.IniConfig;
  */
 @Parameters(resourceBundle = "sidplay.ConsolePlayer")
 final public class ConsolePlayer {
+
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
 	private Boolean help = Boolean.FALSE;
 
@@ -132,15 +133,14 @@ final public class ConsolePlayer {
 	private void printSidBlasterDevices() {
 		try {
 			triggerFetchSerialNumbers();
-			String[] serialNumbers = SIDBlasterBuilder.getSerialNumbers();
+			String[] serialNumbers = JSIDBlasterBuilder.getSerialNumbers();
 			if (serialNumbers.length > 0) {
 				System.out.println("\nDetected SIDBlaster device serial numbers: (configure INI file accordingly)");
 				System.out.printf("    SIDBlasterMapping_N=%d\n", serialNumbers.length);
 				int deviceIdx = 0;
 				for (String serialNumber : serialNumbers) {
-					SIDType sidType = SIDBlasterBuilder.getSidType(deviceIdx);
-					System.out.printf("    SIDBlasterMapping_%d=%s=%s\n", deviceIdx++, serialNumber,
-							sidType.asChipModel());
+					SIDType sidType = JSIDBlasterBuilder.getSidType(deviceIdx);
+					System.out.printf("    SIDBlasterMapping_%d=%s=%s\n", deviceIdx++, serialNumber, sidType.name());
 				}
 			}
 		} catch (UnsatisfiedLinkError e) {
@@ -149,7 +149,7 @@ final public class ConsolePlayer {
 	}
 
 	private void triggerFetchSerialNumbers() {
-		new SIDBlasterBuilder(null, config, null);
+		new JSIDBlasterBuilder(null, config, null);
 	}
 
 	private void exit(int rc) {

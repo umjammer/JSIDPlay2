@@ -1,4 +1,4 @@
-package builder.sidblaster;
+package builder.jsidblaster;
 
 import static libsidplay.components.pla.PLA.MAX_SIDS;
 
@@ -10,6 +10,8 @@ import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.config.IEmulationSection;
+import sidblaster.hardsid.HardSID;
+import sidblaster.hardsid.WState;
 
 /**
  *
@@ -31,7 +33,7 @@ public class SIDBlasterEmu extends ReSIDfp {
 		private final int prevNum;
 		private final List<SIDBlasterEmu> sids;
 
-		public FakeStereo(SIDBlasterBuilder hardSIDBuilder, EventScheduler context, CPUClock cpuClock, HardSID hardSID,
+		public FakeStereo(JSIDBlasterBuilder hardSIDBuilder, EventScheduler context, CPUClock cpuClock, HardSID hardSID,
 				byte deviceId, int sidNum, ChipModel model, ChipModel defaultChipModel, List<SIDBlasterEmu> sids,
 				IEmulationSection emulationSection) {
 			super(hardSIDBuilder, context, cpuClock, hardSID, deviceId, sidNum, model, defaultChipModel);
@@ -72,7 +74,7 @@ public class SIDBlasterEmu extends ReSIDfp {
 
 	private final EventScheduler context;
 
-	private final SIDBlasterBuilder hardSIDBuilder;
+	private final JSIDBlasterBuilder hardSIDBuilder;
 
 	private final HardSID hardSID;
 
@@ -88,7 +90,7 @@ public class SIDBlasterEmu extends ReSIDfp {
 
 	private boolean[] filterDisable = new boolean[MAX_SIDS];
 
-	public SIDBlasterEmu(SIDBlasterBuilder hardSIDBuilder, EventScheduler context, CPUClock cpuClock, HardSID hardSID,
+	public SIDBlasterEmu(JSIDBlasterBuilder hardSIDBuilder, EventScheduler context, CPUClock cpuClock, HardSID hardSID,
 			byte deviceId, int sidNum, ChipModel model, ChipModel defaultSidModel) {
 		super(context);
 		this.hardSIDBuilder = hardSIDBuilder;
@@ -106,6 +108,7 @@ public class SIDBlasterEmu extends ReSIDfp {
 
 	@Override
 	public void write(int addr, byte data) {
+		final short clocksSinceLastAccess = (short) hardSIDBuilder.clocksSinceLastAccess();
 		switch (addr & 0x1f) {
 		case 0x04:
 		case 0x0b:
@@ -135,18 +138,9 @@ public class SIDBlasterEmu extends ReSIDfp {
 		}
 		final byte dataByte = data;
 		doWriteDelayed(() -> {
-			while (hardSID.HardSID_Try_Write(deviceID, (short) 0, (byte) addr, dataByte) == WState.WSTATE_BUSY) {
+			while (hardSID.HardSID_Try_Write(deviceID, clocksSinceLastAccess, (byte) addr, dataByte) == WState.BUSY)
 				;
-			}
 		});
-	}
-
-	@Override
-	public void clock() {
-		super.clock();
-		final short clocksSinceLastAccess = (short) hardSIDBuilder.clocksSinceLastAccess();
-
-		doWriteDelayed(() -> hardSID.HardSID_Delay(deviceID, clocksSinceLastAccess));
 	}
 
 	private void doWriteDelayed(Runnable runnable) {
