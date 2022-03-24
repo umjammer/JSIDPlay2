@@ -1,18 +1,11 @@
-package builder.exsid;
+package builder.jexsid;
 
-import static libsidplay.common.Engine.EXSID;
 import static libsidplay.components.pla.PLA.MAX_SIDS;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.sun.jna.DefaultTypeMapper;
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.platform.EnumConverter;
-
+import exsid.ExSID;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
@@ -34,7 +27,7 @@ import sidplay.audio.AudioDriver;
  * @author Ken Händel
  *
  */
-public class ExSIDBuilder implements HardwareSIDBuilder, Mixer {
+public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 
 	private static final short REGULAR_DELAY = 128;
 
@@ -81,47 +74,29 @@ public class ExSIDBuilder implements HardwareSIDBuilder, Mixer {
 
 	protected int lastSidNum = -1;
 
-	public ExSIDBuilder(EventScheduler context, IConfig config, CPUClock cpuClock) {
+	public JExSIDBuilder(EventScheduler context, IConfig config, CPUClock cpuClock) {
 		this.context = context;
 		this.config = config;
 		this.cpuClock = cpuClock;
 		if (exSID == null) {
-			try {
-				exSID = Native.load("exsid", ExSID.class, createOptions());
-				init();
-			} catch (UnsatisfiedLinkError e) {
-				System.err.println("Error: Windows, Linux or OSX is required to use " + EXSID + " soundcard!");
-				printInstallationHint();
-				throw e;
-			}
+			exSID = new ExSID();
+			init();
 		}
-	}
-
-	private Map<String, Object> createOptions() {
-		Map<String, Object> options = new HashMap<String, Object>();
-		options.put(Library.OPTION_TYPE_MAPPER, new DefaultTypeMapper() {
-			{
-				addTypeConverter(AudioOp.class, new EnumConverter<AudioOp>(AudioOp.class));
-				addTypeConverter(ChipSelect.class, new EnumConverter<ChipSelect>(ChipSelect.class));
-				addTypeConverter(ClockSelect.class, new EnumConverter<ClockSelect>(ClockSelect.class));
-				addTypeConverter(HardwareModel.class, new EnumConverter<HardwareModel>(HardwareModel.class));
-			}
-		});
-		return options;
 	}
 
 	private void init() {
 		if (exSID.exSID_init() < 0) {
 			throw new RuntimeException(exSID.exSID_error_str());
 		}
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> exSID.exSID_exit()));
-		final String hardwareRevision = exSID.exSID_hwmodel() != null ? exSID.exSID_hwmodel().getModel() : "???";
+		final String hardwareRevision = HardwareModel.get(exSID.exSID_hwmodel()).name();
 		final String firmwareVersion = String.format(" fw%c%d", (exSID.exSID_hwversion() >> 8) & 0xff,
 				exSID.exSID_hwversion() & 0xff);
 		deviceCount = 2;
 		deviceNames = new String[deviceCount];
 		deviceNames[0] = hardwareRevision + " " + firmwareVersion;
 		deviceNames[1] = deviceNames[0];
+
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> exSID.exSID_exit()));
 	}
 
 	public static void printInstallationHint() {
@@ -175,7 +150,7 @@ public class ExSIDBuilder implements HardwareSIDBuilder, Mixer {
 		if (audioSection.isExsidFakeStereo()) {
 			if (sidNum == 0 && SidTune.isFakeStereoSid(emulationSection, tune, 1)) {
 				lastSidNum = sidNum;
-				exSID.exSID_chipselect(ChipSelect.XS_CS_BOTH);
+				exSID.exSID_chipselect(ChipSelect.XS_CS_BOTH.getChipSelect());
 			}
 			if (sidNum == 1 && SidTune.isFakeStereoSid(emulationSection, tune, 1)) {
 				return SIDEmu.NONE;

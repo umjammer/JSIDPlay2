@@ -1,4 +1,4 @@
-package builder.exsid;
+package builder.jexsid;
 
 import static libsidplay.components.pla.PLA.MAX_SIDS;
 
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import builder.resid.residfp.ReSIDfp;
+import exsid.ExSID;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
@@ -32,10 +33,10 @@ public class ExSIDEmu extends ReSIDfp {
 		private final int prevNum;
 		private final List<ExSIDEmu> sids;
 
-		public FakeStereo(ExSIDBuilder exSIDBuilder, EventScheduler context, CPUClock cpuClock, ExSID hardSID,
+		public FakeStereo(JExSIDBuilder jExSIDBuilder, EventScheduler context, CPUClock cpuClock, ExSID hardSID,
 				byte deviceId, int sidNum, ChipModel model, ChipModel defaultChipModel, boolean stereo,
 				List<ExSIDEmu> sids, IEmulationSection emulationSection) {
-			super(exSIDBuilder, context, cpuClock, hardSID, deviceId, sidNum, model, defaultChipModel, stereo);
+			super(jExSIDBuilder, context, cpuClock, hardSID, deviceId, sidNum, model, defaultChipModel, stereo);
 			this.prevNum = sidNum - 1;
 			this.sids = sids;
 			this.emulationSection = emulationSection;
@@ -67,13 +68,13 @@ public class ExSIDEmu extends ReSIDfp {
 	private final Event event = new Event("ExSID Delay") {
 		@Override
 		public void event() {
-			context.schedule(event, exSIDBuilder.eventuallyDelay(), Event.Phase.PHI2);
+			context.schedule(event, jExSIDBuilder.eventuallyDelay(), Event.Phase.PHI2);
 		}
 	};
 
 	private final EventScheduler context;
 
-	private final ExSIDBuilder exSIDBuilder;
+	private final JExSIDBuilder jExSIDBuilder;
 
 	private final ExSID exSID;
 
@@ -89,10 +90,10 @@ public class ExSIDEmu extends ReSIDfp {
 
 	private boolean[] filterDisable = new boolean[MAX_SIDS];
 
-	public ExSIDEmu(ExSIDBuilder exSIDBuilder, EventScheduler context, CPUClock cpuClock, ExSID exSID, byte deviceId,
+	public ExSIDEmu(JExSIDBuilder jExSIDBuilder, EventScheduler context, CPUClock cpuClock, ExSID exSID, byte deviceId,
 			int sidNum, ChipModel model, ChipModel defaultSidModel, boolean stereo) {
 		super(context);
-		this.exSIDBuilder = exSIDBuilder;
+		this.jExSIDBuilder = jExSIDBuilder;
 		this.context = context;
 		this.exSID = exSID;
 		this.deviceID = deviceId;
@@ -105,14 +106,17 @@ public class ExSIDEmu extends ReSIDfp {
 		});
 
 		if (sidNum == 0) {
-			exSID.exSID_audio_op(AudioOp.XS_AU_MUTE);
-			exSID.exSID_clockselect(cpuClock == CPUClock.PAL ? ClockSelect.XS_CL_PAL : ClockSelect.XS_CL_NTSC);
+			exSID.exSID_audio_op(AudioOp.XS_AU_MUTE.getAudioOp());
+			exSID.exSID_clockselect(
+					cpuClock == CPUClock.PAL ? ClockSelect.XS_CL_PAL.getClockSelect() : ClockSelect.XS_CL_NTSC.getClockSelect());
 			if (stereo) {
-				exSID.exSID_audio_op(model == ChipModel.MOS6581 ? AudioOp.XS_AU_6581_8580 : AudioOp.XS_AU_8580_6581);
+				exSID.exSID_audio_op(model == ChipModel.MOS6581 ? AudioOp.XS_AU_6581_8580.getAudioOp()
+						: AudioOp.XS_AU_8580_6581.getAudioOp());
 			} else {
-				exSID.exSID_audio_op(model == ChipModel.MOS6581 ? AudioOp.XS_AU_6581_6581 : AudioOp.XS_AU_8580_8580);
+				exSID.exSID_audio_op(model == ChipModel.MOS6581 ? AudioOp.XS_AU_6581_6581.getAudioOp()
+						: AudioOp.XS_AU_8580_8580.getAudioOp());
 			}
-			exSID.exSID_audio_op(AudioOp.XS_AU_UNMUTE);
+			exSID.exSID_audio_op(AudioOp.XS_AU_UNMUTE.getAudioOp());
 		}
 	}
 
@@ -151,10 +155,10 @@ public class ExSIDEmu extends ReSIDfp {
 			return;
 		}
 		doWriteDelayed(() -> {
-			if (!Objects.equals(exSIDBuilder.lastSidNum, sidNum)) {
-				exSID.exSID_chipselect(
-						chipModel == ChipModel.MOS8580 ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
-				exSIDBuilder.lastSidNum = sidNum;
+			if (!Objects.equals(jExSIDBuilder.lastSidNum, sidNum)) {
+				exSID.exSID_chipselect(chipModel == ChipModel.MOS8580 ? ChipSelect.XS_CS_CHIP1.getChipSelect()
+						: ChipSelect.XS_CS_CHIP0.getChipSelect());
+				jExSIDBuilder.lastSidNum = sidNum;
 			}
 			exSID.exSID_clkdwrite(0, (byte) addr, dataByte);
 		});
@@ -163,19 +167,19 @@ public class ExSIDEmu extends ReSIDfp {
 	@Override
 	public void clock() {
 		super.clock();
-		final short clocksSinceLastAccess = (short) exSIDBuilder.clocksSinceLastAccess();
+		final short clocksSinceLastAccess = (short) jExSIDBuilder.clocksSinceLastAccess();
 
 		doWriteDelayed(() -> exSID.exSID_delay(clocksSinceLastAccess));
 	}
 
 	private void doWriteDelayed(Runnable runnable) {
-		if (exSIDBuilder.getDelay(sidNum) > 0) {
+		if (jExSIDBuilder.getDelay(sidNum) > 0) {
 			context.schedule(new Event("Delayed SID output") {
 				@Override
 				public void event() throws InterruptedException {
 					runnable.run();
 				}
-			}, exSIDBuilder.getDelay(sidNum));
+			}, jExSIDBuilder.getDelay(sidNum));
 		} else {
 			runnable.run();
 		}

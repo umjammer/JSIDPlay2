@@ -7,7 +7,7 @@ import static libsidplay.common.ChipModel.MOS8580;
 import static libsidplay.common.Emulation.RESID;
 import static libsidplay.common.Emulation.RESIDFP;
 import static libsidplay.common.Engine.EXSID;
-import static libsidplay.common.Engine.JHARDSID;
+import static libsidplay.common.Engine.HARDSID;
 import static libsidplay.common.Engine.NETSID;
 import static libsidplay.common.Engine.SIDBLASTER;
 import static libsidplay.common.SIDChip.FC_MAX;
@@ -377,7 +377,7 @@ public class EmulationSettings extends C64Window {
 	private void enableStereoSettings(SidTune tune) {
 		EmulationSection emulationSection = util.getConfig().getEmulationSection();
 
-		boolean hardwareBasedSid = emulationSection.getEngine() == JHARDSID
+		boolean hardwareBasedSid = emulationSection.getEngine() == HARDSID
 				|| emulationSection.getEngine() == SIDBLASTER || emulationSection.getEngine() == EXSID;
 		boolean second = SidTune.isSIDUsed(emulationSection, tune, 1);
 		boolean third = SidTune.isSIDUsed(emulationSection, tune, 2);

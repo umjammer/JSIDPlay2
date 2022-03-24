@@ -10,7 +10,7 @@ public enum Engine {
 	/** Software (Network SID Device via socket connection) */
 	NETSID,
 	/** Hardware (HardSID4U, HardSID Uno and HardSID UPlay - USB devices) */
-	JHARDSID,
+	HARDSID,
 	/** Hardware (SidBlaster USB device) */
 	SIDBLASTER,
 	/** Hardware (ExSID USB device) */

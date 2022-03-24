@@ -183,6 +183,11 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>exsid</groupId>
+			<artifactId>exsid-usb-driver-library-java</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>net.sf.sevenzipjbinding</groupId>
 			<artifactId>sevenzipjbinding</artifactId>
 			<version>16.02-2.01</version>

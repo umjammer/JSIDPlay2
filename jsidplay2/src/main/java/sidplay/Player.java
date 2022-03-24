@@ -39,7 +39,7 @@ import java.util.function.IntFunction;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import builder.exsid.ExSIDBuilder;
+import builder.jexsid.JExSIDBuilder;
 import builder.jhardsid.JHardSIDBuilder;
 import builder.jsidblaster.JSIDBlasterBuilder;
 import builder.netsiddev.NetSIDDevBuilder;
@@ -800,12 +800,14 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			return new ReSIDBuilder(c64.getEventScheduler(), config, cpuClock);
 		case NETSID:
 			return new NetSIDDevBuilder(c64.getEventScheduler(), config, cpuClock);
-		case JHARDSID:
+		case HARDSID:
 			return new JHardSIDBuilder(c64.getEventScheduler(), config, cpuClock);
 		case SIDBLASTER:
 			return new JSIDBlasterBuilder(c64.getEventScheduler(), config, cpuClock);
 		case EXSID:
-			return new ExSIDBuilder(c64.getEventScheduler(), config, cpuClock);
+			return new JExSIDBuilder(c64.getEventScheduler(), config, cpuClock);
+//		case EXSID:
+//			return new ExSIDBuilder(c64.getEventScheduler(), config, cpuClock);
 		default:
 			throw new RuntimeException("Unknown engine type: " + config.getEmulationSection().getEngine());
 		}
@@ -1347,7 +1349,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		credits.append(VIC.credits());
 		credits.append(builder.resid.resid.ReSID.credits());
 		credits.append(builder.resid.residfp.ReSIDfp.credits());
-		credits.append(builder.exsid.ExSIDEmu.credits());
+		credits.append(builder.jexsid.ExSIDEmu.credits());
 		credits.append(builder.jsidblaster.SIDBlasterEmu.credits());
 		credits.append(builder.jhardsid.JHardSIDEmu.credits());
 		return credits.toString();
