@@ -37,8 +37,21 @@ public class ExSID implements IExSID {
 
 	private HardwareSpecs hardwareSpecs = new HardwareSpecs();
 
-	private byte backbuf[] = new byte[XS_BUFFSZ];
-	private int backbufIdx = 0;
+//#ifndef	EXSID_THREADED
+//	private byte backbuf[] = new byte[XS_BUFFSZ];
+//	private int backbufIdx = 0;
+//#else
+	byte[] bufptr = null;
+//#endif
+
+//	#ifdef	EXSID_THREADED
+	// Global variables for flip buffering
+	byte bufchar0[] = new byte[XS_BUFFSZ];
+	byte bufchar1[] = new byte[XS_BUFFSZ];
+	byte frontbuf[] = bufchar0, backbuf[] = bufchar1;
+	static int frontbufIdx = 0, backbufIdx = 0;
+	Object frontbufMtx = new Object();
+//	#endif	// EXSID_THREADED
 
 	@Override
 	public String exSID_error_str() {
@@ -67,10 +80,62 @@ public class ExSID implements IExSID {
 	 * @param size number of bytes to read
 	 * @return
 	 * @throws FTD2XXException
+	 * @throws InterruptedException
 	 */
-	private int xSread(byte[] buff, int size) throws FTD2XXException {
-		return device.read(buff, 0, size);
+	private int xSread(byte[] buff, int size) throws FTD2XXException, InterruptedException {
+//	#ifdef	EXSID_THREADED
+		synchronized (frontbufMtx) {
+			while (frontbufIdx != 0)
+				frontbufMtx.wait();
+//	#endif
+			return device.read(buff, 0, size);
+//	#ifdef	EXSID_THREADED
+		}
+//	#endif
 	}
+
+//	#ifdef	EXSID_THREADED
+	/**
+	 * Writer thread. ** consumer ** This thread consumes buffer prepared in
+	 * xSoutb(). Since writes to the FTDI subsystem are blocking, this thread blocks
+	 * when it's writing to the chip, and also while it's waiting for the front
+	 * buffer to be ready. This ensures execution time consistency as xSoutb()
+	 * periodically waits for the front buffer to be ready before flipping buffers.
+	 * 
+	 * @note BLOCKING.
+	 * @param arg ignored
+	 * @return DOES NOT RETURN, exits when frontbuf_idx is negative.
+	 */
+	private Thread exSID_thread_output = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			try {
+				while (true) {
+					synchronized (frontbufMtx) {
+
+						// wait for frontbuf ready (not empty)
+						while (frontbufIdx == 0)
+							frontbufMtx.wait();
+
+						if (frontbufIdx < 0) { // exit condition
+							return;
+						}
+
+						xSwrite(frontbuf, frontbufIdx);
+						frontbufIdx = 0;
+
+						// xSread() and xSoutb() are in the same thread of execution
+						// so it can only be one or the other waiting.
+						frontbufMtx.notify();
+
+					}
+				}
+			} catch (FTD2XXException | InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	});
+//	#endif	// EXSID_THREADED
 
 	/**
 	 * Single byte output routine. ** producer ** Fills a static buffer with bytes
@@ -82,15 +147,39 @@ public class ExSID implements IExSID {
 	 * @param       byte byte to send
 	 * @param flush force write flush if positive, trigger thread exit if negative
 	 * @throws FTD2XXException
+	 * @throws InterruptedException
 	 */
-	private void xSoutb(byte b, boolean flush) throws FTD2XXException {
+	private void xSoutb(byte b, int flush) throws FTD2XXException, InterruptedException {
 		backbuf[backbufIdx++] = b;
 
-		if (backbufIdx < XS_BUFFSZ && !flush)
+		if (backbufIdx < XS_BUFFSZ && flush == 0)
 			return;
 
-		xSwrite(backbuf, backbufIdx);
-		backbufIdx = 0;
+//		#ifdef	EXSID_THREADED
+		// buffer dance
+		synchronized (frontbufMtx) {
+
+			// wait for frontbuf available (empty). Only triggers if previous
+			// write buffer hasn't been consummed before we get here again.
+			while (frontbufIdx != 0)
+				frontbufMtx.wait();
+
+			if (flush < 0) // indicate exit request
+				frontbufIdx = -1;
+			else { // flip buffers
+				bufptr = frontbuf;
+				frontbuf = backbuf;
+				frontbufIdx = backbufIdx;
+				backbuf = bufptr;
+				backbufIdx = 0;
+			}
+
+			frontbufMtx.notify();
+		}
+//	#else	// unthreaded
+//		xSwrite(backbuf, backbufIdx);
+//		backbufIdx = 0;
+//	#endif
 	}
 
 	/**
@@ -103,7 +192,7 @@ public class ExSID implements IExSID {
 	 */
 	@Override
 	public int exSID_init() {
-		if (device.isOpen()) {
+		if (device != null && device.isOpen()) {
 			System.err.println("Device is already open!");
 			return -1;
 		}
@@ -120,6 +209,7 @@ public class ExSID implements IExSID {
 					logger.info(String.format("Trying %s...\n", xSsup.getDescription()));
 					if (ftDevice.getDevDescription().equals(xSsup.getDescription())) {
 						device = ftDevice;
+						device.open();
 						hardwareSpecs = xSsup.getHardwareSpecs();
 						break;
 					}
@@ -131,15 +221,21 @@ public class ExSID implements IExSID {
 			}
 
 			xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
+
+//		#ifdef	EXSID_THREADED
+			backbufIdx = frontbufIdx = 0;
+			exSID_thread_output.start();
+//		#endif
+
 			xSfw_usb_purge_buffers();
 
 			// Wait for device ready by trying to read FV and wait for the answer
 			// XXX Broken with libftdi due to non-blocking read :-/
-			xSoutb(XS_AD_IOCTFV, true);
+			xSoutb(XS_AD_IOCTFV, 1);
 			xSread(new byte[1], 1);
 			return 0;
 
-		} catch (FTD2XXException e1) {
+		} catch (FTD2XXException | InterruptedException e1) {
 			e1.printStackTrace();
 			return -1;
 		}
@@ -155,13 +251,18 @@ public class ExSID implements IExSID {
 			if (device != null) {
 				exSID_reset((byte) 0);
 
+//		#ifdef	EXSID_THREADED
+				xSoutb(XS_AD_IOCTFV, -1); // signal end of thread
+				exSID_thread_output.join();
+//		#endif
+
 				xSfw_usb_purge_buffers();
 
 				xSfw_usb_close();
 				device = null;
 			}
 			clkdrift = 0;
-		} catch (FTD2XXException e) {
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -179,14 +280,14 @@ public class ExSID implements IExSID {
 	public void exSID_reset(byte volume) {
 		try {
 			// this will stall
-			xSoutb(XS_AD_IOCTRS, true);
+			xSoutb(XS_AD_IOCTRS, 1);
 			// sleep for 100us
 			usleep(100);
 			// this only needs 2 bytes which matches the input buffer of the PIC so all is
 			// well
-			exSID_write((byte) 0x18, volume, true);
+			exSID_write((byte) 0x18, volume, 1);
 			clkdrift = 0;
-		} catch (FTD2XXException e) {
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -212,13 +313,13 @@ public class ExSID implements IExSID {
 			ClockSelect clk = ClockSelect.get(clock);
 			switch (clk) {
 			case XS_CL_PAL:
-				xSoutb(XSP_AD_IOCTCP, true);
+				xSoutb(XSP_AD_IOCTCP, 1);
 				break;
 			case XS_CL_NTSC:
-				xSoutb(XSP_AD_IOCTCN, true);
+				xSoutb(XSP_AD_IOCTCN, 1);
 				break;
 			case XS_CL_1MHZ:
-				xSoutb(XSP_AD_IOCTC1, true);
+				xSoutb(XSP_AD_IOCTC1, 1);
 				break;
 			default:
 				return -1;
@@ -228,7 +329,7 @@ public class ExSID implements IExSID {
 			clkdrift = 0; // reset drift
 
 			return 0;
-		} catch (FTD2XXException e) {
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 			return -1;
 		}
@@ -253,29 +354,29 @@ public class ExSID implements IExSID {
 			AudioOp op = AudioOp.get(operation);
 			switch (op) {
 			case XS_AU_6581_8580:
-				xSoutb(XSP_AD_IOCTA0, false);
+				xSoutb(XSP_AD_IOCTA0, 0);
 				break;
 			case XS_AU_8580_6581:
-				xSoutb(XSP_AD_IOCTA1, false);
+				xSoutb(XSP_AD_IOCTA1, 0);
 				break;
 			case XS_AU_8580_8580:
-				xSoutb(XSP_AD_IOCTA2, false);
+				xSoutb(XSP_AD_IOCTA2, 0);
 				break;
 			case XS_AU_6581_6581:
-				xSoutb(XSP_AD_IOCTA3, false);
+				xSoutb(XSP_AD_IOCTA3, 0);
 				break;
 			case XS_AU_MUTE:
-				xSoutb(XSP_AD_IOCTAM, false);
+				xSoutb(XSP_AD_IOCTAM, 0);
 				break;
 			case XS_AU_UNMUTE:
-				xSoutb(XSP_AD_IOCTAU, false);
+				xSoutb(XSP_AD_IOCTAU, 0);
 				break;
 			default:
 				return -1;
 			}
 
 			return 0;
-		} catch (FTD2XXException e) {
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 			return -1;
 		}
@@ -296,16 +397,16 @@ public class ExSID implements IExSID {
 			ChipSelect ch = ChipSelect.get(chip);
 			switch (ch) {
 			case XS_CS_CHIP0:
-				xSoutb(XS_AD_IOCTS0, false);
+				xSoutb(XS_AD_IOCTS0, 0);
 				break;
 			case XS_CS_CHIP1:
-				xSoutb(XS_AD_IOCTS1, false);
+				xSoutb(XS_AD_IOCTS1, 0);
 				break;
 			default:
-				xSoutb(XS_AD_IOCTSB, false);
+				xSoutb(XS_AD_IOCTSB, 0);
 				break;
 			}
-		} catch (FTD2XXException e) {
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -340,15 +441,15 @@ public class ExSID implements IExSID {
 	@Override
 	public short exSID_hwversion() {
 		try {
-			xSoutb(XS_AD_IOCTHV, false);
-			xSoutb(XS_AD_IOCTFV, true);
+			xSoutb(XS_AD_IOCTHV, 0);
+			xSoutb(XS_AD_IOCTFV, 1);
 
 			byte inbuf[] = new byte[2];
 			xSread(inbuf, 2);
 
 			// ensure proper order regardless of endianness
 			return (short) (inbuf[0] << 8 | inbuf[1]);
-		} catch (FTD2XXException e) {
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 			return 0;
 		}
@@ -362,10 +463,11 @@ public class ExSID implements IExSID {
 	 * 
 	 * @param cycles how many SID clocks to loop for.
 	 * @throws FTD2XXException
+	 * @throws InterruptedException
 	 */
-	private void xSdelay(long cycles) throws FTD2XXException {
+	private void xSdelay(long cycles) throws FTD2XXException, InterruptedException {
 		while (cycles >= hardwareSpecs.getMindelCycles()) {
-			xSoutb(XS_AD_IOCTD1, false);
+			xSoutb(XS_AD_IOCTD1, 0);
 			cycles -= hardwareSpecs.getMindelCycles();
 			clkdrift -= hardwareSpecs.getMindelCycles();
 		}
@@ -382,15 +484,16 @@ public class ExSID implements IExSID {
 	 * 
 	 * @param cycles how many SID clocks to wait for.
 	 * @throws FTD2XXException
+	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unused")
-	private void xSlongdelay(long cycles) throws FTD2XXException {
+	private void xSlongdelay(long cycles) throws FTD2XXException, InterruptedException {
 		int multiple;
-		boolean flush;
+		int flush;
 		long delta;
 		byte dummy[] = new byte[1];
 
-		flush = (XS_MODEL_STD == hardwareSpecs.getModel());
+		flush = (XS_MODEL_STD == hardwareSpecs.getModel()) ? 1 : 0;
 
 		multiple = (int) (cycles - hardwareSpecs.getLdelayOffs());
 		delta = multiple % XS_LDMULT;
@@ -402,7 +505,7 @@ public class ExSID implements IExSID {
 
 		while (multiple >= 255) {
 			exSID_write(XS_AD_IOCTLD, (byte) 255, flush);
-			if (flush)
+			if (flush != 0)
 				// wait for answer with blocking read
 				xSread(dummy, 1);
 			multiple -= 255;
@@ -410,7 +513,7 @@ public class ExSID implements IExSID {
 
 		if (multiple != 0) {
 			exSID_write(XS_AD_IOCTLD, (byte) multiple, flush);
-			if (flush)
+			if (flush != 0)
 				// wait for answer with blocking read
 				xSread(dummy, 1);
 		}
@@ -449,7 +552,7 @@ public class ExSID implements IExSID {
 			default:
 				xSdelay(delay);
 			}
-		} catch (FTD2XXException e) {
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -461,9 +564,10 @@ public class ExSID implements IExSID {
 	 * @param data  data to write at that address.
 	 * @param flush if non-zero, force immediate flush to device.
 	 * @throws FTD2XXException
+	 * @throws InterruptedException
 	 */
-	private void exSID_write(byte addr, byte data, boolean flush) throws FTD2XXException {
-		xSoutb(addr, false);
+	private void exSID_write(byte addr, byte data, int flush) throws FTD2XXException, InterruptedException {
+		xSoutb(addr, 0);
 		xSoutb(data, flush);
 	}
 
@@ -505,8 +609,8 @@ public class ExSID implements IExSID {
 				addr = (byte) (addr | (adj << 5));
 			}
 
-			exSID_write(addr, data, false);
-		} catch (FTD2XXException e) {
+			exSID_write(addr, data, 0);
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -518,8 +622,9 @@ public class ExSID implements IExSID {
 	 * @param flush if non-zero, force immediate flush to device.
 	 * @return data read from address.
 	 * @throws FTD2XXException
+	 * @throws InterruptedException
 	 */
-	private byte exSID_read(byte addr, boolean flush) throws FTD2XXException {
+	private byte exSID_read(byte addr, int flush) throws FTD2XXException, InterruptedException {
 		byte data[] = new byte[1];
 
 		// XXX
@@ -603,8 +708,8 @@ public class ExSID implements IExSID {
 			// spent
 			clkdrift -= hardwareSpecs.getReadPostCycles();
 
-			return exSID_read(addr, true);
-		} catch (FTD2XXException e) {
+			return exSID_read(addr, 1);
+		} catch (FTD2XXException | InterruptedException e) {
 			e.printStackTrace();
 			return 0;
 		}

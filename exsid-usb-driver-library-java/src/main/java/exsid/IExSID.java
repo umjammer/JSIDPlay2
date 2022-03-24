@@ -27,9 +27,9 @@ public interface IExSID {
 	 */
 	int XS_CYCCHR = (XS_SIDCLK / XS_RSBCLK);
 	/**
-	 * FTDI latency: 1-255ms in 1ms increments
+	 * FTDI latency: 2-255ms in 1ms increments
 	 */
-	short XS_USBLAT = 1;
+	short XS_USBLAT = 2;
 	/**
 	 * Must be multiple of _62_ or USB won't be happy.
 	 */
