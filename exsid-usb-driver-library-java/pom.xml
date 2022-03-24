@@ -1,0 +1,93 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>exsid</groupId>
+	<artifactId>exsid-usb-driver-library-java</artifactId>
+	<version>1.0</version>
+	<organization>
+		<url></url>
+		<name></name>
+	</organization>
+	<name>exSID/exSID+ USB I/O library</name>
+	<url></url>
+	<description>This is a library to use ExSID USB devices in Java</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>GPLv2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>api calls Written Thibaut VARENE, Java port by Ken Händel</name>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.bidib.com.ftdi/FTD2xxJ -->
+		<dependency>
+			<groupId>org.bidib.com.ftdi</groupId>
+			<artifactId>FTD2xxJ</artifactId>
+			<version>0.3.7</version>
+			<exclusions>
+				<exclusion>
+					<groupId>net.java.dev.jna</groupId>
+					<artifactId>jna</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.java.dev.jna</groupId>
+					<artifactId>jna-platform</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/maven/**</exclude>
+										<exclude>com/sun/jna/**</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
