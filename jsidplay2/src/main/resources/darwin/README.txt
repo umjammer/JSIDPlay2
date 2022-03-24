@@ -1,1 +1,0 @@
-libexsid.dylib       - ExSID USB driver library (https://sourceforge.net/p/jsidplay2/code/HEAD/tree/trunk/jsidplay2/src/test/resources/sid/exsid/)
