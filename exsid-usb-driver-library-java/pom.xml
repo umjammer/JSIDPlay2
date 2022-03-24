@@ -80,6 +80,8 @@
 									<excludes>
 										<exclude>META-INF/maven/**</exclude>
 										<exclude>com/sun/jna/**</exclude>
+										<exclude>com/ftdi/**</exclude>
+										<exclude>natives/**</exclude>
 									</excludes>
 								</filter>
 							</filters>
