@@ -226,6 +226,7 @@ public class ExSID implements IExSID {
 
 //		#ifdef	EXSID_THREADED
 			backbufIdx = frontbufIdx = 0;
+			exSIDthreadOutput.setDaemon(true);
 			exSIDthreadOutput.start();
 //		#endif
 
