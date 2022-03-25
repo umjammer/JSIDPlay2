@@ -41,16 +41,16 @@ public class ExSID implements IExSID {
 //	private byte backbuf[] = new byte[XS_BUFFSZ];
 //	private int backbufIdx = 0;
 //#else
-	byte[] bufptr = null;
+	private byte[] bufptr = null;
 //#endif
 
 //	#ifdef	EXSID_THREADED
 	// Global variables for flip buffering
-	byte bufchar0[] = new byte[XS_BUFFSZ];
-	byte bufchar1[] = new byte[XS_BUFFSZ];
-	byte frontbuf[] = bufchar0, backbuf[] = bufchar1;
-	static int frontbufIdx = 0, backbufIdx = 0;
-	Object frontbufMtx = new Object();
+	private byte bufchar0[] = new byte[XS_BUFFSZ];
+	private byte bufchar1[] = new byte[XS_BUFFSZ];
+	private byte frontbuf[] = bufchar0, backbuf[] = bufchar1;
+	private int frontbufIdx, backbufIdx;
+	private Object frontbufMtx = new Object();
 //	#endif	// EXSID_THREADED
 
 	@Override
@@ -106,7 +106,7 @@ public class ExSID implements IExSID {
 	 * @param arg ignored
 	 * @return DOES NOT RETURN, exits when frontbuf_idx is negative.
 	 */
-	private Thread exSID_thread_output = new Thread(new Runnable() {
+	private Thread exSIDthreadOutput = new Thread(new Runnable() {
 		@Override
 		public void run() {
 			try {
@@ -117,7 +117,8 @@ public class ExSID implements IExSID {
 						while (frontbufIdx == 0)
 							frontbufMtx.wait();
 
-						if (frontbufIdx < 0) { // exit condition
+						// exit condition
+						if (frontbufIdx < 0) {
 							return;
 						}
 
@@ -164,9 +165,11 @@ public class ExSID implements IExSID {
 			while (frontbufIdx != 0)
 				frontbufMtx.wait();
 
-			if (flush < 0) // indicate exit request
+			if (flush < 0)
+				// indicate exit request
 				frontbufIdx = -1;
-			else { // flip buffers
+			else {
+				// flip buffers
 				bufptr = frontbuf;
 				frontbuf = backbuf;
 				frontbufIdx = backbufIdx;
@@ -224,7 +227,7 @@ public class ExSID implements IExSID {
 
 //		#ifdef	EXSID_THREADED
 			backbufIdx = frontbufIdx = 0;
-			exSID_thread_output.start();
+			exSIDthreadOutput.start();
 //		#endif
 
 			xSfw_usb_purge_buffers();
@@ -253,7 +256,7 @@ public class ExSID implements IExSID {
 
 //		#ifdef	EXSID_THREADED
 				xSoutb(XS_AD_IOCTFV, -1); // signal end of thread
-				exSID_thread_output.join();
+				exSIDthreadOutput.join();
 //		#endif
 
 				xSfw_usb_purge_buffers();
