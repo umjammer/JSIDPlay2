@@ -132,6 +132,7 @@ TODO:
   and would allow a listener to see the connections between register values and sounds.
 - Removal of splash screen
 - Drag and Drop of HVSC zip file
+- Redesign playback buttons (winamp style)
 
 Steps to create a release version:
 ==================================
