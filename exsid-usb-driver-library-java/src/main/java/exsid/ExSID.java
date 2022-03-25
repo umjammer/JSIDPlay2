@@ -744,11 +744,11 @@ public class ExSID implements IExSID {
 	}
 
 	private void usleep(int delayUs) {
-		delayUs *= 1000;
+		int delayNs = delayUs * 1000;
 		long start = System.nanoTime();
 		long end = 0;
 		do {
 			end = System.nanoTime();
-		} while (start + delayUs >= end);
+		} while (start + delayNs >= end);
 	}
 }
