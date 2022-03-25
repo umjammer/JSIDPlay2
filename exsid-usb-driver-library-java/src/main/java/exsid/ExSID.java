@@ -102,9 +102,8 @@ public class ExSID implements IExSID {
 	 * buffer to be ready. This ensures execution time consistency as xSoutb()
 	 * periodically waits for the front buffer to be ready before flipping buffers.
 	 * 
-	 * @note BLOCKING.
-	 * @param arg ignored
-	 * @return DOES NOT RETURN, exits when frontbuf_idx is negative.
+	 * <B>Note: </B> BLOCKING. DOES NOT RETURN, exits when frontbufIdx is negative.
+	 *
 	 */
 	private Thread exSIDthreadOutput = new Thread(new Runnable() {
 		@Override
@@ -145,7 +144,7 @@ public class ExSID implements IExSID {
 	 * 
 	 * <b>Note:</b> No drift compensation is performed on read operations.
 	 * 
-	 * @param       byte byte to send
+	 * @param b     byte to send
 	 * @param flush force write flush if positive, trigger thread exit if negative
 	 * @throws FTD2XXException
 	 * @throws InterruptedException
@@ -478,7 +477,7 @@ public class ExSID implements IExSID {
 
 	/**
 	 * Private long delay loop. Calls to IOCTLD delay, for "very" long delays
-	 * (thousands of SID clocks). Requested delay MUST be > ldelayOffs, and for
+	 * (thousands of SID clocks). Requested delay MUST be &gt; ldelayOffs, and for
 	 * better performance, the requested delay time should ideally be several
 	 * XS_LDMULT and be close to a multiple of XS_USBLAT milliseconds (on the
 	 * exSID).
@@ -577,7 +576,7 @@ public class ExSID implements IExSID {
 	/**
 	 * Timed write routine, attempts cycle-accurate writes. This function will be
 	 * cycle-accurate provided that no two consecutive reads or writes are less than
-	 * writeCycles apart and the leftover delay is <= maxAdj SID clock cycles.
+	 * writeCycles apart and the leftover delay is &lt;= maxAdj SID clock cycles.
 	 * 
 	 * @param cycles how many SID clocks to wait before the actual data write.
 	 * @param addr   target address.
@@ -642,18 +641,18 @@ public class ExSID implements IExSID {
 	 * BLOCKING Timed read routine, attempts cycle-accurate reads. The following
 	 * description is based on exSID (standard). This function will be
 	 * cycle-accurate provided that no two consecutive reads or writes are less than
-	 * XS_CYCIO apart and leftover delay is <= maxAdj SID clock cycles. Read result
-	 * will only be available after a full XS_CYCIO, giving clkdread() the same run
-	 * time as clkdwrite(). There's a 2-cycle negative adjustment in the code
-	 * because that's the actual offset from the write calls ('/' denotes falling
-	 * clock edge latch), which the following ASCII tries to illustrate:
+	 * XS_CYCIO apart and leftover delay is &lt;= maxAdj SID clock cycles. Read
+	 * result will only be available after a full XS_CYCIO, giving clkdread() the
+	 * same run time as clkdwrite(). There's a 2-cycle negative adjustment in the
+	 * code because that's the actual offset from the write calls ('/' denotes
+	 * falling clock edge latch), which the following ASCII tries to illustrate:
 	 * 
 	 * <br>
 	 * 
 	 * Write looks like this in firmware:
 	 * 
 	 * <pre>
-	 *  > ...|_/_|...
+	 *  &gt; ...|_/_|...
 	 * </pre>
 	 * 
 	 * ...end of data byte read | cycle during which write is enacted / next cycle |
@@ -664,7 +663,7 @@ public class ExSID implements IExSID {
 	 * Read looks like this in firmware:
 	 * 
 	 * <pre>
-	 * > ...|_|_|_/_|_|...
+	 * &gt; ...|_|_|_/_|_|...
 	 * </pre>
 	 * 
 	 * ...end of address byte read | 2 cycles for address processing | cycle during
@@ -721,10 +720,8 @@ public class ExSID implements IExSID {
 	/**
 	 * Setup FTDI chip to match exSID firmware. Defaults to 8N1, no flow control.
 	 * 
-	 * @param ftdi     ftdi handle
 	 * @param baudrate Target baudrate
 	 * @param latency  Target latency
-	 * @return 0 on success, rval on error.
 	 * @throws IllegalArgumentException
 	 * @throws FTD2XXException
 	 */
