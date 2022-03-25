@@ -48,7 +48,7 @@ public class HardSIDImpl implements HardSID {
 	public void HardSID_Delay(byte DeviceID, short Cycles) {
 		c64Time += Cycles & 0xffff;
 		Command cmd = new Command(DeviceID, CommandEnum.Delay, (byte) 0, (byte) 0,
-				startTime + (long) (c64Time * 1000. / ISIDBlaster.PAL_CLOCK));
+				startTime + (long) (c64Time * (1000000000. / ISIDBlaster.PAL_CLOCK)));
 
 		try {
 			g_CommandDispatcher.sendCommand(cmd);
@@ -61,7 +61,7 @@ public class HardSIDImpl implements HardSID {
 	public void HardSID_Write(byte DeviceID, short Cycles, byte SID_reg, byte data) {
 		c64Time += Cycles & 0xffff;
 		Command cmd = new Command(DeviceID, CommandEnum.Write, SID_reg, data,
-				startTime + (long) (c64Time * 1000. / ISIDBlaster.PAL_CLOCK));
+				startTime + (long) (c64Time * (1000000000. / ISIDBlaster.PAL_CLOCK)));
 		try {
 			while (g_CommandDispatcher.sendCommand(cmd) != 0) {
 				Thread.yield();
@@ -75,7 +75,7 @@ public class HardSIDImpl implements HardSID {
 	public byte HardSID_Read(byte DeviceID, short Cycles, byte SID_reg) {
 		c64Time += Cycles & 0xffff;
 		Command cmd = new Command(DeviceID, CommandEnum.Read, SID_reg, (byte) 0,
-				startTime + (long) (c64Time * 1000. / ISIDBlaster.PAL_CLOCK));
+				startTime + (long) (c64Time * (1000000000. / ISIDBlaster.PAL_CLOCK)));
 		int result;
 		try {
 			result = g_CommandDispatcher.sendCommand(cmd);
@@ -139,7 +139,7 @@ public class HardSIDImpl implements HardSID {
 	@Override
 	public void HardSID_Reset(byte DeviceID) {
 		this.c64Time = 0;
-		this.startTime = System.currentTimeMillis();
+		this.startTime = System.nanoTime();
 
 		Command cmd = new Command(DeviceID, CommandEnum.Reset);
 		try {
@@ -237,7 +237,7 @@ public class HardSIDImpl implements HardSID {
 	public WState HardSID_Try_Write(byte DeviceID, short Cycles, byte SID_reg, byte data) {
 		c64Time += Cycles & 0xffff;
 		Command cmd = new Command(DeviceID, CommandEnum.Write, SID_reg, data,
-				startTime + (long) (c64Time * 1000. / ISIDBlaster.PAL_CLOCK));
+				startTime + (long) (c64Time * (1000000000. / ISIDBlaster.PAL_CLOCK)));
 		try {
 			if (g_CommandDispatcher.sendCommand(cmd) == 0) {
 				return WState.OK;

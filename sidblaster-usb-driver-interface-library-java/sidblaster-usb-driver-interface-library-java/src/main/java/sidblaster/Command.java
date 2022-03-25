@@ -40,7 +40,7 @@ public final class Command {
 	}
 
 	public long getDelay() {
-		return startTime - System.currentTimeMillis();
+		return startTime - System.nanoTime();
 	}
 
 	@Override
