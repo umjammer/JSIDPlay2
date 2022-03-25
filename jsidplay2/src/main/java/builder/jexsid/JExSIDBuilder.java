@@ -29,7 +29,7 @@ import sidplay.audio.AudioDriver;
  */
 public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 
-	private static final short REGULAR_DELAY = 128;
+	private static final short REGULAR_DELAY = 512;
 
 	/**
 	 * System event context.
