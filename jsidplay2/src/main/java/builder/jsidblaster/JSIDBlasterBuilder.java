@@ -87,14 +87,14 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 	}
 
 	private void init() {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> uninitialize()));
+
 		deviceCount = hardSID.HardSID_Devices();
 		hardSID.HardSID_SetWriteBufferSize((byte) config.getEmulationSection().getSidBlasterWriteBufferSize());
 		serialNumbers = new String[deviceCount];
 		for (byte deviceId = 0; deviceId < deviceCount; deviceId++) {
 			serialNumbers[deviceId] = hardSID.HardSID_GetSerial(deviceId);
 		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> uninitialize()));
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hardsid.usb.driver.HardSIDUSB;
+import com.hardsid.usb.driver.OS;
 import com.hardsid.usb.driver.SysMode;
 import com.hardsid.usb.driver.WState;
 
@@ -56,6 +57,11 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 	private static int deviceCount;
 
 	/**
+	 * Device names of HardSID devices.
+	 */
+	private static String[] deviceNames;
+
+	/**
 	 * Number of SIDs of the first HardSID device.
 	 */
 	private static int chipCount;
@@ -84,6 +90,10 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 		hardSID.hardsid_usb_init(true, SysMode.SIDPLAY);
 		deviceCount = hardSID.hardsid_usb_getdevcount();
 		chipCount = hardSID.hardsid_usb_getsidcount(deviceID);
+		deviceNames = new String[chipCount];
+		for (int i = 1; i <= chipCount; i++) {
+			deviceNames[i - 1] = "HardSID #" + i;
+		}
 	}
 
 	@Override
@@ -116,12 +126,51 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 				sid.setVoiceMute(voice, emulationSection.isMuteVoice(sidNum, voice));
 			}
 			sids.add(sid);
-			setDeviceName(sidNum, "HardSID");
+			setDeviceName(sidNum, deviceNames[chipNum]);
 			setDelay(sidNum, audioSection.getDelay(sidNum));
 			return sid;
 		}
 		System.err.printf("HARDSID ERROR: System doesn't have enough SID chips. Requested: (sidNum=%d)\n", sidNum);
+
+		if (deviceCount == 0) {
+			printInstallationHint();
+		}
 		return SIDEmu.NONE;
+	}
+
+	public static void printInstallationHint() {
+		if (OS.get() == OS.WINDOWS) {
+			printWindowsInstallationHint();
+		} else if (OS.get() == OS.LINUX) {
+			printLinuxInstallationHint();
+		} else if (OS.get() == OS.MAC) {
+			printMacInstallationHint();
+		}
+	}
+
+	private static void printLinuxInstallationHint() {
+		System.err.println("\"To give proper permissions, please type the following commands:\"");
+		System.err.println("sudo vi /etc/udev/rules.d/hardsid4u.rules");
+		System.err.println("\"Now, add the following single line:\"");
+		System.err.println(
+				"SUBSYSTEM==\"usb\",ATTR{idVendor}==\"6581\",ATTR{idProduct}==\"8580\",MODE=\"0660\",GROUP=\"plugdev\"");
+		System.err.println("\"And finally type this command to refresh device configuration:\"");
+		System.err.println("sudo udevadm trigger");
+		System.err.println("You are ready to start :-)");
+	}
+
+	private static void printMacInstallationHint() {
+		System.err.println("Unknown things to do... N.Y.T");
+		System.err.println("This should work out-of-the box!? Is a different device driver loaded?");
+	}
+
+	private static void printWindowsInstallationHint() {
+		System.err.println(
+				"Go to \"Control Panel / Hardware / Device Manager\" and uninstall previous HardSID4U driver, and then reboot!");
+		System.err.println("Now install Zadigs USB driver installation from that web-site: https://zadig.akeo.ie/");
+		System.err.println(
+				"Click install for device (6581 8580) and WinUSB. These settings were already proposed by the installer for me.");
+		System.err.println("You are ready to start :-)");
 	}
 
 	@Override
@@ -134,6 +183,10 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 	@Override
 	public int getDeviceCount() {
 		return chipCount;
+	}
+
+	public static String[] getDeviceNames() {
+		return deviceNames;
 	}
 
 	@Override

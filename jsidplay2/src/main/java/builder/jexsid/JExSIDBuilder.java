@@ -85,18 +85,19 @@ public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 	}
 
 	private void init() {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> exSID.exSID_exit()));
+
 		if (exSID.exSID_init() < 0) {
-			throw new RuntimeException(exSID.exSID_error_str());
+			deviceNames = new String[0];
+			return;
 		}
 		final String hardwareRevision = HardwareModel.get(exSID.exSID_hwmodel()).name();
 		final String firmwareVersion = String.format(" fw%c%d", (exSID.exSID_hwversion() >> 8) & 0xff,
 				exSID.exSID_hwversion() & 0xff);
 		deviceCount = 2;
 		deviceNames = new String[deviceCount];
-		deviceNames[0] = hardwareRevision + " " + firmwareVersion;
-		deviceNames[1] = deviceNames[0];
-
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> exSID.exSID_exit()));
+		deviceNames[0] = hardwareRevision + " " + firmwareVersion + " #1";
+		deviceNames[1] = hardwareRevision + " " + firmwareVersion + " #2";
 	}
 
 	public static void printInstallationHint() {
@@ -196,6 +197,10 @@ public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 	@Override
 	public int getDeviceCount() {
 		return deviceCount;
+	}
+
+	public static String[] getDeviceNames() {
+		return deviceNames;
 	}
 
 	@Override

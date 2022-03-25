@@ -14,6 +14,8 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import builder.jexsid.JExSIDBuilder;
+import builder.jhardsid.JHardSIDBuilder;
 import builder.jsidblaster.JSIDBlasterBuilder;
 import builder.jsidblaster.SIDType;
 import libsidplay.components.mos6510.MOS6510;
@@ -132,10 +134,10 @@ final public class ConsolePlayer {
 
 	private void printSidBlasterDevices() {
 		try {
-			triggerFetchSerialNumbers();
+			triggerFetchSerialNumbersAndDeviceNames();
 			String[] serialNumbers = JSIDBlasterBuilder.getSerialNumbers();
 			if (serialNumbers.length > 0) {
-				System.out.println("\nDetected SIDBlaster device serial numbers: (configure INI file accordingly)");
+				System.out.println("\nDetected SIDBlaster devices: (configure INI file accordingly)");
 				System.out.printf("    SIDBlasterMapping_N=%d\n", serialNumbers.length);
 				int deviceIdx = 0;
 				for (String serialNumber : serialNumbers) {
@@ -143,13 +145,30 @@ final public class ConsolePlayer {
 					System.out.printf("    SIDBlasterMapping_%d=%s=%s\n", deviceIdx++, serialNumber, sidType.name());
 				}
 			}
+			String[] exSidDeviceNames = JExSIDBuilder.getDeviceNames();
+			if (exSidDeviceNames.length > 0) {
+				System.out.println("\nDetected ExSID devices:");
+				for (String deviceName : exSidDeviceNames) {
+					System.out.println("    " + deviceName);
+				}
+			}
+			String[] hardSidDeviceNames = JHardSIDBuilder.getDeviceNames();
+			if (hardSidDeviceNames.length > 0) {
+				System.out.println("\nDetected HardSID devices:");
+				for (String deviceName : hardSidDeviceNames) {
+					System.out.println("    " + deviceName);
+				}
+			}
+
 		} catch (UnsatisfiedLinkError e) {
 			// ignore to not bother non SIDBlaster users
 		}
 	}
 
-	private void triggerFetchSerialNumbers() {
+	private void triggerFetchSerialNumbersAndDeviceNames() {
 		new JSIDBlasterBuilder(null, config, null);
+		new JExSIDBuilder(null, config, null);
+		new JHardSIDBuilder(null, config, null);
 	}
 
 	private void exit(int rc) {
