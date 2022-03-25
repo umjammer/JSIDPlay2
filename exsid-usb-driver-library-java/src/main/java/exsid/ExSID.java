@@ -208,7 +208,7 @@ public class ExSID implements IExSID {
 
 			for (FTDevice ftDevice : devices) {
 				for (SupportedDevices xSsup : xSsupported) {
-					logger.info(String.format("Trying %s...\n", xSsup.getDescription()));
+					logger.finest(String.format("Trying %s...\n", xSsup.getDescription()));
 					if (ftDevice.getDevDescription().equals(xSsup.getDescription())) {
 						device = ftDevice;
 						device.open();
