@@ -806,8 +806,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			return new JSIDBlasterBuilder(c64.getEventScheduler(), config, cpuClock);
 		case EXSID:
 			return new JExSIDBuilder(c64.getEventScheduler(), config, cpuClock);
-//		case EXSID:
-//			return new ExSIDBuilder(c64.getEventScheduler(), config, cpuClock);
 		default:
 			throw new RuntimeException("Unknown engine type: " + config.getEmulationSection().getEngine());
 		}
