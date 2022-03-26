@@ -1,4 +1,4 @@
-package ui.common.util;
+package sidplay.player;
 
 import java.io.IOException;
 import java.util.logging.LogManager;

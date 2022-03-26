@@ -74,7 +74,7 @@ import server.restful.servlets.whatssid.InsertTuneServlet;
 import server.restful.servlets.whatssid.TuneExistsServlet;
 import server.restful.servlets.whatssid.WhatsSidServlet;
 import sidplay.Player;
-import ui.common.util.DebugUtil;
+import sidplay.player.DebugUtil;
 import ui.entities.PersistenceProperties;
 import ui.entities.config.Configuration;
 import ui.entities.config.EmulationSection;

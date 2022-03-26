@@ -97,11 +97,6 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 		}
 	}
 
-	@Override
-	public void destroy() {
-//		uninitialize();		see shutdown hook
-	}
-
 	public static void printInstallationHint() {
 		if (OS.get() == OS.LINUX) {
 			printLinuxInstallationHint();

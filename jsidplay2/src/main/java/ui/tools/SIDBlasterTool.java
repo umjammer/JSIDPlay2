@@ -18,7 +18,7 @@ import com.beust.jcommander.Parameters;
 import builder.jsidblaster.JSIDBlasterBuilder;
 import builder.jsidblaster.SIDType;
 import sidplay.ini.IniConfig;
-import ui.common.util.DebugUtil;
+import sidplay.player.DebugUtil;
 
 @Parameters(resourceBundle = "ui.tools.SIDBlasterTool")
 public class SIDBlasterTool {

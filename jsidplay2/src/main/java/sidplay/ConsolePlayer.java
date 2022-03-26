@@ -30,6 +30,7 @@ import sidplay.consoleplayer.ConsoleIO;
 import sidplay.consoleplayer.VerboseValidator;
 import sidplay.fingerprinting.FingerprintJsonClient;
 import sidplay.ini.IniConfig;
+import sidplay.player.DebugUtil;
 
 /**
  * 
@@ -40,6 +41,10 @@ import sidplay.ini.IniConfig;
  */
 @Parameters(resourceBundle = "sidplay.ConsolePlayer")
 final public class ConsolePlayer {
+
+	static {
+		DebugUtil.init();
+	}
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
 	private Boolean help = Boolean.FALSE;
@@ -74,7 +79,7 @@ final public class ConsolePlayer {
 			if (help || !filename.isPresent()) {
 				commander.usage();
 				printSoundcardDevices();
-				printSidBlasterDevices();
+				printHardwareDevices();
 				exit(1);
 			}
 			IWhatsSidSection whatsSidSection = config.getWhatsSidSection();
@@ -132,9 +137,9 @@ final public class ConsolePlayer {
 		}
 	}
 
-	private void printSidBlasterDevices() {
+	private void printHardwareDevices() {
 		try {
-			triggerFetchSerialNumbersAndDeviceNames();
+			triggerFetchDevices();
 			String[] serialNumbers = JSIDBlasterBuilder.getSerialNumbers();
 			if (serialNumbers.length > 0) {
 				System.out.println("\nDetected SIDBlaster devices: (configure INI file accordingly)");
@@ -165,7 +170,7 @@ final public class ConsolePlayer {
 		}
 	}
 
-	private void triggerFetchSerialNumbersAndDeviceNames() {
+	private void triggerFetchDevices() {
 		new JSIDBlasterBuilder(null, config, null);
 		new JExSIDBuilder(null, config, null);
 		new JHardSIDBuilder(null, config, null);
