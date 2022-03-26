@@ -218,7 +218,7 @@ public class ExSID implements IExSID {
 				}
 			}
 			if (device == null) {
-				System.err.println("No device could be opened");
+				logger.finest("No device could be opened");
 				return -1;
 			}
 
