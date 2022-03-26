@@ -157,7 +157,7 @@ public class IniConfig implements IConfig {
 	 *
 	 * @return the absolute path name of the INI file to use
 	 */
-	private static File getINIPath() {
+	public static File getINIPath() {
 		for (final String parent : new String[] { System.getProperty("user.dir"), System.getProperty("user.home"), }) {
 			File configPlace = new File(parent, FILE_NAME);
 			if (configPlace.exists()) {

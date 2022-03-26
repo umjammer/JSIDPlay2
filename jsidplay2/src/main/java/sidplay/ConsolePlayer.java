@@ -1,5 +1,7 @@
 package sidplay;
 
+import static sidplay.ini.IniConfig.getINIPath;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -142,7 +144,7 @@ final public class ConsolePlayer {
 			triggerFetchDevices();
 			String[] serialNumbers = JSIDBlasterBuilder.getSerialNumbers();
 			if (serialNumbers.length > 0) {
-				System.out.println("\nDetected SIDBlaster devices: (configure INI file accordingly)");
+				System.out.println("\nDetected SIDBlaster devices: (please add to INI file: " + getINIPath() + ")");
 				System.out.printf("    SIDBlasterMapping_N=%d\n", serialNumbers.length);
 				int deviceIdx = 0;
 				for (String serialNumber : serialNumbers) {
