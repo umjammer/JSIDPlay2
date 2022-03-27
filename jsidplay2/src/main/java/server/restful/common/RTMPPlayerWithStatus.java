@@ -2,6 +2,7 @@ package server.restful.common;
 
 import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
+import static sidplay.audio.xuggle.XuggleVideoDriver.TRUE_TYPE_FONT_BIG;
 
 import java.io.File;
 import java.io.IOException;
@@ -194,7 +195,8 @@ public final class RTMPPlayerWithStatus {
 					public void event() throws InterruptedException {
 
 						getXuggleVideoDriver().ifPresent(xuggleVideoDriver -> {
-							xuggleVideoDriver.setStatusText(createStatusText());
+							xuggleVideoDriver.setStatusText(createStatusText().toUpperCase(), TRUE_TYPE_FONT_BIG);
+
 							int statusTextOffset = xuggleVideoDriver.getStatusTextOffset();
 							int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
 

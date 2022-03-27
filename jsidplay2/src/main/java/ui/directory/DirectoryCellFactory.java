@@ -6,6 +6,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
+import libsidutils.C64Font;
 import ui.JSidPlay2Main;
 
 /**
@@ -15,13 +16,17 @@ import ui.JSidPlay2Main;
  *
  */
 public class DirectoryCellFactory
-		implements Callback<TableColumn<DirectoryItem, String>, TableCell<DirectoryItem, String>> {
+		implements Callback<TableColumn<DirectoryItem, String>, TableCell<DirectoryItem, String>>, C64Font {
 
-	protected Font c64Font;
+	protected static Font c64Font;
 
-	{
-		InputStream fontStream = JSidPlay2Main.class.getResourceAsStream("fonts/C64_Elite_Mono_v1.0-STYLE.ttf");
-		c64Font = Font.loadFont(fontStream, 10);
+	static {
+		try {
+			InputStream fontStream = JSidPlay2Main.class.getResourceAsStream(FONT_NAME);
+			c64Font = Font.loadFont(fontStream, 10);
+		} catch (Exception e) {
+			throw new ExceptionInInitializerError(e);
+		}
 	}
 
 	@Override

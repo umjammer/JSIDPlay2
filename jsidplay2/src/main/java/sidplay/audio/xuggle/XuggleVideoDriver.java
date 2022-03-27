@@ -10,8 +10,11 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static libsidplay.components.mos656x.VIC.MAX_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_WIDTH;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.FileNotFoundException;
@@ -44,6 +47,7 @@ import libsidplay.common.EventScheduler;
 import libsidplay.common.SamplingRate;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.config.IAudioSection;
+import libsidutils.C64Font;
 import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.VideoDriver;
@@ -75,7 +79,23 @@ import sidplay.audio.exceptions.IniConfigException;
  * @author ken
  *
  */
-public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver {
+public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64Font {
+
+	private static Font c64Font;
+
+	static {
+		try {
+			InputStream fontStream = XuggleVideoDriver.class.getResourceAsStream(FONT_NAME);
+			if (fontStream == null) {
+				throw new IOException("Font not found: " + FONT_NAME);
+			}
+			GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			c64Font = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(8.f);
+			graphicsEnvironment.registerFont(c64Font);
+		} catch (IOException | FontFormatException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	private EventScheduler context;
 
@@ -131,8 +151,9 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver {
 
 		vicImage = new BufferedImage(MAX_WIDTH, MAX_HEIGHT, TYPE_3BYTE_BGR);
 		graphics = vicImage.createGraphics();
-		statusImage = new BufferedImage(MAX_WIDTH, graphics.getFontMetrics().getHeight(), TYPE_3BYTE_BGR);
-		setStatusText("Recorded by JSIDPlay2!");
+		graphics.setFont(c64Font);
+		statusImage = new BufferedImage(MAX_WIDTH, graphics.getFontMetrics(c64Font).getHeight(), TYPE_3BYTE_BGR);
+		setStatusText("Recorded by JSIDPlay2!".toUpperCase(), TRUE_TYPE_FONT_BIG);
 
 		pictureBuffer = ByteBuffer.wrap(((DataBufferByte) vicImage.getRaster().getDataBuffer()).getData());
 		converter = ConverterFactory.createConverter(vicImage, YUV420P);
@@ -189,7 +210,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver {
 
 		to3ByteGBR(vic.getPixels());
 
-		graphics.drawImage(statusImage, 0, vic.getBorderHeight(), null);
+		graphics.drawImage(statusImage, 0, vic.getBorderHeight() + ((MAX_HEIGHT - vic.getBorderHeight()) >> 1), null);
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
 		videoPicture.setKeyFrame((frameNo++ % framesPerKeyFrames) == 0);
@@ -262,12 +283,14 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver {
 		return true;
 	}
 
-	public void setStatusText(String statusText) {
+	public void setStatusText(String statusText, int fontSet) {
+		statusText = toC64Chars(statusText, fontSet);
 		Graphics2D graphics = null;
 		try {
 			if (statusImage != null) {
 				graphics = statusImage.createGraphics();
-				FontMetrics fontMetrics = graphics.getFontMetrics();
+				graphics.setFont(c64Font);
+				FontMetrics fontMetrics = graphics.getFontMetrics(c64Font);
 				graphics.clearRect(0, 0, statusImage.getWidth(), statusImage.getHeight());
 				graphics.drawString(statusText, -statusTextOffset, fontMetrics.getAscent());
 				statusTextOverflow = Math.max(0, fontMetrics.stringWidth(statusText) - statusTextOffset - MAX_WIDTH);

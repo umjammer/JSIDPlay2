@@ -17,6 +17,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Priority;
 import libsidplay.sidtune.SidTuneError;
+import libsidutils.C64Font;
 import libsidutils.directory.CartridgeDirectory;
 import libsidutils.directory.DirEntry;
 import libsidutils.directory.DiskDirectory;
@@ -30,24 +31,7 @@ import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TuneFileFilter;
 import ui.entities.config.SidPlay2Section;
 
-public class Directory extends C64VBox implements UIPart {
-
-	/**
-	 * Upper case letters.
-	 */
-	private static final int TRUE_TYPE_FONT_BIG = 0xe000;
-	/**
-	 * Lower case letters.
-	 */
-	private static final int TRUE_TYPE_FONT_SMALL = 0xe100;
-	/**
-	 * Inverse Upper case letters.
-	 */
-	private static final int TRUE_TYPE_FONT_INVERSE_BIG = 0xe200;
-	/**
-	 * Inverse Lower case letters.
-	 */
-	private static final int TRUE_TYPE_FONT_INVERSE_SMALL = 0xe300;
+public class Directory extends C64VBox implements UIPart, C64Font {
 
 	private static TuneFileFilter tuneFilter = new TuneFileFilter();
 
@@ -155,20 +139,20 @@ public class Directory extends C64VBox implements UIPart {
 			if (dir != null) {
 				// Print directory title/id
 				DirectoryItem headerItem = new DirectoryItem();
-				headerItem.setText(print(dir.getTitle(), fontSetHeader));
+				headerItem.setText(toC64Chars(dir.getTitle(), fontSetHeader));
 				directoryEntries.add(headerItem);
 				Collection<DirEntry> dirEntries = dir.getDirEntries();
 				// Print directory entries
 				for (DirEntry dirEntry : dirEntries) {
 					DirectoryItem dirItem = new DirectoryItem();
-					dirItem.setText(print(dirEntry.getDirectoryLine(), fontSet));
+					dirItem.setText(toC64Chars(dirEntry.getDirectoryLine(), fontSet));
 					dirItem.setDirEntry(dirEntry);
 					directoryEntries.add(dirItem);
 				}
 				// Print directory result
 				if (dir.getStatusLine() != null) {
 					DirectoryItem dirItem = new DirectoryItem();
-					dirItem.setText(print(dir.getStatusLine(), fontSet));
+					dirItem.setText(toC64Chars(dir.getStatusLine(), fontSet));
 					directoryEntries.add(dirItem);
 				}
 			} else {
@@ -176,33 +160,17 @@ public class Directory extends C64VBox implements UIPart {
 			}
 		} catch (IOException | SidTuneError ioE) {
 			DirectoryItem dirItem = new DirectoryItem();
-			dirItem.setText(print("SORRY, NO PREVIEW AVAILABLE!", TRUE_TYPE_FONT_BIG));
+			dirItem.setText(toC64Chars("SORRY, NO PREVIEW AVAILABLE!", TRUE_TYPE_FONT_BIG));
 			directoryEntries.add(dirItem);
 		}
 		DirectoryItem dirItem = new DirectoryItem();
-		dirItem.setText(print("READY.", TRUE_TYPE_FONT_BIG));
+		dirItem.setText(toC64Chars("READY.", TRUE_TYPE_FONT_BIG));
 		directoryEntries.add(dirItem);
 	}
 
 	public void clear() {
 		directoryEntries.clear();
 
-	}
-
-	private String print(final String s, int fontSet) {
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < s.length(); i++) {
-			buf.append(print(s.charAt(i), fontSet));
-		}
-		return buf.toString();
-	}
-
-	private String print(final char c, int fontSet) {
-		if ((c & 0x60) == 0) {
-			return String.valueOf((char) (c | 0x40 | fontSet ^ 0x0200));
-		} else {
-			return String.valueOf((char) (c | fontSet));
-		}
 	}
 
 	private libsidutils.directory.Directory createDirectory(File hvscRoot, final File file)
