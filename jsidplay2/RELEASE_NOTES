@@ -1,14 +1,10 @@
 Release Notes:
 ==============
 
-HardSID4U, HardSID UNO and HardSID UPlay now supported on ALL platforms (MAC not working though)
-new java-based drivers for HardSID, SIDBlaster and ExSID (only depending on libusb and ftdi)
+SIDBlaster, ExSID, HardSID4U, HardSID Uno and HardSID UPlay - USB devices now supported on ALL platforms
+(MAC currently not working with HardSID)
 
 JSIDPlay2Server:
 Live videos: can be controlled by web-page
 Live video now shows infos in a status bar
-
-
--Andreas Schumm:
--wenn du den maker von exsid mal has frag ihn mal was er mit der creative common Lizens auf seine firmware will
--Nur namensnennung oder geld
+Scan bar-code to watch videos on your mobile

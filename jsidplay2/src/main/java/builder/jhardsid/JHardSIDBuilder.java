@@ -25,7 +25,7 @@ import sidplay.audio.AudioDriver;
 
 /**
  *
- * Support of HARDSID USB devices like HardSID4U.
+ * Support of HARDSID USB devices like HardSID Uno, HardSID UPlay and HardSID4U.
  * 
  * @author Ken Händel
  *
@@ -166,7 +166,7 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 
 	private static void printWindowsInstallationHint() {
 		System.err.println(
-				"Go to \"Control Panel / Hardware / Device Manager\" and uninstall previous HardSID4U driver, and then reboot!");
+				"Go to \"Control Panel / Hardware / Device Manager\" and uninstall previous HardSID driver, and then reboot!");
 		System.err.println("Now install Zadigs USB driver installation from that web-site: https://zadig.akeo.ie/");
 		System.err.println(
 				"Click install for device (6581 8580) and WinUSB. These settings were already proposed by the installer for me.");
@@ -220,26 +220,26 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 
 	@Override
 	public void fadeIn(double fadeIn) {
-		System.err.println("Fade-in unsupported by HardSID4U");
-		// XXX unsupported by HardSID4U
+		System.err.println("Fade-in unsupported by HardSID");
+		// XXX unsupported by HardSID
 	}
 
 	@Override
 	public void fadeOut(double fadeOut) {
-		System.err.println("Fade-out unsupported by HardSID4U");
-		// XXX unsupported by HardSID4U
+		System.err.println("Fade-out unsupported by HardSID");
+		// XXX unsupported by HardSID
 	}
 
 	@Override
 	public void setVolume(int sidNum, float volume) {
-		System.err.println("Volume unsupported by HardSID4U");
-		// XXX unsupported by HardSID4U
+		System.err.println("Volume unsupported by HardSID");
+		// XXX unsupported by HardSID
 	}
 
 	@Override
 	public void setBalance(int sidNum, float balance) {
-		System.err.println("Balance unsupported by HardSID4U");
-		// XXX unsupported by HardSID4U
+		System.err.println("Balance unsupported by HardSID");
+		// XXX unsupported by HardSID
 	}
 
 	public int getDelay(int sidNum) {

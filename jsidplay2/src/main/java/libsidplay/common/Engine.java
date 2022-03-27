@@ -13,7 +13,7 @@ public enum Engine {
 	HARDSID,
 	/** Hardware (SidBlaster USB device) */
 	SIDBLASTER,
-	/** Hardware (ExSID USB device) */
+	/** Hardware (ExSID(+) USB device) */
 	EXSID;
 
 	/**
