@@ -4,7 +4,7 @@ import static com.xuggle.xuggler.IAudioSamples.Format.FMT_S16;
 import static com.xuggle.xuggler.IContainer.Type.WRITE;
 import static com.xuggle.xuggler.IPixelFormat.Type.YUV420P;
 import static com.xuggle.xuggler.IStreamCoder.Flags.FLAG_QSCALE;
-import static java.awt.image.BufferedImage.TYPE_3BYTE_BGR;
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Short.BYTES;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static libsidplay.components.mos656x.VIC.MAX_HEIGHT;
@@ -16,7 +16,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,10 +34,12 @@ import com.xuggle.xuggler.ICodec.ID;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IContainerFormat;
 import com.xuggle.xuggler.IPacket;
+import com.xuggle.xuggler.IPixelFormat;
 import com.xuggle.xuggler.IRational;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.IVideoPicture;
+import com.xuggle.xuggler.video.ArgbConverter;
 import com.xuggle.xuggler.video.ConverterFactory;
 import com.xuggle.xuggler.video.IConverter;
 
@@ -92,6 +94,9 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 			GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			c64Font = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(8.f);
 			graphicsEnvironment.registerFont(c64Font);
+
+			ConverterFactory.registerConverter(new ConverterFactory.Type(ConverterFactory.XUGGLER_ARGB_32,
+					ArgbConverter.class, IPixelFormat.Type.ARGB, BufferedImage.TYPE_INT_ARGB));
 		} catch (IOException | FontFormatException e) {
 			throw new ExceptionInInitializerError(e);
 		}
@@ -106,7 +111,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 	private int statusTextOffset;
 
 	private Graphics2D graphics;
-	private ByteBuffer pictureBuffer;
+	private IntBuffer pictureBuffer;
 	private long frameNo, framesPerKeyFrames, firstTimeStamp;
 	private double ticksPerMicrosecond;
 
@@ -149,13 +154,13 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		configurePresets(audioSection.getVideoCoderPreset().getPresetName());
 		videoCoder.open(null, null);
 
-		vicImage = new BufferedImage(MAX_WIDTH, MAX_HEIGHT, TYPE_3BYTE_BGR);
+		vicImage = new BufferedImage(MAX_WIDTH, MAX_HEIGHT, TYPE_INT_ARGB);
 		graphics = vicImage.createGraphics();
 		graphics.setFont(c64Font);
-		statusImage = new BufferedImage(MAX_WIDTH, graphics.getFontMetrics(c64Font).getHeight(), TYPE_3BYTE_BGR);
+		statusImage = new BufferedImage(MAX_WIDTH, graphics.getFontMetrics(c64Font).getHeight(), TYPE_INT_ARGB);
 		setStatusText("Recorded by JSIDPlay2!".toUpperCase(), TRUE_TYPE_FONT_BIG);
 
-		pictureBuffer = ByteBuffer.wrap(((DataBufferByte) vicImage.getRaster().getDataBuffer()).getData());
+		pictureBuffer = IntBuffer.wrap(((DataBufferInt) vicImage.getRaster().getDataBuffer()).getData());
 		converter = ConverterFactory.createConverter(vicImage, YUV420P);
 
 		IStream audioStream = container.addNewStream(getAudioCodec());
@@ -208,7 +213,9 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 	public void accept(VIC vic) {
 		long timeStamp = getTimeStamp();
 
-		to3ByteGBR(vic.getPixels());
+		((Buffer) pictureBuffer).clear();
+		((Buffer) vic.getPixels()).clear();
+		pictureBuffer.put(vic.getPixels());
 
 		graphics.drawImage(statusImage, 0, vic.getBorderHeight() + ((MAX_HEIGHT - vic.getBorderHeight()) >> 1), null);
 
@@ -330,18 +337,6 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 			firstTimeStamp = now;
 		}
 		return (long) ((now - firstTimeStamp) / ticksPerMicrosecond);
-	}
-
-	private void to3ByteGBR(IntBuffer pixels) {
-		((Buffer) pictureBuffer).clear();
-		((Buffer) pixels).clear();
-		while (pixels.hasRemaining()) {
-			int pixel = pixels.get();
-			// ignore ALPHA channel (ARGB channel order)
-			pictureBuffer.put((byte) (pixel & 0xff));
-			pictureBuffer.put((byte) (pixel >> 8 & 0xff));
-			pictureBuffer.put((byte) (pixel >> 16 & 0xff));
-		}
 	}
 
 	protected abstract String getOutputFormatName();
