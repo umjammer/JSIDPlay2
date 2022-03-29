@@ -112,7 +112,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 
 	private Graphics2D graphics;
 	private IntBuffer pictureBuffer;
-	private long frameNo, framesPerKeyFrames, firstTimeStamp;
+	private long frameNo, framesPerKeyFrames, firstAudioTimeStamp, firstVideoTimeStamp;
 	private double ticksPerMicrosecond;
 
 	private ByteBuffer sampleBuffer;
@@ -177,13 +177,14 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		frameNo = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
 		framesPerKeyFrames = (int) cpuClock.getScreenRefresh();
-		firstTimeStamp = 0;
+		firstAudioTimeStamp = 0;
+		firstVideoTimeStamp = 0;
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
 	}
 
 	@Override
 	public void write() throws InterruptedException {
-		long timeStamp = getTimeStamp();
+		long timeStamp = getAudioTimeStamp();
 
 		int numSamples = sampleBuffer.position() >> 2;
 		IAudioSamples audioSamples = IAudioSamples.make(numSamples, audioCoder.getChannels(), FMT_S16);
@@ -211,7 +212,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 
 	@Override
 	public void accept(VIC vic) {
-		long timeStamp = getTimeStamp();
+		long timeStamp = getVideoTimeStamp();
 
 		((Buffer) pictureBuffer).clear();
 		((Buffer) vic.getPixels()).clear();
@@ -331,12 +332,20 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		Configuration.configure(props, videoCoder);
 	}
 
-	private long getTimeStamp() {
+	private long getAudioTimeStamp() {
 		long now = context.getTime(Phase.PHI2);
-		if (firstTimeStamp == 0) {
-			firstTimeStamp = now;
+		if (firstAudioTimeStamp == 0) {
+			firstAudioTimeStamp = now;
 		}
-		return (long) ((now - firstTimeStamp) / ticksPerMicrosecond);
+		return (long) ((now - firstAudioTimeStamp) / ticksPerMicrosecond);
+	}
+
+	private long getVideoTimeStamp() {
+		long now = context.getTime(Phase.PHI2);
+		if (firstVideoTimeStamp == 0) {
+			firstVideoTimeStamp = now;
+		}
+		return (long) ((now - firstVideoTimeStamp) / ticksPerMicrosecond);
 	}
 
 	protected abstract String getOutputFormatName();
