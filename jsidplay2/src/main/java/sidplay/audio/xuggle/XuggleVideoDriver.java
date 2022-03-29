@@ -36,7 +36,6 @@ import com.xuggle.xuggler.IContainerFormat;
 import com.xuggle.xuggler.IPacket;
 import com.xuggle.xuggler.IPixelFormat;
 import com.xuggle.xuggler.IRational;
-import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.IVideoPicture;
 import com.xuggle.xuggler.video.ArgbConverter;
@@ -83,6 +82,8 @@ import sidplay.audio.exceptions.IniConfigException;
  */
 public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64Font {
 
+	private static final int FONT_SIZE = 8;
+
 	private static Font c64Font;
 
 	static {
@@ -92,7 +93,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 				throw new IOException("Font not found: " + FONT_NAME);
 			}
 			GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			c64Font = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(8.f);
+			c64Font = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont((float) FONT_SIZE);
 			graphicsEnvironment.registerFont(c64Font);
 
 			ConverterFactory.registerConverter(new ConverterFactory.Type(ConverterFactory.XUGGLER_ARGB_32,
@@ -140,45 +141,28 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		if (container.open(url, WRITE, containerFormat) < 0) {
 			throw new IOException("Could not open: '" + url + "'");
 		}
-		IStream stream = container.addNewStream(getVideoCodec());
-		videoCoder = stream.getStreamCoder();
-		videoCoder.setNumPicturesInGroupOfPictures(audioSection.getVideoCoderNumPicturesInGroupOfPictures());
-		videoCoder.setBitRate(audioSection.getVideoCoderBitRate());
-		videoCoder.setBitRateTolerance(audioSection.getVideoCoderBitRateTolerance());
-		videoCoder.setTimeBase(IRational.make(1 / cpuClock.getScreenRefresh()));
-		videoCoder.setPixelType(YUV420P);
-		videoCoder.setHeight(MAX_HEIGHT);
-		videoCoder.setWidth(MAX_WIDTH);
-		videoCoder.setFlag(FLAG_QSCALE, true);
-		videoCoder.setGlobalQuality(audioSection.getVideoCoderGlobalQuality());
-		configurePresets(audioSection.getVideoCoderPreset().getPresetName());
+		videoCoder = createVideoCoder(audioSection, cpuClock);
 		videoCoder.open(null, null);
 
+		audioCoder = createAudioCoder(audioSection, cfg);
+		audioCoder.open(null, null);
+
+		container.writeHeader();
+
 		vicImage = new BufferedImage(MAX_WIDTH, MAX_HEIGHT, TYPE_INT_ARGB);
+		pictureBuffer = IntBuffer.wrap(((DataBufferInt) vicImage.getRaster().getDataBuffer()).getData());
+		converter = ConverterFactory.createConverter(vicImage, YUV420P);
+
 		graphics = vicImage.createGraphics();
 		graphics.setFont(c64Font);
 		statusImage = new BufferedImage(MAX_WIDTH, graphics.getFontMetrics(c64Font).getHeight(), TYPE_INT_ARGB);
 		setStatusText("Recorded by JSIDPlay2!".toUpperCase(), TRUE_TYPE_FONT_BIG);
 
-		pictureBuffer = IntBuffer.wrap(((DataBufferInt) vicImage.getRaster().getDataBuffer()).getData());
-		converter = ConverterFactory.createConverter(vicImage, YUV420P);
-
-		IStream audioStream = container.addNewStream(getAudioCodec());
-		audioCoder = audioStream.getStreamCoder();
-		audioCoder.setChannels(cfg.getChannels());
-		audioCoder.setSampleFormat(FMT_S16);
-		audioCoder.setBitRate(audioSection.getAudioCoderBitRate());
-		audioCoder.setBitRateTolerance(audioSection.getAudioCoderBitRateTolerance());
-		audioCoder.setSampleRate(cfg.getFrameRate());
-		audioCoder.open(null, null);
-
-		container.writeHeader();
-
 		frameNo = 0;
-		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
-		framesPerKeyFrames = (int) cpuClock.getScreenRefresh();
 		firstAudioTimeStamp = 0;
 		firstVideoTimeStamp = 0;
+		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
+		framesPerKeyFrames = (int) cpuClock.getScreenRefresh();
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
 	}
 
@@ -218,7 +202,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		((Buffer) vic.getPixels()).clear();
 		pictureBuffer.put(vic.getPixels());
 
-		graphics.drawImage(statusImage, 0, vic.getBorderHeight() + ((MAX_HEIGHT - vic.getBorderHeight()) >> 1), null);
+		graphics.drawImage(statusImage, 0, MAX_HEIGHT + vic.getBorderHeight() >> 1, null);
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
 		videoPicture.setKeyFrame((frameNo++ % framesPerKeyFrames) == 0);
@@ -322,7 +306,22 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		this.statusTextOffset = statusImageOffset;
 	}
 
-	private void configurePresets(String presetName) {
+	private IStreamCoder createVideoCoder(IAudioSection audioSection, CPUClock cpuClock) {
+		IStreamCoder videoCoder = container.addNewStream(getVideoCodec()).getStreamCoder();
+		videoCoder.setNumPicturesInGroupOfPictures(audioSection.getVideoCoderNumPicturesInGroupOfPictures());
+		videoCoder.setBitRate(audioSection.getVideoCoderBitRate());
+		videoCoder.setBitRateTolerance(audioSection.getVideoCoderBitRateTolerance());
+		videoCoder.setTimeBase(IRational.make(1 / cpuClock.getScreenRefresh()));
+		videoCoder.setPixelType(YUV420P);
+		videoCoder.setHeight(MAX_HEIGHT);
+		videoCoder.setWidth(MAX_WIDTH);
+		videoCoder.setFlag(FLAG_QSCALE, true);
+		videoCoder.setGlobalQuality(audioSection.getVideoCoderGlobalQuality());
+		configurePresets(videoCoder, audioSection.getVideoCoderPreset().getPresetName());
+		return videoCoder;
+	}
+
+	private void configurePresets(IStreamCoder videoCoder, String presetName) {
 		Properties props = new Properties();
 		try (InputStream is = XuggleVideoDriver.class.getResourceAsStream(presetName)) {
 			props.load(is);
@@ -330,6 +329,16 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 			throw new RuntimeException("You need the " + presetName + " in your classpath.");
 		}
 		Configuration.configure(props, videoCoder);
+	}
+
+	private IStreamCoder createAudioCoder(IAudioSection audioSection, AudioConfig cfg) {
+		IStreamCoder audioCoder = container.addNewStream(getAudioCodec()).getStreamCoder();
+		audioCoder.setChannels(cfg.getChannels());
+		audioCoder.setSampleFormat(FMT_S16);
+		audioCoder.setBitRate(audioSection.getAudioCoderBitRate());
+		audioCoder.setBitRateTolerance(audioSection.getAudioCoderBitRateTolerance());
+		audioCoder.setSampleRate(cfg.getFrameRate());
+		return audioCoder;
 	}
 
 	private long getAudioTimeStamp() {
