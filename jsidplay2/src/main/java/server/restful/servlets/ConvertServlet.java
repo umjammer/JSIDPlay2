@@ -273,7 +273,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		case SID_DUMP:
 			return new SIDDumpStreamDriver(outputstream);
 		case SID_REG:
-			return new SIDRegStreamDriver(outputstream);
+			return new SIDRegStreamDriver(outputstream, true);
 		}
 	}
 

@@ -62,8 +62,9 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		 *
 		 * @param out Output stream to write the SID reg to
 		 */
-		public SIDRegStreamDriver(OutputStream out) {
+		public SIDRegStreamDriver(OutputStream out, boolean small) {
 			this.out = out;
+			this.small = small;
 		}
 
 		@Override
@@ -79,6 +80,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 	 * Print stream to write the encoded MP3 to.
 	 */
 	protected OutputStream out;
+	protected boolean small;
 
 	private EventScheduler context;
 
@@ -110,7 +112,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		final long relTime = time - fTime;
 
 		try {
-			new SidRegWrite(time, relTime, addr, data).writeSidRegister(out);
+			new SidRegWrite(time, relTime, addr, data).writeSidRegister(out, small);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

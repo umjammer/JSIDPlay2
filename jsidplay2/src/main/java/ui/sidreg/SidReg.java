@@ -235,7 +235,7 @@ public class SidReg extends C64VBox implements UIPart {
 				SIDRegDriver.writeHeader(ps);
 				filteredSidRegWrites.stream().forEach(sidRegWrite -> {
 					try {
-						sidRegWrite.writeSidRegister(ps);
+						sidRegWrite.writeSidRegister(ps, false);
 					} catch (IOException e) {
 						throw new RuntimeException("Error writing SIDRegDriver stream", e);
 					}

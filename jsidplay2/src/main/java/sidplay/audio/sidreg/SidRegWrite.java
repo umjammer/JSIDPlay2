@@ -44,9 +44,14 @@ public class SidRegWrite {
 		return SIDRegDriver.BUNDLE.getString(DESCRIPTION[address & 0x1f]);
 	}
 
-	public void writeSidRegister(OutputStream out) throws IOException {
-		out.write(String.format("\"%d\", \"%d\", \"$%04X\", \"$%02X\", \"%s\"\n", absCycles, relCycles, address, value,
-				getDescription()).getBytes(StandardCharsets.ISO_8859_1));
+	public void writeSidRegister(OutputStream out, boolean small) throws IOException {
+		if (small) {
+			out.write(String.format(",\"%d\",\"$%04X\",\"$%02X\",\n", relCycles, address, value)
+					.getBytes(StandardCharsets.ISO_8859_1));
+		} else {
+			out.write(String.format("\"%d\", \"%d\", \"$%04X\", \"$%02X\", \"%s\"\n", absCycles, relCycles, address,
+					value, getDescription()).getBytes(StandardCharsets.ISO_8859_1));
+		}
 	}
 
 }
