@@ -3,9 +3,9 @@ package sidplay.audio;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -38,6 +38,8 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 			if (out != null) {
 				try {
 					out.close();
+				} catch (IOException e) {
+					throw new RuntimeException("Error closing SIDRegDriver stream", e);
 				} finally {
 					out = null;
 				}
@@ -61,7 +63,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		 * @param out Output stream to write the SID reg to
 		 */
 		public SIDRegStreamDriver(OutputStream out) {
-			this.out = new PrintStream(out);
+			this.out = out;
 		}
 
 		@Override
@@ -76,7 +78,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 	/**
 	 * Print stream to write the encoded MP3 to.
 	 */
-	protected PrintStream out;
+	protected OutputStream out;
 
 	private EventScheduler context;
 
@@ -90,7 +92,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		AudioConfig cfg = new AudioConfig(audioSection);
 		this.context = context;
 
-		out = new PrintStream(getOut(recordingFilename));
+		out = getOut(recordingFilename);
 
 		fTime = 0;
 		writeHeader(out);
@@ -107,7 +109,11 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		}
 		final long relTime = time - fTime;
 
-		new SidRegWrite(time, relTime, addr, data).writeSidRegister(out);
+		try {
+			new SidRegWrite(time, relTime, addr, data).writeSidRegister(out);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
 		fTime = time;
 	}
@@ -135,10 +141,10 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		return ".csv";
 	}
 
-	public static void writeHeader(PrintStream printStream) {
-		printStream.printf("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"\n", BUNDLE.getString("ABSOLUTE_CYCLES"),
+	public static void writeHeader(OutputStream out) throws IOException {
+		out.write(String.format("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"\n", BUNDLE.getString("ABSOLUTE_CYCLES"),
 				BUNDLE.getString("RELATIVE_CYCLES"), BUNDLE.getString("ADDRESS"), BUNDLE.getString("VALUE"),
-				BUNDLE.getString("DESCRIPTION"));
+				BUNDLE.getString("DESCRIPTION")).getBytes(StandardCharsets.ISO_8859_1));
 	}
 
 	protected abstract OutputStream getOut(String recordingFilename) throws IOException;

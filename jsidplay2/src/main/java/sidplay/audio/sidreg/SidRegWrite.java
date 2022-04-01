@@ -1,6 +1,8 @@
 package sidplay.audio.sidreg;
 
-import java.io.PrintStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import sidplay.audio.SIDRegDriver;
 
@@ -42,9 +44,9 @@ public class SidRegWrite {
 		return SIDRegDriver.BUNDLE.getString(DESCRIPTION[address & 0x1f]);
 	}
 
-	public void writeSidRegister(PrintStream printStream) {
-		printStream.printf("\"%d\", \"%d\", \"$%04X\", \"$%02X\", \"%s\"\n", absCycles, relCycles, address, value,
-				getDescription());
+	public void writeSidRegister(OutputStream out) throws IOException {
+		out.write(String.format("\"%d\", \"%d\", \"$%04X\", \"$%02X\", \"%s\"\n", absCycles, relCycles, address, value,
+				getDescription()).getBytes(StandardCharsets.ISO_8859_1));
 	}
 
 }

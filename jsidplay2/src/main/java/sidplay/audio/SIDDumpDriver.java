@@ -3,9 +3,9 @@ package sidplay.audio;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -37,6 +37,8 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 			if (out != null) {
 				try {
 					out.close();
+				} catch (IOException e) {
+					throw new RuntimeException("Error closing SIDDumpDriver stream", e);
 				} finally {
 					out = null;
 				}
@@ -60,7 +62,7 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 		 * @param out Output stream to write the SID dump to
 		 */
 		public SIDDumpStreamDriver(OutputStream out) {
-			this.out = new PrintStream(out);
+			this.out = out;
 		}
 
 		@Override
@@ -73,7 +75,7 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 	/**
 	 * Print stream to write the encoded MP3 to.
 	 */
-	protected PrintStream out;
+	protected OutputStream out;
 
 	private ByteBuffer sampleBuffer;
 
@@ -86,14 +88,9 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 		init(cpuClock);
 		setTimeInSeconds(false);
 
-		out = new PrintStream(getOut(recordingFilename));
+		out = getOut(recordingFilename);
 
-		out.println(String.format("Middle C frequency is $%04X", getMiddleCFreq()));
-		out.println();
-		out.println(
-				"| Frame | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | FCut RC Typ V |");
-		out.println(
-				"+-------+---------------------------+---------------------------+---------------------------+---------------+");
+		writeHeader();
 
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
@@ -128,49 +125,61 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 	}
 
 	@Override
-	public void add(SidDumpOutput putput) {
-		out.print("| ");
-		out.print(putput.getTime());
-		out.print(" | ");
-		out.print(putput.getFreq(0));
-		out.print(" ");
-		out.print(putput.getNote(0));
-		out.print(" ");
-		out.print(putput.getWf(0));
-		out.print(" ");
-		out.print(putput.getAdsr(0));
-		out.print(" ");
-		out.print(putput.getPul(0));
-		out.print(" | ");
-		out.print(putput.getFreq(1));
-		out.print(" ");
-		out.print(putput.getNote(1));
-		out.print(" ");
-		out.print(putput.getWf(1));
-		out.print(" ");
-		out.print(putput.getAdsr(1));
-		out.print(" ");
-		out.print(putput.getPul(1));
-		out.print(" | ");
-		out.print(putput.getFreq(2));
-		out.print(" ");
-		out.print(putput.getNote(2));
-		out.print(" ");
-		out.print(putput.getWf(2));
-		out.print(" ");
-		out.print(putput.getAdsr(2));
-		out.print(" ");
-		out.print(putput.getPul(2));
-		out.print(" | ");
-		out.print(putput.getFcut());
-		out.print(" ");
-		out.print(putput.getRc());
-		out.print(" ");
-		out.print(putput.getTyp());
-		out.print(" ");
-		out.print(putput.getV());
-		out.println(" |");
+	public void add(SidDumpOutput putput) throws IOException {
+		StringBuilder builder = new StringBuilder();
+		builder.append("| ");
+		builder.append(putput.getTime());
+		builder.append(" | ");
+		builder.append(putput.getFreq(0));
+		builder.append(" ");
+		builder.append(putput.getNote(0));
+		builder.append(" ");
+		builder.append(putput.getWf(0));
+		builder.append(" ");
+		builder.append(putput.getAdsr(0));
+		builder.append(" ");
+		builder.append(putput.getPul(0));
+		builder.append(" | ");
+		builder.append(putput.getFreq(1));
+		builder.append(" ");
+		builder.append(putput.getNote(1));
+		builder.append(" ");
+		builder.append(putput.getWf(1));
+		builder.append(" ");
+		builder.append(putput.getAdsr(1));
+		builder.append(" ");
+		builder.append(putput.getPul(1));
+		builder.append(" | ");
+		builder.append(putput.getFreq(2));
+		builder.append(" ");
+		builder.append(putput.getNote(2));
+		builder.append(" ");
+		builder.append(putput.getWf(2));
+		builder.append(" ");
+		builder.append(putput.getAdsr(2));
+		builder.append(" ");
+		builder.append(putput.getPul(2));
+		builder.append(" | ");
+		builder.append(putput.getFcut());
+		builder.append(" ");
+		builder.append(putput.getRc());
+		builder.append(" ");
+		builder.append(putput.getTyp());
+		builder.append(" ");
+		builder.append(putput.getV());
+		builder.append(" |\n");
+		out.write(builder.toString().getBytes(StandardCharsets.ISO_8859_1));
+	}
 
+	private void writeHeader() throws IOException {
+		StringBuilder builder = new StringBuilder();
+		builder.append(String.format("Middle C frequency is $%04X\n", getMiddleCFreq()));
+		builder.append("\n");
+		builder.append(String.format(
+				"| Frame | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | FCut RC Typ V |\n"));
+		builder.append(String.format(
+				"+-------+---------------------------+---------------------------+---------------------------+---------------+\n"));
+		out.write(builder.toString().getBytes(StandardCharsets.ISO_8859_1));
 	}
 
 	protected abstract OutputStream getOut(String recordingFilename) throws IOException;

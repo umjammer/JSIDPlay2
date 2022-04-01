@@ -2,8 +2,9 @@ package ui.sidreg;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -230,9 +231,15 @@ public class SidReg extends C64VBox implements UIPart {
 		if (file != null) {
 			util.getConfig().getSidplay2Section().setLastDirectory(file.getParentFile());
 			File target = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()) + ".csv");
-			try (PrintStream ps = new PrintStream(target)) {
+			try (OutputStream ps = new FileOutputStream(target)) {
 				SIDRegDriver.writeHeader(ps);
-				filteredSidRegWrites.stream().forEach(sidRegWrite -> sidRegWrite.writeSidRegister(ps));
+				filteredSidRegWrites.stream().forEach(sidRegWrite -> {
+					try {
+						sidRegWrite.writeSidRegister(ps);
+					} catch (IOException e) {
+						throw new RuntimeException("Error writing SIDRegDriver stream", e);
+					}
+				});
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
