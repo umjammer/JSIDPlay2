@@ -12,7 +12,7 @@ public interface IServletSystemProperties {
 	/**
 	 * JSIDPlay2Server Socket connection timeout in s of the HTTP(s) connection.
 	 */
-	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.whatssid.connection.timeout", "120"));
+	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.whatssid.connection.timeout", "20000"));
 
 	//
 	// ConvertServlet

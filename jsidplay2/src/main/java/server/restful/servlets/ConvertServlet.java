@@ -159,6 +159,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream());
 
 				response.setContentType(getMimeType(driver.getExtension()).toString());
+				response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked"); // required for CSV?
 				if (Boolean.TRUE.equals(servletParameters.getDownload())) {
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 							+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
