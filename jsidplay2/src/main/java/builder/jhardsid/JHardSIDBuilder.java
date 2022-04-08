@@ -109,7 +109,7 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 		ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
 		ChipModel defaultSidModel = emulationSection.getDefaultSidModel();
 
-		Integer chipNum = getModelDependantChipNum(chipModel, sidNum);
+		Integer chipNum = getModelDependantChipNum(chipModel);
 
 		if (oldHardSID != null) {
 			// always re-use hardware SID chips, if configuration changes
@@ -299,10 +299,9 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 	 * Get HardSID device index based on the desired chip model.
 	 *
 	 * @param chipModel desired chip model
-	 * @param sidNum    current SID number
 	 * @return SID index of the desired HardSID device
 	 */
-	private Integer getModelDependantChipNum(final ChipModel chipModel, int sidNum) {
+	private Integer getModelDependantChipNum(final ChipModel chipModel) {
 		int sid6581 = config.getEmulationSection().getHardsid6581();
 		int sid8580 = config.getEmulationSection().getHardsid8580();
 
