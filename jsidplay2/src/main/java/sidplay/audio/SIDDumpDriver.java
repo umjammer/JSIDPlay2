@@ -82,7 +82,6 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
 			throws IOException, LineUnavailableException, InterruptedException {
-		System.out.println("Recording, file=" + recordingFilename);
 		AudioConfig cfg = new AudioConfig(audioSection);
 
 		init(cpuClock);
