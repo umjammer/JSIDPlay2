@@ -12,7 +12,6 @@ import static libsidplay.components.mos656x.VIC.MAX_WIDTH;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
@@ -108,17 +107,14 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 	private IContainer container;
 	private IStreamCoder videoCoder, audioCoder;
 	private IConverter converter;
-	private BufferedImage vicImage, statusImage;
-	private int statusTextOffset;
+	private BufferedImage vicImage;
 
-	private Graphics2D graphics;
-	private IntBuffer pictureBuffer;
+	private IntBuffer pictureBuffer, statusBuffer;
+	private int statusTextOverflow, statusTextOffset;
 	private long frameNo, framesPerKeyFrames, firstAudioTimeStamp, firstVideoTimeStamp;
 	private double ticksPerMicrosecond;
 
 	private ByteBuffer sampleBuffer;
-
-	private int statusTextOverflow;
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
@@ -127,7 +123,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		AudioConfig cfg = new AudioConfig(audioSection);
 		String url = getUrl(audioSection, recordingFilename);
 		if (url == null) {
-			throw new FileNotFoundException(" (No such file or URL)");
+			throw new FileNotFoundException("url is missing");
 		}
 
 		if (!getSupportedSamplingRates().contains(audioSection.getSamplingRate())) {
@@ -153,9 +149,6 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		pictureBuffer = IntBuffer.wrap(((DataBufferInt) vicImage.getRaster().getDataBuffer()).getData());
 		converter = ConverterFactory.createConverter(vicImage, YUV420P);
 
-		graphics = vicImage.createGraphics();
-		graphics.setFont(c64Font);
-		statusImage = new BufferedImage(MAX_WIDTH, graphics.getFontMetrics(c64Font).getHeight(), TYPE_INT_ARGB);
 		setStatusText("Recorded by JSIDPlay2!".toUpperCase(), TRUE_TYPE_FONT_BIG);
 
 		frameNo = 0;
@@ -199,10 +192,11 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		long timeStamp = getVideoTimeStamp();
 
 		((Buffer) pictureBuffer).clear();
+		((Buffer) statusBuffer).clear();
 		((Buffer) vic.getPixels()).clear();
 		pictureBuffer.put(vic.getPixels());
-
-		graphics.drawImage(statusImage, 0, MAX_HEIGHT + vic.getBorderHeight() >> 1, null);
+		pictureBuffer.position(MAX_WIDTH * (MAX_HEIGHT + vic.getBorderHeight() - c64Font.getSize() >> 1));
+		pictureBuffer.put(statusBuffer);
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
 		videoPicture.setKeyFrame((frameNo++ % framesPerKeyFrames) == 0);
@@ -258,9 +252,6 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 			if (container.isOpened()) {
 				container.close();
 			}
-			if (graphics != null) {
-				graphics.dispose();
-			}
 			container = null;
 		}
 	}
@@ -275,23 +266,23 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		return true;
 	}
 
-	public void setStatusText(String statusText, int fontSet) {
-		statusText = toC64Chars(statusText, fontSet);
-		Graphics2D graphics = null;
-		try {
-			if (statusImage != null) {
-				graphics = statusImage.createGraphics();
-				graphics.setFont(c64Font);
-				FontMetrics fontMetrics = graphics.getFontMetrics(c64Font);
-				graphics.clearRect(0, 0, statusImage.getWidth(), statusImage.getHeight());
-				graphics.drawString(statusText, -statusTextOffset, fontMetrics.getAscent());
-				statusTextOverflow = Math.max(0, fontMetrics.stringWidth(statusText) - statusTextOffset - MAX_WIDTH);
-			}
-		} finally {
-			if (graphics != null) {
-				graphics.dispose();
+	public void setStatusText(String text, int fontSet) {
+		BufferedImage statusImage = new BufferedImage(MAX_WIDTH, c64Font.getSize(), TYPE_INT_ARGB);
+
+		Graphics2D graphics = statusImage.createGraphics();
+		graphics.setFont(c64Font);
+
+		String statusText = toC64Chars(text, fontSet);
+		graphics.drawString(statusText, -statusTextOffset, graphics.getFontMetrics(c64Font).getAscent());
+
+		statusTextOverflow = Math.max(0, c64Font.getSize() * statusText.length() - statusTextOffset - MAX_WIDTH);
+		statusBuffer = IntBuffer.allocate(statusImage.getWidth() * statusImage.getHeight());
+		for (int y = 0; y < statusImage.getHeight(); y++) {
+			for (int x = 0; x < statusImage.getWidth(); x++) {
+				statusBuffer.put(statusImage.getRGB(x, y));
 			}
 		}
+		graphics.dispose();
 	}
 
 	public int getStatusTextOverflow() {

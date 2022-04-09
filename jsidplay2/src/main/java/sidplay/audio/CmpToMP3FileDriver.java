@@ -46,7 +46,7 @@ public class CmpToMP3FileDriver extends JavaSound {
 		this.audioSection = audioSection;
 		File mp3 = audioSection.getMp3();
 		if (mp3 == null) {
-			throw new FileNotFoundException(" (Please choose mp3 file...)");
+			throw new FileNotFoundException("mp3 file is missing");
 		}
 		if (!mp3.exists()) {
 			throw new FileNotFoundException(mp3.getAbsolutePath() + " (No such file or directory)");

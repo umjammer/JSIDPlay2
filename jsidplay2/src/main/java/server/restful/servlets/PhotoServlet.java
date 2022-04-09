@@ -6,10 +6,10 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JPG;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Properties;
 
 import jakarta.servlet.ServletException;
@@ -52,9 +52,6 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			response.setContentType(MIME_TYPE_JPG.toString());
 			File absoluteFile = getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN));
 			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), absoluteFile);
-			if (photo == null) {
-				throw new FileNotFoundException(filePath + " (No such file or directory)");
-			}
 			response.getOutputStream().write(photo);
 			response.setContentLength(photo.length);
 		} catch (Throwable t) {
@@ -77,7 +74,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			/* title = */iterator.next();
 			author = iterator.next();
 		}
-		return Photos.getPhoto(collectionName, author);
+		return Optional.ofNullable(Photos.getPhoto(collectionName, author)).orElse(new byte[0]);
 	}
 
 }
