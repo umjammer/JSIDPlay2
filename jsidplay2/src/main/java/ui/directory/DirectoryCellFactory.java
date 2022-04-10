@@ -16,13 +16,13 @@ import ui.JSidPlay2Main;
  *
  */
 public class DirectoryCellFactory
-		implements Callback<TableColumn<DirectoryItem, String>, TableCell<DirectoryItem, String>>, C64Font {
+		implements Callback<TableColumn<DirectoryItem, String>, TableCell<DirectoryItem, String>> {
 
 	protected static Font c64Font;
 
 	static {
 		try {
-			InputStream fontStream = JSidPlay2Main.class.getResourceAsStream(FONT_NAME);
+			InputStream fontStream = JSidPlay2Main.class.getResourceAsStream(C64Font.FONT_NAME);
 			c64Font = Font.loadFont(fontStream, 10);
 		} catch (Exception e) {
 			throw new ExceptionInInitializerError(e);

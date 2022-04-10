@@ -52,6 +52,7 @@ public final class MOS6569 extends VIC {
 
 	private static final int FIRST_DISPLAY_LINE = 15;
 	private static final int LAST_DISPLAY_LINE = 300;
+	public static final int BORDER_HEIGHT = LAST_DISPLAY_LINE - FIRST_DISPLAY_LINE;
 
 	protected void doPHI1Fetch() {
 		switch (lineCycle) {
@@ -413,7 +414,7 @@ public final class MOS6569 extends VIC {
 
 	@Override
 	public int getBorderHeight() {
-		return LAST_DISPLAY_LINE - FIRST_DISPLAY_LINE;
+		return BORDER_HEIGHT;
 	}
 
 }

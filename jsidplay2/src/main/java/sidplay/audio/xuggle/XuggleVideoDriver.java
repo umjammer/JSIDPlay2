@@ -7,6 +7,7 @@ import static com.xuggle.xuggler.IStreamCoder.Flags.FLAG_QSCALE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Short.BYTES;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
+import static libsidplay.common.CPUClock.PAL;
 import static libsidplay.components.mos656x.VIC.MAX_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_WIDTH;
 
@@ -45,6 +46,8 @@ import libsidplay.common.CPUClock;
 import libsidplay.common.Event.Phase;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.SamplingRate;
+import libsidplay.components.mos656x.MOS6567;
+import libsidplay.components.mos656x.MOS6569;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.config.IAudioSection;
 import libsidutils.C64Font;
@@ -81,6 +84,8 @@ import sidplay.audio.exceptions.IniConfigException;
  */
 public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64Font {
 
+	private static final int STATUS_TEXT_Y = 10;
+
 	private static final int FONT_SIZE = 8;
 
 	private static final Font c64Font;
@@ -111,7 +116,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 
 	private IntBuffer pictureBuffer;
 	private int[] statusPixels;
-	private int statusTextOverflow, statusTextOffset;
+	private int statusTextY, statusTextOverflow, statusTextOffset;
 	private long frameNo, framesPerKeyFrames, firstAudioTimeStamp, firstVideoTimeStamp;
 	private double ticksPerMicrosecond;
 
@@ -150,11 +155,9 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		pictureBuffer = IntBuffer.wrap(((DataBufferInt) vicImage.getRaster().getDataBuffer()).getData());
 		converter = ConverterFactory.createConverter(vicImage, YUV420P);
 
-		setStatusText("Recorded by JSIDPlay2!".toUpperCase(), TRUE_TYPE_FONT_BIG);
+		setStatusText("Recorded by JSIDPlay2!");
 
-		frameNo = 0;
-		firstAudioTimeStamp = 0;
-		firstVideoTimeStamp = 0;
+		statusTextY = MAX_WIDTH * ((cpuClock == PAL ? MOS6569.BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) + STATUS_TEXT_Y);
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
 		framesPerKeyFrames = (int) cpuClock.getScreenRefresh();
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
@@ -195,7 +198,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		((Buffer) pictureBuffer).clear();
 		((Buffer) vic.getPixels()).clear();
 		pictureBuffer.put(vic.getPixels());
-		pictureBuffer.position(MAX_WIDTH * (MAX_HEIGHT + vic.getBorderHeight() - c64Font.getSize() >> 1));
+		pictureBuffer.position(statusTextY);
 		pictureBuffer.put(statusPixels);
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
@@ -266,18 +269,17 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		return true;
 	}
 
-	public void setStatusText(String text, int fontSet) {
-		BufferedImage statusImage = new BufferedImage(MAX_WIDTH, c64Font.getSize(), TYPE_INT_ARGB);
+	public void setStatusText(String text) {
+		String c64Chars = toC64Chars(text.toUpperCase(), TRUE_TYPE_FONT_BIG);
 
+		BufferedImage statusImage = new BufferedImage(MAX_WIDTH, c64Font.getSize(), TYPE_INT_ARGB);
 		Graphics2D graphics = statusImage.createGraphics();
 		graphics.setFont(c64Font);
-
-		String statusText = toC64Chars(text, fontSet);
-		graphics.drawString(statusText, -statusTextOffset, graphics.getFontMetrics(c64Font).getAscent());
-
-		statusTextOverflow = Math.max(0, c64Font.getSize() * statusText.length() - statusTextOffset - MAX_WIDTH);
-		statusPixels = ((DataBufferInt) statusImage.getRaster().getDataBuffer()).getData();
+		graphics.drawString(c64Chars, -statusTextOffset, graphics.getFontMetrics(c64Font).getAscent());
 		graphics.dispose();
+
+		statusTextOverflow = Math.max(0, c64Font.getSize() * text.length() - statusTextOffset - MAX_WIDTH);
+		statusPixels = ((DataBufferInt) statusImage.getRaster().getDataBuffer()).getData();
 	}
 
 	public int getStatusTextOverflow() {
@@ -288,8 +290,8 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		return statusTextOffset;
 	}
 
-	public void setStatusTextOffset(int statusImageOffset) {
-		this.statusTextOffset = statusImageOffset;
+	public void setStatusTextOffset(int statusTextOffset) {
+		this.statusTextOffset = statusTextOffset;
 	}
 
 	private IStreamCoder createVideoCoder(IAudioSection audioSection, CPUClock cpuClock) {
