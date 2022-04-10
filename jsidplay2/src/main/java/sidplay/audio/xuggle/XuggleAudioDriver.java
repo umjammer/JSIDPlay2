@@ -50,7 +50,10 @@ public abstract class XuggleAudioDriver implements AudioDriver {
 		if (writer.addAudioStream(0, 0, getAudioCodec(), cfg.getChannels(), cfg.getFrameRate()) < 0) {
 			throw new IOException("Could not add audio stream");
 		}
+
+		firstTimeStamp = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
+
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
 	}

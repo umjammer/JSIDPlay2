@@ -158,9 +158,15 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 
 		setStatusText("Recorded by JSIDPlay2!");
 
+		frameNo = 0;
+		firstAudioTimeStamp = 0;
+		firstVideoTimeStamp = 0;
 		statusTextY = MAX_WIDTH * ((cpuClock == PAL ? MOS6569.BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) + STATUS_TEXT_Y);
+		statusTextOffset = 0;
+		statusTextOverflow = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
 		framesPerKeyFrames = (int) cpuClock.getScreenRefresh();
+
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
 	}
 
