@@ -31,6 +31,7 @@ import javax.sound.sampled.LineUnavailableException;
 import com.xuggle.xuggler.Configuration;
 import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.ICodec.ID;
+import com.xuggle.xuggler.IConfigurable;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IContainerFormat;
 import com.xuggle.xuggler.IPacket;
@@ -116,7 +117,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 
 	private IntBuffer pictureBuffer;
 	private int[] statusPixels;
-	private int statusTextY, statusTextOverflow, statusTextOffset;
+	private int statusTextY, statusTextOffset, statusTextOverflow;
 	private long frameNo, framesPerKeyFrames, firstAudioTimeStamp, firstVideoTimeStamp;
 	private double ticksPerMicrosecond;
 
@@ -301,18 +302,18 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		videoCoder.setWidth(MAX_WIDTH);
 		videoCoder.setFlag(FLAG_QSCALE, true);
 		videoCoder.setGlobalQuality(audioSection.getVideoCoderGlobalQuality());
-		configurePresets(videoCoder, audioSection.getVideoCoderPreset().getPresetName());
+		configurePreset(videoCoder, audioSection.getVideoCoderPreset().getPresetName());
 		return videoCoder;
 	}
 
-	private void configurePresets(IStreamCoder videoCoder, String presetName) {
-		Properties props = new Properties();
+	private void configurePreset(IConfigurable configurable, String presetName) {
 		try (InputStream is = XuggleVideoDriver.class.getResourceAsStream(presetName)) {
+			Properties props = new Properties();
 			props.load(is);
+			Configuration.configure(props, configurable);
 		} catch (IOException | NullPointerException e) {
 			throw new RuntimeException("You need the " + presetName + " in your classpath.");
 		}
-		Configuration.configure(props, videoCoder);
 	}
 
 	private IStreamCoder createAudioCoder(IAudioSection audioSection, AudioConfig cfg) {
