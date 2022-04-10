@@ -208,19 +208,21 @@ public final class EventScheduler {
 	 * Cancel the specified event.
 	 *
 	 * @param event The event to cancel
+	 * @return true if an event was actually removed
 	 */
-	public void cancel(final Event event) {
+	public boolean cancel(final Event event) {
 		Event prev = firstEvent;
 		Event scan = firstEvent.next;
-		while (scan.triggerTime <= event.triggerTime) {
+		while (scan != lastEvent) {
 			/* find the event at triggerTime to cancel */
 			if (event == scan) {
 				prev.next = scan.next;
-				return;
+				return true;
 			}
 			prev = scan;
 			scan = scan.next;
 		}
+		return false;
 	}
 
 	/** Cancel all pending events and reset time. */
@@ -266,7 +268,7 @@ public final class EventScheduler {
 	 */
 	public boolean isPending(final Event event) {
 		Event scan = firstEvent.next;
-		while (scan.triggerTime <= event.triggerTime) {
+		while (scan != lastEvent) {
 			/* find the event at triggerTime */
 			if (event == scan) {
 				return true;
