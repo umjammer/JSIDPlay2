@@ -182,9 +182,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 			}
 			samplesConsumed += retval;
 			if (packet.isComplete()) {
-				if (container.writePacket(packet) < 0) {
-					throw new RuntimeException("Could not write audio packet!");
-				}
+				container.writePacket(packet);
 			}
 		}
 		audioSamples.delete();
@@ -209,9 +207,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 			throw new RuntimeException("Error writing video stream");
 		}
 		if (packet.isComplete()) {
-			if (container.writePacket(packet) < 0) {
-				throw new RuntimeException("Could not write video packet!");
-			}
+			container.writePacket(packet);
 		}
 		videoPicture.delete();
 		packet.delete();
