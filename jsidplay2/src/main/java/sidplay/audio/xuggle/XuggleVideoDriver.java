@@ -109,7 +109,8 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 	private IConverter converter;
 	private BufferedImage vicImage;
 
-	private IntBuffer pictureBuffer, statusBuffer;
+	private IntBuffer pictureBuffer;
+	private int[] statusPixels;
 	private int statusTextOverflow, statusTextOffset;
 	private long frameNo, framesPerKeyFrames, firstAudioTimeStamp, firstVideoTimeStamp;
 	private double ticksPerMicrosecond;
@@ -192,11 +193,10 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		long timeStamp = getVideoTimeStamp();
 
 		((Buffer) pictureBuffer).clear();
-		((Buffer) statusBuffer).clear();
 		((Buffer) vic.getPixels()).clear();
 		pictureBuffer.put(vic.getPixels());
 		pictureBuffer.position(MAX_WIDTH * (MAX_HEIGHT + vic.getBorderHeight() - c64Font.getSize() >> 1));
-		pictureBuffer.put(statusBuffer);
+		pictureBuffer.put(statusPixels);
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
 		videoPicture.setKeyFrame((frameNo++ % framesPerKeyFrames) == 0);
@@ -276,12 +276,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		graphics.drawString(statusText, -statusTextOffset, graphics.getFontMetrics(c64Font).getAscent());
 
 		statusTextOverflow = Math.max(0, c64Font.getSize() * statusText.length() - statusTextOffset - MAX_WIDTH);
-		statusBuffer = IntBuffer.allocate(statusImage.getWidth() * statusImage.getHeight());
-		for (int y = 0; y < statusImage.getHeight(); y++) {
-			for (int x = 0; x < statusImage.getWidth(); x++) {
-				statusBuffer.put(statusImage.getRGB(x, y));
-			}
-		}
+		statusPixels = ((DataBufferInt) statusImage.getRaster().getDataBuffer()).getData();
 		graphics.dispose();
 	}
 
