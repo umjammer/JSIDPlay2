@@ -12,19 +12,19 @@ public interface IServletSystemProperties {
 	/**
 	 * JSIDPlay2Server Socket connection timeout in s of the HTTP(s) connection.
 	 */
-	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.whatssid.connection.timeout", "20000"));
+	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
 
 	//
 	// ConvertServlet
 	//
 
 	/**
-	 * WhatsSID? Maximum number of requests in parallel.
+	 * Maximum number of requests in parallel.
 	 */
 	int MAX_CONVERT_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.max.parallel", "7"));
 
 	/**
-	 * WhatsSID? Maximum number of RTMP threads in parallel.
+	 * Video streaming: Maximum number of RTMP threads in parallel.
 	 */
 	int MAX_RTMP_IN_PARALLEL = valueOf(getProperty("jsidplay2.rtmp.max.parallel", "7"));
 
