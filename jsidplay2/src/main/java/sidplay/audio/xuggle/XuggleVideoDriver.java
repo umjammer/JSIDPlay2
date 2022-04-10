@@ -57,28 +57,28 @@ import sidplay.audio.VideoDriver;
 import sidplay.audio.exceptions.IniConfigException;
 
 /**
- * The Kush Gauge: To find a decent bitrate simply multiply the target pixel
- * count by the frame rate; then multiply the result by a factor of 1, 2 or 4,
- * depending on the amount of motion in the video; and then multiply that result
- * by 0.07 to get the bit rate in bps. <br>
+ * Create video.<BR>
  * 
  * <pre>
- * Video Coder Bit Rate - full screen with borders (MAX_WIDTH * MAX_HEIGHT):
+ * Video possibilities (file, RTMP and HLS):
+ * /home/ken/.jsidplay2/jsidplay2.flv
+ * rtmp://localhost/live/test
+ * http://localhost:90/hls/test.m3u8
+ * </pre>
+ * 
+ * <B>The Kush Gauge:</B> To find a decent bitrate simply multiply the target
+ * pixel count by the frame rate; then multiply the result by a factor of 1, 2
+ * or 4, depending on the amount of motion in the video; and then multiply that
+ * result by 0.07 to get the bit rate in bps. <br>
+ * 
+ * <pre>
+ * Video Coder Bit Rate:
  * PAL low motion:		192 * 312 * 50,1246 * 1 * 0,07	=   210.186
  * PAL high motion:		192 * 312 * 50,1246 * 4 * 0,07	=   840.746
  * NTSC low motion:		192 * 312 * 59,83 * 1 * 0,07	=   250.884
  * NTSC high motion:	192 * 312 * 59,83 * 4 * 0,07	= 1.003.536
  * </pre>
  * 
- * E.g. stream video<BR>
- * {@code
- * http://127.0.0.1:8080/jsidplay2service/JSIDPlay2REST/convert/Demos/Instinct+BoozeDesign%20-%20Andropolis/Instinct+BoozeDesign%20-%20Andropolis.d64?defaultLength=06:00&enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel=MOS8580&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true
- * 
- * Video streaming possibilities (RTMP and HLS):
- * rtmp://localhost/live/test
- * http://localhost:90/hls/test.m3u8
- * }
- *
  * @author ken
  *
  */
