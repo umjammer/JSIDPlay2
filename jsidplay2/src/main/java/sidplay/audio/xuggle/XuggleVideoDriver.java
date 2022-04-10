@@ -83,7 +83,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 
 	private static final int FONT_SIZE = 8;
 
-	private static Font c64Font;
+	private static final Font c64Font;
 
 	static {
 		try {
