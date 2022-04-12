@@ -203,7 +203,7 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		((Buffer) pictureBuffer).clear();
 		((Buffer) vic.getPixels()).clear();
 		pictureBuffer.put(vic.getPixels());
-		pictureBuffer.position(statusTextY);
+		((Buffer) pictureBuffer).position(statusTextY);
 		pictureBuffer.put(statusPixels);
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
