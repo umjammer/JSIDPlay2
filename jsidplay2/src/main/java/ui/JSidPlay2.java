@@ -8,6 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -31,6 +32,7 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import sidplay.Player;
+import sidplay.audio.Audio;
 import sidplay.player.State;
 import ui.asm.Asm;
 import ui.assembly64.Assembly64;
@@ -84,7 +86,9 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 					}
 				}
 				if ((event.getNewValue() == State.END || event.getNewValue() == State.QUIT)
-						&& util.getPlayer().getAudioDriver().isRecording()) {
+						&& util.getPlayer().getAudioDriver().isRecording()
+						&& !Arrays.asList(Audio.LIVE_VIDEO_STREAMING, Audio.LIVE_SID_DUMP, Audio.LIVE_SID_REG)
+								.contains(util.getPlayer().getAudio())) {
 					final ResourceBundle bundle = util.getBundle();
 					final C64Window window = util.getWindow();
 					final Player player = util.getPlayer();

@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
@@ -27,6 +28,7 @@ import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
 import sidplay.Player;
+import sidplay.audio.Audio;
 import sidplay.audio.AudioConfig;
 import sidplay.audio.JavaSound;
 import sidplay.audio.xuggle.XuggleVideoPlayer;
@@ -46,7 +48,9 @@ public class VideoPlayer extends C64VBox implements UIPart {
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			if ((event.getNewValue() == State.END || event.getNewValue() == State.QUIT)
-					&& util.getPlayer().getAudioDriver().isRecording()) {
+					&& util.getPlayer().getAudioDriver().isRecording()
+					&& !Arrays.asList(Audio.LIVE_VIDEO_STREAMING, Audio.LIVE_SID_DUMP, Audio.LIVE_SID_REG)
+							.contains(util.getPlayer().getAudio())) {
 				Path sourcePath = Paths.get(util.getPlayer().getRecordingFilename());
 				filenameField.setText(sourcePath.toFile().getAbsolutePath());
 			}

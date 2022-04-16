@@ -837,7 +837,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * 
 	 * @return audio audio
 	 */
-	private Audio getAudio() {
+	public Audio getAudio() {
 		return audioAndDriver.getKey();
 	}
 
