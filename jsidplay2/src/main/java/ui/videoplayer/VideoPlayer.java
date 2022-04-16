@@ -144,6 +144,7 @@ public class VideoPlayer extends C64VBox implements UIPart {
 					imageQueue.clear();
 					javaSound.close();
 					screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
+					recordingPauseContinue.setSelected(false);
 					thread = null;
 				}
 			}

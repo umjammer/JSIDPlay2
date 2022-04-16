@@ -52,7 +52,7 @@
 			</center>
 			<top>
 				<HBox>
-					<TextField HBox.hgrow="ALWAYS" fx:id="filenameField" />
+					<TextField HBox.hgrow="ALWAYS" fx:id="filenameField" disable="true"/>
 					<ToggleButton focusTraversable="false" onAction="#pauseContinue"
 						fx:id="recordingPauseContinue">
 						<tooltip>
