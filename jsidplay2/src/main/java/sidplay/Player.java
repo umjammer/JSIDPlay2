@@ -181,6 +181,11 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	private Consumer<MusicInfoWithConfidenceBean> whatsSidHook = musicInfoWithConfidence -> {
 	};
 	/**
+	 * Override player address of the tune.
+	 */
+	private Function<Integer, Integer> playAddrHook = Function.identity();
+
+	/**
 	 * Currently used audio and corresponding audio driver.
 	 *
 	 * <B>Note:</B> If audio driver has been set externally by
@@ -521,7 +526,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 						}
 						if (config.getEmulationSection().getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
 							// Set play address to feedback call frames counter.
-							c64.setPlayAddr(tune.getInfo().getPlayAddr());
+							c64.setPlayAddr(playAddrHook.apply(tune.getInfo().getPlayAddr()));
 							// Start SID player driver
 							c64.getCPU().forcedJump(driverAddress);
 						}
@@ -699,6 +704,15 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	public void setWhatsSidHook(Consumer<MusicInfoWithConfidenceBean> whatsSidHook) {
 		this.whatsSidHook = whatsSidHook;
+	}
+
+	/**
+	 * Set a hook to be called when player address has been read from the tune.
+	 * 
+	 * @param playAddrHook player address hook
+	 */
+	public void setPlayAddrHook(Function<Integer, Integer> playAddrHook) {
+		this.playAddrHook = playAddrHook;
 	}
 
 	/**
