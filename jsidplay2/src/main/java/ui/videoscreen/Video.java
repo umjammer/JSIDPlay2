@@ -385,7 +385,6 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 			node.setScaleX(scale);
 			node.setScaleY(scale);
 		}
-		monitor.setPrefHeight(Integer.MAX_VALUE);
 		// adjust monitorBorder to surround screen
 		monitorBorder.setScaleX(monitorBorder.getScaleX() * SCALE_X);
 		monitorBorder.setScaleY(monitorBorder.getScaleY() * scaleY);

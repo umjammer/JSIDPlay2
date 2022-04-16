@@ -45,19 +45,6 @@
 				<ComboBox onAction="#setVideoStandard" fx:id="videoStandardBox" />
 				<ComboBox onAction="#setEngine" fx:id="engineBox" />
 				<ComboBox onAction="#setAudio" fx:id="audioBox" maxWidth="150" />
-				<Label fx:id="saveRecordingLabel" onMouseReleased="#saveRecording"
-					contentDisplay="GRAPHIC_ONLY" disable="false">
-					<graphic>
-						<ImageView>
-							<image>
-								<Image url="@/ui/icons/save.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<tooltip>
-						<Tooltip text="%SAVE_RECORDING" />
-					</tooltip>
-				</Label>
 				<ComboBox onAction="#setDevice" fx:id="devicesBox"
 					maxWidth="150" />
 				<ComboBox onAction="#setSampling" fx:id="samplingBox" />

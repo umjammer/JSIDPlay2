@@ -51,6 +51,7 @@ import ui.oscilloscope.Oscilloscope;
 import ui.printer.Printer;
 import ui.siddump.SidDump;
 import ui.sidreg.SidReg;
+import ui.videoplayer.VideoPlayer;
 import ui.videoscreen.Video;
 import ui.webview.WebView;
 import ui.webview.WebViewType;
@@ -81,6 +82,17 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 							playNextRandomHVSC();
 						}
 					}
+				}
+				if ((event.getNewValue() == State.END || event.getNewValue() == State.QUIT)
+						&& util.getPlayer().getAudioDriver().isRecording()) {
+					final ResourceBundle bundle = util.getBundle();
+					final C64Window window = util.getWindow();
+					final Player player = util.getPlayer();
+					String fxId = VideoPlayer.ID;
+					if (!tabAlreadyOpen(fxId)) {
+						addTab(new Tab(bundle.getString(fxId), new VideoPlayer(window, player)), fxId);
+					}
+					Platform.runLater(() -> selectTab(fxId));
 				}
 			});
 		}
@@ -189,7 +201,9 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 		final Player player = util.getPlayer();
 
 		if (!tabAlreadyOpen(fxId)) {
-			if (Video.ID.equals(fxId)) {
+			if (VideoPlayer.ID.equals(fxId)) {
+				addTab(new Tab(bundle.getString(fxId), new VideoPlayer(window, player)), fxId);
+			} else if (Video.ID.equals(fxId)) {
 				addTab(new Tab(bundle.getString(fxId), new Video(window, player)), fxId);
 			} else if (Oscilloscope.ID.equals(fxId)) {
 				addTab(new Tab(bundle.getString(fxId), new Oscilloscope(window, player)), fxId);

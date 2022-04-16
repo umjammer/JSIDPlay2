@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Integer?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+
+<?scenebuilder-preview-i18n-resource VideoPlayer.properties?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<!-- Use Scene tag for JavaFX Preview in Eclipse e(fx)clipse -->
+<!-- Ctrl+Shift+C to toggle comment -->
+
+<!-- <Scene xmlns:fx="http://javafx.com/fxml" stylesheets="@../JSidPlay2.css" 
+	fx:controller="ui.videoscreen.Video"> -->
+<fx:root xmlns:fx="http://javafx.com/fxml" stylesheets="@../JSidPlay2.css"
+	type="javafx.scene.layout.VBox">
+
+	<AnchorPane>
+		<BorderPane AnchorPane.bottomAnchor="10"
+			AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10"
+			AnchorPane.topAnchor="10">
+			<center>
+				<GridPane>
+					<children>
+						<TitledPane id="background" fx:id="monitor" text="%MONITOR"
+							collapsible="false" GridPane.columnIndex="0" GridPane.rowIndex="0">
+							<prefWidth>
+								<Integer fx:constant="MAX_VALUE" />
+							</prefWidth>
+							<prefHeight>
+								<Integer fx:constant="MAX_VALUE" />
+							</prefHeight>
+							<StackPane translateY="-20">
+								<Canvas fx:id="screen" cache="false" cacheHint="QUALITY" />
+							</StackPane>
+						</TitledPane>
+					</children>
+				</GridPane>
+			</center>
+			<top>
+				<HBox>
+					<TextField HBox.hgrow="ALWAYS" fx:id="filenameField" />
+					<ToggleButton focusTraversable="false" onAction="#pauseContinue"
+						fx:id="recordingPauseContinue">
+						<tooltip>
+							<Tooltip text="%PAUSE" />
+						</tooltip>
+						<graphic>
+							<ImageView>
+								<image>
+									<Image url="@/ui/icons/playback_pause.png" />
+								</image>
+							</ImageView>
+						</graphic>
+					</ToggleButton>
+					<Button focusTraversable="false" onAction="#stop">
+						<tooltip>
+							<Tooltip text="%STOP" />
+						</tooltip>
+						<graphic>
+							<ImageView>
+								<image>
+									<Image url="@/ui/icons/playback_stop.png" />
+								</image>
+							</ImageView>
+						</graphic>
+					</Button>
+					<Button onAction="#export" text="%EXPORT" />
+				</HBox>
+			</top>
+		</BorderPane>
+	</AnchorPane>
+</fx:root>

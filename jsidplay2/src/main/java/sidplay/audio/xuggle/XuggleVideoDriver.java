@@ -11,10 +11,7 @@ import static libsidplay.common.CPUClock.PAL;
 import static libsidplay.components.mos656x.VIC.MAX_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_WIDTH;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.FileNotFoundException;
@@ -35,11 +32,9 @@ import com.xuggle.xuggler.IConfigurable;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IContainerFormat;
 import com.xuggle.xuggler.IPacket;
-import com.xuggle.xuggler.IPixelFormat;
 import com.xuggle.xuggler.IRational;
 import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.IVideoPicture;
-import com.xuggle.xuggler.video.ArgbConverter;
 import com.xuggle.xuggler.video.ConverterFactory;
 import com.xuggle.xuggler.video.IConverter;
 
@@ -51,7 +46,6 @@ import libsidplay.components.mos656x.MOS6567;
 import libsidplay.components.mos656x.MOS6569;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.config.IAudioSection;
-import libsidutils.C64Font;
 import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.VideoDriver;
@@ -83,30 +77,9 @@ import sidplay.audio.exceptions.IniConfigException;
  * @author ken
  *
  */
-public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64Font {
+public abstract class XuggleVideoDriver extends XuggleVideoBase implements AudioDriver, VideoDriver {
 
 	private static final int STATUS_TEXT_Y = 10;
-
-	private static final int FONT_SIZE = 8;
-
-	private static final Font c64Font;
-
-	static {
-		try {
-			InputStream fontStream = XuggleVideoDriver.class.getResourceAsStream(FONT_NAME);
-			if (fontStream == null) {
-				throw new IOException("Font not found: " + FONT_NAME);
-			}
-			GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			c64Font = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont((float) FONT_SIZE);
-			graphicsEnvironment.registerFont(c64Font);
-
-			ConverterFactory.registerConverter(new ConverterFactory.Type(ConverterFactory.XUGGLER_ARGB_32,
-					ArgbConverter.class, IPixelFormat.Type.ARGB, BufferedImage.TYPE_INT_ARGB));
-		} catch (IOException | FontFormatException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
 
 	private EventScheduler context;
 
@@ -141,14 +114,13 @@ public abstract class XuggleVideoDriver implements AudioDriver, VideoDriver, C64
 		IContainerFormat containerFormat = IContainerFormat.make();
 		containerFormat.setOutputFormat(getOutputFormatName(), url, null);
 		container.setInputBufferLength(0);
-		if (container.open(url, WRITE, containerFormat) < 0) {
-			throw new IOException("Could not open: '" + url + "'");
-		}
+		throwExceptionOnError(container.open(url, WRITE, containerFormat), "Could not open: '" + url + "'");
+
 		videoCoder = createVideoCoder(audioSection, cpuClock);
-		videoCoder.open(null, null);
+		throwExceptionOnError(videoCoder.open(null, null));
 
 		audioCoder = createAudioCoder(audioSection, cfg);
-		audioCoder.open(null, null);
+		throwExceptionOnError(audioCoder.open(null, null));
 
 		container.writeHeader();
 

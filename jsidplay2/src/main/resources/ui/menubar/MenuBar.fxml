@@ -110,11 +110,13 @@
 						</Menu>
 						<MenuItem fx:id="printer" text="%PRINTER" onAction="#printer" />
 						<MenuItem fx:id="console" text="%CONSOLE" onAction="#console" />
+						<MenuItem fx:id="videoPlayer" text="%VIDEOPLAYER"
+							onAction="#videoPlayer" />
 					</Menu>
 					<Menu text="%PLAYER">
 						<items>
-							<CheckMenuItem text="%PAUSE" onAction="#pause"
-								fx:id="pauseContinue">
+							<CheckMenuItem text="%PLAY" onAction="#pauseContinue"
+								selected="true" fx:id="pauseContinue">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="P"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
@@ -315,15 +317,15 @@
 					</ImageView>
 				</graphic>
 			</Button>
-			<ToggleButton focusTraversable="false" onAction="#pause"
-				fx:id="pauseContinue2">
+			<ToggleButton focusTraversable="false" onAction="#pauseContinue"
+				selected="true" fx:id="pauseContinue2">
 				<tooltip>
-					<Tooltip text="%PAUSE2" />
+					<Tooltip text="%PLAY" />
 				</tooltip>
 				<graphic>
 					<ImageView>
 						<image>
-							<Image url="@/ui/icons/playback_start.png" />
+							<Image url="@/ui/icons/playback_pause.png" />
 						</image>
 					</ImageView>
 				</graphic>

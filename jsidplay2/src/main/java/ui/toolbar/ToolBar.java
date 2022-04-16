@@ -20,10 +20,6 @@ import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,7 +53,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
 import libsidplay.common.CPUClock;
@@ -109,12 +104,8 @@ public class ToolBar extends C64VBox implements UIPart {
 						testPlayer.stopC64();
 					}
 				} else if (event.getNewValue() == State.START) {
-					saveRecordingLabel.setDisable(true);
 					util.getPlayer()
 							.configureMixer(mixer -> Platform.runLater(() -> setActiveSidBlasterDevices(mixer)));
-				} else if ((event.getNewValue() == State.END || event.getNewValue() == State.QUIT)
-						&& util.getPlayer().getAudioDriver().isRecording()) {
-					saveRecordingLabel.setDisable(false);
 				}
 			});
 		}
@@ -161,8 +152,7 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private Label hostnameLabel, portLabel, hardsid6581Label, hardsid8580Label, appIpAddress, appHostname,
 			appServerPortLbl, appServerSecurePortLbl, appServerKeyStorePasswordLbl, appServerKeyAliasLbl,
-			appServerKeyPasswordLbl, saveRecordingLabel, sidBlasterWriteBufferSizeLbl, streamingIpAddress,
-			streamingHostname;
+			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, streamingIpAddress, streamingHostname;
 	@FXML
 	private Hyperlink appServerUsage, onlinePlayer, downloadApp, sidBlasterDoc;
 	@FXML
@@ -370,28 +360,6 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private void setAudio() {
 		restart();
-	}
-
-	@FXML
-	private void saveRecording() {
-		try {
-			SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
-			final DirectoryChooser fileDialog = new DirectoryChooser();
-			fileDialog.setTitle(util.getBundle().getString("SAVE_RECORDING"));
-			fileDialog.setInitialDirectory(sidplay2Section.getLastDirectory());
-			File directory = fileDialog.showDialog(getScene().getWindow());
-			if (directory != null) {
-				sidplay2Section.setLastDirectory(directory);
-
-				Path sourcePath = Paths.get(util.getPlayer().getRecordingFilename());
-				Path targetPath = new File(directory, sourcePath.toFile().getName()).toPath();
-				Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-				sourcePath.toFile().deleteOnExit();
-				System.out.println("Recording Saved to: " + targetPath);
-			}
-		} catch (IOException e) {
-			openErrorDialog(e.getMessage());
-		}
 	}
 
 	@FXML

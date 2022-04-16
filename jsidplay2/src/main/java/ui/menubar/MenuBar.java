@@ -91,6 +91,7 @@ import ui.siddump.SidDump;
 import ui.sidreg.SidReg;
 import ui.ultimate64.Ultimate64Window;
 import ui.update.Update;
+import ui.videoplayer.VideoPlayer;
 import ui.videoscreen.Video;
 import ui.webview.WebViewType;
 import ui.whatssidsettings.WhatsSidSettings;
@@ -129,7 +130,7 @@ public class MenuBar extends C64VBox implements UIPart {
 	@FXML
 	protected MenuItem video, oscilloscope, favorites, hvsc, cgsc, hvmec, demos, mags, sidDump, sidRegisters, asm,
 			disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, c64Sk, soasc, codebase64, gamebase,
-			jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc, save, previous, next;
+			jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc, videoPlayer, save, previous, next;
 
 	@FXML
 	protected Button previous2, next2, nextFavorite;
@@ -155,6 +156,8 @@ public class MenuBar extends C64VBox implements UIPart {
 				if (event.getNewValue() == State.START) {
 					setCurrentTrack(sidTune);
 					updatePlayerButtons(util.getPlayer().getPlayList());
+				} else if (event.getNewValue() == State.QUIT || event.getNewValue() == State.END) {
+					pauseContinue2.setSelected(false);
 				}
 			});
 		}
@@ -256,7 +259,8 @@ public class MenuBar extends C64VBox implements UIPart {
 	private void updateMenuItems() {
 		for (MenuItem menuItem : Arrays.asList(video, oscilloscope, favorites, hvsc, cgsc, hvmec, demos, mags, sidDump,
 				sidRegisters, asm, disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, c64Sk, soasc,
-				codebase64, gamebase, jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc)) {
+				codebase64, gamebase, jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc,
+				videoPlayer)) {
 			menuItem.setDisable(false);
 		}
 		util.getConfig().getViews().stream().map(ViewEntity::getFxId).forEach(fxId -> {
@@ -312,6 +316,8 @@ public class MenuBar extends C64VBox implements UIPart {
 				jsidplay2userGuide.setDisable(true);
 			} else if (WebViewType.JSIDPLAY2_JAVADOC.name().equals(fxId)) {
 				jsidplay2Javadoc.setDisable(true);
+			} else if (VideoPlayer.ID.equals(fxId)) {
+				videoPlayer.setDisable(true);
 			} else {
 				throw new RuntimeException("Unknown view ID: " + fxId);
 			}
@@ -396,7 +402,7 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
-	private void pause() {
+	private void pauseContinue() {
 		util.getPlayer().pauseContinue();
 	}
 
@@ -895,6 +901,11 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
+	private void videoPlayer() {
+		addView(VideoPlayer.ID);
+	}
+
+	@FXML
 	private void updateCheck() {
 		new Update(util.getPlayer()).open();
 	}
@@ -981,7 +992,6 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	private void updatePlayerButtons(PlayList playList) {
-		pauseContinue.setSelected(false);
 		normalSpeed.setSelected(true);
 
 		previous.setDisable(!playList.hasPrevious());
