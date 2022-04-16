@@ -10,3 +10,6 @@ JSIDPlay2Server:
 - Live videos: can be controlled by web-page
 - Live video now shows infos in a status bar
 - Scan bar-code to watch videos on your mobile
+
+JSIDPlay2app:
+- SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay can now be connected and used standalone on a mobile device.
