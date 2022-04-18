@@ -784,6 +784,9 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			setAudioAndDriver(audioSection.getAudio(), audioSection.getAudio().getAudioDriver(audioSection, tune));
 		}
 		verifyConfiguration(sidplay2Section);
+
+		reset();
+
 		// open audio driver
 		getAudioDriver().open(audioSection, getRecordingFilename(), c64.getClock(), c64.getEventScheduler());
 
@@ -798,8 +801,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		bufferSize = config.getAudioSection().getBufferSize();
 
 		stateProperty.addListener(pauseListener);
-
-		reset();
 	}
 
 	/**

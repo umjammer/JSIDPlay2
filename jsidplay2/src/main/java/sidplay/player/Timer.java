@@ -104,9 +104,9 @@ public abstract class Timer {
 		final IConfig config = player.getConfig();
 		fadeIn = config.getSidplay2Section().getFadeInTime();
 		fadeOut = config.getSidplay2Section().getFadeOutTime();
-		schedule(start, startTimeEvent, false);
+		schedule(start, startTimeEvent);
 		if (fadeIn != 0) {
-			schedule(start, fadeInStartTimeEvent, false);
+			schedule(start, fadeInStartTimeEvent);
 		}
 		updateEnd();
 	}
@@ -137,9 +137,9 @@ public abstract class Timer {
 			double songLength = player.getSidDatabaseInfo(db -> db.getSongLength(tune), 0.);
 			if (songLength > 0) {
 				// use song length of song length database ...
-				end = schedule(songLength, endTimeEvent, true);
+				end = schedule(songLength, endTimeEvent);
 				if (fadeOut != 0) {
-					schedule(end - fadeOut, fadeOutStartTimeEvent, true);
+					schedule(end - fadeOut, fadeOutStartTimeEvent);
 				}
 				return;
 			}
@@ -148,9 +148,9 @@ public abstract class Timer {
 		end = config.getSidplay2Section().getDefaultPlayLength();
 		if (end > 0) {
 			// use default length (is meant to be relative to start)
-			end = schedule(start + end, endTimeEvent, true);
+			end = schedule(start + end, endTimeEvent);
 			if (fadeOut != 0) {
-				schedule(start + end - fadeOut, fadeOutStartTimeEvent, true);
+				schedule(start + end - fadeOut, fadeOutStartTimeEvent);
 			}
 		}
 	}
@@ -162,10 +162,9 @@ public abstract class Timer {
 	 * @param seconds absolute schedule time in seconds
 	 * @param event   timer event to schedule
 	 */
-	private double schedule(final double seconds, final Event event, final boolean includeEndpoint) {
-		double maxSeconds = seconds + (includeEndpoint ? .001 : 0);
+	private double schedule(final double seconds, final Event event) {
 		EventScheduler eventScheduler = player.getC64().getEventScheduler();
-		long absoluteCycles = (long) (maxSeconds * eventScheduler.getCyclesPerSecond());
+		long absoluteCycles = (long) (seconds * eventScheduler.getCyclesPerSecond());
 		if (absoluteCycles < eventScheduler.getTime(Phase.PHI1)) {
 			// event is in the past? Trigger immediately!
 			eventScheduler.scheduleAbsolute(event, 0, Phase.PHI1);
@@ -173,7 +172,7 @@ public abstract class Timer {
 			// event is in the future
 			eventScheduler.scheduleAbsolute(event, absoluteCycles, Phase.PHI1);
 		}
-		return maxSeconds;
+		return seconds;
 	}
 
 	/**
