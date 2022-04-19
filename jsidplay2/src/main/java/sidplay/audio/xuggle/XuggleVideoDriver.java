@@ -194,25 +194,8 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 
 	@Override
 	public void close() {
-		if (audioCoder != null) {
-			IPacket audioPacket = IPacket.make();
-			// flush any data it was keeping a hold of
-			if (audioCoder.encodeAudio(audioPacket, null, 0) < 0) {
-				throw new RuntimeException("Error writing audio stream");
-			}
-			audioPacket.delete();
-		}
-		if (videoCoder != null) {
-			IPacket videoPacket = IPacket.make();
-			// flush any data it was keeping a hold of
-			if (videoCoder.encodeVideo(videoPacket, null, 0) < 0) {
-				throw new RuntimeException("Error writing video stream");
-			}
-			videoPacket.delete();
-		}
 		if (container != null) {
 			if (container.isOpened()) {
-				container.flushPackets();
 				container.writeTrailer();
 			}
 			if (audioCoder != null) {
