@@ -8,7 +8,6 @@ import static sidplay.player.State.QUIT;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import com.xuggle.xuggler.Global;
 import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
@@ -156,27 +155,25 @@ public abstract class XuggleVideoPlayer extends XuggleVideoBase implements Runna
 	}
 
 	private void dump() {
-		double duration = (container.getDuration() == Global.NO_PTS ? 0 : (container.getDuration() / 1000.0));
-
-		System.out.println("Number of streams: " + container.getNumStreams());
-		System.out.println("Start time: " + container.getStartTime());
-		System.out.println("Duration (us): " + container.getDuration());
-		System.out.println("File Size (bytes): " + container.getFileSize());
-		System.out.println("Bit Rate: " + (long) container.getBitRate());
+		System.out.printf("Number of streams: %d\n", container.getNumStreams());
+		System.out.printf("Start time: %d\n", container.getStartTime());
+		System.out.printf("Duration: %dus\n", container.getDuration());
+		System.out.printf("File Size: %d bytes\n", container.getFileSize());
+		System.out.printf("Bit Rate: %d bytes/sec\n", container.getBitRate());
 
 		if (videoStreamId != -1) {
 			IStream videoStream = container.getStream(videoStreamId);
 			System.out.println("*** Start of Video Stream Info ***");
 			System.out.printf("type: %s; ", videoCoder.getCodecType());
 			System.out.printf("codec: %s; ", videoCoder.getCodecID());
-			System.out.printf("duration: %s; ", videoStream.getDuration());
+			System.out.printf("duration: %sus; ", videoStream.getDuration());
 			System.out.printf("timebase: %d/%d; ", videoStream.getTimeBase().getNumerator(),
 					videoStream.getTimeBase().getDenominator());
 			System.out.printf("coder timebase: %d/%d; ", videoCoder.getTimeBase().getNumerator(),
 					videoCoder.getTimeBase().getDenominator());
-			System.out.printf("Frame rate: %d/%d; ", videoStream.getTimeBase().getNumerator(),
-					videoStream.getTimeBase().getDenominator());
-			System.out.println("Num frames: " + (videoStream.getFrameRate().getDouble() / 1000. * duration));
+			System.out.printf("frame rate: %f; ", videoStream.getFrameRate().getDouble());
+			System.out.printf("frames: %f; ",
+					(videoStream.getFrameRate().getDouble() * container.getDuration() / 1000000.));
 			System.out.println();
 		}
 
@@ -185,13 +182,14 @@ public abstract class XuggleVideoPlayer extends XuggleVideoBase implements Runna
 			System.out.println("*** Start of Audio Stream Info ***");
 			System.out.printf("type: %s; ", audioCoder.getCodecType());
 			System.out.printf("codec: %s; ", audioCoder.getCodecID());
-			System.out.printf("sample rate: %d; ", audioCoder.getSampleRate());
-			System.out.printf("channels: %d; ", audioCoder.getChannels());
-			System.out.printf("duration: %s; ", audioStream.getDuration());
+			System.out.printf("duration: %sus; ", audioStream.getDuration());
 			System.out.printf("timebase: %d/%d; ", audioStream.getTimeBase().getNumerator(),
 					audioStream.getTimeBase().getDenominator());
 			System.out.printf("coder timebase: %d/%d; ", audioCoder.getTimeBase().getNumerator(),
 					audioCoder.getTimeBase().getDenominator());
+			System.out.printf("sample rate: %d; ", audioCoder.getSampleRate());
+			System.out.printf("samples: %f; ", (audioCoder.getSampleRate() * container.getDuration() / 1000000.));
+			System.out.printf("channels: %d; ", audioCoder.getChannels());
 			System.out.println();
 		}
 	}
