@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IError;
 import com.xuggle.xuggler.IPixelFormat;
 import com.xuggle.xuggler.IStreamCoder;
@@ -19,13 +20,15 @@ public class XuggleVideoBase implements C64Font {
 
 	public static class VideoInfo {
 
-		private int sampleRate;
-		private int channels;
-		private int width;
-		private int height;
+		private long duration;
+
+		private int sampleRate, channels;
+
+		private int width, height;
 		private double frameRate;
 
-		public VideoInfo(IStreamCoder audioCoder, IStreamCoder videoCoder) {
+		public VideoInfo(IContainer container, IStreamCoder audioCoder, IStreamCoder videoCoder) {
+			duration = container.getDuration();
 			if (audioCoder != null) {
 				this.sampleRate = audioCoder.getSampleRate();
 				this.channels = audioCoder.getChannels();
@@ -35,6 +38,10 @@ public class XuggleVideoBase implements C64Font {
 				this.height = videoCoder.getHeight();
 				this.frameRate = videoCoder.getFrameRate().getValue();
 			}
+		}
+
+		public long getDuration() {
+			return duration;
 		}
 
 		public int getSampleRate() {

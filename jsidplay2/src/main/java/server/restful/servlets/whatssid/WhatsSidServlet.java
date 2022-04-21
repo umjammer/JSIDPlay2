@@ -1,6 +1,7 @@
 package server.restful.servlets.whatssid;
 
 import static java.lang.String.valueOf;
+import static java.lang.Thread.getAllStackTraces;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.closeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
@@ -64,15 +65,18 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			int hashCode = wavBean.hashCode();
 
 			MusicInfoWithConfidenceBean musicInfoWithConfidence = null;
-			if (!MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
-				WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
-				FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
-				musicInfoWithConfidence = fingerPrinting.match(wavBean);
-				MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-				info(valueOf(musicInfoWithConfidence));
-			} else {
-				musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
-				info(valueOf(musicInfoWithConfidence) + " (cached)");
+			// prioritize live stream before WhatsSid
+			if (getAllStackTraces().keySet().stream().map(Thread::getName).filter("RTMP"::equals).count() == 0) {
+				if (!MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
+					WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
+					FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
+					musicInfoWithConfidence = fingerPrinting.match(wavBean);
+					MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
+					info(valueOf(musicInfoWithConfidence));
+				} else {
+					musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
+					info(valueOf(musicInfoWithConfidence) + " (cached)");
+				}
 			}
 			setOutput(request, response, musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
 		} catch (Throwable t) {

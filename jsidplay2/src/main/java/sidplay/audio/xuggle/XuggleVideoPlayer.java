@@ -63,7 +63,7 @@ public abstract class XuggleVideoPlayer extends XuggleVideoBase implements Runna
 
 		stateProperty.set(State.START);
 
-		return new VideoInfo(audioCoder, videoCoder);
+		return new VideoInfo(container, audioCoder, videoCoder);
 	}
 
 	@Override
