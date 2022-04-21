@@ -83,7 +83,7 @@ import sidplay.audio.exceptions.IniConfigException;
 import sidplay.audio.exceptions.SongEndException;
 import sidplay.ini.IniConfig;
 import sidplay.player.ObjectProperty;
-import sidplay.player.PSID64Detection;
+import sidplay.player.PSid64Detection;
 import sidplay.player.PSid64DetectedTuneInfo;
 import sidplay.player.PlayList;
 import sidplay.player.State;
@@ -1249,7 +1249,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		IEmulationSection emulationSection = config.getEmulationSection();
 
 		if (emulationSection.isDetectPSID64ChipModel()) {
-			PSid64DetectedTuneInfo psid64TuneInfo = PSID64Detection.detectPSid64TuneInfo(c64.getRAM(),
+			PSid64DetectedTuneInfo psid64TuneInfo = PSid64Detection.detectPSid64TuneInfo(c64.getRAM(),
 					c64.getVicMemBase() + c64.getVIC().getVideoMatrixBase());
 			if (psid64TuneInfo.isDetected()) {
 				psid64Detected = true;

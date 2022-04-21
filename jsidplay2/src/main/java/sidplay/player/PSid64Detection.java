@@ -8,7 +8,7 @@ import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidutils.Petscii;
 
-public final class PSID64Detection {
+public final class PSid64Detection {
 
 	public static PSid64DetectedTuneInfo detectPSid64TuneInfo(byte[] ram, int videoScreenAddress) {
 		boolean detected = false;
