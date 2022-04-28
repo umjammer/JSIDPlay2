@@ -332,8 +332,7 @@ Now you can install JSIDPlay2 from my web-site and extract it to the Downloads f
 [source,subs="attributes+"]
 ----
 cd /Users/<name>/Downloads/{artifactId}-{version}-java11-mac
-chmod +x "JSIDPlay2 (Java11).sh"
-"./JSIDPlay2 (Java11).sh"			 # <1>
+"./jsidplay2-java11.sh"			 # <1>
 ----
 <1> Before you launch JSIDPlay2 you must be sure, that you connected your SIDBlaster device with your machine.
 *Note:* It can be necessary to change the path to java inside that script to that of your installation.
@@ -438,8 +437,7 @@ sudo udevadm control --reload-rules && udevadm trigger
 ----
 unzip /home/<name>/Downloads/{artifactId}-{version}-java11-linux.zip
 cd /home/<name>/Downloads/{artifactId}-{version}-java11-linux
-chmod +x "JSIDPlay2 (Java11).sh"
-"./JSIDPlay2 (Java11).sh"	 # <1>
+"./jsidplay2-java11.sh"	 # <1>
 ----
 <1> Before you launch JSIDPlay2 you must be sure, that you connected your SIDBlaster device with your machine.
 
@@ -473,12 +471,11 @@ You can permanently store the SID chip type to be auto-detected by JSIDPlay2.
 [source,subs="attributes+"]
 ----
 cd /Users/<name>/Downloads/{artifactId}-{version}-java11-*
-chmod +x "SIDBlasterTool.sh"
-"./SIDBlasterTool.sh"										 # <1>
-"./SIDBlasterTool.sh" -c INFO								 # <2>
-"./SIDBlasterTool.sh" -c SET_SID_TYPE -d 0 -t SIDTYPE_6581	 # <3>
-"./SIDBlasterTool.sh" -c SET_SERIAL -d 0 -s A12B34C56D		 # <4>
-"./SIDBlasterTool.sh" -c RUN_ON_WINDOWS -d 0				 # <5>
+"./sidblaster-tool.sh"										 # <1>
+"./sidblaster-tool.sh" -c INFO								 # <2>
+"./sidblaster-tool.sh" -c SET_SID_TYPE -d 0 -t SIDTYPE_6581	 # <3>
+"./sidblaster-tool.sh" -c SET_SERIAL -d 0 -s A12B34C56D		 # <4>
+"./sidblaster-tool.sh" -c RUN_ON_WINDOWS -d 0				 # <5>
 ----
 <1> Display usage
 <2> List detected devices

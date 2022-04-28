@@ -13,3 +13,6 @@ JSIDPlay2Server:
 
 JSIDPlay2app:
 - SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay can now be connected and used standalone on a mobile device.
+
+Changes:
+- All shell-scripts and desktop files renamed to lower case without space in it's name better for convenience

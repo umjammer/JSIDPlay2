@@ -176,7 +176,7 @@ rm /tmp/fullchain.pkcs12 >> /var/log/jsidplay2cert.log 2>&1
 keytool -keystore /etc/jsidplay2.ks -changealias -alias 1 -destalias jsidplay2 \
 	-storepass jsidplay2 >> /var/log/jsidplay2cert.log 2>&1
 	
-sudo -i -u ken /home/ken/server.sh >> /var/log/jsidplay2cert.log 2>&1 # <1>
+sudo -i -u ken /home/ken/jsidplay2-server.sh >> /var/log/jsidplay2cert.log 2>&1 # <1>
 ----
 <1> At last our server gets restarted with the renewed certificate,
 please refer to
@@ -226,7 +226,7 @@ encrypted HTTPS connections with the keystore created above.
 
 To start the JSIPlay2 AppServer with HTTPS using the formerly
 created keystore, you can use the following script,
-please type 'vi ~/server.sh'.
+please type 'vi ~/jsidplay2-server.sh'.
 
 [source,subs="attributes+"]
 ----
@@ -253,7 +253,7 @@ of JSIDPlay2 for security reasons!
 Now, grant permission to execute that script:
 [source,subs="attributes+"]
 ----
-sudo chmod 755 ~/server.sh
+sudo chmod 755 ~/jsidplay2-server.sh
 ----
 
 Now, we are finished to launch JSIDPlay2 using HTTP or HTTPS
