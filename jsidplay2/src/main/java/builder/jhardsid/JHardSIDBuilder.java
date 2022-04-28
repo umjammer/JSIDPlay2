@@ -169,7 +169,7 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 				"Go to \"Control Panel / Hardware / Device Manager\" and uninstall previous HardSID driver, and then reboot!");
 		System.err.println("Now install Zadigs USB driver installation from that web-site: https://zadig.akeo.ie/");
 		System.err.println(
-				"Click install for device (6581 8580) and WinUSB. These settings were already proposed by the installer for me.");
+				"Click install for device (658x 8580) and WinUSB, where x=1-3. These settings were already proposed by the installer for me.");
 		System.err.println("You are ready to start :-)");
 	}
 

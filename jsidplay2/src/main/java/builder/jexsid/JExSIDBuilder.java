@@ -103,32 +103,17 @@ public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 	public static void printInstallationHint() {
 		if (OS.get() == OS.LINUX) {
 			printLinuxInstallationHint();
-		} else if (OS.get() == OS.MAC) {
-			printMacInstallationHint();
 		}
 		System.err.println("Maybe you just forgot to plug-in your USB devices?");
 		System.err.println();
 	}
 
 	private static void printLinuxInstallationHint() {
-		System.err
-				.println("Please install FTDI drivers explained in chapter '2 Installing the D2XX driver' from here:");
-		System.err.println(
-				"https://www.ftdichip.com/Support/Documents/AppNotes/AN_220_FTDI_Drivers_Installation_Guide_for_Linux.pdf");
-		System.err.println(
-				"If device still cannot be used, please install a workaround mentioned in chapter '1.1 Overview' :");
+		System.err.println("If device cannot be used, please use this workaround (we grant access to the USB device):");
 		System.err.println("$ sudo vi /etc/udev/rules.d/92-exsid.rules");
 		System.err.println(
 				"ACTION==\"add\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", MODE=\"0666\",  RUN+=\"/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'\"");
 		System.err.println("$ sudo udevadm control --reload-rules && udevadm trigger");
-	}
-
-	private static void printMacInstallationHint() {
-		System.err.println("Please install FTDI drivers explained in chapter '3.3 Installing D2xx Drivers' from here:");
-		System.err.println(
-				"https://ftdichip.com/wp-content/uploads/2020/08/AN_134_FTDI_Drivers_Installation_Guide_for_MAC_OSX-1.pdf");
-		System.err.println(
-				"If device still cannot be used, please install D2XXHelper explained in chapter '5.2 The device does not appear in the /dev directory' and reboot.");
 	}
 
 	@Override
