@@ -71,7 +71,7 @@ public class XuggleVideoBase implements C64Font {
 
 	static {
 		try {
-			InputStream fontStream = XuggleVideoDriver.class.getResourceAsStream(FONT_NAME);
+			InputStream fontStream = XuggleVideoBase.class.getResourceAsStream(FONT_NAME);
 			if (fontStream == null) {
 				throw new IOException("Font not found: " + FONT_NAME);
 			}
