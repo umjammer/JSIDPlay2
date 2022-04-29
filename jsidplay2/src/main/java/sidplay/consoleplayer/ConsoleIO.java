@@ -282,7 +282,7 @@ public class ConsoleIO {
 
 	private void printFileDetails(PrintStream out, final IniConsoleSection console, final SidTune tune) {
 		out.printf("%c %-12s : %37s %c\n", console.getVertical(), BUNDLE.getString("FILE_FORMAT"),
-				tune.getInfo().getClass().getSimpleName(), console.getVertical());
+				tune.getClass().getSimpleName(), console.getVertical());
 		out.printf("%c %-12s : %37s %c\n", console.getVertical(), BUNDLE.getString("FILENAMES"),
 				new File(filename).getName(), console.getVertical());
 	}
