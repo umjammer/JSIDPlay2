@@ -255,7 +255,7 @@ public class ConsoleIO {
 	}
 
 	private void printHeading(PrintStream out, final IniConsoleSection console) {
-		out.printf("%c%52s  %c\n", console.getVertical(), BUNDLE.getString("HEADING"), console.getVertical());
+		out.printf("%c %52s %c\n", console.getVertical(), BUNDLE.getString("HEADING"), console.getVertical());
 	}
 
 	private void printSeparatorLine(PrintStream out, final IniConsoleSection console) {
