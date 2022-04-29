@@ -539,7 +539,7 @@
 								</manifestEntries>
 							</archive>
 							<outputDirectory>${project.build.directory}/standalone</outputDirectory>
-							<finalName>${project.artifactId}_console-${project.version}</finalName>
+							<finalName>${project.artifactId}-console-${project.version}</finalName>
 							<excludes>
 								<exclude>**/*</exclude>
 							</excludes>
@@ -860,7 +860,7 @@
 							<dontWrapJar>true</dontWrapJar>
 							<headerType>console</headerType>
 							<jar>${project.artifactId}-${project.version}.jar</jar>
-							<outfile>${project.build.directory}/standalone/${project.artifactId}_console-${project.version}.exe</outfile>
+							<outfile>${project.build.directory}/standalone/${project.artifactId}-console-${project.version}.exe</outfile>
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
@@ -979,7 +979,7 @@
 								<directory>${project.build.directory}/standalone</directory>
 								<includes>
 									<include>${project.artifactId}-${project.version}.exe</include>
-									<include>${project.artifactId}_console-${project.version}.exe</include>
+									<include>${project.artifactId}-console-${project.version}.exe</include>
 									<include>sidblastertool-${project.version}.exe</include>
 								</includes>
 							</fileset>

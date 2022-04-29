@@ -161,7 +161,7 @@ Note: Whereas *Windows* users get an executable (.EXE) to launch:
 [source,subs="attributes+"]
 ----
 jsidplay2-{version}.exe # <1>
-jsidplay2_console-{version}.exe # <2>
+jsidplay2-console-{version}.exe # <2>
 ----
 <1> Launch User interface version
 <2> Launch Console version
@@ -172,7 +172,7 @@ other operating systems launch JSIDPlay2 using the following command:
 ----
 cd Downloads/jsidplay2-{version}
 java -jar jsidplay2-{version}.jar # <1>
-java -jar jsidplay2_console-{version}.jar # <2>
+java -jar jsidplay2-console-{version}.jar # <2>
 ---- 
 <1> Launch User interface version
 <2> Launch Console version

@@ -75,8 +75,8 @@ How to start JSIDPlay2? That depends on what you want to start.
 Type "${project.name}-${project.version}.exe" (Windows)
 or Type "java -jar ${project.name}-${project.version}.jar" (Linux, Mac OS X)
 - For the console player:
-Type "${project.name}_console-${project.version}.exe" (Windows)
-or Type "java -jar ${project.name}_console-${project.version}.jar" (Linux, Mac OS X)
+Type "${project.name}-console-${project.version}.exe" (Windows)
+or Type "java -jar ${project.name}-console-${project.version}.jar" (Linux, Mac OS X)
 
 10. How compatible is JSIDPlay2?
 JSIDPlay2 is known to be a very accurate C64 emulator.
