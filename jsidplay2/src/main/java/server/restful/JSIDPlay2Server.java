@@ -29,6 +29,8 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11Nio2Protocol;
+import org.apache.tomcat.JarScanFilter;
+import org.apache.tomcat.JarScanType;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
 import org.apache.tomcat.util.descriptor.web.FilterMap;
 import org.apache.tomcat.util.descriptor.web.LoginConfig;
@@ -48,7 +50,6 @@ import jakarta.servlet.Filter;
 import server.restful.common.CleanupPlayerTimerTask;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.NoOpJarScanner;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.DirectoryServlet;
 import server.restful.servlets.DownloadServlet;
@@ -365,7 +366,18 @@ public class JSIDPlay2Server {
 		// roles must be defined before being used in a security constraint, therefore:
 		context.addSecurityRole(ROLE_ADMIN);
 		context.addSecurityRole(ROLE_USER);
-		context.setJarScanner(new NoOpJarScanner());
+		context.getJarScanner().setJarScanFilter(new JarScanFilter() {
+
+			@Override
+			public boolean check(JarScanType jarScanType, String jarName) {
+				return false;
+			}
+
+			@Override
+			public boolean isSkipAll() {
+				return true;
+			}
+		});
 
 		return context;
 	}
