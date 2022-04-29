@@ -1,5 +1,7 @@
 package builder.resid;
 
+import static java.lang.Short.MAX_VALUE;
+import static java.lang.Short.MIN_VALUE;
 import static java.nio.ByteOrder.nativeOrder;
 import static libsidplay.components.pla.PLA.MAX_SIDS;
 
@@ -101,15 +103,13 @@ public class SIDMixer implements Mixer {
 					int dither = triangularDithering();
 
 					if (resamplerL.input(valL >> fastForwardShift)) {
-						short outputL = (short) Math.max(Math.min(resamplerL.output() + dither, Short.MAX_VALUE),
-								Short.MIN_VALUE);
+						short outputL = (short) Math.max(Math.min(resamplerL.output() + dither, MAX_VALUE), MIN_VALUE);
 						buffer.putShort(outputL);
 					}
 					if (resamplerR.input(valR >> fastForwardShift)) {
-						short outputR = (short) Math.max(Math.min(resamplerR.output() + dither, Short.MAX_VALUE),
-								Short.MIN_VALUE);
+						short outputR = (short) Math.max(Math.min(resamplerR.output() + dither, MAX_VALUE), MIN_VALUE);
 						if (!buffer.putShort(outputR).hasRemaining()) {
-							audioProcessors.stream().forEach(processor -> processor.process(buffer));
+							audioProcessors.forEach(processor -> processor.process(buffer));
 							audioDriver.write();
 							((Buffer) buffer).clear();
 						}
