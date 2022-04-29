@@ -23,7 +23,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
-import server.restful.common.CollectionFileComparator;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 
@@ -106,7 +105,15 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			});
 			if (listFiles != null) {
 				List<File> asList = Arrays.asList(listFiles);
-				Collections.sort(asList, new CollectionFileComparator());
+				Collections.sort(asList, (file1, file2) -> {
+					if (file1.isDirectory() && !file2.isDirectory()) {
+						return -1;
+					} else if (!file1.isDirectory() && file2.isDirectory()) {
+						return 1;
+					} else {
+						return file1.getName().compareToIgnoreCase(file2.getName());
+					}
+				});
 				addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/../", null);
 				for (File f : asList) {
 					addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, f), f);

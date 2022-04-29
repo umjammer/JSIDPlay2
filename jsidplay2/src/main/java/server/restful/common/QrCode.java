@@ -19,11 +19,11 @@ public class QrCode {
 
 		BitMatrix bitMatrix = new MultiFormatWriter().encode(data, QR_CODE, width, height);
 		BufferedImage qrImage = new BufferedImage(bitMatrix.getWidth(), bitMatrix.getHeight(), TYPE_BYTE_BINARY);
-		qrImage.setRGB(0, 0, bitMatrix.getWidth(), bitMatrix.getHeight(), toRGB(bitMatrix), 0, bitMatrix.getWidth());
+		qrImage.setRGB(0, 0, bitMatrix.getWidth(), bitMatrix.getHeight(), toARGB(bitMatrix), 0, bitMatrix.getWidth());
 		return qrImage;
 	}
 
-	private static int[] toRGB(BitMatrix matrix) {
+	private static int[] toARGB(BitMatrix matrix) {
 		int[] result = new int[matrix.getWidth() * matrix.getHeight()];
 		int i = 0;
 		for (int x = 0; x < matrix.getWidth(); x++) {
