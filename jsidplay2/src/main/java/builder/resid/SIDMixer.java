@@ -341,7 +341,8 @@ public class SIDMixer implements Mixer {
 	 * If P2/P1 is equal to 1, that is P1 = P2 then: <BR>
 	 * dB = 10log10[1] = log10[1/10]
 	 * 
-	 * @see https://www.electronics-tutorials.ws/filter/decibels.html
+	 * @see <a href=
+	 *      "https://www.electronics-tutorials.ws/filter/decibels.html">https://www.electronics-tutorials.ws/filter/decibels.html</a>
 	 * 
 	 * @param sidNum     SID chip number
 	 * @param volumeInDB volume in DB -6(-6db)..6(+6db)
