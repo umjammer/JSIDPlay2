@@ -330,8 +330,19 @@ public class SIDMixer implements Mixer {
 	}
 
 	/**
-	 * Volume of the SID chip.
+	 * Volume of the SID chip.<BR>
 	 *
+	 * <B>Note:</B> The decibel (dB) value is a ratio used for comparing and
+	 * calculating levels of change in power and is not the power itself. So if we
+	 * have two quantities of power, for example: P1 and P2, the ratio of these two
+	 * values is represented by the equation:<BR>
+	 * 
+	 * dB = 10log10[P2/P1] <BR>
+	 * If P2/P1 is equal to 1, that is P1 = P2 then: <BR>
+	 * dB = 10log10[1] = log10[1/10]
+	 * 
+	 * @see https://www.electronics-tutorials.ws/filter/decibels.html
+	 * 
 	 * @param sidNum     SID chip number
 	 * @param volumeInDB volume in DB -6(-6db)..6(+6db)
 	 */
