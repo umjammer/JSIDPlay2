@@ -43,7 +43,7 @@
 			</fx:define>
 			<HBox AnchorPane.leftAnchor="10" alignment="TOP_LEFT" spacing="10">
 				<ComboBox onAction="#setVideoStandard" fx:id="videoStandardBox" />
-				<ComboBox onAction="#setEngine" fx:id="engineBox" />
+				<ComboBox onAction="#setEngine" fx:id="engineBox" maxWidth="150" />
 				<ComboBox onAction="#setAudio" fx:id="audioBox" maxWidth="150" />
 				<ComboBox onAction="#setDevice" fx:id="devicesBox"
 					maxWidth="150" />
@@ -98,7 +98,7 @@
 						</TypeTextField>
 					</VBox>
 				</TitledPane>
-				<TitledPane text="%HARDSID" expanded="false">
+				<TitledPane text="%HARDSID_SHORT" expanded="false">
 					<VBox>
 						<Label text="%6581" fx:id="hardsid6581Label" />
 						<ComboBox fx:id="hardsid6581Box" onAction="#setSid6581">
@@ -126,7 +126,7 @@
 						</ComboBox>
 					</VBox>
 				</TitledPane>
-				<TitledPane text="%SIDBLASTER" expanded="false">
+				<TitledPane text="%SIDBLASTER_SHORT" expanded="false">
 					<VBox spacing="10">
 						<Label text="%SIDBLASTER_DEVICE_LIST" alignment="CENTER_RIGHT" />
 						<ScrollPane fx:id="sidBlasterScrollPane" maxHeight="400"
