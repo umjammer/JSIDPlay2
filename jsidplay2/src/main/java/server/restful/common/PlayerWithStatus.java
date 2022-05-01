@@ -26,7 +26,7 @@ import sidplay.audio.xuggle.XuggleVideoDriver;
 import sidplay.player.State;
 import ui.common.filefilter.DiskFileFilter;
 
-public final class RTMPPlayerWithStatus {
+public final class PlayerWithStatus {
 
 	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 
@@ -40,9 +40,9 @@ public final class RTMPPlayerWithStatus {
 
 	private LocalDateTime validUntil;
 
-	private int playCounter, counter;
+	private int playCounter, statusScrollCounter;
 
-	public RTMPPlayerWithStatus(Player player, File diskImage, ResourceBundle resourceBundle) {
+	public PlayerWithStatus(Player player, File diskImage, ResourceBundle resourceBundle) {
 		this.player = player;
 		this.diskImage = diskImage;
 		status = new Status(player, resourceBundle);
@@ -148,7 +148,7 @@ public final class RTMPPlayerWithStatus {
 				player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Released") {
 					@Override
 					public void event() throws InterruptedException {
-						player.getC64().setJoystick(number, () -> (byte) 0xff);
+						player.getC64().setJoystick(number, null);
 					}
 				});
 			}
@@ -200,14 +200,14 @@ public final class RTMPPlayerWithStatus {
 							int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
 
 							// scroll forward after some time
-							if (counter++ > 10) {
+							if (statusScrollCounter++ > 10) {
 								if (statusTextOverflow > 0) {
 									xuggleVideoDriver.setStatusTextOffset(statusTextOffset + 8);
 								}
 							}
 							// reset scroll status if scroll has finished
 							if (statusTextOverflow == 0) {
-								counter = 0;
+								statusScrollCounter = 0;
 								xuggleVideoDriver.setStatusTextOffset(0);
 							}
 						});

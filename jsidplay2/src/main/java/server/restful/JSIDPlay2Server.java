@@ -47,7 +47,7 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
 import jakarta.servlet.Filter;
-import server.restful.common.CleanupPlayerTimerTask;
+import server.restful.common.PlayerCleanupTimerTask;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.servlets.ConvertServlet;
@@ -270,7 +270,7 @@ public class JSIDPlay2Server {
 		addSecurityConstraints(context);
 		addServlets(context);
 
-		new Timer().schedule(new CleanupPlayerTimerTask(context.getParent().getLogger()), 0, 1000L);
+		new Timer().schedule(new PlayerCleanupTimerTask(context.getParent().getLogger()), 0, 1000L);
 
 		return tomcat;
 	}
