@@ -174,9 +174,8 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 
 		((Buffer) pictureBuffer).clear();
 		((Buffer) vic.getPixels()).clear();
-		pictureBuffer.put(vic.getPixels());
-		((Buffer) pictureBuffer).position(statusTextY);
-		pictureBuffer.put(statusPixels);
+		pictureBuffer.put(vic.getPixels().array(), 0, statusTextY).put(statusPixels).put(vic.getPixels().array(),
+				pictureBuffer.position(), pictureBuffer.remaining());
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
 		videoPicture.setKeyFrame((frameNo++ % framesPerKeyFrames) == 0);
