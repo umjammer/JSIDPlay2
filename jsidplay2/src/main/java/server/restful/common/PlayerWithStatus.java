@@ -196,19 +196,19 @@ public final class PlayerWithStatus {
 						getXuggleVideoDriver().ifPresent(xuggleVideoDriver -> {
 							xuggleVideoDriver.setStatusText(createStatusText());
 
-							int statusTextOffset = xuggleVideoDriver.getStatusTextOffset();
+							int statusTextX = xuggleVideoDriver.getStatusTextX();
 							int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
 
 							// scroll forward after some time
 							if (statusScrollCounter++ > 10) {
 								if (statusTextOverflow > 0) {
-									xuggleVideoDriver.setStatusTextOffset(statusTextOffset + 8);
+									xuggleVideoDriver.setStatusTextX(statusTextX + 8);
 								}
 							}
 							// reset scroll status if scroll has finished
 							if (statusTextOverflow == 0) {
 								statusScrollCounter = 0;
-								xuggleVideoDriver.setStatusTextOffset(0);
+								xuggleVideoDriver.setStatusTextX(0);
 							}
 						});
 						player.getC64().getEventScheduler().schedule(this,

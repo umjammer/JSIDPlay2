@@ -8,6 +8,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Short.BYTES;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static libsidplay.common.CPUClock.PAL;
+import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_WIDTH;
 
@@ -43,7 +44,6 @@ import libsidplay.common.Event.Phase;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.SamplingRate;
 import libsidplay.components.mos656x.MOS6567;
-import libsidplay.components.mos656x.MOS6569;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.config.IAudioSection;
 import sidplay.audio.AudioConfig;
@@ -89,8 +89,8 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 	private BufferedImage vicImage;
 
 	private IntBuffer pictureBuffer;
-	private int[] statusPixels;
-	private int statusTextY, statusTextOffset, statusTextOverflow;
+	private int[] statusTextPixels;
+	private int statusTextOffset, statusTextX, statusTextOverflow;
 	private long frameNo, framesPerKeyFrames, firstAudioTimeStamp, firstVideoTimeStamp;
 	private double ticksPerMicrosecond;
 
@@ -133,8 +133,8 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 		frameNo = 0;
 		firstAudioTimeStamp = 0;
 		firstVideoTimeStamp = 0;
-		statusTextY = MAX_WIDTH * ((cpuClock == PAL ? MOS6569.BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) + STATUS_TEXT_Y);
-		statusTextOffset = 0;
+		statusTextOffset = MAX_WIDTH * ((cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) + STATUS_TEXT_Y);
+		statusTextX = 0;
 		statusTextOverflow = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
 		framesPerKeyFrames = (int) cpuClock.getScreenRefresh();
@@ -172,9 +172,9 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 	public void accept(VIC vic) {
 		long timeStamp = getVideoTimeStamp();
 
+		pictureBuffer.put(vic.getPixels().array(), 0, statusTextOffset).put(statusTextPixels)
+				.put(vic.getPixels().array(), pictureBuffer.position(), pictureBuffer.remaining());
 		((Buffer) pictureBuffer).clear();
-		pictureBuffer.put(vic.getPixels().array(), 0, statusTextY).put(statusPixels).put(vic.getPixels().array(),
-				pictureBuffer.position(), pictureBuffer.remaining());
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);
 		videoPicture.setKeyFrame((frameNo++ % framesPerKeyFrames) == 0);
@@ -231,23 +231,23 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 		BufferedImage statusImage = new BufferedImage(MAX_WIDTH, c64Font.getSize(), TYPE_INT_ARGB);
 		Graphics2D graphics = statusImage.createGraphics();
 		graphics.setFont(c64Font);
-		graphics.drawString(c64Chars, -statusTextOffset, graphics.getFontMetrics(c64Font).getAscent());
+		graphics.drawString(c64Chars, -statusTextX, graphics.getFontMetrics(c64Font).getAscent());
 		graphics.dispose();
 
-		statusTextOverflow = Math.max(0, c64Font.getSize() * text.length() - statusTextOffset - MAX_WIDTH);
-		statusPixels = ((DataBufferInt) statusImage.getRaster().getDataBuffer()).getData();
+		statusTextOverflow = Math.max(0, c64Font.getSize() * text.length() - statusTextX - MAX_WIDTH);
+		statusTextPixels = ((DataBufferInt) statusImage.getRaster().getDataBuffer()).getData();
 	}
 
 	public int getStatusTextOverflow() {
 		return statusTextOverflow;
 	}
 
-	public int getStatusTextOffset() {
-		return statusTextOffset;
+	public int getStatusTextX() {
+		return statusTextX;
 	}
 
-	public void setStatusTextOffset(int statusTextOffset) {
-		this.statusTextOffset = statusTextOffset;
+	public void setStatusTextX(int statusTextX) {
+		this.statusTextX = statusTextX;
 	}
 
 	private IStreamCoder createVideoCoder(IAudioSection audioSection, CPUClock cpuClock) {
