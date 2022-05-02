@@ -173,7 +173,6 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 		long timeStamp = getVideoTimeStamp();
 
 		((Buffer) pictureBuffer).clear();
-		((Buffer) vic.getPixels()).clear();
 		pictureBuffer.put(vic.getPixels().array(), 0, statusTextY).put(statusPixels).put(vic.getPixels().array(),
 				pictureBuffer.position(), pictureBuffer.remaining());
 
