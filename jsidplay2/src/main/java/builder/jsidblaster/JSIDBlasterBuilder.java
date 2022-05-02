@@ -101,7 +101,7 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 		if (OS.get() == OS.LINUX) {
 			printLinuxInstallationHint();
 		}
-		System.err.println("Or maybe you just forgot to plug-in your USB devices?");
+		System.err.println("Maybe you just forgot to plug-in your USB devices?");
 		System.err.println("Use the magic wand of the SIDBlaster combobox to configure your SIDBlaster devices!");
 		System.err.println();
 	}
