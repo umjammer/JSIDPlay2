@@ -38,7 +38,7 @@ public class WhatsSidEvent extends Event {
 		super("WhatsSID?");
 		this.player = player;
 		this.whatsSidSupport = whatsSidSupport;
-		init();
+		whatsSidSupport.reset();
 	}
 
 	@Override
@@ -75,11 +75,10 @@ public class WhatsSidEvent extends Event {
 		this.abort = abort;
 	}
 
-	private void init() {
+	public void start() {
 		IWhatsSidSection whatsSidSection = player.getConfig().getWhatsSidSection();
 		int matchStartTimeInSeconds = whatsSidSection.getMatchStartTime();
 
-		whatsSidSupport.reset();
 		Double songLength = player.getSidDatabaseInfo(db -> db.getSongLength(player.getTune()), 0.);
 		if (songLength > 0 && songLength < matchStartTimeInSeconds) {
 			// song too short? start at 90%

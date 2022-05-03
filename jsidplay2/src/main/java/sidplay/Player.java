@@ -333,18 +333,14 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			@Override
 			public void start() {
 				c64.insertSIDChips(requiredSIDs, sidLocator);
-				configureMixer(Mixer::start);
-				if (getAudioDriver() instanceof VideoDriver) {
-					addVideoDriver((VideoDriver) getAudioDriver());
+				c64.configureVICs(vic -> vic.setVideoDriver(Player.this));
+				c64.setSIDListener(Player.this);
+				c64.setPlayRoutineObserver(Player.this);
+				if (sidBuilder instanceof Mixer) {
+					((Mixer) sidBuilder).start();
 				}
-				if (getAudioDriver() instanceof SIDListener) {
-					addSidListener((SIDListener) getAudioDriver());
-				}
-				if (getAudioDriver() instanceof IMOS6510Extension) {
-					addMOS6510Extension((IMOS6510Extension) getAudioDriver());
-				}
-				if (sidBuilder instanceof SIDMixer) {
-					whatsSidEvent = new WhatsSidEvent(Player.this, ((SIDMixer) sidBuilder).getWhatsSidSupport());
+				if (whatsSidEvent != null) {
+					whatsSidEvent.start();
 				}
 			}
 
@@ -789,15 +785,25 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 
 		reset();
 
+		if (getAudioDriver() instanceof VideoDriver) {
+			addVideoDriver((VideoDriver) getAudioDriver());
+		}
+		if (getAudioDriver() instanceof SIDListener) {
+			addSidListener((SIDListener) getAudioDriver());
+		}
+		if (getAudioDriver() instanceof IMOS6510Extension) {
+			addMOS6510Extension((IMOS6510Extension) getAudioDriver());
+		}
 		// open audio driver
 		getAudioDriver().open(audioSection, getRecordingFilename(), c64.getClock(), c64.getEventScheduler());
 
 		sidBuilder = createSIDBuilder(c64.getClock());
-
-		configureMixer(mixer -> mixer.setAudioDriver(getAudioDriver()));
-		configureVICs(vic -> vic.setVideoDriver(this));
-		c64.setSIDListener(this);
-		c64.setPlayRoutineObserver(this);
+		if (sidBuilder instanceof Mixer) {
+			((Mixer) sidBuilder).setAudioDriver(getAudioDriver());
+		}
+		if (sidBuilder instanceof SIDMixer) {
+			whatsSidEvent = new WhatsSidEvent(Player.this, ((SIDMixer) sidBuilder).getWhatsSidSupport());
+		}
 
 		fastForwardVICFrames = 0;
 		bufferSize = config.getAudioSection().getBufferSize();
