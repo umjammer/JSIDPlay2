@@ -509,9 +509,13 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	@Override
 	protected final void reset() {
+		final IEmulationSection emulationSection = config.getEmulationSection();
+
 		super.reset();
 		timer.reset();
-		if (config.getEmulationSection().getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
+		emulationSection.getOverrideSection().reset();
+
+		if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
 			sendReset(config, tune);
 		}
 		c64.getEventScheduler().schedule(new Event("Auto-start") {
@@ -521,10 +525,10 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 					// for tunes: Install player into RAM
 					Integer driverAddress = tune.placeProgramInMemory(c64.getRAM());
 					if (driverAddress != null) {
-						if (config.getEmulationSection().getUltimate64Mode() != Ultimate64Mode.OFF) {
+						if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF) {
 							sendRamAndSys(config, tune, c64.getRAM(), driverAddress);
 						}
-						if (config.getEmulationSection().getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
+						if (emulationSection.getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
 							// Set play address to feedback call frames counter.
 							c64.setPlayAddr(playAddrHook.apply(tune.getInfo().getPlayAddr()));
 							// Start SID player driver
@@ -533,7 +537,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 					} else {
 						// No player: Start basic program or assembler code
 						final int loadAddr = tune.getInfo().getLoadAddr();
-						if (config.getEmulationSection().getUltimate64Mode() != Ultimate64Mode.OFF) {
+						if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF) {
 							if (loadAddr == 0x0801) {
 								sendRamAndRun(config, tune, c64.getRAM());
 							} else {
@@ -549,10 +553,10 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 						datasette.control(Control.START);
 					}
 					// Enter basic command
-					if (config.getEmulationSection().getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
+					if (emulationSection.getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
 						typeInCommand(command);
 					}
-					if (config.getEmulationSection().getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
+					if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
 						sendWait(config, 300);
 						sendCommand(config, command);
 					}
@@ -770,8 +774,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		final IAudioSection audioSection = config.getAudioSection();
-
-		emulationSection.getOverrideSection().reset();
 
 		playList = PlayList.getInstance(config, tune);
 		timer.setStart(sidplay2Section.getStartTime());
