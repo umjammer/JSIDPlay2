@@ -325,8 +325,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		this.timer = new Timer(this) {
 
 			/**
-			 * Start time reached? Insert SID chips, connect audio/video driver and start
-			 * tune recognition.
+			 * Start time reached?
 			 * 
 			 * @see sidplay.player.Timer#start()
 			 */
