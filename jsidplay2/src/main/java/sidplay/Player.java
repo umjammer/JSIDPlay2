@@ -766,8 +766,13 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		fastForwardVICFrames = 0;
 		playList = PlayList.getInstance(config, tune);
 		timer.setStart(sidplay2Section.getStartTime());
+		stateProperty.addListener(pauseListener);
 
 		setClock(CPUClock.getCPUClock(emulationSection, tune));
+
+		verifyConfiguration(sidplay2Section);
+
+		reset();
 
 		// Audio configuration, if audio driver has not been set by setAudioDriver()!
 		if (getAudio() != null) {
@@ -782,18 +787,15 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		if (getAudioDriver() instanceof IMOS6510Extension) {
 			addMOS6510Extension((IMOS6510Extension) getAudioDriver());
 		}
-		verifyConfiguration(sidplay2Section);
-		reset();
-
 		getAudioDriver().open(audioSection, getRecordingFilename(), c64.getClock(), c64.getEventScheduler());
 
 		sidBuilder = createSIDBuilder(c64.getClock());
+
 		if (sidBuilder instanceof SIDMixer) {
 			SIDMixer sidMixer = (SIDMixer) sidBuilder;
 			sidMixer.setAudioDriver(getAudioDriver());
 			whatsSidEvent = new WhatsSidEvent(Player.this, sidMixer.getWhatsSidSupport());
 		}
-		stateProperty.addListener(pauseListener);
 	}
 
 	/**
