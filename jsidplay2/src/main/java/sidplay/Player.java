@@ -949,17 +949,22 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 				removeMOS6510Extension((IMOS6510Extension) getAudioDriver());
 			}
 			// save still unwritten sound data
-			if ((getAudioDriver().isRecording() || stateProperty.get() != QUIT) && getAudioDriver().buffer() != null) {
+			if (getAudioDriver() != null && getAudioDriver().buffer() != null
+					&& (getAudioDriver().isRecording() || stateProperty.get() != QUIT)) {
 				getAudioDriver().write();
 			}
-			sidBuilder.destroy();
+			if (sidBuilder != null) {
+				sidBuilder.destroy();
+			}
 		} catch (Throwable e) {
 			// ignore exceptions near close
 		} finally {
 			if (whatsSidEvent != null) {
 				whatsSidEvent.setAbort(true);
 			}
-			getAudioDriver().close();
+			if (getAudioDriver() != null) {
+				getAudioDriver().close();
+			}
 		}
 	}
 
