@@ -290,11 +290,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	private int fastForwardVICFrames;
 
 	/**
-	 * Emulation buffer size.
-	 */
-	private int bufferSize;
-
-	/**
 	 * WhatsSID?
 	 */
 	private IFingerprintMatcher fingerPrintMatcher;
@@ -335,9 +330,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 				c64.configureVICs(vic -> vic.setVideoDriver(Player.this));
 				c64.setSIDListener(Player.this);
 				c64.setPlayRoutineObserver(Player.this);
-				if (sidBuilder instanceof Mixer) {
-					((Mixer) sidBuilder).start();
-				}
+				configureMixer(Mixer::start);
 				if (whatsSidEvent != null) {
 					whatsSidEvent.start();
 				}
@@ -757,7 +750,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	};
 
 	/**
-	 * Open player, that means basically: Reset C64 and start playing the tune.
+	 * Open player.
 	 *
 	 * <B>Note:</B> Audio driver different to {@link Audio} members are on hold!
 	 *
@@ -770,20 +763,16 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		final IAudioSection audioSection = config.getAudioSection();
 
+		fastForwardVICFrames = 0;
 		playList = PlayList.getInstance(config, tune);
 		timer.setStart(sidplay2Section.getStartTime());
 
-		// PAL/NTSC
 		setClock(CPUClock.getCPUClock(emulationSection, tune));
 
 		// Audio configuration, if audio driver has not been set by setAudioDriver()!
 		if (getAudio() != null) {
 			setAudioAndDriver(audioSection.getAudio(), audioSection.getAudio().getAudioDriver(audioSection, tune));
 		}
-		verifyConfiguration(sidplay2Section);
-
-		reset();
-
 		if (getAudioDriver() instanceof VideoDriver) {
 			addVideoDriver((VideoDriver) getAudioDriver());
 		}
@@ -793,18 +782,17 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		if (getAudioDriver() instanceof IMOS6510Extension) {
 			addMOS6510Extension((IMOS6510Extension) getAudioDriver());
 		}
-		// open audio driver
+		verifyConfiguration(sidplay2Section);
+		reset();
+
 		getAudioDriver().open(audioSection, getRecordingFilename(), c64.getClock(), c64.getEventScheduler());
 
 		sidBuilder = createSIDBuilder(c64.getClock());
 		if (sidBuilder instanceof SIDMixer) {
-			((SIDMixer) sidBuilder).setAudioDriver(getAudioDriver());
-			whatsSidEvent = new WhatsSidEvent(Player.this, ((SIDMixer) sidBuilder).getWhatsSidSupport());
+			SIDMixer sidMixer = (SIDMixer) sidBuilder;
+			sidMixer.setAudioDriver(getAudioDriver());
+			whatsSidEvent = new WhatsSidEvent(Player.this, sidMixer.getWhatsSidSupport());
 		}
-
-		fastForwardVICFrames = 0;
-		bufferSize = config.getAudioSection().getBufferSize();
-
 		stateProperty.addListener(pauseListener);
 	}
 
@@ -928,6 +916,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * @throws InterruptedException audio production interrupted
 	 */
 	private boolean play() throws InterruptedException {
+		int bufferSize = config.getAudioSection().getBufferSize();
 		for (int i = 0; i < bufferSize; i++) {
 			if (stateProperty.get() == PLAY) {
 				c64.getEventScheduler().clock();
