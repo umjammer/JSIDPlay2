@@ -56,7 +56,7 @@
 					<ToggleButton focusTraversable="false" onAction="#pauseContinue"
 						fx:id="recordingPauseContinue">
 						<tooltip>
-							<Tooltip text="%PAUSE" />
+							<Tooltip text="%PLAY_PAUSE" />
 						</tooltip>
 						<graphic>
 							<ImageView>
