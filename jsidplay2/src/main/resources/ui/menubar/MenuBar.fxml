@@ -304,19 +304,6 @@
 				</padding>
 				<Label fx:id="tracks" />
 			</HBox>
-			<Button focusTraversable="false" onAction="#previousSong"
-				fx:id="previous2">
-				<tooltip>
-					<Tooltip text="%PREVIOUS2" fx:id="previous2ToolTip" />
-				</tooltip>
-				<graphic>
-					<ImageView>
-						<image>
-							<Image url="@/ui/icons/playback_prev.png" />
-						</image>
-					</ImageView>
-				</graphic>
-			</Button>
 			<ToggleButton focusTraversable="false" onAction="#pauseContinue"
 				selected="true" fx:id="pauseContinue2">
 				<tooltip>
@@ -343,18 +330,6 @@
 					</ImageView>
 				</graphic>
 			</ToggleButton>
-			<Button focusTraversable="false" onAction="#nextSong" fx:id="next2">
-				<tooltip>
-					<Tooltip text="%NEXT2" fx:id="next2ToolTip" />
-				</tooltip>
-				<graphic>
-					<ImageView>
-						<image>
-							<Image url="@/ui/icons/playback_next.png" />
-						</image>
-					</ImageView>
-				</graphic>
-			</Button>
 			<Button focusTraversable="false" onAction="#nextFavorite"
 				fx:id="nextFavorite">
 				<tooltip>
@@ -376,6 +351,31 @@
 					<ImageView>
 						<image>
 							<Image url="@/ui/icons/playback_stop.png" />
+						</image>
+					</ImageView>
+				</graphic>
+			</Button>
+			<Button focusTraversable="false" onAction="#previousSong"
+				fx:id="previous2">
+				<tooltip>
+					<Tooltip text="%PREVIOUS2" fx:id="previous2ToolTip" />
+				</tooltip>
+				<graphic>
+					<ImageView>
+						<image>
+							<Image url="@/ui/icons/playback_prev.png" />
+						</image>
+					</ImageView>
+				</graphic>
+			</Button>
+			<Button focusTraversable="false" onAction="#nextSong" fx:id="next2">
+				<tooltip>
+					<Tooltip text="%NEXT2" fx:id="next2ToolTip" />
+				</tooltip>
+				<graphic>
+					<ImageView>
+						<image>
+							<Image url="@/ui/icons/playback_next.png" />
 						</image>
 					</ImageView>
 				</graphic>
