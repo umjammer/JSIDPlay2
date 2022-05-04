@@ -932,8 +932,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	}
 
 	/**
-	 * Close player, that means basically plugging out SID chips and close audio
-	 * driver.
+	 * Close player.
 	 */
 	private void close() {
 		try {
