@@ -1,7 +1,5 @@
 package libsidplay.common;
 
-import sidplay.audio.AudioDriver;
-
 /**
  * Interface for SID mixer controls. A SID builder that implements this
  * interface gets controlled by the player.
@@ -15,11 +13,6 @@ public interface Mixer {
 	 * Maximum fast forward factor (1 &lt;&lt; 5 = 32x).
 	 */
 	int MAX_FAST_FORWARD = 5;
-
-	/**
-	 * Set audio driver for mixing
-	 */
-	void setAudioDriver(AudioDriver audioDriver);
 
 	/**
 	 * Timer start reached, audio output should be produced.

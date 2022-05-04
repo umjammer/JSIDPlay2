@@ -30,7 +30,6 @@ import libsidplay.config.IAudioSection;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
-import sidplay.audio.AudioDriver;
 
 /**
  * 
@@ -115,11 +114,6 @@ public class NetSIDDevBuilder implements SIDBuilder, Mixer {
 			setDelay(sidNum, audioSection.getDelay(sidNum));
 		}
 		client.softFlush();
-	}
-
-	@Override
-	public void setAudioDriver(AudioDriver audioDriver) {
-		// unused, since mixing is done on the server side
 	}
 
 	@Override

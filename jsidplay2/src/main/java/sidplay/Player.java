@@ -797,10 +797,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		getAudioDriver().open(audioSection, getRecordingFilename(), c64.getClock(), c64.getEventScheduler());
 
 		sidBuilder = createSIDBuilder(c64.getClock());
-		if (sidBuilder instanceof Mixer) {
-			((Mixer) sidBuilder).setAudioDriver(getAudioDriver());
-		}
 		if (sidBuilder instanceof SIDMixer) {
+			((SIDMixer) sidBuilder).setAudioDriver(getAudioDriver());
 			whatsSidEvent = new WhatsSidEvent(Player.this, ((SIDMixer) sidBuilder).getWhatsSidSupport());
 		}
 

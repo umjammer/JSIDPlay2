@@ -255,7 +255,9 @@ public class SIDMixer implements Mixer {
 		normalSpeed();
 	}
 
-	@Override
+	/**
+	 * Set audio driver for mixing
+	 */
 	public void setAudioDriver(AudioDriver audioDriver) {
 		IAudioSection audioSection = config.getAudioSection();
 

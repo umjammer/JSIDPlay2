@@ -21,7 +21,6 @@ import libsidplay.config.IAudioSection;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
-import sidplay.audio.AudioDriver;
 
 /**
  *
@@ -208,10 +207,6 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 	@Override
 	public ChipModel getDeviceChipModel(int sidNum) {
 		return sidNum < sids.size() ? sids.get(sidNum).getChipModel() : null;
-	}
-
-	@Override
-	public void setAudioDriver(AudioDriver audioDriver) {
 	}
 
 	@Override
