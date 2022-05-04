@@ -154,6 +154,7 @@ public class MenuBar extends C64VBox implements UIPart {
 			Platform.runLater(() -> {
 				nextFavoriteDisabledState.set(sidTune == RESET || event.getNewValue() == State.QUIT);
 				if (event.getNewValue() == State.START) {
+					pauseContinue2.setSelected(true);
 					setCurrentTrack(sidTune);
 					updatePlayerButtons(util.getPlayer().getPlayList());
 				} else if (event.getNewValue() == State.QUIT || event.getNewValue() == State.END) {
@@ -444,7 +445,8 @@ public class MenuBar extends C64VBox implements UIPart {
 		ctx.scheduleThreadSafe(new Event("Timer End To Play Next Favorite!") {
 			@Override
 			public void event() {
-				if (util.getPlayer().stateProperty().get() == State.PLAY) {
+				if (util.getPlayer().stateProperty().get() == State.PLAY
+						|| util.getPlayer().stateProperty().get() == State.PAUSE) {
 					util.getPlayer().getTimer().end();
 				}
 			}
