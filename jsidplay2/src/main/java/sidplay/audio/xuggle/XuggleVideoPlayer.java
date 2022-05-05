@@ -176,7 +176,7 @@ public abstract class XuggleVideoPlayer extends XuggleVideoBase implements Runna
 			videoInfo.append(format("duration: %sus; ", videoStream.getDuration()));
 			videoInfo.append(format("timebase: %d/%d; ", videoStream.getTimeBase().getNumerator(),
 					videoStream.getTimeBase().getDenominator()));
-			videoInfo.append(format("coder timebase: %d/%d; ", videoCoder.getTimeBase().getNumerator(),
+			videoInfo.append(format("video timebase: %d/%d; ", videoCoder.getTimeBase().getNumerator(),
 					videoCoder.getTimeBase().getDenominator()));
 			videoInfo.append(format("frame rate: %f; ", videoStream.getFrameRate().getDouble()));
 			videoInfo.append(format("frames: %f; ",
@@ -190,7 +190,7 @@ public abstract class XuggleVideoPlayer extends XuggleVideoBase implements Runna
 			audioInfo.append(format("type: %s; ", audioCoder.getCodecType()));
 			audioInfo.append(format("codec: %s; ", audioCoder.getCodecID()));
 			audioInfo.append(format("duration: %sus; ", audioStream.getDuration()));
-			audioInfo.append(format("timebase: %d/%d; ", audioStream.getTimeBase().getNumerator(),
+			audioInfo.append(format("audio timebase: %d/%d; ", audioStream.getTimeBase().getNumerator(),
 					audioStream.getTimeBase().getDenominator()));
 			audioInfo.append(format("coder timebase: %d/%d; ", audioCoder.getTimeBase().getNumerator(),
 					audioCoder.getTimeBase().getDenominator()));

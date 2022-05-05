@@ -73,8 +73,8 @@ public abstract class XuggleAudioDriver implements AudioDriver {
 	public void close() {
 		if (writer != null && writer.isOpen()) {
 			writer.close();
-			writer = null;
 		}
+		writer = null;
 	}
 
 	@Override
