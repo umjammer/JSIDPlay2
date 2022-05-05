@@ -76,9 +76,6 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 
 	public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("sidplay.audio.SIDRegDriver");
 
-	/**
-	 * Print stream to write the encoded MP3 to.
-	 */
 	protected OutputStream out;
 	protected boolean small;
 

@@ -321,4 +321,51 @@ public class SidDumpOutput {
 	public void setV(String value) {
 		v = value;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("| ");
+		builder.append(getTime());
+		builder.append(" | ");
+		builder.append(getFreq(0));
+		builder.append(" ");
+		builder.append(getNote(0));
+		builder.append(" ");
+		builder.append(getWf(0));
+		builder.append(" ");
+		builder.append(getAdsr(0));
+		builder.append(" ");
+		builder.append(getPul(0));
+		builder.append(" | ");
+		builder.append(getFreq(1));
+		builder.append(" ");
+		builder.append(getNote(1));
+		builder.append(" ");
+		builder.append(getWf(1));
+		builder.append(" ");
+		builder.append(getAdsr(1));
+		builder.append(" ");
+		builder.append(getPul(1));
+		builder.append(" | ");
+		builder.append(getFreq(2));
+		builder.append(" ");
+		builder.append(getNote(2));
+		builder.append(" ");
+		builder.append(getWf(2));
+		builder.append(" ");
+		builder.append(getAdsr(2));
+		builder.append(" ");
+		builder.append(getPul(2));
+		builder.append(" | ");
+		builder.append(getFcut());
+		builder.append(" ");
+		builder.append(getRc());
+		builder.append(" ");
+		builder.append(getTyp());
+		builder.append(" ");
+		builder.append(getV());
+		builder.append(" |\n");
+		return builder.toString();
+	}
 }

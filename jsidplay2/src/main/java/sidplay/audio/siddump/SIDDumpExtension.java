@@ -441,4 +441,14 @@ public abstract class SIDDumpExtension implements SIDListener, IMOS6510Extension
 
 	public abstract void add(final SidDumpOutput output) throws IOException;
 
+	public String toHeaderString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(String.format("Middle C frequency is $%04X\n", getMiddleCFreq()));
+		builder.append("\n");
+		builder.append(String.format(
+				"| Frame | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | FCut RC Typ V |\n"));
+		builder.append(String.format(
+				"+-------+---------------------------+---------------------------+---------------------------+---------------+\n"));
+		return builder.toString();
+	}
 }

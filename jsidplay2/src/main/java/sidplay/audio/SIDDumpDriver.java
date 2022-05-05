@@ -72,9 +72,6 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 
 	}
 
-	/**
-	 * Print stream to write the encoded MP3 to.
-	 */
 	protected OutputStream out;
 
 	private ByteBuffer sampleBuffer;
@@ -89,10 +86,15 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 
 		out = getOut(recordingFilename);
 
-		writeHeader();
+		out.write(toHeaderString().getBytes(StandardCharsets.ISO_8859_1));
 
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
+	}
+
+	@Override
+	public void add(SidDumpOutput output) throws IOException {
+		out.write(output.toString().getBytes(StandardCharsets.ISO_8859_1));
 	}
 
 	@Override
@@ -121,64 +123,6 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 	@Override
 	public String getExtension() {
 		return ".txt";
-	}
-
-	@Override
-	public void add(SidDumpOutput putput) throws IOException {
-		StringBuilder builder = new StringBuilder();
-		builder.append("| ");
-		builder.append(putput.getTime());
-		builder.append(" | ");
-		builder.append(putput.getFreq(0));
-		builder.append(" ");
-		builder.append(putput.getNote(0));
-		builder.append(" ");
-		builder.append(putput.getWf(0));
-		builder.append(" ");
-		builder.append(putput.getAdsr(0));
-		builder.append(" ");
-		builder.append(putput.getPul(0));
-		builder.append(" | ");
-		builder.append(putput.getFreq(1));
-		builder.append(" ");
-		builder.append(putput.getNote(1));
-		builder.append(" ");
-		builder.append(putput.getWf(1));
-		builder.append(" ");
-		builder.append(putput.getAdsr(1));
-		builder.append(" ");
-		builder.append(putput.getPul(1));
-		builder.append(" | ");
-		builder.append(putput.getFreq(2));
-		builder.append(" ");
-		builder.append(putput.getNote(2));
-		builder.append(" ");
-		builder.append(putput.getWf(2));
-		builder.append(" ");
-		builder.append(putput.getAdsr(2));
-		builder.append(" ");
-		builder.append(putput.getPul(2));
-		builder.append(" | ");
-		builder.append(putput.getFcut());
-		builder.append(" ");
-		builder.append(putput.getRc());
-		builder.append(" ");
-		builder.append(putput.getTyp());
-		builder.append(" ");
-		builder.append(putput.getV());
-		builder.append(" |\n");
-		out.write(builder.toString().getBytes(StandardCharsets.ISO_8859_1));
-	}
-
-	private void writeHeader() throws IOException {
-		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("Middle C frequency is $%04X\n", getMiddleCFreq()));
-		builder.append("\n");
-		builder.append(String.format(
-				"| Frame | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | Freq Note/Abs WF ADSR Pul | FCut RC Typ V |\n"));
-		builder.append(String.format(
-				"+-------+---------------------------+---------------------------+---------------------------+---------------+\n"));
-		out.write(builder.toString().getBytes(StandardCharsets.ISO_8859_1));
 	}
 
 	protected abstract OutputStream getOut(String recordingFilename) throws IOException;
