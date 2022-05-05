@@ -106,16 +106,19 @@ Now, using ACID64 you are able to switch between the real SID chip playback and 
 
 ++++
   <TABLE>
-  <TR>
-    <TD>
-		<OBJECT type="text/html" data="https://www.openhub.net/p/79813/widgets/project_partner_badge" width="245" height="50" style="overflow:hidden; width: 245px; height: 50px">Partner Badge</OBJECT>
-	</TD>
-	</TR>
     <TR>
-    <TD>
-		<OBJECT type="text/html" data="https://www.openhub.net/p/79813/widgets/project_languages" width="350" height="210" style="overflow:hidden; width: 350px; height: 210px" >Project Languages</OBJECT>
-	</TD>
-	</TR>
+      <TD>
+        <script type='text/javascript' src='https://www.openhub.net/p/jsidplay2/widgets/project_partner_badge?format=js'></script>
+      </TD>
+    </TR>
+    <TR>
+      <TD>
+        <script type='text/javascript' src='https://www.openhub.net/p/jsidplay2/widgets/project_factoids_stats?format=js'></script>
+      </TD>
+      <TD>
+        <script type='text/javascript' src='https://www.openhub.net/p/jsidplay2/widgets/project_languages?format=js'></script>
+      </TD>
+    </TR>
   </TABLE>
 ++++
 
