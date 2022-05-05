@@ -1,9 +1,14 @@
 package ui.webview;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -102,12 +107,21 @@ public class WebView extends C64VBox implements UIPart {
 							try {
 								isDownloading = false;
 								Platform.runLater(() -> webView.setCursor(Cursor.DEFAULT));
-								if (downloadedFile != null && convenience.autostart(downloadedFile,
-										Convenience.LEXICALLY_FIRST_MEDIA, null)) {
-									downloadedFile.deleteOnExit();
+								if (downloadedFile != null) {
+
+									File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(),
+											UUID.randomUUID().toString());
+									File targetFile = new File(targetDir, downloadedFile.getName());
+									targetDir.mkdirs();
+									Files.move(Paths.get(downloadedFile.getAbsolutePath()),
+											Paths.get(targetFile.getAbsolutePath()), REPLACE_EXISTING);
+
+									convenience.autostart(targetFile, Convenience.LEXICALLY_FIRST_MEDIA, null);
+									targetFile.deleteOnExit();
+									targetDir.deleteOnExit();
+									targetFile.delete();
+									targetDir.delete();
 									Platform.runLater(() -> util.setPlayingTab(WebView.this));
-								} else if (downloadedFile != null) {
-									downloadedFile.delete();
 								}
 							} catch (IOException | SidTuneError e) {
 								// ignore
