@@ -128,27 +128,6 @@ public class SIDBlasterTool {
 
 				}
 				break;
-
-			case RUN_ON_WINDOWS:
-				throw new RuntimeException("No longer supported!");
-//				if (OS.get() != OS.WINDOWS) {
-//					System.out.println(RESOURCE_BUNDLE.getString("MUST_BE_RUN_ON_WINDOWS"));
-//					exit(1);
-//				}
-//				System.out.printf(RESOURCE_BUNDLE.getString("RUN_ON_WINDOWS"), deviceId);
-//				switch (proceed()) {
-//				case 'y':
-//				case 'Y':
-//					System.out.printf("RC=%d\n", setSidType(deviceId, getSidType(deviceId)));
-//					System.out.println(RESOURCE_BUNDLE.getString("DONE"));
-//					break;
-//
-//				default:
-//					System.out.println(RESOURCE_BUNDLE.getString("ABORTED"));
-//					break;
-//
-//				}
-//				break;
 			}
 		} finally {
 			uninitialize();
