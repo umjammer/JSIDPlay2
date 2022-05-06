@@ -112,15 +112,13 @@ public class WebView extends C64VBox implements UIPart {
 									File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(),
 											UUID.randomUUID().toString());
 									File targetFile = new File(targetDir, downloadedFile.getName());
+									targetDir.deleteOnExit();
+									targetFile.deleteOnExit();
 									targetDir.mkdirs();
 									Files.move(Paths.get(downloadedFile.getAbsolutePath()),
 											Paths.get(targetFile.getAbsolutePath()), REPLACE_EXISTING);
 
 									convenience.autostart(targetFile, Convenience.LEXICALLY_FIRST_MEDIA, null);
-									targetFile.deleteOnExit();
-									targetDir.deleteOnExit();
-									targetFile.delete();
-									targetDir.delete();
 									Platform.runLater(() -> util.setPlayingTab(WebView.this));
 								}
 							} catch (IOException | SidTuneError e) {
