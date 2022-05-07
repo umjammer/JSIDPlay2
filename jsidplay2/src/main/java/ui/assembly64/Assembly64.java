@@ -1,6 +1,7 @@
 package ui.assembly64;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.stream.IntStream.concat;
 import static java.util.stream.IntStream.of;
 import static java.util.stream.IntStream.rangeClosed;
@@ -27,6 +28,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
@@ -39,6 +42,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -802,7 +806,17 @@ public class Assembly64 extends C64VBox implements UIPart {
 			return;
 		}
 		try {
-			contentEntryFile = requestContentEntry(contentEntry);
+			File requestContentEntry = requestContentEntry(contentEntry);
+
+			File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
+			File targetFile = new File(targetDir, requestContentEntry.getName());
+			targetDir.deleteOnExit();
+			targetFile.deleteOnExit();
+			targetDir.mkdirs();
+			Files.move(Paths.get(requestContentEntry.getAbsolutePath()), Paths.get(targetFile.getAbsolutePath()),
+					REPLACE_EXISTING);
+
+			contentEntryFile = targetFile;
 		} catch (IOException e) {
 			System.err.println(String.format("Cannot DOWNLOAD file '%s'.", contentEntry.getId()));
 		}
