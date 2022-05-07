@@ -81,6 +81,7 @@ import ui.entities.config.PrinterSection;
 import ui.entities.config.SidPlay2Section;
 import ui.entities.config.ViewEntity;
 import ui.favorites.Favorites;
+import ui.favorites.PlaybackType;
 import ui.gamebase.GameBase;
 import ui.joysticksettings.JoystickSettings;
 import ui.musiccollection.MusicCollectionType;
@@ -150,9 +151,11 @@ public class MenuBar extends C64VBox implements UIPart {
 	private class StateChangeListener implements PropertyChangeListener {
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
+			SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
 			SidTune sidTune = util.getPlayer().getTune();
 			Platform.runLater(() -> {
-				nextFavoriteDisabledState.set(sidTune == RESET || event.getNewValue() == State.QUIT);
+				nextFavoriteDisabledState.set(sidTune == RESET || event.getNewValue() == State.QUIT
+						|| sidplay2Section.getPlaybackType() == PlaybackType.PLAYBACK_OFF);
 				if (event.getNewValue() == State.START) {
 					pauseContinue2.setSelected(true);
 					setCurrentTrack(sidTune);
