@@ -47,7 +47,6 @@ public class WhatsSidSettings extends C64Window {
 	@FXML
 	@Override
 	protected void initialize() {
-		EmulationSection emulationSection = util.getConfig().getEmulationSection();
 		WhatsSidSection whatsSidSection = util.getConfig().getWhatsSidSection();
 
 		enable.selectedProperty().bindBidirectional(whatsSidSection.enableProperty());
@@ -69,8 +68,7 @@ public class WhatsSidSettings extends C64Window {
 		bindBidirectional(minimumRelativeConfidence.textProperty(), whatsSidSection.minimumRelativeConfidenceProperty(),
 				new NumberStringConverter());
 		detectWhatsSidChipModel.selectedProperty().bindBidirectional(whatsSidSection.detectChipModelProperty());
-		detectWhatsSidChipModel.selectedProperty()
-				.addListener((s, o, n) -> emulationSection.getOverrideSection().reset());
+		detectWhatsSidChipModel.selectedProperty().addListener((s, o, n) -> resetChipModel());
 	}
 
 	@FXML
@@ -97,6 +95,13 @@ public class WhatsSidSettings extends C64Window {
 		String password = whatsSidSection.getPassword();
 		int connectionTimeout = whatsSidSection.getConnectionTimeout();
 		util.getPlayer().setFingerPrintMatcher(new FingerprintJsonClient(url, username, password, connectionTimeout));
+	}
+
+	private void resetChipModel() {
+		EmulationSection emulationSection = util.getConfig().getEmulationSection();
+
+		emulationSection.getOverrideSection().reset();
+		util.getPlayer().updateSIDChipConfiguration();
 	}
 
 }
