@@ -13,10 +13,8 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -41,18 +39,11 @@ public class InternetUtil {
 				}
 
 			} };
-			SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, trustAllCerts, new java.security.SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-			// Create all-trusting host name verifier
-			HostnameVerifier allHostsValid = new HostnameVerifier() {
-				@Override
-				public boolean verify(String hostname, SSLSession session) {
-					return true;
-				}
-			};
+			SSLContext sslContext = SSLContext.getInstance("SSL");
+			sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 			// Install the all-trusting host verifier
-			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+			HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
 			throw new ExceptionInInitializerError(e);
 		}
