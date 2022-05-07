@@ -781,7 +781,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 							downloadedFile.delete();
 						}
 						downloadStart(url, hvscVersion + 1);
-					} else {
+					} else if (downloadedFile != null) {
 						downloadedFile.deleteOnExit();
 						Platform.runLater(() -> {
 							Configuration config = util.getConfig();
