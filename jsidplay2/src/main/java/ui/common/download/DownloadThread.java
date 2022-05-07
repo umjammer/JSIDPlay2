@@ -201,6 +201,7 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 				}
 				file.delete();
 			} catch (IOException e) {
+				System.err.println(e.getMessage());
 				if (retry) {
 					System.err.println(String.format("Download failed for %s, next try!", decoded));
 				} else {
