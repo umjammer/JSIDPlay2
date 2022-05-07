@@ -775,23 +775,23 @@ public class MusicCollection extends C64VBox implements UIPart {
 
 				@Override
 				public void downloaded(final File downloadedFile) {
-					if (downloadedFile != null) {
-						if (downloadedFile.length() < 1000 && hvscVersion < 100) {
-							// skip errors, try to guess HVSC version
+					if ((downloadedFile == null || downloadedFile.length() < 1000) && hvscVersion < 100) {
+						// skip errors, try to guess HVSC version
+						if (downloadedFile != null) {
 							downloadedFile.delete();
-							downloadStart(url, hvscVersion + 1);
-						} else {
-							downloadedFile.deleteOnExit();
-							Platform.runLater(() -> {
-								Configuration config = util.getConfig();
-								SidPlay2Section sidplay2Section = config.getSidplay2Section();
-								AudioSection audioSection = config.getAudioSection();
-								audioSection.setMp3(downloadedFile);
-								audioSection.setPlayOriginal(true);
-								audioSection.setAudio(Audio.COMPARE_MP3);
-								playTune(PathUtils.getFile(hvscName + ".sid", sidplay2Section.getHvsc(), null));
-							});
 						}
+						downloadStart(url, hvscVersion + 1);
+					} else {
+						downloadedFile.deleteOnExit();
+						Platform.runLater(() -> {
+							Configuration config = util.getConfig();
+							SidPlay2Section sidplay2Section = config.getSidplay2Section();
+							AudioSection audioSection = config.getAudioSection();
+							audioSection.setMp3(downloadedFile);
+							audioSection.setPlayOriginal(true);
+							audioSection.setAudio(Audio.COMPARE_MP3);
+							playTune(PathUtils.getFile(hvscName + ".sid", sidplay2Section.getHvsc(), null));
+						});
 					}
 				}
 			}, new URL(realUrl), false).start();
