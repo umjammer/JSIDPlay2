@@ -4,7 +4,8 @@ JSIDPlay2
 - New java based USB drivers implemented for:
   SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay
   Supported platforms: Windows/Linux and MacOSX (MacOSX currently not working with HardSID devices)
-- SID Recordings can now watched and exported in a new recording tab.
+- SID Recordings can now being watched and exported in a new recording tab.
+- Player control buttons re-arranged
 
 JSIDPlay2Server:
 - Live videos: can be controlled by web-page
