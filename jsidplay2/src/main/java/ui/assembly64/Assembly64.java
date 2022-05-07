@@ -22,10 +22,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -91,6 +91,7 @@ import ui.common.converter.EnumToStringConverter;
 import ui.common.converter.IntegerToStringConverter;
 import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TapeFileFilter;
+import ui.common.util.InternetUtil;
 import ui.directory.Directory;
 import ui.entities.config.Assembly64Column;
 import ui.entities.config.Assembly64ColumnType;
@@ -582,7 +583,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private List<Category> requestCategories() {
 		String assembly64Url = util.getConfig().getOnlineSection().getAssembly64Url();
 
-		HttpURLConnection connection = null;
+		URLConnection connection = null;
 		try {
 			URL url = new URL(assembly64Url + "/leet/search/v2/categories");
 			connection = requestURL(url);
@@ -595,10 +596,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 		} catch (IOException e) {
 			System.err.println("Unexpected result: " + e.getMessage());
 			return Collections.emptyList();
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
 		}
 	}
 
@@ -641,7 +638,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			String responseString = null;
 
-			HttpURLConnection connection = null;
+			URLConnection connection = null;
 			try {
 				URI uri = new URI(assembly64Url + "/leet/search/v2");
 				int matchCount = 0;
@@ -746,10 +743,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 				} catch (IOException e1) {
 					System.err.println("Unexpected result: " + e.getMessage());
 				}
-			} finally {
-				if (connection != null) {
-					connection.disconnect();
-				}
 			}
 		} finally {
 			Platform.runLater(() -> util.progressProperty(assembly64Table.getScene()).set(0));
@@ -776,7 +769,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 			final String itemId = Base64.getEncoder().encodeToString(searchResult.getId().getBytes());
 			final Integer categoryId = searchResult.getCategory().getId();
 
-			HttpURLConnection connection = null;
+			URLConnection connection = null;
 			try {
 				URL url = new URL(assembly64Url + "/leet/search/v2/contententries" + "/" + itemId + "/" + categoryId);
 				connection = requestURL(url);
@@ -790,10 +783,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 				}
 			} catch (IOException e) {
 				System.err.println("Unexpected result: " + e.getMessage());
-			} finally {
-				if (connection != null) {
-					connection.disconnect();
-				}
 			}
 		} finally {
 			Platform.runLater(() -> util.progressProperty(assembly64Table.getScene()).set(0));
@@ -850,23 +839,17 @@ public class Assembly64 extends C64VBox implements UIPart {
 		final String itemId = Base64.getEncoder().encodeToString(searchResult.getId().getBytes());
 		final String fileId = Base64.getEncoder().encodeToString(contentEntry.getId().getBytes());
 
-		HttpURLConnection connection = null;
-		try {
-			URL url = new URL(assembly64Url + "/leet/search/v2/binary" + "/" + itemId + "/"
-					+ searchResult.getCategory().getId() + "/" + fileId);
-			connection = requestURL(url);
-			byte[] responseBytes = readBytes(connection.getInputStream());
+		URLConnection connection = null;
+		URL url = new URL(assembly64Url + "/leet/search/v2/binary" + "/" + itemId + "/"
+				+ searchResult.getCategory().getId() + "/" + fileId);
+		connection = requestURL(url);
+		byte[] responseBytes = readBytes(connection.getInputStream());
 
-			try (OutputStream outputStream = new FileOutputStream(contentEntryFile);
-					PrintStream checksumPrintStream = new PrintStream(contentEntryChecksumFile)) {
-				outputStream.write(responseBytes);
-				checksumPrintStream.print(connection.getHeaderField("checksum"));
-				return contentEntryFile;
-			}
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
+		try (OutputStream outputStream = new FileOutputStream(contentEntryFile);
+				PrintStream checksumPrintStream = new PrintStream(contentEntryChecksumFile)) {
+			outputStream.write(responseBytes);
+			checksumPrintStream.print(connection.getHeaderField("checksum"));
+			return contentEntryFile;
 		}
 	}
 
@@ -933,17 +916,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 		}
 	}
 
-	private HttpURLConnection requestURL(URL url) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setDoOutput(true);
-		connection.setInstanceFollowRedirects(false);
-		connection.setRequestMethod("GET");
-		int status = connection.getResponseCode();
-
-		if (status != HttpURLConnection.HTTP_OK) {
-			throw new IOException("Failed to create connection : HTTP error code : " + connection.getResponseCode());
-		}
-		return connection;
+	private URLConnection requestURL(URL url) throws IOException {
+		return InternetUtil.openConnection(url, util.getConfig().getSidplay2Section());
 	}
 
 	private String getMD5Digest(byte[] contents) {
@@ -971,7 +945,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 		return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
 	}
 
-	private String readString(HttpURLConnection connection) throws IOException {
+	private String readString(URLConnection connection) throws IOException {
 		StringBuffer result = new StringBuffer();
 		try (BufferedReader br = new BufferedReader(
 				new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
