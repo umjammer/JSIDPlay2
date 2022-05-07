@@ -20,6 +20,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 
@@ -63,6 +64,8 @@ import ui.entities.config.SidPlay2Section;
  *
  */
 public class DownloadThread extends Thread implements RBCWrapperDelegate {
+	private static final Logger LOG = Logger.getLogger(DownloadThread.class.getName());
+
 	private static final String ILLEGAL_FILENAME_CHARS = "[?:]";
 	private static final String REPLACEMENT_ILLEGAL_CHAR = "_";
 	public static final int MAX_BUFFER_SIZE = 1 << 20;
@@ -107,7 +110,7 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 				downloadedFile = download(url, true, true);
 			}
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			LOG.fine(e.getMessage());
 			listener.downloadStop(null);
 			return;
 		}
@@ -201,7 +204,7 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 				}
 				file.delete();
 			} catch (IOException e) {
-				System.err.println(e.getMessage());
+				LOG.fine(e.getMessage());
 				if (retry) {
 					System.err.println(String.format("Download failed for %s, next try!", decoded));
 				} else {
