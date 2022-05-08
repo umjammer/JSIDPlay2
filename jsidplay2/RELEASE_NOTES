@@ -1,6 +1,7 @@
 Release Notes:
 ==============
-JSIDPlay2
+
+JSIDPlay2:
 - All shell-scripts and desktop files renamed to lower case without space in it's name better for convenience
 - splash screen removed
 - New java based USB drivers implemented for:
@@ -10,9 +11,9 @@ JSIDPlay2
 - Player control buttons re-arranged
 
 JSIDPlay2Server:
-- Live videos: can be controlled by web-page
-- Live video now shows infos in a status bar
-- Scan bar-code to watch videos on your mobile
+- Live videos: can be controlled now by web-page (insert next disk, send keys and so on)
+- Live videos: shows info now in a status bar
+- Live videos: bar-code to watch videos on your mobile phone
 
 JSIDPlay2app:
 - SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay can now be connected and used standalone on a mobile device.
