@@ -1,6 +1,8 @@
 Release Notes:
 ==============
 JSIDPlay2
+- All shell-scripts and desktop files renamed to lower case without space in it's name better for convenience
+- splash screen removed
 - New java based USB drivers implemented for:
   SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay
   Supported platforms: Windows/Linux and MacOSX (MacOSX currently not working with HardSID devices)
@@ -14,6 +16,3 @@ JSIDPlay2Server:
 
 JSIDPlay2app:
 - SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay can now be connected and used standalone on a mobile device.
-
-Changes:
-- All shell-scripts and desktop files renamed to lower case without space in it's name better for convenience

@@ -355,6 +355,11 @@
 					</ImageView>
 				</graphic>
 			</Button>
+			<HBox alignment="CENTER_RIGHT">
+				<padding>
+					<Insets right="20.0" />
+				</padding>
+			</HBox>
 			<Button focusTraversable="false" onAction="#previousSong"
 				fx:id="previous2">
 				<tooltip>
