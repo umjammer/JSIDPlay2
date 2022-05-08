@@ -385,6 +385,11 @@
 					</ImageView>
 				</graphic>
 			</Button>
+			<HBox alignment="CENTER_RIGHT">
+				<padding>
+					<Insets right="20.0" />
+				</padding>
+			</HBox>
 			<ToggleButton fx:id="minimizeMaximize" focusTraversable="false">
 				<tooltip>
 					<Tooltip text="%MINIMIZE_MAXIMIZE" />
