@@ -507,27 +507,27 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
-	private void record() {
+	private void recordTape() {
 		util.getPlayer().getDatasette().control(Datasette.Control.RECORD);
 	}
 
 	@FXML
-	private void play() {
+	private void playTape() {
 		util.getPlayer().getDatasette().control(Datasette.Control.START);
 	}
 
 	@FXML
-	private void rewind() {
+	private void rewindTape() {
 		util.getPlayer().getDatasette().control(Datasette.Control.REWIND);
 	}
 
 	@FXML
-	private void forward() {
+	private void forwardTape() {
 		util.getPlayer().getDatasette().control(Datasette.Control.FORWARD);
 	}
 
 	@FXML
-	private void stop() {
+	private void stopTape() {
 		util.getPlayer().getDatasette().control(Datasette.Control.STOP);
 	}
 
