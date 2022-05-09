@@ -296,7 +296,7 @@
 		</HBox>
 		<HBox AnchorPane.rightAnchor="10">
 			<padding>
-				<Insets top="5.0" bottom="5.0" />
+				<Insets top="10.0" />
 			</padding>
 			<HBox alignment="CENTER_RIGHT">
 				<padding>
@@ -393,7 +393,7 @@
 				<graphic>
 					<ImageView>
 						<image>
-							<Image url="@/ui/icons/favorite_next.png" />
+							<Image url="@/ui/icons/playback_next_favorite.png" />
 						</image>
 					</ImageView>
 				</graphic>
@@ -411,7 +411,7 @@
 				<graphic>
 					<ImageView>
 						<image>
-							<Image url="@/ui/icons/minmax.png" />
+							<Image url="@/ui/icons/playback_minimize_maximize.png" />
 						</image>
 					</ImageView>
 				</graphic>
