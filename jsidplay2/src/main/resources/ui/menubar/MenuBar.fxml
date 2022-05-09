@@ -343,19 +343,6 @@
 					</ImageView>
 				</graphic>
 			</ToggleButton>
-			<Button focusTraversable="false" onAction="#nextFavorite"
-				fx:id="btnNextFavorite">
-				<tooltip>
-					<Tooltip text="%BTN_NEXT_FAVORITE" />
-				</tooltip>
-				<graphic>
-					<ImageView>
-						<image>
-							<Image url="@/ui/icons/favorite_next.png" />
-						</image>
-					</ImageView>
-				</graphic>
-			</Button>
 			<Button focusTraversable="false" onAction="#stop" fx:id="btnStop">
 				<tooltip>
 					<Tooltip text="%BTN_STOP" />
@@ -394,6 +381,19 @@
 					<ImageView>
 						<image>
 							<Image url="@/ui/icons/playback_next.png" />
+						</image>
+					</ImageView>
+				</graphic>
+			</Button>
+			<Button focusTraversable="false" onAction="#nextFavorite"
+				fx:id="btnNextFavorite">
+				<tooltip>
+					<Tooltip text="%BTN_NEXT_FAVORITE" />
+				</tooltip>
+				<graphic>
+					<ImageView>
+						<image>
+							<Image url="@/ui/icons/favorite_next.png" />
 						</image>
 					</ImageView>
 				</graphic>

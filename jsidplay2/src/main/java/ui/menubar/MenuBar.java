@@ -444,6 +444,7 @@ public class MenuBar extends C64VBox implements UIPart {
 			public void event() {
 				if (util.getPlayer().stateProperty().get() == State.PLAY
 						|| util.getPlayer().stateProperty().get() == State.PAUSE) {
+					util.getPlayer().getPlayList().last();
 					util.getPlayer().getTimer().end();
 				}
 			}
