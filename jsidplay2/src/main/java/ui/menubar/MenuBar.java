@@ -156,7 +156,7 @@ public class MenuBar extends C64VBox implements UIPart {
 				if (event.getNewValue() == State.START) {
 					setCurrentTrack(util.getPlayer().getTune());
 				}
-				updateButtonStates(util.getPlayer().getTune(), (State) event.getNewValue(),
+				updateButtonStates((State) event.getNewValue(),
 						util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false));
 			});
 		}
@@ -237,7 +237,7 @@ public class MenuBar extends C64VBox implements UIPart {
 				.addListener((ListChangeListener<ViewEntity>) c -> updateMenuItems());
 		updateMenuItems();
 
-		updateButtonStates(util.getPlayer().getTune(), util.getPlayer().stateProperty().get(),
+		updateButtonStates(util.getPlayer().stateProperty().get(),
 				util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false));
 
 		propertyChangeListener = new StateChangeListener();
@@ -991,13 +991,14 @@ public class MenuBar extends C64VBox implements UIPart {
 		}
 	}
 
-	private void updateButtonStates(SidTune sidTune, State state, boolean isFastForward) {
+	private void updateButtonStates(State state, boolean isFastForward) {
 		SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
+		SidTune sidTune = util.getPlayer().getTune();
+		PlayList playList = util.getPlayer().getPlayList();
 
 		btnNextFavoriteDisabledState.set(sidTune == RESET || state == State.QUIT
 				|| sidplay2Section.getPlaybackType() == PlaybackType.PLAYBACK_OFF);
 
-		PlayList playList = util.getPlayer().getPlayList();
 		boolean isPlayOrPause = state == State.PLAY || state == State.PAUSE;
 
 		pauseContinue.setSelected(state == State.PAUSE);
@@ -1018,7 +1019,6 @@ public class MenuBar extends C64VBox implements UIPart {
 		btnFastForward.setDisable(!isPlayOrPause);
 		btnFastForward.setSelected(isPlayOrPause && isFastForward);
 		btnStop.setDisable(!isPlayOrPause);
-
 		btnPreviousSong.setDisable(previousSong.isDisable());
 		btnPreviousSongToolTip.setText(String.format(util.getBundle().getString("BTN_PREVIOUS_SONG") + " (%d/%d)",
 				playList.getPrevious(), playList.getLength()));
@@ -1026,7 +1026,7 @@ public class MenuBar extends C64VBox implements UIPart {
 		btnNextSongToolTip.setText(String.format(util.getBundle().getString("BTN_NEXT_SONG") + " (%d/%d)",
 				playList.getNext(), playList.getLength()));
 
-		saveTune.setDisable(util.getPlayer().getTune() == RESET);
+		saveTune.setDisable(sidTune == RESET);
 	}
 
 	private void setCurrentTrack(SidTune sidTune) {
