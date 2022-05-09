@@ -156,7 +156,7 @@ public class MenuBar extends C64VBox implements UIPart {
 				if (event.getNewValue() == State.START) {
 					setCurrentTrack(util.getPlayer().getTune());
 				}
-				updateButtonStates((State) event.getNewValue(),
+				updatePlayerButtons((State) event.getNewValue(),
 						util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false));
 			});
 		}
@@ -237,7 +237,7 @@ public class MenuBar extends C64VBox implements UIPart {
 				.addListener((ListChangeListener<ViewEntity>) c -> updateMenuItems());
 		updateMenuItems();
 
-		updateButtonStates(util.getPlayer().stateProperty().get(),
+		updatePlayerButtons(util.getPlayer().stateProperty().get(),
 				util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false));
 
 		propertyChangeListener = new StateChangeListener();
@@ -428,11 +428,13 @@ public class MenuBar extends C64VBox implements UIPart {
 
 	@FXML
 	private void fastForward2X() {
-		if (util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false)) {
+		Boolean isFastForward = util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false);
+		if (isFastForward) {
 			util.getPlayer().configureMixer(mixer -> mixer.normalSpeed());
 		} else {
 			util.getPlayer().configureMixer(mixer -> mixer.fastForward());
 		}
+		updatePlayerButtons(util.getPlayer().stateProperty().get(), !isFastForward);
 	}
 
 	@FXML
@@ -991,8 +993,9 @@ public class MenuBar extends C64VBox implements UIPart {
 		}
 	}
 
-	private void updateButtonStates(State state, boolean isFastForward) {
+	private void updatePlayerButtons(State state, boolean isFastForward) {
 		SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
+
 		SidTune sidTune = util.getPlayer().getTune();
 		PlayList playList = util.getPlayer().getPlayList();
 
