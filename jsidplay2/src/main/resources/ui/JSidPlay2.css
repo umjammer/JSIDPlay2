@@ -12,14 +12,6 @@
 	-fx-effect: null;
 }
 
-#pauseContinue2:selected {
-	-fx-graphic: url("icons/playback_pause.png");
-}
-
-#pauseContinue2 {
-	-fx-graphic: url("icons/playback_start.png");
-}
-
 #recordingPauseContinue:selected {
 	-fx-graphic: url("icons/playback_pause.png");
 }

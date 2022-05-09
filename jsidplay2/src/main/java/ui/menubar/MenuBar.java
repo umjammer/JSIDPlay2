@@ -129,21 +129,22 @@ public class MenuBar extends C64VBox implements UIPart {
 	protected RadioMenuItem fastForward, normalSpeed;
 
 	@FXML
-	protected MenuItem video, oscilloscope, favorites, hvsc, cgsc, hvmec, demos, mags, sidDump, sidRegisters, asm,
-			disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, c64Sk, soasc, codebase64, gamebase,
-			jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc, videoPlayer, save, previous, next;
+	protected MenuItem previousSong, nextSong, stop, video, oscilloscope, favorites, hvsc, cgsc, hvmec, demos, mags,
+			sidDump, sidRegisters, asm, disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, c64Sk, soasc,
+			codebase64, gamebase, jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc, videoPlayer,
+			saveTune;
 
 	@FXML
-	protected Button previous2, next2, nextFavorite;
+	protected Button btnPlay, btnPause, btnPreviousSong, btnNextSong, btnNextFavorite, btnStop;
 
 	@FXML
 	private ToggleGroup floppyGroup, extensionGroup;
 
 	@FXML
-	private ToggleButton pauseContinue2, fastForward2, minimizeMaximize;
+	private ToggleButton btnFastForward, btnMinimizeMaximize;
 
 	@FXML
-	protected Tooltip previous2ToolTip, next2ToolTip;
+	protected Tooltip btnPreviousSongToolTip, btnNextSongToolTip;
 
 	@FXML
 	protected Label tracks, whatssidPositioner;
@@ -151,24 +152,18 @@ public class MenuBar extends C64VBox implements UIPart {
 	private class StateChangeListener implements PropertyChangeListener {
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
-			SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
-			SidTune sidTune = util.getPlayer().getTune();
 			Platform.runLater(() -> {
-				nextFavoriteDisabledState.set(sidTune == RESET || event.getNewValue() == State.QUIT
-						|| sidplay2Section.getPlaybackType() == PlaybackType.PLAYBACK_OFF);
 				if (event.getNewValue() == State.START) {
-					pauseContinue2.setSelected(true);
-					setCurrentTrack(sidTune);
-					updatePlayerButtons(util.getPlayer().getPlayList());
-				} else if (event.getNewValue() == State.QUIT || event.getNewValue() == State.END) {
-					pauseContinue2.setSelected(false);
+					setCurrentTrack(util.getPlayer().getTune());
 				}
+				updateButtonStates(util.getPlayer().getTune(), (State) event.getNewValue(),
+						util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false));
 			});
 		}
 
 	}
 
-	private BooleanProperty nextFavoriteDisabledState;
+	private BooleanProperty btnNextFavoriteDisabledState;
 	private int hardcopyCounter;
 	private StateChangeListener propertyChangeListener;
 
@@ -188,10 +183,10 @@ public class MenuBar extends C64VBox implements UIPart {
 		final C1541Section c1541Section = config.getC1541Section();
 		final PrinterSection printer = config.getPrinterSection();
 
-		pauseContinue.selectedProperty().bindBidirectional(pauseContinue2.selectedProperty());
-		fastForward2.selectedProperty().bindBidirectional(fastForward.selectedProperty());
-		nextFavoriteDisabledState = new SimpleBooleanProperty(true);
-		nextFavorite.disableProperty().bind(nextFavoriteDisabledState);
+		btnFastForward.selectedProperty().bindBidirectional(fastForward.selectedProperty());
+		btnNextFavoriteDisabledState = new SimpleBooleanProperty(true);
+		btnNextFavorite.disableProperty().bind(btnNextFavoriteDisabledState);
+
 		turboTape.selectedProperty().bindBidirectional(sidplay2Section.turboTapeProperty());
 		driveOn.selectedProperty().bindBidirectional(c1541Section.driveOnProperty());
 		parCable.selectedProperty().bindBidirectional(c1541Section.parallelCableProperty());
@@ -213,9 +208,9 @@ public class MenuBar extends C64VBox implements UIPart {
 		if (util.getWindow() != null) {
 			Stage stage = util.getWindow().getStage();
 			stage.maximizedProperty()
-					.addListener((observable, oldValue, newValue) -> minimizeMaximize.setDisable(newValue));
-			minimizeMaximize.selectedProperty().bindBidirectional(sidplay2Section.minimizedProperty());
-			minimizeMaximize.selectedProperty().addListener((observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> btnMinimizeMaximize.setDisable(newValue));
+			btnMinimizeMaximize.selectedProperty().bindBidirectional(sidplay2Section.minimizedProperty());
+			btnMinimizeMaximize.selectedProperty().addListener((observable, oldValue, newValue) -> {
 				hideMainTabbedPane(stage, newValue);
 				if (newValue) {
 					sidplay2Section.setMinimizedX(getScene().getWindow().getX());
@@ -242,7 +237,8 @@ public class MenuBar extends C64VBox implements UIPart {
 				.addListener((ListChangeListener<ViewEntity>) c -> updateMenuItems());
 		updateMenuItems();
 
-		updatePlayerButtons(util.getPlayer().getPlayList());
+		updateButtonStates(util.getPlayer().getTune(), util.getPlayer().stateProperty().get(),
+				util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false));
 
 		propertyChangeListener = new StateChangeListener();
 		util.getPlayer().stateProperty().addListener(propertyChangeListener);
@@ -338,7 +334,7 @@ public class MenuBar extends C64VBox implements UIPart {
 	private void resizeToMinHeight(Stage stage) {
 		stage.sizeToScene();
 		// For Mac OSX:
-		Platform.runLater(() -> minimizeMaximize.setDisable(false));
+		Platform.runLater(() -> btnMinimizeMaximize.setDisable(false));
 	}
 
 	@FXML
@@ -359,7 +355,7 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
-	private void save() {
+	private void saveTune() {
 		final FileChooser fileDialog = new FileChooser();
 		fileDialog.setInitialDirectory(util.getConfig().getSidplay2Section().getLastDirectory());
 		fileDialog.getExtensionFilters()
@@ -421,23 +417,21 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
-	private void playNormalSpeed() {
+	private void normalSpeed() {
 		util.getPlayer().configureMixer(mixer -> mixer.normalSpeed());
 	}
 
 	@FXML
-	private void playFastForward() {
+	private void fastForward() {
 		util.getPlayer().configureMixer(mixer -> mixer.fastForward());
 	}
 
 	@FXML
-	private void fastForward() {
+	private void fastForward2X() {
 		if (util.getPlayer().getMixerInfo(mixer -> mixer.isFastForward(), false)) {
 			util.getPlayer().configureMixer(mixer -> mixer.normalSpeed());
-			normalSpeed.setSelected(true);
 		} else {
 			util.getPlayer().configureMixer(mixer -> mixer.fastForward());
-			fastForward.setSelected(true);
 		}
 	}
 
@@ -457,7 +451,7 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
-	private void stopSong() {
+	private void stop() {
 		util.getPlayer().quit();
 	}
 
@@ -996,22 +990,42 @@ public class MenuBar extends C64VBox implements UIPart {
 		}
 	}
 
-	private void updatePlayerButtons(PlayList playList) {
-		normalSpeed.setSelected(true);
+	private void updateButtonStates(SidTune sidTune, State state, boolean isFastForward) {
+		SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
 
-		previous.setDisable(!playList.hasPrevious());
-		previous2.setDisable(previous.isDisable());
-		next.setDisable(!playList.hasNext());
-		next2.setDisable(next.isDisable());
+		btnNextFavoriteDisabledState.set(sidTune == RESET || state == State.QUIT
+				|| sidplay2Section.getPlaybackType() == PlaybackType.PLAYBACK_OFF);
 
-		previous.setText(String.format(util.getBundle().getString("PREVIOUS2") + " (%d/%d)", playList.getPrevious(),
+		PlayList playList = util.getPlayer().getPlayList();
+		boolean isPlayOrPause = state == State.PLAY || state == State.PAUSE;
+
+		pauseContinue.setSelected(state == State.PAUSE);
+		previousSong.setDisable(btnNextFavoriteDisabledState.get() || !playList.hasPrevious());
+		previousSong.setText(String.format(util.getBundle().getString("PREVIOUS_SONG") + " (%d/%d)",
+				playList.getPrevious(), playList.getLength()));
+		nextSong.setDisable(btnNextFavoriteDisabledState.get() || !playList.hasNext());
+		nextSong.setText(String.format(util.getBundle().getString("NEXT_SONG") + " (%d/%d)", playList.getNext(),
 				playList.getLength()));
-		previous2ToolTip.setText(previous.getText());
-		next.setText(String.format(util.getBundle().getString("NEXT2") + " (%d/%d)", playList.getNext(),
-				playList.getLength()));
-		next2ToolTip.setText(next.getText());
+		normalSpeed.setSelected(!(isPlayOrPause && isFastForward));
+		normalSpeed.setDisable(!isPlayOrPause);
+		fastForward.setDisable(!isPlayOrPause);
+		fastForward.setSelected(isPlayOrPause && isFastForward);
+		stop.setDisable(!isPlayOrPause);
 
-		save.setDisable(util.getPlayer().getTune() == RESET);
+		btnPlay.setDisable(state == State.PLAY);
+		btnPause.setDisable(state != State.PLAY);
+		btnFastForward.setDisable(!isPlayOrPause);
+		btnFastForward.setSelected(isPlayOrPause && isFastForward);
+		btnStop.setDisable(!isPlayOrPause);
+
+		btnPreviousSong.setDisable(previousSong.isDisable());
+		btnPreviousSongToolTip.setText(String.format(util.getBundle().getString("BTN_PREVIOUS_SONG") + " (%d/%d)",
+				playList.getPrevious(), playList.getLength()));
+		btnNextSong.setDisable(nextSong.isDisable());
+		btnNextSongToolTip.setText(String.format(util.getBundle().getString("BTN_NEXT_SONG") + " (%d/%d)",
+				playList.getNext(), playList.getLength()));
+
+		saveTune.setDisable(util.getPlayer().getTune() == RESET);
 	}
 
 	private void setCurrentTrack(SidTune sidTune) {

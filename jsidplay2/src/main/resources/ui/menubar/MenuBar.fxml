@@ -49,7 +49,7 @@
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
 								</accelerator>
 							</MenuItem>
-							<MenuItem text="%SAVE" onAction="#save" fx:id="save">
+							<MenuItem text="%SAVE_TUNE" onAction="#saveTune" fx:id="saveTune">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="S"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
@@ -115,41 +115,41 @@
 					</Menu>
 					<Menu text="%PLAYER">
 						<items>
-							<CheckMenuItem text="%PLAY" onAction="#pauseContinue"
-								selected="true" fx:id="pauseContinue">
+							<CheckMenuItem text="%PAUSE_CONTINUE" onAction="#pauseContinue"
+								fx:id="pauseContinue">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="P"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
 								</accelerator>
 							</CheckMenuItem>
-							<MenuItem text="%PREVIOUS" onAction="#previousSong"
-								fx:id="previous">
+							<MenuItem text="%PREVIOUS_SONG" onAction="#previousSong"
+								fx:id="previousSong">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="MINUS"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
 								</accelerator>
 							</MenuItem>
-							<MenuItem text="%NEXT" onAction="#nextSong" fx:id="next">
+							<MenuItem text="%NEXT_SONG" onAction="#nextSong" fx:id="nextSong">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="PLUS"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
 								</accelerator>
 							</MenuItem>
 							<RadioMenuItem text="%NORMAL_SPEED" selected="true"
-								toggleGroup="$playSpeedGroup" onAction="#playNormalSpeed" fx:id="normalSpeed">
+								toggleGroup="$playSpeedGroup" onAction="#normalSpeed" fx:id="normalSpeed">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="COMMA"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
 								</accelerator>
 							</RadioMenuItem>
 							<RadioMenuItem text="%FAST_FORWARD" toggleGroup="$playSpeedGroup"
-								onAction="#playFastForward" fx:id="fastForward">
+								onAction="#fastForward" fx:id="fastForward">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="DECIMAL"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
 								</accelerator>
 							</RadioMenuItem>
-							<MenuItem text="%STOP" onAction="#stopSong">
+							<MenuItem text="%STOP" onAction="#stop" fx:id="stop">
 								<accelerator>
 									<KeyCodeCombination alt="UP" code="T"
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
@@ -304,10 +304,23 @@
 				</padding>
 				<Label fx:id="tracks" />
 			</HBox>
-			<ToggleButton focusTraversable="false" onAction="#pauseContinue"
-				selected="true" fx:id="pauseContinue2">
+			<Button focusTraversable="false" onAction="#pauseContinue"
+				fx:id="btnPlay">
 				<tooltip>
-					<Tooltip text="%PLAY_PAUSE" />
+					<Tooltip text="%BTN_PLAY" />
+				</tooltip>
+				<graphic>
+					<ImageView>
+						<image>
+							<Image url="@/ui/icons/playback_start.png" />
+						</image>
+					</ImageView>
+				</graphic>
+			</Button>
+			<Button focusTraversable="false" onAction="#pauseContinue"
+				fx:id="btnPause">
+				<tooltip>
+					<Tooltip text="%BTN_PAUSE" />
 				</tooltip>
 				<graphic>
 					<ImageView>
@@ -316,11 +329,11 @@
 						</image>
 					</ImageView>
 				</graphic>
-			</ToggleButton>
-			<ToggleButton focusTraversable="false" onAction="#fastForward"
-				fx:id="fastForward2">
+			</Button>
+			<ToggleButton focusTraversable="false" onAction="#fastForward2X"
+				fx:id="btnFastForward">
 				<tooltip>
-					<Tooltip text="%FAST_FORWARD2" />
+					<Tooltip text="%BTN_FAST_FORWARD" />
 				</tooltip>
 				<graphic>
 					<ImageView>
@@ -331,9 +344,9 @@
 				</graphic>
 			</ToggleButton>
 			<Button focusTraversable="false" onAction="#nextFavorite"
-				fx:id="nextFavorite">
+				fx:id="btnNextFavorite">
 				<tooltip>
-					<Tooltip text="%NEXT_FAVORITE" />
+					<Tooltip text="%BTN_NEXT_FAVORITE" />
 				</tooltip>
 				<graphic>
 					<ImageView>
@@ -343,9 +356,9 @@
 					</ImageView>
 				</graphic>
 			</Button>
-			<Button focusTraversable="false" onAction="#stopSong">
+			<Button focusTraversable="false" onAction="#stop" fx:id="btnStop">
 				<tooltip>
-					<Tooltip text="%STOP2" />
+					<Tooltip text="%BTN_STOP" />
 				</tooltip>
 				<graphic>
 					<ImageView>
@@ -361,9 +374,9 @@
 				</padding>
 			</HBox>
 			<Button focusTraversable="false" onAction="#previousSong"
-				fx:id="previous2">
+				fx:id="btnPreviousSong">
 				<tooltip>
-					<Tooltip text="%PREVIOUS2" fx:id="previous2ToolTip" />
+					<Tooltip text="%BTN_PREVIOUS_SONG" fx:id="btnPreviousSongToolTip" />
 				</tooltip>
 				<graphic>
 					<ImageView>
@@ -373,9 +386,9 @@
 					</ImageView>
 				</graphic>
 			</Button>
-			<Button focusTraversable="false" onAction="#nextSong" fx:id="next2">
+			<Button focusTraversable="false" onAction="#nextSong" fx:id="btnNextSong">
 				<tooltip>
-					<Tooltip text="%NEXT2" fx:id="next2ToolTip" />
+					<Tooltip text="%BTN_NEXT_SONG" fx:id="btnNextSongToolTip" />
 				</tooltip>
 				<graphic>
 					<ImageView>
@@ -390,9 +403,10 @@
 					<Insets right="20.0" />
 				</padding>
 			</HBox>
-			<ToggleButton fx:id="minimizeMaximize" focusTraversable="false">
+			<ToggleButton fx:id="btnMinimizeMaximize"
+				focusTraversable="false">
 				<tooltip>
-					<Tooltip text="%MINIMIZE_MAXIMIZE" />
+					<Tooltip text="%BTN_MINIMIZE_MAXIMIZE" />
 				</tooltip>
 				<graphic>
 					<ImageView>
