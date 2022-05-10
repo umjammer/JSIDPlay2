@@ -59,7 +59,7 @@ public class SidPlay2Section implements ISidPlay2Section {
 	public static final int DEFAULT_PROXY_PORT = 80;
 	public static final int DEFAULT_FRAME_X = 0;
 	public static final int DEFAULT_FRAME_Y = 0;
-	public static final int DEFAULT_FRAME_WIDTH = 1304;
+	public static final int DEFAULT_FRAME_WIDTH = 1310;
 	public static final int DEFAULT_FRAME_HEIGHT = 1024;
 	public static final boolean DEFAULT_MINIMIZED = false;
 	public static final float DEFAULT_VIDEO_SCALING = 1.75f;
