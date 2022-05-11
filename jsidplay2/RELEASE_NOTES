@@ -2,18 +2,18 @@ Release Notes:
 ==============
 
 JSIDPlay2:
-- All shell-scripts and desktop files renamed to lower case without space in it's name better for convenience
+- All shell-scripts and desktop files renamed to lower case without space in it's name for convenience
 - splash screen removed
 - New java based USB drivers implemented for:
   SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay
   Supported platforms: Windows/Linux and MacOSX (MacOSX currently not working with HardSID devices)
-- SID Recordings can now being watched and exported in a new recording tab.
-- Player control buttons re-arranged
+- SID Recordings can now being watched and exported in a new recording view.
+- Player control buttons reworked and rearranged
 
 JSIDPlay2Server:
-- Live videos: can be controlled now by web-page (insert next disk, send keys and so on)
-- Live videos: shows info now in a status bar
-- Live videos: bar-code to watch videos on your mobile phone
+- Live videos: Now being controlled by web-page to watch demos better (insert the next disk, send keys, switch SID chip, etc.)
+- Live videos: Now shows infos in a status bar
+- Live videos: Scan bar-code to watch videos on your mobile phone
 
 JSIDPlay2app:
-- SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay can now be connected and used standalone on a mobile device.
+- Connect USB hardware (SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay) directly with a mobile device. No PC required.
