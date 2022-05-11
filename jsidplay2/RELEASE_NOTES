@@ -2,6 +2,8 @@ Release Notes:
 ==============
 
 JSIDPlay2:
+- Configuration version changed for jsidplay2.xml, creates a new one and backups the old one to jsidplay2.xml.bak
+- sidplay2.ini has been renamed to jsidplay2.ini
 - All shell-scripts and desktop files renamed to lower case without space in it's name for convenience
 - splash screen removed
 - New java based USB drivers implemented for:

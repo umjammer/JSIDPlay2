@@ -1,9 +1,9 @@
 package ui.entities.config.service;
 
+import static libsidplay.config.IConfig.REQUIRED_CONFIG_VERSION;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -19,7 +19,6 @@ import javax.xml.bind.Unmarshaller;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import libsidplay.config.IConfig;
 import libsidutils.PathUtils;
 import ui.entities.DatabaseType;
 import ui.entities.PersistenceProperties;
@@ -138,7 +137,7 @@ public class ConfigService {
 		if (first.isPresent()) {
 			Configuration configuration = first.get();
 			// configuration version check
-			if (configuration.getSidplay2Section().getVersion() == IConfig.REQUIRED_CONFIG_VERSION) {
+			if (configuration.getSidplay2Section().getVersion() == REQUIRED_CONFIG_VERSION) {
 				return configuration;
 			}
 			remove(configuration);
@@ -153,7 +152,7 @@ public class ConfigService {
 	 */
 	private Configuration create() {
 		Configuration configuration = new Configuration();
-		configuration.getSidplay2Section().setVersion(IConfig.REQUIRED_CONFIG_VERSION);
+		configuration.getSidplay2Section().setVersion(REQUIRED_CONFIG_VERSION);
 		persist(configuration);
 		return configuration;
 	}
@@ -221,7 +220,7 @@ public class ConfigService {
 					Configuration detachedConfig = (Configuration) obj;
 
 					// configuration version check
-					if (detachedConfig.getSidplay2Section().getVersion() == IConfig.REQUIRED_CONFIG_VERSION) {
+					if (detachedConfig.getSidplay2Section().getVersion() == REQUIRED_CONFIG_VERSION) {
 						Configuration mergedConfig = em.merge(detachedConfig);
 						persist(mergedConfig);
 						return mergedConfig;
@@ -230,7 +229,6 @@ public class ConfigService {
 				}
 			} catch (JAXBException e) {
 				System.err.println(e.getMessage());
-				createBackup(file);
 			}
 		}
 		return create();
@@ -252,7 +250,7 @@ public class ConfigService {
 				Configuration detachedConfig = objectMapper.readValue(file, Configuration.class);
 
 				// configuration version check
-				if (detachedConfig.getSidplay2Section().getVersion() == IConfig.REQUIRED_CONFIG_VERSION) {
+				if (detachedConfig.getSidplay2Section().getVersion() == REQUIRED_CONFIG_VERSION) {
 					Configuration mergedConfig = em.merge(detachedConfig);
 					persist(mergedConfig);
 					return mergedConfig;
@@ -261,7 +259,6 @@ public class ConfigService {
 				return detachedConfig;
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
-				createBackup(file);
 			}
 		} else {
 			// migration XML to JSON
@@ -328,25 +325,11 @@ public class ConfigService {
 	 */
 	private void createBackup(Configuration configuration, File configPath) {
 		File bakFile = new File(configPath.getParentFile(), configPath.getName() + ".bak");
-		if (!bakFile.exists()) {
-			save(configuration, bakFile);
-		}
-	}
+		save(configuration, bakFile);
 
-	/**
-	 * Create a backup of the current file.
-	 *
-	 * @param configPath filename to create a backup of (.bak is added)
-	 */
-	private void createBackup(File configPath) {
-		File bakFile = new File(configPath.getParentFile(), configPath.getName() + ".bak");
-		if (!bakFile.exists()) {
-			try {
-				Files.copy(configPath.toPath(), bakFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException e1) {
-				// ignore
-			}
-		}
+		int currentVersion = configuration.getSidplay2Section().getVersion();
+		System.out.println("Configuration file version=" + currentVersion + " is older than expected version="
+				+ REQUIRED_CONFIG_VERSION + ", a backup has been created: " + bakFile);
 	}
 
 }

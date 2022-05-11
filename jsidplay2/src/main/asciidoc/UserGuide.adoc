@@ -216,15 +216,15 @@ The first time JSIDPlay2 the console version gets started the configuration file
 
 Windows:
 
- C:\Users\ken\sidplay2.ini
+ C:\Users\ken\jsidplay2.ini
 
 Linux:
 
- /home/ken/sidplay2.ini
+ /home/ken/jsidplay2.ini
 
 OSX:
 
- /Users/ken/sidplay2.ini
+ /Users/ken/jsidplay2.ini
 
 If you want to place JSIDPlay2 on an USB stick you can move it to the current working directory as well.
 Search order is:
@@ -260,7 +260,7 @@ JSIDPlay2 exists in two alternative versions:
 
 [source,subs="attributes+"]
 ----
-Use INI file: /home/ken/sidplay2.ini
+Use INI file: /home/ken/jsidplay2.ini
 +------------------------------------------------------+
 | Java SIDPLAY - Music Player & C64 SID Chip Emulator  |
 +------------------------------------------------------+

@@ -36,7 +36,7 @@ public class IniFingerprintConfig implements IFingerprintConfig {
 	}
 
 	/**
-	 * Get default configuration, read from internal sidplay2.ini file.<BR>
+	 * Get default configuration, read from internal fingerprint.ini file.<BR>
 	 * This is a Single instance!
 	 *
 	 * @return default configuration

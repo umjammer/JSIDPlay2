@@ -46,7 +46,7 @@ import sidplay.ini.converter.BeanToStringConverter;
  */
 public class IniConfig implements IConfig {
 	/** Name of our config file. */
-	private static final String FILE_NAME = "sidplay2.ini";
+	private static final String FILE_NAME = "jsidplay2.ini";
 
 	private static IniConfig singleInstance;
 
@@ -95,7 +95,7 @@ public class IniConfig implements IConfig {
 	}
 
 	/**
-	 * Get default configuration, read from internal sidplay2.ini file.<BR>
+	 * Get default configuration, read from internal jsidplay2.ini file.<BR>
 	 * This is a Single instance!
 	 *
 	 * @return default configuration
