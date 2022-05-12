@@ -24,6 +24,9 @@ public class ServletParameters {
 	@ParametersDelegate
 	private IniConfig config = new IniConfig();
 
+	@Parameter
+	private String filePath;
+
 	private volatile boolean started;
 
 	public Integer getSong() {
@@ -44,6 +47,10 @@ public class ServletParameters {
 
 	public IniConfig getConfig() {
 		return config;
+	}
+
+	public String getFilePath() {
+		return filePath;
 	}
 
 	public boolean isStarted() {

@@ -46,11 +46,12 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
@@ -145,30 +146,29 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			String filePath = request.getPathInfo();
-			File file = getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN));
-			String[] args = getRequestParameters(request);
-
 			final ServletParameters servletParameters = new ServletParameters();
-			final IniConfig config = servletParameters.getConfig();
 
 			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
-					.programName(resourceBundle.getString("PROGRAM_NAME")).build();
+					.programName("https://haendel.ddns.net:8443" + getServletPath()
+							+ "/<filePath>?option1=value1& ... &optionN=valueN")
+					.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream())))
+					.build();
+			String[] args = getRequestParameters(request);
 			commander.parse(args);
-			if (filePath == null) {
+			if (servletParameters.getFilePath() == null) {
 				response.setContentType(MIME_TYPE_TEXT.toString());
-				commander.setConsole(new PrintStreamConsole(new PrintStream(response.getOutputStream())));
 				commander.setUsageFormatter(new DefaultUsageFormatter(commander) {
 					@Override
 					public void appendMainLine(StringBuilder out, boolean hasOptions, boolean hasCommands,
 							int indentCount, String indent) {
 						super.appendMainLine(out, false, hasCommands, indentCount, indent);
 					}
-
 				});
 				commander.usage();
 				return;
 			}
+			final IniConfig config = servletParameters.getConfig();
+			final File file = getAbsoluteFile(servletParameters.getFilePath(), request.isUserInRole(ROLE_ADMIN));
 
 			if (audioTuneFileFilter.accept(file)) {
 
@@ -231,9 +231,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					videoFile.delete();
 				}
 			} else {
-				response.setContentType(getMimeType(getFilenameSuffix(filePath)).toString());
-				response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + new File(filePath).getName());
-				copy(getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN)), response.getOutputStream());
+				response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
+				response.addHeader(CONTENT_DISPOSITION,
+						ATTACHMENT + "; filename=" + new File(servletParameters.getFilePath()).getName());
+				copy(getAbsoluteFile(servletParameters.getFilePath(), request.isUserInRole(ROLE_ADMIN)),
+						response.getOutputStream());
 			}
 		} catch (Throwable t) {
 			error(t);
@@ -244,10 +246,13 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private String[] getRequestParameters(HttpServletRequest request) {
-		return Collections.list(request.getParameterNames()).stream()
-				.map(name -> Arrays.asList("--" + name,
-						Arrays.asList(request.getParameterValues(name)).stream().findFirst().orElse("?")))
-				.flatMap(List::stream).toArray(String[]::new);
+		return Stream
+				.concat(Collections.list(request.getParameterNames()).stream()
+						.flatMap(name -> Arrays.asList(request.getParameterValues(name)).stream()
+								.map(v -> Stream.of((name.length() > 1 ? "--" : "-") + name, v)))
+						.flatMap(Function.identity()),
+						Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(Stream.empty()))
+				.toArray(String[]::new);
 	}
 
 	private Audio getAudioFormat(IConfig config) {
