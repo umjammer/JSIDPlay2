@@ -10,6 +10,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
@@ -46,9 +47,14 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 		super.doGet(request);
 		try {
 			String filePath = request.getPathInfo();
+			File absoluteFile = getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN));
+
+			if (filePath == null) {
+				throw new FileNotFoundException(filePath);
+			}
 			response.setContentType(getMimeType(getFilenameSuffix(filePath)).toString());
 			response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + new File(filePath).getName());
-			copy(getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN)), response.getOutputStream());
+			copy(absoluteFile, response.getOutputStream());
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());

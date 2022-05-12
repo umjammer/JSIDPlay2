@@ -49,8 +49,9 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 		super.doGet(request);
 		try {
 			String filePath = request.getPathInfo();
-			response.setContentType(MIME_TYPE_JPG.toString());
 			File absoluteFile = getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN));
+
+			response.setContentType(MIME_TYPE_JPG.toString());
 			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), absoluteFile);
 			response.getOutputStream().write(photo);
 			response.setContentLength(photo.length);
@@ -64,15 +65,17 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 
 	private byte[] getPhoto(File hvscRoot, File tuneFile) throws IOException, SidTuneError {
 		String collectionName = null;
-		if (hvscRoot != null && tuneFile.getParentFile() != null) {
+		if (hvscRoot != null && tuneFile != null && tuneFile.getParentFile() != null) {
 			collectionName = PathUtils.getCollectionName(hvscRoot, tuneFile.getParentFile());
 		}
-		SidTuneInfo info = SidTune.load(tuneFile).getInfo();
 		String author = null;
-		if (info.getInfoString().size() > 1) {
-			Iterator<String> iterator = info.getInfoString().iterator();
-			/* title = */iterator.next();
-			author = iterator.next();
+		if (tuneFile != null) {
+			SidTuneInfo info = SidTune.load(tuneFile).getInfo();
+			if (info.getInfoString().size() > 1) {
+				Iterator<String> iterator = info.getInfoString().iterator();
+				/* title = */iterator.next();
+				author = iterator.next();
+			}
 		}
 		return Optional.ofNullable(Photos.getPhoto(collectionName, author)).orElse(new byte[0]);
 	}

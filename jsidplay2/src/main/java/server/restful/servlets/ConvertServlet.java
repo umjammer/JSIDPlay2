@@ -13,7 +13,6 @@ import static org.apache.tomcat.util.http.fileupload.FileUploadBase.ATTACHMENT;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
-import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
@@ -26,6 +25,7 @@ import static server.restful.common.IServletSystemProperties.RTMP_INTERNAL_DOWNL
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_RTMP;
+import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static sidplay.audio.Audio.AAC;
 import static sidplay.audio.Audio.AVI;
@@ -42,7 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -73,6 +73,7 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.PrintStreamConsole;
 import server.restful.common.ServletParameters;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
@@ -145,15 +146,22 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		try {
 			String filePath = request.getPathInfo();
 			File file = getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN));
+			String[] args = getRequestParameters(request);
+
+			final ServletParameters servletParameters = new ServletParameters();
+			final IniConfig config = servletParameters.getConfig();
+
+			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
+					.programName(getClass().getName()).build();
+			commander.parse(args);
+			if (filePath == null) {
+				response.setContentType(MIME_TYPE_TEXT.toString());
+				commander.setConsole(new PrintStreamConsole(new PrintStream(response.getOutputStream())));
+				commander.usage();
+				return;
+			}
+
 			if (audioTuneFileFilter.accept(file)) {
-
-				final ServletParameters servletParameters = new ServletParameters();
-				final IniConfig config = servletParameters.getConfig();
-
-				String[] args = getRequestParameters(request);
-
-				JCommander.newBuilder().addObject(servletParameters).programName(getClass().getName()).build()
-						.parse(args);
 
 				Audio audio = getAudioFormat(config);
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream());
@@ -166,14 +174,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				convert2audio(config, file, driver, servletParameters);
 			} else if (videoTuneFileFilter.accept(file) || cartFileFilter.accept(file) || diskFileFilter.accept(file)
 					|| tapeFileFilter.accept(file)) {
-
-				final ServletParameters servletParameters = new ServletParameters();
-				final IniConfig config = servletParameters.getConfig();
-
-				String[] args = getRequestParameters(request);
-
-				JCommander.newBuilder().addObject(servletParameters).programName(getClass().getName()).build()
-						.parse(args);
 
 				UUID uuid = UUID.randomUUID();
 
@@ -204,7 +204,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						Map<String, String> replacements = createReplacements(request, file, uuid);
 						try (InputStream is = ConvertServlet.class
 								.getResourceAsStream("/server/restful/webapp/convert.html")) {
-							response.getWriter().println(convertStreamToString(is, UTF_8.name(), replacements));
+							response.getOutputStream().println(convertStreamToString(is, UTF_8.name(), replacements));
 						}
 					} else {
 						response.setContentType(MIME_TYPE_TEXT.toString());
@@ -229,7 +229,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			t.printStackTrace(new PrintStream(response.getOutputStream()));
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

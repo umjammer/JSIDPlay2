@@ -9,16 +9,16 @@ import sidplay.ini.IniConfig;
 @Parameters(resourceBundle = "server.restful.common.ServletParameters")
 public class ServletParameters {
 
-	@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG")
+	@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -4)
 	private Integer song = null;
 
-	@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD")
+	@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -3)
 	private Boolean download = Boolean.FALSE;
 
-	@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS")
+	@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -2)
 	private Boolean jiffydos = Boolean.FALSE;
 
-	@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE")
+	@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -1)
 	private Integer reuSize = null;
 
 	@ParametersDelegate

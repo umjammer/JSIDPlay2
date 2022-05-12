@@ -136,6 +136,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected File getAbsoluteFile(String path, boolean adminRole) throws FileNotFoundException {
+		if (path == null) {
+			return null;
+		}
 		if (path.startsWith(C64_MUSIC)) {
 			File rootFile = configuration.getSidplay2Section().getHvsc();
 			return PathUtils.getFile(path.substring(C64_MUSIC.length()), rootFile, null);
