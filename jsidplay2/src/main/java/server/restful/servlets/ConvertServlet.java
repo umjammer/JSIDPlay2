@@ -56,6 +56,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.http.HttpHeaders;
 
+import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
 import com.google.zxing.WriterException;
 
@@ -152,11 +153,19 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			final IniConfig config = servletParameters.getConfig();
 
 			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
-					.programName(getClass().getName()).build();
+					.programName(resourceBundle.getString("PROGRAM_NAME")).build();
 			commander.parse(args);
 			if (filePath == null) {
 				response.setContentType(MIME_TYPE_TEXT.toString());
 				commander.setConsole(new PrintStreamConsole(new PrintStream(response.getOutputStream())));
+				commander.setUsageFormatter(new DefaultUsageFormatter(commander) {
+					@Override
+					public void appendMainLine(StringBuilder out, boolean hasOptions, boolean hasCommands,
+							int indentCount, String indent) {
+						super.appendMainLine(out, false, hasCommands, indentCount, indent);
+					}
+
+				});
 				commander.usage();
 				return;
 			}
