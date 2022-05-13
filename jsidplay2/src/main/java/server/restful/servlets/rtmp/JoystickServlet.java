@@ -56,9 +56,9 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 	 * 
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doPost(request);
+		super.doGet(request);
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 

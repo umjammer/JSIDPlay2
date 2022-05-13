@@ -218,7 +218,7 @@ body {
 				startVideo();
 			}
 		};
-		xhttp.open("POST", "/static/insert_next_disk?name=$uuid", true);
+		xhttp.open("GET", "/static/insert_next_disk?name=$uuid", true);
 		xhttp.setRequestHeader("Accept", "application/json;charset=UTF-8");
 		xhttp.send();
 	}
@@ -230,7 +230,7 @@ body {
 				startVideo();
 			}
 		};
-		xhttp.open("POST", "/static/set_default_sid_model_6581?name=$uuid",
+		xhttp.open("GET", "/static/set_default_sid_model_6581?name=$uuid",
 				true);
 		xhttp.send();
 	}
@@ -242,7 +242,7 @@ body {
 				startVideo();
 			}
 		};
-		xhttp.open("POST", "/static/set_default_sid_model_8580?name=$uuid",
+		xhttp.open("GET", "/static/set_default_sid_model_8580?name=$uuid",
 				true);
 		xhttp.send();
 	}
@@ -254,7 +254,7 @@ body {
 				startVideo();
 			}
 		};
-		xhttp.open("POST", "/static/set_default_emulation_resid?name=$uuid",
+		xhttp.open("GET", "/static/set_default_emulation_resid?name=$uuid",
 				true);
 		xhttp.send();
 	}
@@ -266,7 +266,7 @@ body {
 				startVideo();
 			}
 		};
-		xhttp.open("POST", "/static/set_default_emulation_residfp?name=$uuid",
+		xhttp.open("GET", "/static/set_default_emulation_residfp?name=$uuid",
 				true);
 		xhttp.send();
 	}
@@ -279,7 +279,7 @@ body {
 				}
 			}
 		};
-		xhttp.open("POST", "/static/press_key?name=$uuid&type=" + key, true);
+		xhttp.open("GET", "/static/press_key?name=$uuid&type=" + key, true);
 		xhttp.send();
 	}
 
@@ -298,7 +298,7 @@ body {
 			if (this.readyState == 4 && this.status == 200) {
 			}
 		};
-		xhttp.open("POST", "/static/press_key?name=$uuid&press=" + key, true);
+		xhttp.open("GET", "/static/press_key?name=$uuid&press=" + key, true);
 		xhttp.send();
 	}
 	function releaseKey(key) {
@@ -307,7 +307,7 @@ body {
 			if (this.readyState == 4 && this.status == 200) {
 			}
 		};
-		xhttp.open("POST", "/static/press_key?name=$uuid&release=" + key, true);
+		xhttp.open("GET", "/static/press_key?name=$uuid&release=" + key, true);
 		xhttp.send();
 	}
 	function setJoyBtn(number, value) {
@@ -317,7 +317,7 @@ body {
 				startVideo();
 			}
 		};
-		xhttp.open("POST", "/static/joystick?name=$uuid&number=" + number
+		xhttp.open("GET", "/static/joystick?name=$uuid&number=" + number
 				+ "&value=" + value, true);
 		xhttp.send();
 	}
