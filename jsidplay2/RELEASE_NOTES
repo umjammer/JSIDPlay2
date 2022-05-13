@@ -16,6 +16,7 @@ JSIDPlay2Server:
 - Live videos: Now being controlled by web-page to watch demos better (insert the next disk, send keys, switch SID chip, etc.)
 - Live videos: Now shows infos in a status bar
 - Live videos: Scan bar-code to watch videos on your mobile phone
+- rest based API endpoints now have a usage
 
 JSIDPlay2app:
 - Connect USB hardware (SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay) directly with a mobile device. No PC required.
