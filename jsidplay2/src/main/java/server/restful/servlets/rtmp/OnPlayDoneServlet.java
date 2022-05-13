@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
+import sidplay.ini.converter.UUIDConverter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -26,8 +27,8 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.OnPlayDoneServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", order = -2)
-		private String name;
+		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = -2)
+		private UUID uuid;
 
 	}
 
@@ -75,11 +76,11 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
 					APP_SERVER_URL + getServletPath() + "?name=uuid", true);
-			if (servletParameters.name == null) {
+			if (servletParameters.uuid == null) {
 				commander.usage();
 				return;
 			}
-			UUID uuid = UUID.fromString(servletParameters.name);
+			UUID uuid = servletParameters.uuid;
 
 			info(String.format("onPlayDone: RTMP stream of: %s", uuid));
 			update(uuid, PlayerWithStatus::onPlayDone);
