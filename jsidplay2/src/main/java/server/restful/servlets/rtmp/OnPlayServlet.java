@@ -67,14 +67,14 @@ public class OnPlayServlet extends JSIDPlay2Servlet {
 	 * </pre>
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doGet(request);
+		super.doPost(request);
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					APP_SERVER_URL + getServletPath() + "?name=uuid");
+					APP_SERVER_URL + getServletPath() + "?name=uuid", true);
 			if (servletParameters.name == null) {
 				commander.usage();
 				return;

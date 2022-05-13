@@ -216,12 +216,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						}
 						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
 						response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
-						response.setContentType(MIME_TYPE_HTML.toString());
 
 						Map<String, String> replacements = createReplacements(request, file, uuid);
 						try (InputStream is = ConvertServlet.class
 								.getResourceAsStream("/server/restful/webapp/convert.html")) {
-							response.getOutputStream().println(convertStreamToString(is, UTF_8.name(), replacements));
+							setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 						}
 					} else {
 						response.setContentType(MIME_TYPE_TEXT.toString());

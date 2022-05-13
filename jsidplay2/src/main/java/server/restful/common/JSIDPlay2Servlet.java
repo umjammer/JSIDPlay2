@@ -93,8 +93,14 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
 			final Object parameterObject, String programName) throws IOException {
+		return parseRequestParameters(request, response, parameterObject, programName, false);
+	}
+
+	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
+			final Object parameterObject, String programName, boolean acceptUnknownOptions) throws IOException {
 		JCommander commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
-				.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream()))).build();
+				.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream())))
+				.acceptUnknownOptions(acceptUnknownOptions).build();
 		commander.setUsageFormatter(new ServletUsageFormatter(commander, response));
 		commander.parse(getRequestParameters(request));
 		return commander;
