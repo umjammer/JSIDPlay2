@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.MissingResourceException;
@@ -99,7 +100,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
 			final Object parameterObject, String programName, boolean acceptUnknownOptions) throws IOException {
 		JCommander commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
-				.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream())))
+				.columnSize(120)
+				.console(new PrintStreamConsole(
+						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
 				.acceptUnknownOptions(acceptUnknownOptions).build();
 		commander.setUsageFormatter(new ServletUsageFormatter(commander, response));
 		commander.parse(getRequestParameters(request));
