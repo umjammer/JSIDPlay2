@@ -3,6 +3,7 @@ package sidplay.ini.converter;
 import java.util.UUID;
 
 import com.beust.jcommander.IStringConverter;
+import com.beust.jcommander.ParameterException;
 
 public final class UUIDConverter implements IStringConverter<UUID> {
 
@@ -11,7 +12,8 @@ public final class UUIDConverter implements IStringConverter<UUID> {
 		try {
 			return UUID.fromString(value);
 		} catch (IllegalArgumentException e) {
-			return null;
+			throw new ParameterException(
+					"Invalid UUID, expected pattern xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (found " + value + ")");
 		}
 	}
 }
