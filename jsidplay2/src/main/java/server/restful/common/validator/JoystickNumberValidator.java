@@ -7,8 +7,8 @@ public class JoystickNumberValidator implements IParameterValidator {
 	@Override
 	public void validate(String name, String value) throws ParameterException {
 		int n = Integer.parseInt(value);
-		if (n < 0 || n > 255) {
-			throw new ParameterException("Invalid " + name + " value, expected 0..255 (found " + value + ")");
+		if (n < 0 || n > 1) {
+			throw new ParameterException("Invalid " + name + " value, expected 0 or 1 (found " + value + ")");
 		}
 	}
 }
