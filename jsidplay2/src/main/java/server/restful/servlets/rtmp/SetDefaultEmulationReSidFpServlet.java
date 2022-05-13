@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
-import sidplay.ini.converter.UUIDConverter;
+import server.restful.common.converter.UUIDConverter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")

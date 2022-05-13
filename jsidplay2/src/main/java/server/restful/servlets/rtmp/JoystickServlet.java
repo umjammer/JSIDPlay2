@@ -17,7 +17,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import sidplay.ini.converter.UUIDConverter;
+import server.restful.common.converter.UUIDConverter;
+import server.restful.common.validator.JoystickNumberValidator;
+import server.restful.common.validator.JoystickValueValidator;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -29,10 +31,12 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = -4)
 		private UUID uuid;
 
-		@Parameter(names = { "--number" }, descriptionKey = "NUMBER", order = -3)
+		@Parameter(names = {
+				"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = -3)
 		private int number;
 
-		@Parameter(names = { "--value" }, descriptionKey = "VALUE", order = -2)
+		@Parameter(names = {
+				"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = -2)
 		private int value;
 	}
 
