@@ -7,7 +7,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -24,10 +27,23 @@ import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.PrintStreamConsole;
+import server.restful.common.ServletUsageFormatter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DirectoryServlet extends JSIDPlay2Servlet {
+
+	@Parameters(resourceBundle = "server.restful.servlets.DirectoryServletParameters")
+	public static class ServletParameters {
+
+		@Parameter(names = { "--filter" }, descriptionKey = "FILTER", order = -2)
+		private String filter;
+
+		@Parameter
+		private String filePath;
+
+	}
 
 	public static final String DIRECTORY_PATH = "/directory";
 
@@ -51,38 +67,49 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			String filePath = request.getPathInfo();
-			String filter = request.getParameter("filter");
+			final ServletParameters servletParameters = new ServletParameters();
 
-			List<String> files = getDirectory(filePath, filter, request.isUserInRole(ROLE_ADMIN));
+			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
+					.programName("https://haendel.ddns.net:8443" + getServletPath() + "/<filePath>?filter=<regexp>")
+					.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream())))
+					.build();
+			commander.parse(getRequestParameters(request));
+			if (servletParameters.filePath == null) {
+				response.setContentType(MIME_TYPE_TEXT.toString());
+				commander.setUsageFormatter(new ServletUsageFormatter(commander));
+				commander.usage();
+				return;
+			}
+			List<String> files = getDirectory(servletParameters.filePath, servletParameters.filter,
+					request.isUserInRole(ROLE_ADMIN));
 
 			response.setContentType(MIME_TYPE_JSON.toString());
-			response.getWriter().println(new ObjectMapper().writer().writeValueAsString(files));
+			response.getOutputStream().println(new ObjectMapper().writer().writeValueAsString(files));
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			t.printStackTrace(new PrintStream(response.getOutputStream()));
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	private List<String> getDirectory(String path, String filter, boolean adminRole) {
-		if (path == null || path.equals("/")) {
+	private List<String> getDirectory(String filePath, String filter, boolean adminRole) {
+		if (filePath == null || filePath.equals("/")) {
 			return getRoot(adminRole);
-		} else if (path.startsWith(C64_MUSIC)) {
+		} else if (filePath.startsWith(C64_MUSIC)) {
 			File root = configuration.getSidplay2Section().getHvsc();
-			return getCollectionFiles(root, path, filter, C64_MUSIC, adminRole);
-		} else if (path.startsWith(CGSC)) {
+			return getCollectionFiles(root, filePath, filter, C64_MUSIC, adminRole);
+		} else if (filePath.startsWith(CGSC)) {
 			File root = configuration.getSidplay2Section().getCgsc();
-			return getCollectionFiles(root, path, filter, CGSC, adminRole);
+			return getCollectionFiles(root, filePath, filter, CGSC, adminRole);
 		}
 		for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
 			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
 			String directoryValue = splitted.length > 0 ? splitted[0] : null;
 			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-			if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
+			if ((!needToBeAdmin || adminRole) && filePath.startsWith(directoryLogicalName) && directoryValue != null) {
 				File root = new TFile(directoryValue);
-				return getCollectionFiles(root, path, filter, directoryLogicalName, adminRole);
+				return getCollectionFiles(root, filePath, filter, directoryLogicalName, adminRole);
 			}
 		}
 		return getRoot(adminRole);

@@ -7,7 +7,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -16,6 +16,9 @@ import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -25,12 +28,22 @@ import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.PrintStreamConsole;
+import server.restful.common.ServletUsageFormatter;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.config.Configuration;
 import ui.musiccollection.SearchCriteria;
 
 @SuppressWarnings("serial")
 public class TuneInfoServlet extends JSIDPlay2Servlet {
+
+	@Parameters(resourceBundle = "server.restful.servlets.TuneInfoServletParameters")
+	public static class ServletParameters {
+
+		@Parameter
+		private String filePath;
+
+	}
 
 	public static final String TUNE_INFO_PATH = "/info";
 
@@ -54,17 +67,29 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			String filePath = request.getPathInfo();
+			final ServletParameters servletParameters = new ServletParameters();
+
+			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
+					.programName("https://haendel.ddns.net:8443" + getServletPath() + "/<filePath>").columnSize(120)
+					.console(new PrintStreamConsole(new PrintStream(response.getOutputStream()))).build();
+			commander.parse(getRequestParameters(request));
+			if (servletParameters.filePath == null) {
+				response.setContentType(MIME_TYPE_TEXT.toString());
+				commander.setUsageFormatter(new ServletUsageFormatter(commander));
+				commander.usage();
+				return;
+			}
+			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
+
 			response.setContentType(MIME_TYPE_JSON.toString());
-			File tuneFile = getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN));
 
-			TreeMap<String, String> tuneInfos = hvscEntry2SortedMap(createHVSCEntry(tuneFile));
+			TreeMap<String, String> tuneInfos = hvscEntry2SortedMap(createHVSCEntry(file));
 
-			response.getWriter().println(new ObjectMapper().writer().writeValueAsString(tuneInfos));
+			response.getOutputStream().println(new ObjectMapper().writer().writeValueAsString(tuneInfos));
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			t.printStackTrace(new PrintStream(response.getOutputStream()));
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

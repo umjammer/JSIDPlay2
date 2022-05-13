@@ -43,22 +43,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
 import org.apache.http.HttpHeaders;
 
-import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
+import com.beust.jcommander.ParametersDelegate;
 import com.google.zxing.WriterException;
 
 import jakarta.servlet.Filter;
@@ -76,7 +74,7 @@ import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PrintStreamConsole;
-import server.restful.common.ServletParameters;
+import server.restful.common.ServletUsageFormatter;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -105,6 +103,31 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class ConvertServlet extends JSIDPlay2Servlet {
+
+	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
+	public static class ServletParameters {
+
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -5)
+		private Integer song = null;
+
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -4)
+		private Boolean download = Boolean.FALSE;
+
+		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -3)
+		private Boolean jiffydos = Boolean.FALSE;
+
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -2)
+		private Integer reuSize = null;
+
+		@ParametersDelegate
+		private IniConfig config = new IniConfig();
+
+		@Parameter
+		private String filePath;
+
+		private volatile boolean started;
+
+	}
 
 	public static final String CONVERT_PATH = "/convert";
 
@@ -153,22 +176,15 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							+ "/<filePath>?option1=value1& ... &optionN=valueN")
 					.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream())))
 					.build();
-			String[] args = getRequestParameters(request);
-			commander.parse(args);
-			if (servletParameters.getFilePath() == null) {
+			commander.parse(getRequestParameters(request));
+			if (servletParameters.filePath == null) {
 				response.setContentType(MIME_TYPE_TEXT.toString());
-				commander.setUsageFormatter(new DefaultUsageFormatter(commander) {
-					@Override
-					public void appendMainLine(StringBuilder out, boolean hasOptions, boolean hasCommands,
-							int indentCount, String indent) {
-						super.appendMainLine(out, false, hasCommands, indentCount, indent);
-					}
-				});
+				commander.setUsageFormatter(new ServletUsageFormatter(commander));
 				commander.usage();
 				return;
 			}
-			final IniConfig config = servletParameters.getConfig();
-			final File file = getAbsoluteFile(servletParameters.getFilePath(), request.isUserInRole(ROLE_ADMIN));
+			final IniConfig config = servletParameters.config;
+			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
 
 			if (audioTuneFileFilter.accept(file)) {
 
@@ -176,7 +192,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream());
 
 				response.setContentType(getMimeType(driver.getExtension()).toString());
-				if (Boolean.TRUE.equals(servletParameters.getDownload())) {
+				if (Boolean.TRUE.equals(servletParameters.download)) {
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 							+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
 				}
@@ -187,9 +203,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				UUID uuid = UUID.randomUUID();
 
 				Audio audio = getVideoFormat(config);
-				AudioDriver driver = getAudioDriverOfVideoFormat(audio, uuid, servletParameters.getDownload());
+				AudioDriver driver = getAudioDriverOfVideoFormat(audio, uuid, servletParameters.download);
 
-				if (Boolean.FALSE.equals(servletParameters.getDownload()) && audio == FLV) {
+				if (Boolean.FALSE.equals(servletParameters.download) && audio == FLV) {
 					if (getAllStackTraces().keySet().stream().map(Thread::getName).filter("RTMP"::equals)
 							.count() < MAX_RTMP_IN_PARALLEL) {
 						new Thread(() -> {
@@ -200,10 +216,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							} catch (IOException | SidTuneError e) {
 								log("ERROR RTMP stream of: " + uuid, e);
 							} finally {
-								servletParameters.setStarted(true);
+								servletParameters.started = true;
 							}
 						}, "RTMP").start();
-						while (!servletParameters.isStarted()) {
+						while (!servletParameters.started) {
 							Thread.yield();
 						}
 						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
@@ -222,7 +238,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					}
 				} else {
 					response.setContentType(getMimeType(driver.getExtension()).toString());
-					if (Boolean.TRUE.equals(servletParameters.getDownload())) {
+					if (Boolean.TRUE.equals(servletParameters.download)) {
 						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 								+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
 					}
@@ -231,10 +247,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					videoFile.delete();
 				}
 			} else {
-				response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
+				response.setContentType(getMimeType(getFilenameSuffix(servletParameters.filePath)).toString());
 				response.addHeader(CONTENT_DISPOSITION,
-						ATTACHMENT + "; filename=" + new File(servletParameters.getFilePath()).getName());
-				copy(getAbsoluteFile(servletParameters.getFilePath(), request.isUserInRole(ROLE_ADMIN)),
+						ATTACHMENT + "; filename=" + new File(servletParameters.filePath).getName());
+				copy(getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN)),
 						response.getOutputStream());
 			}
 		} catch (Throwable t) {
@@ -243,16 +259,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			t.printStackTrace(new PrintStream(response.getOutputStream()));
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
-	}
-
-	private String[] getRequestParameters(HttpServletRequest request) {
-		return Stream
-				.concat(Collections.list(request.getParameterNames()).stream()
-						.flatMap(name -> Arrays.asList(request.getParameterValues(name)).stream()
-								.map(v -> Stream.of((name.length() > 1 ? "--" : "-") + name, v)))
-						.flatMap(Function.identity()),
-						Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(Stream.empty()))
-				.toArray(String[]::new);
 	}
 
 	private Audio getAudioFormat(IConfig config) {
@@ -300,11 +306,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 		player.setAudioDriver(driver);
 		player.setDefaultLengthInRecordMode(true);
-		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
+		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
 		SidTune tune = SidTune.load(file);
-		tune.getInfo().setSelectedSong(servletParameters.getSong());
+		tune.getInfo().setSelectedSong(servletParameters.song);
 		player.play(tune);
 		player.stopC64(false);
 	}
@@ -344,26 +350,26 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		IC1541Section c1541Section = config.getC1541Section();
 
-		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.getJiffydos()));
+		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.jiffydos));
 
 		Player player = new Player(config);
-		if (Boolean.TRUE.equals(servletParameters.getDownload())) {
+		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_DOWNLOAD_LENGTH));
 			videoFile = createVideoFile(player, driver);
 		}
 		player.setAudioDriver(driver);
-		player.setDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
-		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.getDownload()));
+		player.setDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
+		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
 		addPressSpaceListener(player);
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
-		if (servletParameters.getReuSize() != null) {
-			player.insertCartridge(CartridgeType.REU, servletParameters.getReuSize());
+		if (servletParameters.reuSize != null) {
+			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
 		}
 		if (uuid != null) {
 			create(uuid, player, file, resourceBundle);
-			servletParameters.setStarted(true);
+			servletParameters.started = true;
 		}
 		player.stopC64(false);
 		return videoFile;

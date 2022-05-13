@@ -7,10 +7,14 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Properties;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,10 +25,20 @@ import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
 import libsidutils.PathUtils;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.PrintStreamConsole;
+import server.restful.common.ServletUsageFormatter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class PhotoServlet extends JSIDPlay2Servlet {
+
+	@Parameters(resourceBundle = "server.restful.servlets.PhotoServletParameters")
+	public static class ServletParameters {
+
+		@Parameter
+		private String filePath;
+
+	}
 
 	public static final String PHOTO_PATH = "/photo";
 
@@ -48,17 +62,28 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			String filePath = request.getPathInfo();
-			File absoluteFile = getAbsoluteFile(filePath, request.isUserInRole(ROLE_ADMIN));
+			final ServletParameters servletParameters = new ServletParameters();
+
+			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
+					.programName("https://haendel.ddns.net:8443" + getServletPath() + "/<filePath>").columnSize(120)
+					.console(new PrintStreamConsole(new PrintStream(response.getOutputStream()))).build();
+			commander.parse(getRequestParameters(request));
+			if (servletParameters.filePath == null) {
+				response.setContentType(MIME_TYPE_TEXT.toString());
+				commander.setUsageFormatter(new ServletUsageFormatter(commander));
+				commander.usage();
+				return;
+			}
+			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
 
 			response.setContentType(MIME_TYPE_JPG.toString());
-			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), absoluteFile);
+			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), file);
 			response.getOutputStream().write(photo);
 			response.setContentLength(photo.length);
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			t.printStackTrace(new PrintStream(response.getOutputStream()));
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

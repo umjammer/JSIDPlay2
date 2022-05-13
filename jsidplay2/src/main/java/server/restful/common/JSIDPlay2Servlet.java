@@ -17,6 +17,8 @@ import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 
@@ -83,6 +85,16 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected void error(Throwable t) {
 		log(thread() + t.getMessage(), t);
+	}
+
+	protected String[] getRequestParameters(HttpServletRequest request) {
+		return Stream
+				.concat(Collections.list(request.getParameterNames()).stream()
+						.flatMap(name -> Arrays.asList(request.getParameterValues(name)).stream()
+								.map(v -> Stream.of((name.length() > 1 ? "--" : "-") + name, v)))
+						.flatMap(Function.identity()),
+						Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(Stream.empty()))
+				.toArray(String[]::new);
 	}
 
 	@SuppressWarnings("unchecked")
