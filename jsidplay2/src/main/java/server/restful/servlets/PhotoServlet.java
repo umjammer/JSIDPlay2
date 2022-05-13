@@ -4,6 +4,7 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JPG;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +26,6 @@ import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
 import libsidutils.PathUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.PrintStreamConsole;
-import server.restful.common.ServletUsageFormatter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -64,20 +63,18 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
-					.programName("https://haendel.ddns.net:8443" + getServletPath() + "/<filePath>").columnSize(120)
-					.console(new PrintStreamConsole(new PrintStream(response.getOutputStream()))).build();
-			commander.parse(getRequestParameters(request));
+			JCommander commander = parseRequestParameters(request, response, servletParameters,
+					APP_SERVER_URL + getServletPath() + "/<filePath>");
 			if (servletParameters.filePath == null) {
-				response.setContentType(MIME_TYPE_TEXT.toString());
-				commander.setUsageFormatter(new ServletUsageFormatter(commander));
 				commander.usage();
 				return;
 			}
 			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
 
 			response.setContentType(MIME_TYPE_JPG.toString());
+
 			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), file);
+
 			response.getOutputStream().write(photo);
 			response.setContentLength(photo.length);
 		} catch (Throwable t) {

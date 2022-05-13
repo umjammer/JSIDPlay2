@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.tomcat.util.http.fileupload.FileItemIterator;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
+import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.Filter;
@@ -87,7 +89,16 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		log(thread() + t.getMessage(), t);
 	}
 
-	protected String[] getRequestParameters(HttpServletRequest request) {
+	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
+			final Object parameterObject, String programName) throws IOException {
+		JCommander commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
+				.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream()))).build();
+		commander.setUsageFormatter(new ServletUsageFormatter(commander, response));
+		commander.parse(getRequestParameters(request));
+		return commander;
+	}
+
+	private String[] getRequestParameters(HttpServletRequest request) {
 		return Stream
 				.concat(Collections.list(request.getParameterNames()).stream()
 						.flatMap(name -> Arrays.asList(request.getParameterValues(name)).stream()

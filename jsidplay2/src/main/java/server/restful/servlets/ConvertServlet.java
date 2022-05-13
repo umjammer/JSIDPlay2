@@ -36,6 +36,7 @@ import static sidplay.audio.Audio.MP4;
 import static sidplay.audio.Audio.SID_DUMP;
 import static sidplay.audio.Audio.SID_REG;
 import static sidplay.audio.Audio.WAV;
+import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -73,8 +74,6 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.PrintStreamConsole;
-import server.restful.common.ServletUsageFormatter;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -171,15 +170,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = JCommander.newBuilder().addObject(servletParameters)
-					.programName("https://haendel.ddns.net:8443" + getServletPath()
-							+ "/<filePath>?option1=value1& ... &optionN=valueN")
-					.columnSize(120).console(new PrintStreamConsole(new PrintStream(response.getOutputStream())))
-					.build();
-			commander.parse(getRequestParameters(request));
+			JCommander commander = parseRequestParameters(request, response, servletParameters,
+					APP_SERVER_URL + getServletPath() + "/<filePath>?option1=value1& ... &optionN=valueN");
 			if (servletParameters.filePath == null) {
-				response.setContentType(MIME_TYPE_TEXT.toString());
-				commander.setUsageFormatter(new ServletUsageFormatter(commander));
 				commander.usage();
 				return;
 			}

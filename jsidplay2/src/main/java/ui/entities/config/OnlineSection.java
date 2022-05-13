@@ -38,9 +38,9 @@ public class OnlineSection {
 	/**
 	 * URL of the JSIDPlay2 AppServer.
 	 */
-	public static final String APP_SERVER_URL = "https://haendel.ddns.net:8443/";
+	public static final String APP_SERVER_URL = "https://haendel.ddns.net:8443";
 
-	public static final String ONLINE_PLAYER_URL = APP_SERVER_URL + "static/hvsc.vue";
+	public static final String ONLINE_PLAYER_URL = APP_SERVER_URL + "/static/hvsc.vue";
 
 	/**
 	 * URL where SOASC downloads are located.
