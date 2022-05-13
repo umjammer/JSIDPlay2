@@ -12,7 +12,6 @@ import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
@@ -71,10 +70,10 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.filePath)).toString());
 			response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + file.getName());
 			copy(file, response.getOutputStream());
+
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintStream(response.getOutputStream()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

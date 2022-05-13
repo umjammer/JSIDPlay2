@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -248,8 +247,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			}
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintStream(response.getOutputStream()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

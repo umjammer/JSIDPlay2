@@ -1,13 +1,17 @@
 package server.restful.servlets.rtmp;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
-import static server.restful.common.PlayerCleanupTimerTask.update;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.PlayerCleanupTimerTask.update;
+import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Properties;
 import java.util.UUID;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +22,14 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class PressKeyServlet extends JSIDPlay2Servlet {
+
+	@Parameters(resourceBundle = "server.restful.servlets.rtmp.PressKeyServletParameters")
+	public static class ServletParameters {
+
+		@Parameter(names = { "--name" }, descriptionKey = "NAME", order = -2)
+		private String name;
+
+	}
 
 	public static final String PRESS_KEY_PATH = "/press_key";
 
@@ -45,7 +57,15 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doPost(request);
 		try {
-			UUID uuid = UUID.fromString(request.getParameter("name"));
+			final ServletParameters servletParameters = new ServletParameters();
+
+			JCommander commander = parseRequestParameters(request, response, servletParameters,
+					APP_SERVER_URL + getServletPath() + "?name=uuid");
+			if (servletParameters.name == null) {
+				commander.usage();
+				return;
+			}
+			UUID uuid = UUID.fromString(servletParameters.name);
 
 			if (request.getParameter("type") != null) {
 				KeyTableEntry key = KeyTableEntry.valueOf(KeyTableEntry.class, request.getParameter("type"));
@@ -65,8 +85,7 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			}
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}
 

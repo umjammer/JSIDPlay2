@@ -8,7 +8,6 @@ import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,6 +59,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 	 *
 	 * E.g.
 	 * http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/directory/C64Music/MUSICIANS?filter=.*%5C.(sid%7Cdat%7Cmus%7Cstr%7Cmp3%7Cmp4%7Cjpg%7Cprg%7Cd64)$
+	 * http://127.0.0.1:8080/jsidplay2service/JSIDPlay2REST/directory/Images?filter=.*%5C.(sid%7Cdat%7Cmus%7Cstr%7Cmp3%7Cmp4%7Cjpg%7Cprg%7Cd64)$
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -77,12 +77,11 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			List<String> files = getDirectory(servletParameters.filePath, servletParameters.filter,
 					request.isUserInRole(ROLE_ADMIN));
 
-			response.setContentType(MIME_TYPE_JSON.toString());
-			response.getOutputStream().println(new ObjectMapper().writer().writeValueAsString(files));
+			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(files));
+
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintStream(response.getOutputStream()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

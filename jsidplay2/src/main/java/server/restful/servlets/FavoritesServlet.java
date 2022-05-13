@@ -5,7 +5,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -48,12 +47,11 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 		try {
 			List<String> filters = getFirstFavorites();
 
-			response.setContentType(MIME_TYPE_JSON.toString());
-			response.getOutputStream().println(new ObjectMapper().writer().writeValueAsString(filters));
+			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(filters));
+
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintStream(response.getOutputStream()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

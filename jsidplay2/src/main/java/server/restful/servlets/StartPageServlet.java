@@ -8,7 +8,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,14 +48,12 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 			Map<String, String> replacements = new HashMap<>();
 			replacements.put("https://haendel.ddns.net:8443", preferredProtocol + "://" + hostname + ":" + portNum);
 
-			response.setContentType(MIME_TYPE_HTML.toString());
 			try (InputStream is = SidTune.class.getResourceAsStream("/doc/restful.html")) {
-				response.getWriter().println(convertStreamToString(is, UTF_8.name(), replacements));
+				setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 			}
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

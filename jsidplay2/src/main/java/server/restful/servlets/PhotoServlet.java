@@ -8,7 +8,6 @@ import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Properties;
@@ -77,10 +76,10 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 
 			response.getOutputStream().write(photo);
 			response.setContentLength(photo.length);
+
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintStream(response.getOutputStream()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

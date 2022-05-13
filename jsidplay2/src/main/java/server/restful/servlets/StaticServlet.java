@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
@@ -66,17 +65,12 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			}
 
 			try (InputStream source = getResourceAsStream(servletParameters.filePath)) {
-				response.setContentType(
-						getMimeType(PathUtils.getFilenameSuffix(servletParameters.filePath)).toString());
-				response.getOutputStream().println(ZipFileUtils.convertStreamToString(source, "UTF-8"));
-			} catch (IOException e) {
-				response.setContentType(MIME_TYPE_TEXT.toString());
-				e.printStackTrace(new PrintStream(response.getOutputStream()));
+				setOutput(response, getMimeType(PathUtils.getFilenameSuffix(servletParameters.filePath)),
+						ZipFileUtils.convertStreamToString(source, "UTF-8"));
 			}
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintStream(response.getOutputStream()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

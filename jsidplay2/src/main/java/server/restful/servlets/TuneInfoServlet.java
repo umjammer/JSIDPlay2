@@ -8,7 +8,6 @@ import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -76,15 +75,13 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			}
 			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
 
-			response.setContentType(MIME_TYPE_JSON.toString());
-
 			TreeMap<String, String> tuneInfos = hvscEntry2SortedMap(createHVSCEntry(file));
 
-			response.getOutputStream().println(new ObjectMapper().writer().writeValueAsString(tuneInfos));
+			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(tuneInfos));
+
 		} catch (Throwable t) {
 			error(t);
-			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintStream(response.getOutputStream()));
+			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
