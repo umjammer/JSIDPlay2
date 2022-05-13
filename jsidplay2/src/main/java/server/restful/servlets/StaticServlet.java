@@ -3,14 +3,19 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
+import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.Properties;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +28,14 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class StaticServlet extends JSIDPlay2Servlet {
+
+	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
+	public static class ServletParameters {
+
+		@Parameter
+		private String filePath;
+
+	}
 
 	public StaticServlet(Configuration configuration, Properties directoryProperties) {
 		super(configuration, directoryProperties);
@@ -43,18 +56,27 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			String filePath = request.getPathInfo();
-			try (InputStream source = getResourceAsStream(filePath)) {
-				response.setContentType(getMimeType(PathUtils.getFilenameSuffix(filePath)).toString());
-				response.getWriter().println(ZipFileUtils.convertStreamToString(source, "UTF-8"));
+			final ServletParameters servletParameters = new ServletParameters();
+
+			JCommander commander = parseRequestParameters(request, response, servletParameters,
+					APP_SERVER_URL + getServletPath() + "/<filePath>");
+			if (servletParameters.filePath == null) {
+				commander.usage();
+				return;
+			}
+
+			try (InputStream source = getResourceAsStream(servletParameters.filePath)) {
+				response.setContentType(
+						getMimeType(PathUtils.getFilenameSuffix(servletParameters.filePath)).toString());
+				response.getOutputStream().println(ZipFileUtils.convertStreamToString(source, "UTF-8"));
 			} catch (IOException e) {
 				response.setContentType(MIME_TYPE_TEXT.toString());
-				e.printStackTrace(new PrintWriter(response.getWriter()));
+				e.printStackTrace(new PrintStream(response.getOutputStream()));
 			}
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			t.printStackTrace(new PrintStream(response.getOutputStream()));
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

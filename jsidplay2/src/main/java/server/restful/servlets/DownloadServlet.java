@@ -12,7 +12,7 @@ import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
@@ -74,7 +74,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 		} catch (Throwable t) {
 			error(t);
 			response.setContentType(MIME_TYPE_TEXT.toString());
-			t.printStackTrace(new PrintWriter(response.getWriter()));
+			t.printStackTrace(new PrintStream(response.getOutputStream()));
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
