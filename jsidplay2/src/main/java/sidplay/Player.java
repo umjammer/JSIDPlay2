@@ -282,7 +282,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	/**
 	 * Consumer for CPU JMP/JSR instructions
 	 */
-	private List<IMOS6510Extension> mos6510Extension = new CopyOnWriteArrayList<>();
+	private List<IMOS6510Extension> mos6510Extensions = new CopyOnWriteArrayList<>();
 
 	/**
 	 * Fast forward: skipped VIC frames.
@@ -1201,7 +1201,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * @param mos6510Extension consumer of MOS6510 JMP/JSR instructions
 	 */
 	public void addMOS6510Extension(IMOS6510Extension mos6510Extension) {
-		this.mos6510Extension.add(mos6510Extension);
+		mos6510Extensions.add(mos6510Extension);
 	}
 
 	/**
@@ -1210,7 +1210,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * @param mos6510Extension of MOS6510 JMP/JSR instructions
 	 */
 	public void removeMOS6510Extension(IMOS6510Extension mos6510Extension) {
-		this.mos6510Extension.remove(mos6510Extension);
+		this.mos6510Extensions.remove(mos6510Extension);
 	}
 
 	/**
@@ -1239,7 +1239,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 
 	@Override
 	public void jmpJsr() {
-		Iterator<IMOS6510Extension> iterator = mos6510Extension.iterator();
+		Iterator<IMOS6510Extension> iterator = mos6510Extensions.iterator();
 		while (iterator.hasNext()) {
 			iterator.next().jmpJsr();
 		}
