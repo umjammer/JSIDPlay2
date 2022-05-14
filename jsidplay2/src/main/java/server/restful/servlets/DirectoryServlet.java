@@ -35,7 +35,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 	public static class ServletParameters {
 
 		@Parameter(names = { "--filter" }, descriptionKey = "FILTER", order = -2)
-		private String filter;
+		private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";
 
 		@Parameter(description = "filePath")
 		private String filePath;

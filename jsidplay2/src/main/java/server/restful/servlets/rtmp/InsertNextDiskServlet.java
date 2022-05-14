@@ -56,8 +56,7 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					getServletPath() + "?name=uuid");
+			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {
 				commander.usage();
 				return;

@@ -3,6 +3,10 @@ package server.restful.common;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,41 +31,54 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	@Override
 	public void appendMainLine(StringBuilder out, boolean hasOptions, boolean hasCommands, int indentCount,
 			String indent) {
-		response.setContentType(MIME_TYPE_TEXT.toString());
-		String programName = commander.getProgramDisplayName();
-		StringBuilder mainLine = new StringBuilder();
-		mainLine.append(indent).append("Usage: ").append(BASE_URL).append(programName);
+		try {
+			response.setContentType(MIME_TYPE_TEXT.toString());
 
-		if (commander.getMainParameter() != null && commander.getMainParameterDescription() != null) {
-			mainLine.append("/").append(commander.getMainParameterDescription());
-		}
+			StringBuilder mainLine = new StringBuilder();
+			mainLine.append(indent).append("Usage: ");
 
-		List<ParameterDescription> arguments = commander.getFields().values().stream()
-				.filter(pd -> !pd.getParameter().hidden() && (pd.getParameterized().getType() != boolean.class
-						|| pd.getParameterized().getParameter().arity() == 1))
-				.sorted(commander.getParameterDescriptionComparator()).collect(Collectors.toList());
+			StringBuilder urlAsString = new StringBuilder();
+			urlAsString.append(BASE_URL).append(commander.getProgramDisplayName());
 
-		if (arguments.size() > 0) {
-			mainLine.append("?");
-			arguments.forEach(parameterDescription -> {
-				mainLine.append(getName(parameterDescription.getNames()));
-				mainLine.append("=");
-				if (!parameterDescription.getParameter().password()) {
-					if (parameterDescription.getParameterized().getType() == UUID.class) {
-						mainLine.append("12345678-0000-0000-0000-123456789012");
+			if (commander.getMainParameter() != null && commander.getMainParameterDescription() != null) {
+				urlAsString.append("/").append(commander.getMainParameterDescription());
+			}
+
+			List<ParameterDescription> arguments = commander.getFields().values().stream()
+					.filter(pd -> !pd.getParameter().hidden() && (pd.getParameterized().getType() != boolean.class
+							|| pd.getParameterized().getParameter().arity() == 1))
+					.sorted(commander.getParameterDescriptionComparator()).collect(Collectors.toList());
+
+			if (arguments.size() > 0) {
+				urlAsString.append("?");
+				arguments.forEach(parameterDescription -> {
+					urlAsString.append(getName(parameterDescription.getNames()));
+					urlAsString.append("=");
+					if (!parameterDescription.getParameter().password()) {
+						if (parameterDescription.getParameterized().getType() == UUID.class) {
+							urlAsString.append("12345678-0000-0000-0000-123456789012");
+						} else {
+							urlAsString.append(String.valueOf(parameterDescription.getDefault()));
+						}
 					} else {
-						mainLine.append(parameterDescription.getDefault());
+						urlAsString.append("***");
 					}
-				} else {
-					mainLine.append("***");
-				}
-				if (!arguments.get(arguments.size() - 1).equals(parameterDescription)) {
-					mainLine.append("&");
-				}
-			});
+					if (!arguments.get(arguments.size() - 1).equals(parameterDescription)) {
+						urlAsString.append("&");
+					}
+				});
+			}
+			URL url = new URL(urlAsString.toString());
+			URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
+					url.getQuery(), url.getRef());
+
+			mainLine.append(uri.toASCIIString());
+			wrapDescription(out, indentCount, mainLine.toString());
+			out.append("\n");
+
+		} catch (URISyntaxException | MalformedURLException e) {
+			throw new RuntimeException(e);
 		}
-		wrapDescription(out, indentCount, mainLine.toString());
-		out.append("\n");
 	}
 
 	private String getName(String names) {
