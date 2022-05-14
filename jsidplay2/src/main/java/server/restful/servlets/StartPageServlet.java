@@ -5,10 +5,10 @@ import static libsidutils.ZipFileUtils.convertStreamToString;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_START_PAGE;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.IServletSystemProperties.BASE_URL;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -17,10 +17,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.sidtune.SidTune;
-import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
-import ui.entities.config.EmulationSection;
 
 @SuppressWarnings("serial")
 public class StartPageServlet extends JSIDPlay2Servlet {
@@ -39,14 +37,8 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			EmulationSection emulationSection = configuration.getEmulationSection();
-
-			Connectors appServerConnectors = emulationSection.getAppServerConnectors();
-			String preferredProtocol = appServerConnectors.getPreferredProtocol();
-			String hostname = InetAddress.getLocalHost().getHostAddress();
-			String portNum = String.valueOf(appServerConnectors.getPreferredPortNum());
 			Map<String, String> replacements = new HashMap<>();
-			replacements.put("https://haendel.ddns.net:8443", preferredProtocol + "://" + hostname + ":" + portNum);
+			replacements.put("https://haendel.ddns.net:8443", BASE_URL);
 
 			try (InputStream is = SidTune.class.getResourceAsStream("/doc/restful.html")) {
 				setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));

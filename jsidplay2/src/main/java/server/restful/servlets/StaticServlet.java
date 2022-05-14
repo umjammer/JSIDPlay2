@@ -3,7 +3,7 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
-import static ui.entities.config.OnlineSection.APP_SERVER_URL;
+import static server.restful.common.IServletSystemProperties.BASE_URL;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +58,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					APP_SERVER_URL + getServletPath() + "/<filePath>");
+					BASE_URL + getServletPath() + "/<filePath>");
 			if (servletParameters.filePath == null) {
 				commander.usage();
 				return;

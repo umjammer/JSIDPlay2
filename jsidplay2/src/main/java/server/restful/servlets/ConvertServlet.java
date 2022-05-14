@@ -16,6 +16,7 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
+import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.MAX_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
@@ -36,7 +37,6 @@ import static sidplay.audio.Audio.MP4;
 import static sidplay.audio.Audio.SID_DUMP;
 import static sidplay.audio.Audio.SID_REG;
 import static sidplay.audio.Audio.WAV;
-import static ui.entities.config.OnlineSection.APP_SERVER_URL;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -106,7 +106,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	public static class ServletParameters {
 
 		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -5)
-		private Integer song = null;
+		private Integer startSong = null;
 
 		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -4)
 		private Boolean download = Boolean.FALSE;
@@ -170,7 +170,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					APP_SERVER_URL + getServletPath() + "/<filePath>?option1=value1& ... &optionN=valueN");
+					BASE_URL + getServletPath() + "/<filePath>?option1=value1& ... &optionN=valueN");
 			if (servletParameters.filePath == null) {
 				commander.usage();
 				return;
@@ -300,7 +300,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setForceCheckSongLength(true);
 
 		SidTune tune = SidTune.load(file);
-		tune.getInfo().setSelectedSong(servletParameters.song);
+		tune.getInfo().setSelectedSong(servletParameters.startSong);
 		player.play(tune);
 		player.stopC64(false);
 	}

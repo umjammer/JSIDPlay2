@@ -4,7 +4,7 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JPG;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static ui.entities.config.OnlineSection.APP_SERVER_URL;
+import static server.restful.common.IServletSystemProperties.BASE_URL;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					APP_SERVER_URL + getServletPath() + "/<filePath>");
+					BASE_URL + getServletPath() + "/<filePath>");
 			if (servletParameters.filePath == null) {
 				commander.usage();
 				return;

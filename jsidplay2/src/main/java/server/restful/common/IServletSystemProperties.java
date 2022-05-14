@@ -10,6 +10,11 @@ public interface IServletSystemProperties {
 	//
 
 	/**
+	 * Server base url
+	 */
+	String BASE_URL = getProperty("jsidplay2.base.url", "http://127.0.0.1:8080");
+
+	/**
 	 * JSIDPlay2Server Socket connection timeout in s of the HTTP(s) connection.
 	 */
 	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
