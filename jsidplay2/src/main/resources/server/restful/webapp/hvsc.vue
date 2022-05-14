@@ -41,7 +41,7 @@
 					<!-- HVSC root -->
 					<div v-if="entry.endsWith('/')">
 						<a href="#"
-							v-on:click="fetchData('directory', entry.substring(0, entry.length-1))">
+							v-on:click="fetchData('directory', entry)">
 							{{entry}} </a>
 					</div> <!-- HVSC music -->
 					<div
