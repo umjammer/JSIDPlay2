@@ -8,7 +8,6 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
-import static server.restful.common.IServletSystemProperties.BASE_URL;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,8 +58,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					BASE_URL + getServletPath());
+			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.filePath == null) {
 				commander.usage();
 				return;

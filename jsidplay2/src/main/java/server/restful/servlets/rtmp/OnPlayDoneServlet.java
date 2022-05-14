@@ -2,7 +2,6 @@ package server.restful.servlets.rtmp;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
@@ -74,8 +73,7 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					BASE_URL + getServletPath(), true);
+			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath(), true);
 			if (servletParameters.uuid == null) {
 				commander.usage();
 				return;

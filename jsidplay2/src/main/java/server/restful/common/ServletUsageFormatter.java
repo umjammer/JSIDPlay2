@@ -1,6 +1,7 @@
 package server.restful.common;
 
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.IServletSystemProperties.BASE_URL;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		response.setContentType(MIME_TYPE_TEXT.toString());
 		String programName = commander.getProgramDisplayName();
 		StringBuilder mainLine = new StringBuilder();
-		mainLine.append(indent).append("Usage: ").append(programName);
+		mainLine.append(indent).append("Usage: ").append(BASE_URL).append(programName);
 
 		if (commander.getMainParameter() != null && commander.getMainParameterDescription() != null) {
 			mainLine.append("/").append(commander.getMainParameterDescription());

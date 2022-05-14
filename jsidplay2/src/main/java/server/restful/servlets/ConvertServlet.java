@@ -16,7 +16,6 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
-import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.MAX_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
@@ -127,7 +126,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		private String filePath;
 
 		private volatile boolean started;
-
 	}
 
 	public static final String CONVERT_PATH = "/convert";
@@ -172,8 +170,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					BASE_URL + getServletPath());
+			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.filePath == null) {
 				commander.usage();
 				return;
@@ -186,12 +183,13 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				Audio audio = getAudioFormat(config);
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream());
 
-				response.setContentType(getMimeType(driver.getExtension()).toString());
 				if (Boolean.TRUE.equals(servletParameters.download)) {
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 							+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
 				}
+				response.setContentType(getMimeType(driver.getExtension()).toString());
 				convert2audio(config, file, driver, servletParameters);
+
 			} else if (videoTuneFileFilter.accept(file) || cartFileFilter.accept(file) || diskFileFilter.accept(file)
 					|| tapeFileFilter.accept(file)) {
 
@@ -231,21 +229,23 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						return;
 					}
 				} else {
-					response.setContentType(getMimeType(driver.getExtension()).toString());
+
 					if (Boolean.TRUE.equals(servletParameters.download)) {
 						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 								+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
 					}
+					response.setContentType(getMimeType(driver.getExtension()).toString());
 					File videoFile = convert2video(config, file, driver, servletParameters, null);
 					copy(videoFile, response.getOutputStream());
 					videoFile.delete();
+
 				}
 			} else {
-				response.setContentType(getMimeType(getFilenameSuffix(servletParameters.filePath)).toString());
+				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
 				response.addHeader(CONTENT_DISPOSITION,
-						ATTACHMENT + "; filename=" + new File(servletParameters.filePath).getName());
-				copy(getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN)),
-						response.getOutputStream());
+						ATTACHMENT + "; filename=" + new File(file.getName()).getName());
+				copy(file, response.getOutputStream());
+
 			}
 		} catch (Throwable t) {
 			error(t);
