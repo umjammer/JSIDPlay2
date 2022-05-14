@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.beust.jcommander.DefaultUsageFormatter;
@@ -38,8 +37,10 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			mainLine.append(indent).append("Usage: ");
 
 			StringBuilder urlAsString = new StringBuilder();
+			// Base url + servlet path
 			urlAsString.append(BASE_URL).append(commander.getProgramDisplayName());
 
+			// Request path
 			if (commander.getMainParameter() != null && commander.getMainParameterDescription() != null) {
 				urlAsString.append("/").append(commander.getMainParameterDescription());
 			}
@@ -49,20 +50,16 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 							|| pd.getParameterized().getParameter().arity() == 1))
 					.sorted(commander.getParameterDescriptionComparator()).collect(Collectors.toList());
 
+			// Query parameters
 			if (arguments.size() > 0) {
 				urlAsString.append("?");
 				arguments.forEach(parameterDescription -> {
+					String displayedDef = String.valueOf(parameterDescription.getDefault());
+
 					urlAsString.append(getName(parameterDescription.getNames()));
 					urlAsString.append("=");
-					if (!parameterDescription.getParameter().password()) {
-						if (parameterDescription.getParameterized().getType() == UUID.class) {
-							urlAsString.append("12345678-0000-0000-0000-123456789012");
-						} else {
-							urlAsString.append(String.valueOf(parameterDescription.getDefault()));
-						}
-					} else {
-						urlAsString.append("***");
-					}
+					urlAsString.append(parameterDescription.getParameter().password() ? "********" : displayedDef);
+
 					if (!arguments.get(arguments.size() - 1).equals(parameterDescription)) {
 						urlAsString.append("&");
 					}
