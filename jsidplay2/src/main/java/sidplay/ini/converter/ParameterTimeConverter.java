@@ -16,7 +16,11 @@ public final class ParameterTimeConverter implements IStringConverter<Double> {
 	public Double convert(String time) {
 		double seconds = timeConverter.fromString(time).doubleValue();
 		if (seconds == -1) {
-			throw new ParameterException("Invalid time, expected mm:ss.SSS (found " + time + ")");
+			try {
+				return Double.parseDouble(time);
+			} catch (NumberFormatException e) {
+				throw new ParameterException("Invalid time, expected mm:ss.SSS (found " + time + ")");
+			}
 		}
 		return seconds;
 	}

@@ -75,7 +75,7 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					BASE_URL + getServletPath() + "?name=uuid", true);
+					BASE_URL + getServletPath(), true);
 			if (servletParameters.uuid == null) {
 				commander.usage();
 				return;

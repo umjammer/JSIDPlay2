@@ -70,7 +70,7 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					BASE_URL + getServletPath() + "?name=uuid");
+					BASE_URL + getServletPath());
 			if (servletParameters.uuid == null) {
 				commander.usage();
 				return;

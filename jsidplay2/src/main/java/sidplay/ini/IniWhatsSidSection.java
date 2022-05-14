@@ -71,7 +71,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDPassword" }, descriptionKey = "WHATSSID_PASSWORD", order = 1048)
+	@Parameter(names = { "--whatsSIDPassword" }, descriptionKey = "WHATSSID_PASSWORD", password = true, order = 1048)
 	public final void setPassword(String password) {
 		iniReader.setProperty(SECTION_ID, "Password", password);
 	}
@@ -139,7 +139,8 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDDetectChipModel" }, descriptionKey = "WHATSSID_DETECT_CHIP_MODEL", order = 1054)
+	@Parameter(names = {
+			"--whatsSIDDetectChipModel" }, descriptionKey = "WHATSSID_DETECT_CHIP_MODEL", arity = 1, order = 1054)
 	public final void setDetectChipModel(boolean detectChipModel) {
 		iniReader.setProperty(SECTION_ID, "Detect ChipModel", detectChipModel);
 	}

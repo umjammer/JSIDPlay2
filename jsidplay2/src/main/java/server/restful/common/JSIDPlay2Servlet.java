@@ -100,7 +100,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
 			final Object parameterObject, String programName, boolean acceptUnknownOptions) throws IOException {
 		JCommander commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
-				.columnSize(120)
+				.columnSize(Integer.MAX_VALUE)
 				.console(new PrintStreamConsole(
 						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
 				.acceptUnknownOptions(acceptUnknownOptions).build();

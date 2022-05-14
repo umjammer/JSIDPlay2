@@ -30,7 +30,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.DownloadServletParameters")
 	public static class ServletParameters {
 
-		@Parameter
+		@Parameter(description = "filePath")
 		private String filePath;
 
 	}
@@ -60,7 +60,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					BASE_URL + getServletPath() + "/<filePath>");
+					BASE_URL + getServletPath());
 			if (servletParameters.filePath == null) {
 				commander.usage();
 				return;

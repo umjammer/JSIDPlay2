@@ -38,7 +38,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 		@Parameter(names = { "--filter" }, descriptionKey = "FILTER", order = -2)
 		private String filter;
 
-		@Parameter
+		@Parameter(description = "filePath")
 		private String filePath;
 
 	}
@@ -68,7 +68,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters,
-					BASE_URL + getServletPath() + "/<filePath>?filter=<regexp>");
+					BASE_URL + getServletPath());
 			if (servletParameters.filePath == null) {
 				commander.usage();
 				return;
