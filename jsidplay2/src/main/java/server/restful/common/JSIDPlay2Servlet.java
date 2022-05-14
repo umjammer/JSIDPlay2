@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
@@ -172,14 +171,16 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
 			throws IOException {
 		response.setContentType(ct.toString());
-		e.printStackTrace(new PrintStream(response.getOutputStream(), true, ct.getCharset().toString()));
+		try (PrintStream out = new PrintStream(response.getOutputStream(), true, ct.getCharset().toString())) {
+			e.printStackTrace(out);
+		}
 	}
 
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String string)
 			throws JsonProcessingException, IOException {
 		response.setContentType(ct.toString());
-		try (OutputStreamWriter out = new OutputStreamWriter(response.getOutputStream(), ct.getCharset())) {
-			out.write(string);
+		try (PrintStream out = new PrintStream(response.getOutputStream(), true, ct.getCharset().toString())) {
+			out.print(string);
 		}
 	}
 
