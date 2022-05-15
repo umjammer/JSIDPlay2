@@ -68,12 +68,11 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			}
 			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
 
-			response.setContentType(MIME_TYPE_JPG.toString());
-
 			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), file);
 
-			response.getOutputStream().write(photo);
 			response.setContentLength(photo.length);
+			response.setContentType(MIME_TYPE_JPG.toString());
+			response.getOutputStream().write(photo);
 
 		} catch (Throwable t) {
 			error(t);
