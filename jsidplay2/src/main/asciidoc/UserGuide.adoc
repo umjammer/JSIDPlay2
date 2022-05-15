@@ -21,9 +21,9 @@ The most popular collections are:
 
 * High Voltage SID Collection (HVSC) - the biggest SID music collection on earth https://www.hvsc.de/
 * Compute's Gazette SID Collection (CGSC) - A collection of COMPUTE!'s Sidplayer music containing tons of stereo files
-https://www.btinternet.com/~pweighill/music/
+link:https://www.btinternet.com/~pweighill/music/[https://www.btinternet.com/~pweighill/music/^]
 * Stone Oakvalley's Authentic SID Collection (SOASC=) - A recording project containing SID music both in SID and MP3 format.
-https://www.6581-8580.com
+link:https://www.6581-8580.com[https://www.6581-8580.com^]
 * HVMEC (High Voltage Music Engine Collection) - A collection of music editors, trackers and other music and sound effect makers
 
 == Supported File Formats
@@ -101,26 +101,23 @@ Just to name a few possibilities for SID output, this is the list of currently s
 
 1.
 JSIDPlay2 comes with two really good software emulation types.
-One created by Dag Lem (link:https://sourceforge.net/projects/sidplay2/[ReSID]) or as a really good alternative an enhanced version by Antti S. Lankila (link:https://sourceforge.net/projects/sidplay-residfp/[ReSID-fp]), that contains emulations of the combined waveforms and distortion emulation as well and is the default for our player.
+One created by Dag Lem (link:https://sourceforge.net/projects/sidplay2/[ReSID^]) or as a really good alternative an enhanced version by Antti S. Lankila (link:https://sourceforge.net/projects/sidplay-residfp/[ReSID-fp^]), that contains emulations of the combined waveforms and distortion emulation as well and is the default for our player.
 
 Beside these software emulation types we support some decent Hardware as well, where you can add the real SID chips inside.
 
 2.
-link:https://en.wikipedia.org/wiki/HardSID[HardSID 4U (USB Version)] can be used with up to 4 SID chips, but are hard to find on ebay these days and they are not produced anymore.
+link:https://en.wikipedia.org/wiki/HardSID[HardSID 4U (USB Version)^] can be used with up to 4 SID chips, but are hard to find on ebay these days and they are not produced anymore.
 
 3.
-Additionally we support SIDBlaster USB devices, e.g. link:http://crazy-midi.de[SIDBlaster device TicTac Edition].
+Additionally we support SIDBlaster USB devices, e.g. link:http://crazy-midi.de[SIDBlaster device TicTac Edition^].
 It contains exactly one chip either MOS6581 or MOS8580 per device.
 
 Information to use that device in software like JSIDPlay2 is available here:
-https://haendel.ddns.net/~ken/sidblaster.html
+link:https://haendel.ddns.net/~ken/sidblaster.html[https://haendel.ddns.net/~ken/sidblaster.html^]
 
 4.
-Additionally we support exactly one ExSID USB device, e.g. link:http://hacks.slashdirt.org/hw/exsid/[exSID USB]. It contains exactly two chips one MOS6581 and one MOS8580 per device.
-
-It requires ftd2xx library on the target machine, therefore do the same documented in section "Creating the SIDBlaster library on XXX"
-just search for "Installing the required ftd2xx library" in the documentation here:
-https://haendel.ddns.net/~ken/sidblaster.html
+Additionally we support exactly one ExSID USB device, e.g. link:http://hacks.slashdirt.org/hw/exsid/[exSID USB^]. It contains exactly two chips one MOS6581 and one MOS8580 per device.
+It contains both chips (MOS6581 and MOS8580) per device.
 
 5.
 If you have created your own hardware device or a software-based implementation of the SID chip, you could choose Network SID Device to use the player with it.

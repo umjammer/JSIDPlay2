@@ -8,7 +8,7 @@ the MOS6581 and its successor CSG8085.
 SIDBlaster is available as a Tic-Tac edition created by Andreas Schumm
 and based on SIDBlaster-USB by Davey (Das Phantom).
 
-It is available at the following web-site: http://crazy-midi.de
+It is available at the following web-site: link:http://crazy-midi.de[http://crazy-midi.de^]
 
 The SIDBlaster library has been created by Stein Pedersen and ported to Linux and MacOSX by Ken Händel.
 
@@ -22,7 +22,7 @@ This guide is for you to use that library.
 
 JSIDPlay2 requires Java, therefore install java first.
 I recommend to install it from the folowing site:
-https://adoptium.net
+link:https://adoptium.net[https://adoptium.net^]
 
 Choose "OpenJDT11" and "Hotspot"
 
@@ -72,7 +72,7 @@ Does it play? Then we are fine.
 
 JSIDPlay2 requires Java, therefore install java first.
 I recommend to install it from the folowing site:
-https://adoptium.net
+link:https://adoptium.net[https://adoptium.net^]
 
 Choose "OpenJDT11" and "Hotspot"
 
@@ -114,7 +114,7 @@ Does it play? Then we are fine.
 
 JSIDPlay2 requires Java, therefore install java first.
 I recommend to install it from the folowing site:
-https://adoptium.net
+link:https://adoptium.net[https://adoptium.net^]
 
 Choose "OpenJDT11" and "Hotspot"
 

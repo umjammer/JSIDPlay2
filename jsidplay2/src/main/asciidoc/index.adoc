@@ -45,13 +45,13 @@ JSidplay2 is able to
 * being used like a real C64 (watching demos, playing games etc.)
 
 == JSIDPlay2 Server
-link:https://haendel.ddns.net:8443[RESTful Services Usage]
+link:https://haendel.ddns.net:8443[RESTful Services Usage^]
 
-link:https://haendel.ddns.net:8443/static/hvsc.vue[JSIDPlay2 Online Player]
+link:https://haendel.ddns.net:8443/static/hvsc.vue[JSIDPlay2 Online Player^]
 
-link:https://haendel.ddns.net:8443/static/favorites.vue[JSIDPlay2 Favorites Online Player]
+link:https://haendel.ddns.net:8443/static/favorites.vue[JSIDPlay2 Favorites Online Player^]
 
-link:https://haendel.ddns.net:8443/static/whatssid.vue[WhatsSID? tune recognition]
+link:https://haendel.ddns.net:8443/static/whatssid.vue[WhatsSID? tune recognition^]
 
 link:rtmp://haendel.ddns.net/live/jsidplay2[JSIDPlay2 Live Stream from my Computer, if running]
 
@@ -82,25 +82,25 @@ link:{codebase}jsidplay2app.apk[Download jsidplay2app] (app for android)
 |
 link:{codebase}java/jdk-8u211-linux-x64.tar.gz[[small]*Java8*]
 |
-link:https://adoptium.net[https://adoptium.net]
+link:https://adoptium.net[https://adoptium.net^]
 | Windows |
 link:{codebase}java/jdk-8u211-windows-x64.exe[[small]*Java8*]
 |
-link:https://adoptium.net[https://adoptium.net]
+link:https://adoptium.net[https://adoptium.net^]
 | MacOSX |
 link:{codebase}java/jdk-8u211-macosx-x64.dmg[[small]*Java8*]
 |
-link:https://adoptium.net[https://adoptium.net]
+link:https://adoptium.net[https://adoptium.net^]
 |===
 
 == Releases
 
-Click link:https://sourceforge.net/projects/jsidplay2/[here] to download
+Click link:https://sourceforge.net/projects/jsidplay2/[here^] to download
 
 == Further possibilities
 
 * If you want to compare the quality of this emulation with the real thing and own a link:http://www.hardsid.com/[HardSID4U] soundcard (no more available, please search on ebay),
-then just download and start link:https://www.acid64.com/[ACID64] (by Wilfred Bos) the recommended music player to play SID tunes on a real SID chip
+then just download and start link:https://www.acid64.com/[ACID64^] (by Wilfred Bos) the recommended music player to play SID tunes on a real SID chip
 and additionally download the link:{codebase}jsiddevice-{version}.jar[Network SID Device] (part of JSIDPlay2).
 Now, using ACID64 you are able to switch between the real SID chip playback and the emulation on the fly.
 

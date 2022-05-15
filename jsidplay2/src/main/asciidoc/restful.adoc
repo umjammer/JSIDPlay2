@@ -741,11 +741,11 @@ Only the first file gets analyzed, though.
 === Android Client for JSIDPlay2 AppServer
 
 Source code of the example Android app using the RESTful web-service
-interface can be found link:https://github.com/kenchis/JSIDPlay2[here].
+interface can be found link:https://github.com/kenchis/JSIDPlay2[here^].
 
 Click here to link:{codebase}jsidplay2app.apk[Get the Installer for]
 JSIDPlay2 App. +
 *Please note: Streaming music using your mobile can cause additional costs!*
 
 As an alternative you can use a browser enabled client like
-link:https://haendel.ddns.net:8443/static/hvsc.vue[here]
+link:https://haendel.ddns.net:8443/static/hvsc.vue[here^]
