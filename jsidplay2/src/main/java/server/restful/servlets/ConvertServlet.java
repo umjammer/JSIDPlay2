@@ -4,7 +4,6 @@ import static java.lang.String.format;
 import static java.lang.Thread.getAllStackTraces;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
-import static libsidplay.components.keyboard.KeyTableEntry.SPACE;
 import static libsidutils.PathUtils.getFilenameSuffix;
 import static libsidutils.PathUtils.getFilenameWithoutSuffix;
 import static libsidutils.ZipFileUtils.convertStreamToString;
@@ -19,7 +18,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.MAX_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
-import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXTERNAL_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_INTERNAL_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
@@ -62,7 +60,6 @@ import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidplay.common.Event;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
@@ -90,7 +87,6 @@ import sidplay.audio.SIDRegDriver.SIDRegStreamDriver;
 import sidplay.audio.SleepDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
-import sidplay.player.State;
 import ui.common.Convenience;
 import ui.common.filefilter.AudioTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
@@ -242,8 +238,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				}
 			} else {
 				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
-				response.addHeader(CONTENT_DISPOSITION,
-						ATTACHMENT + "; filename=" + new File(file.getName()).getName());
+				response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + file.getName());
 				copy(file, response.getOutputStream());
 
 			}
@@ -355,7 +350,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
-		addPressSpaceListener(player);
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
 		if (servletParameters.reuSize != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
@@ -375,32 +369,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		videoFile.deleteOnExit();
 		player.setRecordingFilenameProvider(tune -> PathUtils.getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
 		return videoFile;
-	}
-
-	private void addPressSpaceListener(Player player) {
-		player.stateProperty().addListener(event -> {
-			if (event.getNewValue() == State.START) {
-				player.getC64().getEventScheduler().schedule(new Event("Key Pressed") {
-
-					@Override
-					public void event() throws InterruptedException {
-						// press space every N seconds
-						player.getC64().getKeyboard().keyPressed(SPACE);
-
-						player.getC64().getEventScheduler().schedule(new Event("Key Released") {
-							@Override
-							public void event() throws InterruptedException {
-								player.getC64().getKeyboard().keyReleased(SPACE);
-							}
-						}, (long) (player.getC64().getClock().getCpuFrequency()));
-
-						player.getC64().getEventScheduler().schedule(this,
-								PRESS_SPACE_INTERVALL * (long) player.getC64().getClock().getCpuFrequency());
-					}
-
-				}, PRESS_SPACE_INTERVALL * (long) player.getC64().getClock().getCpuFrequency());
-			}
-		});
 	}
 
 	private Map<String, String> createReplacements(HttpServletRequest request, File file, UUID uuid)

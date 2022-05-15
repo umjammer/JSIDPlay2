@@ -1,5 +1,7 @@
 package server.restful.common;
 
+import static libsidplay.components.keyboard.KeyTableEntry.SPACE;
+import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 
@@ -48,6 +50,7 @@ public final class PlayerWithStatus {
 		status = new Status(player, resourceBundle);
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
+		addPressSpaceListener();
 		addStatusTextListener();
 	}
 
@@ -185,6 +188,33 @@ public final class PlayerWithStatus {
 		return diskImage;
 	}
 
+	private void addPressSpaceListener() {
+		player.stateProperty().addListener(event -> {
+			if (event.getNewValue() == State.START) {
+
+				player.getC64().getEventScheduler().schedule(new Event("Key Pressed") {
+					@Override
+					public void event() throws InterruptedException {
+
+						// press space every N seconds
+						player.getC64().getKeyboard().keyPressed(SPACE);
+
+						player.getC64().getEventScheduler().schedule(new Event("Key Released") {
+							@Override
+							public void event() throws InterruptedException {
+								player.getC64().getKeyboard().keyReleased(SPACE);
+							}
+						}, (long) (player.getC64().getClock().getCpuFrequency()));
+
+						player.getC64().getEventScheduler().schedule(this,
+								PRESS_SPACE_INTERVALL * (long) player.getC64().getClock().getCpuFrequency());
+					}
+
+				}, PRESS_SPACE_INTERVALL * (long) player.getC64().getClock().getCpuFrequency());
+			}
+		});
+	}
+
 	private void addStatusTextListener() {
 		player.stateProperty().addListener(event -> {
 			if (event.getNewValue() == State.START) {
@@ -214,7 +244,7 @@ public final class PlayerWithStatus {
 						player.getC64().getEventScheduler().schedule(this,
 								(long) (player.getC64().getClock().getCpuFrequency()));
 					}
-				}, 0);
+				}, (long) (player.getC64().getClock().getCpuFrequency()));
 			}
 		});
 	}
