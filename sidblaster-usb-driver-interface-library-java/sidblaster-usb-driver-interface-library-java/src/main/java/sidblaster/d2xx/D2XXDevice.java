@@ -1,5 +1,8 @@
 package sidblaster.d2xx;
 
+import static java.lang.Integer.valueOf;
+import static java.lang.System.getenv;
+
 import com.ftdi.EEPROMData;
 import com.ftdi.FTD2XXException;
 import com.ftdi.FTDevice;
@@ -13,7 +16,7 @@ public class D2XXDevice {
 
 	private final static int FT_READ_TIMEOUT = 1000;
 	private final static int FT_WRITE_TIMEOUT = 1000;
-	private final static int FT_BAUD_RATE = 500000; // FT_BAUD_115200
+	private final static int FT_BAUD_RATE = valueOf(getenv().getOrDefault("SIDBLASTERUSB_BAUDRATE", "500000")); // FT_BAUD_115200
 
 	public static void open(FTDevice device) throws FTD2XXException {
 		device.open();
