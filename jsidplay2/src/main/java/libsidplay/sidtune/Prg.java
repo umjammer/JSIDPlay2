@@ -121,7 +121,8 @@ class Prg extends SidTune {
 		StringBuilder md5 = new StringBuilder();
 		final byte[] encryptMsg = MD5_DIGEST.digest(program);
 		for (final byte anEncryptMsg : encryptMsg) {
-			md5.append(String.format("%02x", anEncryptMsg & 0xff));
+			md5.append(Character.forDigit((anEncryptMsg >> 4) & 0xF, 16));
+			md5.append(Character.forDigit((anEncryptMsg & 0xF), 16));
 		}
 		return md5.toString();
 	}
