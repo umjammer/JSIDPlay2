@@ -8,6 +8,7 @@ import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -64,8 +65,9 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			int hashCode = wavBean.hashCode();
 
 			MusicInfoWithConfidenceBean musicInfoWithConfidence = null;
-			// prioritize live stream before WhatsSid
-			if (getAllStackTraces().keySet().stream().map(Thread::getName).filter("RTMP"::equals).count() == 0) {
+			// prioritize live stream instead of WhatsSid?
+			if (!WHATSID_LOW_PRIO
+					|| getAllStackTraces().keySet().stream().map(Thread::getName).filter("RTMP"::equals).count() == 0) {
 				if (!MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
 					WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
 					FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
