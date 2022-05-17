@@ -126,13 +126,12 @@ Java JMX - jvisualvm connection parameters:
 
 TODO:
 =====
-- App: download sid register writes and siddump
 - Playlists are wanted to be shared online
 - the ability to have music playback occur alongside your SID dump feature. This would look a bit like a tracker,
   and would allow a listener to see the connections between register values and sounds.
-- Removal of splash screen
 - Drag and Drop of HVSC zip file
-- Redesign playback buttons (winamp style)
+- Support SIDBlaster reads (for configuru and fpgasid)
+- SID Reg should report reads as well.
 
 Steps to create a release version:
 ==================================
