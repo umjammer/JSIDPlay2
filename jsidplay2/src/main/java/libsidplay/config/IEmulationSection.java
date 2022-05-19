@@ -243,7 +243,7 @@ public interface IEmulationSection {
 	 * Setter of SIDBLASTER to use hardware for READ access otherwise emulated
 	 * READs.
 	 *
-	 * @param use hardware for READ access otherwise emulated READs
+	 * @param sidBlasterRead use hardware for READ access otherwise emulated READs
 	 */
 	void setSidBlasterRead(boolean sidBlasterRead);
 
