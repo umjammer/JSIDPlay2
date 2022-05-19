@@ -45,6 +45,7 @@ import static sidplay.ini.IniDefaults.DEFAULT_ReSIDfp_FILTER_8580;
 import static sidplay.ini.IniDefaults.DEFAULT_ReSIDfp_STEREO_FILTER_6581;
 import static sidplay.ini.IniDefaults.DEFAULT_ReSIDfp_STEREO_FILTER_8580;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_DEVICE_LIST;
+import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_READ;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_SERIAL_NUMBER;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_WRITE_BUFFER_SIZE;
 import static sidplay.ini.IniDefaults.DEFAULT_SID_MODEL;
@@ -448,6 +449,23 @@ public class EmulationSection implements IEmulationSection {
 
 	public final StringProperty sidBlasterSerialNumberProperty() {
 		return sidBlasterSerialNumber.property();
+	}
+
+	private ShadowField<BooleanProperty, Boolean> sidBlasterRead = new ShadowField<>(SimpleBooleanProperty::new,
+			DEFAULT_SIDBLASTER_READ);
+
+	@Override
+	public final boolean isSidBlasterRead() {
+		return sidBlasterRead.get();
+	}
+
+	@Override
+	public final void setSidBlasterRead(boolean sidBlasterRead) {
+		this.sidBlasterRead.set(sidBlasterRead);
+	}
+
+	public final BooleanProperty sidBlasterReadProperty() {
+		return sidBlasterRead.property();
 	}
 
 	private ShadowField<StringProperty, String> netSidDevHost = new ShadowField<>(SimpleStringProperty::new,

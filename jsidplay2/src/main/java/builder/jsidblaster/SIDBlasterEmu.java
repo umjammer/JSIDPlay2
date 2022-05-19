@@ -107,6 +107,16 @@ public class SIDBlasterEmu extends ReSIDfp {
 	}
 
 	@Override
+	public byte read(int addr) {
+		byte emulatedRead = super.read(addr);
+		if (hardSIDBuilder.isSidBlasterRead()) {
+			final short clocksSinceLastAccess = (short) hardSIDBuilder.clocksSinceLastAccess();
+			return hardSID.HardSID_Read(deviceID, clocksSinceLastAccess, (byte) addr);
+		}
+		return emulatedRead;
+	}
+
+	@Override
 	public void write(int addr, byte data) {
 		final short clocksSinceLastAccess = (short) hardSIDBuilder.clocksSinceLastAccess();
 		switch (addr & 0x1f) {

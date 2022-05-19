@@ -133,7 +133,7 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private ComboBox<Ultimate64Mode> ultimate64Box;
 	@FXML
-	private CheckBox enableSldb, singleSong;
+	private CheckBox sidBlasterRead, enableSldb, singleSong;
 	@FXML
 	private TextField bufferSize, defaultPlayLength, hostname, port, ultimate64Hostname, ultimate64Port,
 			ultimate64SyncDelay, appServerPort, appServerSecurePort, appServerKeyStorePassword, appServerKeyAlias,
@@ -329,6 +329,7 @@ public class ToolBar extends C64VBox implements UIPart {
 
 		enableSldb.selectedProperty().bindBidirectional(sidplay2Section.enableDatabaseProperty());
 		singleSong.selectedProperty().bindBidirectional(sidplay2Section.singleProperty());
+		sidBlasterRead.selectedProperty().bindBidirectional(emulationSection.sidBlasterReadProperty());
 
 		bindBidirectional(playSourceGroup, audioSection.playOriginalProperty());
 

@@ -188,6 +188,14 @@
 								</tooltip>
 							</ComboBox>
 						</VBox>
+						<VBox>
+							<Label text="%SIDBLASTER_READ" alignment="CENTER_RIGHT" />
+							<CheckBox fx:id="sidBlasterRead">
+								<tooltip>
+									<Tooltip text="%SIDBLASTER_READ_TIP" />
+								</tooltip>
+							</CheckBox>
+						</VBox>
 						<Hyperlink text="%SIDBLASTER_DOC" textFill="BLUE"
 							underline="true" onAction="#gotoSidBlasterDoc" fx:id="sidBlasterDoc" />
 					</VBox>

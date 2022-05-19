@@ -169,6 +169,10 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 		return serialNumbers;
 	}
 
+	public boolean isSidBlasterRead() {
+		return config.getEmulationSection().isSidBlasterRead();
+	}
+
 	public static SIDType getSidType(int deviceId) {
 		sidblaster.SIDType hardSID_GetSIDType = hardSID.HardSID_GetSIDType((byte) deviceId);
 		return SIDType.to(hardSID_GetSIDType);

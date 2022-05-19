@@ -232,6 +232,22 @@ public interface IEmulationSection {
 	void setSidBlasterSerialNumber(String sidBlasterSerialNumber);
 
 	/**
+	 * Getter of the SIDBLASTER to use hardware for READ access otherwise emulated
+	 * READs.
+	 *
+	 * @return use hardware for READ access otherwise emulated READs
+	 */
+	boolean isSidBlasterRead();
+
+	/**
+	 * Setter of SIDBLASTER to use hardware for READ access otherwise emulated
+	 * READs.
+	 *
+	 * @param use hardware for READ access otherwise emulated READs
+	 */
+	void setSidBlasterRead(boolean sidBlasterRead);
+
+	/**
 	 * Getter of the host name of a NetworkSIDDevice.
 	 *
 	 * @return host name of a NetworkSIDDevice
@@ -617,7 +633,7 @@ public interface IEmulationSection {
 	boolean isDigiBoosted8580();
 
 	/**
-	 * setter of the enable SID digi-boost.
+	 * Setter of the enable SID digi-boost.
 	 *
 	 * @param boost the enable SID digi-boost
 	 */
@@ -630,6 +646,11 @@ public interface IEmulationSection {
 	 */
 	int getDualSidBase();
 
+	/**
+	 * Getter of the third SID base address.
+	 *
+	 * @return the third SID base address
+	 */
 	int getThirdSIDBase();
 
 	/**
