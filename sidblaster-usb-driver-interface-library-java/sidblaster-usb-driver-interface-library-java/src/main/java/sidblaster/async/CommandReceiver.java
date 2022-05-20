@@ -18,8 +18,8 @@ public class CommandReceiver {
 
 	private final List<ISIDBlaster> devices = new ArrayList<>();
 
-	private boolean isReadResultReady;
-	private int readResult;
+	private volatile boolean isReadResultReady;
+	private volatile int readResult;
 
 	protected volatile boolean abortSIDWriteThread;
 
