@@ -86,7 +86,7 @@ public class CommandReceiver {
 				break;
 			case Read:
 				byte data = sidblaster.read(command.getReg());
-				readResult = data | (data << 8);
+				readResult = (data & 0xff) | ((data << 8) & 0xff00);
 				isReadResultReady = true;
 				break;
 			case Mute:
