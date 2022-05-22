@@ -60,10 +60,11 @@ public class CommandReceiver {
 		long nanos = command.getDelay();
 		if (nanos > 0) {
 			long millis = nanos / 1000000;
-			if (millis > 0) {
+			if (millis > 2) {
 				Thread.sleep(millis);
+				nanos -= millis * 1000000;
 			}
-			nsleep(nanos % 1000000);
+			nsleep(nanos);
 		}
 		boolean bufferedWrites = devices.get(0).getWriteBufferSize() > 0;
 		int retval = 0;
@@ -115,10 +116,8 @@ public class CommandReceiver {
 
 	private void nsleep(long delayNs) {
 		long start = System.nanoTime();
-		long end = 0;
 		do {
-			end = System.nanoTime();
-		} while (start + delayNs >= end);
+		} while (start + delayNs >= System.nanoTime());
 	}
 
 	public void uninitialize() {
