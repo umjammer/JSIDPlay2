@@ -61,8 +61,9 @@ public class CommandReceiver {
 		if (nanos > 0) {
 			long millis = nanos / 1000000;
 			if (millis > 2) {
-				Thread.sleep(millis);
-				nanos -= millis * 1000000;
+				long toWait = millis - 2;
+				Thread.sleep(toWait);
+				nanos -= toWait * 1000000;
 			}
 			nsleep(nanos);
 		}
