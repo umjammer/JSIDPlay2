@@ -17,6 +17,8 @@ public class D2XXDevice {
 	private final static int FT_READ_TIMEOUT = 1000;
 	private final static int FT_WRITE_TIMEOUT = 1000;
 	private final static int FT_BAUD_RATE = valueOf(getenv().getOrDefault("SIDBLASTERUSB_BAUDRATE", "500000")); // FT_BAUD_115200
+	private final static short FT_LATENCY_TIMER = Short
+			.valueOf(getenv().getOrDefault("SIDBLASTERUSB_LATENCY_TIMER", "2"));
 
 	public static void open(FTDevice device) throws FTD2XXException {
 		device.open();
@@ -42,6 +44,7 @@ public class D2XXDevice {
 		device.setTimeouts(FT_READ_TIMEOUT, FT_WRITE_TIMEOUT);
 		device.setBaudRate(FT_BAUD_RATE);
 		device.setDataCharacteristics(WordLength.BITS_8, StopBits.STOP_BITS_1, Parity.PARITY_NONE);
+		device.setLatencyTimer(FT_LATENCY_TIMER);
 	}
 
 	public static SIDType getSIDType(FTDevice device) {
