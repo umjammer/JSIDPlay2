@@ -221,6 +221,14 @@ public class IniReader {
 		return defaultValue;
 	}
 
+	public final short getPropertyShort(final String section, final String key, final short defaultValue) {
+		final String s = getPropertyString(section, key, null);
+		if (s != null && !s.equals("")) {
+			return Short.decode(s);
+		}
+		return defaultValue;
+	}
+
 	public final boolean getPropertyBool(final String section, final String key, final boolean defaultValue) {
 		final String s = getPropertyString(section, key, null);
 		if (s != null) {

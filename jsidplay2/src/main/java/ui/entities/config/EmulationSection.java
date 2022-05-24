@@ -45,6 +45,7 @@ import static sidplay.ini.IniDefaults.DEFAULT_ReSIDfp_FILTER_8580;
 import static sidplay.ini.IniDefaults.DEFAULT_ReSIDfp_STEREO_FILTER_6581;
 import static sidplay.ini.IniDefaults.DEFAULT_ReSIDfp_STEREO_FILTER_8580;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_DEVICE_LIST;
+import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_LATENCY_TIMER;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_READ;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_SERIAL_NUMBER;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_WRITE_BUFFER_SIZE;
@@ -466,6 +467,23 @@ public class EmulationSection implements IEmulationSection {
 
 	public final BooleanProperty sidBlasterReadProperty() {
 		return sidBlasterRead.property();
+	}
+
+	private ShadowField<ObjectProperty<Short>, Short> sidBlasterLatencyTimer = new ShadowField<>(
+			SimpleObjectProperty::new, DEFAULT_SIDBLASTER_LATENCY_TIMER);
+
+	@Override
+	public final short getSidBlasterLatencyTimer() {
+		return sidBlasterLatencyTimer.get();
+	}
+
+	@Override
+	public final void setSidBlasterLatencyTimer(short sidBlasterLatencyTimer) {
+		this.sidBlasterLatencyTimer.set(sidBlasterLatencyTimer);
+	}
+
+	public final ObjectProperty<Short> sidBlasterLatencyTimerProperty() {
+		return sidBlasterLatencyTimer.property();
 	}
 
 	private ShadowField<StringProperty, String> netSidDevHost = new ShadowField<>(SimpleStringProperty::new,

@@ -121,6 +121,8 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private ComboBox<Integer> hardsid6581Box, hardsid8580Box, audioBufferSize, sidBlasterWriteBufferSize;
 	@FXML
+	private ComboBox<Short> sidBlasterLatencyTimer;
+	@FXML
 	private ComboBox<SamplingRate> samplingRateBox;
 	@FXML
 	private ComboBox<Audio> audioBox;
@@ -152,7 +154,8 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private Label hostnameLabel, portLabel, hardsid6581Label, hardsid8580Label, appIpAddress, appHostname,
 			appServerPortLbl, appServerSecurePortLbl, appServerKeyStorePasswordLbl, appServerKeyAliasLbl,
-			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, streamingIpAddress, streamingHostname;
+			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, sidBlasterLatencyTimerLbl, streamingIpAddress,
+			streamingHostname;
 	@FXML
 	private Hyperlink appServerUsage, onlinePlayer, downloadApp, sidBlasterDoc;
 	@FXML
@@ -244,6 +247,8 @@ public class ToolBar extends C64VBox implements UIPart {
 			autodetect.setDisable(!Engine.SIDBLASTER.equals(n));
 			sidBlasterWriteBufferSizeLbl.setDisable(!Engine.SIDBLASTER.equals(n));
 			sidBlasterWriteBufferSize.setDisable(!Engine.SIDBLASTER.equals(n));
+			sidBlasterLatencyTimerLbl.setDisable(!Engine.SIDBLASTER.equals(n));
+			sidBlasterLatencyTimer.setDisable(!Engine.SIDBLASTER.equals(n));
 		});
 		engineBox.valueProperty().bindBidirectional(emulationSection.engineProperty());
 
@@ -261,6 +266,8 @@ public class ToolBar extends C64VBox implements UIPart {
 		sidBlasterWriteBufferSize.valueProperty()
 				.bindBidirectional(emulationSection.sidBlasterWriteBufferSizeProperty());
 		emulationSection.getSidBlasterDeviceList().stream().forEach(this::addSidBlasterDeviceMapping);
+		sidBlasterRead.selectedProperty().bindBidirectional(emulationSection.sidBlasterReadProperty());
+		sidBlasterLatencyTimer.valueProperty().bindBidirectional(emulationSection.sidBlasterLatencyTimerProperty());
 
 		hostname.textProperty().bindBidirectional(emulationSection.netSidDevHostProperty());
 		bindBidirectional(port.textProperty(), emulationSection.netSidDevPortProperty(), new IntegerStringConverter());
@@ -273,6 +280,7 @@ public class ToolBar extends C64VBox implements UIPart {
 		ultimate64Hostname.textProperty().bindBidirectional(emulationSection.ultimate64HostProperty());
 		bindBidirectional(ultimate64Port.textProperty(), emulationSection.ultimate64PortProperty(),
 				new IntegerStringConverter());
+
 		bindBidirectional(ultimate64SyncDelay.textProperty(), emulationSection.ultimate64SyncDelayProperty(),
 				new IntegerStringConverter());
 
@@ -329,7 +337,6 @@ public class ToolBar extends C64VBox implements UIPart {
 
 		enableSldb.selectedProperty().bindBidirectional(sidplay2Section.enableDatabaseProperty());
 		singleSong.selectedProperty().bindBidirectional(sidplay2Section.singleProperty());
-		sidBlasterRead.selectedProperty().bindBidirectional(emulationSection.sidBlasterReadProperty());
 
 		bindBidirectional(playSourceGroup, audioSection.playOriginalProperty());
 

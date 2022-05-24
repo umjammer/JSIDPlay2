@@ -248,6 +248,22 @@ public interface IEmulationSection {
 	void setSidBlasterRead(boolean sidBlasterRead);
 
 	/**
+	 * Getter of the SIDBLASTER receive buffer timeout (2ms..255ms) that is used to
+	 * flush remaining data from the receive buffer
+	 * 
+	 * @return receive buffer timeout
+	 */
+	short getSidBlasterLatencyTimer();
+
+	/**
+	 * Setter of SIDBLASTER to the receive buffer timeout (2ms..255ms) that is used
+	 * to flush remaining data from the receive buffer
+	 * 
+	 * @param sidBlasterLatencyTimer receive buffer timeout
+	 */
+	void setSidBlasterLatencyTimer(final short sidBlasterLatencyTimer);
+
+	/**
 	 * Getter of the host name of a NetworkSIDDevice.
 	 *
 	 * @return host name of a NetworkSIDDevice

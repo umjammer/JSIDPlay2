@@ -143,6 +143,7 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 				sids.add(sid);
 				setDeviceName(sidNum, serialNumbers[deviceId]);
 				setDelay(sidNum, audioSection.getDelay(sidNum));
+				setLatencyTimer(emulationSection.getSidBlasterLatencyTimer());
 				return sid;
 			}
 		}
@@ -249,6 +250,10 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 	@Override
 	public void setDelay(int sidNum, int delay) {
 		delayInCycles[sidNum] = (int) (cpuClock.getCpuFrequency() / 1000. * delay);
+	}
+
+	public void setLatencyTimer(short ms) {
+		hardSID.HardSID_SetLatencyTimer(ms);
 	}
 
 	@Override

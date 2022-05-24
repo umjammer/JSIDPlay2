@@ -23,6 +23,7 @@
 <?import javafx.collections.FXCollections?> 
 <?import javafx.geometry.Insets?>
 <?import java.lang.Integer?>
+<?import java.lang.Short?>
 <?import java.lang.String?>
 <?import ui.common.TypeTextField?>
 <?scenebuilder-preview-i18n-resource ToolBar.properties?>
@@ -189,6 +190,32 @@
 							</ComboBox>
 						</VBox>
 						<VBox>
+							<Label text="%SIDBLASTER_LATENCY_TIMER" alignment="CENTER_RIGHT"
+								fx:id="sidBlasterLatencyTimerLbl" />
+							<ComboBox fx:id="sidBlasterLatencyTimer">
+								<items>
+									<FXCollections fx:factory="observableArrayList">
+										<Short fx:value="2" />
+										<Short fx:value="3" />
+										<Short fx:value="4" />
+										<Short fx:value="5" />
+										<Short fx:value="6" />
+										<Short fx:value="7" />
+										<Short fx:value="8" />
+										<Short fx:value="16" />
+										<Short fx:value="32" />
+										<Short fx:value="64" />
+										<Short fx:value="128" />
+										<Short fx:value="255" />
+									</FXCollections>
+								</items>
+								<tooltip>
+									<Tooltip text="%SIDBLASTER_LATENCY_TIMER_TIP" wrapText="true"
+										prefWidth="400" />
+								</tooltip>
+							</ComboBox>
+						</VBox>
+						<VBox>
 							<Label text="%SIDBLASTER_READ" alignment="CENTER_RIGHT" />
 							<CheckBox fx:id="sidBlasterRead">
 								<tooltip>
@@ -203,8 +230,9 @@
 				<TitledPane text="%VIDEO_STREAMING" expanded="false">
 					<HBox spacing="5">
 						<VBox>
-							<Label text="%VIDEO_STREAMING_URL"/>
-							<TextField fx:id="videoStreamingUrl" promptText="%VIDEO_STREAMING_URL_PROMPT" prefWidth="150">
+							<Label text="%VIDEO_STREAMING_URL" />
+							<TextField fx:id="videoStreamingUrl" promptText="%VIDEO_STREAMING_URL_PROMPT"
+								prefWidth="150">
 								<tooltip>
 									<Tooltip text="%VIDEO_STREAMING_URL_TIP" />
 								</tooltip>
