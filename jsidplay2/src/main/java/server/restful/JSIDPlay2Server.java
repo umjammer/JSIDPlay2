@@ -47,9 +47,9 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
 import jakarta.servlet.Filter;
-import server.restful.common.PlayerCleanupTimerTask;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.PlayerCleanupTimerTask;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.DirectoryServlet;
 import server.restful.servlets.DownloadServlet;
@@ -446,7 +446,7 @@ public class JSIDPlay2Server {
 
 			JSIDPlay2Server jsidplay2Server = getInstance(configuration);
 			JCommander commander = JCommander.newBuilder().addObject(jsidplay2Server)
-					.programName(JSIDPlay2Server.class.getName()).build();
+					.programName(jsidplay2Server.getClass().getName()).build();
 			commander.parse(args);
 			if (jsidplay2Server.help) {
 				commander.usage();

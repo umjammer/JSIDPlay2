@@ -5,7 +5,6 @@ import static builder.jsidblaster.JSIDBlasterBuilder.getSidType;
 import static builder.jsidblaster.JSIDBlasterBuilder.setSerial;
 import static builder.jsidblaster.JSIDBlasterBuilder.setSidType;
 import static builder.jsidblaster.JSIDBlasterBuilder.uninitialize;
-import static ui.common.util.VersionUtil.VERSION;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -52,8 +51,7 @@ public class SIDBlasterTool {
 
 	private void create(String[] args) throws Exception {
 		try {
-			JCommander commander = JCommander.newBuilder().addObject(this).programName("sidblastertool-" + VERSION)
-					.build();
+			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
 
 			System.out.println(credits());
