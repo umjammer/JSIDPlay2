@@ -121,7 +121,7 @@ public final class PLA {
 		private final static int MAPPER_SIZE = 128;
 
 		/**
-		 * SID Mapping table. Maps a SID chip base address to each SID.
+		 * SID Mapping table. Maps a SID chip base address to each SID chip number.
 		 */
 		private final int sidmapper[] = new int[MAPPER_SIZE];
 
