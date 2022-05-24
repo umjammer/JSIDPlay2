@@ -29,9 +29,9 @@ import libsidutils.debug.MOS6510Debug;
 import libsidutils.siddatabase.SidDatabase;
 import sidplay.audio.JavaSound;
 import sidplay.consoleplayer.ConsoleIO;
-import sidplay.consoleplayer.VerboseValidator;
 import sidplay.fingerprinting.FingerprintJsonClient;
 import sidplay.ini.IniConfig;
+import sidplay.ini.validator.VerboseValidator;
 import sidplay.player.DebugUtil;
 
 /**

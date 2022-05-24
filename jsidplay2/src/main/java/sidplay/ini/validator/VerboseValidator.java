@@ -1,4 +1,4 @@
-package sidplay.consoleplayer;
+package sidplay.ini.validator;
 
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.ParameterException;
