@@ -87,4 +87,8 @@ public class AsyncDispatcher implements ICommandDispatcher {
 		receiver.setWriteBufferSize(bufferSize);
 	}
 
+	@Override
+	public void setLatencyTimer(short ms) throws FTD2XXException {
+		receiver.setLatencyTimer(ms);
+	}
 }

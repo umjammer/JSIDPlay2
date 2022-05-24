@@ -25,6 +25,8 @@ public abstract class ISIDBlaster {
 
 	public abstract void setWriteBufferSize(int size);
 
+	public abstract void setLatencyTimer(short ms) throws FTD2XXException;
+
 	public abstract void open() throws FTD2XXException;
 
 	public abstract void close() throws FTD2XXException;

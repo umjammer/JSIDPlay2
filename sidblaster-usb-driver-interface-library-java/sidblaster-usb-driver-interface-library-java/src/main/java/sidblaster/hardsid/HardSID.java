@@ -148,6 +148,12 @@ public interface HardSID {
 	 */
 	void HardSID_SetWriteBufferSize(byte bufferSize);
 
+	/**
+	 * @since ???
+	 * @since ???
+	 */
+	void HardSID_SetLatencyTimer(short ms);
+
 	SIDType HardSID_GetSIDType(byte DeviceID);
 
 	/**

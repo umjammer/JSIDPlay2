@@ -36,6 +36,12 @@ public class CommandReceiver {
 		}
 	}
 
+	public void setLatencyTimer(short ms) throws FTD2XXException {
+		for (ISIDBlaster sidBlasterInterface : devices) {
+			sidBlasterInterface.setLatencyTimer(ms);
+		}
+	}
+
 	public void setAbortSIDWriteThread() {
 		abortSIDWriteThread = true;
 	}

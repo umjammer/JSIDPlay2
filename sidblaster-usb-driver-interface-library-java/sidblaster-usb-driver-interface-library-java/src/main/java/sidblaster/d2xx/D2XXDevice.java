@@ -47,6 +47,10 @@ public class D2XXDevice {
 		device.setLatencyTimer(FT_LATENCY_TIMER);
 	}
 
+	public static void setLatencyTimer(FTDevice device, short ms) throws FTD2XXException, IllegalArgumentException {
+		device.setLatencyTimer(ms);
+	}
+
 	public static SIDType getSIDType(FTDevice device) {
 		if (device.getDevDescription().startsWith("SIDBlaster/USB/")) {
 			String sidType = device.getDevDescription().substring("SIDBlaster/USB/".length());

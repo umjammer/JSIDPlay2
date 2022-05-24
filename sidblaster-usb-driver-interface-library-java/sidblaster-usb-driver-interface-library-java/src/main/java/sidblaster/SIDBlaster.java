@@ -36,6 +36,11 @@ public class SIDBlaster extends ISIDBlaster {
 	}
 
 	@Override
+	public void setLatencyTimer(short ms) throws FTD2XXException {
+		D2XXDevice.setLatencyTimer(sid, ms);
+	}
+
+	@Override
 	public void open() throws FTD2XXException {
 		if (!sid.isOpen()) {
 			D2XXDevice.open(sid);

@@ -16,4 +16,6 @@ public abstract interface ICommandDispatcher {
 
 	public abstract void setWriteBufferSize(int bufferSize);
 
+	public abstract void setLatencyTimer(short ms) throws FTD2XXException;
+
 }

@@ -70,4 +70,8 @@ public class SyncDispatcher implements ICommandDispatcher {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void setLatencyTimer(short ms) {
+		// TODO Auto-generated method stub
+	}
 }

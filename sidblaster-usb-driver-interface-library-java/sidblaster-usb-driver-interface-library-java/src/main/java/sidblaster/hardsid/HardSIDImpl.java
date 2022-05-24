@@ -262,6 +262,15 @@ public class HardSIDImpl implements HardSID {
 	}
 
 	@Override
+	public void HardSID_SetLatencyTimer(short ms) {
+		try {
+			g_CommandDispatcher.setLatencyTimer(ms);
+		} catch (FTD2XXException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	public SIDType HardSID_GetSIDType(byte DeviceID) {
 		return x_Manager.GetSIDType(DeviceID);
 	}
