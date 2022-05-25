@@ -19,6 +19,7 @@ public class D2XXDevice {
 	private final static int FT_BAUD_RATE = valueOf(getenv().getOrDefault("SIDBLASTERUSB_BAUDRATE", "500000")); // FT_BAUD_115200
 	private final static short FT_LATENCY_TIMER = Short
 			.valueOf(getenv().getOrDefault("SIDBLASTERUSB_LATENCY_TIMER", "2"));
+	private final static int FT_TRANSFER_SIZE = valueOf(getenv().getOrDefault("SIDBLASTERUSB_TRANSFER_SIZE", "4096"));
 
 	public static void open(FTDevice device) throws FTD2XXException {
 		device.open();
@@ -45,6 +46,7 @@ public class D2XXDevice {
 		device.setBaudRate(FT_BAUD_RATE);
 		device.setDataCharacteristics(WordLength.BITS_8, StopBits.STOP_BITS_1, Parity.PARITY_NONE);
 		device.setLatencyTimer(FT_LATENCY_TIMER);
+		device.setUSBParameters(FT_TRANSFER_SIZE, FT_TRANSFER_SIZE);
 	}
 
 	public static void setLatencyTimer(FTDevice device, short ms) throws FTD2XXException, IllegalArgumentException {
