@@ -271,7 +271,7 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 			props.load(is);
 			Configuration.configure(props, configurable);
 		} catch (IOException | NullPointerException e) {
-			throw new RuntimeException("You need the " + presetName + " in your classpath.");
+			throw new RuntimeException("You need preset " + presetName + " in your classpath.");
 		}
 	}
 
