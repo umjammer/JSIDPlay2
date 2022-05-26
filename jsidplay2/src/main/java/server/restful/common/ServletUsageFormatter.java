@@ -14,16 +14,19 @@ import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 	private JCommander commander;
+	private HttpServletRequest request;
 	private HttpServletResponse response;
 
-	public ServletUsageFormatter(JCommander commander, HttpServletResponse response) {
+	public ServletUsageFormatter(JCommander commander, HttpServletRequest request, HttpServletResponse response) {
 		super(commander);
 		this.commander = commander;
+		this.request = request;
 		this.response = response;
 	}
 
@@ -34,7 +37,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			response.setContentType(MIME_TYPE_TEXT.toString());
 
 			StringBuilder mainLine = new StringBuilder();
-			mainLine.append(indent).append("Usage: ");
+			mainLine.append(indent).append("HTTP-").append(request.getMethod()).append(" ");
 
 			StringBuilder urlAsString = new StringBuilder();
 			// Base url + servlet path
@@ -72,6 +75,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			mainLine.append(uri.toASCIIString());
 			wrapDescription(out, indentCount, mainLine.toString());
 			out.append("\n");
+			out.append(indent).append("Servlet-Parameter");
 
 		} catch (URISyntaxException | MalformedURLException e) {
 			throw new RuntimeException(e);

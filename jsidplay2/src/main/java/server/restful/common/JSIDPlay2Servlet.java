@@ -103,7 +103,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				.console(new PrintStreamConsole(
 						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
 				.acceptUnknownOptions(acceptUnknownOptions).build();
-		commander.setUsageFormatter(new ServletUsageFormatter(commander, response));
+		commander.setUsageFormatter(new ServletUsageFormatter(commander, request, response));
 		commander.parse(getRequestParameters(request));
 		return commander;
 	}
