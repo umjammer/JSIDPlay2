@@ -7,7 +7,6 @@ import static sidplay.player.State.PLAY;
 import static sidplay.player.State.QUIT;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import com.xuggle.xuggler.IAudioSamples;
@@ -23,7 +22,7 @@ import com.xuggle.xuggler.video.IConverter;
 import sidplay.player.ObjectProperty;
 import sidplay.player.State;
 
-public abstract class XuggleVideoPlayer extends XuggleVideoBase implements Runnable {
+public abstract class XuggleVideoPlayer extends XuggleBase implements Runnable {
 
 	private static final Logger LOGGER = Logger.getLogger(XuggleVideoPlayer.class.getName());
 
@@ -34,7 +33,7 @@ public abstract class XuggleVideoPlayer extends XuggleVideoBase implements Runna
 	private int videoStreamId, audioStreamId;
 	private IConverter converter;
 
-	public VideoInfo open(String filename) throws IOException {
+	public VideoInfo open(String filename) {
 		stateProperty.set(State.OPEN);
 		container = IContainer.make();
 		throwExceptionOnError(container.open(filename, READ, null), "Could not open: '" + filename + "'");

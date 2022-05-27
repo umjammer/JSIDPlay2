@@ -22,7 +22,7 @@ import libsidplay.config.IAudioSection;
 import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
 
-public abstract class XuggleAudioDriver implements AudioDriver {
+public abstract class XuggleAudioDriver extends XuggleBase implements AudioDriver {
 
 	protected OutputStream out;
 
@@ -47,9 +47,7 @@ public abstract class XuggleAudioDriver implements AudioDriver {
 		containerFormat.setOutputFormat(getOutputFormatName(), null, null);
 
 		writer.getContainer().setFormat(containerFormat);
-		if (writer.addAudioStream(0, 0, getAudioCodec(), cfg.getChannels(), cfg.getFrameRate()) < 0) {
-			throw new IOException("Could not add audio stream");
-		}
+		throwExceptionOnError(writer.addAudioStream(0, 0, getAudioCodec(), cfg.getChannels(), cfg.getFrameRate()));
 
 		firstTimeStamp = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;

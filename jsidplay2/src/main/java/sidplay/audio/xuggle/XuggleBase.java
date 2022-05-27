@@ -16,7 +16,7 @@ import com.xuggle.xuggler.video.ConverterFactory;
 
 import libsidutils.C64Font;
 
-public class XuggleVideoBase implements C64Font {
+public class XuggleBase implements C64Font {
 
 	public static class VideoInfo {
 
@@ -71,7 +71,7 @@ public class XuggleVideoBase implements C64Font {
 
 	static {
 		try {
-			InputStream fontStream = XuggleVideoBase.class.getResourceAsStream(FONT_NAME);
+			InputStream fontStream = XuggleBase.class.getResourceAsStream(FONT_NAME);
 			if (fontStream == null) {
 				throw new IOException("Font not found: " + FONT_NAME);
 			}
@@ -86,17 +86,18 @@ public class XuggleVideoBase implements C64Font {
 		}
 	}
 
-	public void throwExceptionOnError(int rc, String message) throws IOException {
+	public int throwExceptionOnError(int rc, String message) {
 		if (rc < 0) {
 			System.err.println(message);
 		}
-		throwExceptionOnError(rc);
+		return throwExceptionOnError(rc);
 	}
 
-	public void throwExceptionOnError(int rc) throws IOException {
+	public int throwExceptionOnError(int rc) {
 		if (rc < 0) {
-			throw new IOException(IError.make(rc).getDescription());
+			throw new RuntimeException(IError.make(rc).getDescription());
 		}
+		return rc;
 	}
 
 }

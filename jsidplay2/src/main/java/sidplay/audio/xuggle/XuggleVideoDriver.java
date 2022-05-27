@@ -77,7 +77,7 @@ import sidplay.audio.exceptions.IniConfigException;
  * @author ken
  *
  */
-public abstract class XuggleVideoDriver extends XuggleVideoBase implements AudioDriver, VideoDriver {
+public abstract class XuggleVideoDriver extends XuggleBase implements AudioDriver, VideoDriver {
 
 	private static final int STATUS_TEXT_Y = 10;
 
@@ -155,11 +155,7 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 		int samplesConsumed = 0;
 		IPacket packet = IPacket.make();
 		while (samplesConsumed < audioSamples.getNumSamples()) {
-			int retval = audioCoder.encodeAudio(packet, audioSamples, samplesConsumed);
-			if (retval < 0) {
-				throw new RuntimeException("Error writing audio stream");
-			}
-			samplesConsumed += retval;
+			samplesConsumed += throwExceptionOnError(audioCoder.encodeAudio(packet, audioSamples, samplesConsumed));
 			if (packet.isComplete()) {
 				container.writePacket(packet);
 			}
@@ -180,9 +176,7 @@ public abstract class XuggleVideoDriver extends XuggleVideoBase implements Audio
 		videoPicture.setKeyFrame((frameNo++ % framesPerKeyFrames) == 0);
 
 		IPacket packet = IPacket.make();
-		if (videoCoder.encodeVideo(packet, videoPicture, 0) < 0) {
-			throw new RuntimeException("Error writing video stream");
-		}
+		throwExceptionOnError(videoCoder.encodeVideo(packet, videoPicture, 0));
 		if (packet.isComplete()) {
 			container.writePacket(packet);
 		}
