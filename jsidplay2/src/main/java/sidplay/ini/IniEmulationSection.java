@@ -83,6 +83,7 @@ import libsidplay.config.IDeviceMapping;
 import libsidplay.config.IEmulationSection;
 import sidplay.ini.converter.BeanToStringConverter;
 import sidplay.ini.converter.NegatedBooleanConverter;
+import sidplay.ini.converter.ShortConverter;
 import sidplay.ini.validator.LatencyTimerValidator;
 
 /**
@@ -292,7 +293,7 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 
 	@Override
 	@Parameter(names = {
-			"--sidBlasterLatencyTimer" }, descriptionKey = "SIDBLASTER_LATENCY_TIMER", validateWith = LatencyTimerValidator.class, arity = 1, order = 1007)
+			"--sidBlasterLatencyTimer" }, descriptionKey = "SIDBLASTER_LATENCY_TIMER", converter = ShortConverter.class, validateWith = LatencyTimerValidator.class, arity = 1, order = 1007)
 	public final void setSidBlasterLatencyTimer(final short sidBlasterLatencyTimer) {
 		iniReader.setProperty(SECTION_ID, "SIDBlasterLatencyTimer", sidBlasterLatencyTimer);
 	}

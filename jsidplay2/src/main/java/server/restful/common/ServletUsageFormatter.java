@@ -85,14 +85,18 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private String getName(String names) {
 		String[] split = names.split(",");
 		for (String name : split) {
-			if (name.startsWith("--")) {
-				return name.substring("--".length());
-			} else if (name.startsWith("-")) {
-				return name.substring("-".length());
-			} else {
-				return name;
-			}
+			return getParameterName(name);
 		}
-		return names;
+		return getParameterName(names);
+	}
+
+	private String getParameterName(String name) {
+		if (name.startsWith("--")) {
+			return name.substring("--".length());
+		} else if (name.startsWith("-")) {
+			return name.substring("-".length());
+		} else {
+			return name;
+		}
 	}
 }
