@@ -69,7 +69,6 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.converter.OptionalIntegerConverter;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -101,8 +100,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = {
-				"--startSong" }, descriptionKey = "START_SONG", converter = OptionalIntegerConverter.class, order = -5)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -5)
 		private Integer startSong;
 
 		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -4)
@@ -111,8 +109,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -3)
 		private Boolean jiffydos = Boolean.FALSE;
 
-		@Parameter(names = {
-				"--reuSize" }, descriptionKey = "REU_SIZE", converter = OptionalIntegerConverter.class, order = -2)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -2)
 		private Integer reuSize;
 
 		@ParametersDelegate

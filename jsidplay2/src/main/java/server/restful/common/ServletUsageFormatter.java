@@ -75,7 +75,9 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			mainLine.append(uri.toASCIIString());
 			wrapDescription(out, indentCount, mainLine.toString());
 			out.append("\n");
-			out.append(indent).append("Servlet-Parameter");
+			if (arguments.size() > 0) {
+				out.append(indent).append("Servlet-Parameter");
+			}
 
 		} catch (URISyntaxException | MalformedURLException e) {
 			throw new RuntimeException(e);

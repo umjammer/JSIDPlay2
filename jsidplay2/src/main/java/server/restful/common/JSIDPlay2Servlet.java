@@ -1,5 +1,9 @@
 package server.restful.common;
 
+import static java.util.Arrays.asList;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.empty;
+import static java.util.stream.Stream.of;
 import static libsidplay.common.SamplingRate.VERY_LOW;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
@@ -13,7 +17,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.MissingResourceException;
 import java.util.Optional;
@@ -109,13 +112,11 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	private String[] getRequestParameters(HttpServletRequest request) {
-		return Stream
-				.concat(Collections.list(request.getParameterNames()).stream()
-						.flatMap(name -> Arrays.asList(request.getParameterValues(name)).stream()
-								.map(v -> Stream.of((name.length() > 1 ? "--" : "-") + name, v)))
-						.flatMap(Function.identity()),
-						Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(Stream.empty()))
-				.toArray(String[]::new);
+		return concat(Collections.list(request.getParameterNames()).stream()
+				.flatMap(name -> asList(request.getParameterValues(name)).stream().filter(v -> !"null".equals(v))
+						.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
+				.flatMap(Function.identity()),
+				Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -154,8 +155,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				return;
 			}
 			Optional<String> optionalContentType = Optional.ofNullable(request.getHeader(HttpHeaders.ACCEPT))
-					.map(accept -> Arrays.asList(accept.split(","))).orElse(Collections.emptyList()).stream()
-					.findFirst();
+					.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
 			if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
 				response.setContentType(MIME_TYPE_JSON.toString());
 				new ObjectMapper().writeValue(out, result);
