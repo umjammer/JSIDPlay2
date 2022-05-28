@@ -86,14 +86,14 @@ public class XuggleBase implements C64Font {
 		}
 	}
 
-	public int throwExceptionOnError(int rc, String message) {
+	protected final int throwExceptionOnError(int rc, String message) {
 		if (rc < 0) {
 			System.err.println(message);
 		}
 		return throwExceptionOnError(rc);
 	}
 
-	public int throwExceptionOnError(int rc) {
+	protected final int throwExceptionOnError(int rc) {
 		if (rc < 0) {
 			throw new RuntimeException(IError.make(rc).getDescription());
 		}
