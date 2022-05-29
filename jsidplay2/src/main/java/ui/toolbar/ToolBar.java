@@ -154,8 +154,8 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private Label hostnameLabel, portLabel, hardsid6581Label, hardsid8580Label, appIpAddress, appHostname,
 			appServerPortLbl, appServerSecurePortLbl, appServerKeyStorePasswordLbl, appServerKeyAliasLbl,
-			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, sidBlasterLatencyTimerLbl, streamingIpAddress,
-			streamingHostname;
+			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, sidBlasterLatencyTimerLbl, sidBlasterReadLbl,
+			streamingIpAddress, streamingHostname;
 	@FXML
 	private Hyperlink appServerUsage, onlinePlayer, downloadApp, sidBlasterDoc;
 	@FXML
@@ -249,6 +249,8 @@ public class ToolBar extends C64VBox implements UIPart {
 			sidBlasterWriteBufferSize.setDisable(!Engine.SIDBLASTER.equals(n));
 			sidBlasterLatencyTimerLbl.setDisable(!Engine.SIDBLASTER.equals(n));
 			sidBlasterLatencyTimer.setDisable(!Engine.SIDBLASTER.equals(n));
+			sidBlasterReadLbl.setDisable(!Engine.SIDBLASTER.equals(n));
+			sidBlasterRead.setDisable(!Engine.SIDBLASTER.equals(n));
 		});
 		engineBox.valueProperty().bindBidirectional(emulationSection.engineProperty());
 

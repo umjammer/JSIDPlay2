@@ -216,7 +216,8 @@
 							</ComboBox>
 						</VBox>
 						<VBox>
-							<Label text="%SIDBLASTER_READ" alignment="CENTER_RIGHT" />
+							<Label text="%SIDBLASTER_READ" alignment="CENTER_RIGHT"
+								fx:id="sidBlasterReadLbl" />
 							<CheckBox fx:id="sidBlasterRead">
 								<tooltip>
 									<Tooltip text="%SIDBLASTER_READ_TIP" />
