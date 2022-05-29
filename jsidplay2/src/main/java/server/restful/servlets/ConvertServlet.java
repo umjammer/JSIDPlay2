@@ -102,20 +102,23 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -6)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -7)
 		private Integer startSong;
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -5)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -6)
 		private Boolean download = Boolean.FALSE;
 
-		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -4)
+		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -5)
 		private Boolean jiffydos = Boolean.FALSE;
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -3)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -4)
 		private Integer reuSize;
 
-		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -2)
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -3)
 		private Integer pressSpaceInterval = PRESS_SPACE_INTERVALL;
+
+		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -2)
+		private Boolean status = Boolean.TRUE;
 
 		@ParametersDelegate
 		private IniConfig config = new IniConfig();
@@ -124,6 +127,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		private String filePath;
 
 		private volatile boolean started;
+
+		public Integer getPressSpaceInterval() {
+			return pressSpaceInterval;
+		}
+
+		public Boolean getStatus() {
+			return status;
+		}
 	}
 
 	public static final String CONVERT_PATH = "/convert";
@@ -359,7 +370,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
 		}
 		if (uuid != null) {
-			create(uuid, player, file, servletParameters.pressSpaceInterval, RESOURCE_BUNDLE);
+			create(uuid, player, file, servletParameters, RESOURCE_BUNDLE);
 			servletParameters.started = true;
 		}
 		player.stopC64(false);

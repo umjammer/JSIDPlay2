@@ -20,6 +20,7 @@ import libsidplay.components.keyboard.KeyTableEntry;
 import libsidutils.status.Status;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
+import server.restful.servlets.ConvertServlet.ServletParameters;
 import sidplay.Player;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.ProxyDriver;
@@ -35,7 +36,7 @@ public final class PlayerWithStatus {
 
 	private final Status status;
 
-	private final Integer pressSpaceInterval;
+	private final ServletParameters servletParameters;
 
 	private File diskImage;
 
@@ -45,10 +46,11 @@ public final class PlayerWithStatus {
 
 	private int playCounter, statusScrollCounter;
 
-	public PlayerWithStatus(Player player, File diskImage, Integer pressSpaceInterval, ResourceBundle resourceBundle) {
+	public PlayerWithStatus(Player player, File diskImage, ServletParameters servletParameters,
+			ResourceBundle resourceBundle) {
 		this.player = player;
 		this.diskImage = diskImage;
-		this.pressSpaceInterval = pressSpaceInterval;
+		this.servletParameters = servletParameters;
 		status = new Status(player, resourceBundle);
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
@@ -191,6 +193,8 @@ public final class PlayerWithStatus {
 	}
 
 	private void addPressSpaceListener() {
+		Integer pressSpaceInterval = servletParameters.getPressSpaceInterval();
+
 		if (pressSpaceInterval > 0) {
 			player.stateProperty().addListener(event -> {
 				if (event.getNewValue() == State.START) {
@@ -267,23 +271,24 @@ public final class PlayerWithStatus {
 	private String createStatusText() {
 		StringBuilder result = new StringBuilder();
 
-		String determinePSID64 = status.determinePSID64();
-		String determineCartridge = status.determineCartridge();
+		if (Boolean.TRUE.equals(servletParameters.getStatus())) {
+			String determinePSID64 = status.determinePSID64();
+			String determineCartridge = status.determineCartridge();
 
-		result.append(status.determineTime(false));
-		result.append(", ");
-		result.append(status.determineVideoNorm());
-		result.append(", ");
-		result.append(status.determineChipModels());
-		result.append(", ");
-		result.append(status.determineEmulations());
-		result.append(determinePSID64.isEmpty() ? "" : ", " + determinePSID64);
-		result.append(determineCartridge.isEmpty() ? "" : ", " + determineCartridge);
-		result.append(", ");
-		result.append(status.determineTapeActivity(false));
-		result.append(status.determineDiskActivity(false));
-		result.append(diskImage.getName());
-
+			result.append(status.determineTime(false));
+			result.append(", ");
+			result.append(status.determineVideoNorm());
+			result.append(", ");
+			result.append(status.determineChipModels());
+			result.append(", ");
+			result.append(status.determineEmulations());
+			result.append(determinePSID64.isEmpty() ? "" : ", " + determinePSID64);
+			result.append(determineCartridge.isEmpty() ? "" : ", " + determineCartridge);
+			result.append(", ");
+			result.append(status.determineTapeActivity(false));
+			result.append(status.determineDiskActivity(false));
+			result.append(diskImage.getName());
+		}
 		return result.toString();
 	}
 
