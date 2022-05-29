@@ -48,10 +48,10 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 
 		playerEntriesToRemove.forEach(this::quitPlayer);
 
-		PLAYER_MAP.entrySet().removeIf(playerEntriesToRemove::contains);
+		PLAYER_MAP.entrySet().removeAll(playerEntriesToRemove);
 
 		if (timerCounter++ % RTMP_CLEANUP_PLAYER_COUNTER == 0) {
-			PLAYER_MAP.entrySet().stream().forEach(this::printPlayer);
+			PLAYER_MAP.entrySet().forEach(this::printPlayer);
 		}
 	}
 
