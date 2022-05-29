@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -123,6 +124,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	public static final String CONVERT_PATH = "/convert";
 
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(ConvertServlet.class.getName());
 	private static final AudioTuneFileFilter audioTuneFileFilter = new AudioTuneFileFilter();
 	private static final VideoTuneFileFilter videoTuneFileFilter = new VideoTuneFileFilter();
 	private static final DiskFileFilter diskFileFilter = new DiskFileFilter();
@@ -348,11 +350,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setForceCheckSongLength(true);
 
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
+
 		if (servletParameters.reuSize != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
 		}
 		if (uuid != null) {
-			create(uuid, player, file, resourceBundle);
+			create(uuid, player, file, RESOURCE_BUNDLE);
 			servletParameters.started = true;
 		}
 		player.stopC64(false);

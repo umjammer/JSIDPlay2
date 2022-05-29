@@ -18,10 +18,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -52,8 +50,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected static final String C64_MUSIC = "/C64Music";
 	protected static final String CGSC = "/CGSC";
 
-	protected ResourceBundle resourceBundle;
-
 	protected Configuration configuration;
 
 	protected Properties directoryProperties;
@@ -61,11 +57,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected JSIDPlay2Servlet(Configuration configuration, Properties directoryProperties) {
 		this.configuration = configuration;
 		this.directoryProperties = directoryProperties;
-		try {
-			this.resourceBundle = ResourceBundle.getBundle(getClass().getName());
-		} catch (MissingResourceException e) {
-			// resource bundle per servlet is optional
-		}
 	}
 
 	public abstract String getServletPath();

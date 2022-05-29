@@ -1,10 +1,10 @@
 package ui.common;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -122,18 +122,19 @@ public class Convenience {
 			throws IOException, SidTuneError {
 		player.getC64().ejectCartridge();
 		File tmpDir = player.getConfig().getSidplay2Section().getTmpDir();
+		boolean fileIsModule = cartFileFilter.accept(file);
 		TFile zip = new TFile(file);
 		File toAttach = null;
 		if (zip.isArchive()) {
 			// uncompress zip
 			TFile.cp_rp(zip, tmpDir, TArchiveDetector.ALL);
 			// search media file to attach
-			toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, true);
+			toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, true, fileIsModule);
 			TFile.rm_r(zip);
 		} else if (file.getName().toLowerCase(Locale.US).endsWith("7z")) {
 			Extract7ZipUtil extract7Zip = new Extract7ZipUtil(zip, tmpDir);
 			extract7Zip.extract();
-			toAttach = getToAttach(tmpDir, extract7Zip.getZipFile(), isMediaToAttach, null, true);
+			toAttach = getToAttach(tmpDir, extract7Zip.getZipFile(), isMediaToAttach, null, true, fileIsModule);
 			TFile.rm_r(zip);
 		} else if (zip.isEntry()) {
 			// uncompress zip entry
@@ -141,10 +142,10 @@ public class Convenience {
 			zipEntry.deleteOnExit();
 			TFile.cp_rp(zip, zipEntry, TArchiveDetector.ALL);
 			// search media file to attach
-			getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> false, null, false);
+			getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
 			toAttach = zipEntry;
 		} else if (isSupportedMedia(file)) {
-			getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> false, null, false);
+			getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
 			toAttach = file;
 		}
 		if (toAttach != null) {
@@ -201,7 +202,7 @@ public class Convenience {
 	 * @return media to attach
 	 */
 	private File getToAttach(File dir, File file, BiPredicate<File, File> mediaTester, File toAttach,
-			boolean deleteOnExit) {
+			boolean deleteOnExit, boolean fileIsModule) {
 		final File[] listFiles = file.listFiles();
 		if (listFiles == null) {
 			return toAttach;
@@ -214,13 +215,13 @@ public class Convenience {
 				memberFile.deleteOnExit();
 			}
 			if (memberFile.isFile() && isSupportedMedia(memberFile)) {
-				if (memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
+				if (!fileIsModule && memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
 					try {
 						player.insertCartridge(CartridgeType.REU, memberFile);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				} else if (memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".crt")) {
+				} else if (!fileIsModule && memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".crt")) {
 					try {
 						player.insertCartridge(CartridgeType.CRT, memberFile);
 						toAttach = memberFile;
@@ -233,8 +234,8 @@ public class Convenience {
 					}
 				}
 			} else if (memberFile.isDirectory() && !memberFile.getName().equals(MACOSX)) {
-				File toAttachChild = getToAttach(memberFile, new TFile(memberFile), mediaTester, toAttach,
-						deleteOnExit);
+				File toAttachChild = getToAttach(memberFile, new TFile(memberFile), mediaTester, toAttach, deleteOnExit,
+						fileIsModule);
 				if (toAttachChild != null) {
 					toAttach = toAttachChild;
 				}
@@ -255,12 +256,9 @@ public class Convenience {
 	}
 
 	private void playVideo(File file) {
-		final File tmpFile = new File(player.getConfig().getSidplay2Section().getTmpDir(), "nuvieplayer-v1.0.prg");
-		tmpFile.deleteOnExit();
-		try (DataOutputStream os = new DataOutputStream(new FileOutputStream(tmpFile))) {
-			os.write(NUVIE_PLAYER);
+		try (InputStream is = new ByteArrayInputStream(NUVIE_PLAYER)) {
 			player.insertCartridge(CartridgeType.REU, file);
-			player.play(SidTune.load(tmpFile));
+			player.play(SidTune.load("nuvieplayer-v1.0.prg", is));
 		} catch (IOException | SidTuneError e) {
 			System.err.println();
 		}

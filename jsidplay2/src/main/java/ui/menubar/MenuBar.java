@@ -8,6 +8,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -379,12 +380,9 @@ public class MenuBar extends C64VBox implements UIPart {
 				.add(new ExtensionFilter(CartFileExtensions.DESCRIPTION, CartFileExtensions.EXTENSIONS));
 		final File file = fileDialog.showOpenDialog(getScene().getWindow());
 		if (file != null) {
-			final File tmpFile = new File(util.getConfig().getSidplay2Section().getTmpDir(), "nuvieplayer-v1.0.prg");
-			tmpFile.deleteOnExit();
-			try (DataOutputStream os = new DataOutputStream(new FileOutputStream(tmpFile))) {
-				os.write(NUVIE_PLAYER);
+			try (InputStream is = new ByteArrayInputStream(NUVIE_PLAYER)) {
 				util.getPlayer().insertCartridge(CartridgeType.REU, file);
-				util.getPlayer().play(SidTune.load(tmpFile));
+				util.getPlayer().play(SidTune.load("nuvieplayer-v1.0.prg", is));
 			} catch (IOException | SidTuneError e) {
 				openErrorDialog(String.format(util.getBundle().getString("ERR_IO_ERROR"), e.getMessage()));
 			}
