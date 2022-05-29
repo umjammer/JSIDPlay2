@@ -14,7 +14,7 @@ JSIDPlay2:
 
 JSIDPlay2Server:
 - Live videos: Now being controlled by web-page to watch demos better (insert the next disk, send keys, switch SID chip, etc.)
-- Live videos: Now shows infos in a status bar
+- Live videos: Now shows infos in a status line, it can be configured to turn it on/off
 - Live videos: Scan bar-code to watch videos on your mobile phone
 - Live videos: Configure time to press space periodically
 - rest based API endpoints now have a usage
