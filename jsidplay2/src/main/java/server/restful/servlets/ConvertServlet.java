@@ -18,6 +18,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.MAX_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXTERNAL_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_INTERNAL_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
@@ -101,17 +102,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -5)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -6)
 		private Integer startSong;
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -4)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -5)
 		private Boolean download = Boolean.FALSE;
 
-		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -3)
+		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -4)
 		private Boolean jiffydos = Boolean.FALSE;
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -2)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -3)
 		private Integer reuSize;
+
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -2)
+		private Integer pressSpaceInterval = PRESS_SPACE_INTERVALL;
 
 		@ParametersDelegate
 		private IniConfig config = new IniConfig();
@@ -355,7 +359,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
 		}
 		if (uuid != null) {
-			create(uuid, player, file, RESOURCE_BUNDLE);
+			create(uuid, player, file, servletParameters.pressSpaceInterval, RESOURCE_BUNDLE);
 			servletParameters.started = true;
 		}
 		player.stopC64(false);

@@ -1,7 +1,6 @@
 package server.restful.common;
 
 import static libsidplay.components.keyboard.KeyTableEntry.SPACE;
-import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 
@@ -36,6 +35,8 @@ public final class PlayerWithStatus {
 
 	private final Status status;
 
+	private final Integer pressSpaceInterval;
+
 	private File diskImage;
 
 	private final LocalDateTime created;
@@ -44,9 +45,10 @@ public final class PlayerWithStatus {
 
 	private int playCounter, statusScrollCounter;
 
-	public PlayerWithStatus(Player player, File diskImage, ResourceBundle resourceBundle) {
+	public PlayerWithStatus(Player player, File diskImage, Integer pressSpaceInterval, ResourceBundle resourceBundle) {
 		this.player = player;
 		this.diskImage = diskImage;
+		this.pressSpaceInterval = pressSpaceInterval;
 		status = new Status(player, resourceBundle);
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
@@ -189,30 +191,32 @@ public final class PlayerWithStatus {
 	}
 
 	private void addPressSpaceListener() {
-		player.stateProperty().addListener(event -> {
-			if (event.getNewValue() == State.START) {
+		if (pressSpaceInterval > 0) {
+			player.stateProperty().addListener(event -> {
+				if (event.getNewValue() == State.START) {
 
-				player.getC64().getEventScheduler().schedule(new Event("Key Pressed") {
-					@Override
-					public void event() throws InterruptedException {
+					player.getC64().getEventScheduler().schedule(new Event("Key Pressed") {
+						@Override
+						public void event() throws InterruptedException {
 
-						// press space every N seconds
-						player.getC64().getKeyboard().keyPressed(SPACE);
+							// press space every N seconds
+							player.getC64().getKeyboard().keyPressed(SPACE);
 
-						player.getC64().getEventScheduler().schedule(new Event("Key Released") {
-							@Override
-							public void event() throws InterruptedException {
-								player.getC64().getKeyboard().keyReleased(SPACE);
-							}
-						}, (long) (player.getC64().getClock().getCpuFrequency()));
+							player.getC64().getEventScheduler().schedule(new Event("Key Released") {
+								@Override
+								public void event() throws InterruptedException {
+									player.getC64().getKeyboard().keyReleased(SPACE);
+								}
+							}, (long) (player.getC64().getClock().getCpuFrequency()));
 
-						player.getC64().getEventScheduler().schedule(this,
-								PRESS_SPACE_INTERVALL * (long) player.getC64().getClock().getCpuFrequency());
-					}
+							player.getC64().getEventScheduler().schedule(this,
+									pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
+						}
 
-				}, PRESS_SPACE_INTERVALL * (long) player.getC64().getClock().getCpuFrequency());
-			}
-		});
+					}, pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
+				}
+			});
+		}
 	}
 
 	private void addStatusTextListener() {

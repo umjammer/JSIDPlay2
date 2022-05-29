@@ -31,8 +31,9 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 		this.logger = logger;
 	}
 
-	public static final void create(UUID uuid, Player player, File diskImage, ResourceBundle resourceBundle) {
-		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, resourceBundle));
+	public static final void create(UUID uuid, Player player, File diskImage, Integer pressSpaceInterval,
+			ResourceBundle resourceBundle) {
+		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, pressSpaceInterval, resourceBundle));
 	}
 
 	public static final void update(UUID uuid, Consumer<PlayerWithStatus> playerWithStatusConsumer) {
