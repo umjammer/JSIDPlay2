@@ -20,4 +20,4 @@ JSIDPlay2Server:
 - rest based API endpoints now have a usage
 
 JSIDPlay2app:
-- Connect your mobile to USB hardware (SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay). No PC required.
+- Connect your mobile directly to USB hardware (SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay). No PC required.
