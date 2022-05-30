@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface VideoTuneFileExtensions {
 
-	List<String> EXTENSIONS = addUpperCase(asList("*.c64", "*.prg", "*.p00", "*.t64"));
+	List<String> EXTENSIONS = addUpperCase(asList("*.c64", "*.prg", "*.p00", ".tap", "*.t64"));
 
 	String DESCRIPTION = "C64 Tunes";
 }

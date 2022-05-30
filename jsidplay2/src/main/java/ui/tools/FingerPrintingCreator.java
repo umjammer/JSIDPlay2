@@ -143,7 +143,7 @@ public class FingerPrintingCreator {
 		try {
 			if (directory != null) {
 				System.out.println(
-						"Create fingerprintings... (press q <return> to abort after the current tune has been fingerprinted)");
+						"Create fingerprintings... (press q <return>, to abort after the current tune has been fingerprinted)");
 
 				processDirectory(directory, em);
 			}

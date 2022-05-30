@@ -8,7 +8,7 @@ import java.util.Locale;
 
 public final class VideoTuneFileFilter implements FileFilter {
 
-	private static final String DEFAULT_FILE_NAME_EXT[] = new String[] { ".c64", ".prg", ".t64", ".p00" };
+	private static final String DEFAULT_FILE_NAME_EXT[] = new String[] { ".c64", ".prg", ".tap", ".t64", ".p00" };
 
 	@Override
 	public boolean accept(File file) {
