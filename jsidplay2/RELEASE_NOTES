@@ -21,3 +21,6 @@ JSIDPlay2Server:
 
 JSIDPlay2app:
 - Connect your mobile directly to USB hardware (SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay). No PC required.
+- Configuration: turn on/off status line
+- Configuration: turn on/off fastloader
+- Configuration: enter time in s to periodically press space
