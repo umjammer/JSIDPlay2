@@ -75,6 +75,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			mainLine.append(uri.toASCIIString());
 			wrapDescription(out, indentCount, mainLine.toString());
 			out.append("\n");
+			out.append("\n");
 			if (arguments.size() > 0) {
 				out.append(indent).append("Servlet-Parameter");
 			}
