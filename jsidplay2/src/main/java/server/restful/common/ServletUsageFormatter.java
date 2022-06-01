@@ -72,7 +72,12 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
 					url.getQuery(), url.getRef());
 
-			mainLine.append(uri.toASCIIString());
+			String asciiString = uri.toASCIIString();
+			if (commander.getMainParameter() != null && commander.getMainParameterDescription() != null) {
+				asciiString = asciiString.replace(commander.getMainParameterDescription(),
+						"{" + commander.getMainParameterDescription() + "}");
+			}
+			mainLine.append(asciiString);
 			wrapDescription(out, indentCount, mainLine.toString());
 			out.append("\n");
 			out.append("\n");
