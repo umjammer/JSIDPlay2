@@ -659,7 +659,8 @@ public class MenuBar extends C64VBox implements UIPart {
 	private void insertEmptyDisk() {
 		final FileChooser fileDialog = new FileChooser();
 		fileDialog.setInitialDirectory(util.getConfig().getSidplay2Section().getLastDirectory());
-		fileDialog.getExtensionFilters().add(new ExtensionFilter("Disk Image (D64)", "*.d64"));
+		fileDialog.getExtensionFilters()
+				.add(new ExtensionFilter(DiskFileExtensions.DESCRIPTION, DiskFileExtensions.STD_EXTENSIONS()));
 		fileDialog.setTitle(util.getBundle().getString("INSERT_EMPTY_DISK"));
 		final File file = fileDialog.showSaveDialog(getScene().getWindow());
 		if (file != null) {

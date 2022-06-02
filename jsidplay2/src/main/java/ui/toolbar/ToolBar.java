@@ -84,6 +84,8 @@ import ui.common.converter.HardSIDSlotToIntegerConverter;
 import ui.common.converter.MinimumNumberToStringConverter;
 import ui.common.converter.MixerInfoToStringConverter;
 import ui.common.converter.TimeToStringConverter;
+import ui.common.fileextension.KeyStoreFileExtensions;
+import ui.common.fileextension.MP3TuneFileExtensions;
 import ui.common.util.DesktopUtil;
 import ui.entities.config.AudioSection;
 import ui.entities.config.Configuration;
@@ -490,7 +492,8 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private void doKeystoreBrowse() {
 		final FileChooser fileDialog = new FileChooser();
-		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Keystore file (*.ks)", "*.ks");
+		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+				KeyStoreFileExtensions.DESCRIPTION, KeyStoreFileExtensions.DESCRIPTION);
 		fileDialog.getExtensionFilters().add(extFilter);
 		final File file = fileDialog.showOpenDialog(getScene().getWindow());
 		if (file != null) {
@@ -567,7 +570,8 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private void doBrowse() {
 		final FileChooser fileDialog = new FileChooser();
-		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("MP3 file (*.mp3)", "*.mp3");
+		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(MP3TuneFileExtensions.DESCRIPTION,
+				MP3TuneFileExtensions.EXTENSIONS);
 		fileDialog.getExtensionFilters().add(extFilter);
 		final File file = fileDialog.showOpenDialog(getScene().getWindow());
 		if (file != null) {
