@@ -276,7 +276,7 @@ public class JHardSIDEmu extends ReSIDfp {
 
 	public static final String credits() {
 		final StringBuffer credits = new StringBuffer();
-		credits.append("HardSID driver Java version by Ken Händel <kschwiersch@yahoo.de> Copyright (©) 2022\n");
+		credits.append("HardSID Java version by Ken Händel <kschwiersch@yahoo.de> Copyright (©) 2022\n");
 		credits.append("\tSupported by official HardSID support\n");
 		credits.append("\tbased on hardsid.dll, api calls Written by Sandor Téli\n");
 		return credits.toString();
