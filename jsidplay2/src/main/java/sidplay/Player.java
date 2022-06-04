@@ -13,6 +13,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static libsidplay.common.SIDEmu.NONE;
 import static libsidplay.sidtune.SidTune.RESET;
 import static sidplay.ini.IniDefaults.DEFAULT_AUDIO;
+import static sidplay.ini.IniDefaults.DEFAULT_TMP_DIR;
 import static sidplay.player.State.END;
 import static sidplay.player.State.OPEN;
 import static sidplay.player.State.PAUSE;
@@ -400,6 +401,11 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	public static void initializeTmpDir(IConfig config) {
 		File tmpDir = config.getSidplay2Section().getTmpDir();
+		if (tmpDir == null) {
+			// non-existent file is nulled, but tmpDir is mandatory!
+			tmpDir = DEFAULT_TMP_DIR;
+			config.getSidplay2Section().setTmpDir(tmpDir);
+		}
 		if (!tmpDir.exists()) {
 			tmpDir.mkdirs();
 		}

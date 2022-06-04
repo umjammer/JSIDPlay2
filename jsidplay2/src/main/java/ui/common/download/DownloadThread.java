@@ -90,7 +90,8 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 		if (handleCrcAndSplits) {
 			try {
 				File availableFile = createLocalFile(url);
-				if (checkCrcOfAvailableFile(availableFile)) {
+				if (availableFile.exists() && checkCrcOfAvailableFile(availableFile)) {
+					System.out.println("CRC32 check OK for download: " + url);
 					listener.downloadStop(availableFile);
 					return;
 				} else {
@@ -124,16 +125,19 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 					downloadedFile = null;
 				}
 			}
-		} catch (IOException ioE) {
-			// ignore missing CRC file
 		} finally {
 			listener.downloadStop(downloadedFile);
 		}
 	}
 
-	private boolean checkCrcOfAvailableFile(File file) throws IOException {
-		File crcFile = download(getCrcUrl(), false, false);
-		return checkCrc(crcFile, file);
+	private boolean checkCrcOfAvailableFile(File file) {
+		try {
+			File crcFile = download(getCrcUrl(), false, false);
+			return checkCrc(crcFile, file);
+		} catch (IOException e) {
+			// no CRC available, check passes
+			return true;
+		}
 	}
 
 	private boolean isSplittedInChunks() throws MalformedURLException {
@@ -271,6 +275,7 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 			long fileLength = Integer.valueOf(properties.getProperty("size"));
 			String filename = properties.getProperty("filename");
 			if (!download.getName().equals(filename)) {
+				// CRC does not belong to the file to check? pass
 				return true;
 			}
 			String calculateCRC32 = calculateCRC32(download);
