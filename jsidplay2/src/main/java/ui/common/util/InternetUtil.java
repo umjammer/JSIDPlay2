@@ -1,14 +1,14 @@
 package ui.common.util;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Proxy;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -63,11 +63,20 @@ public class InternetUtil {
 				case HttpURLConnection.HTTP_SEE_OTHER:
 					String location = connection.getHeaderField("Location");
 					if (location != null) {
-						location = URLDecoder.decode(location, UTF_8.name());
-						// Deal with relative URLs
-						URL next = new URL(currentURL, location);
-						currentURL = new URL(
-								next.toExternalForm().replace("%", "%25").replace("#", "%23").replace(" ", "%20"));
+						try {
+							// absolute URI
+							currentURL = new URL(location);
+						} catch (MalformedURLException e) {
+							try {
+								// Deal with relative URLs where location must be encoded properly
+								URI uri = new URI(currentURL.getProtocol(), currentURL.getUserInfo(),
+										currentURL.getHost(), currentURL.getPort(), location, currentURL.getQuery(),
+										currentURL.getRef());
+								currentURL = new URL(uri.toASCIIString());
+							} catch (URISyntaxException e2) {
+								throw new IOException("Redirection failed for location: " + location);
+							}
+						}
 						continue;
 					}
 				case HttpURLConnection.HTTP_OK:

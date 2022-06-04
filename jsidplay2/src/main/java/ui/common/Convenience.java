@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.zip.GZIPInputStream;
 
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
+import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
@@ -130,6 +132,14 @@ public class Convenience {
 			TFile.cp_rp(zip, tmpDir, TArchiveDetector.ALL);
 			// search media file to attach
 			toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, true, fileIsModule);
+			TFile.rm_r(zip);
+		} else if (file.getName().toLowerCase(Locale.US).endsWith(".gz")) {
+			File dst = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()));
+			try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
+				TFile.cp(is, dst);
+			}
+			toAttach = getToAttach(file.getParentFile(), file.getParentFile(), isMediaToAttach, null, true,
+					fileIsModule);
 			TFile.rm_r(zip);
 		} else if (file.getName().toLowerCase(Locale.US).endsWith("7z")) {
 			Extract7ZipUtil extract7Zip = new Extract7ZipUtil(zip, tmpDir);
