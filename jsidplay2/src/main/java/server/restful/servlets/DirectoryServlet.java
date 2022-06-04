@@ -131,9 +131,15 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 						return file1.getName().compareToIgnoreCase(file2.getName());
 					}
 				});
+				String currentPath = null;
 				addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/../", null);
 				for (File f : asList) {
-					addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, f), f);
+					if (asList.get(0).equals(f)) {
+						currentPath = PathUtils.getCollectionName(rootFile, f);
+					} else {
+						currentPath = new File(new File(currentPath).getParentFile(), f.getName()).getAbsolutePath();
+					}
+					addPath(result, virtualCollectionRoot + currentPath, f);
 				}
 			}
 		}
