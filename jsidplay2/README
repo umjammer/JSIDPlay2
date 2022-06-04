@@ -60,8 +60,8 @@ Right click on .fxml file: Open With -> Other... -> FXML Editor (Check "Use it f
 4. To use JavaFX Preview view in Eclipse, change root tag in fxml file (uncomment the commented out alternative version)
 Eventually uncomment line in C64VBox.java (see TODO marker), still not sure, why some of the layouts need that.
 
-HardSIDin VirtualBox:
-=====================
+HardSID in VirtualBox:
+======================
 Use HardSID4U, HardSID Uno and HardSID UPlay - USB devices:
 Connect HardSID device to your real computer.
 Allow Windows to use USB hardware with Virtual box Toolbar icon in the bottom right side of the window.
@@ -69,7 +69,7 @@ Your user has to be a member of the group: vboxusers to let virtualbox access US
 Start JSIDPlay2 and switch from Emulation to HardSID4U.
 Check console, that there are no error messages.
 
-Hard-wire HardSID: connect mixed/out into the Microfone/in of your computer.
+Hard-wire HardSID: connect mixed/out into the Microfone/in of your computer:
 In Ubuntu Linux with Pulseaudio installed transport Microfone sound to speakers;
 Open a terminal and type:
 parec --latency-msec=1 | pacat --latency-msec=1
