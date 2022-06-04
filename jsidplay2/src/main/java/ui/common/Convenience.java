@@ -238,10 +238,8 @@ public class Convenience {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				} else {
-					if (mediaTester.test(memberFile, toAttach)) {
-						toAttach = memberFile;
-					}
+				} else if (mediaTester.test(memberFile, toAttach)) {
+					toAttach = memberFile;
 				}
 			} else if (memberFile.isDirectory() && !memberFile.getName().equals(MACOSX)) {
 				File toAttachChild = getToAttach(memberFile, new TFile(memberFile), mediaTester, toAttach, deleteOnExit,
