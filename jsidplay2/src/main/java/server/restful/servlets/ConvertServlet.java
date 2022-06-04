@@ -307,7 +307,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			player.setSidDatabase(new SidDatabase(root));
 		}
 		player.setAudioDriver(driver);
-		player.setDefaultLengthInRecordMode(true);
+		player.setDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
