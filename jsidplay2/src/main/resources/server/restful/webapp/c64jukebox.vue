@@ -95,7 +95,7 @@
 
 				</b-tab> <b-tab title="SID"> <b-button
 					v-on:click="playSid(currentSid, username, password)">Play</b-button>
-				<b-button v-on:click="playlist.push(currentSid)">Add To
+				<b-button v-on:click="playlist.push(currentSid); tabIndex = 3;">Add To
 				Playlist</b-button>
 
 				<div class="sid">
