@@ -71,8 +71,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			List<String> files = getDirectory(servletParameters.filePath, servletParameters.filter,
-					request.isUserInRole(ROLE_ADMIN));
+			List<String> files = getDirectory(servletParameters, request.isUserInRole(ROLE_ADMIN));
 
 			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(files));
 
@@ -83,23 +82,25 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	private List<String> getDirectory(String filePath, String filter, boolean adminRole) {
-		if (filePath == null || filePath.equals("/")) {
+	private List<String> getDirectory(ServletParameters servletParameters, boolean adminRole) {
+		if (servletParameters.filePath == null || servletParameters.filePath.equals("/")) {
 			return getRoot(adminRole);
-		} else if (filePath.startsWith(C64_MUSIC)) {
+		} else if (servletParameters.filePath.startsWith(C64_MUSIC)) {
 			File root = configuration.getSidplay2Section().getHvsc();
-			return getCollectionFiles(root, filePath, filter, C64_MUSIC, adminRole);
-		} else if (filePath.startsWith(CGSC)) {
+			return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter, C64_MUSIC, adminRole);
+		} else if (servletParameters.filePath.startsWith(CGSC)) {
 			File root = configuration.getSidplay2Section().getCgsc();
-			return getCollectionFiles(root, filePath, filter, CGSC, adminRole);
+			return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter, CGSC, adminRole);
 		}
 		for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
 			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
 			String directoryValue = splitted.length > 0 ? splitted[0] : null;
 			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-			if ((!needToBeAdmin || adminRole) && filePath.startsWith(directoryLogicalName) && directoryValue != null) {
+			if ((!needToBeAdmin || adminRole) && servletParameters.filePath.startsWith(directoryLogicalName)
+					&& directoryValue != null) {
 				File root = new TFile(directoryValue);
-				return getCollectionFiles(root, filePath, filter, directoryLogicalName, adminRole);
+				return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter,
+						directoryLogicalName, adminRole);
 			}
 		}
 		return getRoot(adminRole);

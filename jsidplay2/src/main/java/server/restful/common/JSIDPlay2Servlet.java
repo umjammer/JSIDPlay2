@@ -163,7 +163,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
 			throws IOException {
 		response.setContentType(ct.toString());
-		try (PrintStream out = new PrintStream(response.getOutputStream(), true, ct.getCharset().toString())) {
+		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
+				Optional.ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			e.printStackTrace(out);
 		}
 	}

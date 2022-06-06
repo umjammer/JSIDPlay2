@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
-import server.restful.JSIDPlay2Server;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 
@@ -81,7 +80,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 		if (localFile.exists() && localFile.canRead()) {
 			return new FileInputStream(localFile);
 		}
-		InputStream resourceAsStream = JSIDPlay2Server.class.getResourceAsStream("/server/restful/webapp/" + filePath);
+		InputStream resourceAsStream = StaticServlet.class.getResourceAsStream("/server/restful/webapp/" + filePath);
 		if (resourceAsStream == null) {
 			throw new FileNotFoundException(filePath + " (No such file or directory)");
 		}

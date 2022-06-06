@@ -16,7 +16,6 @@ import java.util.Properties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidplay.sidtune.SidTune;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 
@@ -40,7 +39,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 			Map<String, String> replacements = new HashMap<>();
 			replacements.put("https://haendel.ddns.net:8443", BASE_URL);
 
-			try (InputStream is = SidTune.class.getResourceAsStream("/doc/restful.html")) {
+			try (InputStream is = StartPageServlet.class.getResourceAsStream("/doc/restful.html")) {
 				setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 			}
 		} catch (Throwable t) {
