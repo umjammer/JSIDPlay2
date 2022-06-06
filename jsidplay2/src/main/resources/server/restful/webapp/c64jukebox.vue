@@ -42,8 +42,8 @@
 		<form>
 
 			<div>
-				<b-card no-body> <b-tabs card> <b-tab title="CON"
-					active> <b-card-text>
+				<b-card no-body> <b-tabs v-model="tabIndex" card>
+				<b-tab title="CON" active> <b-card-text>
 				<div>
 					<h3>Authentication:</h3>
 					<label for="username">Username</label> <input type="text"
@@ -75,9 +75,6 @@
 									<a href="#"
 										v-on:click="setSid(entry, username, password);setPic(entry, username, password)">
 										{{entry}} </a>
-									<!--a
-										v-bind:href="'https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true'"
-										target="_blank"> {{entry}} </a-->
 								</div>
 							</div> <!-- others -->
 							<div v-else>
@@ -96,23 +93,48 @@
 					</ul>
 				</div>
 
-				</b-tab> <b-tab title="SID">
+				</b-tab> <b-tab title="SID"> <b-button
+					v-on:click="playSid(currentSid, username, password)">Play</b-button>
+				<b-button v-on:click="playlist.push(currentSid)">Add To
+				Playlist</b-button>
 
-				<b-button v-on:click="playSid(currentSid, username, password)">Play</b-button>
+				<div class="sid">
+					<div>
+						<table>
+							<thead>
+							</thead>
+							<tbody>
+								<tr v-for="(value, key) in infos">
+									<td>{{ $t( key ) }}</td>
+									<td>{{value}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<img :src="picture" id="img">
+					</div>
+				</div>
+				</b-tab> <b-tab title="PL"> <b-card-text>
 
-				<img :src="picture" id="img">
+				<div>
+					<div>
+						<b-button v-on:click="playlist.pop()">Remove</b-button>
+					</div>
+					<div>
+						<b-button v-on:click="downloadPlaylist(username, password)">Download
+						Playlist</b-button>
+						<b-button v-on:click="playlist=[]">Remove Playlist</b-button>
 
-				<table>
-					<thead>
-					</thead>
-					<tbody>
-						<tr v-for="(value, key) in infos">
-							<td>{{ $t( key ) }}</td>
-							<td>{{value}}</td>
-						</tr>
-					</tbody>
-				</table>
-				</b-tab> <b-tab title="CFG"> <b-card-text>
+					</div>
+				</div>
+				<ul>
+					<li v-for="entry in playlist" :key="entry"><a
+						v-bind:href="'https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true'"
+						target="_blank"> {{entry}} </a></li>
+				</ul>
+
+				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
 
 				<div>
 					<h3>SID:</h3>
@@ -243,10 +265,11 @@ new Vue({
   el: "#app",
   i18n, //import mutil-lang
   data: {
+	tabIndex: 0,
 	directory: "",
+	playlist: [],
     infos: "",
     picture: '',
-    imgData: [],
     currentSid: '',
     defaultModel: "MOS8580",
     reuSize: "auto",
@@ -311,6 +334,7 @@ new Vue({
         })
           .then(response => {
             this.infos = response.data;
+            this.tabIndex = 2;
             this.currentSid = entry;
           })
           .finally(() => (this.loading = false));
@@ -340,7 +364,24 @@ new Vue({
         },
         playSid: function(entry, username, password) {
         	window.open('https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true');
-          }        
+          },
+        downloadPlaylist: function(username, password) {
+            this.loading = true; //the loading begin
+            axios({
+              method: "get",
+              url:
+                "/jsidplay2service/JSIDPlay2REST/favorites",
+              auth: {
+                username: username,
+                password: password
+              }
+            })
+              .then(response => {
+                this.playlist = response.data;
+              })
+              .finally(() => (this.loading = false));
+          }
+
   }
 });
 
