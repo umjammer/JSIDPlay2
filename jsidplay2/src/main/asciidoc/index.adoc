@@ -47,7 +47,7 @@ JSidplay2 is able to
 == JSIDPlay2 Server
 link:https://haendel.ddns.net:8443[RESTful Services Usage^]
 
-link:https://haendel.ddns.net:8443/static/hvsc.vue[JSIDPlay2 Online Player^]
+link:https://haendel.ddns.net:8443/static/c64jukebox.vue[JSIDPlay2 Online Player^]
 
 link:https://haendel.ddns.net:8443/static/favorites.vue[JSIDPlay2 Favorites Online Player^]
 

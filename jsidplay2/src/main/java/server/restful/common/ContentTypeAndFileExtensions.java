@@ -56,7 +56,11 @@ public enum ContentTypeAndFileExtensions {
 	/**
 	 * Javascript
 	 */
-	MIME_TYPE_JAVASCRIPT(create("application/javascript", (Charset) null), ".js");
+	MIME_TYPE_JAVASCRIPT(create("application/javascript", StandardCharsets.UTF_8), ".js"),
+	/**
+	 * Sassy CSS
+	 */
+	MIME_TYPE_SCSS(create("text/css", StandardCharsets.UTF_8), ".scss");
 
 	private final ContentType contentType;
 	private final String[] extensions;

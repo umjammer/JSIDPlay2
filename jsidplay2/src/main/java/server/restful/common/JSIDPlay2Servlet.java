@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Optional;
@@ -170,7 +171,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String string)
 			throws JsonProcessingException, IOException {
 		response.setContentType(ct.toString());
-		try (PrintStream out = new PrintStream(response.getOutputStream(), true, ct.getCharset().toString())) {
+		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
+				Optional.ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			out.print(string);
 		}
 	}
