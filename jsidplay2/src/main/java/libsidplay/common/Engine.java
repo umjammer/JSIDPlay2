@@ -11,9 +11,9 @@ public enum Engine {
 	NETSID,
 	/** Hardware (HardSID4U, HardSID Uno and HardSID UPlay - USB devices) */
 	HARDSID,
-	/** Hardware (SidBlaster USB device) */
+	/** Hardware (SIDBlaster - USB device) */
 	SIDBLASTER,
-	/** Hardware (ExSID(+) USB device) */
+	/** Hardware (ExSID, ExSID+ - USB devices) */
 	EXSID;
 
 	/**

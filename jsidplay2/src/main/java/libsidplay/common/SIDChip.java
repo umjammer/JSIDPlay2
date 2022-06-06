@@ -12,7 +12,7 @@ public interface SIDChip {
 	/** Max SID filter FC value. */
 	int FC_MAX = 2048;
 
-	/** SID base address */
+	/** SID base address. */
 	int DEF_BASE_ADDRESS = 0xd400;
 
 	/** Number of SID chip registers. */
