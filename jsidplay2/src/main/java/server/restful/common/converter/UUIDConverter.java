@@ -12,8 +12,7 @@ public final class UUIDConverter implements IStringConverter<UUID> {
 		try {
 			return UUID.fromString(value);
 		} catch (IllegalArgumentException e) {
-			throw new ParameterException(
-					"Invalid UUID, expected pattern xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (found " + value + ")");
+			throw new ParameterException("Invalid UUID (found " + value + ")");
 		}
 	}
 }
