@@ -123,7 +123,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		@ParametersDelegate
 		private IniConfig config = new IniConfig();
 
-		@Parameter(description = "filePath")
+		@Parameter(descriptionKey = "FILE_PATH")
 		private String filePath;
 
 		private volatile boolean started;

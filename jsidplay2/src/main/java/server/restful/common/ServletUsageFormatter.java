@@ -44,8 +44,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			urlAsString.append(BASE_URL).append(commander.getProgramDisplayName());
 
 			// Request path
-			if (commander.getMainParameter() != null && commander.getMainParameterDescription() != null) {
-				urlAsString.append("/").append(commander.getMainParameterDescription());
+			if (commander.getMainParameterValue() != null) {
+				urlAsString.append("/").append(commander.getMainParameterValue().getParameterized().getName());
 			}
 
 			List<ParameterDescription> arguments = commander.getFields().values().stream()
@@ -73,14 +73,24 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 					url.getQuery(), url.getRef());
 
 			String asciiString = uri.toASCIIString();
-			if (commander.getMainParameter() != null && commander.getMainParameterDescription() != null) {
-				asciiString = asciiString.replace(commander.getMainParameterDescription(),
-						"{" + commander.getMainParameterDescription() + "}");
+			if (commander.getMainParameterValue() != null) {
+				asciiString = asciiString.replace(commander.getMainParameterValue().getParameterized().getName(),
+						"{" + commander.getMainParameterValue().getParameterized().getName() + "}");
 			}
 			mainLine.append(asciiString);
 			wrapDescription(out, indentCount, mainLine.toString());
 			out.append("\n");
 			out.append("\n");
+
+			// Request path description
+			if (commander.getMainParameterValue() != null) {
+				out.append("{");
+				out.append(commander.getMainParameterValue().getParameterized().getName());
+				out.append("}: ");
+				out.append(commander.getMainParameterValue().getDescription());
+				out.append("\n");
+				out.append("\n");
+			}
 			if (arguments.size() > 0) {
 				out.append(indent).append("Servlet-Parameter");
 			}

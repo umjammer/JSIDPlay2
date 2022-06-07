@@ -32,7 +32,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.PhotoServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(description = "filePath")
+		@Parameter(descriptionKey = "FILE_PATH")
 		private String filePath;
 
 	}
