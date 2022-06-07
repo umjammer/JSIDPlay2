@@ -157,13 +157,13 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 	private List<String> getRoot(boolean adminRole) {
 		List<String> result = new ArrayList<>(Arrays.asList(C64_MUSIC + "/", CGSC + "/"));
 
-		for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
+		directoryProperties.stringPropertyNames().stream().sorted().forEach(directoryLogicalName -> {
 			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
 			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 			if (!needToBeAdmin || adminRole) {
 				result.add(directoryLogicalName + "/");
 			}
-		}
+		});
 		return result;
 	}
 }
