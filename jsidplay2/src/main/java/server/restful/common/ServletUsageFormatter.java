@@ -44,7 +44,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			urlAsString.append(BASE_URL).append(commander.getProgramDisplayName());
 
 			// Request path
-			if (commander.getMainParameterValue() != null) {
+			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
 				urlAsString.append("/").append(commander.getMainParameterValue().getParameterized().getName());
 			}
 
@@ -73,7 +73,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 					url.getQuery(), url.getRef());
 
 			String asciiString = uri.toASCIIString();
-			if (commander.getMainParameterValue() != null) {
+			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
 				asciiString = asciiString.replace(commander.getMainParameterValue().getParameterized().getName(),
 						"{" + commander.getMainParameterValue().getParameterized().getName() + "}");
 			}
@@ -83,7 +83,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			out.append("\n");
 
 			// Request path description
-			if (commander.getMainParameterValue() != null) {
+			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
 				out.append("{");
 				out.append(commander.getMainParameterValue().getParameterized().getName());
 				out.append("}: ");
