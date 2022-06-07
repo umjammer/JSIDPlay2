@@ -22,7 +22,7 @@ public enum ContentTypeAndFileExtensions {
 	MIME_TYPE_WAV(create("audio/wav", (Charset) null), ".wav"),
 	MIME_TYPE_FLAC(create("audio/flac", (Charset) null), ".flac"),
 	MIME_TYPE_AAC(create("audio/aac", (Charset) null), ".aac"),
-	MIME_TYPE_CSV(create("text/csv", (Charset) null), ".csv"),
+	MIME_TYPE_SID(create("audio/prs.sid", (Charset) null), ".sid"),
 	/**
 	 * Video formats
 	 */
@@ -30,17 +30,14 @@ public enum ContentTypeAndFileExtensions {
 	MIME_TYPE_AVI(create("video/msvideo", (Charset) null), ".avi"),
 	MIME_TYPE_MP4(create("video/mp4", (Charset) null), ".mp4"),
 	/**
-	 * SID formats
-	 */
-	MIME_TYPE_SID(create("audio/prs.sid", (Charset) null), ".sid"),
-	/**
-	 * Binary formats
+	 * Binary format
 	 */
 	MIME_TYPE_OCTET_STREAM(create("application/octet-stream", (Charset) null), ".bin"),
 	/**
-	 * Text
+	 * Text formats
 	 */
 	MIME_TYPE_TEXT(create("text/plain", StandardCharsets.UTF_8), ".txt"),
+	MIME_TYPE_CSV(create("text/csv", (Charset) null), ".csv"),
 	/**
 	 * Json
 	 */
@@ -58,9 +55,9 @@ public enum ContentTypeAndFileExtensions {
 	 */
 	MIME_TYPE_JAVASCRIPT(create("application/javascript", StandardCharsets.UTF_8), ".js"),
 	/**
-	 * Sassy CSS
+	 * CSS
 	 */
-	MIME_TYPE_SCSS(create("text/css", StandardCharsets.UTF_8), ".scss");
+	MIME_TYPE_SCSS(create("text/css", StandardCharsets.UTF_8), ".scss", ".css");
 
 	private final ContentType contentType;
 	private final String[] extensions;
