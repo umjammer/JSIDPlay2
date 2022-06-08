@@ -57,7 +57,8 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	}
 
 	private List<String> getFirstFavorites() {
-		List<String> filters = configuration.getFavorites().stream().findFirst()
+		List<String> filters = configuration.getFavorites().stream()
+				.filter(favorites -> !favorites.getFavorites().isEmpty()).findFirst()
 				.map(favoritesSection -> favoritesSection.getFavorites()).orElseGet(Collections::emptyList).stream()
 				.map(favorite -> getFavoriteFilename(favorite)).filter(Objects::nonNull).collect(Collectors.toList());
 		return filters;
