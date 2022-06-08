@@ -64,6 +64,7 @@ link:https://www.6581-8580.com[https://www.6581-8580.com^]
 | Magic Desk (32Kb, 64Kb and 128Kb)
 | MikroAss
 | Generic 8Kb
+| Ocean Type1
 | Rexx Datentechnik
 | Zaxxon
 | GeoRAM (64kb, 128kb, 256kb, 512kb, 1024kb, 2048kb and 2048kb)
@@ -94,6 +95,9 @@ Sound output can be recorded optionally as:
 * MP3 audio (lossy)
 * AVI video (lossless)
 * MP4 video (lossy)
+* FLV video (lossy)
+* SID dump file
+* SID reg file
 
 == Supported Devices
 
@@ -106,7 +110,7 @@ One created by Dag Lem (link:https://sourceforge.net/projects/sidplay2/[ReSID^])
 Beside these software emulation types we support some decent Hardware as well, where you can add the real SID chips inside.
 
 2.
-link:https://en.wikipedia.org/wiki/HardSID[HardSID 4U (USB Version)^] can be used with up to 4 SID chips, but are hard to find on ebay these days and they are not produced anymore.
+link:https://en.wikipedia.org/wiki/HardSID[HardSID4U, HardSID UPlay and HardSID Uno (USB devices)^] can be used with up to 4 SID chips, but are hard to find on ebay these days and they are not produced anymore.
 
 3.
 Additionally we support SIDBlaster USB devices, e.g. link:http://crazy-midi.de[SIDBlaster device TicTac Edition^].
@@ -116,7 +120,7 @@ Information to use that device in software like JSIDPlay2 is available here:
 link:https://haendel.ddns.net/~ken/sidblaster.html[https://haendel.ddns.net/~ken/sidblaster.html^]
 
 4.
-Additionally we support exactly one ExSID USB device, e.g. link:http://hacks.slashdirt.org/hw/exsid/[exSID USB^]. It contains exactly two chips one MOS6581 and one MOS8580 per device.
+Additionally we support exactly one of ExSID or ExSID+ (USB devices), e.g. link:http://hacks.slashdirt.org/hw/exsid/[exSID USB^]. It contains exactly two chips one MOS6581 and one MOS8580 per device.
 It contains both chips (MOS6581 and MOS8580) per device.
 
 5.
@@ -181,10 +185,12 @@ launch JSIDPlay2 using the following command:
 ----
 cd Downloads/jsidplay2-{version}
 java -Djava.library.path="." \
-	--module-path ~/Downloads/jsidplay2-{version} \
+	--module-path . \
 	--add-modules javafx.controls,javafx.web,javafx.fxml \
-	--add-opens java.base/java.io=org.apache.tomcat.embed.core \
-	--add-opens java.base/java.util.function=jcommander \
+	--add-opens=java.base/java.lang=ALL-UNNAMED \
+	--add-opens=java.base/java.io=ALL-UNNAMED \
+	--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED \
+	--add-opens java.base/java.util.function=jcommander
 	-jar jsidplay2-{version}.jar # <1>
 ----
 <1> Launch User interface version
@@ -303,10 +309,11 @@ image:ScreenLayout.png[JSidplay2 {version} - Screen Layout]
 
 The main window is divided in several regions:
 
-1. Menubar - reveals all possible functions of JSIDPlay2 by a classic menu
-2. Toolbar - For always visible and important settings like emulation, sound device and sampling parameters
-3. Tabs Area - User configurable additional information
-4. Statusbar - For the currently chosen settings like chip type, song speed and peripheral device infos
+. Menubar - reveals all possible functions of JSIDPlay2 by a classic menu
+. Toolbar - For always visible and important settings like emulation, sound device and sampling parameters
+. Tabs Area - Switch between currently opened views
+. View - contents of the currently opened view
+. Statusbar - For the currently chosen settings like chip type, song speed and peripheral device infos
 
 ==== Menubar
 
@@ -318,6 +325,7 @@ The file menu is for loading a tune from file basically.
 
 | File/Load... | load a tune, reset C64 and immediately start playing
 | File/Load REU Video... | Insert a REU (Ram Expansion Unit) memory dump containing video data, reset C64 and immediately start playing using NUVIE video player 1.0
+| File/Save... | Save current tune
 | File/Reset | Reset C64
 | File/Quit | Quit JSIDPlay2
 
@@ -340,8 +348,10 @@ Each tab can be opened exactly once.
 | View/Disk Collections/Magazines | Show the disk magazine collection
 | View/Tools/SID Dump | Record notes while playing tune
 | View/Tools/SID Registers | Show register writes  while playing tune
-| View/Tools/Assembler | Use kickassembler to assemble machine code into C64 RAM
+| View/Tools/Kick Assembler | Use kickassembler to assemble machine code into C64 RAM
 | View/Tools/Disassembler | Simple Disassembler possibility of the C64 RAM
+| View/Online/Assembly64 | Open Assembly 64 search engine
+| View/Online/GameBase 64 | Open GameBase64 to search for games
 | View/Online/<website> | Open a web browser view for that site
 | View/Online/JSIDPlay2 Source Code | Show source code of JSIDPlay2 in a web browser view
 | View/Printer | Open the printer view (as a replacement for paper)
@@ -378,7 +388,8 @@ where a tape can be inserted to store program data.
 | Devices/Datasette/Forward | Press Forward on device to control storage medium position
 | Devices/Datasette/Stop | Press Stop key on device
 | Devices/Datasette/Reset Counter | Reset the counter of the storage medium position to zero
-| Devices/Datasette/Insert Tape... | Insert a tape into the datasette (.TAP file format). Different file formats are converted to turbo tape (default)
+| Devices/Datasette/Enable turbo tape for t64 | Enable turbo tape for t64
+| Devices/Datasette/Insert Tape... | Insert a tape into the datasette (.TAP file format). Different file formats are converted
 | Devices/Datasette/Eject Tape... | Physically eject a tape from the datasette
 
 |===
@@ -393,6 +404,7 @@ a disk as the storage medium (a thin and flexible magnetic storage medium) for d
 | Devices/Floppy/Turn Drive On | Switch power on/off key
 | Devices/Floppy/Drive Sound | Play pre-recorded floppy disk drive sound for disk rotation and track change
 | Devices/Floppy/Parallel Cable | Connect floppy disk drive and C64 using a parallel cable for faster disk read/write speed
+| Devices/Floppy/jiffyDos | Use floppy speeder
 | Devices/Floppy/Floppy Type/C1541 | Choose C-1541 as the floppy disk drive device (old model)
 | Devices/Floppy/Floppy Type/C1541-II | Choose C-1541-II as the floppy disk drive device (new model)
 | Devices/Floppy/40 Track handling/Never Extend | Normally a disk uses 35 tracks, but can be formatted using up to 40 tracks. This option means a disk will never extend to 40 tracks.
@@ -441,10 +453,9 @@ The devices cartridge menu is the interface to the various multi-purpose cartrid
 | Devices/Cartridge/GeoRAM/Insert REU (512KB) | Insert a RAM expansion cartridge REU of 512KB size with empty contents.
 | Devices/Cartridge/GeoRAM/Insert REU (2MB) | Insert a RAM expansion cartridge REU of 2MB size with empty contents.
 | Devices/Cartridge/GeoRAM/Insert REU (16MB) | Insert a RAM expansion cartridge REU of 16MB size with empty contents. This REU size has never been manufactured, but is very popular in the scene.
+| Devices/Cartridge/Action Replay V6.0 | Insert multi-purpose cartridge Action Replay V6.0
 | Devices/Cartridge/Eject Cartridge | Disconnect multi-purpose cartridge from C64
 | Devices/Cartridge/Freeze | Press the freeze button on the multi-purpose cartridge
-| Devices/Install JiffyDos... | Install the very compatible floppy speeder JiffyDOS by selection the custom ROM files for C64 and C-1541. JiffyDOS is sold separately.
-| Devices/Uninstall JiffyDos | Uninstall the floppy speeder JiffyDOS by removing the custom ROM files out of C64 and C-1541.
 
 |===
 
@@ -460,13 +471,25 @@ The devices hardcopy menu is to make screenshot of the video screen of the C64.
 
 |===
 
+The extras menu provides special functionalities.
+
+.Extras menu
+|===
+|  |  
+
+| Extras/Ultimate64 | Show Ultimate64 audio and video data shared over socket connection.
+
+|===
+
 The settings menu opens a new window to configure JSIDPlay2. All settings will be persisted.
 
 .Settings menu
 |===
 |  |  
 
+| Settings/Audio Settings... | Open the audio settings window of JSIDPlay2.
 | Settings/Emulation Settings... | Open the emulation settings window of JSIDPlay2.
+| Settings/WhatsSID Settings... | Open the WhatsSID settings window of JSIDPlay2.
 | Settings/Joystick Settings... | Open the joystick settings window of JSIDPlay2.
 | Settings/Proxy Settings... | Open the proxy settings to be used for internet connections.
 
@@ -478,12 +501,20 @@ The help menu provides access to user help and credits.
 |===
 |  |  
 
+| Help/Userguide | Open the userguide of JSIDPlay2.
+| Help/Java documentation | Open the Java API documentation of JSIDPlay2.
 | Help/Check For Updates | Check for updates of JSIDPlay2.
 | Help/About | Open the about box with the credits of all supporters of JSIDPlay2.
 
 |===
 
 ==== Tabs Area
+
+Shows a selection of currently opened tabs.
+
+==== View
+
+Shows the contents of the currently selected tab.
 
 ==== Statusbar
 
@@ -507,11 +538,14 @@ each additional SIDs base address is printed hexadecimal in brackets, eg. "MOS65
 | "Player: DMC" | Shows the currently identified player of the tune, e.g. Demo Music Creator System (DMC).
 Players are identified by memory analysis of the play routine identity scanner tool SIDId.
 A click on the tool tip of the status bar opens a browser window of the online available player.
-| "Speed: 2,0x" | Shows the speed of the tune (how many times the player routine is called within a frame).
+| PSID64 | Shows if PSID64 format has been detected.
+| REU | Shows the cartridge name of the currently inserted cart.
+| SPEED: 2.0 | Shows the measured tune speed.
 | "Song: 1/7" | Shows the currently played song number and the available number of songs within a tune,
 but only if more than one song is available.
+| "Floppy Track: 18" | Shows the read/write head position of the floppy disk drive, if a disk has been inserted and the motor is on.
 | "Datasette Counter: 001" | Shows the counter of the storage medium position, if a tape has been inserted and the motor is on.
-| "Floppy Track: 18" | Shows the the read/write head position of the floppy disk drive, if a disk has been inserted and the motor is on.
+| 250MB/4096MB | Shows the current memory usage.
 | "Time: 00:01.000/04:37.000" | Shows the current playing time of a tune or song in minutes, seconds and milliseconds.
 If the song length is well-known, it is separated by a slash and printed as well.
 | "Recording: /path/to/filename" | Shows the currently recorded filename.

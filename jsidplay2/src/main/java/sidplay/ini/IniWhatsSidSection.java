@@ -38,7 +38,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDEnable" }, descriptionKey = "WHATSSID_ENABLE", arity = 1, order = 1045)
+	@Parameter(names = { "--whatsSIDEnable" }, descriptionKey = "WHATSSID_ENABLE", arity = 1, order = 2000)
 	public final void setEnable(boolean enable) {
 		iniReader.setProperty(SECTION_ID, "Enable", enable);
 	}
@@ -49,7 +49,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDUrl" }, descriptionKey = "WHATSSID_URL", order = 1046)
+	@Parameter(names = { "--whatsSIDUrl" }, descriptionKey = "WHATSSID_URL", order = 2001)
 	public final void setUrl(String url) {
 		iniReader.setProperty(SECTION_ID, "Url", url);
 	}
@@ -60,7 +60,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDUsername" }, descriptionKey = "WHATSSID_USERNAME", order = 1047)
+	@Parameter(names = { "--whatsSIDUsername" }, descriptionKey = "WHATSSID_USERNAME", order = 2002)
 	public final void setUsername(String username) {
 		iniReader.setProperty(SECTION_ID, "Username", username);
 	}
@@ -71,7 +71,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDPassword" }, descriptionKey = "WHATSSID_PASSWORD", password = true, order = 1048)
+	@Parameter(names = { "--whatsSIDPassword" }, descriptionKey = "WHATSSID_PASSWORD", password = true, order = 2003)
 	public final void setPassword(String password) {
 		iniReader.setProperty(SECTION_ID, "Password", password);
 	}
@@ -82,7 +82,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDConnectionTimeout" }, descriptionKey = "WHATSSID_CONNECTION_TIMEOUT", order = 1049)
+	@Parameter(names = { "--whatsSIDConnectionTimeout" }, descriptionKey = "WHATSSID_CONNECTION_TIMEOUT", order = 2004)
 	public final void setConnectionTimeout(int connectionTimeout) {
 		iniReader.setProperty(SECTION_ID, "Connection Timeout", connectionTimeout);
 	}
@@ -93,7 +93,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDCaptureTime" }, descriptionKey = "WHATSSID_CAPTURE_TIME", order = 1050)
+	@Parameter(names = { "--whatsSIDCaptureTime" }, descriptionKey = "WHATSSID_CAPTURE_TIME", order = 2005)
 	public final void setCaptureTime(int captureTime) {
 		iniReader.setProperty(SECTION_ID, "Capture Time", captureTime);
 	}
@@ -104,7 +104,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDMatchStartTime" }, descriptionKey = "WHATSSID_MATCH_START_TIME", order = 1051)
+	@Parameter(names = { "--whatsSIDMatchStartTime" }, descriptionKey = "WHATSSID_MATCH_START_TIME", order = 2006)
 	public final void setMatchStartTime(int matchStartTime) {
 		iniReader.setProperty(SECTION_ID, "Match Start Time", matchStartTime);
 	}
@@ -115,7 +115,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 	}
 
 	@Override
-	@Parameter(names = { "--whatsSIDMatchRetryTime" }, descriptionKey = "WHATSSID_MATCH_RETRY_TIME", order = 1052)
+	@Parameter(names = { "--whatsSIDMatchRetryTime" }, descriptionKey = "WHATSSID_MATCH_RETRY_TIME", order = 2007)
 	public final void setMatchRetryTime(int matchRetryTime) {
 		iniReader.setProperty(SECTION_ID, "Match Retry Time", matchRetryTime);
 	}
@@ -128,7 +128,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 
 	@Override
 	@Parameter(names = {
-			"--whatsSIDMinimumRelativeConfidence" }, descriptionKey = "WHATSSID_MINIMUM_RELATIVE_CONFIDENCE", order = 1053)
+			"--whatsSIDMinimumRelativeConfidence" }, descriptionKey = "WHATSSID_MINIMUM_RELATIVE_CONFIDENCE", order = 2008)
 	public final void setMinimumRelativeConfidence(float minimumRelativeConfidence) {
 		iniReader.setProperty(SECTION_ID, "Minimum Relative Confidence", minimumRelativeConfidence);
 	}
@@ -140,7 +140,7 @@ public class IniWhatsSidSection extends IniSection implements IWhatsSidSection {
 
 	@Override
 	@Parameter(names = {
-			"--whatsSIDDetectChipModel" }, descriptionKey = "WHATSSID_DETECT_CHIP_MODEL", arity = 1, order = 1054)
+			"--whatsSIDDetectChipModel" }, descriptionKey = "WHATSSID_DETECT_CHIP_MODEL", arity = 1, order = 2009)
 	public final void setDetectChipModel(boolean detectChipModel) {
 		iniReader.setProperty(SECTION_ID, "Detect ChipModel", detectChipModel);
 	}
