@@ -65,8 +65,7 @@
 						<li v-for="entry in directory" :key="entry">
 							<!-- HVSC root -->
 							<div v-if="entry.endsWith('/')">
-								<a href="#"
-									v-on:click="fetchData('directory', entry)">
+								<a href="#" v-on:click="fetchData('directory', entry)">
 									{{entry}} </a>
 							</div> <!-- HVSC music -->
 							<div
@@ -79,12 +78,10 @@
 							</div> <!-- others -->
 							<div v-else>
 								<div style="white-space: nowrap;">
-									{{entry}} <a
-										v-bind:href="'https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&pressSpaceInterval='+pressSpaceInterval+'&status='+status+reu"
-										target="_blank"> Load </a> <span
-										v-if='entry.toLowerCase().endsWith(".d64")'> <span>
-											or </span> <a
-										v-bind:href="'https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&pressSpaceInterval='+pressSpaceInterval+'&status='+status+'&jiffydos=true'+reu"
+									{{entry}} <a v-bind:href="convert(entry)" target="_blank">
+										Load </a> <span v-if='entry.toLowerCase().endsWith(".d64")'>
+										<span> or </span> <a
+										v-bind:href="convert(entry) + '&jiffydos=true'"
 										target="_blank"> Fastload </a>
 									</span>
 								</div>
@@ -94,9 +91,10 @@
 				</div>
 
 				</b-tab> <b-tab title="SID"> <b-button
-					v-on:click="$refs.audioElm.src='https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(currentSid) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true'; $refs.audioElm.play()">Play</b-button>
-				<b-button v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">Add To
-				Playlist</b-button>
+					v-on:click="$refs.audioElm.src=convert(currentSid); $refs.audioElm.play()">Play</b-button>
+				<b-button
+					v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">Add
+				To Playlist</b-button>
 
 				<div class="sid">
 					<div>
@@ -121,8 +119,8 @@
 					<div class="button-box">
 						<b-button v-on:click="playlist.pop()">Remove</b-button>
 						<b-button v-on:click="nextPlaylistEntry">Next</b-button>
-						<label for="random">Random</label>
-						<input type="checkbox" id="random" v-model="random" />
+						<label for="random">Random</label> <input type="checkbox"
+							id="random" v-model="random" />
 					</div>
 					<div class="button-box">
 						<b-button v-on:click="downloadPlaylist()">Download
@@ -133,16 +131,17 @@
 				</div>
 
 				<div class="audio">
-					<audio ref="audioElm" v-bind:src="current" v-on:ended="nextPlaylistEntry" type="audio/mpeg" controls autoplay>
-					  I'm sorry. You're browser doesn't support HTML5 audio
+					<audio ref="audioElm" v-bind:src="current"
+						v-on:ended="nextPlaylistEntry" type="audio/mpeg" controls autoplay>
+						I'm sorry. You're browser doesn't support HTML5 audio
 					</audio>
 					<div>{{playlist[currentPlaylistEntry]}}</div>
 				</div>
-										
+
 				<ol>
-					<li v-for="(entry,index) in playlist" :key="index">
-						<a :class="index==currentPlaylistEntry ? 'highlighted' : ''" href="#" v-on:click="play(index);">{{entry}} </a>
-					</li>
+					<li v-for="(entry,index) in playlist" :key="index"><a
+						:class="index==currentPlaylistEntry ? 'highlighted' : ''" href="#"
+						v-on:click="play(index);">{{entry}} </a></li>
 				</ol>
 
 				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
@@ -287,7 +286,7 @@ new Vue({
     reuSize: "auto",
     pressSpaceInterval: 90,
     status: true,
-    random: false,
+    random: true,
     loading: false,
     username: "jsidplay2",
     password: "jsidplay2!"
@@ -311,7 +310,7 @@ new Vue({
     	if (this.playlist.length === 0) {
     		return '';
     	} else {
-			return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(this.playlist[this.currentPlaylistEntry]) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true';
+			return this.convert(this.playlist[this.currentPlaylistEntry]);;
     	}
     }
   },
@@ -419,8 +418,10 @@ new Vue({
                 this.currentPlaylistEntry = 0;
               })
               .finally(() => (this.loading = false));
-          }
-
+          },
+        convert: function(entry) {
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        }
   }
 });
 
