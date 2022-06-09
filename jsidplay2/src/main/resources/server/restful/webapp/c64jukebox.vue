@@ -154,15 +154,19 @@
 
 					<div class="settings-box">
 						<label for="startTime">{{ $t( 'startTime' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');" id="startTime" v-model.number="startTime" />
-						<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');" id="defaultLength" v-model.number="defaultLength" />
+							type="number" min="0" oninput="validity.valid||(value='');"
+							id="startTime" v-model.number="startTime" /> <label
+							for="defaultLength">{{ $t( 'defaultLength' ) }}</label> <input
+							type="number" min="0" oninput="validity.valid||(value='');"
+							id="defaultLength" v-model.number="defaultLength" />
 					</div>
 					<div class="settings-box">
 						<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');" id="fadeIn" v-model.number="fadeIn" />
-						<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');" id="fadeOut" v-model.number="fadeOut" />
+							type="number" min="0" oninput="validity.valid||(value='');"
+							id="fadeIn" v-model.number="fadeIn" /> <label for="fadeOut">{{
+							$t( 'fadeOut' ) }}</label> <input type="number" min="0"
+							oninput="validity.valid||(value='');" id="fadeOut"
+							v-model.number="fadeOut" />
 					</div>
 					<div class="settings-box">
 						<label for="detectSongLength">{{ $t( 'detectSongLength' )
@@ -207,7 +211,21 @@
 							v-model="defaultModel"> <label for="MOS8580">8580</label>
 					</div>
 				</div>
-				<div>
+				<div class="settings-box">
+					<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label>
+					<b-form-input id="volumeSid" v-model="volumeSid" type="range"
+						min="-6" max="6" step="1"></b-form-input>
+					<div>{{ volumeSid }}</div>
+					<label for="volumeStereoSid">{{ $t( 'volumeStereoSid' ) }}</label>
+					<b-form-input id="volumeStereoSid" v-model="volumeStereoSid" type="range"
+						min="-6" max="6" step="1"></b-form-input>
+					<div>{{ volumeStereoSid }}</div>
+					<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label>
+					<b-form-input id="volumeThreeSid" v-model="volumeThreeSid" type="range"
+						min="-6" max="6" step="1"></b-form-input>
+					<div>{{ volumeThreeSid }}</div>
+				</div>
+				<div class="settings-box">
 					<h3>REU:</h3>
 					<input type="radio" id="auto" value="auto" v-model="reuSize">
 					<label for="auto">Autodetect</label> <input type="radio" id="kb64"
@@ -219,7 +237,7 @@
 					<label for="kb1024">1024kb</label> <input type="radio" id="kb2048"
 						value="kb2048" v-model="reuSize"> <label for="kb2048">2048kb</label>
 				</div>
-				<div>
+				<div class="settings-box">
 					<h3>Misc.:</h3>
 					<label for="status">Show status line</label> <input type="checkbox"
 						id="status" v-model="status" /> <label for="pressSpaceInterval">Press
@@ -300,7 +318,10 @@ const messages = {
 		  startTime: 'Start Time in sec.',
 		  defaultLength: 'Default Length in sec.',
 		  fadeIn: 'Fade-In in sec.',
-		  fadeOut: 'Fade-Out in sec.'
+		  fadeOut: 'Fade-Out in sec.',
+		  volumeSid: 'Volume of SID in db:',
+		  volumeStereoSid: 'Volume of Stereo-SID in db:',
+		  volumeThreeSid: 'Volume of 3-SID in db:'
 	    },
   },
   de: {
@@ -355,8 +376,11 @@ const messages = {
 	  bypassReverb: 'Reverb überbrücken',
 	  startTime: 'Startzeit in Sek.',
 	  defaultLength: 'Default Länge in Sek.',
-	  fadeIn: 'Fade-In in Sek..',
-	  fadeOut: 'Fade-Out in Sek..'
+	  fadeIn: 'Fade-In in Sek.',
+	  fadeOut: 'Fade-Out in Sek.',
+	  volumeSid: 'Lautstärke des SID in db:',
+	  volumeStereoSid: 'Lautstärke des Stereo-SID in db:',
+	  volumeThreeSid: 'Lautstärke des 3-SID in db:'
   }
 }
 
@@ -390,6 +414,9 @@ new Vue({
     defaultLength: 0,
     fadeIn: 0,
     fadeOut: 0,
+    volumeSid: 0,
+    volumeStereoSid: 0,
+    volumeThreeSid: 0,
     reuSize: 'auto',
     pressSpaceInterval: 90,
     status: true,
@@ -527,7 +554,7 @@ new Vue({
               .finally(() => (this.loading = false));
           },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid + '&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
         }
   }
 });
