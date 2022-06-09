@@ -153,6 +153,18 @@
 					<h3>SID:</h3>
 
 					<div class="settings-box">
+						<label for="startTime">{{ $t( 'startTime' ) }}</label> <input
+							type="number" id="startTime" v-model.number="startTime" />
+						<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label> <input
+							type="number" id="defaultLength" v-model.number="defaultLength" />
+					</div>
+					<div class="settings-box">
+						<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label> <input
+							type="number" id="fadeIn" v-model.number="fadeIn" />
+						<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label> <input
+							type="number" id="fadeOut" v-model.number="fadeOut" />
+					</div>
+					<div class="settings-box">
 						<label for="detectSongLength">{{ $t( 'detectSongLength' )
 							}}</label> <input type="checkbox" id="detectSongLength"
 							v-model="detectSongLength" /> <label for="singleSong">{{
@@ -182,12 +194,11 @@
 							v-model="samplingMethod"> <label for="RESAMPLE">RESAMPLE</label>
 					</div>
 					<div class="settings-box">
-						<input type="radio" id="LOW" value="LOW"
-							v-model="samplingRate"> <label for="LOW">LOW</label>
-						<input type="radio" id="MEDIUM" value="MEDIUM"
-							v-model="samplingRate"> <label for="MEDIUM">MEDIUM</label>
-						<input type="radio" id="HIGH" value="HIGH"
-							v-model="samplingRate"> <label for="HIGH">HIGH</label>
+						<input type="radio" id="LOW" value="LOW" v-model="samplingRate">
+						<label for="LOW">LOW</label> <input type="radio" id="MEDIUM"
+							value="MEDIUM" v-model="samplingRate"> <label
+							for="MEDIUM">MEDIUM</label> <input type="radio" id="HIGH"
+							value="HIGH" v-model="samplingRate"> <label for="HIGH">HIGH</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="MOS6581" value="MOS6581"
@@ -285,7 +296,11 @@ const messages = {
 		  loopSong: 'Loop Song',
 		  digiboost8580: 'Digi Boost 8580',
 		  fakeStereo: 'Fake Stereo',
-		  bypassReverb: 'Bypass Reverb'
+		  bypassReverb: 'Bypass Reverb',
+		  startTime: 'Start Time in sec.',
+		  defaultLength: 'Default Length in sec.',
+		  fadeIn: 'Fade-In in sec.',
+		  fadeOut: 'Fade-Out in sec.'
 	    },
   },
   de: {
@@ -337,7 +352,11 @@ const messages = {
 	  loopSong: 'Song wiederholen',
 	  digiboost8580: 'Digi Boost 8580',
 	  fakeStereo: 'Fake Stereo',
-	  bypassReverb: 'Reverb überbrücken'
+	  bypassReverb: 'Reverb überbrücken',
+	  startTime: 'Startzeit in Sek.',
+	  defaultLength: 'Default Länge in Sek.',
+	  fadeIn: 'Fade-In in Sek..',
+	  fadeOut: 'Fade-Out in Sek..'
   }
 }
 
@@ -367,6 +386,10 @@ new Vue({
     samplingMethod: 'DECIMATE',
     samplingRate: 'MEDIUM',
     defaultModel: 'MOS8580',
+    startTime: 0,
+    defaultLength: 0,
+    fadeIn: 0,
+    fadeOut: 0,
     reuSize: 'auto',
     pressSpaceInterval: 90,
     status: true,
@@ -504,7 +527,7 @@ new Vue({
               .finally(() => (this.loading = false));
           },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
         }
   }
 });
