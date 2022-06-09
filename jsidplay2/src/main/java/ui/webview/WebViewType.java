@@ -62,7 +62,11 @@ public enum WebViewType {
 				URL resource = getClass().getResource(userGuideUrl);
 				String result = resource != null ? resource.toExternalForm() : "";
 				result = result.replace(userGuideUrl, "/index.html");
-				result = result.replace("/jsidplay2-", "/jsidplay2_doc-");
+				int occurrence = result.lastIndexOf("/jsidplay2-");
+				if (occurrence != -1) {
+					result = result.substring(0, occurrence)
+							+ result.substring(occurrence).replace("/jsidplay2-", "/jsidplay2_doc-");
+				}
 				result = result.replace(".jar", "-javadoc.jar");
 				return result;
 			} else {
