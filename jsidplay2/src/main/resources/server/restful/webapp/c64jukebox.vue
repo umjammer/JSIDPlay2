@@ -46,10 +46,11 @@
 				<b-tab title="CON" active> <b-card-text>
 				<div>
 					<h3>{{ $t( 'authentication' ) }}</h3>
-					<label for="username">{{ $t( 'username' ) }}</label> <input type="text"
-						id="username" value="jsidplay2" v-model="username"> <label
-						for="password">{{ $t( 'password' ) }}</label> <input type="password"
-						id="password" value="jsidplay2!" v-model="password">
+					<label for="username">{{ $t( 'username' ) }}</label> <input
+						type="text" id="username" value="jsidplay2" v-model="username">
+					<label for="password">{{ $t( 'password' ) }}</label> <input
+						type="password" id="password" value="jsidplay2!"
+						v-model="password">
 				</div>
 				</b-card-text> </b-tab> <b-tab title="SIDS">
 
@@ -91,9 +92,10 @@
 				</div>
 
 				</b-tab> <b-tab title="SID"> <b-button
-					v-on:click="$refs.audioElm.src=convert(currentSid); $refs.audioElm.play()">{{ $t( 'play' ) }}</b-button>
-				<b-button
-					v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">{{ $t( 'addToPlaylist' ) }}</b-button>
+					v-on:click="$refs.audioElm.src=convert(currentSid); $refs.audioElm.play()">{{
+				$t( 'play' ) }}</b-button> <b-button
+					v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">{{
+				$t( 'addToPlaylist' ) }}</b-button>
 
 				<div class="sid">
 					<div>
@@ -116,14 +118,18 @@
 
 				<div>
 					<div class="button-box">
-						<b-button v-on:click="playlist.pop()">{{ $t( 'remove' ) }}</b-button>
-						<b-button v-on:click="nextPlaylistEntry">{{ $t( 'next' ) }}</b-button>
-						<label for="random">{{ $t( 'random' ) }}</label> <input type="checkbox"
-							id="random" v-model="random" />
+						<b-button v-on:click="playlist.pop()">{{ $t( 'remove' )
+						}}</b-button>
+						<b-button v-on:click="nextPlaylistEntry">{{ $t( 'next'
+						) }}</b-button>
+						<label for="random">{{ $t( 'random' ) }}</label> <input
+							type="checkbox" id="random" v-model="random" />
 					</div>
 					<div class="button-box">
-						<b-button v-on:click="downloadPlaylist()">{{ $t( 'downloadPlaylist' ) }}</b-button>
-						<b-button v-on:click="playlist=[]">{{ $t( 'removePlaylist' ) }}</b-button>
+						<b-button v-on:click="downloadPlaylist()">{{ $t(
+						'downloadPlaylist' ) }}</b-button>
+						<b-button v-on:click="playlist=[]">{{ $t(
+						'removePlaylist' ) }}</b-button>
 					</div>
 				</div>
 
@@ -146,28 +152,49 @@
 				<div>
 					<h3>SID:</h3>
 
-					<div>
-						<label for="detectSongLength">{{ $t( 'detectSongLength' ) }}</label> <input type="checkbox"
-							id="detectSongLength" v-model="detectSongLength" />
-						<label for="singleSong">{{ $t( 'singleSong' ) }}</label> <input type="checkbox"
-							id="singleSong" v-model="singleSong" />
-						<label for="loopSong">{{ $t( 'loopSong' ) }}</label> <input type="checkbox"
-							id="loopSong" v-model="loopSong" />
-					</div>					
-					<div>
-						<label for="digiboost8580">{{ $t( 'digiboost8580' ) }}</label> <input type="checkbox"
-							id="digiboost8580" v-model="digiboost8580" />
-						<label for="fakeStereo">{{ $t( 'fakeStereo' ) }}</label> <input type="checkbox"
-							id="fakeStereo" v-model="fakeStereo" />
-						<label for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label> <input type="checkbox"
-							id="bypassReverb" v-model="bypassReverb" />
-					</div>					
-					<div>
+					<div class="settings-box">
+						<label for="detectSongLength">{{ $t( 'detectSongLength' )
+							}}</label> <input type="checkbox" id="detectSongLength"
+							v-model="detectSongLength" /> <label for="singleSong">{{
+							$t( 'singleSong' ) }}</label> <input type="checkbox" id="singleSong"
+							v-model="singleSong" /> <label for="loopSong">{{ $t(
+							'loopSong' ) }}</label> <input type="checkbox" id="loopSong"
+							v-model="loopSong" />
+					</div>
+					<div class="settings-box">
+						<label for="digiboost8580">{{ $t( 'digiboost8580' ) }}</label> <input
+							type="checkbox" id="digiboost8580" v-model="digiboost8580" /> <label
+							for="fakeStereo">{{ $t( 'fakeStereo' ) }}</label> <input
+							type="checkbox" id="fakeStereo" v-model="fakeStereo" /> <label
+							for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label> <input
+							type="checkbox" id="bypassReverb" v-model="bypassReverb" />
+					</div>
+					<div class="settings-box">
+						<input type="radio" id="RESIDFP" value="RESIDFP"
+							v-model="defaultEngine"> <label for="RESIDFP">RESIDFP</label>
+						<input type="radio" id="RESID" value="RESID"
+							v-model="defaultEngine"> <label for="RESID">RESID</label>
+					</div>
+					<div class="settings-box">
+						<input type="radio" id="DECIMATE" value="DECIMATE"
+							v-model="samplingMethod"> <label for="DECIMATE">DECIMATE</label>
+						<input type="radio" id="RESAMPLE" value="RESAMPLE"
+							v-model="samplingMethod"> <label for="RESAMPLE">RESAMPLE</label>
+					</div>
+					<div class="settings-box">
+						<input type="radio" id="LOW" value="LOW"
+							v-model="samplingRate"> <label for="LOW">LOW</label>
+						<input type="radio" id="MEDIUM" value="MEDIUM"
+							v-model="samplingRate"> <label for="MEDIUM">MEDIUM</label>
+						<input type="radio" id="HIGH" value="HIGH"
+							v-model="samplingRate"> <label for="HIGH">HIGH</label>
+					</div>
+					<div class="settings-box">
 						<input type="radio" id="MOS6581" value="MOS6581"
 							v-model="defaultModel"> <label for="MOS6581">6581</label>
 						<input type="radio" id="MOS8580" value="MOS8580"
 							v-model="defaultModel"> <label for="MOS8580">8580</label>
-					</div>					
+					</div>
 				</div>
 				<div>
 					<h3>REU:</h3>
@@ -336,8 +363,11 @@ new Vue({
     digiboost8580: false,
     fakeStereo: false,
     bypassReverb: false,
-    defaultModel: "MOS8580",
-    reuSize: "auto",
+    defaultEngine: 'RESIDFP',
+    samplingMethod: 'DECIMATE',
+    samplingRate: 'MEDIUM',
+    defaultModel: 'MOS8580',
+    reuSize: 'auto',
     pressSpaceInterval: 90,
     status: true,
     random: true,
@@ -474,7 +504,7 @@ new Vue({
               .finally(() => (this.loading = false));
           },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
         }
   }
 });
