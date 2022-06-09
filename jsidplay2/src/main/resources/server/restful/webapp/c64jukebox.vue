@@ -45,10 +45,10 @@
 				<b-card no-body> <b-tabs v-model="tabIndex" card>
 				<b-tab title="CON" active> <b-card-text>
 				<div>
-					<h3>Authentication:</h3>
-					<label for="username">Username</label> <input type="text"
+					<h3>{{ $t( 'authentication' ) }}</h3>
+					<label for="username">{{ $t( 'username' ) }}</label> <input type="text"
 						id="username" value="jsidplay2" v-model="username"> <label
-						for="password">Password</label> <input type="password"
+						for="password">{{ $t( 'password' ) }}</label> <input type="password"
 						id="password" value="jsidplay2!" v-model="password">
 				</div>
 				</b-card-text> </b-tab> <b-tab title="SIDS">
@@ -91,10 +91,9 @@
 				</div>
 
 				</b-tab> <b-tab title="SID"> <b-button
-					v-on:click="$refs.audioElm.src=convert(currentSid); $refs.audioElm.play()">Play</b-button>
+					v-on:click="$refs.audioElm.src=convert(currentSid); $refs.audioElm.play()">{{ $t( 'play' ) }}</b-button>
 				<b-button
-					v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">Add
-				To Playlist</b-button>
+					v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">{{ $t( 'addToPlaylist' ) }}</b-button>
 
 				<div class="sid">
 					<div>
@@ -117,16 +116,14 @@
 
 				<div>
 					<div class="button-box">
-						<b-button v-on:click="playlist.pop()">Remove</b-button>
-						<b-button v-on:click="nextPlaylistEntry">Next</b-button>
-						<label for="random">Random</label> <input type="checkbox"
+						<b-button v-on:click="playlist.pop()">{{ $t( 'remove' ) }}</b-button>
+						<b-button v-on:click="nextPlaylistEntry">{{ $t( 'next' ) }}</b-button>
+						<label for="random">{{ $t( 'random' ) }}</label> <input type="checkbox"
 							id="random" v-model="random" />
 					</div>
 					<div class="button-box">
-						<b-button v-on:click="downloadPlaylist()">Download
-						Playlist</b-button>
-						<b-button v-on:click="playlist=[]">Remove Playlist</b-button>
-
+						<b-button v-on:click="downloadPlaylist()">{{ $t( 'downloadPlaylist' ) }}</b-button>
+						<b-button v-on:click="playlist=[]">{{ $t( 'removePlaylist' ) }}</b-button>
 					</div>
 				</div>
 
@@ -148,10 +145,29 @@
 
 				<div>
 					<h3>SID:</h3>
-					<input type="radio" id="MOS6581" value="MOS6581"
-						v-model="defaultModel"> <label for="MOS6581">6581</label>
-					<input type="radio" id="MOS8580" value="MOS8580"
-						v-model="defaultModel"> <label for="MOS8580">8580</label>
+
+					<div>
+						<label for="detectSongLength">{{ $t( 'detectSongLength' ) }}</label> <input type="checkbox"
+							id="detectSongLength" v-model="detectSongLength" />
+						<label for="singleSong">{{ $t( 'singleSong' ) }}</label> <input type="checkbox"
+							id="singleSong" v-model="singleSong" />
+						<label for="loopSong">{{ $t( 'loopSong' ) }}</label> <input type="checkbox"
+							id="loopSong" v-model="loopSong" />
+					</div>					
+					<div>
+						<label for="digiboost8580">{{ $t( 'digiboost8580' ) }}</label> <input type="checkbox"
+							id="digiboost8580" v-model="digiboost8580" />
+						<label for="fakeStereo">{{ $t( 'fakeStereo' ) }}</label> <input type="checkbox"
+							id="fakeStereo" v-model="fakeStereo" />
+						<label for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label> <input type="checkbox"
+							id="bypassReverb" v-model="bypassReverb" />
+					</div>					
+					<div>
+						<input type="radio" id="MOS6581" value="MOS6581"
+							v-model="defaultModel"> <label for="MOS6581">6581</label>
+						<input type="radio" id="MOS8580" value="MOS8580"
+							v-model="defaultModel"> <label for="MOS8580">8580</label>
+					</div>					
 				</div>
 				<div>
 					<h3>REU:</h3>
@@ -226,7 +242,23 @@ const messages = {
 			  relocStartPage: 'Reloc. Start Page',
 			  relocNoPages: 'Reloc. no. Pages',
 			  stilGlbComment: 'Tune Size (b)',
-		  }
+		  },
+		  authentication: 'Authentication:',
+		  username: 'Username',
+		  password: 'Password',
+		  play: 'Play',
+		  addToPlaylist: 'Add To Playlist',
+		  remove: 'Remove',
+		  next: 'Next',
+		  downloadPlaylist: 'Download Playlist',
+		  removePlaylist: 'Remove Playlist',
+		  random: 'Random',
+		  detectSongLength: 'Detect Song Length',
+		  singleSong: 'Single Song',
+		  loopSong: 'Loop Song',
+		  digiboost8580: 'Digi Boost 8580',
+		  fakeStereo: 'Fake Stereo',
+		  bypassReverb: 'Bypass Reverb'
 	    },
   },
   de: {
@@ -262,7 +294,23 @@ const messages = {
 		  relocStartPage: 'Reloc. Start Seite',
 		  relocNoPages: 'Reloc. Seitenanzahl',
 		  stilGlbComment: 'STIL glb. Kommentar',
-	  }
+	  },
+	  authentication: 'Anmeldedaten:',
+	  username: 'Benutzername',
+	  password: 'Passwort',
+	  play: 'Abspielen',
+	  addToPlaylist: 'Zu Favoriten hinzufügen',
+	  remove: 'Löschen',
+	  next: 'Nächster',
+	  downloadPlaylist: 'Favoriten herunterladen',
+	  removePlaylist: 'Favoriten löschen',
+	  random: 'Zufällig',
+	  detectSongLength: 'Songlänge berücksichtigen',
+	  singleSong: 'Nur den Startsong spielen',
+	  loopSong: 'Song wiederholen',
+	  digiboost8580: 'Digi Boost 8580',
+	  fakeStereo: 'Fake Stereo',
+	  bypassReverb: 'Reverb überbrücken'
   }
 }
 
@@ -282,6 +330,12 @@ new Vue({
     infos: "",
     picture: '',
     currentSid: '',
+    detectSongLength: true,
+    singleSong: false,
+    loopSong: false,
+    digiboost8580: false,
+    fakeStereo: false,
+    bypassReverb: false,
     defaultModel: "MOS8580",
     reuSize: "auto",
     pressSpaceInterval: 90,
@@ -420,7 +474,7 @@ new Vue({
               .finally(() => (this.loading = false));
           },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=64&vbrQuality=0&vbr=true&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
         }
   }
 });
