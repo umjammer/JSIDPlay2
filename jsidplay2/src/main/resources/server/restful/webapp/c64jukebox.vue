@@ -66,14 +66,14 @@
 							<!-- HVSC root -->
 							<div v-if="entry.endsWith('/')">
 								<a href="#"
-									v-on:click="fetchData('directory', entry, username, password)">
+									v-on:click="fetchData('directory', entry)">
 									{{entry}} </a>
 							</div> <!-- HVSC music -->
 							<div
 								v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
 								<div>
 									<a href="#"
-										v-on:click="setSid(entry, username, password); setPic(entry, username, password); tabIndex = 2;">
+										v-on:click="setSid(entry); setPic(entry); tabIndex = 2;">
 										{{entry}} </a>
 								</div>
 							</div> <!-- others -->
@@ -94,7 +94,7 @@
 				</div>
 
 				</b-tab> <b-tab title="SID"> <b-button
-					v-on:click="playSid(currentSid, username, password)">Play</b-button>
+					v-on:click="$refs.audioElm.src='https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(currentSid) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true'; $refs.audioElm.play()">Play</b-button>
 				<b-button v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">Add To
 				Playlist</b-button>
 
@@ -125,7 +125,7 @@
 						<input type="checkbox" id="random" v-model="random" />
 					</div>
 					<div class="button-box">
-						<b-button v-on:click="downloadPlaylist(username, password)">Download
+						<b-button v-on:click="downloadPlaylist()">Download
 						Playlist</b-button>
 						<b-button v-on:click="playlist=[]">Remove Playlist</b-button>
 
@@ -325,6 +325,9 @@ new Vue({
 	  this.setPic(this.playlist[index], this.username, this.password);
     },
 	nextPlaylistEntry: function () {
+		if (this.playlist.length === 0) {
+			return;
+		}
 		if (this.random) {
 			this.currentPlaylistEntry = Math.ceil(Math.random()*this.playlist.length);
 		} else {
@@ -338,7 +341,7 @@ new Vue({
 		this.setPic(this.playlist[this.currentPlaylistEntry], this.username, this.password);
 	    console.log("currentPlaylistEntry=" + this.currentPlaylistEntry);
 	},
-    fetchData: function(type, entry, username, password) {
+    fetchData: function(type, entry) {
       if (type == "directory") {
         this.loading = true; //the loading begin
         axios({
@@ -349,8 +352,8 @@ new Vue({
             uriEncode(entry) +
             "?filter=.*%5C.(sid%7Cdat%7Cmus%7Cstr%7Cmp3%7Cmp4%7Cdv%7Cvob%7Ctxt%7Cjpg%7Cprg%7Cd64%7Cg64%7Cnib%7Creu%7Cima%7Ccrt%7Cimg%7Ctap%7Ct64%7Cp00)$",
           auth: {
-            username: username,
-            password: password
+            username: this.username,
+            password: this.password
           }
         })
           .then(response => {
@@ -359,7 +362,7 @@ new Vue({
           .finally(() => (this.loading = false));
       }
     },
-    setSid: function(entry, username, password) {
+    setSid: function(entry) {
         this.loading = true; //the loading begin
         axios({
           method: "get",
@@ -367,8 +370,8 @@ new Vue({
             "/jsidplay2service/JSIDPlay2REST/info" +
             uriEncode(entry),
           auth: {
-            username: username,
-            password: password
+            username: this.username,
+            password: this.password
           }
         })
           .then(response => {
@@ -377,15 +380,15 @@ new Vue({
           })
           .finally(() => (this.loading = false));
       },
-      setPic: function(entry, username, password) {
+      setPic: function(entry) {
           this.loading = true; //the loading begin
           axios({
             method: "get",
             url:
               "/jsidplay2service/JSIDPlay2REST/photo" + uriEncode(entry),
               auth: {
-              username: username,
-              password: password
+              username: this.username,
+              password: this.password
             },
             responseType:"blob",
           })
@@ -400,18 +403,15 @@ new Vue({
            	})
             .finally(() => (this.loading = false));
         },
-        playSid: function(entry, username, password) {
-        	window.open('https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true');
-          },
-        downloadPlaylist: function(username, password) {
+        downloadPlaylist: function() {
             this.loading = true; //the loading begin
             axios({
               method: "get",
               url:
                 "/jsidplay2service/JSIDPlay2REST/favorites",
               auth: {
-                username: username,
-                password: password
+                username: this.username,
+                password: this.password
               }
             })
               .then(response => {
