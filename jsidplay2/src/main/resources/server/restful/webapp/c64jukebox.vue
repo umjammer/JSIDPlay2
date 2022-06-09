@@ -95,7 +95,7 @@
 
 				</b-tab> <b-tab title="SID"> <b-button
 					v-on:click="playSid(currentSid, username, password)">Play</b-button>
-				<b-button v-on:click="playlist.push(currentSid); tabIndex = 3;">Add To
+				<b-button v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">Add To
 				Playlist</b-button>
 
 				<div class="sid">
@@ -128,10 +128,16 @@
 
 					</div>
 				</div>
+
+				<audio ref="audioElm" v-bind:src="current" v-on:ended="nextPlaylistEntry" type="audio/mpeg" controls autoplay>
+				  I'm sorry. You're browser doesn't support HTML5 audio
+				</audio>
+	
+						
 				<ul>
-					<li v-for="entry in playlist" :key="entry"><a
-						v-bind:href="'https://' + username + ':' + password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true'"
-						target="_blank"> {{entry}} </a></li>
+					<li v-for="(entry,index) in playlist" :key="index">
+						<a href="#" v-on:click="play(index);">{{entry}} </a>
+					</li>
 				</ul>
 
 				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
@@ -268,6 +274,7 @@ new Vue({
 	tabIndex: 0,
 	directory: "",
 	playlist: [],
+	currentPlaylistEntry: 0,
     infos: "",
     picture: '',
     currentSid: '',
@@ -293,12 +300,31 @@ new Vue({
         return "&reuSize=2048";
       }
       return "";
+    },
+    current: function() {
+    	if (this.playlist.length === 0) {
+    		return '';
+    	} else {
+			return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(this.playlist[this.currentPlaylistEntry]) + '?enableSidDatabase=true&single=true&loop=false&bufferSize=65536&sampling=RESAMPLE&frequency=MEDIUM&defaultEmulation=RESIDFP&defaultModel='+this.defaultModel+'&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=true&cbr=64&vbrQuality=0&vbr=true';
+    	}
     }
   },
   created: function() {
     this.fetchData("directory", "/", this.username, this.password);
   },
   methods: {
+	play: function(index) {
+	  this.currentPlaylistEntry=index;
+      this.$refs.audioElm.play();
+    },
+	nextPlaylistEntry: function () {
+	    if (this.currentPlaylistEntry === this.playlist.length - 1) {
+	    	this.currentPlaylistEntry = 0;
+	    } else {
+	    	this.currentPlaylistEntry++;
+	    }
+	    console.log("currentPlaylistEntry=" + this.currentPlaylistEntry);
+	},
     fetchData: function(type, entry, username, password) {
       if (type == "directory") {
         this.loading = true; //the loading begin
@@ -378,6 +404,7 @@ new Vue({
             })
               .then(response => {
                 this.playlist = response.data;
+                this.currentPlaylistEntry = 0;
               })
               .finally(() => (this.loading = false));
           }
