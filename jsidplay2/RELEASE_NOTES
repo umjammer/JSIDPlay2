@@ -18,7 +18,7 @@ JSIDPlay2Server:
 - Live videos: Scan bar-code to continue watching videos on your mobile phone
 - Live videos: Configure timespan to press space periodically
 - rest based API endpoints now have a usage
-- VUE based HTML client extended to nearly full app compatibility
+- C64 Jukebox: VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)
 
 JSIDPlay2app:
 - Connect your mobile directly to USB hardware (SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay). No PC required!
