@@ -154,15 +154,15 @@
 
 					<div class="settings-box">
 						<label for="startTime">{{ $t( 'startTime' ) }}</label> <input
-							type="number" id="startTime" v-model.number="startTime" />
+							type="number" min="0" oninput="validity.valid||(value='');" id="startTime" v-model.number="startTime" />
 						<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label> <input
-							type="number" id="defaultLength" v-model.number="defaultLength" />
+							type="number" min="0" oninput="validity.valid||(value='');" id="defaultLength" v-model.number="defaultLength" />
 					</div>
 					<div class="settings-box">
 						<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label> <input
-							type="number" id="fadeIn" v-model.number="fadeIn" />
+							type="number" min="0" oninput="validity.valid||(value='');" id="fadeIn" v-model.number="fadeIn" />
 						<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label> <input
-							type="number" id="fadeOut" v-model.number="fadeOut" />
+							type="number" min="0" oninput="validity.valid||(value='');" id="fadeOut" v-model.number="fadeOut" />
 					</div>
 					<div class="settings-box">
 						<label for="detectSongLength">{{ $t( 'detectSongLength' )
