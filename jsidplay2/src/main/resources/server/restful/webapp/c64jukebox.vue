@@ -73,7 +73,7 @@
 								v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
 								<div>
 									<a href="#"
-										v-on:click="setSid(entry, username, password);setPic(entry, username, password)">
+										v-on:click="setSid(entry, username, password); setPic(entry, username, password); tabIndex = 2;">
 										{{entry}} </a>
 								</div>
 							</div> <!-- others -->
@@ -118,10 +118,13 @@
 				</b-tab> <b-tab title="PL"> <b-card-text>
 
 				<div>
-					<div>
+					<div class="button-box">
 						<b-button v-on:click="playlist.pop()">Remove</b-button>
+						<b-button v-on:click="nextPlaylistEntry">Next</b-button>
+						<label for="random">Random</label>
+						<input type="checkbox" id="random" v-model="random" />
 					</div>
-					<div>
+					<div class="button-box">
 						<b-button v-on:click="downloadPlaylist(username, password)">Download
 						Playlist</b-button>
 						<b-button v-on:click="playlist=[]">Remove Playlist</b-button>
@@ -284,6 +287,7 @@ new Vue({
     reuSize: "auto",
     pressSpaceInterval: 90,
     status: true,
+    random: false,
     loading: false,
     username: "jsidplay2",
     password: "jsidplay2!"
@@ -317,13 +321,21 @@ new Vue({
   methods: {
 	play: function(index) {
 	  this.currentPlaylistEntry=index;
+	  this.setSid(this.playlist[index], this.username, this.password);
+	  this.setPic(this.playlist[index], this.username, this.password);
     },
 	nextPlaylistEntry: function () {
-	    if (this.currentPlaylistEntry === this.playlist.length - 1) {
-	    	this.currentPlaylistEntry = 0;
-	    } else {
-	    	this.currentPlaylistEntry++;
-	    }
+		if (this.random) {
+			this.currentPlaylistEntry = Math.ceil(Math.random()*this.playlist.length);
+		} else {
+		    if (this.currentPlaylistEntry === this.playlist.length - 1) {
+		    	this.currentPlaylistEntry = 0;
+		    } else {
+		    	this.currentPlaylistEntry++;
+		    }
+		}
+		this.setSid(this.playlist[this.currentPlaylistEntry], this.username, this.password);
+		this.setPic(this.playlist[this.currentPlaylistEntry], this.username, this.password);
 	    console.log("currentPlaylistEntry=" + this.currentPlaylistEntry);
 	},
     fetchData: function(type, entry, username, password) {
@@ -361,7 +373,6 @@ new Vue({
         })
           .then(response => {
             this.infos = response.data;
-            this.tabIndex = 2;
             this.currentSid = entry;
           })
           .finally(() => (this.loading = false));
