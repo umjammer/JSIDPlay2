@@ -129,16 +129,18 @@
 					</div>
 				</div>
 
-				<audio ref="audioElm" v-bind:src="current" v-on:ended="nextPlaylistEntry" type="audio/mpeg" controls autoplay>
-				  I'm sorry. You're browser doesn't support HTML5 audio
-				</audio>
-	
-						
-				<ul>
+				<div class="audio">
+					<audio ref="audioElm" v-bind:src="current" v-on:ended="nextPlaylistEntry" type="audio/mpeg" controls autoplay>
+					  I'm sorry. You're browser doesn't support HTML5 audio
+					</audio>
+					<div>{{playlist[currentPlaylistEntry]}}</div>
+				</div>
+										
+				<ol>
 					<li v-for="(entry,index) in playlist" :key="index">
-						<a href="#" v-on:click="play(index);">{{entry}} </a>
+						<a :class="index==currentPlaylistEntry ? 'highlighted' : ''" href="#" v-on:click="play(index);">{{entry}} </a>
 					</li>
-				</ul>
+				</ol>
 
 				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
 
@@ -315,7 +317,6 @@ new Vue({
   methods: {
 	play: function(index) {
 	  this.currentPlaylistEntry=index;
-      this.$refs.audioElm.play();
     },
 	nextPlaylistEntry: function () {
 	    if (this.currentPlaylistEntry === this.playlist.length - 1) {
