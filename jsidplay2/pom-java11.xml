@@ -837,7 +837,7 @@
 							<dontWrapJar>true</dontWrapJar>
 							<headerType>gui</headerType>
 							<jar>${project.artifactId}-${project.version}.jar</jar>
-							<outfile>${project.build.directory}/standalone/${project.artifactId}_java11-${project.version}.exe</outfile>
+							<outfile>${project.build.directory}/standalone/${project.artifactId}-java11-${project.version}.exe</outfile>
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
@@ -1032,7 +1032,7 @@
 							<fileset>
 								<directory>${project.build.directory}/standalone</directory>
 								<includes>
-									<include>${project.artifactId}_java11-${project.version}.exe</include>
+									<include>${project.artifactId}-java11-${project.version}.exe</include>
 									<include>${project.artifactId}-${project.version}.exe</include>
 									<include>${project.artifactId}-console-${project.version}.exe</include>
 									<include>sidblastertool-${project.version}.exe</include>

@@ -233,8 +233,7 @@ please type 'vi ~/jsidplay2-server.sh'.
 #!/bin/bash -x
 cd /home/ken/Downloads/{artifactId}-{version}
 pkill -f server.restful.JSIDPlay2Server
-java -Dhibernate.dialect.storage_engine=innodb \
-	-classpath {artifactId}-{version}.jar server.restful.JSIDPlay2Server \
+java -classpath {artifactId}-{version}.jar server.restful.JSIDPlay2Server \
 	--appServerKeystore /home/ken/jsidplay2.ks \
 	--appServerKeystorePassword jsidplay2 \
 	--appServerKeyAlias jsidplay2 \

@@ -3,17 +3,6 @@
 :toc:
 :toc-position: right
 
-== Introduction
-
-I am a C64 fan since 1986 as many other people are. I played games, watched demos and read books, but when the time goes by, all activities stopped slowly in the beginning of the 90s. 
-But one thing from the past i actually do until today, that is listening the precious SID music of all the talented music artists and demo groups. So many thanks to all of you for your work.
-
-JSIDPlay2 is a tribute to the C64 scene and the golden times of the company Commodore. Its purpose is to bring the feeling back we had when we were young and
-it wants to demonstrate what a wonderful and powerful machine with so many restrictions could accomplish,
-namely the people learned to live with these restrictions and got creative to make things happen, that nobody would have believed thirty years ago.
-Many people started their business career from these roots, because of a strong interest and thinking of the fun they had playing and working
-with their old home computers.
- 
 == SID music
 
 SID music has been and still is collected at several sites throughout the Internet. +
@@ -96,8 +85,6 @@ Sound output can be recorded optionally as:
 * AVI video (lossless)
 * MP4 video (lossy)
 * FLV video (lossy)
-* SID dump file
-* SID reg file
 
 == Supported Devices
 
@@ -116,8 +103,8 @@ link:https://en.wikipedia.org/wiki/HardSID[HardSID4U, HardSID UPlay and HardSID 
 Additionally we support SIDBlaster USB devices, e.g. link:http://crazy-midi.de[SIDBlaster device TicTac Edition^].
 It contains exactly one chip either MOS6581 or MOS8580 per device.
 
-Information to use that device in software like JSIDPlay2 is available here:
-link:https://haendel.ddns.net/~ken/sidblaster.html[https://haendel.ddns.net/~ken/sidblaster.html^]
+Information to use that device in software like JSIDPlay2 is available
+link:https://haendel.ddns.net/~ken/sidblaster.html[here^]
 
 4.
 Additionally we support exactly one of ExSID or ExSID+ (USB devices), e.g. link:http://hacks.slashdirt.org/hw/exsid/[exSID USB^]. It contains exactly two chips one MOS6581 and one MOS8580 per device.
@@ -146,15 +133,6 @@ and some inline video mode changes are buggy.
 The disk drive is very compatible. All chips are emulated cycle exact, although a few loaders deny to work.
 * ReSID 1.0 beta. Sound work is always ongoing.
 
-== System Requirements
-
-JSIDPlay2 User Interface (UI) version is a Java application making use of JavaFX for the UI.
-
-* Supported Operating Systems are Linux, Windows and MacOSX
-
-* Oracle Java 8 is required to launch JSIDPlay2, however linux users can use as an alternative openjdk 8 and
-must then install openjfx as well.
-
 == Launch JSIDPlay2
 
 Note: Whereas *Windows* users get an executable (.EXE) to launch:
@@ -167,33 +145,31 @@ jsidplay2-console-{version}.exe # <2>
 <1> Launch User interface version
 <2> Launch Console version
 
-other operating systems launch JSIDPlay2 using the following command:
+Since Java 11 you need for JSIDPlay2 User Interface version a different launch:
+
+[source,subs="attributes+"]
+----
+jsidplay2-java11-{version}.exe
+----
+ 
+*Other operating systems* launch JSIDPlay2 using the following command:
 
 [source,subs="attributes+"]
 ----
 cd Downloads/jsidplay2-{version}
-java -jar jsidplay2-{version}.jar # <1>
-java -jar jsidplay2-console-{version}.jar # <2>
+jsidplay2.sh # <1>
+jsidplay2-console.sh # <2>
 ---- 
 <1> Launch User interface version
 <2> Launch Console version
 
-Since Java 11 you need to use JSIDPlay2 specific to your platform
-launch JSIDPlay2 using the following command:
+Since Java 11 you need for JSIDPlay2 User Interface version a different launch:
 
 [source,subs="attributes+"]
 ----
 cd Downloads/jsidplay2-{version}
-java -Djava.library.path="." \
-	--module-path . \
-	--add-modules javafx.controls,javafx.web,javafx.fxml \
-	--add-opens=java.base/java.lang=ALL-UNNAMED \
-	--add-opens=java.base/java.io=ALL-UNNAMED \
-	--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED \
-	--add-opens java.base/java.util.function=jcommander
-	-jar jsidplay2-{version}.jar # <1>
+jsidplay2-java11.sh
 ----
-<1> Launch User interface version
  
 == Configuration
 
@@ -297,15 +273,13 @@ q   - quit player
 * User interface version is the more complete C64 emulator with video screen output and access to additional tools.
  you can create and save favorite tunes and configure completely by keyboard or mouse.
 
-image:StartScreen.png[JSidplay2 {version} - Start Screen]
-
 == JSIDPlay2 User Interface
 
 === Screen Layout
 
 In the following image the general layout of the UI is shown.
   
-image:ScreenLayout.png[JSidplay2 {version} - Screen Layout]
+image:StartScreen.png[JSidplay2 {version} - Start Screen]
 
 The main window is divided in several regions:
 
@@ -552,24 +526,23 @@ If the song length is well-known, it is separated by a slash and printed as well
 
 |===
 
-== Further possibilities
+== JSIDPlay2 Server
+JSIDPlay2 has a built-in server mode.
 
-=== Built-in AppServer
-Connect with any client to your instance of JSIDPlay2 running on a server.
+Please refer to the
+<<restful.ad#RESTful,JSIDPlay2 Server API Documentation>>
 
-<<restful.ad#RESTful,RESTful Services Usage>>
-
-=== Record SID as MP3 by Command Line
-Record your favorite SID music to MP3 files.
-
-<<mp3recording.ad#RecordAsMp3,Record SID as MP3 by Command Line>>
-
-=== Network SID Device
+== Network SID Device Interface
 Create a software or hardware replacement for a SID by implementing the Network SID Device protocol, then control it by JSIDPlay2.
 
 <<netsiddev.ad#NetSIDDev,Network SID Device>>
 
-== Troubleshooting
+== FAQ
+
+=== How to Record SID as MP3 by Command Line
+Record your favorite SID music to MP3 files.
+
+<<mp3recording.ad#RecordAsMp3,Record SID as MP3 by Command Line>>
 
 [glossary]
 == Glossary

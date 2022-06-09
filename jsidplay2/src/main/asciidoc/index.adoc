@@ -44,38 +44,14 @@ JSidplay2 is able to
 * be integrated into Java enabled platforms
 * being used like a real C64 (watching demos, playing games etc.)
 
-== JSIDPlay2 Server
-link:https://haendel.ddns.net:8443/static/c64jukebox.vue[JSIDPlay2 Online Player^]
-
-link:https://haendel.ddns.net:8443/static/whatssid.vue[WhatsSID? tune recognition^]
-
-link:rtmp://haendel.ddns.net/live/jsidplay2[JSIDPlay2 Live Stream from my Computer, if running]
-
-link:https://haendel.ddns.net:8443[RESTful Services Usage^]
-
 == User Guide
 Please read manual here:
 <<UserGuide.ad#UserGuide,JSIDPlay2 User Guide>>
 
-== Latest Beta Version
-
-|===
-| | Java 8, 9, 10 | Java 11, 12, ...
-| Linux | link:{codebase}{artifactId}-{version}.zip[Download]| link:{codebase}{artifactId}-{version}-java11-linux.zip[Download]
-| Windows | link:{codebase}{artifactId}-{version}.zip[Download] | link:{codebase}{artifactId}-{version}-java11-win.zip[Download]
-| MacOSX | link:{codebase}{artifactId}-{version}.zip[Download] | link:{codebase}{artifactId}-{version}-java11-mac.zip[Download]
-|===
-
-link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
-
-link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (standalone)
-
-link:{codebase}jsidplay2app.apk[Download jsidplay2app] (app for android)
-
 == Minimum System Requirement
 
 |===
-| | Java | Installers for Java 8, 11, 14
+| | Java | Installers for Java
 | Linux
 |
 link:{codebase}java/jdk-8u211-linux-x64.tar.gz[[small]*Java8*]
@@ -91,16 +67,31 @@ link:{codebase}java/jdk-8u211-macosx-x64.dmg[[small]*Java8*]
 link:https://adoptium.net[https://adoptium.net^]
 |===
 
-== Releases
+== Official Releases
 
 Click link:https://sourceforge.net/projects/jsidplay2/[here^] to download
 
-== Further possibilities
+== Latest Beta Version
 
-* If you want to compare the quality of this emulation with the real thing and own a link:http://www.hardsid.com/[HardSID4U] soundcard (no more available, please search on ebay),
-then just download and start link:https://www.acid64.com/[ACID64^] (by Wilfred Bos) the recommended music player to play SID tunes on a real SID chip
-and additionally download the link:{codebase}jsiddevice-{version}.jar[Network SID Device] (part of JSIDPlay2).
-Now, using ACID64 you are able to switch between the real SID chip playback and the emulation on the fly.
+|===
+| | JSIDPlay2 for Java 8 | JSIDPlay2 for Java 11, 17, ...
+| Linux | link:{codebase}{artifactId}-{version}.zip[Download]| link:{codebase}{artifactId}-{version}-java11-linux.zip[Download]
+| Windows | link:{codebase}{artifactId}-{version}.zip[Download] | link:{codebase}{artifactId}-{version}-java11-win.zip[Download]
+| MacOSX | link:{codebase}{artifactId}-{version}.zip[Download] | link:{codebase}{artifactId}-{version}-java11-mac.zip[Download]
+|===
+
+link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
+
+link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (standalone)
+
+link:{codebase}jsidplay2app.apk[Download jsidplay2app] (app for android)
+
+== JSIDPlay2 Server
+link:https://haendel.ddns.net:8443[JSIDPlay2 Server API Documentation^]
+
+link:https://haendel.ddns.net:8443/static/c64jukebox.vue[Example Client: JSIDPlay2 Online Player^]
+
+link:https://haendel.ddns.net:8443/static/whatssid.vue[Example Client: WhatsSID? Tune Recognition^]
 
 == Metrics
 
@@ -159,7 +150,7 @@ Credits go first to the original authors for doing such a great sidplay2 softwar
 | reSID emulation engine
 
 | Michael Schwendt
-| SidTune library, Sid2Wav support and basis for xSID...
+| SidTune library, Sid2Wav support
 
 | Simon White
 | Sidplay2 music player library v2
