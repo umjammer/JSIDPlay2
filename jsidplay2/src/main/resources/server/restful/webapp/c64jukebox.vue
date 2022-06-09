@@ -150,8 +150,6 @@
 				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
 
 				<div>
-					<h3>SID:</h3>
-
 					<div class="settings-box">
 						<label for="startTime">{{ $t( 'startTime' ) }}</label> <input
 							type="number" min="0" oninput="validity.valid||(value='');"
@@ -226,6 +224,34 @@
 					<div>{{ volumeThreeSid }}</div>
 				</div>
 				<div class="settings-box">
+					<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label>
+					<b-form-input id="balanceSid" v-model="balanceSid" type="range"
+						min="0" max="1" step="0.1"></b-form-input>
+					<div>{{ balanceSid }}</div>
+					<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' ) }}</label>
+					<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
+						type="range" min="0" max="1" step="0.1"></b-form-input>
+					<div>{{ balanceStereoSid }}</div>
+					<label for="balanceThreeSid">{{ $t( 'balanceThreeSid' ) }}</label>
+					<b-form-input id="balanceThreeSid" v-model="balanceThreeSid"
+						type="range" min="0" max="1" step="0.1"></b-form-input>
+					<div>{{ balanceThreeSid }}</div>
+				</div>
+				<div class="settings-box">
+					<label for="delaySid">{{ $t( 'delaySid' ) }}</label>
+					<b-form-input id="delaySid" v-model="delaySid" type="range"
+						min="0" max="100" step="10"></b-form-input>
+					<div>{{ delaySid }}</div>
+					<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label>
+					<b-form-input id="delayStereoSid" v-model="delayStereoSid"
+						type="range" min="0" max="100" step="10"></b-form-input>
+					<div>{{ delayStereoSid }}</div>
+					<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label>
+					<b-form-input id="delayThreeSid" v-model="delayThreeSid"
+						type="range" min="0" max="100" step="10"></b-form-input>
+					<div>{{ delayThreeSid }}</div>
+				</div>
+				<div class="settings-box">
 					<div>
 						<label for="vbr">{{ $t ( 'vbr' ) }}</label> <input type="checkbox" id="vbr"
 							v-model="vbr" />
@@ -268,6 +294,13 @@
 
 				</div>
 				<div class="settings-box">
+					<h3>Misc.:</h3>
+					<label for="status">Show status line</label> <input type="checkbox"
+						id="status" v-model="status" /> <label for="pressSpaceInterval">Press
+						Space periodically in s</label> <input type="number"
+						id="pressSpaceInterval" v-model.number="pressSpaceInterval" />
+				</div>
+				<div class="settings-box">
 					<h3>REU:</h3>
 					<input type="radio" id="auto" value="auto" v-model="reuSize">
 					<label for="auto">Autodetect</label> <input type="radio" id="kb64"
@@ -278,13 +311,6 @@
 					<input type="radio" id="kb1024" value="kb1024" v-model="reuSize">
 					<label for="kb1024">1024kb</label> <input type="radio" id="kb2048"
 						value="kb2048" v-model="reuSize"> <label for="kb2048">2048kb</label>
-				</div>
-				<div class="settings-box">
-					<h3>Misc.:</h3>
-					<label for="status">Show status line</label> <input type="checkbox"
-						id="status" v-model="status" /> <label for="pressSpaceInterval">Press
-						Space periodically in s</label> <input type="number"
-						id="pressSpaceInterval" v-model.number="pressSpaceInterval" />
 				</div>
 
 				</b-card-text> </b-tab> </b-tabs> </b-card>
@@ -364,6 +390,12 @@ const messages = {
 		  volumeSid: 'Volume of SID in db:',
 		  volumeStereoSid: 'Volume of Stereo-SID in db:',
 		  volumeThreeSid: 'Volume of 3-SID in db:',
+		  balanceSid: 'Balance of SID (0..1):',
+		  balanceStereoSid: 'Balance of Stereo-SID (0..1):',
+		  balanceThreeSid: 'Balance of 3-SID (0..1):',
+		  delaySid: 'Delay of SID in ms (0ms..50ms):',
+		  delayStereoSid: 'Delay of Stereo-SID in ms (0ms..50ms):',
+		  delayThreeSid: 'Delay of 3-SID in ms (0ms..50ms):',
 		  vbr: 'Use variable bitrate instead of constant bitrate',
 		  cbr: 'constant bitrate in kbps',
 		  vbrQuality: 'Quality of variable bitrate'
@@ -426,6 +458,12 @@ const messages = {
 	  volumeSid: 'Lautstärke des SID in db:',
 	  volumeStereoSid: 'Lautstärke des Stereo-SID in db:',
 	  volumeThreeSid: 'Lautstärke des 3-SID in db:',
+	  balanceSid: 'Balance des SID (0..1):',
+	  balanceStereoSid: 'Balance des Stereo-SID (0..1):',
+	  balanceThreeSid: 'Balance des 3-SID (0..1):',
+	  delaySid: 'Verzögerung des SID in ms (0ms..50ms):',
+	  delayStereoSid: 'Verzögerung des SID in ms (0ms..50ms):',
+	  delayThreeSid: 'Verzögerung des SID in ms (0ms..50ms):',
 	  vbr: 'Variable Bitrate verwenden anstatt fester Bitrate',
 	  cbr: 'Konstante Bitrate in kbps',
 	  vbrQuality: 'Qualität der variablen Bitrate'
@@ -465,6 +503,12 @@ new Vue({
     volumeSid: 0,
     volumeStereoSid: 0,
     volumeThreeSid: 0,
+    balanceSid: 0,
+    balanceStereoSid: 0,
+    balanceThreeSid: 0,
+    delaySid: 0,
+    delayStereoSid: 0,
+    delayThreeSid: 0,
     vbr: false,
     cbr: -1,
     vbrQuality: 0,
@@ -605,7 +649,7 @@ new Vue({
               .finally(() => (this.loading = false));
           },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid + '&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid + '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid + '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid + '&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
         }
   }
 });
