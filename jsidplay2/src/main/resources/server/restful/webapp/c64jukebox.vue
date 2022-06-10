@@ -66,7 +66,7 @@
 						<li v-for="entry in directory" :key="entry">
 							<!-- HVSC root -->
 							<div v-if="entry.endsWith('/')">
-								<a href="#" v-on:click="fetchData('directory', entry)">
+								<a href="#" v-on:click="fetchData(entry)">
 									{{entry}} </a>
 							</div> <!-- HVSC music -->
 							<div
@@ -185,9 +185,9 @@
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="RESIDFP" value="RESIDFP"
-							v-model="defaultEngine"> <label for="RESIDFP">RESIDFP</label>
+							v-model="defaultEngine" v-on:click="setFilters('RESIDFP')"> <label for="RESIDFP">RESIDFP</label>
 						<input type="radio" id="RESID" value="RESID"
-							v-model="defaultEngine"> <label for="RESID">RESID</label>
+							v-model="defaultEngine" v-on:click="setFilters('RESID')"> <label for="RESID">RESID</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="DECIMATE" value="DECIMATE"
@@ -207,6 +207,38 @@
 							v-model="defaultModel"> <label for="MOS6581">6581</label>
 						<input type="radio" id="MOS8580" value="MOS8580"
 							v-model="defaultModel"> <label for="MOS8580">8580</label>
+					</div>
+				</div>
+				<div class="settings-box">
+					<div>
+						<label for="filter6581">{{ $t( 'filter6581' ) }}</label>
+						<select id="filter6581" v-model="filter6581">
+						  <option v-for="entry in filters6581">{{entry}}</option>
+						</select>
+						<label for="filter8580">{{ $t( 'filter8580' ) }}</label>
+						<select id="filter8580" v-model="filter8580">
+						  <option v-for="entry in filters8580">{{entry}}</option>
+						</select>
+					</div>
+					<div>
+						<label for="stereoFilter6581">{{ $t( 'stereoFilter6581' ) }}</label>
+						<select id="stereoFilter6581" v-model="stereoFilter6581">
+						  <option v-for="entry in filters6581">{{entry}}</option>
+						</select>
+						<label for="stereoFilter8580">{{ $t( 'stereoFilter8580' ) }}</label>
+						<select id="stereoFilter8580" v-model="stereoFilter8580">
+						  <option v-for="entry in filters8580">{{entry}}</option>
+						</select>
+					</div>
+					<div>
+						<label for="threeFilter6581">{{ $t( 'threeFilter6581' ) }}</label>
+						<select id="threeFilter6581" v-model="threeFilter6581">
+						  <option v-for="entry in filters6581">{{entry}}</option>
+						</select>
+						<label for="threeFilter8580">{{ $t( 'threeFilter8580' ) }}</label>
+						<select id="threeFilter8580" v-model="threeFilter8580">
+						  <option v-for="entry in filters8580">{{entry}}</option>
+						</select>
 					</div>
 				</div>
 				<div class="settings-box">
@@ -398,7 +430,13 @@ const messages = {
 		  delayThreeSid: 'Delay of 3-SID in ms (0ms..50ms):',
 		  vbr: 'Use variable bitrate instead of constant bitrate',
 		  cbr: 'constant bitrate in kbps',
-		  vbrQuality: 'Quality of variable bitrate'
+		  vbrQuality: 'Quality of variable bitrate',
+		  filter6581: 'SID Filter 6581',
+		  filter8580: 'SID Filter 8580',
+		  stereoFilter6581: 'Stereo-SID Filter 6581',
+		  stereoFilter8580: 'Stereo-SID Filter 8580',
+		  threeFilter6581: '3-SID Filter 6581',
+		  threeFilter8580: '3-SID Filter 8580'
 	    },
   },
   de: {
@@ -466,7 +504,13 @@ const messages = {
 	  delayThreeSid: 'Verzögerung des SID in ms (0ms..50ms):',
 	  vbr: 'Variable Bitrate verwenden anstatt fester Bitrate',
 	  cbr: 'Konstante Bitrate in kbps',
-	  vbrQuality: 'Qualität der variablen Bitrate'
+	  vbrQuality: 'Qualität der variablen Bitrate',
+	  filter6581: 'Filter 6581',
+	  filter8580: 'Filter 8580',
+	  stereoFilter6581: 'Stereo-SID Filter 6581',
+	  stereoFilter8580: 'Stereo-SID Filter 8580',
+	  threeFilter6581: '3-SID Filter 6581',
+	  threeFilter8580: '3-SID Filter 8580'
   }
 }
 
@@ -481,6 +525,18 @@ new Vue({
   data: {
 	tabIndex: 0,
 	directory: "",
+	filtersResid6581: [],
+	filtersResid8580: [],
+	filtersResidFp6581: [],
+	filtersResidFp8580: [],
+	filters6581: [],
+	filters8580: [],
+	filter6581: '',
+	filter8580: '',
+	stereoFilter6581: '',
+	stereoFilter8580: '',
+	threeFilter6581: '',
+	threeFilter8580: '',
 	playlist: [],
 	currentPlaylistEntry: 0,
     infos: "",
@@ -544,7 +600,8 @@ new Vue({
     }
   },
   created: function() {
-    this.fetchData("directory", "/", this.username, this.password);
+    this.fetchData("/");
+    this.fetchFilters();
   },
   methods: {
 	play: function(index) {
@@ -569,26 +626,21 @@ new Vue({
 		this.setPic(this.playlist[this.currentPlaylistEntry], this.username, this.password);
 	    console.log("currentPlaylistEntry=" + this.currentPlaylistEntry);
 	},
-    fetchData: function(type, entry) {
-      if (type == "directory") {
-        this.loading = true; //the loading begin
-        axios({
-          method: "get",
-          url:
-            "/jsidplay2service/JSIDPlay2REST/" +
-            type +
-            uriEncode(entry) +
-            "?filter=.*%5C.(sid%7Cdat%7Cmus%7Cstr%7Cmp3%7Cmp4%7Cdv%7Cvob%7Ctxt%7Cjpg%7Cprg%7Cd64%7Cg64%7Cnib%7Creu%7Cima%7Ccrt%7Cimg%7Ctap%7Ct64%7Cp00)$",
-          auth: {
-            username: this.username,
-            password: this.password
-          }
-        })
-          .then(response => {
-            this.directory = response.data;
-          })
-          .finally(() => (this.loading = false));
-      }
+    fetchData: function(entry) {
+       this.loading = true; //the loading begin
+       axios({
+         method: "get",
+         url:
+           "/jsidplay2service/JSIDPlay2REST/directory" + uriEncode(entry) + "?filter=.*%5C.(sid%7Cdat%7Cmus%7Cstr%7Cmp3%7Cmp4%7Cdv%7Cvob%7Ctxt%7Cjpg%7Cprg%7Cd64%7Cg64%7Cnib%7Creu%7Cima%7Ccrt%7Cimg%7Ctap%7Ct64%7Cp00)$",
+         auth: {
+           username: this.username,
+           password: this.password
+         }
+       })
+         .then(response => {
+           this.directory = response.data;
+         })
+         .finally(() => (this.loading = false));
     },
     setSid: function(entry) {
         this.loading = true; //the loading begin
@@ -648,8 +700,45 @@ new Vue({
               })
               .finally(() => (this.loading = false));
           },
+          setFilters: function(engine) {
+			if (engine==='RESIDFP') {
+				this.filters6581 = this.filtersResidFp6581;
+			 	this.filters8580 = this.filtersResidFp8580;
+			} else {
+				this.filters6581 = this.filtersResid6581;
+				this.filters8580 = this.filtersResid8580;
+			}
+			this.filter6581 = this.filters6581[0];
+			this.filter8580 = this.filters8580[0];
+			this.stereoFilter6581 = this.filters6581[0];
+			this.stereoFilter8580 = this.filters8580[0];
+			this.threeFilter6581 = this.filters6581[0];
+			this.threeFilter8580 = this.filters8580[0];
+          },
+          fetchFilters: function() {
+              this.loading = true; //the loading begin
+              axios({
+                method: "get",
+                url:
+                  "/jsidplay2service/JSIDPlay2REST/filters",
+                auth: {
+                  username: this.username,
+                  password: this.password
+                }
+              })
+                .then(response => {
+                	const filters = response.data;
+                	this.filtersResid6581 = filters.filter(filter => filter.startsWith('RESID_MOS6581_')).map(filter => filter.substring('RESID_MOS6581_'.length));
+                	this.filtersResid8580 = filters.filter(filter => filter.startsWith('RESID_MOS8580_')).map(filter => filter.substring('RESID_MOS8580_'.length));
+                	this.filtersResidFp6581 = filters.filter(filter => filter.startsWith('RESIDFP_MOS6581_')).map(filter => filter.substring('RESIDFP_MOS6581_'.length));
+                	this.filtersResidFp8580 = filters.filter(filter => filter.startsWith('RESIDFP_MOS8580_')).map(filter => filter.substring('RESIDFP_MOS8580_'.length));
+
+                	this.setFilters(this.defaultEngine);
+                })
+                .finally(() => (this.loading = false));
+            },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid + '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid + '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid + '&filter6581=FilterAlankila6581R4AR_3789&stereoFilter6581=FilterAlankila6581R4AR_3789&thirdFilter6581=FilterAlankila6581R4AR_3789&filter8580=FilterAlankila6581R4AR_3789&stereoFilter8580=FilterAlankila6581R4AR_3789&thirdFilter8580=FilterAlankila6581R4AR_3789&reSIDfpFilter6581=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter6581=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter6581=FilterAlankila6581R4AR_3789&reSIDfpFilter8580=FilterAlankila6581R4AR_3789&reSIDfpStereoFilter8580=FilterAlankila6581R4AR_3789&reSIDfpThirdFilter8580=FilterAlankila6581R4AR_3789&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid + '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid + '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid + '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581 + '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580 + '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.thirdFilter6581 + '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.thirdFilter8580 + '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
         }
   }
 });
