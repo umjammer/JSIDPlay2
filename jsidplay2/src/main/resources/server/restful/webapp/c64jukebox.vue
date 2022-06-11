@@ -66,8 +66,7 @@
 						<li v-for="entry in directory" :key="entry">
 							<!-- HVSC root -->
 							<div v-if="entry.endsWith('/')">
-								<a href="#" v-on:click="fetchData(entry)">
-									{{entry}} </a>
+								<a href="#" v-on:click="fetchData(entry)"> {{entry}} </a>
 							</div> <!-- HVSC music -->
 							<div
 								v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
@@ -167,27 +166,28 @@
 							v-model.number="fadeOut" />
 					</div>
 					<div class="settings-box">
-						<label for="detectSongLength">{{ $t( 'detectSongLength' )
-							}}</label> <input type="checkbox" id="detectSongLength"
-							v-model="detectSongLength" /> <label for="singleSong">{{
-							$t( 'singleSong' ) }}</label> <input type="checkbox" id="singleSong"
-							v-model="singleSong" /> <label for="loopSong">{{ $t(
-							'loopSong' ) }}</label> <input type="checkbox" id="loopSong"
-							v-model="loopSong" />
+						<input type="checkbox" id="detectSongLength"
+							v-model="detectSongLength" /> <label for="detectSongLength">{{
+							$t( 'detectSongLength' ) }}</label> <input type="checkbox"
+							id="singleSong" v-model="singleSong" /> <label for="singleSong">{{
+							$t( 'singleSong' ) }}</label> <input type="checkbox" id="loopSong"
+							v-model="loopSong" /> <label for="loopSong">{{ $t(
+							'loopSong' ) }}</label>
 					</div>
 					<div class="settings-box">
+						<input type="checkbox" id="digiboost8580" v-model="digiboost8580" />
 						<label for="digiboost8580">{{ $t( 'digiboost8580' ) }}</label> <input
-							type="checkbox" id="digiboost8580" v-model="digiboost8580" /> <label
-							for="fakeStereo">{{ $t( 'fakeStereo' ) }}</label> <input
 							type="checkbox" id="fakeStereo" v-model="fakeStereo" /> <label
-							for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label> <input
-							type="checkbox" id="bypassReverb" v-model="bypassReverb" />
+							for="fakeStereo">{{ $t( 'fakeStereo' ) }}</label> <input
+							type="checkbox" id="bypassReverb" v-model="bypassReverb" /> <label
+							for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="RESIDFP" value="RESIDFP"
-							v-model="defaultEngine" v-on:click="setFilters('RESIDFP')"> <label for="RESIDFP">RESIDFP</label>
-						<input type="radio" id="RESID" value="RESID"
-							v-model="defaultEngine" v-on:click="setFilters('RESID')"> <label for="RESID">RESID</label>
+							v-model="defaultEngine" v-on:click="setFilters('RESIDFP')">
+						<label for="RESIDFP">RESIDFP</label> <input type="radio"
+							id="RESID" value="RESID" v-model="defaultEngine"
+							v-on:click="setFilters('RESID')"> <label for="RESID">RESID</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="DECIMATE" value="DECIMATE"
@@ -211,129 +211,146 @@
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="filter6581">{{ $t( 'filter6581' ) }}</label>
-						<select id="filter6581" v-model="filter6581">
-						  <option v-for="entry in filters6581">{{entry}}</option>
-						</select>
-						<label for="filter8580">{{ $t( 'filter8580' ) }}</label>
-						<select id="filter8580" v-model="filter8580">
-						  <option v-for="entry in filters8580">{{entry}}</option>
+						<label for="filter6581">{{ $t( 'filter6581' ) }}</label> <select
+							id="filter6581" v-model="filter6581">
+							<option v-for="entry in filters6581">{{entry}}</option>
+						</select> <label for="filter8580">{{ $t( 'filter8580' ) }}</label> <select
+							id="filter8580" v-model="filter8580">
+							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
 					<div>
-						<label for="stereoFilter6581">{{ $t( 'stereoFilter6581' ) }}</label>
-						<select id="stereoFilter6581" v-model="stereoFilter6581">
-						  <option v-for="entry in filters6581">{{entry}}</option>
-						</select>
-						<label for="stereoFilter8580">{{ $t( 'stereoFilter8580' ) }}</label>
-						<select id="stereoFilter8580" v-model="stereoFilter8580">
-						  <option v-for="entry in filters8580">{{entry}}</option>
+						<label for="stereoFilter6581">{{ $t( 'stereoFilter6581' )
+							}}</label> <select id="stereoFilter6581" v-model="stereoFilter6581">
+							<option v-for="entry in filters6581">{{entry}}</option>
+						</select> <label for="stereoFilter8580">{{ $t( 'stereoFilter8580' )
+							}}</label> <select id="stereoFilter8580" v-model="stereoFilter8580">
+							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
 					<div>
 						<label for="threeFilter6581">{{ $t( 'threeFilter6581' ) }}</label>
 						<select id="threeFilter6581" v-model="threeFilter6581">
-						  <option v-for="entry in filters6581">{{entry}}</option>
-						</select>
-						<label for="threeFilter8580">{{ $t( 'threeFilter8580' ) }}</label>
-						<select id="threeFilter8580" v-model="threeFilter8580">
-						  <option v-for="entry in filters8580">{{entry}}</option>
+							<option v-for="entry in filters6581">{{entry}}</option>
+						</select> <label for="threeFilter8580">{{ $t( 'threeFilter8580' )
+							}}</label> <select id="threeFilter8580" v-model="threeFilter8580">
+							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
-				</div>
-				<div class="settings-box">
-					<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label>
-					<b-form-input id="volumeSid" v-model="volumeSid" type="range"
-						min="-6" max="6" step="1"></b-form-input>
-					<div>{{ volumeSid }}</div>
-					<label for="volumeStereoSid">{{ $t( 'volumeStereoSid' ) }}</label>
-					<b-form-input id="volumeStereoSid" v-model="volumeStereoSid"
-						type="range" min="-6" max="6" step="1"></b-form-input>
-					<div>{{ volumeStereoSid }}</div>
-					<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label>
-					<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
-						type="range" min="-6" max="6" step="1"></b-form-input>
-					<div>{{ volumeThreeSid }}</div>
-				</div>
-				<div class="settings-box">
-					<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label>
-					<b-form-input id="balanceSid" v-model="balanceSid" type="range"
-						min="0" max="1" step="0.1"></b-form-input>
-					<div>{{ balanceSid }}</div>
-					<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' ) }}</label>
-					<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
-						type="range" min="0" max="1" step="0.1"></b-form-input>
-					<div>{{ balanceStereoSid }}</div>
-					<label for="balanceThreeSid">{{ $t( 'balanceThreeSid' ) }}</label>
-					<b-form-input id="balanceThreeSid" v-model="balanceThreeSid"
-						type="range" min="0" max="1" step="0.1"></b-form-input>
-					<div>{{ balanceThreeSid }}</div>
-				</div>
-				<div class="settings-box">
-					<label for="delaySid">{{ $t( 'delaySid' ) }}</label>
-					<b-form-input id="delaySid" v-model="delaySid" type="range"
-						min="0" max="100" step="10"></b-form-input>
-					<div>{{ delaySid }}</div>
-					<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label>
-					<b-form-input id="delayStereoSid" v-model="delayStereoSid"
-						type="range" min="0" max="100" step="10"></b-form-input>
-					<div>{{ delayStereoSid }}</div>
-					<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label>
-					<b-form-input id="delayThreeSid" v-model="delayThreeSid"
-						type="range" min="0" max="100" step="10"></b-form-input>
-					<div>{{ delayThreeSid }}</div>
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="vbr">{{ $t ( 'vbr' ) }}</label> <input type="checkbox" id="vbr"
-							v-model="vbr" />
+						<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label> <span>{{
+							volumeSid }}db</span>
+						<b-form-input id="volumeSid" v-model="volumeSid" type="range"
+							min="-6" max="6" step="1"></b-form-input>
 					</div>
 					<div>
-						<label for="cbr">{{ $t ( 'cbr' ) }}</label> 
-						<select id="cbr" v-model="cbr">
-						  <option>-1</option>
-						  <option>32</option>
-						  <option>40</option>
-						  <option>48</option>
-						  <option>56</option>
-						  <option>64</option>
-						  <option>80</option>
-						  <option>96</option>
-						  <option>112</option>
-						  <option>128</option>
-						  <option>160</option>
-						  <option>192</option>
-						  <option>224</option>
-						  <option>256</option>
-						  <option>320</option>
-						</select>
+						<label for="volumeStereoSid">{{ $t( 'volumeStereoSid' ) }}</label>
+						<span>{{ volumeStereoSid }}db</span>
+						<b-form-input id="volumeStereoSid" v-model="volumeStereoSid"
+							type="range" min="-6" max="6" step="1"></b-form-input>
 					</div>
 					<div>
-						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> 
-						<select id="vbrQuality" v-model="vbrQuality">
-						  <option>0</option>
-						  <option>1</option>
-						  <option>2</option>
-						  <option>3</option>
-						  <option>4</option>
-						  <option>5</option>
-						  <option>6</option>
-						  <option>7</option>
-						  <option>8</option>
-						  <option>9</option>
-						</select>
+						<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label> <span>{{
+							volumeThreeSid }}db</span>
+						<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
+							type="range" min="-6" max="6" step="1"></b-form-input>
 					</div>
-
 				</div>
 				<div class="settings-box">
-					<h3>Misc.:</h3>
+					<div>
+						<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label> <span>{{
+							balanceSid }}</span>
+						<b-form-input id="balanceSid" v-model="balanceSid" type="range"
+							min="0" max="1" step="0.1"></b-form-input>
+					</div>
+					<div>
+						<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' )
+							}}</label> <span>{{ balanceStereoSid }}</span>
+						<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
+							type="range" min="0" max="1" step="0.1"></b-form-input>
+					</div>
+					<div>
+						<label for="balanceThreeSid">{{ $t( 'balanceThreeSid' ) }}</label>
+						<span>{{ balanceThreeSid }}</span>
+						<b-form-input id="balanceThreeSid" v-model="balanceThreeSid"
+							type="range" min="0" max="1" step="0.1"></b-form-input>
+					</div>
+				</div>
+				<div class="settings-box">
+					<div>
+						<label for="delaySid">{{ $t( 'delaySid' ) }}</label> <span>{{
+							delaySid }}ms</span>
+						<b-form-input id="delaySid" v-model="delaySid" type="range"
+							min="0" max="100" step="10"></b-form-input>
+					</div>
+					<div>
+						<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label> <span>{{
+							delayStereoSid }}ms</span>
+						<b-form-input id="delayStereoSid" v-model="delayStereoSid"
+							type="range" min="0" max="100" step="10"></b-form-input>
+					</div>
+					<div>
+						<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label> <span>{{
+							delayThreeSid }}ms</span>
+						<b-form-input id="delayThreeSid" v-model="delayThreeSid"
+							type="range" min="0" max="100" step="10"></b-form-input>
+					</div>
+				</div>
+				<div class="settings-box">
+					<div>
+						<label for="vbr">{{ $t ( 'vbr' ) }}</label> <input type="checkbox"
+							id="vbr" v-model="vbr" />
+					</div>
+					<div>
+						<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
+							v-model="cbr">
+							<option>-1</option>
+							<option>32</option>
+							<option>40</option>
+							<option>48</option>
+							<option>56</option>
+							<option>64</option>
+							<option>80</option>
+							<option>96</option>
+							<option>112</option>
+							<option>128</option>
+							<option>160</option>
+							<option>192</option>
+							<option>224</option>
+							<option>256</option>
+							<option>320</option>
+						</select>
+					</div>
+					<div>
+						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
+							id="vbrQuality" v-model="vbrQuality">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+						</select>
+					</div>
+					<div>
+						<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label> <input
+							type="number" min="0" oninput="validity.valid||(value='');"
+							id="vcBitRate" v-model.number="vcBitRate" />
+					</div>
+				</div>
+				<div class="settings-box">
 					<label for="status">Show status line</label> <input type="checkbox"
 						id="status" v-model="status" /> <label for="pressSpaceInterval">Press
 						Space periodically in s</label> <input type="number"
 						id="pressSpaceInterval" v-model.number="pressSpaceInterval" />
 				</div>
 				<div class="settings-box">
-					<h3>REU:</h3>
 					<input type="radio" id="auto" value="auto" v-model="reuSize">
 					<label for="auto">Autodetect</label> <input type="radio" id="kb64"
 						value="kb64" v-model="reuSize"> <label for="kb64">64kb</label>
@@ -419,18 +436,19 @@ const messages = {
 		  defaultLength: 'Default Length in sec.',
 		  fadeIn: 'Fade-In in sec.',
 		  fadeOut: 'Fade-Out in sec.',
-		  volumeSid: 'Volume of SID in db:',
-		  volumeStereoSid: 'Volume of Stereo-SID in db:',
-		  volumeThreeSid: 'Volume of 3-SID in db:',
-		  balanceSid: 'Balance of SID (0..1):',
-		  balanceStereoSid: 'Balance of Stereo-SID (0..1):',
-		  balanceThreeSid: 'Balance of 3-SID (0..1):',
-		  delaySid: 'Delay of SID in ms (0ms..50ms):',
-		  delayStereoSid: 'Delay of Stereo-SID in ms (0ms..50ms):',
-		  delayThreeSid: 'Delay of 3-SID in ms (0ms..50ms):',
+		  volumeSid: 'Increase volume of SID:',
+		  volumeStereoSid: 'Increase volume of Stereo-SID:',
+		  volumeThreeSid: 'Increase volume of 3-SID:',
+		  balanceSid: 'Balance of SID:',
+		  balanceStereoSid: 'Balance of Stereo-SID:',
+		  balanceThreeSid: 'Balance of 3-SID:',
+		  delaySid: 'Delay of SID:',
+		  delayStereoSid: 'Delay of Stereo-SID:',
+		  delayThreeSid: 'Delay of 3-SID:',
 		  vbr: 'Use variable bitrate instead of constant bitrate',
 		  cbr: 'constant bitrate in kbps',
 		  vbrQuality: 'Quality of variable bitrate',
+		  vcBitRate: 'Video Bit Rate',
 		  filter6581: 'SID Filter 6581',
 		  filter8580: 'SID Filter 8580',
 		  stereoFilter6581: 'Stereo-SID Filter 6581',
@@ -493,18 +511,19 @@ const messages = {
 	  defaultLength: 'Default Länge in Sek.',
 	  fadeIn: 'Fade-In in Sek.',
 	  fadeOut: 'Fade-Out in Sek.',
-	  volumeSid: 'Lautstärke des SID in db:',
-	  volumeStereoSid: 'Lautstärke des Stereo-SID in db:',
-	  volumeThreeSid: 'Lautstärke des 3-SID in db:',
-	  balanceSid: 'Balance des SID (0..1):',
-	  balanceStereoSid: 'Balance des Stereo-SID (0..1):',
-	  balanceThreeSid: 'Balance des 3-SID (0..1):',
-	  delaySid: 'Verzögerung des SID in ms (0ms..50ms):',
-	  delayStereoSid: 'Verzögerung des SID in ms (0ms..50ms):',
-	  delayThreeSid: 'Verzögerung des SID in ms (0ms..50ms):',
+	  volumeSid: 'Lautstärke anheben des SID:',
+	  volumeStereoSid: 'Lautstärke anheben des Stereo-SID:',
+	  volumeThreeSid: 'Lautstärke anheben des 3-SID:',
+	  balanceSid: 'Balance des SID:',
+	  balanceStereoSid: 'Balance des Stereo-SID:',
+	  balanceThreeSid: 'Balance des 3-SID:',
+	  delaySid: 'Verzögerung des SID:',
+	  delayStereoSid: 'Verzögerung des SID:',
+	  delayThreeSid: 'Verzögerung des SID:',
 	  vbr: 'Variable Bitrate verwenden anstatt fester Bitrate',
 	  cbr: 'Konstante Bitrate in kbps',
 	  vbrQuality: 'Qualität der variablen Bitrate',
+	  vcBitRate: 'Video Bit Rate',
 	  filter6581: 'Filter 6581',
 	  filter8580: 'Filter 8580',
 	  stereoFilter6581: 'Stereo-SID Filter 6581',
@@ -559,15 +578,16 @@ new Vue({
     volumeSid: 0,
     volumeStereoSid: 0,
     volumeThreeSid: 0,
-    balanceSid: 0,
-    balanceStereoSid: 0,
-    balanceThreeSid: 0,
+    balanceSid: 0.3,
+    balanceStereoSid: 0.7,
+    balanceThreeSid: 0.5,
     delaySid: 0,
-    delayStereoSid: 0,
+    delayStereoSid: 20,
     delayThreeSid: 0,
     vbr: false,
     cbr: -1,
     vbrQuality: 0,
+	vcBitRate: 600000,
     reuSize: 'auto',
     pressSpaceInterval: 90,
     status: true,
@@ -606,8 +626,8 @@ new Vue({
   methods: {
 	play: function(index) {
 	  this.currentPlaylistEntry=index;
-	  this.setSid(this.playlist[index], this.username, this.password);
-	  this.setPic(this.playlist[index], this.username, this.password);
+	  this.setSid(this.playlist[index]);
+	  this.setPic(this.playlist[index]);
     },
 	nextPlaylistEntry: function () {
 		if (this.playlist.length === 0) {
@@ -622,9 +642,8 @@ new Vue({
 		    	this.currentPlaylistEntry++;
 		    }
 		}
-		this.setSid(this.playlist[this.currentPlaylistEntry], this.username, this.password);
-		this.setPic(this.playlist[this.currentPlaylistEntry], this.username, this.password);
-	    console.log("currentPlaylistEntry=" + this.currentPlaylistEntry);
+		this.setSid(this.playlist[this.currentPlaylistEntry]);
+		this.setPic(this.playlist[this.currentPlaylistEntry]);
 	},
     fetchData: function(entry) {
        this.loading = true; //the loading begin
@@ -704,16 +723,24 @@ new Vue({
 			if (engine==='RESIDFP') {
 				this.filters6581 = this.filtersResidFp6581;
 			 	this.filters8580 = this.filtersResidFp8580;
+
+				this.filter6581 = this.filters6581[1];
+				this.filter8580 = this.filters8580[1];
+				this.stereoFilter6581 = this.filters6581[1];
+				this.stereoFilter8580 = this.filters8580[1];
+				this.threeFilter6581 = this.filters6581[1];
+				this.threeFilter8580 = this.filters8580[1];
 			} else {
 				this.filters6581 = this.filtersResid6581;
 				this.filters8580 = this.filtersResid8580;
+
+				this.filter6581 = this.filters6581[3];
+				this.filter8580 = this.filters8580[1];
+				this.stereoFilter6581 = this.filters6581[3];
+				this.stereoFilter8580 = this.filters8580[1];
+				this.threeFilter6581 = this.filters6581[3];
+				this.threeFilter8580 = this.filters8580[1];
 			}
-			this.filter6581 = this.filters6581[0];
-			this.filter8580 = this.filters8580[0];
-			this.stereoFilter6581 = this.filters6581[0];
-			this.stereoFilter8580 = this.filters8580[0];
-			this.threeFilter6581 = this.filters6581[0];
-			this.threeFilter8580 = this.filters8580[0];
           },
           fetchFilters: function() {
               this.loading = true; //the loading begin
@@ -738,7 +765,21 @@ new Vue({
                 .finally(() => (this.loading = false));
             },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong + '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate + '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime + '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut + '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid + '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid + '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid + '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581 + '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580 + '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.thirdFilter6581 + '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.thirdFilter8580 + '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb + '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
+        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert'
+        		+ uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
+        		+ '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
+        		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
+        		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
+        		+ '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid
+        		+ '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid
+        		+ '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid
+        		+ '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581
+        		+ '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580
+        		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.thirdFilter6581
+        		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.thirdFilter8580
+        		+ '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb
+        		+ '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + "&vcBitRate=" + this.vcBitRate
+        		+ '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
         }
   }
 });
