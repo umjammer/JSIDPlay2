@@ -86,15 +86,20 @@
 					</ul>
 				</div>
 
-				</b-tab> <b-tab title="SID"> <b-button
-					v-on:click="$refs.audioElm.src=createConvertUrl(currentSid); $refs.audioElm.play()">{{
-				$t( 'play' ) }}</b-button> <b-button
-					v-on:click="playlist.push(currentSid); tabIndex = 3; playlistIndex = 0;">{{
-				$t( 'addToPlaylist' ) }}</b-button> <b-button
-					v-on:click="createDownloadMP3Url(currentSid);">{{ $t(
-				'downloadMP3' ) }}</b-button> <b-button
-					v-on:click="createDownloadSIDUrl(currentSid);">{{ $t(
-				'downloadSID' ) }}</b-button>
+				</b-tab> <b-tab title="SID">
+
+				<div v-if='currentSid'>
+					<b-button
+						v-on:click="$refs.audioElm.src=createConvertUrl(currentSid); $refs.audioElm.play()">{{
+					$t( 'play' ) }}</b-button>
+					<b-button
+						v-on:click="playlist.push(currentSid); tabIndex = 3; playlistIndex = 0;">{{
+					$t( 'addToPlaylist' ) }}</b-button>
+					<b-button v-on:click="createDownloadMP3Url(currentSid);">{{
+					$t( 'downloadMP3' ) }}</b-button>
+					<b-button v-on:click="createDownloadSIDUrl(currentSid);">{{
+					$t( 'downloadSID' ) }}</b-button>
+				</div>
 
 				<div class="sid">
 					<div>
