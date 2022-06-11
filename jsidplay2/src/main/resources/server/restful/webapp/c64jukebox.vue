@@ -12,19 +12,10 @@
 <link type="text/css" rel="stylesheet"
 	href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 
-<!-- Load polyfills to support older browsers -->
-<script
-	src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
-	crossorigin="anonymous"></script>
-
 <!-- Load Vue followed by BootstrapVue -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
 <script
 	src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-
-<!-- Load the following for BootstrapVueIcons support -->
-<script
-	src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
