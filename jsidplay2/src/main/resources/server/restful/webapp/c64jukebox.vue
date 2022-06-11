@@ -765,8 +765,9 @@ new Vue({
                 .finally(() => (this.loading = false));
             },
         convert: function(entry) {
-        	return 'https://' + this.username + ':' + this.password + '@haendel.ddns.net:8443/jsidplay2service/JSIDPlay2REST/convert'
-        		+ uriEncode(entry) + '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
+        	console.log(window.location.host);
+        	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry)
+        		+ '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
         		+ '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
         		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
         		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
