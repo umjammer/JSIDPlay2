@@ -808,13 +808,12 @@ new Vue({
           		+ '&pressSpaceInterval=' + this.pressSpaceInterval+'&status=' + this.status + this.reuParameters;
           },
       createDownloadUrl: function(entry) {
-        	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/download' + uriEncode(entry);
         },
       createDownloadMP3Url: function(entry) {
           window.open(this.createConvertUrl(entry) + '&download=true');
       },
       createDownloadSIDUrl: function(entry) {
-          window.open(this.createDownloadUrl(entry));
+          window.open(window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/download' + uriEncode(entry));
       },
     fetchDirectory: function(entry) {
        this.loading = true; //the loading begin
