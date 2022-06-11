@@ -783,36 +783,34 @@ new Vue({
 			this.threeFilter8580 = this.filters8580[1];
 		}
       },
-      updateSid: function(entry) {
+    updateSid: function(entry) {
     	  this.fetchInfo(entry);
     	  this.fetchPhoto(entry);
         },
-        createConvertUrl: function(entry) {
-          	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry)
-          		+ '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
-          		+ '&muteVoice1=' + this.sidMuteVoice1 + '&muteVoice2=' + this.sidMuteVoice2 + '&muteVoice3=' + this.sidMuteVoice3 + '&muteVoice4=' + this.sidMuteSamples
-          		+ '&muteStereoVoice1=' + this.stereoSidMuteVoice1 + '&muteStereoVoice2=' + this.stereoSidMuteVoice2 + '&muteStereoVoice3=' + this.stereoSidMuteVoice3 + '&muteStereoVoice4=' + this.stereoSidMuteSamples
-          		+ '&muteThirdSidVoice1=' + this.threeSidMuteVoice1 + '&muteThirdSidVoice2=' + this.threeSidMuteVoice2 + '&muteThirdSidVoice3=' + this.threeSidMuteVoice3 + '&muteThirdSidVoice4=' + this.threeSidMuteSamples
-          		+ '&bufferSize=' + this.bufferSize + '&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
-          		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
-          		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
-          		+ '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid
-          		+ '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid
-          		+ '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid
-          		+ '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581
-          		+ '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580
-          		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.threeFilter6581
-          		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.threeFilter8580
-          		+ '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb
-          		+ '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + "&vcBitRate=" + this.vcBitRate
-          		+ '&pressSpaceInterval=' + this.pressSpaceInterval+'&status=' + this.status + this.reuParameters;
-          },
-      createDownloadUrl: function(entry) {
-        },
-      createDownloadMP3Url: function(entry) {
+    createConvertUrl: function(entry) {
+      	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry)
+      		+ '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
+      		+ '&muteVoice1=' + this.sidMuteVoice1 + '&muteVoice2=' + this.sidMuteVoice2 + '&muteVoice3=' + this.sidMuteVoice3 + '&muteVoice4=' + this.sidMuteSamples
+      		+ '&muteStereoVoice1=' + this.stereoSidMuteVoice1 + '&muteStereoVoice2=' + this.stereoSidMuteVoice2 + '&muteStereoVoice3=' + this.stereoSidMuteVoice3 + '&muteStereoVoice4=' + this.stereoSidMuteSamples
+      		+ '&muteThirdSidVoice1=' + this.threeSidMuteVoice1 + '&muteThirdSidVoice2=' + this.threeSidMuteVoice2 + '&muteThirdSidVoice3=' + this.threeSidMuteVoice3 + '&muteThirdSidVoice4=' + this.threeSidMuteSamples
+      		+ '&bufferSize=' + this.bufferSize + '&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
+      		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
+      		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
+      		+ '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid
+      		+ '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid
+      		+ '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid
+      		+ '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581
+      		+ '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580
+      		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.threeFilter6581
+      		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.threeFilter8580
+      		+ '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb
+      		+ '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + "&vcBitRate=" + this.vcBitRate
+      		+ '&pressSpaceInterval=' + this.pressSpaceInterval+'&status=' + this.status + this.reuParameters;
+      },
+    createDownloadMP3Url: function(entry) {
           window.open(this.createConvertUrl(entry) + '&download=true');
       },
-      createDownloadSIDUrl: function(entry) {
+    createDownloadSIDUrl: function(entry) {
           window.open(window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/download' + uriEncode(entry));
       },
     fetchDirectory: function(entry) {
