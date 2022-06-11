@@ -45,14 +45,13 @@
 				<b-card no-body> <b-tabs v-model="tabIndex" card>
 				<b-tab title="CON" active> <b-card-text>
 				<div>
-					<h3>{{ $t( 'authentication' ) }}</h3>
 					<label for="username">{{ $t( 'username' ) }}</label>
 					<input type="text" id="username" v-model="username">
 					<label for="password">{{ $t( 'password' ) }}</label>
 					<input type="password" id="password" v-model="password">
 				</div>
 
-				</b-card-text> </b-tab> <b-tab title="SIDS">
+				</b-card-text> </b-tab> <b-tab title="SIDS" active>
 				<div v-if="loading">
 					<!-- here put a spinner or whatever you want to indicate that a request is in progress -->
 					<div class="loader"></div>
@@ -63,22 +62,22 @@
 						<li v-for="entry in directory" :key="entry">
 							<!-- HVSC root -->
 							<div v-if="entry.endsWith('/')">
-								<a href="#" v-on:click="fetchData(entry)"> {{entry}} </a>
+								<a href="#" v-on:click="fetchDirectory(entry)"> {{entry}} </a>
 							</div> <!-- HVSC music -->
 							<div
 								v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
 								<div>
-									<a href="#"
-										v-on:click="setSid(entry); setPic(entry); tabIndex = 2;">
+									<a href="#" v-on:click="updateSid(entry); tabIndex = 2;">
 										{{entry}} </a>
 								</div>
 							</div> <!-- others -->
 							<div v-else>
 								<div style="white-space: nowrap;">
-									{{entry}} <a v-bind:href="convert(entry)" target="_blank">
-										Load </a> <span v-if='entry.toLowerCase().endsWith(".d64")'>
-										<span> or </span> <a
-										v-bind:href="convert(entry) + '&jiffydos=true'"
+									{{entry}} <a v-bind:href="createConvertUrl(entry)"
+										target="_blank"> Load </a> <span
+										v-if='entry.toLowerCase().endsWith(".d64")'> <span>
+											or </span> <a
+										v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
 										target="_blank"> Fastload </a>
 									</span>
 								</div>
@@ -88,10 +87,14 @@
 				</div>
 
 				</b-tab> <b-tab title="SID"> <b-button
-					v-on:click="$refs.audioElm.src=convert(currentSid); $refs.audioElm.play()">{{
+					v-on:click="$refs.audioElm.src=createConvertUrl(currentSid); $refs.audioElm.play()">{{
 				$t( 'play' ) }}</b-button> <b-button
-					v-on:click="playlist.push(currentSid); tabIndex = 3; currentPlaylistEntry = 0;">{{
-				$t( 'addToPlaylist' ) }}</b-button>
+					v-on:click="playlist.push(currentSid); tabIndex = 3; playlistIndex = 0;">{{
+				$t( 'addToPlaylist' ) }}</b-button> <b-button
+					v-on:click="createDownloadMP3Url(currentSid);">{{ $t(
+				'downloadMP3' ) }}</b-button> <b-button
+					v-on:click="createDownloadSIDUrl(currentSid);">{{ $t(
+				'downloadSID' ) }}</b-button>
 
 				<div class="sid">
 					<div>
@@ -116,31 +119,33 @@
 					<div class="button-box">
 						<b-button v-on:click="playlist.pop()">{{ $t( 'remove' )
 						}}</b-button>
-						<b-button v-on:click="nextPlaylistEntry">{{ $t( 'next'
-						) }}</b-button>
+						<b-button v-on:click="setNextPlaylistEntry">{{ $t(
+						'next' ) }}</b-button>
 						<label for="random">{{ $t( 'random' ) }}</label>
 						<input type="checkbox" id="random" v-model="random" />
 					</div>
 					<div class="button-box">
-						<b-button v-on:click="downloadPlaylist()">{{ $t(
-						'downloadPlaylist' ) }}</b-button>
+						<b-button v-on:click="fetchFavorites()">{{ $t(
+						'fetchFavorites' ) }}</b-button>
 						<b-button v-on:click="playlist=[]">{{ $t(
 						'removePlaylist' ) }}</b-button>
 					</div>
 				</div>
 
 				<div class="audio">
-					<audio ref="audioElm" v-bind:src="current"
-						v-on:ended="nextPlaylistEntry" type="audio/mpeg" controls autoplay>
-						I'm sorry. You're browser doesn't support HTML5 audio
+					<audio ref="audioElm" v-bind:src="playlistEntryUrl"
+						v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
+						autoplay> I'm sorry. You're browser doesn't support HTML5
+						audio
 					</audio>
-					<div>{{playlist[currentPlaylistEntry]}}</div>
+					<div>{{playlist[playlistIndex]}}</div>
 				</div>
 
 				<ol>
 					<li v-for="(entry,index) in playlist" :key="index"><a
-						:class="index==currentPlaylistEntry ? 'highlighted' : ''" href="#"
-						v-on:click="play(index);">{{entry}} </a></li>
+						:class="index==playlistIndex ? 'highlighted' : ''" href="#"
+						v-on:click="playlistIndex = index; updateSid(playlist[playlistIndex]);">{{entry}}
+					</a></li>
 				</ol>
 
 				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
@@ -246,10 +251,10 @@
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="RESIDFP" value="RESIDFP"
-							v-model="defaultEngine" v-on:click="setFilters('RESIDFP')">
+							v-model="defaultEngine" v-on:click="updateFilters('RESIDFP')">
 						<label for="RESIDFP">RESIDFP</label>
 						<input type="radio" id="RESID" value="RESID"
-							v-model="defaultEngine" v-on:click="setFilters('RESID')">
+							v-model="defaultEngine" v-on:click="updateFilters('RESID')">
 						<label for="RESID">RESID</label>
 					</div>
 					<div class="settings-box">
@@ -494,14 +499,15 @@ const messages = {
 			  relocNoPages: 'Reloc. no. Pages',
 			  stilGlbComment: 'Tune Size (b)',
 		  },
-		  authentication: 'Authentication:',
 		  username: 'Username',
 		  password: 'Password',
 		  play: 'Play',
+		  downloadMP3: 'Download MP3',
+		  downloadSID: 'Download SID',
 		  addToPlaylist: 'Add To Playlist',
 		  remove: 'Remove',
 		  next: 'Next',
-		  downloadPlaylist: 'Download Playlist',
+		  fetchFavorites: 'Download Playlist',
 		  removePlaylist: 'Remove Playlist',
 		  random: 'Random',
 		  detectSongLength: 'Detect Song Length',
@@ -577,14 +583,15 @@ const messages = {
 		  relocNoPages: 'Reloc. Seitenanzahl',
 		  stilGlbComment: 'STIL glb. Kommentar',
 	  },
-	  authentication: 'Anmeldedaten:',
 	  username: 'Benutzername',
 	  password: 'Passwort',
 	  play: 'Abspielen',
+	  downloadMP3: 'Download MP3',
+	  downloadSID: 'Download SID',
 	  addToPlaylist: 'Zu Favoriten hinzufügen',
 	  remove: 'Löschen',
 	  next: 'Nächster',
-	  downloadPlaylist: 'Favoriten herunterladen',
+	  fetchFavorites: 'Favoriten herunterladen',
 	  removePlaylist: 'Favoriten löschen',
 	  random: 'Zufällig',
 	  detectSongLength: 'Songlänge berücksichtigen',
@@ -636,25 +643,24 @@ new Vue({
   el: "#app",
   i18n, //import mutil-lang
   data: {
-	tabIndex: 0,
+	// CON (connection parameters)
+    username: "jsidplay2",
+    password: "jsidplay2!",
+    // SIDS (directories containing SIDS)
 	directory: "",
-	filtersResid6581: [],
-	filtersResid8580: [],
-	filtersResidFp6581: [],
-	filtersResidFp8580: [],
-	filters6581: [],
-	filters8580: [],
-	filter6581: '',
-	filter8580: '',
-	stereoFilter6581: '',
-	stereoFilter8580: '',
-	threeFilter6581: '',
-	threeFilter8580: '',
-	playlist: [],
-	currentPlaylistEntry: 0,
+	// SID (info + picture)
     infos: "",
     picture: '',
     currentSid: '',
+	// PL (Playlist)
+	playlist: [],
+	playlistIndex: 0,
+    random: true,
+	// CFG (configuration)
+    startTime: 0,
+    defaultLength: 0,
+    fadeIn: 0,
+    fadeOut: 0,
     detectSongLength: true,
     singleSong: false,
     loopSong: false,
@@ -678,11 +684,24 @@ new Vue({
     samplingMethod: 'DECIMATE',
     samplingRate: 'MEDIUM',
     defaultModel: 'MOS8580',
-    startTime: 0,
-    defaultLength: 0,
-    fadeIn: 0,
-    fadeOut: 0,
-    volumeSid: 0,
+
+    // pre-fetched filter definitions
+	filtersResid6581: [],
+	filtersResid8580: [],
+	filtersResidFp6581: [],
+	filtersResidFp8580: [],
+	// current filters according to defaultEngine
+	filters6581: [],
+	filters8580: [],
+	// chosen filters
+	filter6581: '',
+	filter8580: '',
+	stereoFilter6581: '',
+	stereoFilter8580: '',
+	threeFilter6581: '',
+	threeFilter8580: '',
+    
+	volumeSid: 0,
     volumeStereoSid: 0,
     volumeThreeSid: 0,
     balanceSid: 0.3,
@@ -696,15 +715,21 @@ new Vue({
     vbrQuality: 0,
 	vcBitRate: 600000,
     reuSize: 'auto',
-    pressSpaceInterval: 90,
     status: true,
-    random: true,
-    loading: false,
-    username: "jsidplay2",
-    password: "jsidplay2!"
+    pressSpaceInterval: 90,
+    // Misc.
+	tabIndex: 0,
+    loading: false
   },
   computed: {
-    reu: function() {
+    playlistEntryUrl: function() {
+    	if (this.playlist.length === 0) {
+    		return undefined;
+    	} else {
+			return this.createConvertUrl(this.playlist[this.playlistIndex]);
+    	}
+    },
+    reuParameters: function() {
       if (this.reuSize === "kb64") {
         return "&reuSize=64";
       } else if (this.reuSize === "kb128") {
@@ -717,42 +742,85 @@ new Vue({
         return "&reuSize=2048";
       }
       return "";
-    },
-    current: function() {
-    	if (this.playlist.length === 0) {
-    		return '';
-    	} else {
-			return this.convert(this.playlist[this.currentPlaylistEntry]);;
-    	}
     }
   },
   created: function() {
-    this.fetchData("/");
+    this.fetchDirectory("/");
     this.fetchFilters();
   },
   methods: {
-	play: function(index) {
-	  this.currentPlaylistEntry=index;
-	  this.setSid(this.playlist[index]);
-	  this.setPic(this.playlist[index]);
-    },
-	nextPlaylistEntry: function () {
+	setNextPlaylistEntry: function () {
 		if (this.playlist.length === 0) {
 			return;
 		}
 		if (this.random) {
-			this.currentPlaylistEntry = Math.ceil(Math.random()*this.playlist.length);
+			this.playlistIndex = Math.ceil(Math.random() * this.playlist.length);
 		} else {
-		    if (this.currentPlaylistEntry === this.playlist.length - 1) {
-		    	this.currentPlaylistEntry = 0;
+		    if (this.playlistIndex === this.playlist.length - 1) {
+		    	this.playlistIndex = 0;
 		    } else {
-		    	this.currentPlaylistEntry++;
+		    	this.playlistIndex++;
 		    }
 		}
-		this.setSid(this.playlist[this.currentPlaylistEntry]);
-		this.setPic(this.playlist[this.currentPlaylistEntry]);
+		this.updateSid(this.playlist[this.playlistIndex]);
 	},
-    fetchData: function(entry) {
+    updateFilters: function(engine) {
+		if (engine==='RESIDFP') {
+			this.filters6581 = this.filtersResidFp6581;
+		 	this.filters8580 = this.filtersResidFp8580;
+
+			this.filter6581 = this.filters6581[1];
+			this.filter8580 = this.filters8580[1];
+			this.stereoFilter6581 = this.filters6581[1];
+			this.stereoFilter8580 = this.filters8580[1];
+			this.threeFilter6581 = this.filters6581[1];
+			this.threeFilter8580 = this.filters8580[1];
+		} else { // RESID
+			this.filters6581 = this.filtersResid6581;
+			this.filters8580 = this.filtersResid8580;
+
+			this.filter6581 = this.filters6581[3];
+			this.filter8580 = this.filters8580[1];
+			this.stereoFilter6581 = this.filters6581[3];
+			this.stereoFilter8580 = this.filters8580[1];
+			this.threeFilter6581 = this.filters6581[3];
+			this.threeFilter8580 = this.filters8580[1];
+		}
+      },
+      updateSid: function(entry) {
+    	  this.fetchInfo(entry);
+    	  this.fetchPhoto(entry);
+        },
+        createConvertUrl: function(entry) {
+          	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry)
+          		+ '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
+          		+ '&muteVoice1=' + this.sidMuteVoice1 + '&muteVoice2=' + this.sidMuteVoice2 + '&muteVoice3=' + this.sidMuteVoice3 + '&muteVoice4=' + this.sidMuteSamples
+          		+ '&muteStereoVoice1=' + this.stereoSidMuteVoice1 + '&muteStereoVoice2=' + this.stereoSidMuteVoice2 + '&muteStereoVoice3=' + this.stereoSidMuteVoice3 + '&muteStereoVoice4=' + this.stereoSidMuteSamples
+          		+ '&muteThirdSidVoice1=' + this.threeSidMuteVoice1 + '&muteThirdSidVoice2=' + this.threeSidMuteVoice2 + '&muteThirdSidVoice3=' + this.threeSidMuteVoice3 + '&muteThirdSidVoice4=' + this.threeSidMuteSamples
+          		+ '&bufferSize=' + this.bufferSize + '&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
+          		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
+          		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
+          		+ '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid
+          		+ '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid
+          		+ '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid
+          		+ '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581
+          		+ '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580
+          		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.threeFilter6581
+          		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.threeFilter8580
+          		+ '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb
+          		+ '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + "&vcBitRate=" + this.vcBitRate
+          		+ '&pressSpaceInterval=' + this.pressSpaceInterval+'&status=' + this.status + this.reuParameters;
+          },
+      createDownloadUrl: function(entry) {
+        	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/download' + uriEncode(entry);
+        },
+      createDownloadMP3Url: function(entry) {
+          window.open(this.createConvertUrl(entry) + '&download=true');
+      },
+      createDownloadSIDUrl: function(entry) {
+          window.open(this.createDownloadUrl(entry));
+      },
+    fetchDirectory: function(entry) {
        this.loading = true; //the loading begin
        axios({
          method: "get",
@@ -768,7 +836,7 @@ new Vue({
          })
          .finally(() => (this.loading = false));
     },
-    setSid: function(entry) {
+    fetchInfo: function(entry) {
         this.loading = true; //the loading begin
         axios({
           method: "get",
@@ -786,7 +854,7 @@ new Vue({
           })
           .finally(() => (this.loading = false));
       },
-      setPic: function(entry) {
+      fetchPhoto: function(entry) {
           this.loading = true; //the loading begin
           axios({
             method: "get",
@@ -809,7 +877,7 @@ new Vue({
            	})
             .finally(() => (this.loading = false));
         },
-        downloadPlaylist: function() {
+        fetchFavorites: function() {
             this.loading = true; //the loading begin
             axios({
               method: "get",
@@ -822,32 +890,9 @@ new Vue({
             })
               .then(response => {
                 this.playlist = response.data;
-                this.currentPlaylistEntry = 0;
+                this.playlistIndex = 0;
               })
               .finally(() => (this.loading = false));
-          },
-          setFilters: function(engine) {
-			if (engine==='RESIDFP') {
-				this.filters6581 = this.filtersResidFp6581;
-			 	this.filters8580 = this.filtersResidFp8580;
-
-				this.filter6581 = this.filters6581[1];
-				this.filter8580 = this.filters8580[1];
-				this.stereoFilter6581 = this.filters6581[1];
-				this.stereoFilter8580 = this.filters8580[1];
-				this.threeFilter6581 = this.filters6581[1];
-				this.threeFilter8580 = this.filters8580[1];
-			} else {
-				this.filters6581 = this.filtersResid6581;
-				this.filters8580 = this.filtersResid8580;
-
-				this.filter6581 = this.filters6581[3];
-				this.filter8580 = this.filters8580[1];
-				this.stereoFilter6581 = this.filters6581[3];
-				this.stereoFilter8580 = this.filters8580[1];
-				this.threeFilter6581 = this.filters6581[3];
-				this.threeFilter8580 = this.filters8580[1];
-			}
           },
           fetchFilters: function() {
               this.loading = true; //the loading begin
@@ -867,30 +912,10 @@ new Vue({
                 	this.filtersResidFp6581 = filters.filter(filter => filter.startsWith('RESIDFP_MOS6581_')).map(filter => filter.substring('RESIDFP_MOS6581_'.length));
                 	this.filtersResidFp8580 = filters.filter(filter => filter.startsWith('RESIDFP_MOS8580_')).map(filter => filter.substring('RESIDFP_MOS8580_'.length));
 
-                	this.setFilters(this.defaultEngine);
+                	this.updateFilters(this.defaultEngine);
                 })
                 .finally(() => (this.loading = false));
-            },
-        convert: function(entry) {
-        	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry)
-        		+ '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
-        		+ '&muteVoice1=' + this.sidMuteVoice1 + '&muteVoice2=' + this.sidMuteVoice2 + '&muteVoice3=' + this.sidMuteVoice3 + '&muteVoice4=' + this.sidMuteSamples
-        		+ '&muteStereoVoice1=' + this.stereoSidMuteVoice1 + '&muteStereoVoice2=' + this.stereoSidMuteVoice2 + '&muteStereoVoice3=' + this.stereoSidMuteVoice3 + '&muteStereoVoice4=' + this.stereoSidMuteSamples
-        		+ '&muteThirdSidVoice1=' + this.threeSidMuteVoice1 + '&muteThirdSidVoice2=' + this.threeSidMuteVoice2 + '&muteThirdSidVoice3=' + this.threeSidMuteVoice3 + '&muteThirdSidVoice4=' + this.threeSidMuteSamples
-        		+ '&bufferSize=' + this.bufferSize + '&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
-        		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
-        		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
-        		+ '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid
-        		+ '&mainBalance=' + this.balanceSid + '&secondBalance=' + this.balanceStereoSid + '&thirdBalance=' + this.balanceThreeSid
-        		+ '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid
-        		+ '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581
-        		+ '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580
-        		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.threeFilter6581
-        		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.threeFilter8580
-        		+ '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb
-        		+ '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + "&vcBitRate=" + this.vcBitRate
-        		+ '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
-        }
+            }
   }
 });
 
