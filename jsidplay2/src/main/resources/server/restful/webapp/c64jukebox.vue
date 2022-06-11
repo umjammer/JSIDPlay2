@@ -46,10 +46,11 @@
 				<b-tab title="CON" active> <b-card-text>
 				<div>
 					<h3>{{ $t( 'authentication' ) }}</h3>
-					<label for="username">{{ $t( 'username' ) }}</label> <input
-						type="text" id="username" value="jsidplay2" v-model="username">
-					<label for="password">{{ $t( 'password' ) }}</label> <input
-						type="password" id="password" value="jsidplay2!"
+					<label for="username">{{ $t( 'username' ) }}</label>
+					<input type="text" id="username" value="jsidplay2"
+						v-model="username">
+					<label for="password">{{ $t( 'password' ) }}</label>
+					<input type="password" id="password" value="jsidplay2!"
 						v-model="password">
 				</div>
 				</b-card-text> </b-tab> <b-tab title="SIDS">
@@ -67,7 +68,8 @@
 							<!-- HVSC root -->
 							<div v-if="entry.endsWith('/')">
 								<a href="#" v-on:click="fetchData(entry)"> {{entry}} </a>
-							</div> <!-- HVSC music -->
+							</div>
+							<!-- HVSC music -->
 							<div
 								v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
 								<div>
@@ -75,14 +77,16 @@
 										v-on:click="setSid(entry); setPic(entry); tabIndex = 2;">
 										{{entry}} </a>
 								</div>
-							</div> <!-- others -->
+							</div>
+							<!-- others -->
 							<div v-else>
 								<div style="white-space: nowrap;">
-									{{entry}} <a v-bind:href="convert(entry)" target="_blank">
-										Load </a> <span v-if='entry.toLowerCase().endsWith(".d64")'>
-										<span> or </span> <a
-										v-bind:href="convert(entry) + '&jiffydos=true'"
-										target="_blank"> Fastload </a>
+									{{entry}}
+									<a v-bind:href="convert(entry)" target="_blank"> Load </a>
+									<span v-if='entry.toLowerCase().endsWith(".d64")'>
+										<span> or </span>
+										<a v-bind:href="convert(entry) + '&jiffydos=true'"
+											target="_blank"> Fastload </a>
 									</span>
 								</div>
 							</div>
@@ -121,8 +125,8 @@
 						}}</b-button>
 						<b-button v-on:click="nextPlaylistEntry">{{ $t( 'next'
 						) }}</b-button>
-						<label for="random">{{ $t( 'random' ) }}</label> <input
-							type="checkbox" id="random" v-model="random" />
+						<label for="random">{{ $t( 'random' ) }}</label>
+						<input type="checkbox" id="random" v-model="random" />
 					</div>
 					<div class="button-box">
 						<b-button v-on:click="downloadPlaylist()">{{ $t(
@@ -141,90 +145,103 @@
 				</div>
 
 				<ol>
-					<li v-for="(entry,index) in playlist" :key="index"><a
-						:class="index==currentPlaylistEntry ? 'highlighted' : ''" href="#"
-						v-on:click="play(index);">{{entry}} </a></li>
+					<li v-for="(entry,index) in playlist" :key="index">
+						<a :class="index==currentPlaylistEntry ? 'highlighted' : ''"
+							href="#" v-on:click="play(index);">{{entry}} </a>
+					</li>
 				</ol>
 
 				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
 
 				<div>
 					<div class="settings-box">
-						<label for="startTime">{{ $t( 'startTime' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');"
-							id="startTime" v-model.number="startTime" /> <label
-							for="defaultLength">{{ $t( 'defaultLength' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');"
+						<label for="startTime">{{ $t( 'startTime' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="startTime" v-model.number="startTime" />
+						<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
 							id="defaultLength" v-model.number="defaultLength" />
 					</div>
 					<div class="settings-box">
-						<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');"
-							id="fadeIn" v-model.number="fadeIn" /> <label for="fadeOut">{{
-							$t( 'fadeOut' ) }}</label> <input type="number" min="0"
-							oninput="validity.valid||(value='');" id="fadeOut"
-							v-model.number="fadeOut" />
+						<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="fadeIn" v-model.number="fadeIn" />
+						<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="fadeOut" v-model.number="fadeOut" />
 					</div>
 					<div class="settings-box">
 						<input type="checkbox" id="detectSongLength"
-							v-model="detectSongLength" /> <label for="detectSongLength">{{
-							$t( 'detectSongLength' ) }}</label> <input type="checkbox"
-							id="singleSong" v-model="singleSong" /> <label for="singleSong">{{
-							$t( 'singleSong' ) }}</label> <input type="checkbox" id="loopSong"
-							v-model="loopSong" /> <label for="loopSong">{{ $t(
-							'loopSong' ) }}</label>
+							v-model="detectSongLength" />
+						<label for="detectSongLength">{{ $t( 'detectSongLength' )
+							}}</label>
+						<input type="checkbox" id="singleSong" v-model="singleSong" />
+						<label for="singleSong">{{ $t( 'singleSong' ) }}</label>
+						<input type="checkbox" id="loopSong" v-model="loopSong" />
+						<label for="loopSong">{{ $t( 'loopSong' ) }}</label>
 					</div>
 					<div class="settings-box">
 						<input type="checkbox" id="digiboost8580" v-model="digiboost8580" />
-						<label for="digiboost8580">{{ $t( 'digiboost8580' ) }}</label> <input
-							type="checkbox" id="fakeStereo" v-model="fakeStereo" /> <label
-							for="fakeStereo">{{ $t( 'fakeStereo' ) }}</label> <input
-							type="checkbox" id="bypassReverb" v-model="bypassReverb" /> <label
-							for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label>
+						<label for="digiboost8580">{{ $t( 'digiboost8580' ) }}</label>
+						<input type="checkbox" id="fakeStereo" v-model="fakeStereo" />
+						<label for="fakeStereo">{{ $t( 'fakeStereo' ) }}</label>
+						<input type="checkbox" id="bypassReverb" v-model="bypassReverb" />
+						<label for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="RESIDFP" value="RESIDFP"
 							v-model="defaultEngine" v-on:click="setFilters('RESIDFP')">
-						<label for="RESIDFP">RESIDFP</label> <input type="radio"
-							id="RESID" value="RESID" v-model="defaultEngine"
-							v-on:click="setFilters('RESID')"> <label for="RESID">RESID</label>
+						<label for="RESIDFP">RESIDFP</label>
+						<input type="radio" id="RESID" value="RESID"
+							v-model="defaultEngine" v-on:click="setFilters('RESID')">
+						<label for="RESID">RESID</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="DECIMATE" value="DECIMATE"
-							v-model="samplingMethod"> <label for="DECIMATE">DECIMATE</label>
+							v-model="samplingMethod">
+						<label for="DECIMATE">DECIMATE</label>
 						<input type="radio" id="RESAMPLE" value="RESAMPLE"
-							v-model="samplingMethod"> <label for="RESAMPLE">RESAMPLE</label>
+							v-model="samplingMethod">
+						<label for="RESAMPLE">RESAMPLE</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="LOW" value="LOW" v-model="samplingRate">
-						<label for="LOW">LOW</label> <input type="radio" id="MEDIUM"
-							value="MEDIUM" v-model="samplingRate"> <label
-							for="MEDIUM">MEDIUM</label> <input type="radio" id="HIGH"
-							value="HIGH" v-model="samplingRate"> <label for="HIGH">HIGH</label>
+						<label for="LOW">LOW</label>
+						<input type="radio" id="MEDIUM" value="MEDIUM"
+							v-model="samplingRate">
+						<label for="MEDIUM">MEDIUM</label>
+						<input type="radio" id="HIGH" value="HIGH" v-model="samplingRate">
+						<label for="HIGH">HIGH</label>
 					</div>
 					<div class="settings-box">
 						<input type="radio" id="MOS6581" value="MOS6581"
-							v-model="defaultModel"> <label for="MOS6581">6581</label>
+							v-model="defaultModel">
+						<label for="MOS6581">6581</label>
 						<input type="radio" id="MOS8580" value="MOS8580"
-							v-model="defaultModel"> <label for="MOS8580">8580</label>
+							v-model="defaultModel">
+						<label for="MOS8580">8580</label>
 					</div>
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="filter6581">{{ $t( 'filter6581' ) }}</label> <select
-							id="filter6581" v-model="filter6581">
+						<label for="filter6581">{{ $t( 'filter6581' ) }}</label>
+						<select id="filter6581" v-model="filter6581">
 							<option v-for="entry in filters6581">{{entry}}</option>
-						</select> <label for="filter8580">{{ $t( 'filter8580' ) }}</label> <select
-							id="filter8580" v-model="filter8580">
+						</select>
+						<label for="filter8580">{{ $t( 'filter8580' ) }}</label>
+						<select id="filter8580" v-model="filter8580">
 							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
 					<div>
 						<label for="stereoFilter6581">{{ $t( 'stereoFilter6581' )
-							}}</label> <select id="stereoFilter6581" v-model="stereoFilter6581">
+							}}</label>
+						<select id="stereoFilter6581" v-model="stereoFilter6581">
 							<option v-for="entry in filters6581">{{entry}}</option>
-						</select> <label for="stereoFilter8580">{{ $t( 'stereoFilter8580' )
-							}}</label> <select id="stereoFilter8580" v-model="stereoFilter8580">
+						</select>
+						<label for="stereoFilter8580">{{ $t( 'stereoFilter8580' )
+							}}</label>
+						<select id="stereoFilter8580" v-model="stereoFilter8580">
 							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
@@ -232,16 +249,17 @@
 						<label for="threeFilter6581">{{ $t( 'threeFilter6581' ) }}</label>
 						<select id="threeFilter6581" v-model="threeFilter6581">
 							<option v-for="entry in filters6581">{{entry}}</option>
-						</select> <label for="threeFilter8580">{{ $t( 'threeFilter8580' )
-							}}</label> <select id="threeFilter8580" v-model="threeFilter8580">
+						</select>
+						<label for="threeFilter8580">{{ $t( 'threeFilter8580' ) }}</label>
+						<select id="threeFilter8580" v-model="threeFilter8580">
 							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label> <span>{{
-							volumeSid }}db</span>
+						<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label>
+						<span>{{ volumeSid }}db</span>
 						<b-form-input id="volumeSid" v-model="volumeSid" type="range"
 							min="-6" max="6" step="1"></b-form-input>
 					</div>
@@ -252,22 +270,23 @@
 							type="range" min="-6" max="6" step="1"></b-form-input>
 					</div>
 					<div>
-						<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label> <span>{{
-							volumeThreeSid }}db</span>
+						<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label>
+						<span>{{ volumeThreeSid }}db</span>
 						<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
 							type="range" min="-6" max="6" step="1"></b-form-input>
 					</div>
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label> <span>{{
-							balanceSid }}</span>
+						<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label>
+						<span>{{ balanceSid }}</span>
 						<b-form-input id="balanceSid" v-model="balanceSid" type="range"
 							min="0" max="1" step="0.1"></b-form-input>
 					</div>
 					<div>
 						<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' )
-							}}</label> <span>{{ balanceStereoSid }}</span>
+							}}</label>
+						<span>{{ balanceStereoSid }}</span>
 						<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
 							type="range" min="0" max="1" step="0.1"></b-form-input>
 					</div>
@@ -280,32 +299,32 @@
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="delaySid">{{ $t( 'delaySid' ) }}</label> <span>{{
-							delaySid }}ms</span>
+						<label for="delaySid">{{ $t( 'delaySid' ) }}</label>
+						<span>{{ delaySid }}ms</span>
 						<b-form-input id="delaySid" v-model="delaySid" type="range"
 							min="0" max="100" step="10"></b-form-input>
 					</div>
 					<div>
-						<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label> <span>{{
-							delayStereoSid }}ms</span>
+						<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label>
+						<span>{{ delayStereoSid }}ms</span>
 						<b-form-input id="delayStereoSid" v-model="delayStereoSid"
 							type="range" min="0" max="100" step="10"></b-form-input>
 					</div>
 					<div>
-						<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label> <span>{{
-							delayThreeSid }}ms</span>
+						<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label>
+						<span>{{ delayThreeSid }}ms</span>
 						<b-form-input id="delayThreeSid" v-model="delayThreeSid"
 							type="range" min="0" max="100" step="10"></b-form-input>
 					</div>
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="vbr">{{ $t ( 'vbr' ) }}</label> <input type="checkbox"
-							id="vbr" v-model="vbr" />
+						<label for="vbr">{{ $t ( 'vbr' ) }}</label>
+						<input type="checkbox" id="vbr" v-model="vbr" />
 					</div>
 					<div>
-						<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
-							v-model="cbr">
+						<label for="cbr">{{ $t ( 'cbr' ) }}</label>
+						<select id="cbr" v-model="cbr">
 							<option>-1</option>
 							<option>32</option>
 							<option>40</option>
@@ -324,8 +343,8 @@
 						</select>
 					</div>
 					<div>
-						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
-							id="vbrQuality" v-model="vbrQuality">
+						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label>
+						<select id="vbrQuality" v-model="vbrQuality">
 							<option>0</option>
 							<option>1</option>
 							<option>2</option>
@@ -339,27 +358,32 @@
 						</select>
 					</div>
 					<div>
-						<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label> <input
-							type="number" min="0" oninput="validity.valid||(value='');"
+						<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
 							id="vcBitRate" v-model.number="vcBitRate" />
 					</div>
 				</div>
 				<div class="settings-box">
-					<label for="status">Show status line</label> <input type="checkbox"
-						id="status" v-model="status" /> <label for="pressSpaceInterval">Press
-						Space periodically in s</label> <input type="number"
-						id="pressSpaceInterval" v-model.number="pressSpaceInterval" />
+					<label for="status">Show status line</label>
+					<input type="checkbox" id="status" v-model="status" />
+					<label for="pressSpaceInterval">Press Space periodically in
+						s</label>
+					<input type="number" id="pressSpaceInterval"
+						v-model.number="pressSpaceInterval" />
 				</div>
 				<div class="settings-box">
 					<input type="radio" id="auto" value="auto" v-model="reuSize">
-					<label for="auto">Autodetect</label> <input type="radio" id="kb64"
-						value="kb64" v-model="reuSize"> <label for="kb64">64kb</label>
+					<label for="auto">Autodetect</label>
+					<input type="radio" id="kb64" value="kb64" v-model="reuSize">
+					<label for="kb64">64kb</label>
 					<input type="radio" id="kb128" value="kb128" v-model="reuSize">
-					<label for="kb128">128kb</label> <input type="radio" id="kb512"
-						value="kb512" v-model="reuSize"> <label for="kb512">512kb</label>
+					<label for="kb128">128kb</label>
+					<input type="radio" id="kb512" value="kb512" v-model="reuSize">
+					<label for="kb512">512kb</label>
 					<input type="radio" id="kb1024" value="kb1024" v-model="reuSize">
-					<label for="kb1024">1024kb</label> <input type="radio" id="kb2048"
-						value="kb2048" v-model="reuSize"> <label for="kb2048">2048kb</label>
+					<label for="kb1024">1024kb</label>
+					<input type="radio" id="kb2048" value="kb2048" v-model="reuSize">
+					<label for="kb2048">2048kb</label>
 				</div>
 
 				</b-card-text> </b-tab> </b-tabs> </b-card>
