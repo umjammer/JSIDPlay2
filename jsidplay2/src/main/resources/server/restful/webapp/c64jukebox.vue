@@ -239,7 +239,11 @@
 								) }}</label>
 						</div>
 					</div>
-
+					<div class="settings-box">
+						<label for="bufferSize">{{ $t( 'bufferSize' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="bufferSize" v-model.number="bufferSize" />
+					</div>
 					<div class="settings-box">
 						<input type="radio" id="RESIDFP" value="RESIDFP"
 							v-model="defaultEngine" v-on:click="setFilters('RESIDFP')">
@@ -535,7 +539,8 @@ const messages = {
 		  sidMuteVoice1: 'Voice 1',
 		  sidMuteVoice2: 'Voice 2',
 		  sidMuteVoice3: 'Voice 3',
-		  sidMuteSamples: 'Samples'
+		  sidMuteSamples: 'Samples',
+		  bufferSize: 'Buffer Size'
 	    },
   },
   de: {
@@ -617,7 +622,8 @@ const messages = {
 	  sidMuteVoice1: 'Voice 1',
 	  sidMuteVoice2: 'Voice 2',
 	  sidMuteVoice3: 'Voice 3',
-	  sidMuteSamples: 'Samples'
+	  sidMuteSamples: 'Samples',
+	  bufferSize: 'Puffergröße'
   }
 }
 
@@ -667,6 +673,7 @@ new Vue({
     threeSidMuteVoice2: false,
     threeSidMuteVoice3: false,
     threeSidMuteSamples: false,
+    bufferSize: 65536,
     defaultEngine: 'RESIDFP',
     samplingMethod: 'DECIMATE',
     samplingRate: 'MEDIUM',
@@ -870,7 +877,7 @@ new Vue({
         		+ '&muteVoice1=' + this.sidMuteVoice1 + '&muteVoice2=' + this.sidMuteVoice2 + '&muteVoice3=' + this.sidMuteVoice3 + '&muteVoice4=' + this.sidMuteSamples
         		+ '&muteStereoVoice1=' + this.stereoSidMuteVoice1 + '&muteStereoVoice2=' + this.stereoSidMuteVoice2 + '&muteStereoVoice3=' + this.stereoSidMuteVoice3 + '&muteStereoVoice4=' + this.stereoSidMuteSamples
         		+ '&muteThirdSidVoice1=' + this.threeSidMuteVoice1 + '&muteThirdSidVoice2=' + this.threeSidMuteVoice2 + '&muteThirdSidVoice3=' + this.threeSidMuteVoice3 + '&muteThirdSidVoice4=' + this.threeSidMuteSamples
-        		+ '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
+        		+ '&bufferSize=' + this.bufferSize + '&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
         		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
         		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
         		+ '&mainVolume=' + this.volumeSid + '&secondVolume=' + this.volumeStereoSid + '&thirdVolume=' + this.volumeThreeSid
