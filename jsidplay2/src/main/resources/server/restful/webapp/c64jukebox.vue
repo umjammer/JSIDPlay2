@@ -180,6 +180,66 @@
 						<input type="checkbox" id="bypassReverb" v-model="bypassReverb" />
 						<label for="bypassReverb">{{ $t( 'bypassReverb' ) }}</label>
 					</div>
+
+					<div class="settings-box">
+						<div>
+							<span>{{ $t( 'muteSid' ) }}</span>
+						</div>
+						<div>
+							<input type="checkbox" id="sidMuteVoice1" v-model="sidMuteVoice1" />
+							<label for="sidMuteVoice1">{{ $t( 'sidMuteVoice1' ) }}</label>
+							<input type="checkbox" id="sidMuteVoice2" v-model="sidMuteVoice2" />
+							<label for="sidMuteVoice2">{{ $t( 'sidMuteVoice2' ) }}</label>
+							<input type="checkbox" id="sidMuteVoice3" v-model="sidMuteVoice3" />
+							<label for="sidMuteVoice3">{{ $t( 'sidMuteVoice3' ) }}</label>
+							<input type="checkbox" id="sidMuteSamples"
+								v-model="sidMuteSamples" />
+							<label for="sidMuteSamples">{{ $t( 'sidMuteSamples' ) }}</label>
+						</div>
+						<div>
+							<span>{{ $t( 'muteStereoSid' ) }}</span>
+						</div>
+						<div>
+							<input type="checkbox" id="stereoSidMuteVoice1"
+								v-model="stereoSidMuteVoice1" />
+							<label for="stereoSidMuteVoice1">{{ $t( 'sidMuteVoice1' )
+								}}</label>
+							<input type="checkbox" id="stereoSidMuteVoice2"
+								v-model="stereoSidMuteVoice2" />
+							<label for="stereoSidMuteVoice2">{{ $t( 'sidMuteVoice2' )
+								}}</label>
+							<input type="checkbox" id="stereoSidMuteVoice3"
+								v-model="stereoSidMuteVoice3" />
+							<label for="stereoSidMuteVoice3">{{ $t( 'sidMuteVoice3' )
+								}}</label>
+							<input type="checkbox" id="stereoSidMuteSamples"
+								v-model="stereoSidMuteSamples" />
+							<label for="stereoSidMuteSamples">{{ $t( 'sidMuteSamples'
+								) }}</label>
+						</div>
+						<div>
+							<span>{{ $t( 'muteThreeSid' ) }}</span>
+						</div>
+						<div>
+							<input type="checkbox" id="threeSidMuteVoice1"
+								v-model="threeSidMuteVoice1" />
+							<label for="threeSidMuteVoice1">{{ $t( 'sidMuteVoice1' )
+								}}</label>
+							<input type="checkbox" id="threeSidMuteVoice2"
+								v-model="threeSidMuteVoice2" />
+							<label for="threeSidMuteVoice2">{{ $t( 'sidMuteVoice2' )
+								}}</label>
+							<input type="checkbox" id="threeSidMuteVoice3"
+								v-model="threeSidMuteVoice3" />
+							<label for="threeSidMuteVoice3">{{ $t( 'sidMuteVoice3' )
+								}}</label>
+							<input type="checkbox" id="threeSidMuteSamples"
+								v-model="threeSidMuteSamples" />
+							<label for="threeSidMuteSamples">{{ $t( 'sidMuteSamples'
+								) }}</label>
+						</div>
+					</div>
+
 					<div class="settings-box">
 						<input type="radio" id="RESIDFP" value="RESIDFP"
 							v-model="defaultEngine" v-on:click="setFilters('RESIDFP')">
@@ -350,12 +410,16 @@
 					</div>
 				</div>
 				<div class="settings-box">
-					<label for="status">Show status line</label>
-					<input type="checkbox" id="status" v-model="status" />
-					<label for="pressSpaceInterval">Press Space periodically in
-						s</label>
-					<input type="number" id="pressSpaceInterval"
-						v-model.number="pressSpaceInterval" />
+					<div>
+						<label for="status">Show status line</label>
+						<input type="checkbox" id="status" v-model="status" />
+					</div>
+					<div>
+						<label for="pressSpaceInterval">Press Space periodically
+							in s</label>
+						<input type="number" id="pressSpaceInterval"
+							v-model.number="pressSpaceInterval" />
+					</div>
 				</div>
 				<div class="settings-box">
 					<input type="radio" id="auto" value="auto" v-model="reuSize">
@@ -464,7 +528,14 @@ const messages = {
 		  stereoFilter6581: 'Stereo-SID Filter 6581',
 		  stereoFilter8580: 'Stereo-SID Filter 8580',
 		  threeFilter6581: '3-SID Filter 6581',
-		  threeFilter8580: '3-SID Filter 8580'
+		  threeFilter8580: '3-SID Filter 8580',
+		  muteSid: 'Mute Mono SID',
+		  muteStereoSid: 'Mute Stereo SID',
+		  muteThreeSid: 'Mute 3-SID',
+		  sidMuteVoice1: 'Voice 1',
+		  sidMuteVoice2: 'Voice 2',
+		  sidMuteVoice3: 'Voice 3',
+		  sidMuteSamples: 'Samples'
 	    },
   },
   de: {
@@ -539,7 +610,14 @@ const messages = {
 	  stereoFilter6581: 'Stereo-SID Filter 6581',
 	  stereoFilter8580: 'Stereo-SID Filter 8580',
 	  threeFilter6581: '3-SID Filter 6581',
-	  threeFilter8580: '3-SID Filter 8580'
+	  threeFilter8580: '3-SID Filter 8580',
+	  muteSid: 'Mono SID stummschalten',
+	  muteStereoSid: 'Stereo SID stummschalten',
+	  muteThreeSid: '3-SID stummschalten',
+	  sidMuteVoice1: 'Voice 1',
+	  sidMuteVoice2: 'Voice 2',
+	  sidMuteVoice3: 'Voice 3',
+	  sidMuteSamples: 'Samples'
   }
 }
 
@@ -577,6 +655,18 @@ new Vue({
     digiboost8580: false,
     fakeStereo: false,
     bypassReverb: false,
+    sidMuteVoice1: false,
+    sidMuteVoice2: false,
+    sidMuteVoice3: false,
+    sidMuteSamples: false,
+    stereoSidMuteVoice1: false,
+    stereoSidMuteVoice2: false,
+    stereoSidMuteVoice3: false,
+    stereoSidMuteSamples: false,
+    threeSidMuteVoice1: false,
+    threeSidMuteVoice2: false,
+    threeSidMuteVoice3: false,
+    threeSidMuteSamples: false,
     defaultEngine: 'RESIDFP',
     samplingMethod: 'DECIMATE',
     samplingRate: 'MEDIUM',
@@ -775,9 +865,11 @@ new Vue({
                 .finally(() => (this.loading = false));
             },
         convert: function(entry) {
-        	console.log(window.location.host);
         	return window.location.protocol + '//' + this.username + ':' + this.password + '@' + window.location.host + '/jsidplay2service/JSIDPlay2REST/convert' + uriEncode(entry)
         		+ '?enableSidDatabase=' + this.detectSongLength + '&single=' + this.singleSong + '&loop=' + this.loopSong
+        		+ '&muteVoice1=' + this.sidMuteVoice1 + '&muteVoice2=' + this.sidMuteVoice2 + '&muteVoice3=' + this.sidMuteVoice3 + '&muteVoice4=' + this.sidMuteSamples
+        		+ '&muteStereoVoice1=' + this.stereoSidMuteVoice1 + '&muteStereoVoice2=' + this.stereoSidMuteVoice2 + '&muteStereoVoice3=' + this.stereoSidMuteVoice3 + '&muteStereoVoice4=' + this.stereoSidMuteSamples
+        		+ '&muteThirdSidVoice1=' + this.threeSidMuteVoice1 + '&muteThirdSidVoice2=' + this.threeSidMuteVoice2 + '&muteThirdSidVoice3=' + this.threeSidMuteVoice3 + '&muteThirdSidVoice4=' + this.threeSidMuteSamples
         		+ '&bufferSize=65536&sampling=' + this.samplingMethod + '&frequency=' + this.samplingRate
         		+ '&defaultEmulation=' + this.defaultEngine + '&defaultModel=' + this.defaultModel + '&startTime=' + this.startTime
         		+ '&defaultLength=' + this.defaultLength + '&fadeIn=' + this.fadeIn + '&fadeOut=' + this.fadeOut
@@ -786,8 +878,8 @@ new Vue({
         		+ '&mainDelay=' + this.delaySid + '&secondDelay=' + this.delayStereoSid + '&thirdDelay=' + this.delayThreeSid
         		+ '&filter6581=' + this.filter6581 + '&stereoFilter6581=' + this.stereoFilter6581 + '&thirdFilter6581=' + this.threeFilter6581
         		+ '&filter8580=' + this.filter8580 + '&stereoFilter8580=' + this.stereoFilter8580 + '&thirdFilter8580=' + this.threeFilter8580
-        		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.thirdFilter6581
-        		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.thirdFilter8580
+        		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.threeFilter6581
+        		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.threeFilter8580
         		+ '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb
         		+ '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + "&vcBitRate=" + this.vcBitRate
         		+ '&pressSpaceInterval='+this.pressSpaceInterval+'&status='+this.status+this.reu;
