@@ -47,29 +47,24 @@
 				<div>
 					<h3>{{ $t( 'authentication' ) }}</h3>
 					<label for="username">{{ $t( 'username' ) }}</label>
-					<input type="text" id="username" value="jsidplay2"
-						v-model="username">
+					<input type="text" id="username" v-model="username">
 					<label for="password">{{ $t( 'password' ) }}</label>
-					<input type="password" id="password" value="jsidplay2!"
-						v-model="password">
+					<input type="password" id="password" v-model="password">
 				</div>
-				</b-card-text> </b-tab> <b-tab title="SIDS">
 
+				</b-card-text> </b-tab> <b-tab title="SIDS">
 				<div v-if="loading">
 					<!-- here put a spinner or whatever you want to indicate that a request is in progress -->
 					<div class="loader"></div>
 				</div>
-
 				<div v-else>
 					<!-- request finished -->
-
 					<ul>
 						<li v-for="entry in directory" :key="entry">
 							<!-- HVSC root -->
 							<div v-if="entry.endsWith('/')">
 								<a href="#" v-on:click="fetchData(entry)"> {{entry}} </a>
-							</div>
-							<!-- HVSC music -->
+							</div> <!-- HVSC music -->
 							<div
 								v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
 								<div>
@@ -77,16 +72,14 @@
 										v-on:click="setSid(entry); setPic(entry); tabIndex = 2;">
 										{{entry}} </a>
 								</div>
-							</div>
-							<!-- others -->
+							</div> <!-- others -->
 							<div v-else>
 								<div style="white-space: nowrap;">
-									{{entry}}
-									<a v-bind:href="convert(entry)" target="_blank"> Load </a>
-									<span v-if='entry.toLowerCase().endsWith(".d64")'>
-										<span> or </span>
-										<a v-bind:href="convert(entry) + '&jiffydos=true'"
-											target="_blank"> Fastload </a>
+									{{entry}} <a v-bind:href="convert(entry)" target="_blank">
+										Load </a> <span v-if='entry.toLowerCase().endsWith(".d64")'>
+										<span> or </span> <a
+										v-bind:href="convert(entry) + '&jiffydos=true'"
+										target="_blank"> Fastload </a>
 									</span>
 								</div>
 							</div>
@@ -145,10 +138,9 @@
 				</div>
 
 				<ol>
-					<li v-for="(entry,index) in playlist" :key="index">
-						<a :class="index==currentPlaylistEntry ? 'highlighted' : ''"
-							href="#" v-on:click="play(index);">{{entry}} </a>
-					</li>
+					<li v-for="(entry,index) in playlist" :key="index"><a
+						:class="index==currentPlaylistEntry ? 'highlighted' : ''" href="#"
+						v-on:click="play(index);">{{entry}} </a></li>
 				</ol>
 
 				</b-card-text> </b-tab> <b-tab title="CFG"> <b-card-text>
@@ -224,24 +216,20 @@
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="filter6581">{{ $t( 'filter6581' ) }}</label>
-						<select id="filter6581" v-model="filter6581">
+						<label for="filter6581">{{ $t( 'filter6581' ) }}</label> <select
+							id="filter6581" v-model="filter6581">
 							<option v-for="entry in filters6581">{{entry}}</option>
-						</select>
-						<label for="filter8580">{{ $t( 'filter8580' ) }}</label>
-						<select id="filter8580" v-model="filter8580">
+						</select> <label for="filter8580">{{ $t( 'filter8580' ) }}</label> <select
+							id="filter8580" v-model="filter8580">
 							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
 					<div>
 						<label for="stereoFilter6581">{{ $t( 'stereoFilter6581' )
-							}}</label>
-						<select id="stereoFilter6581" v-model="stereoFilter6581">
+							}}</label> <select id="stereoFilter6581" v-model="stereoFilter6581">
 							<option v-for="entry in filters6581">{{entry}}</option>
-						</select>
-						<label for="stereoFilter8580">{{ $t( 'stereoFilter8580' )
-							}}</label>
-						<select id="stereoFilter8580" v-model="stereoFilter8580">
+						</select> <label for="stereoFilter8580">{{ $t( 'stereoFilter8580' )
+							}}</label> <select id="stereoFilter8580" v-model="stereoFilter8580">
 							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
@@ -249,17 +237,16 @@
 						<label for="threeFilter6581">{{ $t( 'threeFilter6581' ) }}</label>
 						<select id="threeFilter6581" v-model="threeFilter6581">
 							<option v-for="entry in filters6581">{{entry}}</option>
-						</select>
-						<label for="threeFilter8580">{{ $t( 'threeFilter8580' ) }}</label>
-						<select id="threeFilter8580" v-model="threeFilter8580">
+						</select> <label for="threeFilter8580">{{ $t( 'threeFilter8580' )
+							}}</label> <select id="threeFilter8580" v-model="threeFilter8580">
 							<option v-for="entry in filters8580">{{entry}}</option>
 						</select>
 					</div>
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label>
-						<span>{{ volumeSid }}db</span>
+						<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label> <span>{{
+							volumeSid }}db</span>
 						<b-form-input id="volumeSid" v-model="volumeSid" type="range"
 							min="-6" max="6" step="1"></b-form-input>
 					</div>
@@ -270,23 +257,22 @@
 							type="range" min="-6" max="6" step="1"></b-form-input>
 					</div>
 					<div>
-						<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label>
-						<span>{{ volumeThreeSid }}db</span>
+						<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label> <span>{{
+							volumeThreeSid }}db</span>
 						<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
 							type="range" min="-6" max="6" step="1"></b-form-input>
 					</div>
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label>
-						<span>{{ balanceSid }}</span>
+						<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label> <span>{{
+							balanceSid }}</span>
 						<b-form-input id="balanceSid" v-model="balanceSid" type="range"
 							min="0" max="1" step="0.1"></b-form-input>
 					</div>
 					<div>
 						<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' )
-							}}</label>
-						<span>{{ balanceStereoSid }}</span>
+							}}</label> <span>{{ balanceStereoSid }}</span>
 						<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
 							type="range" min="0" max="1" step="0.1"></b-form-input>
 					</div>
@@ -299,20 +285,20 @@
 				</div>
 				<div class="settings-box">
 					<div>
-						<label for="delaySid">{{ $t( 'delaySid' ) }}</label>
-						<span>{{ delaySid }}ms</span>
+						<label for="delaySid">{{ $t( 'delaySid' ) }}</label> <span>{{
+							delaySid }}ms</span>
 						<b-form-input id="delaySid" v-model="delaySid" type="range"
 							min="0" max="100" step="10"></b-form-input>
 					</div>
 					<div>
-						<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label>
-						<span>{{ delayStereoSid }}ms</span>
+						<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label> <span>{{
+							delayStereoSid }}ms</span>
 						<b-form-input id="delayStereoSid" v-model="delayStereoSid"
 							type="range" min="0" max="100" step="10"></b-form-input>
 					</div>
 					<div>
-						<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label>
-						<span>{{ delayThreeSid }}ms</span>
+						<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label> <span>{{
+							delayThreeSid }}ms</span>
 						<b-form-input id="delayThreeSid" v-model="delayThreeSid"
 							type="range" min="0" max="100" step="10"></b-form-input>
 					</div>
@@ -323,8 +309,8 @@
 						<input type="checkbox" id="vbr" v-model="vbr" />
 					</div>
 					<div>
-						<label for="cbr">{{ $t ( 'cbr' ) }}</label>
-						<select id="cbr" v-model="cbr">
+						<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
+							v-model="cbr">
 							<option>-1</option>
 							<option>32</option>
 							<option>40</option>
@@ -343,8 +329,8 @@
 						</select>
 					</div>
 					<div>
-						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label>
-						<select id="vbrQuality" v-model="vbrQuality">
+						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
+							id="vbrQuality" v-model="vbrQuality">
 							<option>0</option>
 							<option>1</option>
 							<option>2</option>
