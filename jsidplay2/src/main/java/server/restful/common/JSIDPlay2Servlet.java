@@ -86,6 +86,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		log(thread() + t.getMessage(), t);
 	}
 
+	protected void uncaughtExceptionHandler(Thread thread, Throwable t) {
+		log(thread(thread) + t.getMessage());
+	}
+
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
 			final Object parameterObject, String programName) throws IOException {
 		return parseRequestParameters(request, response, parameterObject, programName, false);
@@ -205,8 +209,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	private String thread() {
+		return thread(Thread.currentThread());
+	}
+
+	private String thread(Thread thread) {
 		StringBuilder result = new StringBuilder();
-		result.append(Thread.currentThread().getName());
+		result.append(thread.getName());
 		result.append(": ");
 		return result.toString();
 	}

@@ -25,6 +25,7 @@ import static sidplay.player.State.START;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Calendar;
@@ -193,6 +194,12 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * {@link Player#setAudioDriver(AudioDriver)}, audio is null!
 	 */
 	private SimpleImmutableEntry<Audio, AudioDriver> audioAndDriver;
+
+	/**
+	 * Uncaught Player exception handler.
+	 */
+	private UncaughtExceptionHandler uncaughtExceptionHandler;
+
 	/**
 	 * Check default length in record mode (default is true).
 	 * 
@@ -640,6 +647,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		if (playerThread == null || !playerThread.isAlive()) {
 			playerThread = new Thread(playerRunnable, "Player");
 			playerThread.setPriority(Thread.MAX_PRIORITY);
+			playerThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 			playerThread.start();
 		}
 	}
@@ -886,6 +894,15 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	private void setAudioAndDriver(final Audio audio, final AudioDriver audioDriver) throws IOException {
 		this.audioAndDriver = new SimpleImmutableEntry<>(audio, audioDriver);
+	}
+
+	/**
+	 * Set uncaught Player exception handler.
+	 * 
+	 * @param uncaughtExceptionHandler excdeption handler
+	 */
+	public void setUncaughtExceptionHandler(UncaughtExceptionHandler uncaughtExceptionHandler) {
+		this.uncaughtExceptionHandler = uncaughtExceptionHandler;
 	}
 
 	/**
