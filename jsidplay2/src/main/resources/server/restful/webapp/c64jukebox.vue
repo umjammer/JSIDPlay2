@@ -26,13 +26,19 @@
 
 </head>
 <body>
-	<h1>C64 Jukebox</h1>
-
 	<div id="app">
 
 		<form>
 
 			<div>
+				<div class="locale-changer">
+					<select v-model="$i18n.locale" style="float: right">
+					  <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
+					    {{ lang }}
+					  </option>
+					</select>
+					<h1>C64 Jukebox</h1>
+				</div>
 				<div class="audio">
 					<audio ref="audioElm" v-bind:src="playlistEntryUrl"
 						v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
@@ -462,89 +468,87 @@ function uriEncode(entry) {
 
 const messages = {
   en: {
-	  message: {
-		  HVSCEntry: {
-			  path: 'Full Path',
-			  name: 'File Name',
-			  title: 'Title',
-			  author: 'Author',
-			  released: 'Released',
-			  format: 'Format',
-			  playerId: 'Player ID',
-			  noOfSongs: 'No. of Songs',
-			  startSong: 'Start Song',
-			  clockFreq: 'Clock Freq.',
-			  speed: 'Speed',
-			  sidModel1: 'SID Model 1',
-			  sidModel2: 'SID Model 2',
-			  sidModel3: 'SID Model 3',
-			  compatibility: 'Compatibility',
-			  tuneLength: 'Tune Length (s)',
-			  audio: 'Audio',
-			  sidChipBase1: 'SID Chip Base 1',
-			  sidChipBase2: 'SID Chip Base 2',
-			  sidChipBase3: 'SID Chip Base 3',
-			  driverAddress: 'Driver Address',
-			  loadAddress: 'Load Address',
-			  loadLength: 'Load Length',
-			  initAddress: 'Init Address',
-			  playerAddress: 'Player Address',
-			  fileDate: 'File Date',
-			  fileSizeKb: 'File Size (kb)',
-			  tuneSizeB: 'Tune Size (b)',
-			  relocStartPage: 'Reloc. Start Page',
-			  relocNoPages: 'Reloc. no. Pages',
-			  stilGlbComment: 'Tune Size (b)',
-		  },
-		  username: 'Username',
-		  password: 'Password',
-		  play: 'Play',
-		  downloadMP3: 'Download MP3',
-		  downloadSID: 'Download SID',
-		  addToPlaylist: 'Add To Playlist',
-		  remove: 'Remove',
-		  next: 'Next',
-		  fetchFavorites: 'Download Playlist',
-		  removePlaylist: 'Remove Playlist',
-		  random: 'Random',
-		  detectSongLength: 'Detect Song Length',
-		  singleSong: 'Single Song',
-		  loopSong: 'Loop Song',
-		  digiboost8580: 'Digi Boost 8580',
-		  fakeStereo: 'Fake Stereo',
-		  bypassReverb: 'Bypass Reverb',
-		  startTime: 'Start Time in sec.',
-		  defaultLength: 'Default Length in sec.',
-		  fadeIn: 'Fade-In in sec.',
-		  fadeOut: 'Fade-Out in sec.',
-		  volumeSid: 'Increase volume of SID:',
-		  volumeStereoSid: 'Increase volume of Stereo-SID:',
-		  volumeThreeSid: 'Increase volume of 3-SID:',
-		  balanceSid: 'Balance of SID:',
-		  balanceStereoSid: 'Balance of Stereo-SID:',
-		  balanceThreeSid: 'Balance of 3-SID:',
-		  delaySid: 'Delay of SID:',
-		  delayStereoSid: 'Delay of Stereo-SID:',
-		  delayThreeSid: 'Delay of 3-SID:',
-		  vbr: 'Use variable bitrate instead of constant bitrate',
-		  cbr: 'constant bitrate in kbps',
-		  vbrQuality: 'Quality of variable bitrate',
-		  vcBitRate: 'Video Bit Rate',
-		  filter6581: 'SID Filter 6581',
-		  filter8580: 'SID Filter 8580',
-		  stereoFilter6581: 'Stereo-SID Filter 6581',
-		  stereoFilter8580: 'Stereo-SID Filter 8580',
-		  threeFilter6581: '3-SID Filter 6581',
-		  threeFilter8580: '3-SID Filter 8580',
-		  muteSid: 'Mute Mono SID',
-		  muteStereoSid: 'Mute Stereo SID',
-		  muteThreeSid: 'Mute 3-SID',
-		  sidMuteVoice1: 'Voice 1',
-		  sidMuteVoice2: 'Voice 2',
-		  sidMuteVoice3: 'Voice 3',
-		  sidMuteSamples: 'Samples',
-		  bufferSize: 'Buffer Size'
-	    },
+	  HVSCEntry: {
+		  path: 'Full Path',
+		  name: 'File Name',
+		  title: 'Title',
+		  author: 'Author',
+		  released: 'Released',
+		  format: 'Format',
+		  playerId: 'Player ID',
+		  noOfSongs: 'No. of Songs',
+		  startSong: 'Start Song',
+		  clockFreq: 'Clock Freq.',
+		  speed: 'Speed',
+		  sidModel1: 'SID Model 1',
+		  sidModel2: 'SID Model 2',
+		  sidModel3: 'SID Model 3',
+		  compatibility: 'Compatibility',
+		  tuneLength: 'Tune Length (s)',
+		  audio: 'Audio',
+		  sidChipBase1: 'SID Chip Base 1',
+		  sidChipBase2: 'SID Chip Base 2',
+		  sidChipBase3: 'SID Chip Base 3',
+		  driverAddress: 'Driver Address',
+		  loadAddress: 'Load Address',
+		  loadLength: 'Load Length',
+		  initAddress: 'Init Address',
+		  playerAddress: 'Player Address',
+		  fileDate: 'File Date',
+		  fileSizeKb: 'File Size (kb)',
+		  tuneSizeB: 'Tune Size (b)',
+		  relocStartPage: 'Reloc. Start Page',
+		  relocNoPages: 'Reloc. no. Pages',
+		  stilGlbComment: 'Tune Size (b)',
+	  },
+	  username: 'Username',
+	  password: 'Password',
+	  play: 'Play',
+	  downloadMP3: 'Download MP3',
+	  downloadSID: 'Download SID',
+	  addToPlaylist: 'Add To Playlist',
+	  remove: 'Remove',
+	  next: 'Next',
+	  fetchFavorites: 'Download Playlist',
+	  removePlaylist: 'Remove Playlist',
+	  random: 'Random',
+	  detectSongLength: 'Detect Song Length',
+	  singleSong: 'Single Song',
+	  loopSong: 'Loop Song',
+	  digiboost8580: 'Digi Boost 8580',
+	  fakeStereo: 'Fake Stereo',
+	  bypassReverb: 'Bypass Reverb',
+	  startTime: 'Start Time in sec.',
+	  defaultLength: 'Default Length in sec.',
+	  fadeIn: 'Fade-In in sec.',
+	  fadeOut: 'Fade-Out in sec.',
+	  volumeSid: 'Increase volume of SID:',
+	  volumeStereoSid: 'Increase volume of Stereo-SID:',
+	  volumeThreeSid: 'Increase volume of 3-SID:',
+	  balanceSid: 'Balance of SID:',
+	  balanceStereoSid: 'Balance of Stereo-SID:',
+	  balanceThreeSid: 'Balance of 3-SID:',
+	  delaySid: 'Delay of SID:',
+	  delayStereoSid: 'Delay of Stereo-SID:',
+	  delayThreeSid: 'Delay of 3-SID:',
+	  vbr: 'Use variable bitrate instead of constant bitrate',
+	  cbr: 'constant bitrate in kbps',
+	  vbrQuality: 'Quality of variable bitrate',
+	  vcBitRate: 'Video Bit Rate',
+	  filter6581: 'SID Filter 6581',
+	  filter8580: 'SID Filter 8580',
+	  stereoFilter6581: 'Stereo-SID Filter 6581',
+	  stereoFilter8580: 'Stereo-SID Filter 8580',
+	  threeFilter6581: '3-SID Filter 6581',
+	  threeFilter8580: '3-SID Filter 8580',
+	  muteSid: 'Mute Mono SID',
+	  muteStereoSid: 'Mute Stereo SID',
+	  muteThreeSid: 'Mute 3-SID',
+	  sidMuteVoice1: 'Voice 1',
+	  sidMuteVoice2: 'Voice 2',
+	  sidMuteVoice3: 'Voice 3',
+	  sidMuteSamples: 'Samples',
+	  bufferSize: 'Buffer Size'
   },
   de: {
 	  HVSCEntry: {
@@ -632,7 +636,7 @@ const messages = {
 }
 
 const i18n = new VueI18n({
-	  locale: 'de', // set locale
+	  locale: 'en', // set locale
 	  messages // set locale messages
 	})
 	
@@ -640,6 +644,7 @@ new Vue({
   el: "#app",
   i18n, //import mutil-lang
   data: {
+	langs: ['de', 'en'],
 	// CON (connection parameters)
     username: "jsidplay2",
     password: "jsidplay2!",
