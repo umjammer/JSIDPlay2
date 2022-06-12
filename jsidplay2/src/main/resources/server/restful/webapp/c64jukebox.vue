@@ -33,6 +33,16 @@
 		<form>
 
 			<div>
+				<div class="audio">
+					<audio ref="audioElm" v-bind:src="playlistEntryUrl"
+						v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
+						autoplay> I'm sorry. You're browser doesn't support HTML5
+						audio
+					</audio>
+					<span>{{currentSid}}</span>
+				</div>
+			</div>
+			<div>
 				<b-card no-body> <b-tabs v-model="tabIndex" card>
 				<b-tab title="CON" active> <b-card-text>
 				<div>
@@ -126,15 +136,6 @@
 						<b-button v-on:click="playlist=[]">{{ $t(
 						'removePlaylist' ) }}</b-button>
 					</div>
-				</div>
-
-				<div class="audio">
-					<audio ref="audioElm" v-bind:src="playlistEntryUrl"
-						v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
-						autoplay> I'm sorry. You're browser doesn't support HTML5
-						audio
-					</audio>
-					<div>{{playlist[playlistIndex]}}</div>
 				</div>
 
 				<ol>
@@ -718,7 +719,7 @@ new Vue({
     loading: false
   },
   computed: {
-    playlistEntryUrl: function() {
+	playlistEntryUrl: function() {
     	if (this.playlist.length === 0) {
     		return undefined;
     	} else {
@@ -745,7 +746,7 @@ new Vue({
     this.fetchFilters();
   },
   methods: {
-	setNextPlaylistEntry: function () {
+	  setNextPlaylistEntry: function () {
 		if (this.playlist.length === 0) {
 			return;
 		}
