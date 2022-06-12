@@ -135,7 +135,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 				String currentPath = null;
 				addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/../", null);
 				for (File f : asList) {
-					if (asList.get(0).equals(f)) {
+					if (currentPath == null) {
 						currentPath = PathUtils.getCollectionName(rootFile, f);
 					} else {
 						currentPath = new File(new File(currentPath).getParentFile(), f.getName()).getAbsolutePath();
