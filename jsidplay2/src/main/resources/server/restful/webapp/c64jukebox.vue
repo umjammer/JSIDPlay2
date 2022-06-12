@@ -884,6 +884,10 @@ new Vue({
               .then(response => {
                 this.playlist = response.data;
                 this.playlistIndex = 0;
+                if (this.playlist.length === 0) {
+                	return;
+                }
+        		this.updateSid(this.playlist[this.playlistIndex]);
               })
               .finally(() => (this.loading = false));
           },
