@@ -48,23 +48,25 @@ REU - Ram Expansion Unit memory dump
 CRT - Cartridge memory dump
 In some rare cases SID music is part of a Floppy disk or a tape or a cartridge, which must be inserted first,
 but normally just loading a single file should do the job just fine.
-ZIP - Every emulation format can be contained within a ZIP file. We treat ZIPs like a directory
 
 7. What sound output JSIDPlay2 supports?
 Normally a sound card is used to play music, but you can choose the following things alternatively:
-- Buy a HardSID4U soundcard for your PC (www.hardsid.com) and choose that for sound output. Connection is via USB cable.
+- Buy a HardSID4U, HardSID UPlay or HardSID Uno soundcard for your PC (https://www.facebook.com/hardsidofficial/) and choose that for sound output. Connection is via USB cable.
+- Buy a SIDBlaster Tic-Toc Edition (http://crazy-midi.de/joomla/index.php/sidblaster-usb) and choose that for sound output. Connection is via USB cable.
+- Buy a ExSID or ExSID+ soundcard for your PC (http://hacks.slashdirt.org/hw/exsid/) and choose that for sound output. Connection is via USB cable.
 - Use a JSIDDevice for sound output communicating via socket connection (port 6581)
 - Listen to MP3 sound file (Yes, we support playback of MP3 even in playlists!)
 - Listen a tune and write a WAV file to your harddisk at the same time.
 - Listen a tune and write a MP3 file to your harddisk at the same time.
-- Switch between an MP3 recording and the emulation while playback to judge the emulators quality.
+- Switch between an MP3 recording and the emulation while playback to judge the emulators quality.
 
 8. How can I use JSIDPlay2, what sort of software is it?
 JSIDPlay2 is software which can be started as
 - an application with a multi-language (English and German) user interface (UI) to control
   the player using the mouse and keyboard.
-- a console player controlled by keyboard- a Network SID Device to be used with ACID64 (http://www.acid64.com) altogether with HardSID4U sound-cards (http://www.hardsid.com).
+- a console player controlled by keyboard- a Network SID Device to be used with ACID64 (http://www.acid64.com) altogether with HardSID4U sound-cards (https://www.facebook.com/hardsidofficial/).
 So you got one program, that can be used in multiple ways.
+- a Server to be used by HTML clients or apps
 
 9. How to start JSIDPlay2?
 Important Note: Installation is strongly recommended on drive C for Windows.
@@ -100,19 +102,14 @@ Cartridge support is limited to Action Replay, Atomic Power, Comal80, Epyx FastL
 Final Cartridge, Final Cartridge III (87, 88), Rexx Datentechnik, Zaxxon and Easyflash.
 REU is supported as well (16 MB), just check out the excellent BlueREU demo by Crest.
 
-11. What does that mean: java.lang.UnsatisfiedLinkError: no jinput-XXX in java.library.path?
-JSIDPlay2 has joystick support, but that is not directly supported in Java.
-It loads a native library at runtime to do that.
-This release ships with libraries for Windows, Linux and Mac OS X, other OSs will show this error message.
-
-12. What else is contained in JSIDPlay2?
+11. What else is contained in JSIDPlay2?
 - Games (GameBase64) has being integrated to browse for games and playing them.
   You need to be online to make use of that feature.
 - Disk Collections can be watched in a separate panel. Directory and screenshot are shown here.
   Double-click in the tree view starts the image.
 - HVMEC (High Voltage Music Engine Collection) - A collection of music editors and trackers.
   Same usage as in the Demo panel described above.
-- Printer page (emulated printer is MPS803). Everything that is printed apears on that panel.
+- and much more...
 ======================================================================
 Credits:
 
@@ -120,7 +117,6 @@ Credits go first to the original authors for doing such a great sidplay2 softwar
 
 Dag Lem	            reSID emulation engine
 Michael Schwendt	SidTune library, Sid2Wav support
-                        and basis for xSID...
 Simon White	        Sidplay2 music player library v2
 Antti Lankila	    SID chip Distortion Simulation efforts (resid-fp)
                         and continuous development of the whole emulator
