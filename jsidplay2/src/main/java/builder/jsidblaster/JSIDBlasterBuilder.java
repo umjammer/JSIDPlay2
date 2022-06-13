@@ -327,14 +327,6 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 					return new SimpleEntry<>(deviceId, deviceMap.get(serialNo));
 				}
 			}
-			// Nothing matched? Use next free slot (unknown type)
-			for (int deviceId = 0; deviceId < deviceCount; deviceId++) {
-				String serialNo = serialNumbers[deviceId];
-
-				if (!isSerialNumAlreadyUsed(serialNo) && deviceMap.containsKey(serialNo)) {
-					return new SimpleEntry<>(deviceId, deviceMap.get(serialNo));
-				}
-			}
 		} else {
 			// TEST: Choose one specific device for sound output
 

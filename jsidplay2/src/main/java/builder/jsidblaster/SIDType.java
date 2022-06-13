@@ -6,7 +6,15 @@ public enum SIDType {
 	NONE, MOS6581, MOS8580;
 
 	public ChipModel asChipModel() {
-		return ChipModel.valueOf(name());
+		switch (this) {
+		case NONE:
+		default:
+			return ChipModel.AUTO;
+		case MOS6581:
+			return ChipModel.MOS6581;
+		case MOS8580:
+			return ChipModel.MOS8580;
+		}
 	}
 
 	public static SIDType to(sidblaster.SIDType hardSID_GetSIDType) {
