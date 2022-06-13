@@ -7,13 +7,13 @@ public enum SIDType {
 
 	public ChipModel asChipModel() {
 		switch (this) {
-		case NONE:
-		default:
-			return ChipModel.AUTO;
 		case MOS6581:
 			return ChipModel.MOS6581;
 		case MOS8580:
 			return ChipModel.MOS8580;
+		case NONE:
+		default:
+			return ChipModel.AUTO;
 		}
 	}
 
