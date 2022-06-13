@@ -192,6 +192,7 @@ public class Favorites extends C64VBox implements UIPart {
 							Platform.runLater(() -> {
 								autoConfiguration.setDisable(false);
 								if (file != null) {
+									file.deleteOnExit();
 									List<FavoritesSection> favorites = util.getConfig().getFavorites();
 									FavoritesSection favoritesSection = new FavoritesSection();
 									String tabName = PathUtils.getFilenameWithoutSuffix(file.getName());
