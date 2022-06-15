@@ -60,6 +60,12 @@ Right click on .fxml file: Open With -> Other... -> FXML Editor (Check "Use it f
 4. To use JavaFX Preview view in Eclipse, change root tag in fxml file (uncomment the commented out alternative version)
 Eventually uncomment line in C64VBox.java (see TODO marker), still not sure, why some of the layouts need that.
 
+Disable Eclipse JPA Warnings:
+=============================
+Go to
+Window/Preferences/Validation
+Turn off "JPA Validator"
+
 HardSID in VirtualBox:
 ======================
 Use HardSID4U, HardSID Uno and HardSID UPlay - USB devices:
