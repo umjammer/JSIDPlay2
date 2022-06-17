@@ -6,7 +6,7 @@
 ++++
 
 
-= link:https://sourceforge.net/projects/jsidplay2/[JSIDPlay2] - Homepage
+== link:https://sourceforge.net/projects/jsidplay2/[JSIDPlay2] - Homepage
 
 == Introduction
 
@@ -74,10 +74,10 @@ Click link:https://sourceforge.net/projects/jsidplay2/[here^] to download
 == Latest Beta Version
 
 |===
-| | JSIDPlay2 for Java 8 | JSIDPlay2 for Java 11, 17, ...
-| Linux | link:{codebase}{artifactId}-{version}.zip[Download]| link:{codebase}{artifactId}-{version}-java11-linux.zip[Download]
-| Windows | link:{codebase}{artifactId}-{version}.zip[Download] | link:{codebase}{artifactId}-{version}-java11-win.zip[Download]
-| MacOSX | link:{codebase}{artifactId}-{version}.zip[Download] | link:{codebase}{artifactId}-{version}-java11-mac.zip[Download]
+| | JSIDPlay2 for Java 8, 11, 17, ...
+| Linux | link:{codebase}{artifactId}-{version}-linux.zip[Download]
+| Windows | link:{codebase}{artifactId}-{version}-win.zip[Download]
+| MacOSX | link:{codebase}{artifactId}-{version}-mac.zip[Download]
 |===
 
 link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.

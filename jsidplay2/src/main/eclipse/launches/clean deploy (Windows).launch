@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.m2e.Maven2LaunchConfigurationType">
     <booleanAttribute key="M2_DEBUG_OUTPUT" value="false"/>
-    <stringAttribute key="M2_GOALS" value="install:install-file"/>
+    <stringAttribute key="M2_GOALS" value="clean deploy"/>
     <booleanAttribute key="M2_NON_RECURSIVE" value="false"/>
     <booleanAttribute key="M2_OFFLINE" value="false"/>
     <stringAttribute key="M2_PROFILES" value=""/>
     <listAttribute key="M2_PROPERTIES">
-        <listEntry value="file=/home/ken/.m2/repository/exsid/exsid-usb-driver-library-java/1.0/exsid-usb-driver-library-java-1.0.jar"/>
-        <listEntry value="groupId=exsid"/>
-        <listEntry value="artifactId=exsid-usb-driver-library-java"/>
-        <listEntry value="version=1.0"/>
-        <listEntry value="packaging=jar"/>
-        <listEntry value="localRepositoryPath=lib"/>
+        <listEntry value="upx.exe=${upx.exe}"/>
     </listAttribute>
     <stringAttribute key="M2_RUNTIME" value="EMBEDDED"/>
     <booleanAttribute key="M2_SKIP_TESTS" value="false"/>
@@ -22,5 +17,6 @@
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djavafx.platform=win"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/jsidplay2}"/>
 </launchConfiguration>

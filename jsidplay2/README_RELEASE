@@ -4,7 +4,6 @@ Create Releases at 14.05. and 24.12. every Year:
 Check release notes a last time
 At 00:00 o' clock
 Increase Version in pom.xml
-Increase Version in pom-java11.xml
 Increase Version in latest.properties
 Increase Version in jsidplay2.service
 Run launch "Release JSIDPlay2"
@@ -17,7 +16,7 @@ Run launch "clean deploy (plus additional online content)"
 Check in all local changes, please note: Update check will report a new release, immediately
 
 Update JSIDPlay2 server with latest version:
-Copy '/home/ken/workspace/jsidplay2/target/deploy/jsidplay2-4.6-java11-linux.zip' to
+Copy '/home/ken/workspace/jsidplay2/target/deploy/jsidplay2-4.6-linux.zip' to
 sftp://ken-whatssid/home/ken/Downloads
 pkill -f server.restful.JSIDPlay2Server
 cd Downloads/
@@ -31,17 +30,16 @@ sudo vi /etc/systemd/system/jsidplay2.service
 ./server.sh
 less server.log
 
-Change version in local desktop files "~/Desktop/JSIDPlay2.desktop" und "~/Desktop/JSIDPlay2 (Java11).desktop"
+Change version in local desktop files "~/Desktop/JSIDPlay2.desktop" und "~/Desktop/JSIDPlay2.desktop"
 
 Upload the following release files to sourceforge and
 mark it with the correct OS (only for jsidplay2-4.6-*.zip and jsidplay2app.apk)
 jsiddevice-4.6.zip
 libsidplay-4.6.jar
 jsidplay2app.apk
-jsidplay2-4.6.zip
-jsidplay2-4.6-java11-linux.zip
-jsidplay2-4.6-java11-mac.zip
-jsidplay2-4.6-java11-win.zip
+jsidplay2-4.6-linux.zip
+jsidplay2-4.6-mac.zip
+jsidplay2-4.6-win.zip
 RELEASE_NOTES
 README_2nd.txt
 README.txt

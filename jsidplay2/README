@@ -23,33 +23,6 @@ Open Preferences/Run/Debug/StringSubstitution or at command line: using -D
 -Dhvmec.zip=<pathToHVMEC.zip>
 -Dupx.exe=<pathToUPX>
 
-Use Oracle Java8
-================
-This is my recommendation, because JavaFX is already included!
-
-OpenJDK
-=======
-If you prefer more recent versions get your installer here: https://adoptium.net
-
-Java 9,10,11 in Eclipse:
-========================
-Since Java11 - JavaFX is no longer bundled with Java!
-We will have to use a separate POM for JSIDPlay2 to include JavaFX. Thanks to Oracle :-(
-
-Therefore, use the following build command:
-mvn -Djavafx.platform=linux -f pom-java11.xml clean install		"(Specify platform: [win|linux|mac])"
-instead of:
-mvn clean install
-
-Java9 and successor versions require additional launch parameters.
-The configured required modules and the module path to JavaFX at startup of JSIDPlay2.
-I have added an additional launch in Eclipse: "Sidplay2Frame (Since Java9)".
-However to use this new launch in Eclipse you must
-1st: Add Java11 to Eclipse for the project build and set as default: Window/Preferences, Java/Installed JREs
-2nd: Copy the contents of pom-java11.xml to pom.xml (Eclipse will always use pom.xml) and
-3rd: Launch "mvn clean install (Java11)".
-Then, you can start JSIDPlay2 using launch "Sidplay2Frame (Since Java9)".
-
 Eclipse JavaFX support:
 =======================
 1. Install e(fx)clipse

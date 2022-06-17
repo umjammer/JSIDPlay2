@@ -38,8 +38,8 @@ Now you can install JSIDPlay2 from my web-site and extract it to the Downloads f
 
 [source,subs="attributes+"]
 ----
-cd /Users/<name>/Downloads/{artifactId}-{version}-java11-mac
-"./jsidplay2-java11.sh"			 # <1>
+cd /Users/<name>/Downloads/{artifactId}-{version}-mac
+"./jsidplay2.sh"			 # <1>
 ----
 <1> Before you launch JSIDPlay2 you must be sure, that you connected your SIDBlaster device with your machine.
 *Note:* It can be necessary to change the path to java inside that script to that of your installation.
@@ -88,7 +88,7 @@ Now you can install JSIDPlay2 from my web-site and extract it to the Downloads f
 
 In the Windows Explorer please go to the following location:
 
-"/Users/<name>/Downloads/{artifactId}-{version}-java11-win/{artifactId}-{version}-java11-win"
+"/Users/<name>/Downloads/{artifactId}-{version}-win/{artifactId}-{version}-win"
 
 Now plug-in your SIDBlaster devices and start the executable "{artifactId}-{version}.exe" from the Explorer.
 
@@ -142,9 +142,9 @@ sudo udevadm control --reload-rules && udevadm trigger
 
 [source,subs="attributes+"]
 ----
-unzip /home/<name>/Downloads/{artifactId}-{version}-java11-linux.zip
-cd /home/<name>/Downloads/{artifactId}-{version}-java11-linux
-"./jsidplay2-java11.sh"	 # <1>
+unzip /home/<name>/Downloads/{artifactId}-{version}-linux.zip
+cd /home/<name>/Downloads/{artifactId}-{version}-linux
+"./jsidplay2.sh"	 # <1>
 ----
 <1> Before you launch JSIDPlay2 you must be sure, that you connected your SIDBlaster device with your machine.
 
@@ -177,7 +177,7 @@ You can permanently store the SID chip type to be auto-detected by JSIDPlay2.
 
 [source,subs="attributes+"]
 ----
-cd /Users/<name>/Downloads/{artifactId}-{version}-java11-*
+cd /Users/<name>/Downloads/{artifactId}-{version}-*
 "./sidblaster-tool.sh"										 # <1>
 "./sidblaster-tool.sh" -c INFO								 # <2>
 "./sidblaster-tool.sh" -c SET_SID_TYPE -d 0 -t SIDTYPE_6581	 # <3>

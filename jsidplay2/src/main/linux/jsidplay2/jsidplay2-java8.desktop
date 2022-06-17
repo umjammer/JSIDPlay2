@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=JSIDPlay2
+Name[de_DE]=JSIDPlay2
+Path=/home/ken/Downloads/${project.artifactId}-${project.version}
+Exec=/bin/bash -c "export LD_LIBRARY_PATH=. ; java -jar ${project.artifactId}-${project.version}.jar"
+Terminal=false
+Type=Application
+Icon=/home/ken/Downloads/${project.artifactId}-${project.version}/jsidplay2.png
+Categories=

@@ -75,9 +75,6 @@ public class OnlineContent {
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true)
 	private Boolean help = Boolean.FALSE;
 
-	@Parameter(names = { "--phase" }, descriptionKey = "PHASE")
-	private String phase;
-
 	@Parameter(names = { "--deployDir" }, descriptionKey = "DEPLOY_DIR")
 	private String deployDir;
 
@@ -114,41 +111,25 @@ public class OnlineContent {
 			System.exit(0);
 		}
 
-		if ("package".equals(phase)) {
-			moveProguardJar();
-
-		} else if ("install".equals(phase)) {
-			if (upxExe != null) {
-				upx();
-			}
-
-			createDemos();
-
-			if (gb64 != null) {
-				gb64();
-			}
-			if (hvmec != null) {
-				hvmec();
-			}
-			if (cgsc != null) {
-				cgsc();
-			}
-			if (hvsc != null) {
-				hvsc();
-			}
-			latestVersion();
-
-		} else {
-			throw new RuntimeException("parameter 'phase' must be equal to 'package' or 'install'!");
+		if (upxExe != null) {
+			upx();
 		}
-	}
 
-	private void moveProguardJar() throws IOException {
-		String source = deployDir + "/jsiddevice-" + projectVersion + "-proguard.jar";
-		String target = deployDir + "/jsiddevice-" + projectVersion + ".jar";
-		if (new File(source).exists()) {
-			Files.move(Paths.get(source), Paths.get(target), REPLACE_EXISTING);
+		createDemos();
+
+		if (gb64 != null) {
+			gb64();
 		}
+		if (hvmec != null) {
+			hvmec();
+		}
+		if (cgsc != null) {
+			cgsc();
+		}
+		if (hvsc != null) {
+			hvsc();
+		}
+		latestVersion();
 	}
 
 	private void upx() throws IOException, InterruptedException {

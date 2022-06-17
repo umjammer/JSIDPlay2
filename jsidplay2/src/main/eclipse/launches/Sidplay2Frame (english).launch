@@ -13,12 +13,15 @@
     <stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_DESTINATION_PROJECT" value="ProfileProject"/>
     <booleanAttribute key="org.eclipse.hyades.trace.ui.ATTR_PROFILE_TO_FILE" value="false"/>
     <stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_PROFILING_SET" value="tptp-dummy-profiling-set-Sidplay2Frame"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
     <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="ui.JSidPlay2Main"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="jsidplay2"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jsidplay2"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.library.path=&quot;${workspace_loc:jsidplay2}/target/standalone&quot; -Duser.language=en"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.library.path=&quot;${workspace_loc:jsidplay2}/target/standalone&quot; --module-path &quot;${workspace_loc:jsidplay2}/target/standalone&quot; --add-modules javafx.controls,javafx.web,javafx.fxml --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED --add-opens java.base/java.util.function=jcommander -Duser.language=en"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/jsidplay2}"/>
     <stringAttribute key="org.eclipse.tptp.platform.instrumentation.ui.SELECTED_INSTRUMENT_COLLECTOR" value="org.eclipse.tptp.platform.instrumentation.ui.instrumentCollector.jvmti"/>
 </launchConfiguration>

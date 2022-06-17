@@ -145,11 +145,11 @@ jsidplay2-console-{version}.exe # <2>
 <1> Launch User interface version
 <2> Launch Console version
 
-Since Java 11 you need for JSIDPlay2 User Interface version a different launch:
+For Java8 to be backward compatible you need for JSIDPlay2 User Interface version a different launch:
 
 [source,subs="attributes+"]
 ----
-jsidplay2-java11-{version}.exe
+jsidplay2-java8-{version}.exe
 ----
  
 *Other operating systems* launch JSIDPlay2 using the following command:
@@ -163,12 +163,12 @@ jsidplay2-console.sh # <2>
 <1> Launch User interface version
 <2> Launch Console version
 
-Since Java 11 you need for JSIDPlay2 User Interface version a different launch:
+For Java8 to be backward compatible you need for JSIDPlay2 User Interface version a different launch:
 
 [source,subs="attributes+"]
 ----
 cd Downloads/jsidplay2-{version}
-jsidplay2-java11.sh
+jsidplay2-java8.sh
 ----
  
 == Configuration

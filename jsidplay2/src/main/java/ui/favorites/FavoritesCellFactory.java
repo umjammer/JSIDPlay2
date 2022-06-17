@@ -69,7 +69,7 @@ public class FavoritesCellFactory implements Callback<TableColumn<HVSCEntry, ?>,
 
 		private HVSCEntry getHVSCEntry() {
 			if (getTableRow() != null) {
-				return (HVSCEntry) getTableRow().getItem();
+				return getTableRow().getItem();
 			}
 			return null;
 		}

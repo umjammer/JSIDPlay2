@@ -61,7 +61,6 @@ public class Settings extends SIDDeviceStage {
 
 	private SIDDeviceSettings settings;
 
-	@SuppressWarnings("unchecked")
 	public Settings() {
 		getContentPane().setLayout(new GridBagLayout());
 		GridBagConstraints gridBagConstants = new GridBagConstraints();
@@ -147,7 +146,7 @@ public class Settings extends SIDDeviceStage {
 		whatsSidEnable.addActionListener(event -> setWhatsSidEnable());
 		whatsSidPane.add(whatsSidEnable);
 		scaleCheckBoxIcon(whatsSidEnable);
-		
+
 		JLabel urlLabel = new JLabel(util.getBundle().getString("WHATSSID_URL"));
 		urlLabel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 		whatsSidPane.add(urlLabel);
@@ -260,35 +259,33 @@ public class Settings extends SIDDeviceStage {
 
 		initialize();
 	}
-	
+
 	private ImageIcon getScaledCheckBoxImageIcon(final JCheckBox checkbox, final boolean checkState) {
-	    final boolean previousState = checkbox.isSelected();
+		final boolean previousState = checkbox.isSelected();
 		checkbox.setSelected(checkState);
-		
+
 		final Icon checkBoxIcon = UIManager.getIcon("CheckBox.icon");
-	    final BufferedImage checkBoxImage = new BufferedImage(
-	    	checkBoxIcon.getIconWidth(), checkBoxIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB
-	    );
-	    
-	    final Graphics graphics = checkBoxImage.createGraphics();
-	    try {
-	    	checkBoxIcon.paintIcon(checkbox, graphics, 0, 0);
-	    } finally {
-	        graphics.dispose();
-	    }
-	    
-	    final FontMetrics fontMetrics =  checkbox.getFontMetrics(checkbox.getFont());
-	    final Image scaledCheckBoxImage = checkBoxImage.getScaledInstance(
-	    	fontMetrics.getHeight(), fontMetrics.getHeight(), Image.SCALE_SMOOTH
-	    );
-	    
-	    checkbox.setSelected(previousState);
-	    return new ImageIcon(scaledCheckBoxImage);
+		final BufferedImage checkBoxImage = new BufferedImage(checkBoxIcon.getIconWidth(), checkBoxIcon.getIconHeight(),
+				BufferedImage.TYPE_INT_ARGB);
+
+		final Graphics graphics = checkBoxImage.createGraphics();
+		try {
+			checkBoxIcon.paintIcon(checkbox, graphics, 0, 0);
+		} finally {
+			graphics.dispose();
+		}
+
+		final FontMetrics fontMetrics = checkbox.getFontMetrics(checkbox.getFont());
+		final Image scaledCheckBoxImage = checkBoxImage.getScaledInstance(fontMetrics.getHeight(),
+				fontMetrics.getHeight(), Image.SCALE_SMOOTH);
+
+		checkbox.setSelected(previousState);
+		return new ImageIcon(scaledCheckBoxImage);
 	}
-	
+
 	private void scaleCheckBoxIcon(final JCheckBox checkbox) {
-	    checkbox.setIcon(getScaledCheckBoxImageIcon(checkbox, false));
-	    checkbox.setSelectedIcon(getScaledCheckBoxImageIcon(checkbox, true));
+		checkbox.setIcon(getScaledCheckBoxImageIcon(checkbox, false));
+		checkbox.setSelectedIcon(getScaledCheckBoxImageIcon(checkbox, true));
 	}
 
 	private void initialize() {
@@ -296,9 +293,9 @@ public class Settings extends SIDDeviceStage {
 		final AudioDeviceCompare cmp = new AudioDeviceCompare();
 		AudioDevice selectedAudioDeviceItem = null;
 		audioDevices.clear();
-		
+
 		int deviceIndex = 0;
-		
+
 		for (Info deviceInfo : JavaSound.getDeviceInfos()) {
 			final AudioDevice audioDeviceItem = new AudioDevice(deviceIndex, deviceInfo);
 			audioDevices.add(audioDeviceItem);
@@ -307,14 +304,14 @@ public class Settings extends SIDDeviceStage {
 				// be translated on some systems
 				cmp.setPrimaryDeviceName(deviceInfo.getName());
 			}
-			
+
 			if (audioDeviceItem.getIndex() == settings.getDeviceIndex()) {
 				selectedAudioDeviceItem = audioDeviceItem;
 			}
-			
+
 			deviceIndex++;
 		}
-		
+
 		Collections.sort(audioDevices, cmp);
 		audioDevice.setSelectedItem(selectedAudioDeviceItem);
 		allowExternalConnections.setSelected(settings.getAllowExternalConnections());
