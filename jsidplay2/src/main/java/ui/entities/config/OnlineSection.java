@@ -1,5 +1,7 @@
 package ui.entities.config;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 
 import javafx.beans.property.DoubleProperty;
@@ -10,6 +12,7 @@ import sidplay.ini.converter.BeanToStringConverter;
 import ui.common.properties.ShadowField;
 
 @Embeddable
+@Access(AccessType.PROPERTY)
 public class OnlineSection {
 
 	/**
@@ -66,11 +69,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> hvscUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_C64MUSIC_URL);
 
-	public final String getHvscUrl() {
+	public String getHvscUrl() {
 		return hvscUrl.get();
 	}
 
-	public final void setHvscUrl(String hvscUrl) {
+	public void setHvscUrl(String hvscUrl) {
 		this.hvscUrl.set(hvscUrl);
 	}
 
@@ -81,11 +84,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> hvscSearchIndexUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_HVSC_SCRIPT_URL);
 
-	public final String getHvscSearchIndexUrl() {
+	public String getHvscSearchIndexUrl() {
 		return hvscSearchIndexUrl.get();
 	}
 
-	public final void setHvscSearchIndexUrl(String hvscSearchIndexUrl) {
+	public void setHvscSearchIndexUrl(String hvscSearchIndexUrl) {
 		this.hvscSearchIndexUrl.set(hvscSearchIndexUrl);
 	}
 
@@ -96,11 +99,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> hvscSearchIndexPropertiesUrl = new ShadowField<>(
 			SimpleStringProperty::new, JSIDPLAY2_HVSC_PROPERTIES_URL);
 
-	public final String getHvscSearchIndexPropertiesUrl() {
+	public String getHvscSearchIndexPropertiesUrl() {
 		return hvscSearchIndexPropertiesUrl.get();
 	}
 
-	public final void setHvscSearchIndexPropertiesUrl(String hvscSearchIndexPropertiesUrl) {
+	public void setHvscSearchIndexPropertiesUrl(String hvscSearchIndexPropertiesUrl) {
 		this.hvscSearchIndexPropertiesUrl.set(hvscSearchIndexPropertiesUrl);
 	}
 
@@ -111,11 +114,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> cgscUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_CGSC_URL);
 
-	public final String getCgscUrl() {
+	public String getCgscUrl() {
 		return cgscUrl.get();
 	}
 
-	public final void setCgscUrl(String cgscUrl) {
+	public void setCgscUrl(String cgscUrl) {
 		this.cgscUrl.set(cgscUrl);
 	}
 
@@ -126,11 +129,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> cgscSearchIndexUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_CGSC_SCRIPT_URL);
 
-	public final String getCgscSearchIndexUrl() {
+	public String getCgscSearchIndexUrl() {
 		return cgscSearchIndexUrl.get();
 	}
 
-	public final void setCgscSearchIndexUrl(String cgscSearchIndexUrl) {
+	public void setCgscSearchIndexUrl(String cgscSearchIndexUrl) {
 		this.cgscSearchIndexUrl.set(cgscSearchIndexUrl);
 	}
 
@@ -141,11 +144,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> cgscSearchIndexPropertiesUrl = new ShadowField<>(
 			SimpleStringProperty::new, JSIDPLAY2_CGSC_PROPERTIES_URL);
 
-	public final String getCgscSearchIndexPropertiesUrl() {
+	public String getCgscSearchIndexPropertiesUrl() {
 		return cgscSearchIndexPropertiesUrl.get();
 	}
 
-	public final void setCgscSearchIndexPropertiesUrl(String cgscSearchIndexPropertiesUrl) {
+	public void setCgscSearchIndexPropertiesUrl(String cgscSearchIndexPropertiesUrl) {
 		this.cgscSearchIndexPropertiesUrl.set(cgscSearchIndexPropertiesUrl);
 	}
 
@@ -156,11 +159,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> hvmecUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_HVMEC_URL);
 
-	public final String getHvmecUrl() {
+	public String getHvmecUrl() {
 		return hvmecUrl.get();
 	}
 
-	public final void setHvmecUrl(String hvmecUrl) {
+	public void setHvmecUrl(String hvmecUrl) {
 		this.hvmecUrl.set(hvmecUrl);
 	}
 
@@ -171,11 +174,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> demosUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_DEMOS_URL);
 
-	public final String getDemosUrl() {
+	public String getDemosUrl() {
 		return demosUrl.get();
 	}
 
-	public final void setDemosUrl(String demosUrl) {
+	public void setDemosUrl(String demosUrl) {
 		this.demosUrl.set(demosUrl);
 	}
 
@@ -186,11 +189,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> magazinesUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_C64MAGAZINES_URL);
 
-	public final String getMagazinesUrl() {
+	public String getMagazinesUrl() {
 		return magazinesUrl.get();
 	}
 
-	public final void setMagazinesUrl(String magazinesUrl) {
+	public void setMagazinesUrl(String magazinesUrl) {
 		this.magazinesUrl.set(magazinesUrl);
 	}
 
@@ -201,11 +204,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> gamebaseUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_GAMEBASE64_URL);
 
-	public final String getGamebaseUrl() {
+	public String getGamebaseUrl() {
 		return gamebaseUrl.get();
 	}
 
-	public final void setGamebaseUrl(String gamebaseUrl) {
+	public void setGamebaseUrl(String gamebaseUrl) {
 		this.gamebaseUrl.set(gamebaseUrl);
 	}
 
@@ -216,11 +219,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> soasc6581R2 = new ShadowField<>(SimpleStringProperty::new,
 			SOASC_6581_R2_URL);
 
-	public final String getSoasc6581R2() {
+	public String getSoasc6581R2() {
 		return soasc6581R2.get();
 	}
 
-	public final void setSoasc6581R2(String soasc6581r2) {
+	public void setSoasc6581R2(String soasc6581r2) {
 		soasc6581R2.set(soasc6581r2);
 	}
 
@@ -231,11 +234,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> soasc6581R3 = new ShadowField<>(SimpleStringProperty::new,
 			SOASC_6581_R3_URL);
 
-	public final String getSoasc6581R3() {
+	public String getSoasc6581R3() {
 		return soasc6581R3.get();
 	}
 
-	public final void setSoasc6581R3(String soasc6581r3) {
+	public void setSoasc6581R3(String soasc6581r3) {
 		soasc6581R3.set(soasc6581r3);
 	}
 
@@ -246,11 +249,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> soasc6581R4 = new ShadowField<>(SimpleStringProperty::new,
 			SOASC_6581_R4_URL);
 
-	public final String getSoasc6581R4() {
+	public String getSoasc6581R4() {
 		return soasc6581R4.get();
 	}
 
-	public final void setSoasc6581R4(String soasc6581r4) {
+	public void setSoasc6581R4(String soasc6581r4) {
 		soasc6581R4.set(soasc6581r4);
 	}
 
@@ -261,11 +264,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> soasc8580R5 = new ShadowField<>(SimpleStringProperty::new,
 			SOASC_8580_R5_URL);
 
-	public final String getSoasc8580R5() {
+	public String getSoasc8580R5() {
 		return soasc8580R5.get();
 	}
 
-	public final void setSoasc8580R5(String soasc8580r5) {
+	public void setSoasc8580R5(String soasc8580r5) {
 		soasc8580R5.set(soasc8580r5);
 	}
 
@@ -276,11 +279,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> gb64MusicUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_GAMEBASE64_MUSIC_URL);
 
-	public final String getGb64MusicUrl() {
+	public String getGb64MusicUrl() {
 		return gb64MusicUrl.get();
 	}
 
-	public final void setGb64MusicUrl(String gb64MusicUrl) {
+	public void setGb64MusicUrl(String gb64MusicUrl) {
 		this.gb64MusicUrl.set(gb64MusicUrl);
 	}
 
@@ -291,11 +294,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> gb64ScreenshotUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_GAMEBASE64_SCREENSHOTS_URL);
 
-	public final String getGb64ScreenshotUrl() {
+	public String getGb64ScreenshotUrl() {
 		return gb64ScreenshotUrl.get();
 	}
 
-	public final void setGb64ScreenshotUrl(String gb64ScreenshotUrl) {
+	public void setGb64ScreenshotUrl(String gb64ScreenshotUrl) {
 		this.gb64ScreenshotUrl.set(gb64ScreenshotUrl);
 	}
 
@@ -306,11 +309,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> gb64PhotosUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_GAMEBASE64_PHOTOS_URL);
 
-	public final String getGb64PhotosUrl() {
+	public String getGb64PhotosUrl() {
 		return gb64PhotosUrl.get();
 	}
 
-	public final void setGb64PhotosUrl(String gb64PhotosUrl) {
+	public void setGb64PhotosUrl(String gb64PhotosUrl) {
 		this.gb64PhotosUrl.set(gb64PhotosUrl);
 	}
 
@@ -321,11 +324,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> gb64GamesUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_GAMEBASE64_GAMES_URL);
 
-	public final String getGb64GamesUrl() {
+	public String getGb64GamesUrl() {
 		return gb64GamesUrl.get();
 	}
 
-	public final void setGb64GamesUrl(String gb64GamesUrl) {
+	public void setGb64GamesUrl(String gb64GamesUrl) {
 		this.gb64GamesUrl.set(gb64GamesUrl);
 	}
 
@@ -336,11 +339,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> assembly64Url = new ShadowField<>(SimpleStringProperty::new,
 			DEFAULT_ASSEMBLY64_URL);
 
-	public final String getAssembly64Url() {
+	public String getAssembly64Url() {
 		return assembly64Url.get();
 	}
 
-	public final void setAssembly64Url(String assembly64Url) {
+	public void setAssembly64Url(String assembly64Url) {
 		this.assembly64Url.set(assembly64Url);
 	}
 
@@ -351,11 +354,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> favoritesUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_FAVORITES_URL);
 
-	public final String getFavoritesUrl() {
+	public String getFavoritesUrl() {
 		return favoritesUrl.get();
 	}
 
-	public final void setFavoritesUrl(String favoritesUrl) {
+	public void setFavoritesUrl(String favoritesUrl) {
 		this.favoritesUrl.set(favoritesUrl);
 	}
 
@@ -366,11 +369,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> appUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_APP_URL);
 
-	public final String getAppUrl() {
+	public String getAppUrl() {
 		return appUrl.get();
 	}
 
-	public final void setAppUrl(String appUrl) {
+	public void setAppUrl(String appUrl) {
 		this.appUrl.set(appUrl);
 	}
 
@@ -381,11 +384,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> onlinePlayerUrl = new ShadowField<>(SimpleStringProperty::new,
 			ONLINE_PLAYER_URL);
 
-	public final String getOnlinePlayerUrl() {
+	public String getOnlinePlayerUrl() {
 		return onlinePlayerUrl.get();
 	}
 
-	public final void setOnlinePlayerUrl(String onlinePlayerUrl) {
+	public void setOnlinePlayerUrl(String onlinePlayerUrl) {
 		this.onlinePlayerUrl.set(onlinePlayerUrl);
 	}
 
@@ -396,11 +399,11 @@ public class OnlineSection {
 	private ShadowField<StringProperty, String> sidBlasterDocUrl = new ShadowField<>(SimpleStringProperty::new,
 			JSIDPLAY2_SIDBLASTER_DOC_URL);
 
-	public final String getSidBlasterDocUrl() {
+	public String getSidBlasterDocUrl() {
 		return sidBlasterDocUrl.get();
 	}
 
-	public final void setSidBlasterDocUrl(String sidBlasterDocUrl) {
+	public void setSidBlasterDocUrl(String sidBlasterDocUrl) {
 		this.sidBlasterDocUrl.set(sidBlasterDocUrl);
 	}
 
@@ -411,11 +414,11 @@ public class OnlineSection {
 	private ShadowField<DoubleProperty, Number> zoom = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_ZOOM);
 
-	public final double getZoom() {
+	public double getZoom() {
 		return zoom.get().doubleValue();
 	}
 
-	public final void setZoom(double zoom) {
+	public void setZoom(double zoom) {
 		this.zoom.set(zoom);
 	}
 

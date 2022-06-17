@@ -1,5 +1,7 @@
 package ui.entities.config;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 
 import javafx.beans.property.FloatProperty;
@@ -10,6 +12,7 @@ import sidplay.ini.converter.BeanToStringConverter;
 import ui.common.properties.ShadowField;
 
 @Embeddable
+@Access(AccessType.PROPERTY)
 public class JoystickSection {
 
 	public static final float DEFAULT_COMPONENT_VALUE_UP_1 = 1.f;
@@ -26,11 +29,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> deviceName1 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getDeviceName1() {
+	public String getDeviceName1() {
 		return deviceName1.get();
 	}
 
-	public final void setDeviceName1(String deviceName) {
+	public void setDeviceName1(String deviceName) {
 		this.deviceName1.set(deviceName);
 	}
 
@@ -40,11 +43,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> deviceName2 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getDeviceName2() {
+	public String getDeviceName2() {
 		return deviceName2.get();
 	}
 
-	public final void setDeviceName2(String deviceName) {
+	public void setDeviceName2(String deviceName) {
 		this.deviceName2.set(deviceName);
 	}
 
@@ -54,11 +57,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameUp1 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameUp1() {
+	public String getComponentNameUp1() {
 		return componentNameUp1.get();
 	}
 
-	public final void setComponentNameUp1(String componentNameUp) {
+	public void setComponentNameUp1(String componentNameUp) {
 		this.componentNameUp1.set(componentNameUp);
 	}
 
@@ -68,11 +71,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameUp2 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameUp2() {
+	public String getComponentNameUp2() {
 		return componentNameUp2.get();
 	}
 
-	public final void setComponentNameUp2(String componentNameUp) {
+	public void setComponentNameUp2(String componentNameUp) {
 		this.componentNameUp2.set(componentNameUp);
 	}
 
@@ -82,11 +85,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameDown1 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameDown1() {
+	public String getComponentNameDown1() {
 		return componentNameDown1.get();
 	}
 
-	public final void setComponentNameDown1(String componentNameDown) {
+	public void setComponentNameDown1(String componentNameDown) {
 		this.componentNameDown1.set(componentNameDown);
 	}
 
@@ -96,11 +99,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameDown2 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameDown2() {
+	public String getComponentNameDown2() {
 		return componentNameDown2.get();
 	}
 
-	public final void setComponentNameDown2(String componentNameDown) {
+	public void setComponentNameDown2(String componentNameDown) {
 		this.componentNameDown2.set(componentNameDown);
 	}
 
@@ -110,11 +113,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameLeft1 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameLeft1() {
+	public String getComponentNameLeft1() {
 		return componentNameLeft1.get();
 	}
 
-	public final void setComponentNameLeft1(String componentNameLeft) {
+	public void setComponentNameLeft1(String componentNameLeft) {
 		this.componentNameLeft1.set(componentNameLeft);
 	}
 
@@ -124,11 +127,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameLeft2 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameLeft2() {
+	public String getComponentNameLeft2() {
 		return componentNameLeft2.get();
 	}
 
-	public final void setComponentNameLeft2(String componentNameLeft) {
+	public void setComponentNameLeft2(String componentNameLeft) {
 		this.componentNameLeft2.set(componentNameLeft);
 	}
 
@@ -139,11 +142,11 @@ public class JoystickSection {
 	private ShadowField<StringProperty, String> componentNameRight1 = new ShadowField<>(SimpleStringProperty::new,
 			null);
 
-	public final String getComponentNameRight1() {
+	public String getComponentNameRight1() {
 		return componentNameRight1.get();
 	}
 
-	public final void setComponentNameRight1(String componentNameRight) {
+	public void setComponentNameRight1(String componentNameRight) {
 		this.componentNameRight1.set(componentNameRight);
 	}
 
@@ -154,11 +157,11 @@ public class JoystickSection {
 	private ShadowField<StringProperty, String> componentNameRight2 = new ShadowField<>(SimpleStringProperty::new,
 			null);
 
-	public final String getComponentNameRight2() {
+	public String getComponentNameRight2() {
 		return componentNameRight2.get();
 	}
 
-	public final void setComponentNameRight2(String componentNameRight) {
+	public void setComponentNameRight2(String componentNameRight) {
 		this.componentNameRight2.set(componentNameRight);
 	}
 
@@ -168,11 +171,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameBtn1 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameBtn1() {
+	public String getComponentNameBtn1() {
 		return componentNameBtn1.get();
 	}
 
-	public final void setComponentNameBtn1(String componentNameBtn) {
+	public void setComponentNameBtn1(String componentNameBtn) {
 		this.componentNameBtn1.set(componentNameBtn);
 	}
 
@@ -182,11 +185,11 @@ public class JoystickSection {
 
 	private ShadowField<StringProperty, String> componentNameBtn2 = new ShadowField<>(SimpleStringProperty::new, null);
 
-	public final String getComponentNameBtn2() {
+	public String getComponentNameBtn2() {
 		return componentNameBtn2.get();
 	}
 
-	public final void setComponentNameBtn2(String componentNameBtn) {
+	public void setComponentNameBtn2(String componentNameBtn) {
 		this.componentNameBtn2.set(componentNameBtn);
 	}
 
@@ -197,11 +200,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueUp1 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_UP_1);
 
-	public final float getComponentValueUp1() {
+	public float getComponentValueUp1() {
 		return componentValueUp1.get().floatValue();
 	}
 
-	public final void setComponentValueUp1(float componentValueUp) {
+	public void setComponentValueUp1(float componentValueUp) {
 		this.componentValueUp1.set(componentValueUp);
 	}
 
@@ -212,11 +215,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueUp2 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_UP_2);
 
-	public final float getComponentValueUp2() {
+	public float getComponentValueUp2() {
 		return componentValueUp2.get().floatValue();
 	}
 
-	public final void setComponentValueUp2(float componentValueUp) {
+	public void setComponentValueUp2(float componentValueUp) {
 		this.componentValueUp2.set(componentValueUp);
 	}
 
@@ -227,11 +230,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueDown1 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_DOWN_1);
 
-	public final float getComponentValueDown1() {
+	public float getComponentValueDown1() {
 		return componentValueDown1.get().floatValue();
 	}
 
-	public final void setComponentValueDown1(float componentValueDown) {
+	public void setComponentValueDown1(float componentValueDown) {
 		this.componentValueDown1.set(componentValueDown);
 	}
 
@@ -242,11 +245,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueDown2 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_DOWN_2);
 
-	public final float getComponentValueDown2() {
+	public float getComponentValueDown2() {
 		return componentValueDown2.get().floatValue();
 	}
 
-	public final void setComponentValueDown2(float componentValueDown) {
+	public void setComponentValueDown2(float componentValueDown) {
 		this.componentValueDown2.set(componentValueDown);
 	}
 
@@ -257,11 +260,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueLeft1 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_LEFT_1);
 
-	public final float getComponentValueLeft1() {
+	public float getComponentValueLeft1() {
 		return componentValueLeft1.get().floatValue();
 	}
 
-	public final void setComponentValueLeft1(float componentValueLeft) {
+	public void setComponentValueLeft1(float componentValueLeft) {
 		this.componentValueLeft1.set(componentValueLeft);
 	}
 
@@ -272,11 +275,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueLeft2 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_LEFT_2);
 
-	public final float getComponentValueLeft2() {
+	public float getComponentValueLeft2() {
 		return componentValueLeft2.get().floatValue();
 	}
 
-	public final void setComponentValueLeft2(float componentValueLeft) {
+	public void setComponentValueLeft2(float componentValueLeft) {
 		this.componentValueLeft2.set(componentValueLeft);
 	}
 
@@ -287,11 +290,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueRight1 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_RIGHT_1);
 
-	public final float getComponentValueRight1() {
+	public float getComponentValueRight1() {
 		return componentValueRight1.get().floatValue();
 	}
 
-	public final void setComponentValueRight1(float componentValueRight) {
+	public void setComponentValueRight1(float componentValueRight) {
 		this.componentValueRight1.set(componentValueRight);
 	}
 
@@ -302,11 +305,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueRight2 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_RIGHT_2);
 
-	public final float getComponentValueRight2() {
+	public float getComponentValueRight2() {
 		return componentValueRight2.get().floatValue();
 	}
 
-	public final void setComponentValueRight2(float componentValueRight) {
+	public void setComponentValueRight2(float componentValueRight) {
 		this.componentValueRight2.set(componentValueRight);
 	}
 
@@ -317,11 +320,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueBtn1 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_BTN_1);
 
-	public final float getComponentValueBtn1() {
+	public float getComponentValueBtn1() {
 		return componentValueBtn1.get().floatValue();
 	}
 
-	public final void setComponentValueBtn1(float componentValueBtn) {
+	public void setComponentValueBtn1(float componentValueBtn) {
 		this.componentValueBtn1.set(componentValueBtn);
 	}
 
@@ -332,11 +335,11 @@ public class JoystickSection {
 	private ShadowField<FloatProperty, Number> componentValueBtn2 = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_COMPONENT_VALUE_BTN_2);
 
-	public final float getComponentValueBtn2() {
+	public float getComponentValueBtn2() {
 		return componentValueBtn2.get().floatValue();
 	}
 
-	public final void setComponentValueBtn2(float componentValueBtn) {
+	public void setComponentValueBtn2(float componentValueBtn) {
 		this.componentValueBtn2.set(componentValueBtn);
 	}
 

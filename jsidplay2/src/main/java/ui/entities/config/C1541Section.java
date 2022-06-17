@@ -34,12 +34,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_DRIVE_ON);
 
 	@Override
-	public final boolean isDriveOn() {
+	public boolean isDriveOn() {
 		return driveOn.get();
 	}
 
 	@Override
-	public final void setDriveOn(boolean driveOn) {
+	public void setDriveOn(boolean driveOn) {
 		this.driveOn.set(driveOn);
 	}
 
@@ -50,11 +50,11 @@ public class C1541Section implements IC1541Section {
 	private ShadowField<BooleanProperty, Boolean> driveSoundOn = new ShadowField<>(SimpleBooleanProperty::new,
 			DEFAULT_DRIVE_SOUND);
 
-	public final boolean isDriveSoundOn() {
+	public boolean isDriveSoundOn() {
 		return driveSoundOn.get();
 	}
 
-	public final void setDriveSoundOn(boolean driveSoundOn) {
+	public void setDriveSoundOn(boolean driveSoundOn) {
 		this.driveSoundOn.set(driveSoundOn);
 	}
 
@@ -66,12 +66,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_PARALLEL_CABLE);
 
 	@Override
-	public final boolean isParallelCable() {
+	public boolean isParallelCable() {
 		return parallelCable.get();
 	}
 
 	@Override
-	public final void setParallelCable(boolean parallelCable) {
+	public void setParallelCable(boolean parallelCable) {
 		this.parallelCable.set(parallelCable);
 	}
 
@@ -83,12 +83,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_JIFFYDOS_INSTALLED);
 
 	@Override
-	public final boolean isJiffyDosInstalled() {
+	public boolean isJiffyDosInstalled() {
 		return this.jiffyDosInstalled.get();
 	}
 
 	@Override
-	public final void setJiffyDosInstalled(boolean on) {
+	public void setJiffyDosInstalled(boolean on) {
 		this.jiffyDosInstalled.set(on);
 	}
 
@@ -100,12 +100,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_RAM_EXPAND_0X2000);
 
 	@Override
-	public final boolean isRamExpansionEnabled0() {
+	public boolean isRamExpansionEnabled0() {
 		return ramExpansionEnabled0.get();
 	}
 
 	@Override
-	public final void setRamExpansionEnabled0(boolean on) {
+	public void setRamExpansionEnabled0(boolean on) {
 		this.ramExpansionEnabled0.set(on);
 	}
 
@@ -117,12 +117,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_RAM_EXPAND_0X4000);
 
 	@Override
-	public final boolean isRamExpansionEnabled1() {
+	public boolean isRamExpansionEnabled1() {
 		return ramExpansionEnabled1.get();
 	}
 
 	@Override
-	public final void setRamExpansionEnabled1(boolean on) {
+	public void setRamExpansionEnabled1(boolean on) {
 		this.ramExpansionEnabled1.set(on);
 	}
 
@@ -134,12 +134,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_RAM_EXPAND_0X6000);
 
 	@Override
-	public final boolean isRamExpansionEnabled2() {
+	public boolean isRamExpansionEnabled2() {
 		return ramExpansionEnabled2.get();
 	}
 
 	@Override
-	public final void setRamExpansionEnabled2(boolean on) {
+	public void setRamExpansionEnabled2(boolean on) {
 		this.ramExpansionEnabled2.set(on);
 	}
 
@@ -151,12 +151,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_RAM_EXPAND_0X8000);
 
 	@Override
-	public final boolean isRamExpansionEnabled3() {
+	public boolean isRamExpansionEnabled3() {
 		return ramExpansionEnabled3.get();
 	}
 
 	@Override
-	public final void setRamExpansionEnabled3(boolean on) {
+	public void setRamExpansionEnabled3(boolean on) {
 		this.ramExpansionEnabled3.set(on);
 	}
 
@@ -168,12 +168,12 @@ public class C1541Section implements IC1541Section {
 			DEFAULT_RAM_EXPAND_0XA000);
 
 	@Override
-	public final boolean isRamExpansionEnabled4() {
+	public boolean isRamExpansionEnabled4() {
 		return ramExpansionEnabled4.get();
 	}
 
 	@Override
-	public final void setRamExpansionEnabled4(boolean on) {
+	public void setRamExpansionEnabled4(boolean on) {
 		this.ramExpansionEnabled4.set(on);
 	}
 
@@ -185,11 +185,11 @@ public class C1541Section implements IC1541Section {
 			SimpleObjectProperty::new, DEFAULT_EXTEND_IMAGE_POLICY);
 
 	@Enumerated(EnumType.STRING)
-	public final ExtendImagePolicy getExtendImagePolicy() {
+	public ExtendImagePolicy getExtendImagePolicy() {
 		return extendImagePolicy.get();
 	}
 
-	public final void setExtendImagePolicy(ExtendImagePolicy policy) {
+	public void setExtendImagePolicy(ExtendImagePolicy policy) {
 		this.extendImagePolicy.set(policy);
 	}
 
@@ -202,12 +202,12 @@ public class C1541Section implements IC1541Section {
 
 	@Enumerated(EnumType.STRING)
 	@Override
-	public final FloppyType getFloppyType() {
+	public FloppyType getFloppyType() {
 		return floppyType.get();
 	}
 
 	@Override
-	public final void setFloppyType(FloppyType floppyType) {
+	public void setFloppyType(FloppyType floppyType) {
 		this.floppyType.set(floppyType);
 	}
 

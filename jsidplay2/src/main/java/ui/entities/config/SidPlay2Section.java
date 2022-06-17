@@ -68,12 +68,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private int version;
 
 	@Override
-	public final int getVersion() {
+	public int getVersion() {
 		return version;
 	}
 
 	@Override
-	public final void setVersion(int version) {
+	public void setVersion(int version) {
 		this.version = version;
 	}
 
@@ -81,12 +81,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			DEFAULT_ENABLE_DATABASE);
 
 	@Override
-	public final boolean isEnableDatabase() {
+	public boolean isEnableDatabase() {
 		return enableDatabase.get();
 	}
 
 	@Override
-	public final void setEnableDatabase(boolean isEnableDatabase) {
+	public void setEnableDatabase(boolean isEnableDatabase) {
 		enableDatabase.set(isEnableDatabase);
 	}
 
@@ -98,12 +98,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_START_TIME);
 
 	@Override
-	public final double getStartTime() {
+	public double getStartTime() {
 		return startTime.get().doubleValue();
 	}
 
 	@Override
-	public final void setStartTime(double startTime) {
+	public void setStartTime(double startTime) {
 		this.startTime.set(startTime);
 	}
 
@@ -115,12 +115,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_PLAY_LENGTH);
 
 	@Override
-	public final double getDefaultPlayLength() {
+	public double getDefaultPlayLength() {
 		return defaultPlayLength.get().doubleValue();
 	}
 
 	@Override
-	public final void setDefaultPlayLength(double defaultPlayLength) {
+	public void setDefaultPlayLength(double defaultPlayLength) {
 		this.defaultPlayLength.set(defaultPlayLength);
 	}
 
@@ -132,12 +132,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_FADE_IN_TIME);
 
 	@Override
-	public final double getFadeInTime() {
+	public double getFadeInTime() {
 		return fadeInTime.get().doubleValue();
 	}
 
 	@Override
-	public final void setFadeInTime(double fadeInTime) {
+	public void setFadeInTime(double fadeInTime) {
 		this.fadeInTime.set(fadeInTime);
 	}
 
@@ -149,12 +149,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_FADE_OUT_TIME);
 
 	@Override
-	public final double getFadeOutTime() {
+	public double getFadeOutTime() {
 		return fadeOutTime.get().doubleValue();
 	}
 
 	@Override
-	public final void setFadeOutTime(double fadeOutTime) {
+	public void setFadeOutTime(double fadeOutTime) {
 		this.fadeOutTime.set(fadeOutTime);
 	}
 
@@ -166,11 +166,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 			SimpleObjectProperty::new, DEFAULT_PLAYBACK_TYPE);
 
 	@Enumerated(EnumType.STRING)
-	public final PlaybackType getPlaybackType() {
+	public PlaybackType getPlaybackType() {
 		return playbackType.get();
 	}
 
-	public final void setPlaybackType(PlaybackType playbackType) {
+	public void setPlaybackType(PlaybackType playbackType) {
 		this.playbackType.set(playbackType);
 	}
 
@@ -181,12 +181,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<BooleanProperty, Boolean> loop = new ShadowField<>(SimpleBooleanProperty::new, DEFAULT_LOOP);
 
 	@Override
-	public final boolean isLoop() {
+	public boolean isLoop() {
 		return loop.get();
 	}
 
 	@Override
-	public final void setLoop(boolean loop) {
+	public void setLoop(boolean loop) {
 		this.loop.set(loop);
 	}
 
@@ -198,12 +198,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			DEFAULT_SINGLE_TRACK);
 
 	@Override
-	public final boolean isSingle() {
+	public boolean isSingle() {
 		return single.get();
 	}
 
 	@Override
-	public final void setSingle(boolean isSingle) {
+	public void setSingle(boolean isSingle) {
 		single.set(isSingle);
 	}
 
@@ -217,11 +217,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@XmlJavaTypeAdapter(FileXmlAdapter.class)
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getHVMEC() {
+	public File getHVMEC() {
 		return hvmec.get();
 	}
 
-	public final void setHVMEC(File hVMEC) {
+	public void setHVMEC(File hVMEC) {
 		hvmec.set(hVMEC);
 	}
 
@@ -235,11 +235,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@XmlJavaTypeAdapter(FileXmlAdapter.class)
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getDemos() {
+	public File getDemos() {
 		return demos.get();
 	}
 
-	public final void setDemos(File demos) {
+	public void setDemos(File demos) {
 		this.demos.set(demos);
 	}
 
@@ -253,11 +253,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@XmlJavaTypeAdapter(FileXmlAdapter.class)
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getMags() {
+	public File getMags() {
 		return mags.get();
 	}
 
-	public final void setMags(File mags) {
+	public void setMags(File mags) {
 		this.mags.set(mags);
 	}
 
@@ -271,11 +271,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@XmlJavaTypeAdapter(FileXmlAdapter.class)
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getCgsc() {
+	public File getCgsc() {
 		return cgsc.get();
 	}
 
-	public final void setCgsc(File cgsc) {
+	public void setCgsc(File cgsc) {
 		this.cgsc.set(cgsc);
 	}
 
@@ -290,12 +290,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@Override
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getHvsc() {
+	public File getHvsc() {
 		return hvsc.get();
 	}
 
 	@Override
-	public final void setHvsc(File hvsc) {
+	public void setHvsc(File hvsc) {
 		this.hvsc.set(hvsc);
 	}
 
@@ -309,11 +309,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@XmlJavaTypeAdapter(FileXmlAdapter.class)
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getGameBase64() {
+	public File getGameBase64() {
 		return gameBase64.get();
 	}
 
-	public final void setGameBase64(File gameBase64) {
+	public void setGameBase64(File gameBase64) {
 		this.gameBase64.set(gameBase64);
 	}
 
@@ -324,11 +324,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<BooleanProperty, Boolean> proxyEnable = new ShadowField<>(SimpleBooleanProperty::new,
 			DEFAULT_PROXY_ENABLE);
 
-	public final boolean isProxyEnable() {
+	public boolean isProxyEnable() {
 		return proxyEnable.get();
 	}
 
-	public final void setProxyEnable(boolean isProxyEnable) {
+	public void setProxyEnable(boolean isProxyEnable) {
 		proxyEnable.set(isProxyEnable);
 	}
 
@@ -339,11 +339,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<StringProperty, String> proxyHostname = new ShadowField<>(SimpleStringProperty::new,
 			DEFAULT_PROXY_HOSTNAME);
 
-	public final String getProxyHostname() {
+	public String getProxyHostname() {
 		return proxyHostname.get();
 	}
 
-	public final void setProxyHostname(String hostname) {
+	public void setProxyHostname(String hostname) {
 		this.proxyHostname.set(hostname);
 	}
 
@@ -354,11 +354,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<ObjectProperty<Integer>, Integer> proxyPort = new ShadowField<>(SimpleObjectProperty::new,
 			DEFAULT_PROXY_PORT);
 
-	public final int getProxyPort() {
+	public int getProxyPort() {
 		return proxyPort.get();
 	}
 
-	public final void setProxyPort(int port) {
+	public void setProxyPort(int port) {
 		this.proxyPort.set(port);
 	}
 
@@ -373,12 +373,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@XmlJavaTypeAdapter(FileXmlAdapter.class)
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getLastDirectory() {
+	public File getLastDirectory() {
 		return lastDirectory.get();
 	}
 
 	@Override
-	public final void setLastDirectory(File lastDirectory) {
+	public void setLastDirectory(File lastDirectory) {
 		this.lastDirectory.set(lastDirectory);
 	}
 
@@ -394,12 +394,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 	@XmlJavaTypeAdapter(FileXmlAdapter.class)
 	@JsonSerialize(using = FileToStringSerializer.class)
 	@JsonDeserialize(using = FileToStringDeserializer.class)
-	public final File getTmpDir() {
+	public File getTmpDir() {
 		return tmpDir.get();
 	}
 
 	@Override
-	public final void setTmpDir(File tmpDir) {
+	public void setTmpDir(File tmpDir) {
 		this.tmpDir.set(tmpDir);
 	}
 
@@ -410,11 +410,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> frameX = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_FRAME_X);
 
-	public final double getFrameX() {
+	public double getFrameX() {
 		return frameX.get().doubleValue();
 	}
 
-	public final void setFrameX(double frameX) {
+	public void setFrameX(double frameX) {
 		this.frameX.set(frameX);
 	}
 
@@ -425,11 +425,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> frameY = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_FRAME_Y);
 
-	public final double getFrameY() {
+	public double getFrameY() {
 		return frameY.get().doubleValue();
 	}
 
-	public final void setFrameY(double frameY) {
+	public void setFrameY(double frameY) {
 		this.frameY.set(frameY);
 	}
 
@@ -440,11 +440,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> frameWidth = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_FRAME_WIDTH);
 
-	public final double getFrameWidth() {
+	public double getFrameWidth() {
 		return frameWidth.get().doubleValue();
 	}
 
-	public final void setFrameWidth(double frameWidth) {
+	public void setFrameWidth(double frameWidth) {
 		this.frameWidth.set(frameWidth);
 	}
 
@@ -455,11 +455,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> frameHeight = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), DEFAULT_FRAME_HEIGHT);
 
-	public final double getFrameHeight() {
+	public double getFrameHeight() {
 		return frameHeight.get().doubleValue();
 	}
 
-	public final void setFrameHeight(double frameHeight) {
+	public void setFrameHeight(double frameHeight) {
 		this.frameHeight.set(frameHeight);
 	}
 
@@ -470,11 +470,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<BooleanProperty, Boolean> minimized = new ShadowField<>(SimpleBooleanProperty::new,
 			DEFAULT_MINIMIZED);
 
-	public final boolean isMinimized() {
+	public boolean isMinimized() {
 		return minimized.get();
 	}
 
-	public final void setMinimized(boolean isMinimized) {
+	public void setMinimized(boolean isMinimized) {
 		minimized.set(isMinimized);
 	}
 
@@ -485,11 +485,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> minimizedX = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), 0);
 
-	public final double getMinimizedX() {
+	public double getMinimizedX() {
 		return minimizedX.get().doubleValue();
 	}
 
-	public final void setMinimizedX(double minimizedX) {
+	public void setMinimizedX(double minimizedX) {
 		this.minimizedX.set(minimizedX);
 	}
 
@@ -500,11 +500,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> minimizedY = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), 0);
 
-	public final double getMinimizedY() {
+	public double getMinimizedY() {
 		return minimizedY.get().doubleValue();
 	}
 
-	public final void setMinimizedY(double minimizedY) {
+	public void setMinimizedY(double minimizedY) {
 		this.minimizedY.set(minimizedY);
 	}
 
@@ -515,11 +515,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> minimizedWidth = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), 0);
 
-	public final double getMinimizedWidth() {
+	public double getMinimizedWidth() {
 		return minimizedWidth.get().doubleValue();
 	}
 
-	public final void setMinimizedWidth(double minimizedWidth) {
+	public void setMinimizedWidth(double minimizedWidth) {
 		this.minimizedWidth.set(minimizedWidth);
 	}
 
@@ -530,11 +530,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<DoubleProperty, Number> minimizedHeight = new ShadowField<>(
 			number -> new SimpleDoubleProperty(number.doubleValue()), 0);
 
-	public final double getMinimizedHeight() {
+	public double getMinimizedHeight() {
 		return minimizedHeight.get().doubleValue();
 	}
 
-	public final void setMinimizedHeight(double minimizedHeight) {
+	public void setMinimizedHeight(double minimizedHeight) {
 		this.minimizedHeight.set(minimizedHeight);
 	}
 
@@ -545,11 +545,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<FloatProperty, Number> videoScaling = new ShadowField<>(
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_VIDEO_SCALING);
 
-	public final float getVideoScaling() {
+	public float getVideoScaling() {
 		return videoScaling.get().floatValue();
 	}
 
-	public final void setVideoScaling(float videoScaling) {
+	public void setVideoScaling(float videoScaling) {
 		this.videoScaling.set(videoScaling);
 	}
 
@@ -560,11 +560,11 @@ public class SidPlay2Section implements ISidPlay2Section {
 	private ShadowField<ObjectProperty<Boolean>, Boolean> showMonitor = new ShadowField<>(SimpleObjectProperty::new,
 			DEFAULT_SHOW_MONITOR);
 
-	public final boolean isShowMonitor() {
+	public boolean isShowMonitor() {
 		return showMonitor.get();
 	}
 
-	public final void setShowMonitor(boolean showMonitor) {
+	public void setShowMonitor(boolean showMonitor) {
 		this.showMonitor.set(showMonitor);
 	}
 
@@ -576,12 +576,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			DEFAULT_PAL_EMULATION);
 
 	@Override
-	public final boolean isPalEmulation() {
+	public boolean isPalEmulation() {
 		return palEmulation.get();
 	}
 
 	@Override
-	public final void setPalEmulation(boolean isPalEmulation) {
+	public void setPalEmulation(boolean isPalEmulation) {
 		palEmulation.set(isPalEmulation);
 	}
 
@@ -593,12 +593,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_BRIGHTNESS);
 
 	@Override
-	public final float getBrightness() {
+	public float getBrightness() {
 		return brightness.get().floatValue();
 	}
 
 	@Override
-	public final void setBrightness(float brightness) {
+	public void setBrightness(float brightness) {
 		this.brightness.set(brightness);
 	}
 
@@ -610,12 +610,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_CONTRAST);
 
 	@Override
-	public final float getContrast() {
+	public float getContrast() {
 		return contrast.get().floatValue();
 	}
 
 	@Override
-	public final void setContrast(float contrast) {
+	public void setContrast(float contrast) {
 		this.contrast.set(contrast);
 	}
 
@@ -627,12 +627,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_GAMMA);
 
 	@Override
-	public final float getGamma() {
+	public float getGamma() {
 		return gamma.get().floatValue();
 	}
 
 	@Override
-	public final void setGamma(float gamma) {
+	public void setGamma(float gamma) {
 		this.gamma.set(gamma);
 	}
 
@@ -644,12 +644,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_SATURATION);
 
 	@Override
-	public final float getSaturation() {
+	public float getSaturation() {
 		return saturation.get().floatValue();
 	}
 
 	@Override
-	public final void setSaturation(float saturation) {
+	public void setSaturation(float saturation) {
 		this.saturation.set(saturation);
 	}
 
@@ -661,12 +661,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_PHASE_SHIFT);
 
 	@Override
-	public final float getPhaseShift() {
+	public float getPhaseShift() {
 		return phaseShift.get().floatValue();
 	}
 
 	@Override
-	public final void setPhaseShift(float phaseShift) {
+	public void setPhaseShift(float phaseShift) {
 		this.phaseShift.set(phaseShift);
 	}
 
@@ -678,12 +678,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_OFFSET);
 
 	@Override
-	public final float getOffset() {
+	public float getOffset() {
 		return offset.get().floatValue();
 	}
 
 	@Override
-	public final void setOffset(float offset) {
+	public void setOffset(float offset) {
 		this.offset.set(offset);
 	}
 
@@ -695,12 +695,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_TINT);
 
 	@Override
-	public final float getTint() {
+	public float getTint() {
 		return tint.get().floatValue();
 	}
 
 	@Override
-	public final void setTint(float tint) {
+	public void setTint(float tint) {
 		this.tint.set(tint);
 	}
 
@@ -712,12 +712,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_BLUR);
 
 	@Override
-	public final float getBlur() {
+	public float getBlur() {
 		return blur.get().floatValue();
 	}
 
 	@Override
-	public final void setBlur(float blur) {
+	public void setBlur(float blur) {
 		this.blur.set(blur);
 	}
 
@@ -729,12 +729,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			number -> new SimpleFloatProperty(number.floatValue()), DEFAULT_BLEED);
 
 	@Override
-	public final float getBleed() {
+	public float getBleed() {
 		return bleed.get().floatValue();
 	}
 
 	@Override
-	public final void setBleed(float bleed) {
+	public void setBleed(float bleed) {
 		this.bleed.set(bleed);
 	}
 
@@ -746,12 +746,12 @@ public class SidPlay2Section implements ISidPlay2Section {
 			DEFAULT_TURBO_TAPE);
 
 	@Override
-	public final boolean isTurboTape() {
+	public boolean isTurboTape() {
 		return turboTape.get();
 	}
 
 	@Override
-	public final void setTurboTape(boolean turboTape) {
+	public void setTurboTape(boolean turboTape) {
 		this.turboTape.set(turboTape);
 	}
 
