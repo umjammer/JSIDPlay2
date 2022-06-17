@@ -1,27 +1,2 @@
 Release Notes:
 ==============
-
-JSIDPlay2:
-- Configuration version changed for jsidplay2.xml, creates a new one and backups the old one to jsidplay2.xml.bak
-- sidplay2.ini has been renamed to jsidplay2.ini
-- All shell-scripts and desktop files renamed to lower case without space in it's name for convenience
-- splash screen removed
-- New java based USB drivers implemented for:
-  SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno and HardSID UPlay
-  Supported platforms: Windows/Linux and MacOSX (MacOSX currently not working with HardSID devices)
-- SID Recordings can now being watched and exported in a new recording view.
-- Player control buttons reworked and rearranged
-
-JSIDPlay2Server:
-- Live videos: Now being controlled by web-page to watch demos better (insert the next disk, send keys, switch SID chip, etc.)
-- Live videos: Now shows infos in a status line, it can be configured to turn it on/off
-- Live videos: Scan bar-code to continue watching videos on your mobile phone
-- Live videos: Configure timespan to press space periodically
-- rest based API endpoints now have a usage
-- C64 Jukebox: VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)
-
-JSIDPlay2app:
-- Connect your mobile directly to USB hardware (SIDBlaster, ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay). No PC required!
-- Configuration: turn on/off status line
-- Configuration: turn on/off fastloader
-- Configuration: enter time in s to periodically press space
