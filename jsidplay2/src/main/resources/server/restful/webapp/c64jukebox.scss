@@ -25,6 +25,10 @@
 	padding: 2px;
 }
 
+.custom-control-label,.custom-range,.value,label {
+	margin: 8px;
+}
+
 .audio {
 	padding: 16px 0;
 }
@@ -35,4 +39,5 @@
 
 .settings-box {
 	padding: 2px;
+	display: flex;
 }
