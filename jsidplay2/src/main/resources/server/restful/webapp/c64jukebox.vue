@@ -52,7 +52,7 @@
 				</div>
 			</div>
 			<div>
-				<b-card no-body> <b-tabs v-model="tabIndex" card vertical>
+				<b-card no-body> <b-tabs v-model="tabIndex" card>
 				<b-tab title="CON">
 
 				<template #title>CON</template>
