@@ -51,33 +51,23 @@ Please read manual here:
 == Minimum System Requirement
 
 |===
-| | Java | Installers for Java
-| Linux
-|
-link:{codebase}java/jdk-8u211-linux-x64.tar.gz[[small]*Java8*]
-|
-link:https://adoptium.net[https://adoptium.net^]
-| Windows |
-link:{codebase}java/jdk-8u211-windows-x64.exe[[small]*Java8*]
-|
-link:https://adoptium.net[https://adoptium.net^]
-| MacOSX |
-link:{codebase}java/jdk-8u211-macosx-x64.dmg[[small]*Java8*]
-|
-link:https://adoptium.net[https://adoptium.net^]
+|         | Java
+| Linux   | link:https://adoptium.net[https://adoptium.net^]
+| Windows | link:https://adoptium.net[https://adoptium.net^]
+| MacOSX  | link:https://adoptium.net[https://adoptium.net^]
 |===
 
 == Official Releases
 
-Click link:https://sourceforge.net/projects/jsidplay2/[here^] to download
+Click link:https://sourceforge.net/projects/jsidplay2/files/[here^] to download
 
 == Latest Beta Version
 
 |===
-| | JSIDPlay2 for Java 8, 11, 17, ...
-| Linux | link:{codebase}{artifactId}-{version}-linux.zip[Download]
+|         | JSIDPlay2 for Java 8, 11, 17, ...
+| Linux   | link:{codebase}{artifactId}-{version}-linux.zip[Download]
 | Windows | link:{codebase}{artifactId}-{version}-win.zip[Download]
-| MacOSX | link:{codebase}{artifactId}-{version}-mac.zip[Download]
+| MacOSX  | link:{codebase}{artifactId}-{version}-mac.zip[Download]
 |===
 
 link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
