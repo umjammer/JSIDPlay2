@@ -73,17 +73,16 @@
 				<b-card-text>
 				<ul>
 					<li v-for="entry in directory" :key="entry">
-						<!-- HVSC root -->
 						<div v-if="entry.endsWith('/')">
 							<a href="#" v-on:click="fetchDirectory(entry)"> {{entry}} </a>
-						</div> <!-- HVSC music -->
+						</div>
 						<div
 							v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
 							<div>
 								<a href="#" v-on:click="updateSid(entry); tabIndex = 2;">
 									{{entry}} </a>
 							</div>
-						</div> <!-- others -->
+						</div>
 						<div v-else>
 							<div style="white-space: nowrap;">
 								{{entry}} <a v-bind:href="createConvertUrl(entry)"
@@ -105,7 +104,7 @@
 				</template>
 
 				<b-card-text>
-				<div v-if='currentSid'>
+				<div class="button-box" v-if='currentSid'>
 					<b-button
 						v-on:click="$refs.audioElm.src=createConvertUrl(currentSid); $refs.audioElm.play()">{{
 					$t( 'play' ) }}</b-button>
@@ -119,18 +118,18 @@
 				</div>
 
 				<div class="sid">
-					<div>
-						<table>
-							<thead>
-							</thead>
-							<tbody>
-								<tr v-for="(value, key) in infos">
-									<td>{{ $t( key ) }}</td>
-									<td>{{value}}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+					<table>
+						<thead>
+							<th>{{ $t( 'sidInfoKey' ) }}</th>
+							<th>{{ $t( 'sidInfoValue' ) }}</th>
+						</thead>
+						<tbody>
+							<tr v-for="(value, key) in infos">
+								<td>{{ $t( key ) }}</td>
+								<td>{{value}}</td>
+							</tr>
+						</tbody>
+					</table>
 					<div>
 						<img :src="picture" id="img">
 					</div>
@@ -144,23 +143,21 @@
 
 				<b-card-text>
 
-				<div>
-					<div class="button-box">
-						<b-button v-on:click="playlist.pop()">{{ $t( 'remove' )
-						}}</b-button>
-						<b-button v-on:click="setNextPlaylistEntry">{{ $t(
-						'next' ) }}</b-button>
+				<div class="button-box">
+					<b-button v-on:click="playlist.pop()">{{ $t( 'remove' )
+					}}</b-button>
+					<b-button v-on:click="setNextPlaylistEntry">{{ $t(
+					'next' ) }}</b-button>
 
-						<b-form-checkbox id="random" v-model="random">
-						{{ $t( 'random' ) }} </b-form-checkbox>
+					<b-form-checkbox id="random" v-model="random">
+					{{ $t( 'random' ) }} </b-form-checkbox>
 
-					</div>
-					<div class="button-box">
-						<b-button v-on:click="fetchFavorites()">{{ $t(
-						'fetchFavorites' ) }}</b-button>
-						<b-button v-on:click="playlist=[]">{{ $t(
-						'removePlaylist' ) }}</b-button>
-					</div>
+				</div>
+				<div class="button-box">
+					<b-button v-on:click="fetchFavorites()">{{ $t(
+					'fetchFavorites' ) }}</b-button>
+					<b-button v-on:click="playlist=[]">{{ $t(
+					'removePlaylist' ) }}</b-button>
 				</div>
 
 				<ol>
@@ -178,7 +175,6 @@
 				</template>
 
 				<b-card-text>
-
 				<div class="settings-box">
 					<label for="startTime">{{ $t( 'startTime' ) }}</label>
 					<input type="number" min="0" oninput="validity.valid||(value='');"
@@ -383,24 +379,18 @@
 				<div class="settings-box">
 					<b-form-checkbox id="vbr" v-model="vbr"> {{ $t(
 					'vbr' ) }} </b-form-checkbox>
-					<div>
-						<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
-							v-model="cbr">
-							<option v-for="cbr in cbrs">{{ cbr }}</option>
-						</select>
-					</div>
-					<div>
-						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
-							id="vbrQuality" v-model="vbrQuality">
-							<option v-for="vbrQuality in vbrQualities">{{ vbrQuality
-								}}</option>
-						</select>
-					</div>
-					<div>
-						<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
-						<input type="number" min="0" oninput="validity.valid||(value='');"
-							id="vcBitRate" v-model.number="vcBitRate" />
-					</div>
+					<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
+						v-model="cbr">
+						<option v-for="cbr in cbrs">{{ cbr }}</option>
+					</select>
+					<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
+						id="vbrQuality" v-model="vbrQuality">
+						<option v-for="vbrQuality in vbrQualities">{{ vbrQuality
+							}}</option>
+					</select>
+					<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
+					<input type="number" min="0" oninput="validity.valid||(value='');"
+						id="vcBitRate" v-model.number="vcBitRate" />
 				</div>
 				<div class="settings-box">
 					<b-form-checkbox id="status" v-model="status"> {{
@@ -433,8 +423,8 @@
 function uriEncode(entry) {
   // escape is deprecated and cannot handle utf8
   // encodeURI() will not encode: ~!@#$&*()=:/,;?+'
-  // untested: !*=/,;?
-  // tested: ~@#$&():+''
+  // untested characters: !*=/,;?
+  // tested characters: ~@#$&():+''
   return encodeURI(entry)
     .replace(/\+/g, "%2B")
     .replace(/#/g, "%23");
@@ -442,6 +432,8 @@ function uriEncode(entry) {
 
 const messages = {
   en: {
+	  sidInfoKey: 'Name',
+	  sidInfoValue: 'Value',
 	  HVSCEntry: {
 		  path: 'Full Path',
 		  name: 'File Name',
@@ -529,6 +521,8 @@ const messages = {
 	  status: 'Show Status Line'
   },
   de: {
+	  sidInfoKey: 'Name',
+	  sidInfoValue: 'Wert',
 	  HVSCEntry: {
 		  path: 'Dateipfad',
 		  name: 'Dateiname',
