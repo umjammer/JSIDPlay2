@@ -34,31 +34,29 @@
 
 		<form>
 
-			<div>
-				<div class="locale-changer">
-					<select v-model="$i18n.locale" style="float: right">
-						<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
-							{{ lang }}</option>
-					</select>
-					<h1>C64 Jukebox</h1>
-					<span>{{currentSid}}</span>
-				</div>
-				<div class="audio">
-					<audio ref="audioElm" v-bind:src="playlistEntryUrl"
-						v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
-						autoplay> I'm sorry. You're browser doesn't support HTML5
-						audio
-					</audio>
-				</div>
+			<div class="locale-changer">
+				<select v-model="$i18n.locale" style="float: right">
+					<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
+						{{ lang }}</option>
+				</select>
+				<h1>C64 Jukebox</h1>
+				<span>{{currentSid}}</span>
+			</div>
+			<div class="audio">
+				<audio ref="audioElm" v-bind:src="playlistEntryUrl"
+					v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
+					autoplay> I'm sorry. You're browser doesn't support HTML5
+					audio
+				</audio>
 			</div>
 			<div>
 				<b-card no-body> <b-tabs v-model="tabIndex" card>
-				<b-tab title="CON">
+				<b-tab>
 
 				<template #title>CON</template>
 
 				<b-card-text>
-				<div>
+				<div class="settings-box">
 					<label for="username">{{ $t( 'username' ) }}</label>
 					<input type="text" id="username" v-model="username">
 					<label for="password">{{ $t( 'password' ) }}</label>
@@ -73,35 +71,32 @@
 				</template>
 
 				<b-card-text>
-				<div v-if="!loadingSids">
-					<!-- request finished -->
-					<ul>
-						<li v-for="entry in directory" :key="entry">
-							<!-- HVSC root -->
-							<div v-if="entry.endsWith('/')">
-								<a href="#" v-on:click="fetchDirectory(entry)"> {{entry}} </a>
-							</div> <!-- HVSC music -->
-							<div
-								v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
-								<div>
-									<a href="#" v-on:click="updateSid(entry); tabIndex = 2;">
-										{{entry}} </a>
-								</div>
-							</div> <!-- others -->
-							<div v-else>
-								<div style="white-space: nowrap;">
-									{{entry}} <a v-bind:href="createConvertUrl(entry)"
-										target="_blank"> Load </a> <span
-										v-if='entry.toLowerCase().endsWith(".d64")'> <span>
-											or </span> <a
-										v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
-										target="_blank"> Fastload </a>
-									</span>
-								</div>
+				<ul>
+					<li v-for="entry in directory" :key="entry">
+						<!-- HVSC root -->
+						<div v-if="entry.endsWith('/')">
+							<a href="#" v-on:click="fetchDirectory(entry)"> {{entry}} </a>
+						</div> <!-- HVSC music -->
+						<div
+							v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
+							<div>
+								<a href="#" v-on:click="updateSid(entry); tabIndex = 2;">
+									{{entry}} </a>
 							</div>
-						</li>
-					</ul>
-				</div>
+						</div> <!-- others -->
+						<div v-else>
+							<div style="white-space: nowrap;">
+								{{entry}} <a v-bind:href="createConvertUrl(entry)"
+									target="_blank"> Load </a> <span
+									v-if='entry.toLowerCase().endsWith(".d64")'> <span>
+										or </span> <a
+									v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
+									target="_blank"> Fastload </a>
+								</span>
+							</div>
+						</div>
+					</li>
+				</ul>
 				</b-card-text> </b-tab> <b-tab>
 
 				<template #title>
@@ -510,6 +505,8 @@ const messages = {
 	  delaySid: 'Delay of SID:',
 	  delayStereoSid: 'Delay of Stereo-SID:',
 	  delayThreeSid: 'Delay of 3-SID:',
+	  mobileProfile: 'Mobile profile',
+	  wifiProfile: 'WiFi profile',
 	  vbr: 'variable bitrate instead of constant bitrate',
 	  cbr: 'constant bitrate in kbps',
 	  vbrQuality: 'Quality of variable bitrate',
@@ -595,6 +592,8 @@ const messages = {
 	  delaySid: 'Verzögerung des SID:',
 	  delayStereoSid: 'Verzögerung des SID:',
 	  delayThreeSid: 'Verzögerung des SID:',
+	  mobileProfile: 'Mobiles Profil',
+	  wifiProfile: 'WiFi Profil',
 	  vbr: 'Variable Bitrate verwenden anstatt fester',
 	  cbr: 'Konstante Bitrate in kbps',
 	  vbrQuality: 'Qualität der variablen Bitrate',
