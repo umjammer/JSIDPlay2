@@ -124,6 +124,7 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>5.6.3.Final</version>
+			<!-- version>6.1.0</version requires Java11 -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
