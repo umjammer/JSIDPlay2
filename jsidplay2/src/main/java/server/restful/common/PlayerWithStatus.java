@@ -69,6 +69,15 @@ public final class PlayerWithStatus {
 		}
 	}
 
+	public void onKeepAlive() {
+		LocalDateTime maxDuration = created.plusSeconds(RTMP_EXCEEDS_MAXIMUM_DURATION);
+		if (LocalDateTime.now().isBefore(maxDuration)) {
+			validUntil = LocalDateTime.now().plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
+		} else {
+			validUntil = maxDuration;
+		}
+	}
+
 	public boolean isInvalid() {
 		return validUntil.isBefore(LocalDateTime.now());
 	}

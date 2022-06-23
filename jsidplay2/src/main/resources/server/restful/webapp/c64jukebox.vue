@@ -85,12 +85,11 @@
 						</div>
 						<div v-else>
 							<div style="white-space: nowrap;">
-								{{entry}} <a v-bind:href="createConvertUrl(entry)"
-									target="_blank"> Load </a> <span
-									v-if='entry.toLowerCase().endsWith(".d64")'> <span>
-										or </span> <a
+								{{entry}} <a v-bind:href="createConvertUrl(entry)" target="c64">
+									Load </a> <span v-if='entry.toLowerCase().endsWith(".d64")'>
+									<span> or </span> <a
 									v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
-									target="_blank"> Fastload </a>
+									target="c64"> Fastload </a>
 								</span>
 							</div>
 						</div>
@@ -149,8 +148,8 @@
 					<b-button v-on:click="setNextPlaylistEntry">{{ $t(
 					'next' ) }}</b-button>
 
-					<b-form-checkbox id="random" v-model="random">
-					{{ $t( 'random' ) }} </b-form-checkbox>
+					<b-form-checkbox id="random" v-model="random"> {{
+					$t( 'random' ) }} </b-form-checkbox>
 
 				</div>
 				<div class="button-box">
@@ -369,6 +368,10 @@
 						type="range" min="0" max="100" step="10"></b-form-input>
 				</div>
 				<div class="settings-box">
+					<b-form-checkbox id="rtmp" v-model="rtmp"> {{ $t(
+					'rtmp' ) }} </b-form-checkbox>
+				</div>
+				<div class="settings-box">
 					<div class="button-box">
 						<b-button v-on:click="mobileProfile">{{ $t(
 						'mobileProfile' ) }}</b-button>
@@ -382,13 +385,11 @@
 					<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
 						v-model="cbr">
 						<option v-for="cbr in cbrs">{{ cbr }}</option>
-					</select>
-					<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
+					</select> <label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
 						id="vbrQuality" v-model="vbrQuality">
 						<option v-for="vbrQuality in vbrQualities">{{ vbrQuality
 							}}</option>
-					</select>
-					<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
+					</select> <label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
 					<input type="number" min="0" oninput="validity.valid||(value='');"
 						id="vcBitRate" v-model.number="vcBitRate" />
 				</div>
@@ -497,6 +498,7 @@ const messages = {
 	  delaySid: 'Delay of SID:',
 	  delayStereoSid: 'Delay of Stereo-SID:',
 	  delayThreeSid: 'Delay of 3-SID:',
+	  rtmp: 'Use RTMP (or HLS)',
 	  mobileProfile: 'Mobile profile',
 	  wifiProfile: 'WiFi profile',
 	  vbr: 'variable bitrate instead of constant bitrate',
@@ -586,6 +588,7 @@ const messages = {
 	  delaySid: 'Verzögerung des SID:',
 	  delayStereoSid: 'Verzögerung des SID:',
 	  delayThreeSid: 'Verzögerung des SID:',
+	  rtmp: 'RTMP (oder HLS) verwenden',
 	  mobileProfile: 'Mobiles Profil',
 	  wifiProfile: 'WiFi Profil',
 	  vbr: 'Variable Bitrate verwenden anstatt fester',
@@ -688,6 +691,7 @@ new Vue({
     delaySid: 0,
     delayStereoSid: 20,
     delayThreeSid: 0,
+    rtmp: false,
     vbr: false,
     cbr: -1,
     cbrs: [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
@@ -750,10 +754,12 @@ new Vue({
 	mobileProfile: function() {
 		this.vbr = false;
 		this.cbr = 64;
+		this.vcBitRate = 300000;
 	},
 	wifiProfile: function() {
 		this.vbr = true;
 		this.vbrQuality = 0;
+		this.vcBitRate = 600000;
 	},
     updateFilters: function(engine) {
 		if (engine==='RESIDFP') {
@@ -799,6 +805,7 @@ new Vue({
       		+ '&reSIDfpFilter6581=' + this.filter6581 + '&reSIDfpStereoFilter6581=' + this.stereoFilter6581 + '&reSIDfpThirdFilter6581=' + this.threeFilter6581
       		+ '&reSIDfpFilter8580=' + this.filter8580 + '&reSIDfpStereoFilter8580=' + this.stereoFilter8580 + '&reSIDfpThirdFilter8580=' + this.threeFilter8580
       		+ '&digiBoosted8580=' + this.digiboost8580 + '&fakeStereo=' + this.fakeStereo + '&reverbBypass=' + this.bypassReverb
+      		+ '&rtmp=' + this.rtmp
       		+ '&cbr=' + this.cbr + '&vbrQuality=' + this.vbrQuality + '&vbr=' + this.vbr + "&vcBitRate=" + this.vcBitRate
       		+ '&pressSpaceInterval=' + this.pressSpaceInterval+'&status=' + this.status + this.reuParameters;
       },

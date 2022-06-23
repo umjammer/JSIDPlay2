@@ -59,6 +59,7 @@ import server.restful.servlets.PhotoServlet;
 import server.restful.servlets.StartPageServlet;
 import server.restful.servlets.StaticServlet;
 import server.restful.servlets.TuneInfoServlet;
+import server.restful.servlets.hls.OnKeepAliveServlet;
 import server.restful.servlets.rtmp.InsertNextDiskServlet;
 import server.restful.servlets.rtmp.JoystickServlet;
 import server.restful.servlets.rtmp.OnPlayDoneServlet;
@@ -161,10 +162,10 @@ public class JSIDPlay2Server {
 			DirectoryServlet.class, TuneInfoServlet.class, PhotoServlet.class, ConvertServlet.class,
 			DownloadServlet.class, FavoritesServlet.class, StaticServlet.class, StartPageServlet.class,
 			InsertTuneServlet.class, InsertHashesServlet.class, FindTuneServlet.class, FindHashServlet.class,
-			WhatsSidServlet.class, TuneExistsServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class,
-			InsertNextDiskServlet.class, SetSidModel6581Servlet.class, SetSidModel8580Servlet.class,
-			SetDefaultEmulationReSidServlet.class, SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class,
-			JoystickServlet.class);
+			WhatsSidServlet.class, TuneExistsServlet.class, OnKeepAliveServlet.class, OnPlayDoneServlet.class,
+			OnPlayServlet.class, InsertNextDiskServlet.class, SetSidModel6581Servlet.class,
+			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
+			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class);
 
 	private static EntityManagerFactory entityManagerFactory;
 

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <style>
@@ -198,8 +199,20 @@ body {
 <script type="text/javascript">
 	function startVideo() {
 		setTimeout(function() {
-			window.open('$rtmp', '_self');
+			window.open('$rtmp', 'c64video', 'resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no');
 		}, $waitForRTMP);
+		if ($hls === true) {
+			setInterval(function() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						console.log('HLS keep alive: $uuid');
+					}
+				};
+				xhttp.open("GET", "/static/on_keep_alive?name=$uuid", true);
+				xhttp.send();
+			}, $notifyForHLS);
+		}
 	}
 	function printMsg(msg) {
 		document.getElementById("alarmmsg").innerHTML = msg;
@@ -518,7 +531,12 @@ body {
 		</tbody>
 	</table>
 
-	<h3>Scan Barcode to watch the video</h3>
+	<h3>For Browser Playback: Please install a plugin for your browser, first!</h3>
+	<ol>
+		<li>E.g. Mozilla Firefox <a href="https://addons.mozilla.org/de/firefox/addon/native-mpeg-dash-hls-playback/">plugin</a>
+		<li>E.g. Google Chrome <a href="https://chrome.google.com/webstore/detail/native-hls-playback/emnphkkblegpebimobpbekeedfgemhof/support?hl=de">plugin</a>
+	</ol>
+	<h3>For mobile playback: Scan Barcode to watch the video</h3>
 	<ol>
 		<li>Please install VLC player or MXPlayer on your phone, first!
 		<li>Scan the barcode and open URL to watch the video.

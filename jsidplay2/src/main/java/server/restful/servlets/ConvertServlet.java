@@ -15,14 +15,16 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
+import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.MAX_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.NOTIFY_FOR_HLS;
 import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
-import static server.restful.common.IServletSystemProperties.RTMP_EXTERNAL_DOWNLOAD_URL;
-import static server.restful.common.IServletSystemProperties.RTMP_INTERNAL_DOWNLOAD_URL;
+import static server.restful.common.IServletSystemProperties.RTMP_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
+import static server.restful.common.IServletSystemProperties.WAIT_FOR_HLS;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_RTMP;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
@@ -119,6 +121,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -2)
 		private Boolean status = Boolean.TRUE;
+
+		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -2)
+		private Boolean rtmp = Boolean.TRUE;
 
 		@ParametersDelegate
 		private IniConfig config = new IniConfig();
@@ -228,7 +233,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
 						response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
 
-						Map<String, String> replacements = createReplacements(request, file, uuid);
+						Map<String, String> replacements = createReplacements(servletParameters, request, file, uuid);
 						try (InputStream is = ConvertServlet.class
 								.getResourceAsStream("/server/restful/webapp/convert.html")) {
 							setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
@@ -388,9 +393,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return videoFile;
 	}
 
-	private Map<String, String> createReplacements(HttpServletRequest request, File file, UUID uuid)
-			throws IOException, WriterException {
-		String rtmpUrl = getRTMPUrl(request.getRemoteAddr(), uuid);
+	private Map<String, String> createReplacements(ServletParameters servletParameters, HttpServletRequest request,
+			File file, UUID uuid) throws IOException, WriterException {
+		String rtmpUrl = getRTMPUrl(servletParameters, request.getRemoteAddr(), uuid);
 		String createQrCodeImgTag = createQrCodeImgTag(rtmpUrl, "UTF-8", "png", 320, 320);
 
 		Map<String, String> result = new HashMap<>();
@@ -399,7 +404,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put("$barcodeImgTop", "8px");
 		result.put("$barcodeImgRight", "-328px");
 		result.put("$rtmp", rtmpUrl);
-		result.put("$waitForRTMP", String.valueOf(WAIT_FOR_RTMP));
+		result.put("$hls", String.valueOf(!Boolean.TRUE.equals(servletParameters.rtmp)));
+		result.put("$waitForRTMP", getWaitFor(servletParameters));
+		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 		result.put("$filename", file.getName());
 		return result;
@@ -412,15 +419,19 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
 	}
 
-	private String getRTMPUrl(String remoteAddress, UUID uuid) {
-		boolean isLocal = remoteAddress.startsWith("192.168.") || remoteAddress.equals("127.0.0.1");
-		String baseUrl = isLocal ? RTMP_INTERNAL_DOWNLOAD_URL : RTMP_EXTERNAL_DOWNLOAD_URL;
-		if (baseUrl.startsWith("http")) {
-			// HLS protocol
-			return baseUrl + "/" + uuid + ".m3u8";
+	private String getRTMPUrl(ServletParameters servletParameters, String remoteAddress, UUID uuid) {
+		if (Boolean.TRUE.equals(servletParameters.rtmp)) {
+			// RTMP protocol
+			return RTMP_DOWNLOAD_URL + "/" + uuid;
+		} else {
+			// HLS
+			return HLS_DOWNLOAD_URL + "/" + uuid + ".m3u8";
 		}
-		// RTMP protocol
-		return baseUrl + "/" + uuid;
+	}
+
+	private String getWaitFor(ServletParameters servletParameters) {
+		return Boolean.TRUE.equals(servletParameters.rtmp) ? String.valueOf(WAIT_FOR_RTMP)
+				: String.valueOf(WAIT_FOR_HLS);
 	}
 
 }

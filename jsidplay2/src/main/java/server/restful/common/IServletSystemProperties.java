@@ -45,6 +45,16 @@ public interface IServletSystemProperties {
 	int WAIT_FOR_RTMP = valueOf(getProperty("jsidplay2.rtmp.wait.for", "1000"));
 
 	/**
+	 * Time span to wait until HLS is available after requesting it.
+	 */
+	int WAIT_FOR_HLS = valueOf(getProperty("jsidplay2.hls.wait.for", "4000"));
+
+	/**
+	 * Time span to wait between HLS keep alive notifications.
+	 */
+	int NOTIFY_FOR_HLS = valueOf(getProperty("jsidplay2.hls.notify.for", "30000"));
+
+	/**
 	 * Video streaming: Live stream created but not yet played will be quit after
 	 * timeout in s.
 	 */
@@ -67,18 +77,14 @@ public interface IServletSystemProperties {
 	String RTMP_UPLOAD_URL = getProperty("jsidplay2.rtmp.upload.url", "rtmp://haendel.ddns.net/live");
 
 	/**
-	 * Video streaming: Download url for the video player for requests from the
-	 * internet.
+	 * Video streaming: RTMP Download url for the video player.
 	 */
-	String RTMP_EXTERNAL_DOWNLOAD_URL = getProperty("jsidplay2.rtmp.external.download.url",
-			"rtmp://haendel.ddns.net/live");
+	String RTMP_DOWNLOAD_URL = getProperty("jsidplay2.rtmp.external.download.url", "rtmp://haendel.ddns.net/live");
 
 	/**
-	 * Video streaming: Download url for the video player for requests from inside
-	 * the internal network.
+	 * Video streaming: HLS Download url for the video player.
 	 */
-	String RTMP_INTERNAL_DOWNLOAD_URL = getProperty("jsidplay2.rtmp.internal.download.url",
-			"rtmp://haendel.ddns.net/live");
+	String HLS_DOWNLOAD_URL = getProperty("jsidplay2.hls.external.download.url", "http://haendel.ddns.net:90/hls");
 
 	/**
 	 * Video download: Maximum length in seconds the video download process is
