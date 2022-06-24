@@ -14,13 +14,15 @@
 	href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 
 <!-- Load Vue followed by BootstrapVue -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.min.js"></script>
+<script src="https://unpkg.com/vue-router@3.5.4/dist/vue-router.min.js"></script>
 <script
 	src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
 
+<!-- helpers -->
+<script src="https://unpkg.com/vue-i18n@8.27.2"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-<script src="https://unpkg.com/vue-i18n@8"></script>
 
 <meta charset="UTF-8" />
 <meta name="viewport"
@@ -45,7 +47,7 @@
 			<div class="audio">
 				<audio ref="audioElm" v-bind:src="playlistEntryUrl"
 					v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
-					autoplay> I'm sorry. You're browser doesn't support HTML5
+					autoplay> I'm sorry. Your browser doesn't support HTML5
 					audio
 				</audio>
 			</div>
@@ -53,52 +55,54 @@
 				<b-card no-body> <b-tabs v-model="tabIndex" card>
 				<b-tab>
 
-				<template #title>CON</template>
+				<template #title>{{ $t( 'CON' ) }}</template>
 
 				<b-card-text>
 				<div class="settings-box">
-					<label for="username">{{ $t( 'username' ) }}</label>
-					<input type="text" id="username" v-model="username">
-					<label for="password">{{ $t( 'password' ) }}</label>
-					<input type="password" id="password" v-model="password">
+					<div>
+						<label for="username">{{ $t( 'username' ) }}</label>
+						<input type="text" id="username" v-model="username">
+					</div>
+					<div>
+						<label for="password">{{ $t( 'password' ) }}</label>
+						<input type="password" id="password" v-model="password">
+					</div>
 				</div>
 
 				</b-card-text> </b-tab> <b-tab active>
 
 				<template #title>
-					SIDS
+					{{ $t( 'SIDS' ) }}
 					<b-spinner type="border" small v-if="loadingSids"></b-spinner>
 				</template>
 
 				<b-card-text>
 				<ul>
-					<li v-for="entry in directory" :key="entry">
-						<div v-if="entry.endsWith('/')">
-							<a href="#" v-on:click="fetchDirectory(entry)"> {{entry}} </a>
+					<li v-for="entry in directory" :key="entry"
+						style="white-space: pre-line;">
+						<div class="directory" v-if="entry.endsWith('/')"
+							v-on:click="fetchDirectory(entry)">{{entry}}</div>
+						<div class="sid-file"
+							v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')"
+							v-on:click="updateSid(entry); tabIndex = 2;">
+							<div>{{entry}}</div>
 						</div>
-						<div
-							v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')">
-							<div>
-								<a href="#" v-on:click="updateSid(entry); tabIndex = 2;">
-									{{entry}} </a>
-							</div>
-						</div>
-						<div v-else>
-							<div style="white-space: nowrap;">
-								{{entry}} <a v-bind:href="createConvertUrl(entry)" target="c64">
-									Load </a> <span v-if='entry.toLowerCase().endsWith(".d64")'>
-									<span> or </span> <a
+						<template v-else>
+							<a v-bind:href="createConvertUrl(entry)" target="c64"> <span>{{entry}}</span>
+							</a>
+							<template v-if='entry.toLowerCase().endsWith(".d64")'>
+								<BR> <span> {{ $t( 'or' ) }} </span> <a
 									v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
-									target="c64"> Fastload </a>
-								</span>
-							</div>
-						</div>
+									target="c64"> <span>JiffyDOS</span>
+								</a>
+							</template>
+						</template>
 					</li>
 				</ul>
 				</b-card-text> </b-tab> <b-tab>
 
 				<template #title>
-					SID
+					{{ $t( 'SID' ) }}
 					<b-spinner type="border" small v-if="loadingSid"></b-spinner>
 				</template>
 
@@ -119,8 +123,8 @@
 				<div class="sid">
 					<table>
 						<thead>
-							<th>{{ $t( 'sidInfoKey' ) }}</th>
-							<th>{{ $t( 'sidInfoValue' ) }}</th>
+							<th v-if="infos.length > 0">{{ $t( 'sidInfoKey' ) }}</th>
+							<th v-if="infos.length > 0">{{ $t( 'sidInfoValue' ) }}</th>
 						</thead>
 						<tbody>
 							<tr v-for="(value, key) in infos">
@@ -136,17 +140,17 @@
 				</b-card-text> </b-tab> <b-tab>
 
 				<template #title>
-					PL
+					{{ $t( 'PL' ) }}
 					<b-spinner type="border" small v-if="loadingPl"></b-spinner>
 				</template>
 
 				<b-card-text>
 
 				<div class="button-box">
-					<b-button v-on:click="playlist.pop()">{{ $t( 'remove' )
-					}}</b-button>
-					<b-button v-on:click="setNextPlaylistEntry">{{ $t(
-					'next' ) }}</b-button>
+					<b-button v-on:click="playlist.pop()" v-if="playlist.length > 0">{{
+					$t( 'remove' ) }}</b-button>
+					<b-button v-on:click="setNextPlaylistEntry"
+						v-if="playlist.length > 0">{{ $t( 'next' ) }}</b-button>
 
 					<b-form-checkbox id="random" v-model="random"> {{
 					$t( 'random' ) }} </b-form-checkbox>
@@ -155,21 +159,21 @@
 				<div class="button-box">
 					<b-button v-on:click="fetchFavorites()">{{ $t(
 					'fetchFavorites' ) }}</b-button>
-					<b-button v-on:click="playlist=[]">{{ $t(
-					'removePlaylist' ) }}</b-button>
+					<b-button v-on:click="playlist=[]" v-if="playlist.length > 0">{{
+					$t( 'removePlaylist' ) }}</b-button>
 				</div>
 
 				<ol>
-					<li v-for="(entry,index) in playlist" :key="index"><a
-						:class="index==playlistIndex ? 'highlighted' : ''" href="#"
+					<li v-for="(entry,index) in playlist" :key="index"
+						:class="index==playlistIndex ? 'highlighted playlist-item' : 'playlist-item'"
 						v-on:click="playlistIndex = index; updateSid(playlist[playlistIndex]);">{{entry}}
-					</a></li>
+					</li>
 				</ol>
 
 				</b-card-text> </b-tab> <b-tab>
 
 				<template #title>
-					CFG
+					{{ $t( 'CFG' ) }}
 					<b-spinner type="border" small v-if="loadingCfg"></b-spinner>
 				</template>
 
@@ -188,22 +192,34 @@
 				<div class="settings-box">
 					<b-form-group> <b-form-radio-group
 						v-model="defaultStreaming" style="display: flex;">
-					<b-form-radio value="HLS">HLS</b-form-radio> <b-form-radio
-						value="RTMP">RTMP</b-form-radio> </b-form-radio-group> </b-form-group>
+					<b-form-radio value="HLS">{{ $t ( 'hls' ) }}</b-form-radio> <b-form-radio
+						value="RTMP">{{ $t ( 'rtmp' ) }}</b-form-radio> </b-form-radio-group> </b-form-group>
 				</div>
 				<div class="settings-box">
 					<b-form-checkbox id="vbr" v-model="vbr"> {{ $t(
 					'vbr' ) }} </b-form-checkbox>
-					<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
-						v-model="cbr">
-						<option v-for="cbr in cbrs">{{ cbr }}</option>
-					</select> <label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
-						id="vbrQuality" v-model="vbrQuality">
-						<option v-for="vbrQuality in vbrQualities">{{ vbrQuality
-							}}</option>
-					</select> <label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
-					<input type="number" min="0" oninput="validity.valid||(value='');"
-						id="vcBitRate" v-model.number="vcBitRate" />
+				</div>
+				<div class="settings-box">
+					<div>
+						<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
+							v-model="cbr">
+							<option v-for="cbr in cbrs">{{ cbr }}</option>
+						</select>
+					</div>
+					<div>
+						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
+							id="vbrQuality" v-model="vbrQuality">
+							<option v-for="vbrQuality in vbrQualities">{{ vbrQuality
+								}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="settings-box">
+					<div>
+						<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="vcBitRate" v-model.number="vcBitRate" />
+					</div>
 				</div>
 
 				<h2>{{ $t( 'playbackCfgHeader' ) }}</h2>
@@ -283,36 +299,38 @@
 				<div class="settings-box">
 					<div>
 						<div>
-							<span>{{ $t( 'filter6581' )}}</span>
+							<label for="filter6581">{{ $t( 'filter6581' )}}</label>
 							<b-form-select v-model="filter6581" :options="filters6581"
 								size="sm" class="mt-3" :select-size="3"></b-form-select>
 						</div>
 						<div>
-							<span>{{ $t( 'filter8580' )}}</span>
+							<label for="filter8580">{{ $t( 'filter8580' )}}</label>
 							<b-form-select v-model="filter8580" :options="filters8580"
 								size="sm" class="mt-3" :select-size="3"></b-form-select>
 						</div>
 					</div>
 					<div>
 						<div>
-							<span>{{ $t( 'stereoFilter6581' )}}</span>
+							<label for="stereoFilter6581">{{ $t( 'stereoFilter6581'
+								)}}</label>
 							<b-form-select v-model="stereoFilter6581" :options="filters6581"
 								size="sm" class="mt-3" :select-size="3"></b-form-select>
 						</div>
 						<div>
-							<span>{{ $t( 'stereoFilter8580' )}}</span>
+							<label for="stereoFilter8580">{{ $t( 'stereoFilter8580'
+								)}}</label>
 							<b-form-select v-model="stereoFilter8580" :options="filters8580"
 								size="sm" class="mt-3" :select-size="3"></b-form-select>
 						</div>
 					</div>
 					<div>
 						<div>
-							<span>{{ $t( 'threeFilter6581' )}}</span>
+							<label for="threeFilter6581">{{ $t( 'threeFilter6581' )}}</label>
 							<b-form-select v-model="threeFilter6581" :options="filters6581"
 								size="sm" class="mt-3" :select-size="3"></b-form-select>
 						</div>
 						<div>
-							<span>{{ $t( 'threeFilter8580' )}}</span>
+							<label for="threeFilter8580">{{ $t( 'threeFilter8580' )}}</label>
 							<b-form-select v-model="threeFilter8580" :options="filters8580"
 								size="sm" class="mt-3" :select-size="3"></b-form-select>
 						</div>
@@ -322,64 +340,90 @@
 				<h2>{{ $t( 'audioCfgHeader' ) }}</h2>
 
 				<div class="settings-box">
-					<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label> <span
-						class="value">{{ volumeSid }}db</span>
-					<b-form-input id="volumeSid" v-model="volumeSid" type="range"
-						min="-6" max="6" step="1"></b-form-input>
+					<div>
+						<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label> <span
+							class="value">{{ volumeSid }}db</span>
+						<b-form-input id="volumeSid" v-model="volumeSid" type="range"
+							min="-6" max="6" step="1"></b-form-input>
 
-					<label for="volumeStereoSid">{{ $t( 'volumeStereoSid' ) }}</label>
-					<span class="value">{{ volumeStereoSid }}db</span>
-					<b-form-input id="volumeStereoSid" v-model="volumeStereoSid"
-						type="range" min="-6" max="6" step="1"></b-form-input>
+					</div>
+					<div>
+						<label for="volumeStereoSid">{{ $t( 'volumeStereoSid' ) }}</label>
+						<span class="value">{{ volumeStereoSid }}db</span>
+						<b-form-input id="volumeStereoSid" v-model="volumeStereoSid"
+							type="range" min="-6" max="6" step="1"></b-form-input>
+					</div>
+					<div>
 
-					<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label> <span
-						class="value">{{ volumeThreeSid }}db</span>
-					<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
-						type="range" min="-6" max="6" step="1"></b-form-input>
+						<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label> <span
+							class="value">{{ volumeThreeSid }}db</span>
+						<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
+							type="range" min="-6" max="6" step="1"></b-form-input>
+					</div>
 				</div>
 				<div class="settings-box">
-					<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label> <span
-						class="value">{{ balanceSid }}</span>
-					<b-form-input id="balanceSid" v-model="balanceSid" type="range"
-						min="0" max="1" step="0.1"></b-form-input>
-					<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' )
-						}}</label> <span class="value">{{ balanceStereoSid }}</span>
-					<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
-						type="range" min="0" max="1" step="0.1"></b-form-input>
-					<label for="balanceThreeSid">{{ $t( 'balanceThreeSid' ) }}</label>
-					<span class="value">{{ balanceThreeSid }}</span>
-					<b-form-input id="balanceThreeSid" v-model="balanceThreeSid"
-						type="range" min="0" max="1" step="0.1"></b-form-input>
+					<div>
+						<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label> <span
+							class="value">{{ balanceSid }}</span>
+						<b-form-input id="balanceSid" v-model="balanceSid" type="range"
+							min="0" max="1" step="0.1"></b-form-input>
+					</div>
+					<div>
+						<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' )
+							}}</label> <span class="value">{{ balanceStereoSid }}</span>
+						<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
+							type="range" min="0" max="1" step="0.1"></b-form-input>
+					</div>
+					<div>
+						<label for="balanceThreeSid">{{ $t( 'balanceThreeSid' ) }}</label>
+						<span class="value">{{ balanceThreeSid }}</span>
+						<b-form-input id="balanceThreeSid" v-model="balanceThreeSid"
+							type="range" min="0" max="1" step="0.1"></b-form-input>
+					</div>
 				</div>
 				<div class="settings-box">
-					<label for="delaySid">{{ $t( 'delaySid' ) }}</label> <span
-						class="value">{{ delaySid }}ms</span>
-					<b-form-input id="delaySid" v-model="delaySid" type="range" min="0"
-						max="100" step="10"></b-form-input>
-					<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label> <span
-						class="value">{{ delayStereoSid }}ms</span>
-					<b-form-input id="delayStereoSid" v-model="delayStereoSid"
-						type="range" min="0" max="100" step="10"></b-form-input>
-					<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label> <span
-						class="value">{{ delayThreeSid }}ms</span>
-					<b-form-input id="delayThreeSid" v-model="delayThreeSid"
-						type="range" min="0" max="100" step="10"></b-form-input>
+					<div>
+						<label for="delaySid">{{ $t( 'delaySid' ) }}</label> <span
+							class="value">{{ delaySid }}ms</span>
+						<b-form-input id="delaySid" v-model="delaySid" type="range"
+							min="0" max="100" step="10"></b-form-input>
+					</div>
+					<div>
+						<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label> <span
+							class="value">{{ delayStereoSid }}ms</span>
+						<b-form-input id="delayStereoSid" v-model="delayStereoSid"
+							type="range" min="0" max="100" step="10"></b-form-input>
+					</div>
+					<div>
+						<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label> <span
+							class="value">{{ delayThreeSid }}ms</span>
+						<b-form-input id="delayThreeSid" v-model="delayThreeSid"
+							type="range" min="0" max="100" step="10"></b-form-input>
+					</div>
 				</div>
 				<div class="settings-box">
-					<label for="startTime">{{ $t( 'startTime' ) }}</label>
-					<input type="number" min="0" oninput="validity.valid||(value='');"
-						id="startTime" v-model.number="startTime" />
-					<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label>
-					<input type="number" min="0" oninput="validity.valid||(value='');"
-						id="defaultLength" v-model.number="defaultLength" />
+					<div>
+						<label for="startTime">{{ $t( 'startTime' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="startTime" v-model.number="startTime" />
+					</div>
+					<div>
+						<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="defaultLength" v-model.number="defaultLength" />
+					</div>
 				</div>
 				<div class="settings-box">
-					<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label>
-					<input type="number" min="0" oninput="validity.valid||(value='');"
-						id="fadeIn" v-model.number="fadeIn" />
-					<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label>
-					<input type="number" min="0" oninput="validity.valid||(value='');"
-						id="fadeOut" v-model.number="fadeOut" />
+					<div>
+						<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="fadeIn" v-model.number="fadeIn" />
+					</div>
+					<div>
+						<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label>
+						<input type="number" min="0" oninput="validity.valid||(value='');"
+							id="fadeOut" v-model.number="fadeOut" />
+					</div>
 				</div>
 
 				<h2>{{ $t( 'mutingCfgHeader' ) }}</h2>
@@ -452,6 +496,11 @@ function uriEncode(entry) {
 
 const messages = {
   en: {
+	  CON: 'Connection',
+	  SIDS: 'Directories',
+	  SID: 'SID',
+	  PL: 'Playlist',
+	  CFG: 'Configuration',
 	  sidInfoKey: 'Name',
 	  sidInfoValue: 'Value',
 	  HVSCEntry: {
@@ -497,7 +546,7 @@ const messages = {
 	  next: 'Next',
 	  fetchFavorites: 'Download Playlist',
 	  removePlaylist: 'Remove Playlist',
-	  random: 'Random',
+	  random: 'Random playback',
 	  detectSongLength: 'Detect Song Length',
 	  singleSong: 'Single Song',
 	  loopSong: 'Loop Song',
@@ -508,9 +557,9 @@ const messages = {
 	  defaultLength: 'Default Length in sec.',
 	  fadeIn: 'Fade-In in sec.',
 	  fadeOut: 'Fade-Out in sec.',
-	  volumeSid: 'Increase volume of SID:',
-	  volumeStereoSid: 'Increase volume of Stereo-SID:',
-	  volumeThreeSid: 'Increase volume of 3-SID:',
+	  volumeSid: 'Boost volume of SID:',
+	  volumeStereoSid: 'Boost volume of Stereo-SID:',
+	  volumeThreeSid: 'Boost volume of 3-SID:',
 	  balanceSid: 'Balance of SID:',
 	  balanceStereoSid: 'Balance of Stereo-SID:',
 	  balanceThreeSid: 'Balance of 3-SID:',
@@ -518,11 +567,11 @@ const messages = {
 	  delayStereoSid: 'Delay of Stereo-SID:',
 	  delayThreeSid: 'Delay of 3-SID:',
 	  rtmp: 'RTMP (Real Time Messaging Protocol)',
-	  hls: 'HLS (HTTP-Streaming)',
+	  hls: 'HLS (HTTP Live Streaming Protocol)',
 	  mobileProfile: 'Mobile profile',
 	  wifiProfile: 'WiFi profile',
-	  vbr: 'variable bitrate for audio instead of constant bitrate',
-	  cbr: 'constant bitrate for audio in kbps',
+	  vbr: 'Use variable bitrate for audio instead of constant bitrate',
+	  cbr: 'Constant bitrate for audio in kbps',
 	  vbrQuality: 'Quality of variable bitrate for audio',
 	  vcBitRate: 'Video Bit Rate',
 	  filter6581: 'SID Filter 6581',
@@ -546,9 +595,15 @@ const messages = {
 	  audioCfgHeader: 'Audio Configuration',
 	  mutingCfgHeader: 'Muting Configuration',
 	  emulationCfgHeader: 'Emulation Configuration',
-	  filterCfgHeader: 'Filter Configuration'
+	  filterCfgHeader: 'Filter Configuration',
+	  or: 'or Load faster using'
   },
   de: {
+	  CON: 'Verbindung',
+	  SIDS: 'Verzeichnisse',
+	  SID: 'SID',
+	  PL: 'Favoriten',
+	  CFG: 'Konfiguration',
 	  sidInfoKey: 'Name',
 	  sidInfoValue: 'Wert',
 	  HVSCEntry: {
@@ -594,8 +649,8 @@ const messages = {
 	  next: 'N\u00e4tchster',
 	  fetchFavorites: 'Favoriten herunterladen',
 	  removePlaylist: 'Favoriten l\u00f6schen',
-	  random: 'Zuf\u00e4tllig',
-	  detectSongLength: 'Songl\u00e4tnge ber\u00fccksichtigen',
+	  random: 'Zuf\u00e4tllige Wiedergabe',
+	  detectSongLength: 'Songl\u00e4nge ber\u00fccksichtigen',
 	  singleSong: 'Nur den Startsong spielen',
 	  loopSong: 'Song wiederholen',
 	  digiboost8580: 'Digi Boost 8580',
@@ -605,9 +660,9 @@ const messages = {
 	  defaultLength: 'Default L\u00e4tnge in Sek.',
 	  fadeIn: 'Fade-In in Sek.',
 	  fadeOut: 'Fade-Out in Sek.',
-	  volumeSid: 'Lautst\u00e4trke anheben des SID:',
-	  volumeStereoSid: 'Lautst\u00e4trke anheben des Stereo-SID:',
-	  volumeThreeSid: 'Lautst\u00e4trke anheben des 3-SID:',
+	  volumeSid: 'Mehr Lautst\u00e4trke des SID:',
+	  volumeStereoSid: 'Mehr Lautst\u00e4trke des Stereo-SID:',
+	  volumeThreeSid: 'Mehr Lautst\u00e4trke des 3-SID:',
 	  balanceSid: 'Balance des SID:',
 	  balanceStereoSid: 'Balance des Stereo-SID:',
 	  balanceThreeSid: 'Balance des 3-SID:',
@@ -615,10 +670,10 @@ const messages = {
 	  delayStereoSid: 'Verz\u00f6gerung des SID:',
 	  delayThreeSid: 'Verz\u00f6gerung des SID:',
 	  rtmp: 'RTMP (Real Time Messaging Protocol)',
-	  hls: 'HLS (HTTP-Streaming)',
+	  hls: 'HLS (HTTP Live Streaming Protokoll)',
 	  mobileProfile: 'Mobiles Profil',
 	  wifiProfile: 'WiFi Profil',
-	  vbr: 'Variable Bitrate f\u00fcr Audio verwenden anstatt fester',
+	  vbr: 'Verwende variable Bitrate f\u00fcr Audio verwenden anstatt fester',
 	  cbr: 'Konstante Bitrate f\u00fcr Audio in kbps',
 	  vbrQuality: 'Qualit\u00e4tt der variablen Bitrate f\u00fcr Audio',
 	  vcBitRate: 'Video Bit Rate',
@@ -643,8 +698,8 @@ const messages = {
 	  audioCfgHeader: 'Audio konfigurieren',
 	  mutingCfgHeader: 'Stummschalten konfigurieren',
 	  emulationCfgHeader: 'Emulation konfigurieren',
-	  filterCfgHeader: 'Filter konfigurieren'
-
+	  filterCfgHeader: 'Filter konfigurieren',
+	  or: 'oder alternativ schneller laden mit'
   }
 }
 

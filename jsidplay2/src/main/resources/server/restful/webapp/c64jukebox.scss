@@ -33,6 +33,11 @@
 	padding: 16px 0;
 }
 
+.playlist-item,.directory,.sid-file {
+    cursor:pointer;
+    color:#0d6efd;
+    text-decoration:underline;
+}
 .highlighted {
 	background-color: lightgray;
 }
@@ -40,4 +45,10 @@
 .settings-box {
 	padding: 2px;
 	display: flex;
+	flex-wrap: wrap;
 }
+
+label {
+	vertical-align: top;
+}
+

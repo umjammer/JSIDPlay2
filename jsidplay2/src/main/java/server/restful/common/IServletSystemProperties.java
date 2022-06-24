@@ -15,7 +15,7 @@ public interface IServletSystemProperties {
 	String BASE_URL = getProperty("jsidplay2.base.url", "http://127.0.0.1:8080");
 
 	/**
-	 * JSIDPlay2Server Socket connection timeout in s of the HTTP(s) connection.
+	 * JSIDPlay2Server Socket connection timeout in ms of the HTTP(s) connection.
 	 */
 	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
 
@@ -40,17 +40,18 @@ public interface IServletSystemProperties {
 	int PRESS_SPACE_INTERVALL = valueOf(getProperty("jsidplay2.rtmp.press_space_intervall", "90"));
 
 	/**
-	 * Time span to wait until RTMP is available after requesting it.
+	 * Time span to wait until RTMP is available after requesting it in
+	 * milliseconds.
 	 */
 	int WAIT_FOR_RTMP = valueOf(getProperty("jsidplay2.rtmp.wait.for", "1000"));
 
 	/**
-	 * Time span to wait until HLS is available after requesting it.
+	 * Time span to wait until HLS is available after requesting it in milliseconds.
 	 */
 	int WAIT_FOR_HLS = valueOf(getProperty("jsidplay2.hls.wait.for", "4000"));
 
 	/**
-	 * Time span to wait between HLS keep alive notifications.
+	 * Time span to wait between HLS keep alive notifications in milliseconds.
 	 */
 	int NOTIFY_FOR_HLS = valueOf(getProperty("jsidplay2.hls.notify.for", "30000"));
 
@@ -87,8 +88,7 @@ public interface IServletSystemProperties {
 	String HLS_DOWNLOAD_URL = getProperty("jsidplay2.hls.external.download.url", "http://haendel.ddns.net:90/hls");
 
 	/**
-	 * Video download: Maximum length in seconds the video download process is
-	 * running.
+	 * Video download: Maximum length in seconds the video download process can run.
 	 */
 	int MAX_DOWNLOAD_LENGTH = valueOf(getProperty("jsidplay2.rtmp.max_seconds", "600"));
 
@@ -107,12 +107,14 @@ public interface IServletSystemProperties {
 	int MAX_WHATSIDS_IN_PARALLEL = valueOf(getProperty("jsidplay2.whatssid.max.parallel", "7"));
 
 	/**
-	 * WhatsSID? Maximum duration used to recognize a tune for file upload.
+	 * WhatsSID? Maximum duration in seconds used to recognize a tune for file
+	 * upload.
 	 */
 	int UPLOAD_MAXIMUM_DURATION = valueOf(getProperty("jsidplay2.whatssid.upload.max.duration", "120"));
 
 	/**
-	 * WhatsSID? Cache size. Recognized audio is cached for performance reasons.
+	 * WhatsSID? Cache size. Recognized audio is cached for repeated requests for
+	 * performance reasons.
 	 */
 	int CACHE_SIZE = valueOf(getProperty("jsidplay2.whatssid.cache.size", "60000"));
 
