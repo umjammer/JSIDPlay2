@@ -147,20 +147,20 @@
 				<b-card-text>
 
 				<div class="button-box">
-					<b-button v-on:click="playlist.pop()" v-if="playlist.length > 0">{{
-					$t( 'remove' ) }}</b-button>
-					<b-button v-on:click="setNextPlaylistEntry"
-						v-if="playlist.length > 0">{{ $t( 'next' ) }}</b-button>
-
-					<b-form-checkbox id="random" v-model="random"> {{
-					$t( 'random' ) }} </b-form-checkbox>
-
-				</div>
-				<div class="button-box">
 					<b-button v-on:click="fetchFavorites()">{{ $t(
 					'fetchFavorites' ) }}</b-button>
 					<b-button v-on:click="playlist=[]" v-if="playlist.length > 0">{{
 					$t( 'removePlaylist' ) }}</b-button>
+				</div>
+				<div class="button-box">
+					<b-button v-on:click="playlist.pop()" v-if="playlist.length > 0">{{
+					$t( 'remove' ) }}</b-button>
+					<b-button v-on:click="setNextPlaylistEntry"
+						v-if="playlist.length > 0">{{ $t( 'next' ) }}</b-button>
+				</div>
+				<div class="button-box">
+					<b-form-checkbox id="random" v-model="random"> {{
+					$t( 'random' ) }} </b-form-checkbox>
 				</div>
 
 				<ol>
@@ -542,8 +542,8 @@ const messages = {
 	  downloadMP3: 'Download MP3',
 	  downloadSID: 'Download SID',
 	  addToPlaylist: 'Add To Playlist',
-	  remove: 'Remove',
-	  next: 'Next',
+	  remove: 'Remove last tune',
+	  next: 'Next tune',
 	  fetchFavorites: 'Download Playlist',
 	  removePlaylist: 'Remove Playlist',
 	  random: 'Random playback',
@@ -645,8 +645,8 @@ const messages = {
 	  downloadMP3: 'Download MP3',
 	  downloadSID: 'Download SID',
 	  addToPlaylist: 'Zu Favoriten hinzuf\u00fcgen',
-	  remove: 'L\u00f6schen',
-	  next: 'N\u00e4tchster',
+	  remove: 'Letzten Tune l\u00f6schen',
+	  next: 'N\u00e4tchster Tune',
 	  fetchFavorites: 'Favoriten herunterladen',
 	  removePlaylist: 'Favoriten l\u00f6schen',
 	  random: 'Zuf\u00e4tllige Wiedergabe',
