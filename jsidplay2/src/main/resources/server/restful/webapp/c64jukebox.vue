@@ -78,46 +78,41 @@
 					<b-spinner type="border" small v-if="loadingSids"></b-spinner>
 				</template>
 
-				<b-card-text>
-				<ul>
-					<li v-for="entry in directory" :key="entry"
-						style="white-space: pre-line;">
-						<div
-							v-bind:class="entry.endsWith('../')?'directory parent':'directory'"
-							v-if="entry.endsWith('/')" v-on:click="fetchDirectory(entry)">
-							<span>{{entry}}</span><span v-if="entry.endsWith('../')"
-								class="parent-directory-hint">&larr; {{ $t(
-								'parentDirectoryHint' ) }}</span>
-						</div>
-						<div
-							v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')"
-							v-on:click="updateSid(entry); tabIndex = 2;">
-							<div>
-								<i class="fas fa-music"></i><span class="sid-file">{{entry}}</span>
-							</div>
-						</div>
-						<template
-							v-else-if="entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
+				<b-card-text> <b-list-group> <b-list-group-item :button="entry.endsWith('/')" v-for="entry in directory" :key="entry"
+					style="white-space: pre-line;">
+				<div
+					v-bind:class="entry.endsWith('../')?'directory parent':'directory'"
+					v-if="entry.endsWith('/')" v-on:click="fetchDirectory(entry)">
+					<span>{{entry}}</span><span v-if="entry.endsWith('../')"
+						class="parent-directory-hint">&larr; {{ $t(
+						'parentDirectoryHint' ) }}</span>
+				</div>
+				<template
+					v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')"
+					v-on:click="updateSid(entry); tabIndex = 2;">
+					<div>
+						<i class="fas fa-music"></i><span class="sid-file">{{entry}}</span>
+					</div>
+				</template>
+				<template
+					v-else-if="entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
 							|| entry.endsWith('.d64') || entry.endsWith('.g64') || entry.endsWith('.nib')
 							|| entry.endsWith('.tap') || entry.endsWith('.t64')
 							|| entry.endsWith('.reu') || entry.endsWith('.ima') || entry.endsWith('.crt') || entry.endsWith('.img')">
-							<a v-bind:href="createConvertUrl(entry)" target="c64"> <i
-								class="fas fa-video"></i><span>{{entry}}</span>
-							</a>
-							<template v-if='entry.toLowerCase().endsWith(".d64")'>
-								<BR> <span> {{ $t( 'or' ) }} </span> <a
-									v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
-									target="c64"> <span>JiffyDOS</span>
-								</a>
-							</template>
-						</template>
-						<template v-else>
-							<a v-bind:href="createDownloadUrl(entry)"> <span>{{entry}}</span>
-							</a>
-						</template>
-					</li>
-				</ul>
-				</b-card-text> </b-tab> <b-tab>
+					<i class="fas fa-video"></i><span>{{entry}}</span>
+					<template v-if='entry.toLowerCase().endsWith(".d64")'>
+						<BR> <a v-bind:href="createConvertUrl(entry)" target="c64">Load</a><span>
+							{{ $t( 'or' ) }} </span> <a
+							v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
+							target="c64"> <span>JiffyDOS</span>
+						</a>
+					</template>
+				</template>
+				<template v-else>
+					<a v-bind:href="createDownloadUrl(entry)"> <span>{{entry}}</span>
+					</a>
+				</template>
+				</b-list-group-item> </b-list-group> </b-card-text> </b-tab> <b-tab>
 
 				<template #title>
 					{{ $t( 'SID' ) }}
