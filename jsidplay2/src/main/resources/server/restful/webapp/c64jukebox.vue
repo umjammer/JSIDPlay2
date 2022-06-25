@@ -126,18 +126,8 @@
 				</div>
 
 				<div class="sid">
-					<table>
-						<thead>
-							<th v-if="infos.length > 0">{{ $t( 'sidInfoKey' ) }}</th>
-							<th v-if="infos.length > 0">{{ $t( 'sidInfoValue' ) }}</th>
-						</thead>
-						<tbody>
-							<tr v-for="(value, key) in infos">
-								<td>{{ $t( key ) }}</td>
-								<td>{{value}}</td>
-							</tr>
-						</tbody>
-					</table>
+					<b-table striped hover :items="translatedInfos"
+						:fields="translatedFields"></b-table>
 					<div>
 						<img :src="picture" id="img">
 					</div>
@@ -157,13 +147,13 @@
 					<b-button v-on:click="playlist=[]" v-if="playlist.length > 0">{{
 					$t( 'removePlaylist' ) }}</b-button>
 				</div>
-				<div class="button-box">
-					<b-button v-on:click="playlist.pop()" v-if="playlist.length > 0">{{
-					$t( 'remove' ) }}</b-button>
-					<b-button v-on:click="setNextPlaylistEntry"
-						v-if="playlist.length > 0">{{ $t( 'next' ) }}</b-button>
+				<div class="button-box" v-if="playlist.length > 0">
+					<b-button v-on:click="playlist.pop()">{{ $t( 'remove' )
+					}}</b-button>
+					<b-button v-on:click="setNextPlaylistEntry">{{ $t(
+					'next' ) }}</b-button>
 				</div>
-				<div class="button-box">
+				<div class="button-box" v-if="playlist.length > 0">
 					<b-form-checkbox id="random" v-model="random"> {{
 					$t( 'random' ) }} </b-form-checkbox>
 				</div>
@@ -834,7 +824,30 @@ new Vue({
         return "&reuSize=2048";
       }
       return "";
-    }
+    },
+    translatedFields() {
+	   	return [
+	   	  {
+	   		key: 'Name',
+	   		label: i18n.t('sidInfoKey')
+	   	  },
+	   	  {
+	   		key: 'Value',
+	   		label: i18n.t('sidInfoValue')
+	   	  }
+	   	];
+    },
+    translatedInfos: function() {
+    	  if (!this.infos) {
+    		  return '[]';
+    	  }
+    	  return this.infos.map(function(obj) {
+  		    return {
+  		        Name: i18n.t(obj.Name),
+  		        Value: obj.Value
+  		    }
+  		});
+      }
   },
   created: function() {
     this.fetchDirectory("/");
@@ -944,14 +957,14 @@ new Vue({
           method: "get",
           url:
             "/jsidplay2service/JSIDPlay2REST/info" +
-            uriEncode(entry),
+            uriEncode(entry) + "?list=true",
           auth: {
             username: this.username,
             password: this.password
           }
         })
           .then(response => {
-            this.infos = response.data;
+			this.infos = response.data;
             this.currentSid = entry;
           })
           .finally(() => (this.loadingSid = false));

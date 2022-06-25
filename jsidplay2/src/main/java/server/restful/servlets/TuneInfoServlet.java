@@ -8,6 +8,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -36,6 +37,9 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.TuneInfoServletParameters")
 	public static class ServletParameters {
+
+		@Parameter(names = "--list", arity = 1, descriptionKey = "LIST", order = -2)
+		private Boolean list = Boolean.FALSE;
 
 		@Parameter(descriptionKey = "FILE_PATH")
 		private String filePath;
@@ -73,10 +77,15 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			}
 			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
 
-			TreeMap<String, String> tuneInfos = hvscEntry2SortedMap(createHVSCEntry(file));
+			if (servletParameters.list) {
+				List<Map<String, String>> tuneInfos = hvscEntry2SortedList(createHVSCEntry(file));
 
-			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(tuneInfos));
+				setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(tuneInfos));
+			} else {
+				TreeMap<String, String> tuneInfos = hvscEntry2SortedMap(createHVSCEntry(file));
 
+				setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(tuneInfos));
+			}
 		} catch (Throwable t) {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
@@ -113,4 +122,9 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 				.filter(index -> Objects.equals(attributeValues.get(index).getKey(), o)).findFirst().getAsInt();
 	}
 
+	private List<Map<String, String>> hvscEntry2SortedList(HVSCEntry hvscEntry) {
+		return hvscEntry2SortedMap(hvscEntry).entrySet().stream()
+				.map(entry -> Map.of("Name", entry.getKey(), "Value", entry.getValue())).collect(Collectors.toList());
+
+	}
 }
