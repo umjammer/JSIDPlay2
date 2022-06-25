@@ -29,6 +29,17 @@
 .sid {
 	display: flex;
 	justify-content: space-between;
+	position: relative;
+}
+
+.picture-container {
+	position: absolute;
+	top: 108px;
+	right: 0px;
+}
+
+.picture {
+	max-width: 160px;
 }
 
 .button-box {

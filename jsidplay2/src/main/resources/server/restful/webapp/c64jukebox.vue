@@ -139,10 +139,10 @@
 				</div>
 
 				<div class="sid">
-					<b-table striped hover :items="translatedInfos"
+					<b-table striped bordered :items="translatedInfos"
 						:fields="translatedFields"></b-table>
-					<div>
-						<img :src="picture" id="img">
+					<div class="picture-container">
+						<img :src="picture" id="img" class="picture">
 					</div>
 				</div>
 				</b-card-text> </b-tab> <b-tab>
