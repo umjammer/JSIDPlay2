@@ -80,8 +80,13 @@
 				<ul>
 					<li v-for="entry in directory" :key="entry"
 						style="white-space: pre-line;">
-						<div class="directory" v-if="entry.endsWith('/')"
-							v-on:click="fetchDirectory(entry)">{{entry}}</div>
+						<div
+							v-bind:class="entry.endsWith('../')?'directory parent':'directory'"
+							v-if="entry.endsWith('/')" v-on:click="fetchDirectory(entry)">
+							<span>{{entry}}</span><span v-if="entry.endsWith('../')"
+								class="parent-directory-hint">&larr; {{ $t(
+								'parentDirectoryHint' ) }}</span>
+						</div>
 						<div class="sid-file"
 							v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')"
 							v-on:click="updateSid(entry); tabIndex = 2;">
@@ -501,6 +506,7 @@ const messages = {
 	  SID: 'SID',
 	  PL: 'Playlist',
 	  CFG: 'Configuration',
+	  parentDirectoryHint: 'Go up one Level',
 	  sidInfoKey: 'Name',
 	  sidInfoValue: 'Value',
 	  HVSCEntry: {
@@ -604,6 +610,7 @@ const messages = {
 	  SID: 'SID',
 	  PL: 'Favoriten',
 	  CFG: 'Konfiguration',
+	  parentDirectoryHint: 'Gehe eine Ebene h\u00f6her',
 	  sidInfoKey: 'Name',
 	  sidInfoValue: 'Wert',
 	  HVSCEntry: {

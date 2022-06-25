@@ -16,6 +16,16 @@
   }
 }
 
+.directory.parent {
+	font-weight: bold;
+	font-size: larger;
+}
+
+.parent-directory-hint {
+	float: right;
+	white-space: nowrap;
+}
+
 .sid {
 	display: flex;
 	justify-content: space-between;
