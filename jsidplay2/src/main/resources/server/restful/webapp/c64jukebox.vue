@@ -46,9 +46,9 @@
 			</div>
 			<div class="audio">
 				<audio ref="audioElm" v-bind:src="playlistEntryUrl"
-					v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls
-					autoplay> I'm sorry. Your browser doesn't support HTML5
-					audio
+					v-show="showAudio" v-on:ended="setNextPlaylistEntry"
+					type="audio/mpeg" controls autoplay> I'm sorry. Your
+					browser doesn't support HTML5 audio
 				</audio>
 			</div>
 			<div>
@@ -712,6 +712,7 @@ new Vue({
   el: "#app",
   i18n, //import mutil-lang
   data: {
+	showAudio: false,
 	langs: ['de', 'en'],
 	// CON (connection parameters)
     username: "jsidplay2",
@@ -799,13 +800,13 @@ new Vue({
   },
   computed: {
 	rtmp: function() {
-	      if (this.defaultStreaming === "HLS") {
-	          return false;
-	        } else if (this.defaultStreaming === "RTMP") {
-	          return true;
-	        }
+      if (this.defaultStreaming === "HLS") {
           return false;
-	    },
+      } else if (this.defaultStreaming === "RTMP") {
+          return true;
+      }
+      return false;
+	},
 	playlistEntryUrl: function() {
     	if (this.playlist.length === 0) {
     		return undefined;
@@ -1014,6 +1015,11 @@ new Vue({
                 })
                 .finally(() => (this.loadingCfg = false));
             }
+  },
+  mounted() {
+	this.$refs.audioElm.addEventListener("canplay", () => {
+		this.showAudio = true;
+	});
   }
 });
 
