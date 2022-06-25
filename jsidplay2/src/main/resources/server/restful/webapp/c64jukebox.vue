@@ -78,7 +78,10 @@
 					<b-spinner type="border" small v-if="loadingSids"></b-spinner>
 				</template>
 
-				<b-card-text> <b-list-group> <b-list-group-item :button="entry.endsWith('/')" v-for="entry in directory" :key="entry"
+				<b-card-text> <b-list-group> <b-list-group-item :button="!(entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
+							|| entry.endsWith('.d64') || entry.endsWith('.g64') || entry.endsWith('.nib')
+							|| entry.endsWith('.tap') || entry.endsWith('.t64')
+							|| entry.endsWith('.reu') || entry.endsWith('.ima') || entry.endsWith('.crt') || entry.endsWith('.img'))" v-for="entry in directory" :key="entry"
 					style="white-space: pre-line;">
 				<div
 					v-bind:class="entry.endsWith('../')?'directory parent':'directory'"
@@ -87,13 +90,13 @@
 						class="parent-directory-hint">&larr; {{ $t(
 						'parentDirectoryHint' ) }}</span>
 				</div>
-				<template
+				<div
 					v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')"
 					v-on:click="updateSid(entry); tabIndex = 2;">
 					<div>
 						<i class="fas fa-music"></i><span class="sid-file">{{entry}}</span>
 					</div>
-				</template>
+				</div>
 				<template
 					v-else-if="entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
 							|| entry.endsWith('.d64') || entry.endsWith('.g64') || entry.endsWith('.nib')
