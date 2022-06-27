@@ -78,41 +78,45 @@
 					<b-spinner type="border" small v-if="loadingSids"></b-spinner>
 				</template>
 
-				<b-card-text> <b-list-group> <b-list-group-item :button="!(entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
-							|| entry.endsWith('.d64') || entry.endsWith('.g64') || entry.endsWith('.nib')
-							|| entry.endsWith('.tap') || entry.endsWith('.t64')
-							|| entry.endsWith('.reu') || entry.endsWith('.ima') || entry.endsWith('.crt') || entry.endsWith('.img'))" v-for="entry in directory" :key="entry"
+				<b-card-text> <b-list-group> <b-list-group-item
+					v-for="entry in directory" :key="entry" :button="!isVideo(entry)"
 					style="white-space: pre-line;">
-				<div
-					v-bind:class="entry.endsWith('../')?'directory parent':'directory'"
-					v-if="entry.endsWith('/')" v-on:click="fetchDirectory(entry)">
-					<span>{{entry}}</span><span v-if="entry.endsWith('../')"
-						class="parent-directory-hint">&larr; {{ $t(
-						'parentDirectoryHint' ) }}</span>
-				</div>
-				<div
-					v-else-if="entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str')"
-					v-on:click="updateSid(entry); tabIndex = 2;">
-					<div>
+
+				<template v-if="isParentDirectory(entry)">
+					<div class="directory parent" v-on:click="fetchDirectory(entry)">
+						<i class="fas fa-arrow-up"></i><span>{{entry}}</span> <span
+							class="parent-directory-hint">&larr; {{ $t(
+							'parentDirectoryHint' ) }}</span>
+					</div>
+				</template>
+				<template v-else-if="isDirectory(entry)">
+					<div :class="directory" v-on:click="fetchDirectory(entry)">
+						<i class="fas fa-folder"></i><span>{{entry}}</span>
+					</div>
+				</template>
+				<template v-else-if="isMusic(entry)">
+					<div v-on:click="updateSid(entry); tabIndex = 2;">
 						<i class="fas fa-music"></i><span class="sid-file">{{entry}}</span>
 					</div>
-				</div>
-				<template
-					v-else-if="entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
-							|| entry.endsWith('.d64') || entry.endsWith('.g64') || entry.endsWith('.nib')
-							|| entry.endsWith('.tap') || entry.endsWith('.t64')
-							|| entry.endsWith('.reu') || entry.endsWith('.ima') || entry.endsWith('.crt') || entry.endsWith('.img')">
-					<i class="fas fa-video"></i><span>{{entry}}</span>
-					<template v-if='entry.toLowerCase().endsWith(".d64")'>
-						<BR> <a v-bind:href="createConvertUrl(entry)" target="c64">Load</a><span>
+				</template>
+				<template v-else-if="isVideo(entry)">
+					<template v-if="canFastload(entry)">
+						<i class="fas fa-video"></i><span>{{entry}}</span> <BR /> <a
+							v-bind:href="createConvertUrl(entry)" target="c64">Load</a><span>
 							{{ $t( 'or' ) }} </span> <a
 							v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
 							target="c64"> <span>JiffyDOS</span>
 						</a>
 					</template>
+					<template v-else>
+						<a v-bind:href="createConvertUrl(entry)" target="c64"> <i
+							class="fas fa-video"></i><span>{{entry}}</span>
+						</a>
+					</template>
 				</template>
 				<template v-else>
-					<a v-bind:href="createDownloadUrl(entry)"> <span>{{entry}}</span>
+					<a v-bind:href="createDownloadUrl(entry)"> <i
+						class="fas fa-download"></i><span>{{entry}}</span>
 					</a>
 				</template>
 				</b-list-group-item> </b-list-group> </b-card-text> </b-tab> <b-tab>
@@ -502,7 +506,7 @@ function uriEncode(entry) {
 
 const messages = {
   en: {
-	  CON: 'Connection',
+	  CON: 'Login',
 	  SIDS: 'Directories',
 	  SID: 'SID',
 	  PL: 'Playlist',
@@ -606,7 +610,7 @@ const messages = {
 	  or: 'or Load faster using'
   },
   de: {
-	  CON: 'Verbindung',
+	  CON: 'Anmeldung',
 	  SIDS: 'Verzeichnisse',
 	  SID: 'SID',
 	  PL: 'Favoriten',
@@ -806,6 +810,7 @@ new Vue({
     loadingPl: false,
     loadingCfg: false
   },
+  // Compoted
   computed: {
 	rtmp: function() {
       if (this.defaultStreaming === "HLS") {
@@ -860,11 +865,26 @@ new Vue({
   		});
       }
   },
-  created: function() {
-    this.fetchDirectory("/");
-    this.fetchFilters();
-  },
+  // Methods
   methods: {
+	  isDirectory: function (entry) {
+		return entry.endsWith('/');  
+	  },
+	  isParentDirectory: function (entry) {
+		return entry.endsWith('../');
+	  },
+	  isMusic: function (entry) {
+		return entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str');  
+	  },
+	  isVideo: function (entry) {
+		return entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
+		|| entry.endsWith('.d64') || entry.endsWith('.g64') || entry.endsWith('.nib')
+		|| entry.endsWith('.tap') || entry.endsWith('.t64')
+		|| entry.endsWith('.reu') || entry.endsWith('.ima') || entry.endsWith('.crt') || entry.endsWith('.img');  
+	  },
+	  canFastload: function(entry) {
+		  return entry.toLowerCase().endsWith(".d64") || entry.toLowerCase().endsWith(".g64") || entry.toLowerCase().endsWith(".nib");
+	  },
 	  setNextPlaylistEntry: function () {
 		if (this.playlist.length === 0) {
 			return;
@@ -1050,6 +1070,10 @@ new Vue({
                 .finally(() => (this.loadingCfg = false));
             }
   },
+  created: function() {
+	    this.fetchDirectory("/");
+	    this.fetchFilters();
+	  },
   mounted() {
 	this.$refs.audioElm.addEventListener("canplay", () => {
 		this.showAudio = true;
