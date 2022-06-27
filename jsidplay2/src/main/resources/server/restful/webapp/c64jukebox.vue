@@ -925,16 +925,19 @@ new Vue({
 		return entry.endsWith('../');
 	  },
 	  isMusic: function (entry) {
+		entry = entry.toLowerCase();
 		return entry.endsWith('.sid') || entry.endsWith('.dat') || entry.endsWith('.mus') || entry.endsWith('.str');  
 	  },
 	  isVideo: function (entry) {
+		entry = entry.toLowerCase();
 		return entry.endsWith('.prg') || entry.endsWith('.c64') || entry.endsWith('.p00')
 		|| entry.endsWith('.d64') || entry.endsWith('.g64') || entry.endsWith('.nib')
 		|| entry.endsWith('.tap') || entry.endsWith('.t64')
 		|| entry.endsWith('.reu') || entry.endsWith('.ima') || entry.endsWith('.crt') || entry.endsWith('.img');  
 	  },
 	  canFastload: function(entry) {
-		  return entry.toLowerCase().endsWith(".d64") || entry.toLowerCase().endsWith(".g64") || entry.toLowerCase().endsWith(".nib");
+		entry = entry.toLowerCase();
+		return entry.toLowerCase().endsWith(".d64") || entry.toLowerCase().endsWith(".g64") || entry.toLowerCase().endsWith(".nib");
 	  },
 	  setNextPlaylistEntry: function () {
 		if (this.playlist.length === 0) {
