@@ -78,48 +78,65 @@
 					<b-spinner type="border" small v-if="loadingSids"></b-spinner>
 				</template>
 
-				<b-card-text> <b-list-group> <b-list-group-item
-					v-for="entry in directory" :key="entry" :button="!isVideo(entry)" :variant="getVariant(entry)"
-					style="white-space: pre-line;">
+				<b-card-text> <b-list-group>
+				<template v-for="entry in directory" :key="entry">
 
-				<template v-if="isParentDirectory(entry)">
-					<div class="directory parent" v-on:click="fetchDirectory(entry)">
-						<i class="fas fa-arrow-up"></i><span>{{entry}}</span> <span
-							class="parent-directory-hint">&larr; {{ $t(
-							'parentDirectoryHint' ) }}</span>
-					</div>
-				</template>
-				<template v-else-if="isDirectory(entry)">
-					<div :class="directory" v-on:click="fetchDirectory(entry)">
-						<i class="fas fa-folder"></i><span>{{shortEntry(entry)}}</span>
-					</div>
-				</template>
-				<template v-else-if="isMusic(entry)">
-					<div v-on:click="updateSid(entry); tabIndex = 2;">
-						<i class="fas fa-music"></i><span class="sid-file">{{shortEntry(entry)}}</span>
-					</div>
-				</template>
-				<template v-else-if="isVideo(entry)">
-					<template v-if="canFastload(entry)">
-						<i class="fas fa-video"></i><a
-							v-bind:href="createConvertUrl(entry)" target="c64">Load</a> <span>{{shortEntry(entry)}}</span><span>
-							{{ $t( 'or' ) }} </span> <a
-							v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
-							target="c64"> <span>JiffyDOS</span>
-						</a>
+					<template v-if="isParentDirectory(entry)">
+						<b-list-group-item :button="!isVideo(entry)"
+							v-on:click="fetchDirectory(entry)" :variant="getVariant(entry)"
+							style="white-space: pre-line;">
+						<div class="directory parent">
+							<i class="fas fa-arrow-up"></i><span>{{entry}}</span> <span
+								class="parent-directory-hint">&larr; {{ $t(
+								'parentDirectoryHint' ) }}</span>
+						</div>
+						</b-list-group-item>
+					</template>
+					<template v-else-if="isDirectory(entry)">
+						<b-list-group-item :button="!isVideo(entry)"
+							:variant="getVariant(entry)" style="white-space: pre-line;"
+							v-on:click="fetchDirectory(entry)">
+						<div :class="directory">
+							<i class="fas fa-folder"></i><span>{{shortEntry(entry)}}</span>
+						</div>
+						</b-list-group-item>
+					</template>
+					<template v-else-if="isMusic(entry)">
+						<b-list-group-item :button="!isVideo(entry)"
+							:variant="getVariant(entry)" style="white-space: pre-line;"
+							v-on:click="updateSid(entry); tabIndex = 2;">
+						<div>
+							<i class="fas fa-music"></i><span class="sid-file">{{shortEntry(entry)}}</span>
+						</div>
+						</b-list-group-item>
+					</template>
+					<template v-else-if="isVideo(entry)">
+						<b-list-group-item :button="!isVideo(entry)"
+							:variant="getVariant(entry)" style="white-space: pre-line;">
+						<template v-if="canFastload(entry)">
+							<i class="fas fa-video"></i><a
+								v-bind:href="createConvertUrl(entry)" target="c64">Load</a> <span>{{shortEntry(entry)}}</span><span>
+								{{ $t( 'or' ) }} </span> <a
+								v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
+								target="c64"> <span>JiffyDOS</span>
+							</a>
+						</template>
+						<template v-else>
+							<a v-bind:href="createConvertUrl(entry)" target="c64"> <i
+								class="fas fa-video"></i><span>{{shortEntry(entry)}}</span>
+							</a>
+						</template>
+						</b-list-group-item>
 					</template>
 					<template v-else>
-						<a v-bind:href="createConvertUrl(entry)" target="c64"> <i
-							class="fas fa-video"></i><span>{{shortEntry(entry)}}</span>
-						</a>
+						<b-list-group-item :button="!isVideo(entry)"
+							:variant="getVariant(entry)" style="white-space: pre-line;">
+						<a v-bind:href="createDownloadUrl(entry)"> <i
+							class="fas fa-download"></i><span>{{shortEntry(entry)}}</span>
+						</a> </b-list-group-item>
 					</template>
 				</template>
-				<template v-else>
-					<a v-bind:href="createDownloadUrl(entry)"> <i
-						class="fas fa-download"></i><span>{{shortEntry(entry)}}</span>
-					</a>
-				</template>
-				</b-list-group-item> </b-list-group> </b-card-text> </b-tab> <b-tab>
+				</b-list-group> </b-card-text> </b-tab> <b-tab>
 
 				<template #title>
 					{{ $t( 'SID' ) }}
