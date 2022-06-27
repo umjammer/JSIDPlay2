@@ -75,7 +75,7 @@
 
 				<template #title>
 					{{ $t( 'SIDS' ) }}
-					<b-spinner type="border" small v-if="loadingSids"></b-spinner>
+					<b-spinner type="border" variant="primary" small v-if="loadingSids"></b-spinner>
 				</template>
 
 				<b-card-text> <b-list-group>
@@ -140,21 +140,24 @@
 
 				<template #title>
 					{{ $t( 'SID' ) }}
-					<b-spinner type="border" small v-if="loadingSid"></b-spinner>
+					<b-spinner type="border" variant="primary" small v-if="loadingSid"></b-spinner>
 				</template>
 
 				<b-card-text>
 				<div class="button-box" v-if='currentSid'>
-					<b-button
-						v-on:click="$refs.audioElm.src=createConvertUrl(currentSid); $refs.audioElm.play()">{{
-					$t( 'play' ) }}</b-button>
-					<b-button
-						v-on:click="playlist.push(currentSid); tabIndex = 3; playlistIndex = 0;">{{
-					$t( 'addToPlaylist' ) }}</b-button>
-					<b-button v-on:click="createDownloadMP3Url(currentSid);">{{
-					$t( 'downloadMP3' ) }}</b-button>
-					<b-button v-on:click="createDownloadSIDUrl(currentSid);">{{
-					$t( 'downloadSID' ) }}</b-button>
+					<b-button variant="success"
+						v-on:click="loadingSid=true; $refs.audioElm.src=createConvertUrl(currentSid); $refs.audioElm.play();">
+					<i class="fas fa-play"></i> <span>{{ $t( 'play' ) }}</span></b-button>
+					<b-button variant="primary"
+						v-on:click="playlist.push(currentSid); tabIndex = 3; playlistIndex = 0;">
+					<i class="fas fa-plus"></i> <span>{{ $t( 'addToPlaylist' )
+						}}</span></b-button>
+					<b-button v-on:click="createDownloadMP3Url(currentSid);">
+					<i class="fas fa-download"></i> <span>{{ $t( 'downloadMP3' )
+						}}</span></b-button>
+					<b-button v-on:click="createDownloadSIDUrl(currentSid);">
+					<i class="fas fa-download"></i> <span>{{ $t( 'downloadSID' )
+						}}</span></b-button>
 				</div>
 
 				<div class="sid">
@@ -168,26 +171,27 @@
 
 				<template #title>
 					{{ $t( 'PL' ) }}
-					<b-spinner type="border" small v-if="loadingPl"></b-spinner>
+					<b-spinner type="border" variant="primary" small v-if="loadingPl"></b-spinner>
 				</template>
 
 				<b-card-text>
 
 				<div class="button-box">
-					<b-button v-on:click="fetchFavorites()">{{ $t(
-					'fetchFavorites' ) }}</b-button>
-					<b-button v-on:click="playlist=[]" v-if="playlist.length > 0">{{
-					$t( 'removePlaylist' ) }}</b-button>
+					<b-button v-on:click="fetchFavorites()"> <i
+						class="fas fa-download"></i> <span>{{ $t( 'fetchFavorites'
+						) }}</span></b-button>
+					<b-button variant="success" v-on:click="setNextPlaylistEntry"
+						v-if="playlist.length > 0"> <i class="fas fa-forward"></i>
+					<span>{{ $t( 'next' ) }}</span></b-button>
 				</div>
 				<div class="button-box" v-if="playlist.length > 0">
-					<b-button v-on:click="playlist.pop()">{{ $t( 'remove' )
-					}}</b-button>
-					<b-button v-on:click="setNextPlaylistEntry">{{ $t(
-					'next' ) }}</b-button>
-				</div>
-				<div class="button-box" v-if="playlist.length > 0">
-					<b-form-checkbox id="random" v-model="random"> {{
-					$t( 'random' ) }} </b-form-checkbox>
+					<b-button variant="danger" size="sm"
+						v-on:click="if (confirm($i18n.t( 'removePlaylistReally' ) )) playlist=[];">
+					<i class="fas fa-trash"></i> <span>{{ $t( 'removePlaylist' )
+						}}</span></b-button>
+					<b-button variant="danger" size="sm"
+						v-on:click="if (confirm($i18n.t( 'removeReally' ) )) playlist.pop();">
+					<i class="fas fa-minus"></i> <span>{{ $t( 'remove' ) }}</span></b-button>
 				</div>
 
 				<ol>
@@ -201,7 +205,7 @@
 
 				<template #title>
 					{{ $t( 'CFG' ) }}
-					<b-spinner type="border" small v-if="loadingCfg"></b-spinner>
+					<b-spinner type="border" variant="primary" small v-if="loadingCfg"></b-spinner>
 				</template>
 
 				<b-card-text>
@@ -210,10 +214,11 @@
 
 				<div class="settings-box">
 					<div class="button-box">
-						<b-button v-on:click="mobileProfile">{{ $t(
-						'mobileProfile' ) }}</b-button>
-						<b-button v-on:click="wifiProfile">{{ $t( 'wifiProfile'
-						) }}</b-button>
+						<b-button variant="success" v-on:click="mobileProfile">
+						<i class="fas fa-mobile"></i> <span>{{ $t( 'mobileProfile'
+							) }}</span></b-button>
+						<b-button variant="success" v-on:click="wifiProfile"> <i
+							class="fas fa-wifi"></i> <span>{{ $t( 'wifiProfile' ) }}</span></b-button>
 					</div>
 				</div>
 
@@ -282,6 +287,8 @@
 						<h2>{{ $t( 'playbackCfgHeader' ) }}</h2>
 
 						<div class="settings-box">
+							<b-form-checkbox id="random" v-model="random">
+							{{ $t( 'random' ) }} </b-form-checkbox>
 							<b-form-checkbox id="detectSongLength" v-model="detectSongLength">
 							{{ $t( 'detectSongLength' ) }} </b-form-checkbox>
 							<b-form-checkbox id="singleSong" v-model="singleSong">
@@ -588,9 +595,11 @@ const messages = {
 	  downloadSID: 'Download SID',
 	  addToPlaylist: 'Add To Playlist',
 	  remove: 'Remove last tune',
+	  removeReally: 'Do you really want to remove the last playlist tune?',
 	  next: 'Next tune',
 	  fetchFavorites: 'Download Playlist',
 	  removePlaylist: 'Remove Playlist',
+	  removePlaylistReally: 'Do you really want to remove ALL playlist entries?',
 	  random: 'Random Playback',
 	  detectSongLength: 'Detect Song Length',
 	  singleSong: 'Single Song',
@@ -643,7 +652,7 @@ const messages = {
 	  mutingCfgHeader: 'Muting Configuration',
 	  emulationCfgHeader: 'Emulation Configuration',
 	  filterCfgHeader: 'Filter Configuration',
-	  or: 'or Load faster using'
+	  or: 'or speed up using'
   },
   de: {
 	  CON: 'Anmeldung',
@@ -694,9 +703,11 @@ const messages = {
 	  downloadSID: 'Download SID',
 	  addToPlaylist: 'Zu Favoriten hinzuf\u00fcgen',
 	  remove: 'Letzten Tune l\u00f6schen',
+	  removeReally: 'Wollen sie wirklich den letzten Favoriten l\u00f6schen?',
 	  next: 'N\u00e4chster Tune',
 	  fetchFavorites: 'Favoriten herunterladen',
 	  removePlaylist: 'Favoriten l\u00f6schen',
+	  removePlaylistReally: 'Wollen sie wirklich ALL Favoriten l\u00f6schen?',
 	  random: 'Zuf\u00e4llige Wiedergabe',
 	  detectSongLength: 'Songl\u00e4nge ber\u00fccksichtigen',
 	  singleSong: 'Nur den Startsong spielen',
@@ -749,7 +760,7 @@ const messages = {
 	  mutingCfgHeader: 'Stummschalten konfigurieren',
 	  emulationCfgHeader: 'Emulation konfigurieren',
 	  filterCfgHeader: 'Filter konfigurieren',
-	  or: 'oder alternativ schneller laden mit'
+	  or: 'oder schneller Laden mit'
   }
 }
 
@@ -944,7 +955,7 @@ new Vue({
 			return;
 		}
 		if (this.random) {
-			this.playlistIndex = Math.ceil(Math.random() * this.playlist.length);
+			this.playlistIndex = Math.max(Math.min(Math.ceil(Math.random() * this.playlist.length), this.playlist.length - 1), 0);
 		} else {
 		    if (this.playlistIndex === this.playlist.length - 1) {
 		    	this.playlistIndex = 0;
@@ -1132,7 +1143,11 @@ new Vue({
 	this.$refs.audioElm.addEventListener("canplay", () => {
 		this.showAudio = true;
 	});
-  }
+	this.$refs.audioElm.addEventListener("play", () => {
+		this.loadingSid=false;
+	});
+
+	}
 });
 
 // prevent back button
