@@ -199,12 +199,9 @@
 						) }}</b-button>
 					</div>
 				</div>
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="defaultStreaming" style="display: flex;">
-					<b-form-radio value="HLS">{{ $t ( 'hls' ) }}</b-form-radio> <b-form-radio
-						value="RTMP">{{ $t ( 'rtmp' ) }}</b-form-radio> </b-form-radio-group> </b-form-group>
-				</div>
+
+				<h3>{{ $t( 'audioStreamingCfgHeader' ) }}</h2>
+
 				<div class="settings-box">
 					<b-form-checkbox id="vbr" v-model="vbr"> {{ $t(
 					'vbr' ) }} </b-form-checkbox>
@@ -224,65 +221,21 @@
 						</select>
 					</div>
 				</div>
+
+				<h3>{{ $t( 'videoStreamingCfgHeader' ) }}</h2>
+
+				<div class="settings-box">
+					<b-form-group> <b-form-radio-group
+						v-model="defaultStreaming" style="display: flex;">
+					<b-form-radio value="HLS">{{ $t ( 'hls' ) }}</b-form-radio> <b-form-radio
+						value="RTMP">{{ $t ( 'rtmp' ) }}</b-form-radio> </b-form-radio-group> </b-form-group>
+				</div>
 				<div class="settings-box">
 					<div>
 						<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
 						<input type="number" min="0" oninput="validity.valid||(value='');"
 							id="vcBitRate" v-model.number="vcBitRate" />
 					</div>
-				</div>
-
-				<h2>{{ $t( 'playbackCfgHeader' ) }}</h2>
-
-				<div class="settings-box">
-					<b-form-checkbox id="detectSongLength" v-model="detectSongLength">
-					{{ $t( 'detectSongLength' ) }} </b-form-checkbox>
-					<b-form-checkbox id="singleSong" v-model="singleSong">
-					{{ $t( 'singleSong' ) }} </b-form-checkbox>
-					<b-form-checkbox id="loopSong" v-model="loopSong">
-					{{ $t( 'loopSong' ) }} </b-form-checkbox>
-				</div>
-				<div class="settings-box">
-					<b-form-checkbox id="digiboost8580" v-model="digiboost8580">
-					{{ $t( 'digiboost8580' ) }} </b-form-checkbox>
-					<b-form-checkbox id="fakeStereo" v-model="fakeStereo">
-					{{ $t( 'fakeStereo' ) }} </b-form-checkbox>
-					<b-form-checkbox id="bypassReverb" v-model="bypassReverb">
-					{{ $t( 'bypassReverb' ) }} </b-form-checkbox>
-				</div>
-
-				<h2>{{ $t( 'emulationCfgHeader' ) }}</h2>
-
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="defaultEngine" style="display: flex;">
-					<b-form-radio value="RESIDFP" @change="updateFilters('RESIDFP')">RESIDFP</b-form-radio>
-					<b-form-radio value="RESID" @change="updateFilters('RESID')">RESID</b-form-radio>
-					</b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="samplingMethod" style="display: flex;">
-					<b-form-radio value="DECIMATE">DECIMATE</b-form-radio> <b-form-radio
-						value="RESAMPLE">RESAMPLE</b-form-radio> </b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="samplingRate" style="display: flex;">
-					<b-form-radio value="LOW">LOW</b-form-radio> <b-form-radio
-						value="MEDIUM">MEDIUM</b-form-radio> <b-form-radio value="HIGH">HIGH</b-form-radio>
-					</b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="defaultModel" style="display: flex;">
-					<b-form-radio value="MOS6581">MOS6581</b-form-radio> <b-form-radio
-						value="MOS8580">MOS8580</b-form-radio> </b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<label for="bufferSize">{{ $t( 'bufferSize' ) }}</label>
-					<input type="number" min="0" oninput="validity.valid||(value='');"
-						id="bufferSize" v-model.number="bufferSize" />
 				</div>
 				<div class="settings-box">
 					<b-form-checkbox id="status" v-model="status"> {{
@@ -304,47 +257,23 @@
 						value="kb2048">2048kb</b-form-radio> </b-form-radio-group> </b-form-group>
 				</div>
 
-				<h2>{{ $t( 'filterCfgHeader' ) }}</h2>
+				<h2>{{ $t( 'playbackCfgHeader' ) }}</h2>
 
 				<div class="settings-box">
-					<div>
-						<div>
-							<label for="filter6581">{{ $t( 'filter6581' )}}</label>
-							<b-form-select v-model="filter6581" :options="filters6581"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-						<div>
-							<label for="filter8580">{{ $t( 'filter8580' )}}</label>
-							<b-form-select v-model="filter8580" :options="filters8580"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-					</div>
-					<div>
-						<div>
-							<label for="stereoFilter6581">{{ $t( 'stereoFilter6581'
-								)}}</label>
-							<b-form-select v-model="stereoFilter6581" :options="filters6581"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-						<div>
-							<label for="stereoFilter8580">{{ $t( 'stereoFilter8580'
-								)}}</label>
-							<b-form-select v-model="stereoFilter8580" :options="filters8580"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-					</div>
-					<div>
-						<div>
-							<label for="threeFilter6581">{{ $t( 'threeFilter6581' )}}</label>
-							<b-form-select v-model="threeFilter6581" :options="filters6581"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-						<div>
-							<label for="threeFilter8580">{{ $t( 'threeFilter8580' )}}</label>
-							<b-form-select v-model="threeFilter8580" :options="filters8580"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-					</div>
+					<b-form-checkbox id="detectSongLength" v-model="detectSongLength">
+					{{ $t( 'detectSongLength' ) }} </b-form-checkbox>
+					<b-form-checkbox id="singleSong" v-model="singleSong">
+					{{ $t( 'singleSong' ) }} </b-form-checkbox>
+					<b-form-checkbox id="loopSong" v-model="loopSong">
+					{{ $t( 'loopSong' ) }} </b-form-checkbox>
+				</div>
+				<div class="settings-box">
+					<b-form-checkbox id="digiboost8580" v-model="digiboost8580">
+					{{ $t( 'digiboost8580' ) }} </b-form-checkbox>
+					<b-form-checkbox id="fakeStereo" v-model="fakeStereo">
+					{{ $t( 'fakeStereo' ) }} </b-form-checkbox>
+					<b-form-checkbox id="bypassReverb" v-model="bypassReverb">
+					{{ $t( 'bypassReverb' ) }} </b-form-checkbox>
 				</div>
 
 				<h2>{{ $t( 'audioCfgHeader' ) }}</h2>
@@ -433,6 +362,83 @@
 						<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label>
 						<input type="number" min="0" oninput="validity.valid||(value='');"
 							id="fadeOut" v-model.number="fadeOut" />
+					</div>
+				</div>
+
+				<h2>{{ $t( 'emulationCfgHeader' ) }}</h2>
+
+				<div class="settings-box">
+					<b-form-group> <b-form-radio-group
+						v-model="defaultEngine" style="display: flex;">
+					<b-form-radio value="RESIDFP" @change="updateFilters('RESIDFP')">RESIDFP</b-form-radio>
+					<b-form-radio value="RESID" @change="updateFilters('RESID')">RESID</b-form-radio>
+					</b-form-radio-group> </b-form-group>
+				</div>
+				<div class="settings-box">
+					<b-form-group> <b-form-radio-group
+						v-model="samplingMethod" style="display: flex;">
+					<b-form-radio value="DECIMATE">DECIMATE</b-form-radio> <b-form-radio
+						value="RESAMPLE">RESAMPLE</b-form-radio> </b-form-radio-group> </b-form-group>
+				</div>
+				<div class="settings-box">
+					<b-form-group> <b-form-radio-group
+						v-model="samplingRate" style="display: flex;">
+					<b-form-radio value="LOW">LOW</b-form-radio> <b-form-radio
+						value="MEDIUM">MEDIUM</b-form-radio> <b-form-radio value="HIGH">HIGH</b-form-radio>
+					</b-form-radio-group> </b-form-group>
+				</div>
+				<div class="settings-box">
+					<b-form-group> <b-form-radio-group
+						v-model="defaultModel" style="display: flex;">
+					<b-form-radio value="MOS6581">MOS6581</b-form-radio> <b-form-radio
+						value="MOS8580">MOS8580</b-form-radio> </b-form-radio-group> </b-form-group>
+				</div>
+				<div class="settings-box">
+					<label for="bufferSize">{{ $t( 'bufferSize' ) }}</label>
+					<input type="number" min="0" oninput="validity.valid||(value='');"
+						id="bufferSize" v-model.number="bufferSize" />
+				</div>
+
+				<h2>{{ $t( 'filterCfgHeader' ) }}</h2>
+
+				<div class="settings-box">
+					<div>
+						<div>
+							<label for="filter6581">{{ $t( 'filter6581' )}}</label>
+							<b-form-select v-model="filter6581" :options="filters6581"
+								size="sm" class="mt-3" :select-size="3"></b-form-select>
+						</div>
+						<div>
+							<label for="filter8580">{{ $t( 'filter8580' )}}</label>
+							<b-form-select v-model="filter8580" :options="filters8580"
+								size="sm" class="mt-3" :select-size="3"></b-form-select>
+						</div>
+					</div>
+					<div>
+						<div>
+							<label for="stereoFilter6581">{{ $t( 'stereoFilter6581'
+								)}}</label>
+							<b-form-select v-model="stereoFilter6581" :options="filters6581"
+								size="sm" class="mt-3" :select-size="3"></b-form-select>
+						</div>
+						<div>
+							<label for="stereoFilter8580">{{ $t( 'stereoFilter8580'
+								)}}</label>
+							<b-form-select v-model="stereoFilter8580" :options="filters8580"
+								size="sm" class="mt-3" :select-size="3"></b-form-select>
+						</div>
+					</div>
+					<div>
+						<div>
+							<label for="threeFilter6581">{{ $t( 'threeFilter6581' )}}</label>
+							<b-form-select v-model="threeFilter6581" :options="filters6581"
+								size="sm" class="mt-3" :select-size="3"></b-form-select>
+						</div>
+						<div>
+							<label for="threeFilter8580">{{ $t( 'threeFilter8580' )}}</label>
+							<b-form-select v-model="threeFilter8580" :options="filters8580"
+								size="sm" class="mt-3" :select-size="3"></b-form-select>
+						</div>
 					</div>
 				</div>
 
@@ -557,7 +563,7 @@ const messages = {
 	  next: 'Next tune',
 	  fetchFavorites: 'Download Playlist',
 	  removePlaylist: 'Remove Playlist',
-	  random: 'Random playback',
+	  random: 'Random Playback',
 	  detectSongLength: 'Detect Song Length',
 	  singleSong: 'Single Song',
 	  loopSong: 'Loop Song',
@@ -602,6 +608,8 @@ const messages = {
 	  pressSpacePeriodically: 'Press Space periodically in s',
 	  status: 'Show Status Line in Videos',
 	  streamingCfgHeader: 'Streaming Configuration',
+	  audioStreamingCfgHeader: 'Audio streaming',
+	  videoStreamingCfgHeader: 'Video streaming',
 	  playbackCfgHeader: 'Playback Configuration',
 	  audioCfgHeader: 'Audio Configuration',
 	  mutingCfgHeader: 'Muting Configuration',
@@ -640,7 +648,7 @@ const messages = {
 		  sidChipBase2: 'SID Chip Basisadresse 2',
 		  sidChipBase3: 'SID Chip Basisadresse 3',
 		  driverAddress: 'Treiberaddresse',
-		  loadAddress: 'Ladeaddresse',
+		  loadAddress: 'Lade-Addresse',
 		  loadLength: 'Ladel\u00e4nge',
 		  initAddress: 'Init-Addresse',
 		  playerAddress: 'Player-Addresse',
@@ -658,10 +666,10 @@ const messages = {
 	  downloadSID: 'Download SID',
 	  addToPlaylist: 'Zu Favoriten hinzuf\u00fcgen',
 	  remove: 'Letzten Tune l\u00f6schen',
-	  next: 'N\u00e4tchster Tune',
+	  next: 'N\u00e4chster Tune',
 	  fetchFavorites: 'Favoriten herunterladen',
 	  removePlaylist: 'Favoriten l\u00f6schen',
-	  random: 'Zuf\u00e4tllige Wiedergabe',
+	  random: 'Zuf\u00e4llige Wiedergabe',
 	  detectSongLength: 'Songl\u00e4nge ber\u00fccksichtigen',
 	  singleSong: 'Nur den Startsong spielen',
 	  loopSong: 'Song wiederholen',
@@ -669,25 +677,25 @@ const messages = {
 	  fakeStereo: 'Fake Stereo',
 	  bypassReverb: 'Reverb \u00fcberbr\u00fccken',
 	  startTime: 'Startzeit in Sek.',
-	  defaultLength: 'Default L\u00e4tnge in Sek.',
+	  defaultLength: 'Default L\u00e4nge in Sek.',
 	  fadeIn: 'Fade-In in Sek.',
 	  fadeOut: 'Fade-Out in Sek.',
-	  volumeSid: 'Mehr Lautst\u00e4trke des SID:',
-	  volumeStereoSid: 'Mehr Lautst\u00e4trke des Stereo-SID:',
-	  volumeThreeSid: 'Mehr Lautst\u00e4trke des 3-SID:',
+	  volumeSid: 'Mehr Lautst\u00e4rke des SID:',
+	  volumeStereoSid: 'Mehr Lautst\u00e4rke des Stereo-SID:',
+	  volumeThreeSid: 'Mehr Lautst\u00e4rke des 3-SID:',
 	  balanceSid: 'Balance des SID:',
 	  balanceStereoSid: 'Balance des Stereo-SID:',
 	  balanceThreeSid: 'Balance des 3-SID:',
 	  delaySid: 'Verz\u00f6gerung des SID:',
-	  delayStereoSid: 'Verz\u00f6gerung des SID:',
-	  delayThreeSid: 'Verz\u00f6gerung des SID:',
+	  delayStereoSid: 'Verz\u00f6gerung des Stereo-SID:',
+	  delayThreeSid: 'Verz\u00f6gerung des 3-SID:',
 	  rtmp: 'RTMP (Real Time Messaging Protocol)',
 	  hls: 'HLS (HTTP Live Streaming Protokoll)',
 	  mobileProfile: 'Mobiles Profil',
 	  wifiProfile: 'WiFi Profil',
 	  vbr: 'Verwende variable Bitrate f\u00fcr Audio verwenden anstatt fester',
 	  cbr: 'Konstante Bitrate f\u00fcr Audio in kbps',
-	  vbrQuality: 'Qualit\u00e4tt der variablen Bitrate f\u00fcr Audio',
+	  vbrQuality: 'Qualit\u00e4t der variablen Bitrate f\u00fcr Audio',
 	  vcBitRate: 'Video Bit Rate',
 	  filter6581: 'Filter 6581',
 	  filter8580: 'Filter 8580',
@@ -706,6 +714,8 @@ const messages = {
 	  pressSpacePeriodically: 'Leertaste wiederholt dr\u00fccken in s',
 	  status: 'Statuszeile in Videos anzeigen',
 	  streamingCfgHeader: 'Streaming konfigurieren',
+	  audioStreamingCfgHeader: 'Audio Streaming',
+	  videoStreamingCfgHeader: 'Video Streaming',
 	  playbackCfgHeader: 'Wiedergabe konfigurieren',
 	  audioCfgHeader: 'Audio konfigurieren',
 	  mutingCfgHeader: 'Stummschalten konfigurieren',
