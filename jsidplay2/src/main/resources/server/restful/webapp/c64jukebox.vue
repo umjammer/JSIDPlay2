@@ -91,18 +91,18 @@
 				</template>
 				<template v-else-if="isDirectory(entry)">
 					<div :class="directory" v-on:click="fetchDirectory(entry)">
-						<i class="fas fa-folder"></i><span>{{entry}}</span>
+						<i class="fas fa-folder"></i><span>{{shortEntry(entry)}}</span>
 					</div>
 				</template>
 				<template v-else-if="isMusic(entry)">
 					<div v-on:click="updateSid(entry); tabIndex = 2;">
-						<i class="fas fa-music"></i><span class="sid-file">{{entry}}</span>
+						<i class="fas fa-music"></i><span class="sid-file">{{shortEntry(entry)}}</span>
 					</div>
 				</template>
 				<template v-else-if="isVideo(entry)">
 					<template v-if="canFastload(entry)">
-						<i class="fas fa-video"></i><span>{{entry}}</span> <BR /> <a
-							v-bind:href="createConvertUrl(entry)" target="c64">Load</a><span>
+						<i class="fas fa-video"></i><a
+							v-bind:href="createConvertUrl(entry)" target="c64">Load</a> <span>{{shortEntry(entry)}}</span><span>
 							{{ $t( 'or' ) }} </span> <a
 							v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
 							target="c64"> <span>JiffyDOS</span>
@@ -110,13 +110,13 @@
 					</template>
 					<template v-else>
 						<a v-bind:href="createConvertUrl(entry)" target="c64"> <i
-							class="fas fa-video"></i><span>{{entry}}</span>
+							class="fas fa-video"></i><span>{{shortEntry(entry)}}</span>
 						</a>
 					</template>
 				</template>
 				<template v-else>
 					<a v-bind:href="createDownloadUrl(entry)"> <i
-						class="fas fa-download"></i><span>{{entry}}</span>
+						class="fas fa-download"></i><span>{{shortEntry(entry)}}</span>
 					</a>
 				</template>
 				</b-list-group-item> </b-list-group> </b-card-text> </b-tab> <b-tab>
@@ -200,298 +200,309 @@
 					</div>
 				</div>
 
-				<h3>{{ $t( 'audioStreamingCfgHeader' ) }}</h2>
+				<h3>
+					{{ $t( 'audioStreamingCfgHeader' ) }}
+					</h2>
 
-				<div class="settings-box">
-					<b-form-checkbox id="vbr" v-model="vbr"> {{ $t(
-					'vbr' ) }} </b-form-checkbox>
-				</div>
-				<div class="settings-box">
-					<div>
-						<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
-							v-model="cbr">
-							<option v-for="cbr in cbrs">{{ cbr }}</option>
-						</select>
+					<div class="settings-box">
+						<b-form-checkbox id="vbr" v-model="vbr"> {{ $t(
+						'vbr' ) }} </b-form-checkbox>
 					</div>
-					<div>
-						<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
-							id="vbrQuality" v-model="vbrQuality">
-							<option v-for="vbrQuality in vbrQualities">{{ vbrQuality
-								}}</option>
-						</select>
-					</div>
-				</div>
-
-				<h3>{{ $t( 'videoStreamingCfgHeader' ) }}</h2>
-
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="defaultStreaming" style="display: flex;">
-					<b-form-radio value="HLS">{{ $t ( 'hls' ) }}</b-form-radio> <b-form-radio
-						value="RTMP">{{ $t ( 'rtmp' ) }}</b-form-radio> </b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<div>
-						<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
-						<input type="number" min="0" oninput="validity.valid||(value='');"
-							id="vcBitRate" v-model.number="vcBitRate" />
-					</div>
-				</div>
-				<div class="settings-box">
-					<b-form-checkbox id="status" v-model="status"> {{
-					$t( 'status' ) }} </b-form-checkbox>
-				</div>
-				<div class="settings-box">
-					<label for="pressSpaceInterval">{{ $t(
-						'pressSpacePeriodically' ) }}</label>
-					<input type="number" id="pressSpaceInterval"
-						v-model.number="pressSpaceInterval" />
-				</div>
-				<div class="settings-box">
-					<b-form-group label="REU size"> <b-form-radio-group
-						v-model="reuSize" style="display: flex;"> <b-form-radio
-						value="auto">Autodetect</b-form-radio> <b-form-radio value="kb64">64kb</b-form-radio>
-					<b-form-radio value="kb128">128kb</b-form-radio> <b-form-radio
-						value="kb256">256kb</b-form-radio> <b-form-radio value="kb512">512kb</b-form-radio>
-					<b-form-radio value="kb1024">1024kb</b-form-radio> <b-form-radio
-						value="kb2048">2048kb</b-form-radio> </b-form-radio-group> </b-form-group>
-				</div>
-
-				<h2>{{ $t( 'playbackCfgHeader' ) }}</h2>
-
-				<div class="settings-box">
-					<b-form-checkbox id="detectSongLength" v-model="detectSongLength">
-					{{ $t( 'detectSongLength' ) }} </b-form-checkbox>
-					<b-form-checkbox id="singleSong" v-model="singleSong">
-					{{ $t( 'singleSong' ) }} </b-form-checkbox>
-					<b-form-checkbox id="loopSong" v-model="loopSong">
-					{{ $t( 'loopSong' ) }} </b-form-checkbox>
-				</div>
-				<div class="settings-box">
-					<b-form-checkbox id="digiboost8580" v-model="digiboost8580">
-					{{ $t( 'digiboost8580' ) }} </b-form-checkbox>
-					<b-form-checkbox id="fakeStereo" v-model="fakeStereo">
-					{{ $t( 'fakeStereo' ) }} </b-form-checkbox>
-					<b-form-checkbox id="bypassReverb" v-model="bypassReverb">
-					{{ $t( 'bypassReverb' ) }} </b-form-checkbox>
-				</div>
-
-				<h2>{{ $t( 'audioCfgHeader' ) }}</h2>
-
-				<div class="settings-box">
-					<div>
-						<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label> <span
-							class="value">{{ volumeSid }}db</span>
-						<b-form-input id="volumeSid" v-model="volumeSid" type="range"
-							min="-6" max="6" step="1"></b-form-input>
-
-					</div>
-					<div>
-						<label for="volumeStereoSid">{{ $t( 'volumeStereoSid' ) }}</label>
-						<span class="value">{{ volumeStereoSid }}db</span>
-						<b-form-input id="volumeStereoSid" v-model="volumeStereoSid"
-							type="range" min="-6" max="6" step="1"></b-form-input>
-					</div>
-					<div>
-
-						<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label> <span
-							class="value">{{ volumeThreeSid }}db</span>
-						<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
-							type="range" min="-6" max="6" step="1"></b-form-input>
-					</div>
-				</div>
-				<div class="settings-box">
-					<div>
-						<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label> <span
-							class="value">{{ balanceSid }}</span>
-						<b-form-input id="balanceSid" v-model="balanceSid" type="range"
-							min="0" max="1" step="0.1"></b-form-input>
-					</div>
-					<div>
-						<label for="balanceStereoSid">{{ $t( 'balanceStereoSid' )
-							}}</label> <span class="value">{{ balanceStereoSid }}</span>
-						<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
-							type="range" min="0" max="1" step="0.1"></b-form-input>
-					</div>
-					<div>
-						<label for="balanceThreeSid">{{ $t( 'balanceThreeSid' ) }}</label>
-						<span class="value">{{ balanceThreeSid }}</span>
-						<b-form-input id="balanceThreeSid" v-model="balanceThreeSid"
-							type="range" min="0" max="1" step="0.1"></b-form-input>
-					</div>
-				</div>
-				<div class="settings-box">
-					<div>
-						<label for="delaySid">{{ $t( 'delaySid' ) }}</label> <span
-							class="value">{{ delaySid }}ms</span>
-						<b-form-input id="delaySid" v-model="delaySid" type="range"
-							min="0" max="100" step="10"></b-form-input>
-					</div>
-					<div>
-						<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label> <span
-							class="value">{{ delayStereoSid }}ms</span>
-						<b-form-input id="delayStereoSid" v-model="delayStereoSid"
-							type="range" min="0" max="100" step="10"></b-form-input>
-					</div>
-					<div>
-						<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label> <span
-							class="value">{{ delayThreeSid }}ms</span>
-						<b-form-input id="delayThreeSid" v-model="delayThreeSid"
-							type="range" min="0" max="100" step="10"></b-form-input>
-					</div>
-				</div>
-				<div class="settings-box">
-					<div>
-						<label for="startTime">{{ $t( 'startTime' ) }}</label>
-						<input type="number" min="0" oninput="validity.valid||(value='');"
-							id="startTime" v-model.number="startTime" />
-					</div>
-					<div>
-						<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label>
-						<input type="number" min="0" oninput="validity.valid||(value='');"
-							id="defaultLength" v-model.number="defaultLength" />
-					</div>
-				</div>
-				<div class="settings-box">
-					<div>
-						<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label>
-						<input type="number" min="0" oninput="validity.valid||(value='');"
-							id="fadeIn" v-model.number="fadeIn" />
-					</div>
-					<div>
-						<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label>
-						<input type="number" min="0" oninput="validity.valid||(value='');"
-							id="fadeOut" v-model.number="fadeOut" />
-					</div>
-				</div>
-
-				<h2>{{ $t( 'emulationCfgHeader' ) }}</h2>
-
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="defaultEngine" style="display: flex;">
-					<b-form-radio value="RESIDFP" @change="updateFilters('RESIDFP')">RESIDFP</b-form-radio>
-					<b-form-radio value="RESID" @change="updateFilters('RESID')">RESID</b-form-radio>
-					</b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="samplingMethod" style="display: flex;">
-					<b-form-radio value="DECIMATE">DECIMATE</b-form-radio> <b-form-radio
-						value="RESAMPLE">RESAMPLE</b-form-radio> </b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="samplingRate" style="display: flex;">
-					<b-form-radio value="LOW">LOW</b-form-radio> <b-form-radio
-						value="MEDIUM">MEDIUM</b-form-radio> <b-form-radio value="HIGH">HIGH</b-form-radio>
-					</b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<b-form-group> <b-form-radio-group
-						v-model="defaultModel" style="display: flex;">
-					<b-form-radio value="MOS6581">MOS6581</b-form-radio> <b-form-radio
-						value="MOS8580">MOS8580</b-form-radio> </b-form-radio-group> </b-form-group>
-				</div>
-				<div class="settings-box">
-					<label for="bufferSize">{{ $t( 'bufferSize' ) }}</label>
-					<input type="number" min="0" oninput="validity.valid||(value='');"
-						id="bufferSize" v-model.number="bufferSize" />
-				</div>
-
-				<h2>{{ $t( 'filterCfgHeader' ) }}</h2>
-
-				<div class="settings-box">
-					<div>
+					<div class="settings-box">
 						<div>
-							<label for="filter6581">{{ $t( 'filter6581' )}}</label>
-							<b-form-select v-model="filter6581" :options="filters6581"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
+							<label for="cbr">{{ $t ( 'cbr' ) }}</label> <select id="cbr"
+								v-model="cbr">
+								<option v-for="cbr in cbrs">{{ cbr }}</option>
+							</select>
 						</div>
 						<div>
-							<label for="filter8580">{{ $t( 'filter8580' )}}</label>
-							<b-form-select v-model="filter8580" :options="filters8580"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
+							<label for="vbrQuality">{{ $t ( 'vbrQuality' ) }}</label> <select
+								id="vbrQuality" v-model="vbrQuality">
+								<option v-for="vbrQuality in vbrQualities">{{
+									vbrQuality }}</option>
+							</select>
 						</div>
 					</div>
-					<div>
-						<div>
-							<label for="stereoFilter6581">{{ $t( 'stereoFilter6581'
-								)}}</label>
-							<b-form-select v-model="stereoFilter6581" :options="filters6581"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-						<div>
-							<label for="stereoFilter8580">{{ $t( 'stereoFilter8580'
-								)}}</label>
-							<b-form-select v-model="stereoFilter8580" :options="filters8580"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-					</div>
-					<div>
-						<div>
-							<label for="threeFilter6581">{{ $t( 'threeFilter6581' )}}</label>
-							<b-form-select v-model="threeFilter6581" :options="filters6581"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-						<div>
-							<label for="threeFilter8580">{{ $t( 'threeFilter8580' )}}</label>
-							<b-form-select v-model="threeFilter8580" :options="filters8580"
-								size="sm" class="mt-3" :select-size="3"></b-form-select>
-						</div>
-					</div>
-				</div>
 
-				<h2>{{ $t( 'mutingCfgHeader' ) }}</h2>
+					<h3>
+						{{ $t( 'videoStreamingCfgHeader' ) }}
+						</h2>
 
-				<div>
-					<span>{{ $t( 'muteSid' ) }}</span>
-				</div>
-				<div class="settings-box">
-					<b-form-checkbox id="sidMuteVoice1" v-model="sidMuteVoice1">
-					{{ $t( 'sidMuteVoice1' ) }} </b-form-checkbox>
-					<b-form-checkbox id="sidMuteVoice2" v-model="sidMuteVoice2">
-					{{ $t( 'sidMuteVoice2' ) }} </b-form-checkbox>
-					<b-form-checkbox id="sidMuteVoice3" v-model="sidMuteVoice3">
-					{{ $t( 'sidMuteVoice3' ) }} </b-form-checkbox>
-					<b-form-checkbox id="sidMuteSamples" v-model="sidMuteSamples">
-					{{ $t( 'sidMuteSamples' ) }} </b-form-checkbox>
-				</div>
-				<div>
-					<span>{{ $t( 'muteStereoSid' ) }}</span>
-				</div>
-				<div class="settings-box">
-					<b-form-checkbox id="stereoSidMuteVoice1"
-						v-model="stereoSidMuteVoice1"> {{ $t(
-					'sidMuteVoice1' ) }} </b-form-checkbox>
-					<b-form-checkbox id="stereoSidMuteVoice2"
-						v-model="stereoSidMuteVoice2"> {{ $t(
-					'sidMuteVoice2' ) }} </b-form-checkbox>
-					<b-form-checkbox id="stereoSidMuteVoice3"
-						v-model="stereoSidMuteVoice3"> {{ $t(
-					'sidMuteVoice3' ) }} </b-form-checkbox>
-					<b-form-checkbox id="stereoSidMuteSamples"
-						v-model="stereoSidMuteSamples"> {{ $t(
-					'sidMuteSamples' ) }} </b-form-checkbox>
-				</div>
-				<div>
-					<span>{{ $t( 'muteThreeSid' ) }}</span>
-				</div>
-				<div class="settings-box">
-					<b-form-checkbox id="threeSidMuteVoice1"
-						v-model="threeSidMuteVoice1"> {{ $t(
-					'sidMuteVoice1' ) }} </b-form-checkbox>
-					<b-form-checkbox id="threeSidMuteVoice2"
-						v-model="threeSidMuteVoice2"> {{ $t(
-					'sidMuteVoice2' ) }} </b-form-checkbox>
-					<b-form-checkbox id="threeSidMuteVoice3"
-						v-model="threeSidMuteVoice3"> {{ $t(
-					'sidMuteVoice3' ) }} </b-form-checkbox>
-					<b-form-checkbox id="threeSidMuteSamples"
-						v-model="threeSidMuteSamples"> {{ $t(
-					'sidMuteSamples' ) }} </b-form-checkbox>
-				</div>
+						<div class="settings-box">
+							<b-form-group> <b-form-radio-group
+								v-model="defaultStreaming" style="display: flex;">
+							<b-form-radio value="HLS">{{ $t ( 'hls' ) }}</b-form-radio> <b-form-radio
+								value="RTMP">{{ $t ( 'rtmp' ) }}</b-form-radio> </b-form-radio-group> </b-form-group>
+						</div>
+						<div class="settings-box">
+							<div>
+								<label for="vcBitRate">{{ $t( 'vcBitRate' ) }}</label>
+								<input type="number" min="0"
+									oninput="validity.valid||(value='');" id="vcBitRate"
+									v-model.number="vcBitRate" />
+							</div>
+						</div>
+						<div class="settings-box">
+							<b-form-checkbox id="status" v-model="status">
+							{{ $t( 'status' ) }} </b-form-checkbox>
+						</div>
+						<div class="settings-box">
+							<label for="pressSpaceInterval">{{ $t(
+								'pressSpacePeriodically' ) }}</label>
+							<input type="number" id="pressSpaceInterval"
+								v-model.number="pressSpaceInterval" />
+						</div>
+						<div class="settings-box">
+							<b-form-group label="REU size"> <b-form-radio-group
+								v-model="reuSize" style="display: flex;"> <b-form-radio
+								value="auto">Auto</b-form-radio> <b-form-radio value="kb64">64kb</b-form-radio>
+							<b-form-radio value="kb128">128kb</b-form-radio> <b-form-radio
+								value="kb256">256kb</b-form-radio> <b-form-radio value="kb512">512kb</b-form-radio>
+							<b-form-radio value="kb1024">1024kb</b-form-radio> <b-form-radio
+								value="kb2048">2048kb</b-form-radio> </b-form-radio-group> </b-form-group>
+						</div>
 
+						<h2>{{ $t( 'playbackCfgHeader' ) }}</h2>
+
+						<div class="settings-box">
+							<b-form-checkbox id="detectSongLength" v-model="detectSongLength">
+							{{ $t( 'detectSongLength' ) }} </b-form-checkbox>
+							<b-form-checkbox id="singleSong" v-model="singleSong">
+							{{ $t( 'singleSong' ) }} </b-form-checkbox>
+							<b-form-checkbox id="loopSong" v-model="loopSong">
+							{{ $t( 'loopSong' ) }} </b-form-checkbox>
+						</div>
+
+						<h2>{{ $t( 'audioCfgHeader' ) }}</h2>
+
+						<div class="settings-box">
+							<b-form-checkbox id="digiboost8580" v-model="digiboost8580">
+							{{ $t( 'digiboost8580' ) }} </b-form-checkbox>
+							<b-form-checkbox id="fakeStereo" v-model="fakeStereo">
+							{{ $t( 'fakeStereo' ) }} </b-form-checkbox>
+							<b-form-checkbox id="bypassReverb" v-model="bypassReverb">
+							{{ $t( 'bypassReverb' ) }} </b-form-checkbox>
+						</div>
+						<div class="settings-box">
+							<div>
+								<label for="volumeSid">{{ $t( 'volumeSid' ) }}</label> <span
+									class="value">{{ volumeSid }}db</span>
+								<b-form-input id="volumeSid" v-model="volumeSid" type="range"
+									min="-6" max="6" step="1"></b-form-input>
+
+							</div>
+							<div>
+								<label for="volumeStereoSid">{{ $t( 'volumeStereoSid' )
+									}}</label> <span class="value">{{ volumeStereoSid }}db</span>
+								<b-form-input id="volumeStereoSid" v-model="volumeStereoSid"
+									type="range" min="-6" max="6" step="1"></b-form-input>
+							</div>
+							<div>
+
+								<label for="volumeThreeSid">{{ $t( 'volumeThreeSid' ) }}</label>
+								<span class="value">{{ volumeThreeSid }}db</span>
+								<b-form-input id="volumeThreeSid" v-model="volumeThreeSid"
+									type="range" min="-6" max="6" step="1"></b-form-input>
+							</div>
+						</div>
+						<div class="settings-box">
+							<div>
+								<label for="balanceSid">{{ $t( 'balanceSid' ) }}</label> <span
+									class="value">{{ balanceSid }}</span>
+								<b-form-input id="balanceSid" v-model="balanceSid" type="range"
+									min="0" max="1" step="0.1"></b-form-input>
+							</div>
+							<div>
+								<label for="balanceStereoSid">{{ $t( 'balanceStereoSid'
+									) }}</label> <span class="value">{{ balanceStereoSid }}</span>
+								<b-form-input id="balanceStereoSid" v-model="balanceStereoSid"
+									type="range" min="0" max="1" step="0.1"></b-form-input>
+							</div>
+							<div>
+								<label for="balanceThreeSid">{{ $t( 'balanceThreeSid' )
+									}}</label> <span class="value">{{ balanceThreeSid }}</span>
+								<b-form-input id="balanceThreeSid" v-model="balanceThreeSid"
+									type="range" min="0" max="1" step="0.1"></b-form-input>
+							</div>
+						</div>
+						<div class="settings-box">
+							<div>
+								<label for="delaySid">{{ $t( 'delaySid' ) }}</label> <span
+									class="value">{{ delaySid }}ms</span>
+								<b-form-input id="delaySid" v-model="delaySid" type="range"
+									min="0" max="100" step="10"></b-form-input>
+							</div>
+							<div>
+								<label for="delayStereoSid">{{ $t( 'delayStereoSid' ) }}</label>
+								<span class="value">{{ delayStereoSid }}ms</span>
+								<b-form-input id="delayStereoSid" v-model="delayStereoSid"
+									type="range" min="0" max="100" step="10"></b-form-input>
+							</div>
+							<div>
+								<label for="delayThreeSid">{{ $t( 'delayThreeSid' ) }}</label> <span
+									class="value">{{ delayThreeSid }}ms</span>
+								<b-form-input id="delayThreeSid" v-model="delayThreeSid"
+									type="range" min="0" max="100" step="10"></b-form-input>
+							</div>
+						</div>
+						<div class="settings-box">
+							<div>
+								<label for="startTime">{{ $t( 'startTime' ) }}</label>
+								<input type="number" min="0"
+									oninput="validity.valid||(value='');" id="startTime"
+									v-model.number="startTime" />
+							</div>
+							<div>
+								<label for="defaultLength">{{ $t( 'defaultLength' ) }}</label>
+								<input type="number" min="0"
+									oninput="validity.valid||(value='');" id="defaultLength"
+									v-model.number="defaultLength" />
+							</div>
+						</div>
+						<div class="settings-box">
+							<div>
+								<label for="fadeIn">{{ $t( 'fadeIn' ) }}</label>
+								<input type="number" min="0"
+									oninput="validity.valid||(value='');" id="fadeIn"
+									v-model.number="fadeIn" />
+							</div>
+							<div>
+								<label for="fadeOut">{{ $t( 'fadeOut' ) }}</label>
+								<input type="number" min="0"
+									oninput="validity.valid||(value='');" id="fadeOut"
+									v-model.number="fadeOut" />
+							</div>
+						</div>
+
+						<h2>{{ $t( 'emulationCfgHeader' ) }}</h2>
+
+						<div class="settings-box">
+							<b-form-group> <b-form-radio-group
+								v-model="defaultEngine" style="display: flex;">
+							<b-form-radio value="RESIDFP" @change="updateFilters('RESIDFP')">RESIDFP</b-form-radio>
+							<b-form-radio value="RESID" @change="updateFilters('RESID')">RESID</b-form-radio>
+							</b-form-radio-group> </b-form-group>
+						</div>
+						<div class="settings-box">
+							<b-form-group> <b-form-radio-group
+								v-model="samplingMethod" style="display: flex;">
+							<b-form-radio value="DECIMATE">DECIMATE</b-form-radio> <b-form-radio
+								value="RESAMPLE">RESAMPLE</b-form-radio> </b-form-radio-group> </b-form-group>
+						</div>
+						<div class="settings-box">
+							<b-form-group> <b-form-radio-group
+								v-model="samplingRate" style="display: flex;">
+							<b-form-radio value="LOW">LOW</b-form-radio> <b-form-radio
+								value="MEDIUM">MEDIUM</b-form-radio> <b-form-radio value="HIGH">HIGH</b-form-radio>
+							</b-form-radio-group> </b-form-group>
+						</div>
+						<div class="settings-box">
+							<b-form-group> <b-form-radio-group
+								v-model="defaultModel" style="display: flex;">
+							<b-form-radio value="MOS6581">MOS6581</b-form-radio> <b-form-radio
+								value="MOS8580">MOS8580</b-form-radio> </b-form-radio-group> </b-form-group>
+						</div>
+						<div class="settings-box">
+							<label for="bufferSize">{{ $t( 'bufferSize' ) }}</label>
+							<input type="number" min="0"
+								oninput="validity.valid||(value='');" id="bufferSize"
+								v-model.number="bufferSize" />
+						</div>
+
+						<h2>{{ $t( 'filterCfgHeader' ) }}</h2>
+
+						<div class="settings-box">
+							<div>
+								<div>
+									<label for="filter6581">{{ $t( 'filter6581' )}}</label>
+									<b-form-select v-model="filter6581" :options="filters6581"
+										size="sm" class="mt-3" :select-size="3"></b-form-select>
+								</div>
+								<div>
+									<label for="filter8580">{{ $t( 'filter8580' )}}</label>
+									<b-form-select v-model="filter8580" :options="filters8580"
+										size="sm" class="mt-3" :select-size="3"></b-form-select>
+								</div>
+							</div>
+							<div>
+								<div>
+									<label for="stereoFilter6581">{{ $t( 'stereoFilter6581'
+										)}}</label>
+									<b-form-select v-model="stereoFilter6581"
+										:options="filters6581" size="sm" class="mt-3" :select-size="3"></b-form-select>
+								</div>
+								<div>
+									<label for="stereoFilter8580">{{ $t( 'stereoFilter8580'
+										)}}</label>
+									<b-form-select v-model="stereoFilter8580"
+										:options="filters8580" size="sm" class="mt-3" :select-size="3"></b-form-select>
+								</div>
+							</div>
+							<div>
+								<div>
+									<label for="threeFilter6581">{{ $t( 'threeFilter6581'
+										)}}</label>
+									<b-form-select v-model="threeFilter6581" :options="filters6581"
+										size="sm" class="mt-3" :select-size="3"></b-form-select>
+								</div>
+								<div>
+									<label for="threeFilter8580">{{ $t( 'threeFilter8580'
+										)}}</label>
+									<b-form-select v-model="threeFilter8580" :options="filters8580"
+										size="sm" class="mt-3" :select-size="3"></b-form-select>
+								</div>
+							</div>
+						</div>
+
+						<h2>{{ $t( 'mutingCfgHeader' ) }}</h2>
+
+						<div>
+							<span>{{ $t( 'muteSid' ) }}</span>
+						</div>
+						<div class="settings-box">
+							<b-form-checkbox id="sidMuteVoice1" v-model="sidMuteVoice1">
+							{{ $t( 'sidMuteVoice1' ) }} </b-form-checkbox>
+							<b-form-checkbox id="sidMuteVoice2" v-model="sidMuteVoice2">
+							{{ $t( 'sidMuteVoice2' ) }} </b-form-checkbox>
+							<b-form-checkbox id="sidMuteVoice3" v-model="sidMuteVoice3">
+							{{ $t( 'sidMuteVoice3' ) }} </b-form-checkbox>
+							<b-form-checkbox id="sidMuteSamples" v-model="sidMuteSamples">
+							{{ $t( 'sidMuteSamples' ) }} </b-form-checkbox>
+						</div>
+						<div>
+							<span>{{ $t( 'muteStereoSid' ) }}</span>
+						</div>
+						<div class="settings-box">
+							<b-form-checkbox id="stereoSidMuteVoice1"
+								v-model="stereoSidMuteVoice1"> {{ $t(
+							'sidMuteVoice1' ) }} </b-form-checkbox>
+							<b-form-checkbox id="stereoSidMuteVoice2"
+								v-model="stereoSidMuteVoice2"> {{ $t(
+							'sidMuteVoice2' ) }} </b-form-checkbox>
+							<b-form-checkbox id="stereoSidMuteVoice3"
+								v-model="stereoSidMuteVoice3"> {{ $t(
+							'sidMuteVoice3' ) }} </b-form-checkbox>
+							<b-form-checkbox id="stereoSidMuteSamples"
+								v-model="stereoSidMuteSamples"> {{ $t(
+							'sidMuteSamples' ) }} </b-form-checkbox>
+						</div>
+						<div>
+							<span>{{ $t( 'muteThreeSid' ) }}</span>
+						</div>
+						<div class="settings-box">
+							<b-form-checkbox id="threeSidMuteVoice1"
+								v-model="threeSidMuteVoice1"> {{ $t(
+							'sidMuteVoice1' ) }} </b-form-checkbox>
+							<b-form-checkbox id="threeSidMuteVoice2"
+								v-model="threeSidMuteVoice2"> {{ $t(
+							'sidMuteVoice2' ) }} </b-form-checkbox>
+							<b-form-checkbox id="threeSidMuteVoice3"
+								v-model="threeSidMuteVoice3"> {{ $t(
+							'sidMuteVoice3' ) }} </b-form-checkbox>
+							<b-form-checkbox id="threeSidMuteSamples"
+								v-model="threeSidMuteSamples"> {{ $t(
+							'sidMuteSamples' ) }} </b-form-checkbox>
+						</div>
 				</b-card-text> </b-tab> </b-tabs> </b-card>
 			</div>
 
@@ -877,6 +888,9 @@ new Vue({
   },
   // Methods
   methods: {
+	  shortEntry: function (entry) {
+		return entry.split('/').slice(entry.endsWith('/')?-2:-1).join('/');
+	  },
 	  isDirectory: function (entry) {
 		return entry.endsWith('/');  
 	  },
