@@ -79,7 +79,7 @@
 				</template>
 
 				<b-card-text> <b-list-group> <b-list-group-item
-					v-for="entry in directory" :key="entry" :button="!isVideo(entry)"
+					v-for="entry in directory" :key="entry" :button="!isVideo(entry)" :variant="getVariant(entry)"
 					style="white-space: pre-line;">
 
 				<template v-if="isParentDirectory(entry)">
@@ -890,6 +890,16 @@ new Vue({
   methods: {
 	  shortEntry: function (entry) {
 		return entry.split('/').slice(entry.endsWith('/')?-2:-1).join('/');
+	  },
+	  getVariant: function (entry) {
+		if (this.isDirectory(entry)) {
+			return '';
+		} else if (this.isMusic(entry)) {
+			return 'primary';
+		} else if (this.isVideo(entry)) {
+			return 'success';
+		}
+		return 'dark';
 	  },
 	  isDirectory: function (entry) {
 		return entry.endsWith('/');  
