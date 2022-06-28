@@ -44,7 +44,6 @@
 						{{ lang }}</option>
 				</select>
 				<h1>C64 Jukebox</h1>
-				<span>{{currentSid}}</span>
 			</div>
 			<div class="audio">
 				<audio ref="audioElm" v-bind:src="playlistEntryUrl"
@@ -52,6 +51,7 @@
 					type="audio/mpeg" controls autoplay> I'm sorry. Your
 					browser doesn't support HTML5 audio
 				</audio>
+				<div><span style="white-space: pre-line;font-style: italic;font-size: small;">{{currentSid}}</span></div>
 			</div>
 			<div>
 				<b-card no-body> <b-tabs v-model="tabIndex" card>
