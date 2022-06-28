@@ -11,7 +11,6 @@ import static libsidutils.ZipFileUtils.copy;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.ATTACHMENT;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
-import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
@@ -191,7 +190,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				return;
 			}
 			final IniConfig config = servletParameters.config;
-			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
+			final File file = getAbsoluteFile(servletParameters.filePath, true/* request.isUserInRole(ROLE_ADMIN) */);
 
 			if (audioTuneFileFilter.accept(file)) {
 
