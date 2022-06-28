@@ -5,6 +5,18 @@
 			@import "/static/c64jukebox.scss";
 		</style>
 
+		<!-- favicon.ico -->
+		<link
+			type="image/vnd.microsoft.icon"
+			rel="shortcut icon"
+			href="/static/favicon.ico"
+		/>
+		<link
+			type="image/vnd.microsoft.icon"
+			rel="icon"
+			href="/static/favicon.ico"
+		/>
+ 
 		<!-- Load required Bootstrap and BootstrapVue CSS -->
 		<link
 			type="text/css"

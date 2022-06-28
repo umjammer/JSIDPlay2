@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
+import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 
@@ -62,8 +63,15 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			}
 
 			try (InputStream source = getResourceAsStream(servletParameters.filePath)) {
-				setOutput(response, getMimeType(PathUtils.getFilenameSuffix(servletParameters.filePath)),
-						ZipFileUtils.convertStreamToString(source, "UTF-8"));
+
+				ContentTypeAndFileExtensions mimeType = getMimeType(
+						PathUtils.getFilenameSuffix(servletParameters.filePath));
+				if (mimeType.isText()) {
+					setOutput(response, mimeType, ZipFileUtils.convertStreamToString(source, "UTF-8"));
+				} else {
+					response.setContentType(mimeType.toString());
+					ZipFileUtils.copy(source, response.getOutputStream());
+				}
 			}
 		} catch (Throwable t) {
 			error(t);
