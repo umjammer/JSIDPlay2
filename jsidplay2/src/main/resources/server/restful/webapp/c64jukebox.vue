@@ -232,9 +232,11 @@
 										<b-button
 											variant="success"
 											v-on:click="
-												loadingSid = true;
-												$refs.audioElm.src = createConvertUrl(currentSid);
-												$refs.audioElm.play();
+												showAudio = true;
+												Vue.nextTick(function () {
+													$refs.audioElm.src = createConvertUrl(currentSid);
+													$refs.audioElm.play();
+												});
 											"
 										>
 											<i class="fas fa-play"></i>
@@ -1402,10 +1404,6 @@
 						return (
 							window.location.protocol +
 							"//" +
-							this.username +
-							":" +
-							this.password +
-							"@" +
 							window.location.host +
 							"/jsidplay2service/JSIDPlay2REST/convert" +
 							uriEncode(entry) +
@@ -1628,6 +1626,7 @@
 									return;
 								}
 								this.updateSid(this.playlist[this.playlistIndex]);
+								this.showAudio = true;
 							})
 							.finally(() => (this.loadingPl = false));
 					},
@@ -1664,14 +1663,6 @@
 				created: function () {
 					this.fetchDirectory("/");
 					this.fetchFilters();
-				},
-				mounted() {
-					this.$refs.audioElm.addEventListener("canplay", () => {
-						this.showAudio = true;
-					});
-					this.$refs.audioElm.addEventListener("play", () => {
-						this.loadingSid = false;
-					});
 				},
 			});
 
