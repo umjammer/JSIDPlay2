@@ -1,0 +1,192 @@
+.insert-disk .key {
+	font-size: 32px;
+}
+
+::selection {
+	background-color: none;
+	color: inherit;
+}
+
+body {
+	background-color: #D5D9D5;
+}
+
+.button {
+	background-color: #368FDD;
+	color: white;
+	padding: 12px 16px;
+	display: inline-block;
+}
+
+.switches {
+	width: 750px;
+	margin: 16px 16px;
+}
+
+.keyboard {
+	width: 750px;
+	height: 280px;
+	background-color: #938c78;
+	border-radius: 9px;
+	padding: 30px;
+	color: #eee;
+	position: relative;
+}
+
+.logo {
+	width: 220px;
+	height: 40px;
+	background-color: #595858;
+	font-weight: 300;
+	font-style: oblique;
+	font-size: 14px;
+	line-height: 40px;
+	text-align: center;
+	margin: -20px auto 20px 16px;
+	border-radius: 400px;
+}
+
+.lights {
+	position: absolute;
+	top: 12px;
+	right: 120px;
+}
+
+.lights span {
+	margin: 0 20px 0 20px;
+	padding: 0;
+	text-align: center;
+}
+
+.lights span:after {
+	content: "";
+	width: 10px;
+	height: 10px;
+	top: 10px;
+	margin-left: -12px;
+	background-color: red;
+	position: absolute;
+	border-radius: 8px;
+}
+
+.key {
+	width: 40px;
+	height: 40px;
+	display: block;
+	background-color: #333;
+	text-align: left;
+	padding-left: 8px;
+	line-height: 29px;
+	border-radius: 2px;
+	float: left;
+	margin-left: 2px;
+	margin-bottom: 2px;
+	cursor: pointer;
+	transition: box-shadow 0.7s ease;
+}
+
+.function {
+	width: 48px;
+	height: 40px;
+	text-align: center;
+	display: block;
+	background-color: #595858;
+	padding-left: 8px;
+	line-height: 29px;
+	border-radius: 2px;
+	margin-left: 2px;
+	margin-bottom: 2px;
+	cursor: pointer;
+	transition: box-shadow 0.7s ease;
+}
+
+.section-a {
+	width: 650px;
+	height: 260px;
+	float: left;
+}
+
+.section-b {
+	width: 80px;
+	height: 260px;
+	float: left;
+	margin-left: 16px;
+}
+
+.dual {
+	font-size: 14px;
+	line-height: 20px;
+	width: 30px;
+}
+
+.tab {
+	width: 50px;
+	line-height: 40px;
+	font-size: 13px;
+}
+
+.letter {
+	width: 30px;
+}
+
+.enter {
+	width: 74px;
+	line-height: 40px;
+	text-align: center;
+	padding-left: 0;
+}
+
+.clr-home {
+	width: 44px;
+	line-height: 20px;
+	text-align: center;
+	padding-left: 0;
+	font-size: 14px;
+}
+
+.ins-del {
+	width: 36px;
+	line-height: 20px;
+	text-align: center;
+	padding-left: 0;
+	font-size: 14px;
+}
+
+.restore {
+	width: 64px;
+	line-height: 40px;
+	text-align: center;
+	padding-left: 0;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+.shift.left {
+	width: 48px;
+	line-height: 40px;
+	font-size: 13px;
+}
+
+.shift.right {
+	width: 48px;
+	line-height: 40px;
+	font-size: 13px;
+}
+
+.ctrl {
+	width: 50px;
+	line-height: 40px;
+	font-size: 13px;
+}
+
+.space {
+	margin-left: 94px;
+	width: 364px;
+}
+
+.key:hover {
+	box-shadow: 0px 0px 10px #14B524;
+	z-index: 1000;
+}
