@@ -35,8 +35,7 @@
 				<h1>C64 Jukebox</h1>
 			</div>
 			<div>
-				<b>JSIDPlay2 presents: <span class="my-filename">$filename</span></b>
-				<span>{{ $t("test") }}</span>
+				<b>{{ $t("presents") }} <span class="my-filename">$filename</span></b>
 			</div>
 
 			<video
@@ -44,289 +43,291 @@
 				id="video-container"
 				class="video-js vjs-default-skin"
 				poster="/static/poster.png"
-				width="768"
-				height="624"
 				controls
 				preload="auto"
 				muted
 				autoplay
 			>
-				<source src="/jsidplay2service/JSIDPlay2REST/proxy/$rtmp" type="application/x-mpegURL" />
+				<source
+					src="/jsidplay2service/JSIDPlay2REST/proxy/$rtmp"
+					type="application/x-mpegURL"
+				/>
 			</video>
 
-			<p id="alarmmsg"></p>
+			<p>
+				{{ msg }}
+			</p>
 
-			<div class="keyboard" style="position: relative">
-				<div
-					style="
-						position: absolute;
-						top: $barcodeImgTop;
-						right: $barcodeImgRight;
-					"
+			<b-button v-b-toggle.collapse-barcode variant="primary">Barcode</b-button>
+			<b-collapse id="collapse-barcode" class="mt-2">
+				<b-card>
+					<b-card-text>
+						$barcodeImg
+
+						<h3>{{ $t("mobilePlaybackHeader") }}</h3>
+						<ul>
+							<li>{{ $t("mobilePlaybackTip1") }}</li>
+							<li>{{ $t("mobilePlaybackTip2") }}</li>
+						</ul>
+					</b-card-text>
+				</b-card>
+			</b-collapse>
+
+			<b-button v-b-toggle.collapse-keyboard variant="primary"
+				>Keyboard</b-button
+			>
+			<b-collapse id="collapse-keyboard" class="mt-2">
+				<b-card>
+					<b-card-text>
+						<div class="keyboard">
+							<div
+								:style="
+									'position: absolute; top: ' +
+									barcodeImgTop +
+									'; right: ' +
+									barcodeImgRight +
+									';'
+								"
+							></div>
+
+							<div class="logo">C= Commodore &nbsp;&nbsp;&nbsp;&nbsp; 64</div>
+
+							<div class="lights">
+								<span>&nbsp;</span>
+							</div>
+
+							<div class="section-a">
+								<div class="key num dual" v-on:click="typeKey('ARROW_LEFT')">
+									&#8592;<br />
+								</div>
+
+								<div class="key num dual" v-on:click="typeKey('ONE')">
+									!<br />1
+								</div>
+								<div class="key num dual" v-on:click="typeKey('TWO')">
+									&quot;<br />2
+								</div>
+								<div class="key num dual" v-on:click="typeKey('THREE')">
+									#<br />3
+								</div>
+								<div class="key num dual" v-on:click="typeKey('FOUR')">
+									$<br />4
+								</div>
+								<div class="key num dual" v-on:click="typeKey('FIVE')">
+									%<br />5
+								</div>
+								<div class="key num dual" v-on:click="typeKey('SIX')">
+									&amp;<br />6
+								</div>
+								<div class="key num dual" v-on:click="typeKey('SEVEN')">
+									'<br />7
+								</div>
+								<div class="key num dual" v-on:click="typeKey('EIGHT')">
+									(<br />8
+								</div>
+								<div class="key num dual" v-on:click="typeKey('NINE')">
+									)<br />9
+								</div>
+								<div class="key letter" v-on:click="typeKey('ZERO')">0</div>
+								<div class="key letter" v-on:click="typeKey('PLUS')">+</div>
+								<div class="key letter" v-on:click="typeKey('MINUS')">-</div>
+								<div class="key letter" v-on:click="typeKey('POUND')">
+									&#163;
+								</div>
+								<div class="key clr-home" v-on:click="typeKey('CLEAR_HOME')">
+									Clr<br />Home
+								</div>
+								<div class="key ins-del" v-on:click="typeKey('INS_DEL')">
+									Ins<br />Del
+								</div>
+
+								<!--END NUMBER KEYS -->
+
+								<div class="key tab" v-on:click="typeKey('CTRL')">Ctrl</div>
+
+								<div class="key letter" v-on:click="typeKey('Q')">Q</div>
+								<div class="key letter" v-on:click="typeKey('W')">W</div>
+								<div class="key letter" v-on:click="typeKey('E')">E</div>
+								<div class="key letter" v-on:click="typeKey('R')">R</div>
+								<div class="key letter" v-on:click="typeKey('T')">T</div>
+								<div class="key letter" v-on:click="typeKey('Y')">Y</div>
+								<div class="key letter" v-on:click="typeKey('U')">U</div>
+								<div class="key letter" v-on:click="typeKey('I')">I</div>
+								<div class="key letter" v-on:click="typeKey('O')">O</div>
+								<div class="key letter" v-on:click="typeKey('P')">P</div>
+								<div class="key letter" v-on:click="typeKey('AT')">@</div>
+								<div class="key letter" v-on:click="typeKey('STAR')">*</div>
+								<div class="key letter" v-on:click="typeKey('ARROW_UP')">
+									&#8593;
+								</div>
+								<div class="key restore">Restore</div>
+
+								<div class="key num dual" v-on:click="typeKey('RUN_STOP')">
+									Run<br />Stop
+								</div>
+								<div class="key num dual">Shft<br />Lck</div>
+								<div class="key letter" v-on:click="typeKey('A')">A</div>
+								<div class="key letter" v-on:click="typeKey('S')">S</div>
+								<div class="key letter" v-on:click="typeKey('D')">D</div>
+								<div class="key letter" v-on:click="typeKey('F')">F</div>
+								<div class="key letter" v-on:click="typeKey('G')">G</div>
+								<div class="key letter" v-on:click="typeKey('H')">H</div>
+								<div class="key letter" v-on:click="typeKey('J')">J</div>
+								<div class="key letter" v-on:click="typeKey('K')">K</div>
+								<div class="key letter" v-on:click="typeKey('L')">L</div>
+								<div class="key dual" v-on:click="typeKey('COLON')">
+									:<br />[
+								</div>
+								<div class="key dual" v-on:click="typeKey('SEMICOLON')">
+									;<br />]
+								</div>
+								<div class="key letter" v-on:click="typeKey('EQUALS')">=</div>
+								<div
+									class="key enter"
+									v-on:click="
+										typeKey('RETURN');
+										startVideo();
+									"
+								>
+									Return
+								</div>
+
+								<div class="key letter" v-on:click="typeKey('COMMODORE')">
+									C=
+								</div>
+								<div
+									:class="'key shift left' + (shiftPressed ? ' uppercase' : '')"
+									v-on:click="toggleKey(this, 'SHIFT_LEFT')"
+								>
+									Shift
+								</div>
+								<div class="key letter" v-on:click="typeKey('Z')">Z</div>
+								<div class="key letter" v-on:click="typeKey('X')">X</div>
+								<div class="key letter" v-on:click="typeKey('C')">C</div>
+								<div class="key letter" v-on:click="typeKey('V')">V</div>
+								<div class="key letter" v-on:click="typeKey('B')">B</div>
+								<div class="key letter" v-on:click="typeKey('N')">N</div>
+								<div class="key letter" v-on:click="typeKey('M')">M</div>
+								<div class="key dual" v-on:click="typeKey('COMMA')">
+									&lt; <br />,
+								</div>
+								<div class="key dual" v-on:click="typeKey('PERIOD')">
+									&gt;<br />.
+								</div>
+								<div class="key dual" v-on:click="typeKey('SLASH')">
+									?<br />/
+								</div>
+								<div
+									:class="
+										'key shift right' + (shiftPressed ? ' uppercase' : '')
+									"
+									v-on:click="toggleKey(this, 'SHIFT_RIGHT')"
+								>
+									Shift
+								</div>
+								<div class="key dual" v-on:click="typeKey('CURSOR_UP_DOWN')">
+									&#8593;<br />&#8595;
+								</div>
+								<div class="key dual" v-on:click="typeKey('CURSOR_LEFT_RIGHT')">
+									&#8592;<br />&#8594;
+								</div>
+								<div
+									class="key space"
+									v-on:click="
+										typeKey('SPACE');
+										startVideo();
+									"
+								></div>
+							</div>
+							<!-- end section-a-->
+
+							<div class="section-b">
+								<div style="width: 100%; float: left">
+									<div class="key function" v-on:click="typeKey('F1')">F1</div>
+								</div>
+								<div style="width: 100%; float: left">
+									<div class="key function" v-on:click="typeKey('F3')">F3</div>
+								</div>
+								<div style="width: 100%; float: left">
+									<div class="key function" v-on:click="typeKey('F5')">F5</div>
+								</div>
+								<div style="width: 100%; float: left">
+									<div class="key function" v-on:click="typeKey('F7')">F7</div>
+								</div>
+							</div>
+							<!-- end section-b-->
+						</div>
+					</b-card-text>
+				</b-card>
+			</b-collapse>
+
+			<div class="switches">
+				<b-button v-on:click="setDefaultSidModel6581()" class="button"
+					>6581</b-button
 				>
-					$barcodeImg
-				</div>
-
-				<div class="logo">C= Commodore &nbsp;&nbsp;&nbsp;&nbsp; 64</div>
-
-				<div class="lights">
-					<span>&nbsp;</span>
-				</div>
-
-				<div class="section-a">
-					<div class="key num dual" onclick="javascript:typeKey('ARROW_LEFT');">
-						&#8592;<br />
-					</div>
-
-					<div class="key num dual" onclick="javascript:typeKey('ONE');">
-						!<br />1
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('TWO');">
-						&quot;<br />2
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('THREE');">
-						#<br />3
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('FOUR');">
-						$<br />4
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('FIVE');">
-						%<br />5
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('SIX');">
-						&amp;<br />6
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('SEVEN');">
-						'<br />7
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('EIGHT');">
-						(<br />8
-					</div>
-					<div class="key num dual" onclick="javascript:typeKey('NINE');">
-						)<br />9
-					</div>
-					<div class="key letter" onclick="javascript:typeKey('ZERO');">0</div>
-					<div class="key letter" onclick="javascript:typeKey('PLUS');">+</div>
-					<div class="key letter" onclick="javascript:typeKey('MINUS');">-</div>
-					<div class="key letter" onclick="javascript:typeKey('POUND');">
-						&#163;
-					</div>
-					<div class="key clr-home" onclick="javascript:typeKey('CLEAR_HOME');">
-						Clr<br />Home
-					</div>
-					<div class="key ins-del" onclick="javascript:typeKey('INS_DEL');">
-						Ins<br />Del
-					</div>
-
-					<!--END NUMBER KEYS -->
-
-					<div class="key tab" onclick="javascript:typeKey('CTRL');">Ctrl</div>
-
-					<div class="key letter" onclick="javascript:typeKey('Q');">Q</div>
-					<div class="key letter" onclick="javascript:typeKey('W');">W</div>
-					<div class="key letter" onclick="javascript:typeKey('E');">E</div>
-					<div class="key letter" onclick="javascript:typeKey('R');">R</div>
-					<div class="key letter" onclick="javascript:typeKey('T');">T</div>
-					<div class="key letter" onclick="javascript:typeKey('Y');">Y</div>
-					<div class="key letter" onclick="javascript:typeKey('U');">U</div>
-					<div class="key letter" onclick="javascript:typeKey('I');">I</div>
-					<div class="key letter" onclick="javascript:typeKey('O');">O</div>
-					<div class="key letter" onclick="javascript:typeKey('P');">P</div>
-					<div class="key letter" onclick="javascript:typeKey('AT');">@</div>
-					<div class="key letter" onclick="javascript:typeKey('STAR');">*</div>
-					<div class="key letter" onclick="javascript:typeKey('ARROW_UP');">
-						&#8593;
-					</div>
-					<div class="key restore">Restore</div>
-
-					<div class="key num dual" onclick="javascript:typeKey('RUN_STOP');">
-						Run<br />Stop
-					</div>
-					<div class="key num dual">Shft<br />Lck</div>
-					<div class="key letter" onclick="javascript:typeKey('A');">A</div>
-					<div class="key letter" onclick="javascript:typeKey('S');">S</div>
-					<div class="key letter" onclick="javascript:typeKey('D');">D</div>
-					<div class="key letter" onclick="javascript:typeKey('F');">F</div>
-					<div class="key letter" onclick="javascript:typeKey('G');">G</div>
-					<div class="key letter" onclick="javascript:typeKey('H');">H</div>
-					<div class="key letter" onclick="javascript:typeKey('J');">J</div>
-					<div class="key letter" onclick="javascript:typeKey('K');">K</div>
-					<div class="key letter" onclick="javascript:typeKey('L');">L</div>
-					<div class="key dual" onclick="javascript:typeKey('COLON');">
-						:<br />[
-					</div>
-					<div class="key dual" onclick="javascript:typeKey('SEMICOLON');">
-						;<br />]
-					</div>
-					<div class="key letter" onclick="javascript:typeKey('EQUALS');">
-						=
-					</div>
-					<div class="key enter" onclick="javascript:typeKey('RETURN');">
-						Return
-					</div>
-
-					<div class="key letter" onclick="javascript:typeKey('COMMODORE');">
-						C=
-					</div>
-					<div
-						class="key shift left"
-						onclick="javascript:toggleKey(this, 'SHIFT_LEFT');"
-					>
-						Shift
-					</div>
-					<div class="key letter" onclick="javascript:typeKey('Z');">Z</div>
-					<div class="key letter" onclick="javascript:typeKey('X');">X</div>
-					<div class="key letter" onclick="javascript:typeKey('C');">C</div>
-					<div class="key letter" onclick="javascript:typeKey('V');">V</div>
-					<div class="key letter" onclick="javascript:typeKey('B');">B</div>
-					<div class="key letter" onclick="javascript:typeKey('N');">N</div>
-					<div class="key letter" onclick="javascript:typeKey('M');">M</div>
-					<div class="key dual" onclick="javascript:typeKey('COMMA');">
-						&lt; <br />,
-					</div>
-					<div class="key dual" onclick="javascript:typeKey('PERIOD');">
-						&gt;<br />.
-					</div>
-					<div class="key dual" onclick="javascript:typeKey('SLASH');">
-						?<br />/
-					</div>
-					<div
-						class="key shift right"
-						onclick="javascript:toggleKey(this, 'SHIFT_RIGHT');"
-					>
-						Shift
-					</div>
-					<div class="key dual" onclick="javascript:typeKey('CURSOR_UP_DOWN');">
-						&#8593;<br />&#8595;
-					</div>
-					<div
-						class="key dual"
-						onclick="javascript:typeKey('CURSOR_LEFT_RIGHT');"
-					>
-						&#8592;<br />&#8594;
-					</div>
-					<div class="key space" onclick="javascript:typeKey('SPACE');"></div>
-				</div>
-				<!-- end section-a-->
-
-				<div class="section-b">
-					<div style="width: 100%; float: left">
-						<div class="key function" onclick="javascript:typeKey('F1');">
-							F1
-						</div>
-					</div>
-					<div style="width: 100%; float: left">
-						<div class="key function" onclick="javascript:typeKey('F3');">
-							F3
-						</div>
-					</div>
-					<div style="width: 100%; float: left">
-						<div class="key function" onclick="javascript:typeKey('F5');">
-							F5
-						</div>
-					</div>
-					<div style="width: 100%; float: left">
-						<div class="key function" onclick="javascript:typeKey('F7');">
-							F7
-						</div>
-					</div>
-				</div>
-				<!-- end section-b-->
+				<b-button v-on:click="setDefaultSidModel8580()" class="button"
+					>8580</b-button
+				>
+				<b-button v-on:click="setDefaultEmulationReSid()" class="button"
+					>RESID</b-button
+				>
+				<b-button v-on:click="setDefaultEmulationReSidFp()" class="button"
+					>RESIDFP</b-button
+				>
+				<b-button v-on:click="insertDisk()" class="button"
+					>insert next disk</b-button
+				>
+				<b-button v-on:click="setJoyBtn(0, 16)" class="button"
+					>Joy1 Btn</b-button
+				>
+				<b-button v-on:click="setJoyBtn(1, 16)" class="button"
+					>Joy2 Btn</b-button
+				>
 			</div>
 
-			<table class="switches">
-				<tbody>
-					<tr>
-						<td>
-							<a href="javascript:setDefaultSidModel6581()" class="button"
-								>6581</a
-							>
-						</td>
-						<td>
-							<a href="javascript:setDefaultSidModel8580()" class="button"
-								>8580</a
-							>
-						</td>
-						<td>
-							<a href="javascript:setDefaultEmulationReSid()" class="button"
-								>RESID</a
-							>
-						</td>
-						<td>
-							<a href="javascript:setDefaultEmulationReSidFp()" class="button"
-								>RESIDFP</a
-							>
-						</td>
-						<td>
-							<a href="javascript:insertDisk()" class="button"
-								>insert next disk</a
-							>
-						</td>
-						<td>
-							<a href="javascript:setJoyBtn(0, 16)" class="button">Joy1 Btn</a>
-						</td>
-						<td>
-							<a
-								href="javascript:setJoyBtn(1, 16)"
-								class="button"
-								style="float: right"
-								>Joy2 Btn</a
-							>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<h3>
-				For Browser Playback: Please install a plugin for your browser, first!
-			</h3>
-			<ol>
-				<li>
-					E.g. Mozilla Firefox
-					<a
-						href="https://addons.mozilla.org/de/firefox/addon/native-mpeg-dash-hls-playback/"
-						>plugin</a
-					>
-				</li>
-
-				<li>
-					E.g. Google Chrome
-					<a
-						href="https://chrome.google.com/webstore/detail/native-hls-playback/emnphkkblegpebimobpbekeedfgemhof/support?hl=de"
-						>plugin</a
-					>
-				</li>
-			</ol>
-
-			<h3>For mobile playback: Scan Barcode to watch the video</h3>
-			<ol>
-				<li>Please install VLC player or MXPlayer on your phone, first!</li>
-				<li>Scan the barcode and open URL to watch the video.</li>
-			</ol>
-
-			<h3>Regarding timeouts</h3>
+			<h3>{{ $t("regardingTimeoutsHeader") }}</h3>
 			<ul>
-				<li>
-					Start video within $notYetPlayedTimeout seconds or it will be
-					terminated, if so please reload page for a new try.
-				</li>
-
-				<li>
-					If video gets stopped, make sure to continue playing within
-					$notYetPlayedTimeout seconds.
-				</li>
-
-				<li>Key presses are delayed a few seconds.</li>
-				<li>Maximum play time is 1 hour.</li>
+				<li>{{ $t("regardingTimeoutsTip1") }}</li>
+				<li>{{ $t("regardingTimeoutsTip2") }}</li>
+				<li>{{ $t("regardingTimeoutsTip3") }}</li>
+				<li>{{ $t("regardingTimeoutsTip4") }}</li>
 			</ul>
 		</div>
 		<script>
 			const messages = {
 				en: {
-					test: "eng-test",
+					presents: "JSIDPlay2 presents:",
+					mobilePlaybackHeader:
+						"For mobile playback: Scan Barcode to watch the video",
+					mobilePlaybackTip1:
+						"Scan the barcode and open URL to watch the video.",
+					mobilePlaybackTip2:
+						"Only for RTMP: Please install VLC player or MXPlayer on your phone!",
+					regardingTimeoutsHeader: "Regarding timeouts",
+					regardingTimeoutsTip1:
+						"Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.",
+					regardingTimeoutsTip2:
+						"If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
+					regardingTimeoutsTip3: "Key presses are delayed a few seconds.",
+					regardingTimeoutsTip4: "Maximum play time is 1 hour.",
 				},
 				de: {
-					test: "de-test",
+					presents: "JSIDPlay2 pr\u00e4sentiert:",
+					mobilePlaybackHeader:
+						"Zum Abspielen auf dem Handy: Barcode scannen um das Video zu schauen",
+					mobilePlaybackTip1:
+						"Bitte scannen sie den Barcode und \u00f6ffnen sie die URL um das Video zu schauen.",
+					mobilePlaybackTip2:
+						"Nur f\u00fcr RTMP: Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
+					regardingTimeoutsHeader: "Bez\u00fcglich der Timeouts",
+					regardingTimeoutsTip1:
+						"Starte das Video innerhalb von $notYetPlayedTimeout Sekunden oder das Video wird beendet, ist das der Fall, m\u00fcssen sie f\u00fcr einen neuen Versuch neu laden.",
+					regardingTimeoutsTip2:
+						"Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
+					regardingTimeoutsTip3:
+						"Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
+					regardingTimeoutsTip4:
+						"Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
 				},
 			};
 			const i18n = new VueI18n({
@@ -340,11 +341,163 @@
 				data: {
 					langs: ["de", "en"],
 					hls: $hls,
+					waitForRTMP: $waitForRTMP,
+					notifyForHLS: $notifyForHLS,
+					barcodeImgTop: "$barcodeImgTop",
+					barcodeImgRight: "$barcodeImgRight",
+					shiftPressed: false,
+					msg: "",
 				},
-				methods: {},
+				methods: {
+					startVideo: function () {
+						if (!this.hls) {
+							console.log("OK");
+							setTimeout(() => {
+								window.open(
+									"$rtmp",
+									"c64video",
+									"resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, fullscreen=yes"
+								);
+							}, this.waitForRTMP);
+						}
+					},
+					printMsg: function (msg) {
+						this.msg = msg;
+						setTimeout(() => {
+							this.msg = "";
+						}, 500);
+					},
+					toggleKey: function (element, key) {
+						this.shiftPressed ^= true;
+						if (this.shiftPressed) {
+							this.pressKey(key);
+						} else {
+							this.releaseKey(key);
+						}
+					},
+					typeKey: function (key) {
+						axios({
+							method: "get",
+							url: "/static/press_key?name=$uuid&type=" + key,
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {});
+					},
+					pressKey: function (key) {
+						axios({
+							method: "get",
+							url: "/static/press_key?name=$uuid&press=" + key,
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {});
+					},
+					releaseKey: function (key) {
+						axios({
+							method: "get",
+							url: "/static/press_key?name=$uuid&release=" + key,
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {});
+					},
+					insertDisk: function () {
+						axios({
+							method: "get",
+							url: "/static/insert_next_disk?name=$uuid",
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {
+							let result = response.data;
+							document.getElementsByClassName("my-filename")[0].innerHTML =
+								result;
+							this.printMsg("Next disk has been inserted!");
+							this.startVideo();
+						});
+					},
+					setDefaultSidModel6581: function () {
+						axios({
+							method: "get",
+							url: "/static/set_default_sid_model_6581?name=$uuid",
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {
+							let result = response.data;
+							this.printMsg("Default SID model has been set to 6581!");
+							this.startVideo();
+						});
+					},
+					setDefaultSidModel8580: function () {
+						axios({
+							method: "get",
+							url: "/static/set_default_sid_model_8580?name=$uuid",
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {
+							let result = response.data;
+							this.printMsg("Default SID model has been set to 8580!");
+							this.startVideo();
+						});
+					},
+					setDefaultEmulationReSid: function () {
+						axios({
+							method: "get",
+							url: "/static/set_default_emulation_resid?name=$uuid",
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {
+							let result = response.data;
+							this.printMsg("Default emulation has been set to RESID!");
+							this.startVideo();
+						});
+					},
+					setDefaultEmulationReSidFp: function () {
+						axios({
+							method: "get",
+							url: "/static/set_default_emulation_residfp?name=$uuid",
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {
+							let result = response.data;
+							this.printMsg("Default emulation has been set to RESIDFP!");
+							this.startVideo();
+						});
+					},
+					setJoyBtn: function (number, value) {
+						axios({
+							method: "get",
+							url:
+								"/static/joystick?name=$uuid&number=" +
+								number +
+								"&value=" +
+								value,
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						}).then((response) => {
+							let result = response.data;
+							this.printMsg("Joystick button has been pressed!");
+							this.startVideo();
+						});
+					},
+				},
 				created: function () {
 					if (this.hls) {
-						console.log("1");
 						setInterval(function () {
 							var xhttp = new XMLHttpRequest();
 							xhttp.onreadystatechange = function () {
@@ -354,165 +507,16 @@
 							};
 							xhttp.open("GET", "/static/on_keep_alive?name=$uuid", true);
 							xhttp.send();
-						}, $notifyForHLS);
+						}, this.notifyForHLS);
 
 						setTimeout(function () {
 							var player = videojs("video-container");
-						}, $waitForRTMP);
+						}, this.waitForRTMP);
 					} else {
-						console.log("2");
-						startVideo();
+						this.startVideo();
 					}
 				},
 			});
-
-			function startVideo() {
-				if ($hls === false) {
-					setTimeout(function () {
-						window.open(
-							"$rtmp",
-							"c64video",
-							"resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, fullscreen=yes"
-						);
-					}, $waitForRTMP);
-				}
-			}
-			function printMsg(msg) {
-				document.getElementById("alarmmsg").innerHTML = msg;
-				setTimeout(function () {
-					document.getElementById("alarmmsg").innerHTML = "";
-				}, 1000);
-			}
-			function insertDisk() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-						let result = this.responseText;
-						let filename = result.substring(1, result.length - 1);
-						document.getElementsByClassName("my-filename")[0].innerHTML =
-							filename;
-						printMsg("Next disk has been inserted!");
-						startVideo();
-					}
-				};
-				xhttp.open("GET", "/static/insert_next_disk?name=$uuid", true);
-				xhttp.setRequestHeader("Accept", "application/json;charset=UTF-8");
-				xhttp.send();
-			}
-			function setDefaultSidModel6581() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-						printMsg("Default SID model has been set to 8561!");
-						startVideo();
-					}
-				};
-				xhttp.open(
-					"GET",
-					"/static/set_default_sid_model_6581?name=$uuid",
-					true
-				);
-				xhttp.send();
-			}
-			function setDefaultSidModel8580() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-						printMsg("Default SID model has been set to 8580!");
-						startVideo();
-					}
-				};
-				xhttp.open(
-					"GET",
-					"/static/set_default_sid_model_8580?name=$uuid",
-					true
-				);
-				xhttp.send();
-			}
-			function setDefaultEmulationReSid() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-						printMsg("Default emulation has been set to RESID!");
-						startVideo();
-					}
-				};
-				xhttp.open(
-					"GET",
-					"/static/set_default_emulation_resid?name=$uuid",
-					true
-				);
-				xhttp.send();
-			}
-			function setDefaultEmulationReSidFp() {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-						printMsg("Default emulation has been set to RESIDFP!");
-						startVideo();
-					}
-				};
-				xhttp.open(
-					"GET",
-					"/static/set_default_emulation_residfp?name=$uuid",
-					true
-				);
-				xhttp.send();
-			}
-			function typeKey(key) {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-						if (key == "SPACE" || key == "RETURN") {
-							startVideo();
-						}
-					}
-				};
-				xhttp.open("GET", "/static/press_key?name=$uuid&type=" + key, true);
-				xhttp.send();
-			}
-
-			function toggleKey(element, key) {
-				element.classList.toggle("uppercase");
-				if (element.classList.contains("uppercase")) {
-					pressKey(key);
-				} else {
-					releaseKey(key);
-				}
-			}
-
-			function pressKey(key) {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-					}
-				};
-				xhttp.open("GET", "/static/press_key?name=$uuid&press=" + key, true);
-				xhttp.send();
-			}
-			function releaseKey(key) {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-					}
-				};
-				xhttp.open("GET", "/static/press_key?name=$uuid&release=" + key, true);
-				xhttp.send();
-			}
-			function setJoyBtn(number, value) {
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function () {
-					if (this.readyState == 4 && this.status == 200) {
-						startVideo();
-					}
-				};
-				xhttp.open(
-					"GET",
-					"/static/joystick?name=$uuid&number=" + number + "&value=" + value,
-					true
-				);
-				xhttp.send();
-			}
 		</script>
 	</body>
 </html>
