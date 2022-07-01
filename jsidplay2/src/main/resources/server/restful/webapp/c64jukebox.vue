@@ -9,12 +9,12 @@
 		<link
 			type="image/vnd.microsoft.icon"
 			rel="shortcut icon"
-			href="/static/favicon.ico"
+			href="/static/favicon-16x16.ico"
 		/>
 		<link
 			type="image/vnd.microsoft.icon"
 			rel="icon"
-			href="/static/favicon.ico"
+			href="/static/favicon-16x16.ico"
 		/>
  
 		<!-- Load required Bootstrap and BootstrapVue CSS -->

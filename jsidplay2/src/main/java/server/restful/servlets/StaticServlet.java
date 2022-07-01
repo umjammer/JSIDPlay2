@@ -3,6 +3,7 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
+import static server.restful.common.IServletSystemProperties.STATIC_RES_MAX_AGE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.apache.http.HttpHeaders;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -69,6 +72,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				if (mimeType.isText()) {
 					setOutput(response, mimeType, ZipFileUtils.convertStreamToString(source, "UTF-8"));
 				} else {
+					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
 					response.setContentType(mimeType.toString());
 					ZipFileUtils.copy(source, response.getOutputStream());
 				}
