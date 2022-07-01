@@ -45,7 +45,8 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	/**
 	 * Keep alive video stream.
 	 * 
-	 * Implements HLS missing notifications, that the stream is still produced.
+	 * Compensates for HLS's missing directives (on_play and on_play_done),
+	 * notifies, that the stream is still being consumed.
 	 *
 	 * {@code
 	 * http://haendel.ddns.net:8080/static/on_keep_alive
