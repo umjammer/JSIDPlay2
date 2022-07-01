@@ -6,17 +6,21 @@
 		</style>
 
 		<!-- favicon.ico -->
+		<link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
 		<link
-			type="image/vnd.microsoft.icon"
-			rel="shortcut icon"
-			href="/static/favicon-16x16.ico"
-		/>
-		<link
-			type="image/vnd.microsoft.icon"
+			id="favicon"
 			rel="icon"
-			href="/static/favicon-16x16.ico"
+			href="/static/favicon.ico"
+			type="image/x-icon"
 		/>
- 
+		<link
+			id="favicon-16x16"
+			rel="icon"
+			href="/static/favicon-16x16.png"
+			type="image/png"
+			sizes="16x16"
+		/>
+
 		<!-- Load required Bootstrap and BootstrapVue CSS -->
 		<link
 			type="text/css"
