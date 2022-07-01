@@ -58,7 +58,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doGet(request);
+//		super.doGet(request);   // Calls are very frequent, therefore we are silent here
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
@@ -69,7 +69,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			}
 			UUID uuid = servletParameters.uuid;
 
-			info(String.format("onKeepAlive: HLS stream of: %s", uuid));
+//			info(String.format("onKeepAlive: HLS stream of: %s", uuid));   // Calls are very frequent, therefore we are silent here
 			update(uuid, PlayerWithStatus::onKeepAlive);
 
 		} catch (Throwable t) {

@@ -52,7 +52,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doGet(request);
+//		super.doGet(request);   // Calls are very frequent, therefore we are silent here
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
@@ -76,6 +76,8 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			response.getOutputStream().write(bos.toByteArray());
 			response.setStatus(HttpServletResponse.SC_OK);
 
+		} catch (IOException e) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (Throwable t) {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
