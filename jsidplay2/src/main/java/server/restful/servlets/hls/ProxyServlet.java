@@ -7,7 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -43,6 +45,10 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + PROXY_PATH;
 	}
 
+	/**
+	 * This class serves as kind of a proxy to make internal HTTP requests of HLS
+	 * protocol through HTTPS to avoid mixed content in the browser.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -55,14 +61,17 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			String urlAsString = servletParameters.url.substring(1).replaceFirst("/", "//");
-			info("urlAsString = " + servletParameters.url);
-			URL url = new URL(urlAsString);
+			URL url = new URL(servletParameters.url.substring(1).replaceFirst("/", "//"));
 
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ZipFileUtils.copy(connection.getInputStream(), bos);
-			response.setContentType("application/vnd.apple.mpegurl");
+
+			for (String header : connection.getHeaderFields().keySet().stream().filter(Objects::nonNull)
+					.collect(Collectors.toList())) {
+				String value = connection.getHeaderFields().get(header).stream().findFirst().get();
+				response.setHeader(header, value);
+			}
 			response.setContentLength(bos.size());
 			response.getOutputStream().write(bos.toByteArray());
 			response.setStatus(HttpServletResponse.SC_OK);
@@ -70,7 +79,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 		} catch (Throwable t) {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 }
