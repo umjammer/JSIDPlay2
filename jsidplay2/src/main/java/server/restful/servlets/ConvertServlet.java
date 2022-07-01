@@ -400,13 +400,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		Map<String, String> result = new HashMap<>();
 		result.put("$uuid", uuid.toString());
 		result.put("$barcodeImg", createQrCodeImgTag);
-		result.put("$barcodeImgTop", "8px");
-		result.put("$barcodeImgRight", "-328px");
 		result.put("$rtmp", rtmpUrl);
 		result.put("$hls", String.valueOf(!Boolean.TRUE.equals(servletParameters.rtmp)));
-		result.put("$waitForRTMP", getWaitFor(servletParameters));
-		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
+		result.put("$waitForVideo", String.valueOf(getWaitForVideo(servletParameters)));
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
+		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
 		result.put("$filename", file.getName());
 		return result;
 	}
@@ -428,9 +426,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private String getWaitFor(ServletParameters servletParameters) {
-		return Boolean.TRUE.equals(servletParameters.rtmp) ? String.valueOf(WAIT_FOR_RTMP)
-				: String.valueOf(WAIT_FOR_HLS);
+	private int getWaitForVideo(ServletParameters servletParameters) {
+		return Boolean.TRUE.equals(servletParameters.rtmp) ? WAIT_FOR_RTMP : WAIT_FOR_HLS;
 	}
 
 }

@@ -56,17 +56,21 @@
 			<video
 				v-if="hls"
 				id="video-container"
-				class="video-js vjs-default-skin"
+				class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
 				poster="/static/poster.png"
 				controls
-				preload="auto"
+				preload="none"
 				muted
 				autoplay
 			>
-				<source
-					src="/jsidplay2service/JSIDPlay2REST/proxy/$rtmp"
-					type="application/x-mpegURL"
-				/>
+				<p class="vjs-no-js">
+					To view this video please enable JavaScript, and consider upgrading to a
+					web browser that
+					<a href="https://videojs.com/html5-video-support/" target="_blank">
+						supports HTML5 video
+					</a>
+				</p>
+				I'm sorry. Your browser doesn't support HTML5 video
 			</video>
 
 			<p>
@@ -322,7 +326,7 @@
 					regardingTimeoutsTip1:
 						"Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.",
 					regardingTimeoutsTip2:
-						"If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
+						"RTMP: If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
 					regardingTimeoutsTip3: "Key presses are delayed a few seconds.",
 					regardingTimeoutsTip4: "Maximum play time is 1 hour.",
 				},
@@ -338,7 +342,7 @@
 					regardingTimeoutsTip1:
 						"Starte das Video innerhalb von $notYetPlayedTimeout Sekunden oder das Video wird beendet, ist das der Fall, m\u00fcssen sie f\u00fcr einen neuen Versuch neu laden.",
 					regardingTimeoutsTip2:
-						"Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
+						"RTMP: Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
 					regardingTimeoutsTip3:
 						"Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
 					regardingTimeoutsTip4:
@@ -356,7 +360,7 @@
 				data: {
 					langs: ["de", "en"],
 					hls: $hls,
-					waitForRTMP: $waitForRTMP,
+					waitForVideo: $waitForVideo,
 					notifyForHLS: $notifyForHLS,
 					barcodeImgTop: "$barcodeImgTop",
 					barcodeImgRight: "$barcodeImgRight",
@@ -373,7 +377,7 @@
 									"c64video",
 									"resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, fullscreen=yes"
 								);
-							}, this.waitForRTMP);
+							}, this.waitForVideo);
 						}
 					},
 					printMsg: function (msg) {
@@ -525,8 +529,12 @@
 						}, this.notifyForHLS);
 
 						setTimeout(function () {
-							var player = videojs("video-container");
-						}, this.waitForRTMP);
+							var video = videojs("video-container");
+							video.src({
+								src: '/jsidplay2service/JSIDPlay2REST/proxy/$rtmp',
+								type: 'application/x-mpegURL'
+							});
+						}, this.waitForVideo);
 					} else {
 						this.startVideo();
 					}
