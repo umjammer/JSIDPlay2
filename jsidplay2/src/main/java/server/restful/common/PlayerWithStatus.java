@@ -1,6 +1,7 @@
 package server.restful.common;
 
 import static libsidplay.components.keyboard.KeyTableEntry.SPACE;
+import static server.restful.common.IServletSystemProperties.HLS_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 
@@ -72,7 +73,7 @@ public final class PlayerWithStatus {
 	public void onKeepAlive() {
 		LocalDateTime maxDuration = created.plusSeconds(RTMP_EXCEEDS_MAXIMUM_DURATION);
 		if (LocalDateTime.now().isBefore(maxDuration)) {
-			validUntil = LocalDateTime.now().plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
+			validUntil = LocalDateTime.now().plusSeconds(HLS_NOT_YET_PLAYED_TIMEOUT);
 		} else {
 			validUntil = maxDuration;
 		}
