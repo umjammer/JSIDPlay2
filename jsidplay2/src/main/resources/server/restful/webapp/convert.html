@@ -22,6 +22,22 @@
 		/>
 
 		<!-- Load Vue followed by BootstrapVue -->
+		<link
+			type="text/css"
+			rel="stylesheet"
+			href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+		/>
+		<link
+			type="text/css"
+			rel="stylesheet"
+			href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"
+		/>
+		<link
+			type="text/css"
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+		/>
+
 		<script src="https://unpkg.com/vue@2.6.14/dist/vue.min.js"></script>
 		<script src="https://unpkg.com/vue-router@3.5.4/dist/vue-router.min.js"></script>
 		<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
@@ -41,60 +57,100 @@
 	</head>
 	<body>
 		<div id="app">
-			<div class="locale-changer">
-				<select v-model="$i18n.locale" style="float: right">
-					<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
-						{{ lang }}
-					</option>
-				</select>
-				<h1>C64 Jukebox</h1>
-			</div>
-			<div>
-				<b>{{ $t("presents") }} <span class="my-filename">$filename</span></b>
+			<div class="left-button-container">
+				<div class="button-container">
+					<b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm"
+						>6581</b-button
+					>
+				</div>
+				<div class="button-container">
+					<b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm"
+						>8580</b-button
+					>
+				</div>
+				<div class="button-container">
+					<b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm"
+						>RESID</b-button
+					>
+				</div>
+				<div class="button-container">
+					<b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-secondary" size="sm"
+						>RESIDFP</b-button
+					>
+				</div>
 			</div>
 
-			<video
-				v-if="hls"
-				id="video-container"
-				class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
-				poster="/static/poster.png"
-				controls
-				preload="none"
-				muted
-				autoplay
-			>
-				<p class="vjs-no-js">
-					To view this video please enable JavaScript, and consider upgrading to a
-					web browser that
-					<a href="https://videojs.com/html5-video-support/" target="_blank">
-						supports HTML5 video
-					</a>
-				</p>
-				I'm sorry. Your browser doesn't support HTML5 video
-			</video>
+			<div class="right-button-container">
+				<div>
+					<select v-model="$i18n.locale">
+						<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
+							{{ lang }}
+						</option>
+					</select>
+				</div>
+				<div class="button-container">
+					<b-button v-b-toggle.collapse-barcode variant="primary" size="sm">Barcode</b-button>
+				</div>
+				<div class="button-container">
+					<b-button v-b-toggle.collapse-keyboard variant="primary" size="sm"
+						>{{ $t("keyboard") }}</b-button
+					>
+				</div>
+				<div class="button-container">
+					<b-button v-on:click="insertDisk()" pill variant="outline-secondary" size="sm"
+						>{{ $t("insertNextDisk") }}</b-button
+					>
+				</div>
+				<div class="button-container">
+					<b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm"
+						>Joy1 Btn</b-button
+					>
+				</div>
+				<div class="button-container">
+					<b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm"
+						>Joy2 Btn</b-button
+					>
+				</div>
+			</div>
+
+			<div class="video-wrapper">
+				<video
+					v-if="hls"
+					id="video-container"
+					class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
+					poster="/static/poster.png"
+					controls
+					preload="auto"
+					muted
+					autoplay
+					data-setup='{"fluid": true}'
+				>
+					<p class="vjs-no-js">
+						To view this video please enable JavaScript, and consider upgrading to a
+						web browser that
+						<a href="https://videojs.com/html5-video-support/" target="_blank">
+							supports HTML5 video
+						</a>
+					</p>
+					I'm sorry. Your browser doesn't support HTML5 video
+				</video>
+			</div>
 
 			<p>
 				{{ msg }}
 			</p>
 
-			<b-button v-b-toggle.collapse-barcode variant="primary">Barcode</b-button>
 			<b-collapse id="collapse-barcode" class="mt-2">
 				<b-card>
 					<b-card-text>
-						$barcodeImg
-
-						<h3>{{ $t("mobilePlaybackHeader") }}</h3>
-						<ul>
-							<li>{{ $t("mobilePlaybackTip1") }}</li>
-							<li>{{ $t("mobilePlaybackTip2") }}</li>
-						</ul>
+						<div class="barcode-container">
+							<b-alert v-if="!hls" variant="success" show>{{ $t("mobilePlaybackTip1") }}</b-alert>
+							$barcodeImg
+						</div>
 					</b-card-text>
 				</b-card>
 			</b-collapse>
 
-			<b-button v-b-toggle.collapse-keyboard variant="primary"
-				>Keyboard</b-button
-			>
 			<b-collapse id="collapse-keyboard" class="mt-2">
 				<b-card>
 					<b-card-text>
@@ -251,16 +307,16 @@
 							<!-- end section-a-->
 
 							<div class="section-b">
-								<div style="width: 100%; float: left">
+								<div class="fn-key">
 									<div class="key function" v-on:click="typeKey('F1')">F1</div>
 								</div>
-								<div style="width: 100%; float: left">
+								<div class="fn-key">
 									<div class="key function" v-on:click="typeKey('F3')">F3</div>
 								</div>
-								<div style="width: 100%; float: left">
+								<div class="fn-key">
 									<div class="key function" v-on:click="typeKey('F5')">F5</div>
 								</div>
-								<div style="width: 100%; float: left">
+								<div class="fn-key">
 									<div class="key function" v-on:click="typeKey('F7')">F7</div>
 								</div>
 							</div>
@@ -270,34 +326,10 @@
 				</b-card>
 			</b-collapse>
 
-			<div class="switches">
-				<b-button v-on:click="setDefaultSidModel6581()" class="button"
-					>6581</b-button
-				>
-				<b-button v-on:click="setDefaultSidModel8580()" class="button"
-					>8580</b-button
-				>
-				<b-button v-on:click="setDefaultEmulationReSid()" class="button"
-					>RESID</b-button
-				>
-				<b-button v-on:click="setDefaultEmulationReSidFp()" class="button"
-					>RESIDFP</b-button
-				>
-				<b-button v-on:click="insertDisk()" class="button"
-					>insert next disk</b-button
-				>
-				<b-button v-on:click="setJoyBtn(0, 16)" class="button"
-					>Joy1 Btn</b-button
-				>
-				<b-button v-on:click="setJoyBtn(1, 16)" class="button"
-					>Joy2 Btn</b-button
-				>
-			</div>
-
 			<h3>{{ $t("regardingTimeoutsHeader") }}</h3>
 			<ul>
 				<li>{{ $t("regardingTimeoutsTip1") }}</li>
-				<li>{{ $t("regardingTimeoutsTip2") }}</li>
+				<li v-if="!hls">{{ $t("regardingTimeoutsTip2") }}</li>
 				<li>{{ $t("regardingTimeoutsTip3") }}</li>
 				<li>{{ $t("regardingTimeoutsTip4") }}</li>
 			</ul>
@@ -305,14 +337,11 @@
 		<script>
 			const messages = {
 				en: {
-					presents: "JSIDPlay2 presents:",
-					mobilePlaybackHeader:
-						"For mobile playback: Scan Barcode to watch the video",
+				    keyboard: 'Keyboard',
+				    insertNextDisk: 'Next Disk',
 					mobilePlaybackTip1:
-						"Scan the barcode and open URL to watch the video.",
-					mobilePlaybackTip2:
-						"Only for RTMP: Please install VLC player or MXPlayer on your phone!",
-					regardingTimeoutsHeader: "Regarding timeouts",
+						"Please install VLC player or MXPlayer on your phone!",
+					regardingTimeoutsHeader: "Timeouts",
 					regardingTimeoutsTip1:
 						"Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.",
 					regardingTimeoutsTip2:
@@ -321,14 +350,11 @@
 					regardingTimeoutsTip4: "Maximum play time is 1 hour.",
 				},
 				de: {
-					presents: "JSIDPlay2 pr\u00e4sentiert:",
-					mobilePlaybackHeader:
-						"Zum Abspielen auf dem Handy: Barcode scannen um das Video zu schauen",
+				    keyboard: 'Tastatur',
+				    insertNextDisk: 'N\u00e4chste Disk',
 					mobilePlaybackTip1:
-						"Bitte scannen sie den Barcode und \u00f6ffnen sie die URL um das Video zu schauen.",
-					mobilePlaybackTip2:
-						"Nur f\u00fcr RTMP: Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
-					regardingTimeoutsHeader: "Bez\u00fcglich der Timeouts",
+						"Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
+					regardingTimeoutsHeader: "Timeouts",
 					regardingTimeoutsTip1:
 						"Starte das Video innerhalb von $notYetPlayedTimeout Sekunden oder das Video wird beendet, ist das der Fall, m\u00fcssen sie f\u00fcr einen neuen Versuch neu laden.",
 					regardingTimeoutsTip2:
