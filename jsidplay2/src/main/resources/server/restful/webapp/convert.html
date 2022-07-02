@@ -118,12 +118,12 @@
 					v-if="hls"
 					id="video-container"
 					class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
+					data-setup='{"fluid": true}'
 					poster="/static/poster.png"
 					controls
-					preload="auto"
+					preload="none"
 					muted
 					autoplay
-					data-setup='{"fluid": true}'
 				>
 					<p class="vjs-no-js">
 						To view this video please enable JavaScript, and consider upgrading to a
