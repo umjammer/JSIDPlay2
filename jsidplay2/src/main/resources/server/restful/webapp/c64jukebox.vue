@@ -376,9 +376,7 @@
 										</div>
 									</div>
 
-									<h3>
-										{{ $t("audioStreamingCfgHeader") }}
-									</h3>
+									<h3>{{ $t("audioStreamingCfgHeader") }}</h3>
 
 									<div class="settings-box">
 										<b-form-checkbox id="vbr" v-model="vbr">
@@ -402,9 +400,7 @@
 										</div>
 									</div>
 
-									<h3>
-										{{ $t("videoStreamingCfgHeader") }}
-									</h3>
+									<h3>{{ $t("videoStreamingCfgHeader") }}</h3>
 
 									<div class="settings-box">
 										<b-form-group>
@@ -492,8 +488,19 @@
 										<b-form-checkbox id="fakeStereo" v-model="fakeStereo">
 											{{ $t("fakeStereo") }}
 										</b-form-checkbox>
+										<b-form-checkbox id="bypassDelay" v-model="bypassDelay">
+											{{ $t("bypassDelay") }}
+										</b-form-checkbox>
 										<b-form-checkbox id="bypassReverb" v-model="bypassReverb">
 											{{ $t("bypassReverb") }}
+										</b-form-checkbox>
+									</div>
+									<div class="settings-box">
+										<b-form-checkbox
+											id="detectPsidSettings"
+											v-model="detectPsidSettings"
+										>
+											{{ $t("detectPsidSettings") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
@@ -672,9 +679,79 @@
 									<h2>{{ $t("emulationCfgHeader") }}</h2>
 
 									<div class="settings-box">
+										<label for="stereoMode">{{ $t("stereoMode") }}</label>
 										<b-form-group>
 											<b-form-radio-group
-												v-model="defaultEngine"
+												id="stereoMode"
+												v-model="stereoMode"
+												style="display: flex"
+											>
+												<b-form-radio value="AUTO">Auto</b-form-radio>
+												<b-form-radio value="FORCE_2SID">2-SID</b-form-radio>
+												<b-form-radio value="FORCE_3SID">3-SID</b-form-radio>
+											</b-form-radio-group>
+										</b-form-group>
+									</div>
+									<div class="settings-box">
+										<div>
+											<label for="stereoSidAddress">{{
+												$t("stereoSidAddress")
+											}}</label>
+											<b-form-select
+												id="stereoSidAddress"
+												v-model="stereoSidAddress"
+												size="sm"
+												class="mt-3"
+												:select-size="1"
+											>
+												<option :value="54304">0xd420</option>
+												<option :value="54336">0xd440</option>
+												<option :value="54528">0xd500</option>
+												<option :value="56832">0xde00</option>
+												<option :value="57088">0xdf00</option>
+											</b-form-select>
+										</div>
+										<div>
+											<label for="threeSidAddress">{{
+												$t("threeSidAddress")
+											}}</label>
+											<b-form-select
+												id="threeSidAddress"
+												v-model="threeSidAddress"
+												size="sm"
+												class="mt-3"
+												:select-size="1"
+											>
+												<option :value="54304">0xd420</option>
+												<option :value="54336">0xd440</option>
+												<option :value="54528">0xd500</option>
+												<option :value="56832">0xde00</option>
+												<option :value="57088">0xdf00</option>
+											</b-form-select>
+										</div>
+									</div>
+									<div class="settings-box">
+										<label for="sidRead">{{ $t("sidRead") }}</label>
+										<b-form-group>
+											<b-form-radio-group
+												id="sidRead"
+												v-model="sidRead"
+												style="display: flex"
+											>
+												<b-form-radio value="0">Haupt SID</b-form-radio>
+												<b-form-radio value="1">2. SID</b-form-radio>
+												<b-form-radio value="2">3. SID</b-form-radio>
+											</b-form-radio-group>
+										</b-form-group>
+									</div>
+									<div class="settings-box">
+										<label for="defaultEmulation">{{
+											$t("defaultEmulation")
+										}}</label>
+										<b-form-group>
+											<b-form-radio-group
+												id="defaultEmulation"
+												v-model="defaultEmulation"
 												style="display: flex"
 											>
 												<b-form-radio
@@ -691,8 +768,12 @@
 										</b-form-group>
 									</div>
 									<div class="settings-box">
+										<label for="samplingMethod">{{
+											$t("samplingMethod")
+										}}</label>
 										<b-form-group>
 											<b-form-radio-group
+												id="samplingMethod"
 												v-model="samplingMethod"
 												style="display: flex"
 											>
@@ -702,8 +783,10 @@
 										</b-form-group>
 									</div>
 									<div class="settings-box">
+										<label for="samplingRate">{{ $t("samplingRate") }}</label>
 										<b-form-group>
 											<b-form-radio-group
+												id="samplingRate"
 												v-model="samplingRate"
 												style="display: flex"
 											>
@@ -714,8 +797,10 @@
 										</b-form-group>
 									</div>
 									<div class="settings-box">
+										<label for="defaultModel">{{ $t("defaultModel") }}</label>
 										<b-form-group>
 											<b-form-radio-group
+												id="defaultModel"
 												v-model="defaultModel"
 												style="display: flex"
 											>
@@ -973,7 +1058,9 @@
 					loopSong: "Loop Song",
 					digiboost8580: "Digi Boost 8580",
 					fakeStereo: "Fake Stereo",
+					bypassDelay: "Bypass Delay",
 					bypassReverb: "Bypass Reverb",
+					detectPsidSettings: "Auto-detect PSID settings",
 					startTime: "Start Time in sec.",
 					defaultLength: "Default Length in sec.",
 					fadeIn: "Fade-In in sec.",
@@ -1009,6 +1096,14 @@
 					sidMuteVoice3: "Voice 3",
 					sidMuteSamples: "Samples",
 					bufferSize: "Buffer Size",
+					stereoMode: "Stereo Mode",
+					sidRead: "Read from SID",
+					stereoSidAddress: "Stereo SID Address",
+					threeSidAddress: "3-SID Address",
+					defaultEmulation: "Default Emulation",
+					samplingMethod: "Sampling Method",
+					samplingRate: "Sampling Rate",
+					defaultModel: "Default Chip Model",
 					pressSpacePeriodically: "Press Space periodically in s",
 					status: "Show Status Line in Videos",
 					streamingCfgHeader: "Streaming Configuration",
@@ -1083,7 +1178,9 @@
 					loopSong: "Song wiederholen",
 					digiboost8580: "Digi Boost 8580",
 					fakeStereo: "Fake Stereo",
+					bypassDelay: "Delay \u00fcberbr\u00fccken",
 					bypassReverb: "Reverb \u00fcberbr\u00fccken",
+					detectPsidSettings: "PSID Einstellungen autom. erkennen",
 					startTime: "Startzeit in Sek.",
 					defaultLength: "Default L\u00e4nge in Sek.",
 					fadeIn: "Fade-In in Sek.",
@@ -1119,6 +1216,14 @@
 					sidMuteVoice3: "Voice 3",
 					sidMuteSamples: "Samples",
 					bufferSize: "Puffergr\u00f6\u00dfe",
+					stereoMode: "Stereo Mode",
+					sidRead: "Lesen vom SID",
+					stereoSidAddress: "Stereo SID Adresse",
+					threeSidAddress: "3-SID SID Adresse",
+					defaultEmulation: "Default Emulation",
+					samplingMethod: "Sampling Methode",
+					samplingRate: "Sampling Rate",
+					defaultModel: "Default Chip Model",
 					pressSpacePeriodically: "Leertaste wiederholt dr\u00fccken in s",
 					status: "Statuszeile in Videos anzeigen",
 					streamingCfgHeader: "Streaming konfigurieren",
@@ -1165,9 +1270,14 @@
 					detectSongLength: true,
 					singleSong: true,
 					loopSong: false,
+					stereoMode: "AUTO",
+					stereoSidAddress: 54304,
+					threeSidAddress: 54336,
 					digiboost8580: false,
 					fakeStereo: false,
+					bypassDelay: true,
 					bypassReverb: false,
+					detectPsidSettings: true,
 					sidMuteVoice1: false,
 					sidMuteVoice2: false,
 					sidMuteVoice3: false,
@@ -1181,7 +1291,8 @@
 					threeSidMuteVoice3: false,
 					threeSidMuteSamples: false,
 					bufferSize: 65536,
-					defaultEngine: "RESIDFP",
+					sidRead: 0,
+					defaultEmulation: "RESIDFP",
 					samplingMethod: "RESAMPLE",
 					samplingRate: "MEDIUM",
 					defaultModel: "MOS8580",
@@ -1191,7 +1302,7 @@
 					filtersResid8580: [],
 					filtersResidFp6581: [],
 					filtersResidFp8580: [],
-					// current filters according to defaultEngine
+					// current filters according to defaultEmulation
 					filters6581: [],
 					filters8580: [],
 					// chosen filters
@@ -1258,6 +1369,14 @@
 							return "&reuSize=1024";
 						} else if (this.reuSize === "kb2048") {
 							return "&reuSize=2048";
+						}
+						return "";
+					},
+					stereoParameters: function () {
+						if (this.stereoMode === "FORCE_2SID") {
+							return "&dualSID=true&dualSIDBase=" + this.stereoSidAddress;
+						} else if (this.stereoMode === "FORCE_3SID") {
+							return "&thirdSID=true&thirdSIDBase=" + this.threeSidAddress;
 						}
 						return "";
 					},
@@ -1448,7 +1567,7 @@
 							"&frequency=" +
 							this.samplingRate +
 							"&defaultEmulation=" +
-							this.defaultEngine +
+							this.defaultEmulation +
 							"&defaultModel=" +
 							this.defaultModel +
 							"&startTime=" +
@@ -1505,8 +1624,12 @@
 							this.digiboost8580 +
 							"&fakeStereo=" +
 							this.fakeStereo +
+							"&bypassDelay=" +
+							this.bypassDelay +
 							"&reverbBypass=" +
 							this.bypassReverb +
+							"&detectPSID64ChipModel=" +
+							this.detectPsidSettings +
 							"&rtmp=" +
 							this.rtmp +
 							"&cbr=" +
@@ -1521,7 +1644,10 @@
 							this.pressSpaceInterval +
 							"&status=" +
 							this.status +
-							this.reuParameters
+							"&sidNumToRead=" +
+							this.sidRead +
+							this.reuParameters +
+							this.stereoParameters
 						);
 					},
 					createDownloadMP3Url: function (entry) {
@@ -1659,7 +1785,7 @@
 									.filter((filter) => filter.startsWith("RESIDFP_MOS8580_"))
 									.map((filter) => filter.substring("RESIDFP_MOS8580_".length));
 
-								this.updateFilters(this.defaultEngine);
+								this.updateFilters(this.defaultEmulation);
 							})
 							.finally(() => (this.loadingCfg = false));
 					},
