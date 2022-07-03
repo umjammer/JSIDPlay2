@@ -738,9 +738,9 @@
 												v-model="sidRead"
 												style="display: flex"
 											>
-												<b-form-radio value="0">Haupt SID</b-form-radio>
-												<b-form-radio value="1">2. SID</b-form-radio>
-												<b-form-radio value="2">3. SID</b-form-radio>
+												<b-form-radio value="FIRST_SID">Haupt SID</b-form-radio>
+												<b-form-radio value="SECOND_SID">2. SID</b-form-radio>
+												<b-form-radio value="THIRD_SID">3. SID</b-form-radio>
 											</b-form-radio-group>
 										</b-form-group>
 									</div>
@@ -1291,7 +1291,7 @@
 					threeSidMuteVoice3: false,
 					threeSidMuteSamples: false,
 					bufferSize: 65536,
-					sidRead: 0,
+					sidRead: 'FIRST_SID',
 					defaultEmulation: "RESIDFP",
 					samplingMethod: "RESAMPLE",
 					samplingRate: "MEDIUM",
@@ -1644,7 +1644,7 @@
 							this.pressSpaceInterval +
 							"&status=" +
 							this.status +
-							"&sidNumToRead=" +
+							"&sidToRead=" +
 							this.sidRead +
 							this.reuParameters +
 							this.stereoParameters
