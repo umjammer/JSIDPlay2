@@ -1624,7 +1624,7 @@
 							this.digiboost8580 +
 							"&fakeStereo=" +
 							this.fakeStereo +
-							"&bypassDelay=" +
+							"&delayBypass=" +
 							this.bypassDelay +
 							"&reverbBypass=" +
 							this.bypassReverb +
