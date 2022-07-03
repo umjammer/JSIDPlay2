@@ -401,12 +401,12 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 	}
 
 	@Override
-	@Parameter(names = { "--sidNumToRead" }, descriptionKey = "SID_NUM_TO_READ", order = 1017)
 	public final int getSidNumToRead() {
 		return iniReader.getPropertyInt(SECTION_ID, "SidNumToRead", DEFAULT_SID_NUM_TO_READ);
 	}
 
 	@Override
+	@Parameter(names = { "--sidNumToRead" }, descriptionKey = "SID_NUM_TO_READ", order = 1017)
 	public final void setSidNumToRead(int sidNumToRead) {
 		iniReader.setProperty(SECTION_ID, "SidNumToRead", sidNumToRead);
 	}
