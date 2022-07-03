@@ -9,6 +9,7 @@ import libsidplay.common.Emulation;
 import libsidplay.common.Engine;
 import libsidplay.common.SamplingMethod;
 import libsidplay.common.SamplingRate;
+import libsidplay.common.SidReads;
 import libsidplay.common.Ultimate64Mode;
 import libsidplay.common.VideoCoderPreset;
 import libsidplay.components.c1541.FloppyType;
@@ -162,7 +163,7 @@ public interface IniDefaults {
 	boolean DEFAULT_USE_FILTER = EMULATOR_SECTION.isFilter();
 	boolean DEFAULT_USE_STEREO_FILTER = EMULATOR_SECTION.isStereoFilter();
 	boolean DEFAULT_USE_3SID_FILTER = EMULATOR_SECTION.isThirdSIDFilter();
-	int DEFAULT_SID_NUM_TO_READ = EMULATOR_SECTION.getSidNumToRead();
+	SidReads DEFAULT_SID_TO_READ = EMULATOR_SECTION.getSidToRead();
 	boolean DEFAULT_DIGI_BOOSTED_8580 = EMULATOR_SECTION.isDigiBoosted8580();
 	int DEFAULT_DUAL_SID_BASE = EMULATOR_SECTION.getDualSidBase();
 	int DEFAULT_THIRD_SID_BASE = EMULATOR_SECTION.getThirdSIDBase();

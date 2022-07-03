@@ -48,7 +48,7 @@ import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_READ;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_SERIAL_NUMBER;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_WRITE_BUFFER_SIZE;
 import static sidplay.ini.IniDefaults.DEFAULT_SID_MODEL;
-import static sidplay.ini.IniDefaults.DEFAULT_SID_NUM_TO_READ;
+import static sidplay.ini.IniDefaults.DEFAULT_SID_TO_READ;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_EMULATION;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_FILTER_6581;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_FILTER_8580;
@@ -78,6 +78,7 @@ import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
 import libsidplay.common.Engine;
+import libsidplay.common.SidReads;
 import libsidplay.common.Ultimate64Mode;
 import libsidplay.config.IDeviceMapping;
 import libsidplay.config.IEmulationSection;
@@ -400,15 +401,25 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 		iniReader.setProperty(SECTION_ID, "Use3rdSIDFilter", enable);
 	}
 
-	@Override
+	@Deprecated
 	public final int getSidNumToRead() {
-		return iniReader.getPropertyInt(SECTION_ID, "SidNumToRead", DEFAULT_SID_NUM_TO_READ);
+		return 0;
+	}
+
+	@Deprecated
+	@Parameter(names = { "--sidNumToRead" }, descriptionKey = "SID_TO_READ", order = 1017, hidden = true)
+	public final void setSidNumToRead(int sidNumToRead) {
 	}
 
 	@Override
-	@Parameter(names = { "--sidNumToRead" }, descriptionKey = "SID_NUM_TO_READ", order = 1017)
-	public final void setSidNumToRead(int sidNumToRead) {
-		iniReader.setProperty(SECTION_ID, "SidNumToRead", sidNumToRead);
+	public final SidReads getSidToRead() {
+		return iniReader.getPropertyEnum(SECTION_ID, "SidToRead", DEFAULT_SID_TO_READ, SidReads.class);
+	}
+
+	@Override
+	@Parameter(names = { "--sidToRead" }, descriptionKey = "SID_TO_READ", order = 1017)
+	public final void setSidToRead(SidReads sidRead) {
+		iniReader.setProperty(SECTION_ID, "SidNumToRead", sidRead);
 	}
 
 	@Override

@@ -686,14 +686,14 @@ public interface IEmulationSection {
 	/**
 	 * @return SID chip to read from (fake stereo)
 	 */
-	int getSidNumToRead();
+	SidReads getSidToRead();
 
 	/**
 	 * Setter of the SID chip to read from (fake stereo).
 	 *
-	 * @param sidNumToRead SID chip to read from (fake stereo)
+	 * @param sidRead SID chip to read from (fake stereo)
 	 */
-	void setSidNumToRead(int sidNumToRead);
+	void setSidToRead(SidReads sidRead);
 
 	/**
 	 * Getter of the fake stereo mode.
@@ -990,24 +990,6 @@ public interface IEmulationSection {
 			setForce3SIDTune(false);
 			break;
 		}
-	}
-
-	/**
-	 * Get SID that should do reads.
-	 *
-	 * @return SID that should do reads
-	 */
-	default SidReads getSidToRead() {
-		return SidReads.values()[getSidNumToRead()];
-	}
-
-	/**
-	 * Set SID that should do reads.
-	 *
-	 * @param sidReads SID that should do reads
-	 */
-	default void setSidToRead(SidReads sidReads) {
-		setSidNumToRead(sidReads.ordinal());
 	}
 
 	/**

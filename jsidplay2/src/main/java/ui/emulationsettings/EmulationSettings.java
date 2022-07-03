@@ -54,7 +54,7 @@ import static sidplay.ini.IniDefaults.DEFAULT_SECOND_BALANCE;
 import static sidplay.ini.IniDefaults.DEFAULT_SECOND_DELAY;
 import static sidplay.ini.IniDefaults.DEFAULT_SECOND_VOLUME;
 import static sidplay.ini.IniDefaults.DEFAULT_SID_MODEL;
-import static sidplay.ini.IniDefaults.DEFAULT_SID_NUM_TO_READ;
+import static sidplay.ini.IniDefaults.DEFAULT_SID_TO_READ;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_EMULATION;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_FILTER_6581;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_FILTER_8580;
@@ -280,10 +280,10 @@ public class EmulationSettings extends C64Window {
 		thirdAddress.textProperty().addListener((obj, o, n) -> updateSIDChipConfiguration());
 
 		sidReads = FXCollections.<SidReads>observableArrayList(SidReads.values());
+
 		sidToRead.setConverter(new EnumToStringConverter<SidReads>(bundle));
 		sidToRead.setItems(sidReads);
-		sidToRead.valueProperty().addListener((onj, o, n) -> emulationSection.setSidToRead(n));
-		sidToRead.getSelectionModel().select(emulationSection.getSidToRead());
+		sidToRead.valueProperty().bindBidirectional(emulationSection.sidToReadProperty());
 
 		sid1Emulations = FXCollections.<Emulation>observableArrayList(Emulation.values());
 		sid1Emulation.setConverter(new EnumToStringConverter<Emulation>(bundle));
@@ -377,8 +377,8 @@ public class EmulationSettings extends C64Window {
 	private void enableStereoSettings(SidTune tune) {
 		EmulationSection emulationSection = util.getConfig().getEmulationSection();
 
-		boolean hardwareBasedSid = emulationSection.getEngine() == HARDSID
-				|| emulationSection.getEngine() == SIDBLASTER || emulationSection.getEngine() == EXSID;
+		boolean hardwareBasedSid = emulationSection.getEngine() == HARDSID || emulationSection.getEngine() == SIDBLASTER
+				|| emulationSection.getEngine() == EXSID;
 		boolean second = SidTune.isSIDUsed(emulationSection, tune, 1);
 		boolean third = SidTune.isSIDUsed(emulationSection, tune, 2);
 		boolean isForcedStereo = emulationSection.isForceStereoTune();
@@ -569,7 +569,7 @@ public class EmulationSettings extends C64Window {
 		emulationSection.setForce3SIDTune(DEFAULT_FORCE_3SID_TUNE);
 		emulationSection.setDualSidBase(DEFAULT_DUAL_SID_BASE);
 		emulationSection.setThirdSIDBase(DEFAULT_THIRD_SID_BASE);
-		emulationSection.setSidNumToRead(DEFAULT_SID_NUM_TO_READ);
+		emulationSection.setSidToRead(DEFAULT_SID_TO_READ);
 
 		emulationSection.setDefaultSidModel(DEFAULT_SID_MODEL);
 		emulationSection.setDefaultEmulation(DEFAULT_EMULATION);

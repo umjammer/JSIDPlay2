@@ -50,7 +50,7 @@ import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_READ;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_SERIAL_NUMBER;
 import static sidplay.ini.IniDefaults.DEFAULT_SIDBLASTER_WRITE_BUFFER_SIZE;
 import static sidplay.ini.IniDefaults.DEFAULT_SID_MODEL;
-import static sidplay.ini.IniDefaults.DEFAULT_SID_NUM_TO_READ;
+import static sidplay.ini.IniDefaults.DEFAULT_SID_TO_READ;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_EMULATION;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_FILTER_6581;
 import static sidplay.ini.IniDefaults.DEFAULT_STEREO_FILTER_8580;
@@ -98,6 +98,7 @@ import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
 import libsidplay.common.Engine;
+import libsidplay.common.SidReads;
 import libsidplay.common.Ultimate64Mode;
 import libsidplay.config.IEmulationSection;
 import server.restful.common.Connectors;
@@ -814,21 +815,22 @@ public class EmulationSection implements IEmulationSection {
 		return thirdSIDFilter.property();
 	}
 
-	private ShadowField<ObjectProperty<Integer>, Integer> sidNumToRead = new ShadowField<>(SimpleObjectProperty::new,
-			DEFAULT_SID_NUM_TO_READ);
+	private ShadowField<ObjectProperty<SidReads>, SidReads> sidToRead = new ShadowField<>(SimpleObjectProperty::new,
+			DEFAULT_SID_TO_READ);
 
+	@Enumerated(EnumType.STRING)
 	@Override
-	public int getSidNumToRead() {
-		return sidNumToRead.get();
+	public SidReads getSidToRead() {
+		return this.sidToRead.get();
 	}
 
 	@Override
-	public void setSidNumToRead(int sidNumToRead) {
-		this.sidNumToRead.set(sidNumToRead);
+	public void setSidToRead(SidReads engine) {
+		this.sidToRead.set(engine);
 	}
 
-	public final ObjectProperty<Integer> sidNumToReadProperty() {
-		return sidNumToRead.property();
+	public final ObjectProperty<SidReads> sidToReadProperty() {
+		return sidToRead.property();
 	}
 
 	private ShadowField<BooleanProperty, Boolean> digiBoosted8580 = new ShadowField<>(SimpleBooleanProperty::new,

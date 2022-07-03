@@ -46,7 +46,7 @@ public class JHardSIDEmu extends ReSIDfp {
 
 		@Override
 		public byte read(int addr) {
-			if (emulationSection.getSidNumToRead() <= prevNum) {
+			if (emulationSection.getSidToRead().getSidNum() <= prevNum) {
 				return sids.get(prevNum).read(addr);
 			}
 			return super.read(addr);
@@ -54,7 +54,7 @@ public class JHardSIDEmu extends ReSIDfp {
 
 		@Override
 		public byte readInternalRegister(int addr) {
-			if (emulationSection.getSidNumToRead() <= prevNum) {
+			if (emulationSection.getSidToRead().getSidNum() <= prevNum) {
 				return sids.get(prevNum).readInternalRegister(addr);
 			}
 			return super.readInternalRegister(addr);

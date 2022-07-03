@@ -44,7 +44,7 @@ public class ExSIDEmu extends ReSIDfp {
 
 		@Override
 		public byte read(int addr) {
-			if (emulationSection.getSidNumToRead() <= prevNum) {
+			if (emulationSection.getSidToRead().getSidNum() <= prevNum) {
 				return sids.get(prevNum).read(addr);
 			}
 			return super.read(addr);
@@ -52,7 +52,7 @@ public class ExSIDEmu extends ReSIDfp {
 
 		@Override
 		public byte readInternalRegister(int addr) {
-			if (emulationSection.getSidNumToRead() <= prevNum) {
+			if (emulationSection.getSidToRead().getSidNum() <= prevNum) {
 				return sids.get(prevNum).readInternalRegister(addr);
 			}
 			return super.readInternalRegister(addr);
@@ -107,8 +107,8 @@ public class ExSIDEmu extends ReSIDfp {
 
 		if (sidNum == 0) {
 			exSID.exSID_audio_op(AudioOp.XS_AU_MUTE.getAudioOp());
-			exSID.exSID_clockselect(
-					cpuClock == CPUClock.PAL ? ClockSelect.XS_CL_PAL.getClockSelect() : ClockSelect.XS_CL_NTSC.getClockSelect());
+			exSID.exSID_clockselect(cpuClock == CPUClock.PAL ? ClockSelect.XS_CL_PAL.getClockSelect()
+					: ClockSelect.XS_CL_NTSC.getClockSelect());
 			if (stereo) {
 				exSID.exSID_audio_op(model == ChipModel.MOS6581 ? AudioOp.XS_AU_6581_8580.getAudioOp()
 						: AudioOp.XS_AU_8580_6581.getAudioOp());

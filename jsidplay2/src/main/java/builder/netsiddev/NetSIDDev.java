@@ -37,7 +37,7 @@ public class NetSIDDev extends SIDEmu {
 
 		@Override
 		public byte read(int addr) {
-			if (emulationSection.getSidNumToRead() <= prevNum) {
+			if (emulationSection.getSidToRead().getSidNum() <= prevNum) {
 				return sids.get(prevNum).read(addr);
 			}
 			return super.read(addr);
@@ -45,7 +45,7 @@ public class NetSIDDev extends SIDEmu {
 
 		@Override
 		public byte readInternalRegister(int addr) {
-			if (emulationSection.getSidNumToRead() <= prevNum) {
+			if (emulationSection.getSidToRead().getSidNum() <= prevNum) {
 				return sids.get(prevNum).readInternalRegister(addr);
 			}
 			return super.readInternalRegister(addr);
@@ -59,7 +59,7 @@ public class NetSIDDev extends SIDEmu {
 		 */
 		@Override
 		public void write(int addr, byte data) {
-			if (emulationSection.getSidNumToRead() <= prevNum) {
+			if (emulationSection.getSidToRead().getSidNum() <= prevNum) {
 				sids.get(prevNum).write(addr, data);
 				super.write(addr, data);
 			} else {
