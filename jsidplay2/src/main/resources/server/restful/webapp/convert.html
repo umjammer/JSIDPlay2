@@ -118,7 +118,6 @@
 					v-if="hls"
 					id="video-container"
 					class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
-					data-setup='{"fluid": true}'
 					poster="/static/poster.png"
 					controls
 					preload="none"
@@ -546,10 +545,12 @@
 
 						setTimeout(function () {
 							var video = videojs("video-container");
+							video.on('resize', function() {this.fluid(true)});
 							video.src({
 								src: '/jsidplay2service/JSIDPlay2REST/proxy/$rtmp',
 								type: 'application/x-mpegURL'
 							});
+							
 						}, this.waitForVideo);
 					} else {
 						this.startVideo();
