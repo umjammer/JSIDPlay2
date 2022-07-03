@@ -14,7 +14,6 @@
 .video-wrapper,.barcode-container {
 	width: 65%;
 	margin: 0px auto;
-	max-width: 960px;
 }
 
 .barcode-container {
@@ -43,7 +42,7 @@ body {
 }
 
 .keyboard {
-	width: 810px;
+	width: 660px;
 	height: 280px;
 	background-color: #938c78;
 	border-radius: 9px;
@@ -121,14 +120,10 @@ body {
 }
 
 .section-a {
-	width: 650px;
-	height: 260px;
 	float: left;
 }
 
 .section-b {
-	width: 80px;
-	height: 260px;
 	float: left;
 	margin-left: 16px;
 }
@@ -212,6 +207,4 @@ body {
 }
 
 .fn-key {
-	width: 100%;
-	float: left;
 }
