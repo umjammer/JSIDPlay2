@@ -1376,7 +1376,7 @@
 						if (this.stereoMode === "FORCE_2SID") {
 							return "&dualSID=true&dualSIDBase=" + this.stereoSidAddress;
 						} else if (this.stereoMode === "FORCE_3SID") {
-							return "&thirdSID=true&thirdSIDBase=" + this.threeSidAddress;
+							return "&dualSID=true&dualSIDBase=" + this.stereoSidAddress + "&thirdSID=true&thirdSIDBase=" + this.threeSidAddress;
 						}
 						return "";
 					},
