@@ -89,14 +89,6 @@
 					</select>
 				</div>
 				<div class="button-container">
-					<b-button v-b-toggle.collapse-barcode variant="primary" size="sm">Barcode</b-button>
-				</div>
-				<div class="button-container">
-					<b-button v-b-toggle.collapse-keyboard variant="primary" size="sm"
-						>{{ $t("keyboard") }}</b-button
-					>
-				</div>
-				<div class="button-container">
 					<b-button v-on:click="insertDisk()" pill variant="outline-secondary" size="sm"
 						>{{ $t("insertNextDisk") }}</b-button
 					>
@@ -133,6 +125,10 @@
 					</p>
 					I'm sorry. Your browser doesn't support HTML5 video
 				</video>
+			</div>
+			<div class="video-bar">
+				<b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right;">{{ $t("barcode") }}</b-button>
+				<b-button v-b-toggle.collapse-keyboard variant="primary" size="sm">{{ $t("keyboard") }}</b-button>
 			</div>
 
 			<p>
@@ -351,6 +347,7 @@
 		<script>
 			const messages = {
 				en: {
+				    barcode: 'Barcode',
 				    keyboard: 'Keyboard',
 				    insertNextDisk: 'Next Disk',
 					mobilePlaybackTip1:
@@ -370,6 +367,7 @@
 					joyBtnDone: 'Joystick button has been pressed!'
 				},
 				de: {
+				    barcode: 'Barcode',
 				    keyboard: 'Tastatur',
 				    insertNextDisk: 'N\u00e4chste Disk',
 					mobilePlaybackTip1:
