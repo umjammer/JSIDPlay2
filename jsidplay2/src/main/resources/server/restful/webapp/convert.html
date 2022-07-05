@@ -362,6 +362,12 @@
 						"RTMP: If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
 					regardingTimeoutsTip3: "Key presses are delayed a few seconds.",
 					regardingTimeoutsTip4: "Maximum play time is 1 hour.",
+					nextDiskDone: 'Next Disk has been inserted!',
+					defaultSidModel6581Done: 'Default SID model has been set to 6581!',
+					defaultSidModel8580Done: 'Default SID model has been set to 8580!',
+					defaultEmulationResidDone: 'Default emulation has been set to RESID!',
+					defaultEmulationResidFpDone: 'Default emulation has been set to RESIDFP!',
+					joyBtnDone: 'Joystick button has been pressed!'
 				},
 				de: {
 				    keyboard: 'Tastatur',
@@ -377,6 +383,12 @@
 						"Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
 					regardingTimeoutsTip4:
 						"Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
+					nextDiskDone: 'N\u00e4chste Diskette wurde eingelegt!',
+					defaultSidModel6581Done: 'Default SID Chip ist jetzt 6581!',
+					defaultSidModel8580Done: 'Default SID Chip ist jetzt 8580!',
+					defaultEmulationResidDone: 'Default Emulation ist jetzt RESID!',
+					defaultEmulationResidFpDone: 'Default Emulation ist jetzt RESIDFP!',
+					joyBtnDone: 'Joystick Button wurde gedr\u00fcckt!'
 				},
 			};
 			const i18n = new VueI18n({
@@ -400,12 +412,11 @@
 				methods: {
 					startVideo: function () {
 						if (!this.hls) {
-							console.log("OK");
 							setTimeout(() => {
 								window.open(
 									"$rtmp",
 									"c64video",
-									"resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, fullscreen=yes"
+									"resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, titlebar=no, location=no, fullscreen=yes"
 								);
 							}, this.waitForVideo);
 						}
@@ -464,9 +475,8 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							document.getElementsByClassName("my-filename")[0].innerHTML =
-								result;
-							this.printMsg("Next disk has been inserted!");
+							//document.getElementsByClassName("my-filename")[0].innerHTML = result;
+							this.printMsg(this.$i18n.t('nextDiskDone'));
 							this.startVideo();
 						});
 					},
@@ -480,7 +490,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg("Default SID model has been set to 6581!");
+							this.printMsg(this.$i18n.t('defaultSidModel6581Done'));
 							this.startVideo();
 						});
 					},
@@ -494,7 +504,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg("Default SID model has been set to 8580!");
+							this.printMsg(this.$i18n.t('defaultSidModel8580Done'));
 							this.startVideo();
 						});
 					},
@@ -508,7 +518,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg("Default emulation has been set to RESID!");
+							this.printMsg(this.$i18n.t('defaultEmulationResidDone'));
 							this.startVideo();
 						});
 					},
@@ -522,7 +532,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg("Default emulation has been set to RESIDFP!");
+							this.printMsg(this.$i18n.t('defaultEmulationResidFpDone'));
 							this.startVideo();
 						});
 					},
@@ -540,7 +550,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg("Joystick button has been pressed!");
+							this.printMsg(this.$i18n.t('joyBtnDone'));
 							this.startVideo();
 						});
 					},
@@ -551,7 +561,7 @@
 							var xhttp = new XMLHttpRequest();
 							xhttp.onreadystatechange = function () {
 								if (this.readyState == 4 && this.status == 200) {
-									console.log("HLS keep alive: $uuid");
+									// console.log("HLS keep alive: $uuid");
 								}
 							};
 							xhttp.open("GET", "/static/on_keep_alive?name=$uuid", true);
