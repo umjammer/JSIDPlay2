@@ -338,7 +338,7 @@
 
 			<h3>{{ $t("regardingTimeoutsHeader") }}</h3>
 			<ul>
-				<li>{{ $t("regardingTimeoutsTip1") }}</li>
+				<li v-if="!hls">{{ $t("regardingTimeoutsTip1") }}</li>
 				<li v-if="!hls">{{ $t("regardingTimeoutsTip2") }}</li>
 				<li>{{ $t("regardingTimeoutsTip3") }}</li>
 				<li>{{ $t("regardingTimeoutsTip4") }}</li>
@@ -357,7 +357,7 @@
 						"Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.",
 					regardingTimeoutsTip2:
 						"RTMP: If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
-					regardingTimeoutsTip3: "Key presses are delayed a few seconds.",
+					regardingTimeoutsTip3: "Actions and key presses are delayed a few seconds.",
 					regardingTimeoutsTip4: "Maximum play time is 1 hour.",
 					nextDiskDone: 'Next Disk has been inserted!',
 					defaultSidModel6581Done: 'Default SID model has been set to 6581!',
@@ -378,7 +378,7 @@
 					regardingTimeoutsTip2:
 						"RTMP: Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
 					regardingTimeoutsTip3:
-						"Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
+						"Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
 					regardingTimeoutsTip4:
 						"Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
 					nextDiskDone: 'N\u00e4chste Diskette wurde eingelegt!',
@@ -568,7 +568,7 @@
 
 						setTimeout(function () {
 							var video = videojs("video-container");
-							video.on('resize', function() {this.fluid(true)});
+							video.on('resize', function() {this.fluid(true);});
 							video.src({
 								src: '/jsidplay2service/JSIDPlay2REST/proxy/$rtmp',
 								type: 'application/x-mpegURL'
