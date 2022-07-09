@@ -173,7 +173,6 @@
 												<b-list-group-item
 													:button="!isVideo(entry)"
 													:variant="getVariant(entry)"
-													style="white-space: pre-line"
 												>
 													<template v-if="canFastload(entry)">
 														<i class="fas fa-video"></i>
@@ -545,10 +544,9 @@
 									</div>
 									<div class="settings-box">
 										<b-form-checkbox
-											id="detectPsidSettings"
-											v-model="detectPsidSettings"
+											v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
 										>
-											{{ $t("detectPsidSettings") }}
+											{{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
@@ -844,11 +842,11 @@
 										</div>
 									</div>
 									<div class="settings-box">
-										<label for="sidRead">{{ $t("sidRead") }}</label>
+										<label for="sidToRead">{{ $t("convertMessages.config.emulationSection.sidToRead") }}</label>
 										<b-form-group>
 											<b-form-radio-group
-												id="sidRead"
-												v-model="sidRead"
+												id="sidToRead"
+												v-model="convertOptions.config.emulationSection.sidToRead"
 												style="display: flex"
 											>
 												<b-form-radio value="FIRST_SID">Haupt SID</b-form-radio>
@@ -1388,11 +1386,9 @@
 					removePlaylistReally:
 						"Do you really want to remove ALL playlist entries?",
 					random: "Random Playback",
-					detectPsidSettings: "Auto-detect PSID settings",
 					mobileProfile: "Mobile profile",
 					wifiProfile: "WiFi profile",
 					stereoMode: "Stereo Mode",
-					sidRead: "Read from SID",
 					streamingCfgHeader: "Streaming Configuration",
 					audioStreamingCfgHeader: "Audio streaming",
 					videoStreamingCfgHeader: "Video streaming",
@@ -1463,11 +1459,9 @@
 					removePlaylistReally:
 						"Wollen sie wirklich ALL Favoriten l\u00f6schen?",
 					random: "Zuf\u00e4llige Wiedergabe",
-					detectPsidSettings: "PSID Einstellungen autom. erkennen",
 					mobileProfile: "Mobiles Profil",
 					wifiProfile: "WiFi Profil",
 					stereoMode: "Stereo Mode",
-					sidRead: "Lesen vom SID",
 					streamingCfgHeader: "Streaming konfigurieren",
 					audioStreamingCfgHeader: "Audio Streaming",
 					videoStreamingCfgHeader: "Video Streaming",
@@ -1509,8 +1503,6 @@
 					random: true,
 					// CFG (configuration)
 					stereoMode: "AUTO",
-					detectPsidSettings: true,
-					sidRead: "FIRST_SID",
 
 					// pre-fetched filter definitions
 					reSIDfilters6581: [],
@@ -1815,7 +1807,7 @@
 							"&reverbBypass=" +
 							this.convertOptions.config.audioSection.reverbBypass +
 							"&detectPSID64ChipModel=" +
-							this.detectPsidSettings +
+							this.convertOptions.config.emulationSection.detectPSID64ChipModel +
 							"&rtmp=" +
 							this.convertOptions.rtmp +
 							"&cbr=" +
@@ -1831,7 +1823,7 @@
 							"&status=" +
 							this.convertOptions.status +
 							"&sidToRead=" +
-							this.sidRead +
+							this.convertOptions.config.emulationSection.sidToRead +
 							this.reuParameters +
 							this.stereoParameters
 						);

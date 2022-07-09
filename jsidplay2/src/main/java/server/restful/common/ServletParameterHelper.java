@@ -28,71 +28,7 @@ import sidplay.ini.IniWhatsSidSection;
 
 public class ServletParameterHelper {
 
-	private static final class BeanParameterLocalizer extends SimpleBeanPropertyFilter {
-
-		private final Locale locale;
-
-		public BeanParameterLocalizer(Locale locale) {
-			this.locale = locale;
-		}
-
-		@Override
-		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-				throws Exception {
-			Parameter parameter = writer.getAnnotation(Parameter.class);
-			if (parameter != null) {
-				Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
-				if (parameters != null) {
-					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
-					jgen.writeStringField(writer.getName(), resBundle.getString(parameter.descriptionKey()));
-				} else {
-					super.serializeAsField(pojo, jgen, prov, writer);
-				}
-			} else {
-				super.serializeAsField(pojo, jgen, prov, writer);
-			}
-		}
-	}
-
-	@JsonFilter("localizer")
-	public class ServletParametersMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniConfigMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniSidplay2SectionMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniAudioSectionMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniEmulationSectionMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniC1541SectionMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniPrinterSectionMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniConsoleSectionMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniWhatsSidSectionMixIn {
-	}
-
-	@JsonFilter("localizer")
-	public class IniFilterSectionMixIn {
-	}
+	private static final String FILTER_NAME = "localizer";
 
 	public static final String CONVERT_MESSAGES_EN;
 	public static final String CONVERT_MESSAGES_DE;
@@ -110,6 +46,68 @@ public class ServletParameterHelper {
 		}
 	}
 
+	private static final class BeanParameterLocalizer extends SimpleBeanPropertyFilter {
+
+		private final Locale locale;
+
+		public BeanParameterLocalizer(Locale locale) {
+			this.locale = locale;
+		}
+
+		@Override
+		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
+				throws Exception {
+			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
+			Parameter parameter = writer.getAnnotation(Parameter.class);
+			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
+				ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
+				jgen.writeStringField(writer.getName(), resBundle.getString(parameter.descriptionKey()));
+			} else {
+				super.serializeAsField(pojo, jgen, prov, writer);
+			}
+		}
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class ServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniConfigMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniSidplay2SectionMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniAudioSectionMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniEmulationSectionMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniC1541SectionMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniPrinterSectionMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniConsoleSectionMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniWhatsSidSectionMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class IniFilterSectionMixIn {
+	}
+
 	private static ObjectMapper createObjectMapper(Locale locale) {
 		return new ObjectMapper().addMixIn(ServletParameters.class, ServletParametersMixIn.class)
 				.addMixIn(IniConfig.class, IniConfigMixIn.class)
@@ -121,7 +119,7 @@ public class ServletParameterHelper {
 				.addMixIn(IniConsoleSection.class, IniConsoleSectionMixIn.class)
 				.addMixIn(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class)
 				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class).setFilterProvider(
-						new SimpleFilterProvider().addFilter("localizer", new BeanParameterLocalizer(locale)));
+						new SimpleFilterProvider().addFilter(FILTER_NAME, new BeanParameterLocalizer(locale)));
 	}
 
 }
