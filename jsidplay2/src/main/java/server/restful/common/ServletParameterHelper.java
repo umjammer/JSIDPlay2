@@ -15,8 +15,10 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import server.restful.servlets.ConvertServlet;
+import server.restful.servlets.ConvertServlet.ServletParameters;
 import sidplay.ini.IniAudioSection;
 import sidplay.ini.IniC1541Section;
+import sidplay.ini.IniConfig;
 import sidplay.ini.IniConsoleSection;
 import sidplay.ini.IniEmulationSection;
 import sidplay.ini.IniFilterSection;
@@ -26,11 +28,11 @@ import sidplay.ini.IniWhatsSidSection;
 
 public class ServletParameterHelper {
 
-	private static final class LocalizedBeanParameters extends SimpleBeanPropertyFilter {
+	private static final class BeanParameterLocalizer extends SimpleBeanPropertyFilter {
 
 		private final Locale locale;
 
-		public LocalizedBeanParameters(Locale locale) {
+		public BeanParameterLocalizer(Locale locale) {
 			this.locale = locale;
 		}
 
@@ -43,40 +45,52 @@ public class ServletParameterHelper {
 				if (parameters != null) {
 					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
 					jgen.writeStringField(writer.getName(), resBundle.getString(parameter.descriptionKey()));
+				} else {
+					super.serializeAsField(pojo, jgen, prov, writer);
 				}
+			} else {
+				super.serializeAsField(pojo, jgen, prov, writer);
 			}
 		}
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
+	public class ServletParametersMixIn {
+	}
+
+	@JsonFilter("localizer")
+	public class IniConfigMixIn {
+	}
+
+	@JsonFilter("localizer")
 	public class IniSidplay2SectionMixIn {
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
 	public class IniAudioSectionMixIn {
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
 	public class IniEmulationSectionMixIn {
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
 	public class IniC1541SectionMixIn {
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
 	public class IniPrinterSectionMixIn {
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
 	public class IniConsoleSectionMixIn {
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
 	public class IniWhatsSidSectionMixIn {
 	}
 
-	@JsonFilter("localized")
+	@JsonFilter("localizer")
 	public class IniFilterSectionMixIn {
 	}
 
@@ -86,18 +100,20 @@ public class ServletParameterHelper {
 	static {
 		try {
 			CONVERT_OPTIONS = new ObjectMapper().writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ServletParameters().getConfig());
+					.writeValueAsString(new ConvertServlet.ServletParameters());
 			CONVERT_MESSAGES_EN = createObjectMapper(Locale.ROOT).writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ServletParameters().getConfig());
+					.writeValueAsString(new ConvertServlet.ServletParameters());
 			CONVERT_MESSAGES_DE = createObjectMapper(Locale.GERMAN).writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ServletParameters().getConfig());
+					.writeValueAsString(new ConvertServlet.ServletParameters());
 		} catch (JsonProcessingException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 	}
 
 	private static ObjectMapper createObjectMapper(Locale locale) {
-		return new ObjectMapper().addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
+		return new ObjectMapper().addMixIn(ServletParameters.class, ServletParametersMixIn.class)
+				.addMixIn(IniConfig.class, IniConfigMixIn.class)
+				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
 				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)
 				.addMixIn(IniEmulationSection.class, IniEmulationSectionMixIn.class)
 				.addMixIn(IniC1541Section.class, IniC1541SectionMixIn.class)
@@ -105,7 +121,7 @@ public class ServletParameterHelper {
 				.addMixIn(IniConsoleSection.class, IniConsoleSectionMixIn.class)
 				.addMixIn(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class)
 				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class).setFilterProvider(
-						new SimpleFilterProvider().addFilter("localized", new LocalizedBeanParameters(locale)));
+						new SimpleFilterProvider().addFilter("localizer", new BeanParameterLocalizer(locale)));
 	}
 
 }

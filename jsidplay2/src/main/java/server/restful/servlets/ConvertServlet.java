@@ -103,66 +103,95 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -8)
 		private Integer startSong;
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -7)
+		public Integer getStartSong() {
+			return startSong;
+		}
+
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -8)
+		public void setStartSong(Integer startSong) {
+			this.startSong = startSong;
+		}
+
 		private Boolean download = Boolean.FALSE;
 
-		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -6)
+		public Boolean getDownload() {
+			return download;
+		}
+
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -7)
+		public void setDownload(Boolean download) {
+			this.download = download;
+		}
+
 		private Boolean jiffydos = Boolean.FALSE;
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -5)
+		public Boolean getJiffydos() {
+			return jiffydos;
+		}
+
+		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -6)
+		public void setJiffydos(Boolean jiffydos) {
+			this.jiffydos = jiffydos;
+		}
+
 		private Integer reuSize;
 
-		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -4)
+		public Integer getReuSize() {
+			return reuSize;
+		}
+
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -5)
+		public void setReuSize(Integer reuSize) {
+			this.reuSize = reuSize;
+		}
+
 		private Integer pressSpaceInterval = PRESS_SPACE_INTERVALL;
 
-		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -3)
+		public Integer getPressSpaceInterval() {
+			return pressSpaceInterval;
+		}
+
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -4)
+		public void setPressSpaceInterval(Integer pressSpaceInterval) {
+			this.pressSpaceInterval = pressSpaceInterval;
+		}
+
 		private Boolean status = Boolean.TRUE;
 
-		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -2)
+		public Boolean getStatus() {
+			return status;
+		}
+
+		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -3)
+		public void setStatus(Boolean status) {
+			this.status = status;
+		}
+
 		private Boolean rtmp = Boolean.TRUE;
+
+		public Boolean getRtmp() {
+			return rtmp;
+		}
+
+		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -2)
+		public void setRtmp(Boolean rtmp) {
+			this.rtmp = rtmp;
+		}
 
 		@ParametersDelegate
 		private IniConfig config = new IniConfig();
+
+		public IniConfig getConfig() {
+			return config;
+		}
 
 		@Parameter(descriptionKey = "FILE_PATH")
 		private String filePath;
 
 		private volatile boolean started;
 
-		public Integer getStartSong() {
-			return startSong;
-		}
-
-		public Boolean getDownload() {
-			return download;
-		}
-
-		public Boolean getJiffydos() {
-			return jiffydos;
-		}
-
-		public Integer getReuSize() {
-			return reuSize;
-		}
-
-		public Integer getPressSpaceInterval() {
-			return pressSpaceInterval;
-		}
-
-		public Boolean getStatus() {
-			return status;
-		}
-
-		public Boolean getRtmp() {
-			return rtmp;
-		}
-
-		public IniConfig getConfig() {
-			return config;
-		}
 	}
 
 	public static final String CONVERT_PATH = "/convert";
