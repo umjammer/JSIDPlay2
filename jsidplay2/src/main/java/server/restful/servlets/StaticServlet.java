@@ -4,12 +4,17 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.STATIC_RES_MAX_AGE;
+import static server.restful.common.ServletParameterHelper.CONVERT_MESSAGES_DE;
+import static server.restful.common.ServletParameterHelper.CONVERT_MESSAGES_EN;
+import static server.restful.common.ServletParameterHelper.CONVERT_OPTIONS;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.http.HttpHeaders;
@@ -67,10 +72,14 @@ public class StaticServlet extends JSIDPlay2Servlet {
 
 			try (InputStream source = getResourceAsStream(servletParameters.filePath)) {
 
+				Map<String, String> replacements = new HashMap<>();
+				replacements.put("$convertOptions", CONVERT_OPTIONS);
+				replacements.put("$convertMessagesEn", CONVERT_MESSAGES_EN);
+				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);
 				ContentTypeAndFileExtensions mimeType = getMimeType(
 						PathUtils.getFilenameSuffix(servletParameters.filePath));
 				if (mimeType.isText()) {
-					setOutput(response, mimeType, ZipFileUtils.convertStreamToString(source, "UTF-8"));
+					setOutput(response, mimeType, ZipFileUtils.convertStreamToString(source, "UTF-8", replacements));
 				} else {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
 					response.setContentType(mimeType.toString());

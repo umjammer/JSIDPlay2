@@ -103,22 +103,22 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -7)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -8)
 		private Integer startSong;
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -6)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -7)
 		private Boolean download = Boolean.FALSE;
 
-		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -5)
+		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -6)
 		private Boolean jiffydos = Boolean.FALSE;
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -4)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -5)
 		private Integer reuSize;
 
-		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -3)
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -4)
 		private Integer pressSpaceInterval = PRESS_SPACE_INTERVALL;
 
-		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -2)
+		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -3)
 		private Boolean status = Boolean.TRUE;
 
 		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -2)
@@ -132,12 +132,36 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		private volatile boolean started;
 
+		public Integer getStartSong() {
+			return startSong;
+		}
+
+		public Boolean getDownload() {
+			return download;
+		}
+
+		public Boolean getJiffydos() {
+			return jiffydos;
+		}
+
+		public Integer getReuSize() {
+			return reuSize;
+		}
+
 		public Integer getPressSpaceInterval() {
 			return pressSpaceInterval;
 		}
 
 		public Boolean getStatus() {
 			return status;
+		}
+
+		public Boolean getRtmp() {
+			return rtmp;
+		}
+
+		public IniConfig getConfig() {
+			return config;
 		}
 	}
 
