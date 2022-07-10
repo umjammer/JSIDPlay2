@@ -463,7 +463,7 @@
 												v-model="convertOptions.reuSize"
 												style="display: flex"
 											>
-												<b-form-radio value="">Auto</b-form-radio>
+												<b-form-radio value=null>Auto</b-form-radio>
 												<b-form-radio value="64">64kb</b-form-radio>
 												<b-form-radio value="128">128kb</b-form-radio>
 												<b-form-radio value="256">256kb</b-form-radio>
@@ -1538,7 +1538,7 @@
 						}
 					},
 					reuParameters: function () {
-						if (this.convertOptions.reuSize !== "") {
+						if (this.convertOptions.reuSize !== null) {
 							return "&reuSize=" + this.convertOptions.reuSize;
 						}
 						return "";
