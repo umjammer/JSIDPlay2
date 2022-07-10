@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.beust.jcommander.ParametersDelegate;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,7 +63,7 @@ public class ServletParameterHelper {
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
 				ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
 				jgen.writeStringField(writer.getName(), resBundle.getString(parameter.descriptionKey()));
-			} else {
+			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
 				super.serializeAsField(pojo, jgen, prov, writer);
 			}
 		}
