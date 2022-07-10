@@ -14,3 +14,4 @@ HTML Client app:
 - Search collections
 - Import/Export playlists
 - load/save configuration
+- show current number of videos in parallel
