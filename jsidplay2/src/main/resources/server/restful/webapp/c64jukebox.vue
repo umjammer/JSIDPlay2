@@ -849,9 +849,9 @@
 												v-model="convertOptions.config.emulationSection.sidToRead"
 												style="display: flex"
 											>
-												<b-form-radio value="FIRST_SID">Haupt SID</b-form-radio>
-												<b-form-radio value="SECOND_SID">2. SID</b-form-radio>
-												<b-form-radio value="THIRD_SID">3. SID</b-form-radio>
+												<b-form-radio value="FIRST_SID">{{ $t("firstSid") }}</b-form-radio>
+												<b-form-radio value="SECOND_SID">{{ $t("secondSid") }}</b-form-radio>
+												<b-form-radio value="THIRD_SID">{{ $t("thirdSid") }}</b-form-radio>
 											</b-form-radio-group>
 										</b-form-group>
 									</div>
@@ -1399,6 +1399,9 @@
 					filterCfgHeader: "Filter Configuration",
 					load: "Normal Load",
 					or: "or",
+					firstSid: "Main SID",
+					secondSid: "Stereo SID",
+					thirdSid: "3-SID",
 
 					convertMessages: $convertMessagesEn,
 				},
@@ -1472,6 +1475,9 @@
 					filterCfgHeader: "Filter konfigurieren",
 					load: "Normal Laden",
 					or: "oder",
+					firstSid: "Haupt SID",
+					secondSid: "Stereo SID",
+					thirdSid: "3-SID",
 
 					convertMessages: $convertMessagesDe,
 				},
@@ -1659,7 +1665,7 @@
 					mobileProfile: function () {
 						this.convertOptions.config.audioSection.vbr = false;
 						this.convertOptions.config.audioSection.cbr = 64;
-						this.convertOptions.config.audioSection.videoCoderBitRate = 400000;
+						this.convertOptions.config.audioSection.videoCoderBitRate = 480000;
 					},
 					wifiProfile: function () {
 						this.convertOptions.config.audioSection.vbr = true;
@@ -1970,6 +1976,12 @@
 				},
 				created: function () {
 					this.convertOptions.rtmp = false;
+					this.convertOptions.config.audioSection.reverbBypass = false;
+					this.convertOptions.config.audioSection.mainBalance = 0.3;
+					this.convertOptions.config.audioSection.secondBalance = 0.7;
+					this.convertOptions.config.audioSection.thirdBalance = 0.5;
+					this.convertOptions.config.audioSection.secondDelay = 20;
+					this.convertOptions.config.audioSection.sampling = 'RESAMPLE';
 					this.convertOptions.config.emulationSection.defaultSidModel =
 						"MOS8580";
 					this.mobileProfile();
