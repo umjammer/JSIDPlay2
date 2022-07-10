@@ -323,16 +323,6 @@
 											<i class="fas fa-trash"></i>
 											<span>{{ $t("removePlaylist") }}</span></b-button
 										>
-										<b-button
-											variant="danger"
-											size="sm"
-											v-on:click="
-												if (confirm($i18n.t('removeReally'))) playlist.pop();
-											"
-										>
-											<i class="fas fa-minus"></i>
-											<span>{{ $t("remove") }}</span></b-button
-										>
 									</div>
 
 									<ol>
@@ -350,6 +340,16 @@
 											"
 										>
 											{{ entry }}
+											<b-button
+												size="sm"
+												v-on:click="
+													if (confirm($i18n.t('removeReally'))) playlist.splice(index, 1);
+												"
+												class="rounded-pill"
+												style="margin-left: 16px !important;"
+											>
+												<i class="fas fa-minus" style="margin: 2px;"></i>
+											</b-button>
 										</li>
 									</ol>
 								</b-card-text>
