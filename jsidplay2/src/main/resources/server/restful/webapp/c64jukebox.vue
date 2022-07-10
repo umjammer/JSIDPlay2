@@ -25,7 +25,7 @@
 		<link
 			type="text/css"
 			rel="stylesheet"
-			href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+			href="https://unpkg.com/bootstrap@4.5.3/dist/css/bootstrap.min.css"
 		/>
 		<link
 			type="text/css"
@@ -298,6 +298,26 @@
 
 								<b-card-text>
 									<div class="button-box">
+										<div>
+											<b-form-file
+												v-model="importFile"
+												accept=".js2"
+												:state="Boolean(importFile)"
+												ref="file-input"
+												class="mb-2"
+												label-cols-sm="2"
+												label-size="sm"
+												placeholder="Choose favorites or drop it here..."
+												drop-placeholder="Drop favorites here..."
+	      									>
+											</b-form-file>
+											<b-button v-if="importFile != null" @click="importFile = null">
+												<i class="fas fa-trash"></i><span>{{ $t("reset") }}</span>
+											</b-button>
+											<b-button v-if="importFile != null" @click="importPlaylist" class="mr-2">
+												<i class="fas fa-file-import"></i><span>{{ $t("startImport") }}</span>
+											</b-button>
+										</div>
 										<b-button v-on:click="fetchFavorites()">
 											<i class="fas fa-download"></i>
 											<span>{{ $t("fetchFavorites") }}</span></b-button
@@ -1384,6 +1404,8 @@
 					remove: "Remove last tune",
 					removeReally: "Do you really want to remove the last playlist tune?",
 					next: "Next tune",
+					reset: 'Reset',
+					startImport: 'Import',
 					fetchFavorites: "Download Playlist",
 					removePlaylist: "Remove Playlist",
 					removePlaylistReally:
@@ -1460,6 +1482,8 @@
 					removeReally:
 						"Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
 					next: "N\u00e4chster Tune",
+					reset: 'Zur\u00fccksetzen',
+					startImport: 'Importieren',
 					fetchFavorites: "Favoriten herunterladen",
 					removePlaylist: "Favoriten l\u00f6schen",
 					removePlaylistReally:
@@ -1507,6 +1531,7 @@
 					picture: "",
 					currentSid: "",
 					// PL (Playlist)
+					importFile: null,
 					playlist: [],
 					playlistIndex: 0,
 					random: true,
@@ -1643,6 +1668,30 @@
 							entry.toLowerCase().endsWith(".g64") ||
 							entry.toLowerCase().endsWith(".nib")
 						);
+					},
+					importPlaylist: function() {
+						const reader = new FileReader();
+				        reader.onload = (res) => {
+							var content = res.target.result;
+							var lines = content.split('\n');
+
+							this.playlist = [];
+							for(var i = 0; i < lines.length; i++){
+							    if (lines[i].length > 0) {
+								    if (!lines[i].startsWith("/C64Music/")
+									    || !lines[i].startsWith("/CGSC/")
+									    || !lines[i].startsWith("/Assembly64/")
+									    || !lines[i].startsWith("/REU/")) {
+										lines[i] = "/C64Music" + lines[i];
+								    }
+								    this.playlist.push(lines[i]);
+							    }
+							}
+							this.playlistIndex = 0;
+							this.importFile = null;
+				        };
+				        reader.onerror = (err) => console.log(err);
+				        reader.readAsText(this.importFile);
 					},
 					setNextPlaylistEntry: function () {
 						if (this.playlist.length === 0) {
