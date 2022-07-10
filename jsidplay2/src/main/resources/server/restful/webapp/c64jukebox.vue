@@ -1528,7 +1528,7 @@
 
 					convertOptions: $convertOptions,
 				},
-				// Compoted
+				// Computed
 				computed: {
 					playlistEntryUrl: function () {
 						if (this.playlist.length === 0) {
