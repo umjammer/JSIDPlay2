@@ -1689,6 +1689,11 @@
 							}
 							this.playlistIndex = 0;
 							this.importFile = null;
+							if (this.playlist.length === 0) {
+								return;
+							}
+							this.updateSid(this.playlist[this.playlistIndex]);
+							this.showAudio = true;
 				        };
 				        reader.onerror = (err) => console.log(err);
 				        reader.readAsText(this.importFile);
