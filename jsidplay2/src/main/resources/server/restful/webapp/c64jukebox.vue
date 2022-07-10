@@ -1678,10 +1678,10 @@
 							this.playlist = [];
 							for(var i = 0; i < lines.length; i++){
 							    if (lines[i].length > 0) {
-								    if (!lines[i].startsWith("/C64Music/")
-									    || !lines[i].startsWith("/CGSC/")
-									    || !lines[i].startsWith("/Assembly64/")
-									    || !lines[i].startsWith("/REU/")) {
+								    if (!(lines[i].startsWith("/C64Music/")
+									    || lines[i].startsWith("/CGSC/")
+									    || lines[i].startsWith("/Assembly64/")
+									    || lines[i].startsWith("/REU/"))) {
 										lines[i] = "/C64Music" + lines[i];
 								    }
 								    this.playlist.push(lines[i]);
