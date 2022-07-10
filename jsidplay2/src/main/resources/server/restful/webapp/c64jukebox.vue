@@ -339,17 +339,20 @@
 												updateSid(playlist[playlistIndex]);
 											"
 										>
-											{{ entry }}
-											<b-button
-												size="sm"
-												v-on:click="
-													if (confirm($i18n.t('removeReally'))) playlist.splice(index, 1);
-												"
-												class="rounded-pill"
-												style="margin-left: 16px !important;"
-											>
-												<i class="fas fa-minus" style="margin: 2px;"></i>
-											</b-button>
+											<span style="display: flex;justify-content: space-between;">
+												<span>{{ entry }}</span>
+												<b-button
+													v-on:click="
+														if (confirm($i18n.t('removeReally'))) playlist.splice(index, 1);
+													"
+													pill
+													variant="outline-danger"
+													size="sm"
+													style="margin-left: 16px !important;"
+												>
+													<i class="fas fa-minus" style="margin: 2px;"></i>
+												</b-button>
+											</span>
 										</li>
 									</ol>
 								</b-card-text>
