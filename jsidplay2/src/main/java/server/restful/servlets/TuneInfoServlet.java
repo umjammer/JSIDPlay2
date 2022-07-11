@@ -7,6 +7,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -123,8 +124,12 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 	}
 
 	private List<Map<String, String>> hvscEntry2SortedList(HVSCEntry hvscEntry) {
-		return hvscEntry2SortedMap(hvscEntry).entrySet().stream()
-				.map(entry -> Map.of("Name", entry.getKey(), "Value", entry.getValue())).collect(Collectors.toList());
+		return hvscEntry2SortedMap(hvscEntry).entrySet().stream().map(entry -> {
+			Map<String, String> map = new HashMap<>();
+			map.put("Name", entry.getKey());
+			map.put("Value", entry.getValue());
+			return map;
+		}).collect(Collectors.toList());
 
 	}
 }
