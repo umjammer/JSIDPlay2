@@ -225,6 +225,46 @@
 									</b-list-group>
 								</b-card-text>
 							</b-tab>
+							<b-tab disabled>
+								<template #title>
+									{{ $t("ASSEMBLY64") }}
+									<b-spinner
+										type="border"
+										variant="primary"
+										small
+										v-if="loadingAssembly64"
+									></b-spinner>
+								</template>
+							
+								<b-card-text>
+
+									<div
+										style="display: flex"
+									>
+										<label for="category">{{
+											$t("category")
+										}}</label>
+										<b-form-select
+											id="category"
+											v-model="category"
+											@change="requestSearchResults"
+											value-field="id"
+											text-field="description"
+											:options="categories"
+											size="sm"
+											class="mt-1"
+											:select-size="1"
+										>
+											<template #first>
+												<b-form-select-option value="">-- Select a category --</b-form-select-option>
+											</template>									
+										</b-form-select>
+										<label for="name">{{ $t("name") }}</label>
+										<input type="text" id="name" v-model="name" @change="requestSearchResults"/>
+									</div>								
+								
+								</b-card-text>
+							</b-tab>
 							<b-tab>
 								<template #title>
 									{{ $t("SID") }}
@@ -1356,6 +1396,7 @@
 				en: {
 					CON: "Login",
 					SIDS: "Directories",
+					ASSEMBLY64: "Assembly64",
 					SID: "SID",
 					PL: "Playlist",
 					CFG: "Configuration",
@@ -1427,12 +1468,15 @@
 					firstSid: "Main SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
+					category: 'Category',
+					name: 'Name',
 
 					convertMessages: $convertMessagesEn,
 				},
 				de: {
 					CON: "Anmeldung",
 					SIDS: "Verzeichnisse",
+					ASSEMBLY64: "Assembly64",
 					SID: "SID",
 					PL: "Favoriten",
 					CFG: "Konfiguration",
@@ -1505,6 +1549,8 @@
 					firstSid: "Haupt SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
+					category: 'Category',
+					name: 'Name',
 
 					convertMessages: $convertMessagesDe,
 				},
@@ -1530,6 +1576,11 @@
 					infos: "",
 					picture: "",
 					currentSid: "",
+					// ASSEMBLY64
+					category: "",
+					categories: [],
+					searchResult: [],
+					name: "",
 					// PL (Playlist)
 					importFile: null,
 					playlist: [],
@@ -1551,6 +1602,7 @@
 					tabIndex: 0,
 					loadingSids: false,
 					loadingSid: false,
+					loadingAssembly64: false,
 					loadingPl: false,
 					loadingCfg: false,
 
@@ -2033,10 +2085,46 @@
 							})
 							.finally(() => (this.loadingCfg = false));
 					},
+					assembly64SearchUrl: function () {
+					    var parameterList = [];
+					    if (this.name) {
+							parameterList.push("name=" + this.name);
+					    }
+					    if (this.category !== "") {
+							parameterList.push("category=" + this.category);
+					    }
+					    return "?" + parameterList.join("&");
+					},
+					fetchCategories: function () {
+						this.loadingAssembly64 = true; //the loading begin
+						axios({
+							method: "get",
+							url: "https://hackerswithstyle.se/leet/search/v2/categories",
+						})
+						.then((response) => {
+							this.categories = response.data;
+							this.categories.sort(function (a, b) {
+							    return a.description > b.description;
+							  });
+						})
+						.finally(() => (this.loadingAssembly64 = false));
+					},
+					requestSearchResults: function() {
+						this.loadingAssembly64 = true; //the loading begin
+						axios({
+							method: "get",
+							url: "https://hackerswithstyle.se/leet/search/v2" + this.assembly64SearchUrl(),
+						})
+						.then((response) => {
+							this.searchResult = response.data;
+						})
+						.finally(() => (this.loadingAssembly64 = false));
+					},
 				},
 				created: function () {
 					this.fetchDirectory("/");
 					this.fetchFilters();
+					this.fetchCategories();
 				},
 				mounted: function() {
 				    if (localStorage.locale) {
