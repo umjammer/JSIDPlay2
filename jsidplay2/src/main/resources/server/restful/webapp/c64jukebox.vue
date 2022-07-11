@@ -59,7 +59,7 @@
 		<div id="app">
 			<form>
 				<div class="locale-changer">
-					<select v-model="$i18n.locale" style="float: right">
+					<select @change="updateLanguage" v-model="$i18n.locale" style="float: right">
 						<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
 							{{ lang }}
 						</option>
@@ -602,7 +602,7 @@
 											>
 											<b-form-input
 												id="secondVolume"
-												v-model="convertOptions.config.audioSection.mainVolume"
+												v-model="convertOptions.config.audioSection.secondVolume"
 												type="range"
 												min="-6"
 												max="6"
@@ -1613,6 +1613,9 @@
 				},
 				// Methods
 				methods: {
+					updateLanguage() {
+						localStorage.locale = this.$i18n.locale;
+					},
 					shortEntry: function (entry) {
 						return entry
 							.split("/")
@@ -2032,19 +2035,60 @@
 					},
 				},
 				created: function () {
-					this.convertOptions.rtmp = false;
-					this.convertOptions.config.audioSection.reverbBypass = false;
-					this.convertOptions.config.audioSection.mainBalance = 0.3;
-					this.convertOptions.config.audioSection.secondBalance = 0.7;
-					this.convertOptions.config.audioSection.thirdBalance = 0.5;
-					this.convertOptions.config.audioSection.secondDelay = 20;
-					this.convertOptions.config.audioSection.sampling = 'RESAMPLE';
-					this.convertOptions.config.emulationSection.defaultSidModel =
-						"MOS8580";
-					this.mobileProfile();
 					this.fetchDirectory("/");
 					this.fetchFilters();
 				},
+				mounted: function() {
+				    if (localStorage.locale) {
+					    this.$i18n.locale = localStorage.locale;
+				    }
+				    if (localStorage.convertOptions) {
+						// restore configuration from last run
+						this.convertOptions = JSON.parse(localStorage.convertOptions);
+				    } else {
+						// initialize configuration
+						this.convertOptions.rtmp = false;
+						this.convertOptions.config.audioSection.reverbBypass = false;
+						this.convertOptions.config.audioSection.mainBalance = 0.3;
+						this.convertOptions.config.audioSection.secondBalance = 0.7;
+						this.convertOptions.config.audioSection.thirdBalance = 0.5;
+						this.convertOptions.config.audioSection.secondDelay = 20;
+						this.convertOptions.config.audioSection.sampling = 'RESAMPLE';
+						this.convertOptions.config.emulationSection.defaultSidModel =
+							"MOS8580";
+						this.mobileProfile();
+				    }
+				    if (localStorage.random) {
+					    this.random = JSON.parse(localStorage.random);
+				    }
+				    if (localStorage.playlistIndex) {
+					    this.playlistIndex = JSON.parse(localStorage.playlistIndex);
+				    }
+				    if (localStorage.playlist) {
+					    this.playlist = JSON.parse(localStorage.playlist);
+						if (this.playlist.length !== 0) {
+							this.updateSid(this.playlist[this.playlistIndex]);
+							this.showAudio = true;
+						}
+				    }
+				},
+				watch: {
+				    random (newValue, oldValue) {
+						localStorage.random = JSON.stringify(this.random);
+				    },
+				    playlistIndex (newValue, oldValue) {
+						localStorage.playlistIndex = JSON.stringify(this.playlistIndex);
+				    },
+				    playlist (newValue, oldValue) {
+						localStorage.playlist = JSON.stringify(this.playlist);
+				    },
+				    convertOptions: {
+						handler: function (after, before) {
+							localStorage.convertOptions = JSON.stringify(this.convertOptions);
+						},
+						deep: true
+				    }
+				}
 			});
 
 			// prevent back button
