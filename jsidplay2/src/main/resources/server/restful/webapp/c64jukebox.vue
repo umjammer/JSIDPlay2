@@ -264,6 +264,7 @@
 												size="sm"
 												class="mt-1"
 												:select-size="1"
+												style="margin: 0 !important;"
 											>
 												<template #first>
 													<b-form-select-option value=""
