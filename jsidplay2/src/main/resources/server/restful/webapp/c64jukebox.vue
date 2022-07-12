@@ -59,7 +59,11 @@
 		<div id="app">
 			<form>
 				<div class="locale-changer">
-					<select @change="updateLanguage" v-model="$i18n.locale" style="float: right">
+					<select
+						@change="updateLanguage"
+						v-model="$i18n.locale"
+						style="float: right"
+					>
 						<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
 							{{ lang }}
 						</option>
@@ -235,39 +239,104 @@
 										v-if="loadingAssembly64"
 									></b-spinner>
 								</template>
-							
-								<b-card-text>
 
-									<div
-										style="display: flex"
-									>
-										<label for="category">{{
-											$t("category")
-										}}</label>
-										<b-form-select
-											id="category"
-											v-model="category"
-											@change="requestSearchResults"
-											value-field="id"
-											text-field="description"
-											:options="categories"
-											size="sm"
-											class="mt-1"
-											:select-size="1"
-										>
-											<template #first>
-												<b-form-select-option value="">-- Select a category --</b-form-select-option>
-											</template>									
-										</b-form-select>
-										<label for="name">{{ $t("name") }}</label>
-										<input type="text" id="name" v-model="name" @change="requestSearchResults"/>
-									</div>								
+								<b-card-text>
 									<b-table
 										striped
 										bordered
 										:items="searchResult"
-									></b-table>
-								
+										:fields="searchFields"
+										primary-key="id"
+										small
+										fixed
+										responsive
+										sticky-header
+									>
+										<template #head(category)="data">
+											<label for="category">{{ data.label }}</label>
+											<b-form-select
+												id="category"
+												v-model="category"
+												@change="requestSearchResults"
+												value-field="id"
+												text-field="description"
+												:options="categories"
+												size="sm"
+												class="mt-1"
+												:select-size="1"
+											>
+												<template #first>
+													<b-form-select-option value=""
+														>-- Select a category --</b-form-select-option
+													>
+												</template>
+											</b-form-select>
+										</template>
+										<template #head(name)="data">
+											<label for="name">{{ data.label }}</label>
+											<input
+												type="text"
+												id="name"
+												v-model="name"
+												@change="requestSearchResults"
+											/>
+										</template>
+										<template #head(group)="data">
+											<label for="group">{{ data.label }}</label>
+											<input
+												type="text"
+												id="group"
+												v-model="group"
+												@change="requestSearchResults"
+											/>
+										</template>
+										<template #head(event)="data">
+											<label for="event">{{ data.label }}</label>
+											<input
+												type="text"
+												id="event"
+												v-model="event"
+												@change="requestSearchResults"
+											/>
+										</template>
+										<template #head(released)="data">
+											<label for="released">{{ data.label }}</label>
+											<input
+												type="text"
+												id="released"
+												v-model="released"
+												@change="requestSearchResults"
+											/>
+										</template>
+										<template #head(year)="data">
+											<label for="year">{{ data.label }}</label>
+											<input
+												type="text"
+												id="year"
+												v-model.number="year"
+												@change="requestSearchResults"
+											/>
+										</template>
+										<template #head(handle)="data">
+											<label for="handle">{{ data.label }}</label>
+											<input
+												type="text"
+												id="handle"
+												v-model.number="handle"
+												@change="requestSearchResults"
+											/>
+										</template>
+										<template #head(rating)="data">
+											<label for="rating">{{ data.label }}</label>
+											<input
+												type="text"
+												id="rating"
+												v-model="rating"
+												@change="requestSearchResults"
+												style="max-width: 100%;"
+											/>
+										</template>
+									</b-table>
 								</b-card-text>
 							</b-tab>
 							<b-tab>
@@ -354,13 +423,22 @@
 												label-size="sm"
 												placeholder="Choose favorites or drop it here..."
 												drop-placeholder="Drop favorites here..."
-	      									>
+											>
 											</b-form-file>
-											<b-button v-if="importFile != null" @click="importFile = null">
-												<i class="fas fa-trash"></i><span>{{ $t("reset") }}</span>
+											<b-button
+												v-if="importFile != null"
+												@click="importFile = null"
+											>
+												<i class="fas fa-trash"></i
+												><span>{{ $t("reset") }}</span>
 											</b-button>
-											<b-button v-if="importFile != null" @click="importPlaylist" class="mr-2">
-												<i class="fas fa-file-import"></i><span>{{ $t("startImport") }}</span>
+											<b-button
+												v-if="importFile != null"
+												@click="importPlaylist"
+												class="mr-2"
+											>
+												<i class="fas fa-file-import"></i
+												><span>{{ $t("startImport") }}</span>
 											</b-button>
 										</div>
 										<b-button v-on:click="fetchFavorites()">
@@ -404,18 +482,21 @@
 												updateSid(playlist[playlistIndex]);
 											"
 										>
-											<span style="display: flex;justify-content: space-between;">
+											<span
+												style="display: flex; justify-content: space-between"
+											>
 												<span>{{ entry }}</span>
 												<b-button
 													v-on:click="
-														if (confirm($i18n.t('removeReally'))) playlist.splice(index, 1);
+														if (confirm($i18n.t('removeReally')))
+															playlist.splice(index, 1);
 													"
 													pill
 													variant="outline-danger"
 													size="sm"
-													style="margin-left: 16px !important;"
+													style="margin-left: 16px !important"
 												>
-													<i class="fas fa-minus" style="margin: 2px;"></i>
+													<i class="fas fa-minus" style="margin: 2px"></i>
 												</b-button>
 											</span>
 										</li>
@@ -531,7 +612,7 @@
 												v-model="convertOptions.reuSize"
 												style="display: flex"
 											>
-												<b-form-radio value=null>Auto</b-form-radio>
+												<b-form-radio value="null">Auto</b-form-radio>
 												<b-form-radio value="64">64kb</b-form-radio>
 												<b-form-radio value="128">128kb</b-form-radio>
 												<b-form-radio value="256">256kb</b-form-radio>
@@ -612,9 +693,16 @@
 									</div>
 									<div class="settings-box">
 										<b-form-checkbox
-											v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
+											v-model="
+												convertOptions.config.emulationSection
+													.detectPSID64ChipModel
+											"
 										>
-											{{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
+											{{
+												$t(
+													"convertMessages.config.emulationSection.detectPSID64ChipModel"
+												)
+											}}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
@@ -647,7 +735,9 @@
 											>
 											<b-form-input
 												id="secondVolume"
-												v-model="convertOptions.config.audioSection.secondVolume"
+												v-model="
+													convertOptions.config.audioSection.secondVolume
+												"
 												type="range"
 												min="-6"
 												max="6"
@@ -910,16 +1000,26 @@
 										</div>
 									</div>
 									<div class="settings-box">
-										<label for="sidToRead">{{ $t("convertMessages.config.emulationSection.sidToRead") }}</label>
+										<label for="sidToRead">{{
+											$t("convertMessages.config.emulationSection.sidToRead")
+										}}</label>
 										<b-form-group>
 											<b-form-radio-group
 												id="sidToRead"
-												v-model="convertOptions.config.emulationSection.sidToRead"
+												v-model="
+													convertOptions.config.emulationSection.sidToRead
+												"
 												style="display: flex"
 											>
-												<b-form-radio value="FIRST_SID">{{ $t("firstSid") }}</b-form-radio>
-												<b-form-radio value="SECOND_SID">{{ $t("secondSid") }}</b-form-radio>
-												<b-form-radio value="THIRD_SID">{{ $t("thirdSid") }}</b-form-radio>
+												<b-form-radio value="FIRST_SID">{{
+													$t("firstSid")
+												}}</b-form-radio>
+												<b-form-radio value="SECOND_SID">{{
+													$t("secondSid")
+												}}</b-form-radio>
+												<b-form-radio value="THIRD_SID">{{
+													$t("thirdSid")
+												}}</b-form-radio>
 											</b-form-radio-group>
 										</b-form-group>
 									</div>
@@ -1396,7 +1496,13 @@
 				// tested characters: ~@#$&():+''
 				return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23");
 			}
-
+			// Month in JavaScript is 0-indexed (January is 0, February is 1, etc),
+			// but by using 0 as the day it will give us the last day of the prior
+			// month. So passing in 1 as the month number will return the last day
+			// of January, not February
+			function daysInMonth(month, year) {
+				return new Date(year, month, 0).getDate();
+			}
 			const messages = {
 				en: {
 					CON: "Login",
@@ -1450,8 +1556,8 @@
 					remove: "Remove last tune",
 					removeReally: "Do you really want to remove the last playlist tune?",
 					next: "Next tune",
-					reset: 'Reset',
-					startImport: 'Import',
+					reset: "Reset",
+					startImport: "Import",
 					fetchFavorites: "Download Playlist",
 					removePlaylist: "Remove Playlist",
 					removePlaylistReally:
@@ -1473,9 +1579,6 @@
 					firstSid: "Main SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
-					category: 'Category',
-					name: 'Name',
-					group: 'Group',
 
 					convertMessages: $convertMessagesEn,
 				},
@@ -1532,8 +1635,8 @@
 					removeReally:
 						"Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
 					next: "N\u00e4chster Tune",
-					reset: 'Zur\u00fccksetzen',
-					startImport: 'Importieren',
+					reset: "Zur\u00fccksetzen",
+					startImport: "Importieren",
 					fetchFavorites: "Favoriten herunterladen",
 					removePlaylist: "Favoriten l\u00f6schen",
 					removePlaylistReally:
@@ -1555,9 +1658,6 @@
 					firstSid: "Haupt SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
-					category: 'Category',
-					name: 'Name',
-					group: 'Gruppe',
 
 					convertMessages: $convertMessagesDe,
 				},
@@ -1587,7 +1687,47 @@
 					category: "",
 					categories: [],
 					searchResult: [],
+					searchFields: [
+						{
+							key: "category",
+							sortable: true,
+						},
+						{
+							key: "name",
+							sortable: true,
+						},
+						{
+							key: "group",
+							sortable: true,
+						},
+						{
+							key: "event",
+							sortable: true,
+						},
+						{
+							key: "released",
+							sortable: true,
+						},
+						{
+							key: "year",
+							sortable: true,
+						},
+						{
+							key: "handle",
+							sortable: true,
+						},
+						{
+							key: "rating",
+							sortable: true,
+						},
+					],
 					name: "",
+					group: "",
+					event: "",
+					released: "",
+					rating: "",
+					year: "",
+					handle: "",
 					// PL (Playlist)
 					importFile: null,
 					playlist: [],
@@ -1731,23 +1871,27 @@
 							entry.toLowerCase().endsWith(".nib")
 						);
 					},
-					importPlaylist: function() {
+					importPlaylist: function () {
 						const reader = new FileReader();
-				        reader.onload = (res) => {
+						reader.onload = (res) => {
 							var content = res.target.result;
-							var lines = content.split('\n');
+							var lines = content.split("\n");
 
 							this.playlist = [];
-							for(var i = 0; i < lines.length; i++){
-							    if (lines[i].length > 0) {
-								    if (!(lines[i].startsWith("/C64Music/")
-									    || lines[i].startsWith("/CGSC/")
-									    || lines[i].startsWith("/Assembly64/")
-									    || lines[i].startsWith("/REU/"))) {
+							for (var i = 0; i < lines.length; i++) {
+								if (lines[i].length > 0) {
+									if (
+										!(
+											lines[i].startsWith("/C64Music/") ||
+											lines[i].startsWith("/CGSC/") ||
+											lines[i].startsWith("/Assembly64/") ||
+											lines[i].startsWith("/REU/")
+										)
+									) {
 										lines[i] = "/C64Music" + lines[i];
-								    }
-								    this.playlist.push(lines[i]);
-							    }
+									}
+									this.playlist.push(lines[i]);
+								}
 							}
 							this.playlistIndex = 0;
 							this.importFile = null;
@@ -1756,9 +1900,9 @@
 							}
 							this.updateSid(this.playlist[this.playlistIndex]);
 							this.showAudio = true;
-				        };
-				        reader.onerror = (err) => console.log(err);
-				        reader.readAsText(this.importFile);
+						};
+						reader.onerror = (err) => console.log(err);
+						reader.readAsText(this.importFile);
 					},
 					setNextPlaylistEntry: function () {
 						if (this.playlist.length === 0) {
@@ -1932,7 +2076,8 @@
 							"&reverbBypass=" +
 							this.convertOptions.config.audioSection.reverbBypass +
 							"&detectPSID64ChipModel=" +
-							this.convertOptions.config.emulationSection.detectPSID64ChipModel +
+							this.convertOptions.config.emulationSection
+								.detectPSID64ChipModel +
 							"&rtmp=" +
 							this.convertOptions.rtmp +
 							"&cbr=" +
@@ -2093,14 +2238,52 @@
 							.finally(() => (this.loadingCfg = false));
 					},
 					assembly64SearchUrl: function () {
-					    var parameterList = [];
-					    if (this.name) {
+						var parameterList = [];
+						if (this.name) {
 							parameterList.push("name=" + this.name);
-					    }
-					    if (this.category !== "") {
+						}
+						if (this.category !== "") {
 							parameterList.push("category=" + this.category);
-					    }
-					    return "?" + parameterList.join("&");
+						}
+						if (this.event !== "") {
+							parameterList.push("event=" + this.event);
+						}
+						if (this.group !== "") {
+							parameterList.push("group=" + this.group);
+						}
+						if (this.released.length === 4) {
+							parameterList.push("dateFrom=" + this.released + "0101");
+							parameterList.push("dateTo=" + this.released + "1231");
+						}
+						if (this.released.length === 7) {
+							var splitted = this.released.split("-");
+							var year = splitted[0];
+							var month = splitted[1];
+							parameterList.push("dateFrom=" + year + month + "01");
+							parameterList.push(
+								"dateTo=" + year + month + daysInMonth(month, year)
+							);
+						}
+						if (this.released.length === 10) {
+							var splitted = this.released.split("-");
+							var year = splitted[0];
+							var month = splitted[1];
+							var day = splitted[2];
+							parameterList.push("dateFrom=" + year + month + day);
+							parameterList.push("dateTo=" + year + month + day);
+						}
+						if (this.rating !== "") {
+							parameterList.push("rating=" + this.rating);
+						}
+						if (this.year !== "") {
+							parameterList.push("year=" + this.year);
+						}
+						if (this.handle !== "") {
+							parameterList.push("handle=" + this.handle);
+						}
+						return parameterList.length > 0
+							? "?" + parameterList.join("&")
+							: "";
 					},
 					fetchCategories: function () {
 						this.loadingAssembly64 = true; //the loading begin
@@ -2108,24 +2291,47 @@
 							method: "get",
 							url: "https://hackerswithstyle.se/leet/search/v2/categories",
 						})
-						.then((response) => {
-							this.categories = response.data;
-							this.categories.sort(function (a, b) {
-							    return a.description > b.description;
-							  });
-						})
-						.finally(() => (this.loadingAssembly64 = false));
+							.then((response) => {
+								this.categories = response.data;
+								this.categories.sort(function (a, b) {
+									return a.description > b.description;
+								});
+							})
+							.finally(() => (this.loadingAssembly64 = false));
 					},
-					requestSearchResults: function() {
+					requestSearchResults: function () {
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
-							url: "https://hackerswithstyle.se/leet/search/v2" + this.assembly64SearchUrl(),
+							url:
+								"https://hackerswithstyle.se/leet/search/v2" +
+								this.assembly64SearchUrl(),
 						})
-						.then((response) => {
-							this.searchResult = response.data;
-						})
-						.finally(() => (this.loadingAssembly64 = false));
+							.then((response) => {
+								this.searchResult = response.data;
+
+								var data = this;
+								this.searchResult = this.searchResult.map((obj) => {
+									return {
+										id: obj.id,
+										category: data.categories.filter(function (item) {
+											return item.id === obj.category;
+										})[0].description,
+										name: obj.name,
+										group: obj.group,
+										event: obj.event,
+										released: obj.released,
+										year: obj.year,
+										handle: obj.handle,
+										rating: obj.rating,
+									};
+								});
+							})
+							.catch((error) => {
+								this.searchResult = [];
+								console.log(error);
+							})
+							.finally(() => (this.loadingAssembly64 = false));
 					},
 				},
 				created: function () {
@@ -2133,14 +2339,14 @@
 					this.fetchFilters();
 					this.fetchCategories();
 				},
-				mounted: function() {
-				    if (localStorage.locale) {
-					    this.$i18n.locale = localStorage.locale;
-				    }
-				    if (localStorage.convertOptions) {
+				mounted: function () {
+					if (localStorage.locale) {
+						this.$i18n.locale = localStorage.locale;
+					}
+					if (localStorage.convertOptions) {
 						// restore configuration from last run
 						this.convertOptions = JSON.parse(localStorage.convertOptions);
-				    } else {
+					} else {
 						// initialize configuration
 						this.convertOptions.rtmp = false;
 						this.convertOptions.config.audioSection.reverbBypass = false;
@@ -2148,42 +2354,42 @@
 						this.convertOptions.config.audioSection.secondBalance = 0.7;
 						this.convertOptions.config.audioSection.thirdBalance = 0.5;
 						this.convertOptions.config.audioSection.secondDelay = 20;
-						this.convertOptions.config.audioSection.sampling = 'RESAMPLE';
+						this.convertOptions.config.audioSection.sampling = "RESAMPLE";
 						this.convertOptions.config.emulationSection.defaultSidModel =
 							"MOS8580";
 						this.mobileProfile();
-				    }
-				    if (localStorage.random) {
-					    this.random = JSON.parse(localStorage.random);
-				    }
-				    if (localStorage.playlistIndex) {
-					    this.playlistIndex = JSON.parse(localStorage.playlistIndex);
-				    }
-				    if (localStorage.playlist) {
-					    this.playlist = JSON.parse(localStorage.playlist);
+					}
+					if (localStorage.random) {
+						this.random = JSON.parse(localStorage.random);
+					}
+					if (localStorage.playlistIndex) {
+						this.playlistIndex = JSON.parse(localStorage.playlistIndex);
+					}
+					if (localStorage.playlist) {
+						this.playlist = JSON.parse(localStorage.playlist);
 						if (this.playlist.length !== 0) {
 							this.updateSid(this.playlist[this.playlistIndex]);
 							this.showAudio = true;
 						}
-				    }
+					}
 				},
 				watch: {
-				    random (newValue, oldValue) {
+					random(newValue, oldValue) {
 						localStorage.random = JSON.stringify(this.random);
-				    },
-				    playlistIndex (newValue, oldValue) {
+					},
+					playlistIndex(newValue, oldValue) {
 						localStorage.playlistIndex = JSON.stringify(this.playlistIndex);
-				    },
-				    playlist (newValue, oldValue) {
+					},
+					playlist(newValue, oldValue) {
 						localStorage.playlist = JSON.stringify(this.playlist);
-				    },
-				    convertOptions: {
+					},
+					convertOptions: {
 						handler: function (after, before) {
 							localStorage.convertOptions = JSON.stringify(this.convertOptions);
 						},
-						deep: true
-				    }
-				}
+						deep: true,
+					},
+				},
 			});
 
 			// prevent back button
