@@ -264,7 +264,7 @@
 												size="sm"
 												class="mt-1"
 												:select-size="1"
-												style="margin: 0 !important;"
+												style="margin: 0 !important; max-width: 100%;"
 											>
 												<template #first>
 													<b-form-select-option value=""
@@ -280,6 +280,7 @@
 												id="name"
 												v-model="name"
 												@change="requestSearchResults"
+												style="max-width: 100%;"
 											/>
 										</template>
 										<template #head(group)="data">
@@ -289,6 +290,7 @@
 												id="group"
 												v-model="group"
 												@change="requestSearchResults"
+												style="max-width: 100%;"
 											/>
 										</template>
 										<template #head(event)="data">
@@ -298,6 +300,7 @@
 												id="event"
 												v-model="event"
 												@change="requestSearchResults"
+												style="max-width: 100%;"
 											/>
 										</template>
 										<template #head(released)="data">
@@ -307,6 +310,7 @@
 												id="released"
 												v-model="released"
 												@change="requestSearchResults"
+												style="max-width: 100%;"
 											/>
 										</template>
 										<template #head(year)="data">
@@ -316,6 +320,7 @@
 												id="year"
 												v-model.number="year"
 												@change="requestSearchResults"
+												style="max-width: 100%;"
 											/>
 										</template>
 										<template #head(handle)="data">
@@ -325,6 +330,7 @@
 												id="handle"
 												v-model.number="handle"
 												@change="requestSearchResults"
+												style="max-width: 100%;"
 											/>
 										</template>
 										<template #head(rating)="data">
