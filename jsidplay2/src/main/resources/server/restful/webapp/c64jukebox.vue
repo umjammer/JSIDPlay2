@@ -225,7 +225,7 @@
 									</b-list-group>
 								</b-card-text>
 							</b-tab>
-							<b-tab disabled>
+							<b-tab>
 								<template #title>
 									{{ $t("ASSEMBLY64") }}
 									<b-spinner
@@ -262,6 +262,11 @@
 										<label for="name">{{ $t("name") }}</label>
 										<input type="text" id="name" v-model="name" @change="requestSearchResults"/>
 									</div>								
+									<b-table
+										striped
+										bordered
+										:items="searchResult"
+									></b-table>
 								
 								</b-card-text>
 							</b-tab>
@@ -1396,7 +1401,7 @@
 				en: {
 					CON: "Login",
 					SIDS: "Directories",
-					ASSEMBLY64: "Assembly64",
+					ASSEMBLY64: "Search",
 					SID: "SID",
 					PL: "Playlist",
 					CFG: "Configuration",
@@ -1470,13 +1475,14 @@
 					thirdSid: "3-SID",
 					category: 'Category',
 					name: 'Name',
+					group: 'Group',
 
 					convertMessages: $convertMessagesEn,
 				},
 				de: {
 					CON: "Anmeldung",
 					SIDS: "Verzeichnisse",
-					ASSEMBLY64: "Assembly64",
+					ASSEMBLY64: "Suche",
 					SID: "SID",
 					PL: "Favoriten",
 					CFG: "Konfiguration",
@@ -1551,6 +1557,7 @@
 					thirdSid: "3-SID",
 					category: 'Category',
 					name: 'Name',
+					group: 'Gruppe',
 
 					convertMessages: $convertMessagesDe,
 				},
