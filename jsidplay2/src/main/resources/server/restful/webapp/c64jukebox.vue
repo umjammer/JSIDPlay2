@@ -2430,6 +2430,9 @@
 						})
 							.then((response) => {
 								this.contentEntries = response.data.contentEntry;
+								for (var i = 0; i < this.searchResult.length; i++) {
+									this.searchResult[i]._showDetails = false;
+								}
 								row.item._showDetails = true;
 							})
 							.catch((error) => {
