@@ -9,18 +9,28 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 import static server.restful.common.IServletSystemProperties.UPLOAD_MAXIMUM_DURATION;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -33,6 +43,7 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletInputStream;
@@ -43,6 +54,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
+import ui.assembly64.ContentEntry;
+import ui.assembly64.ContentEntrySearchResult;
+import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -206,6 +220,85 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			}
 		}
 		throw new FileNotFoundException(path);
+	}
+
+	protected File getAssembly64File(String itemId, String categoryId, String fileId) {
+		URLConnection connection = null;
+		ObjectMapper objectMapper = createObjectMapper();
+		try {
+			URL url = new URL("https://hackerswithstyle.se/leet/search/v2/contententries/" + itemId + "/" + categoryId);
+			connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
+			String responseString = readString(connection);
+			ContentEntrySearchResult contentEntry = objectMapper.readValue(responseString,
+					ContentEntrySearchResult.class);
+
+			return unpack(itemId, categoryId, fileId, contentEntry.getContentEntry());
+		} catch (IOException e) {
+			System.err.println("Unexpected result: " + e.getMessage());
+		}
+		return null;
+	}
+
+	private File unpack(String itemId, String categoryId, String fileId, List<ContentEntry> contentEntries) {
+		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
+		targetDir.deleteOnExit();
+		targetDir.mkdirs();
+
+		File result = null;
+		for (ContentEntry contentEntry : contentEntries) {
+			String contentEntryId = new String(Base64.getEncoder().encode(contentEntry.getId().getBytes()));
+
+			File contentEntryFile = new File(targetDir, new File(contentEntry.getId()).getName());
+			contentEntryFile.deleteOnExit();
+
+			File fetched = fetchFile(itemId, categoryId, contentEntryId, contentEntryFile);
+
+			if (Objects.equals("/" + contentEntryId, fileId)) {
+				result = fetched;
+			}
+		}
+		return result;
+	}
+
+	private File fetchFile(String itemId, String categoryId, String fileId, File contentEntryFile) {
+		URLConnection connection = null;
+		try {
+			URL url = new URL(
+					"https://hackerswithstyle.se/leet/search/v2/binary/" + itemId + "/" + categoryId + "/" + fileId);
+			connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
+			byte[] responseBytes = readBytes(connection.getInputStream());
+
+			try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {
+				outputStream.write(responseBytes);
+				return contentEntryFile;
+			}
+		} catch (IOException e) {
+			System.err.println("Unexpected result: " + e.getMessage());
+		}
+		return null;
+	}
+
+	private ObjectMapper createObjectMapper() {
+		JavaTimeModule module = new JavaTimeModule();
+		return new ObjectMapper().registerModule(module);
+	}
+
+	private String readString(URLConnection connection) throws IOException {
+		StringBuffer result = new StringBuffer();
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+			String output;
+			while ((output = br.readLine()) != null) {
+				result.append(output).append("\n");
+			}
+		}
+		return result.toString();
+	}
+
+	private byte[] readBytes(InputStream is) throws IOException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		ZipFileUtils.copy(is, os);
+		return os.toByteArray();
 	}
 
 	private String thread() {

@@ -2146,7 +2146,7 @@
 							this.convertOptions.config.emulationSection
 								.reSIDfpThirdSIDFilter6581 +
 							"&reSIDfpFilter8580=" +
-							this.convertOptions.config.emulationSection.reSIDfpfilter8580 +
+							this.convertOptions.config.emulationSection.reSIDfpFilter8580 +
 							"&reSIDfpStereoFilter8580=" +
 							this.convertOptions.config.emulationSection
 								.reSIDfpStereoFilter8580 +
@@ -2442,32 +2442,7 @@
 							.finally(() => (this.loadingAssembly64 = false));
 					},
 					requestContentEntry: function (row, innerRow) {
-						this.loadingAssembly64 = true; //the loading begin
-						console.log(row.item);
-						axios({
-							method: "get",
-							url:
-								"https://hackerswithstyle.se/leet/search/v2/binary/" +
-								btoa(row.item.id) +
-								"/" +
-								row.item.categoryId +
-								"/" +
-								btoa(innerRow.item.id),
-							responseType: "blob",
-						})
-							.then((response) => {
-								new File([response.data], fileName);
-								/*							var reader = new window.FileReader();
-							reader.readAsDataURL(response.data);
-							reader.onload = function () {
-								var bytes = reader.result;
-								console.log(bytes.length);
-							};*/
-							})
-							.catch((error) => {
-								console.log(error);
-							})
-							.finally(() => (this.loadingAssembly64 = false));
+						window.open(this.createConvertUrl("/" + btoa(innerRow.item.id)) + "&itemId="+btoa(row.item.id) + "&categoryId=" + row.item.categoryId);
 					},
 				},
 				created: function () {

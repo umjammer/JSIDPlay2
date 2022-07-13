@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
@@ -175,7 +176,8 @@ public final class PlayerWithStatus {
 	private void setNextDiskImage() {
 		if (diskImage != null) {
 			File[] files = diskImage.getParentFile().listFiles(DISK_FILE_FILTER);
-			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0]));
+			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0])).stream()
+					.filter(File::isFile).collect(Collectors.toList());
 			Iterator<File> fileIterator = filesList.stream().sorted().iterator();
 			while (fileIterator.hasNext()) {
 				File siblingFile = fileIterator.next();

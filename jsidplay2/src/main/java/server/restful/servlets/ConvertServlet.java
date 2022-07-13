@@ -180,6 +180,28 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.rtmp = rtmp;
 		}
 
+		private String itemId;
+
+		public String getItemId() {
+			return itemId;
+		}
+
+		@Parameter(names = { "--itemId" }, descriptionKey = "ITEM_ID", order = -2)
+		public void setItemId(String itemId) {
+			this.itemId = itemId;
+		}
+
+		private String categoryId;
+
+		public String getCategoryId() {
+			return categoryId;
+		}
+
+		@Parameter(names = { "--categoryId" }, descriptionKey = "CATEGORY_ID", order = -2)
+		public void setCategoryId(String categoryId) {
+			this.categoryId = categoryId;
+		}
+
 		@ParametersDelegate
 		private IniConfig config = new IniConfig();
 
@@ -242,8 +264,16 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
+
+			final File file;
+			if (servletParameters.getItemId() != null) {
+				file = getAssembly64File(servletParameters.getItemId(), servletParameters.getCategoryId(),
+						servletParameters.filePath);
+			} else {
+				file = getAbsoluteFile(servletParameters.filePath, true/* request.isUserInRole(ROLE_ADMIN) */);
+			}
+
 			final IniConfig config = servletParameters.config;
-			final File file = getAbsoluteFile(servletParameters.filePath, true/* request.isUserInRole(ROLE_ADMIN) */);
 
 			if (audioTuneFileFilter.accept(file)) {
 
