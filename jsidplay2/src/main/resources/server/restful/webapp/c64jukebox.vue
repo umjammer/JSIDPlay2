@@ -251,49 +251,80 @@
 										fixed
 										responsive
 									>
-
+										<template #table-colgroup="scope">
+											<col
+												v-for="field in scope.fields"
+												:key="field.key"
+												:style="{
+													width: field.key === 'actions' ? '54px' : '',
+												}"
+											/>
+										</template>
 										<template #cell(name)="row">
 											<div>
 												<span>{{ row.item.name }}</span>
 											</div>
 											<div>
-												<span style="font-style: italic; font-size: small;">{{ row.item.group }}</span>
+												<span style="font-style: italic; font-size: small">{{
+													row.item.group
+												}}</span>
 											</div>
 										</template>
 										<template #head(actions)="row">
 											<span></span>
 										</template>
 										<template #cell(actions)="row">
-										        <b-button size="sm" @click="requestContentEntries(row)" class="mr-1">
-										          <i class="fas fa-download"></i>
-										        </b-button>
+											<b-button
+												size="sm"
+												@click="requestContentEntries(row)"
+												class="mr-1"
+											>
+												<i class="fas fa-download"></i>
+											</b-button>
 										</template>
 										<template #row-details="row">
-										  <b-card>
-										    <b-button size="sm" @click="row.toggleDetails" style="float: right;">Hide</b-button>
+											<b-card>
+												<b-button
+													size="sm"
+													@click="row.toggleDetails"
+													style="float: right"
+													>Hide</b-button
+												>
 
-											<b-table
-												striped
-												bordered
-												:items="contentEntries"
-												:fields="contentEntryFields"
-												primary-key="id"
-												small
-												fixed
-												responsive
-											>
+												<b-table
+													striped
+													bordered
+													:items="contentEntries"
+													:fields="contentEntryFields"
+													primary-key="id"
+													small
+													fixed
+													responsive
+												>
+													<template #table-colgroup="scope">
+														<col
+															v-for="field in scope.fields"
+															:key="field.key"
+															:style="{
+																width: field.key === 'actions' ? '54px' : '',
+															}"
+														/>
+													</template>
 
-												<template #head(actions)="innerRow">
-													<span></span>
-												</template>
-												<template #cell(actions)="innerRow">
-												        <b-button size="sm" @click="requestContentEntry(row, innerRow)" class="mr-1">
-												          <i class="fas fa-download"></i>
-												        </b-button>
-												</template>
-
-											</b-table>
-										  </b-card>
+													<template #head(actions)="innerRow">
+														<span></span>
+													</template>
+													<template #cell(actions)="innerRow">
+														<b-button
+															size="sm"
+															@click="requestContentEntry(row, innerRow)"
+															class="mr-1"
+														>
+															<i class="fas fa-download"></i>
+														</b-button>
+													</template>
+												</b-table>
+											</b-card>
 										</template>
 
 										<template #head(category)="data">
@@ -308,7 +339,7 @@
 												size="sm"
 												class="mt-1"
 												:select-size="1"
-												style="margin: 0 !important; max-width: 100%;"
+												style="margin: 0 !important; max-width: 100%"
 											>
 												<template #first>
 													<b-form-select-option value=""
@@ -324,7 +355,7 @@
 												id="name"
 												v-model="name"
 												@change="requestSearchResults"
-												style="max-width: 100%;"
+												style="max-width: 100%"
 											/>
 										</template>
 										<template #head(group)="data">
@@ -334,7 +365,7 @@
 												id="group"
 												v-model="group"
 												@change="requestSearchResults"
-												style="max-width: 100%;"
+												style="max-width: 100%"
 											/>
 										</template>
 										<template #head(event)="data">
@@ -344,7 +375,7 @@
 												id="event"
 												v-model="event"
 												@change="requestSearchResults"
-												style="max-width: 100%;"
+												style="max-width: 100%"
 											/>
 										</template>
 										<template #head(released)="data">
@@ -354,7 +385,7 @@
 												id="released"
 												v-model="released"
 												@change="requestSearchResults"
-												style="max-width: 100%;"
+												style="max-width: 100%"
 											/>
 										</template>
 										<template #head(year)="data">
@@ -364,7 +395,7 @@
 												id="year"
 												v-model.number="year"
 												@change="requestSearchResults"
-												style="max-width: 100%;"
+												style="max-width: 100%"
 											/>
 										</template>
 										<template #head(handle)="data">
@@ -374,7 +405,7 @@
 												id="handle"
 												v-model.number="handle"
 												@change="requestSearchResults"
-												style="max-width: 100%;"
+												style="max-width: 100%"
 											/>
 										</template>
 										<template #head(rating)="data">
@@ -384,11 +415,10 @@
 												id="rating"
 												v-model="rating"
 												@change="requestSearchResults"
-												style="max-width: 100%;"
+												style="max-width: 100%"
 											/>
 										</template>
 									</b-table>
-
 								</b-card-text>
 							</b-tab>
 							<b-tab>
@@ -1769,14 +1799,14 @@
 							key: "rating",
 							sortable: true,
 						},
-						{ key: "actions"},
+						{ key: "actions" },
 					],
 					contentEntryFields: [
 						{
 							key: "id",
 							label: "Program",
 						},
-						{ key: "actions"},
+						{ key: "actions" },
 					],
 					name: "",
 					event: "",
@@ -2378,7 +2408,7 @@
 										year: obj.year,
 										handle: obj.handle,
 										rating: obj.rating,
-										_showDetails: false
+										_showDetails: false,
 									};
 								});
 							})
@@ -2393,14 +2423,17 @@
 						axios({
 							method: "get",
 							url:
-								"https://hackerswithstyle.se/leet/search/v2/contententries/" + btoa(row.item.id) + "/" + row.item.categoryId,
+								"https://hackerswithstyle.se/leet/search/v2/contententries/" +
+								btoa(row.item.id) +
+								"/" +
+								row.item.categoryId,
 						})
 							.then((response) => {
 								this.contentEntries = response.data.contentEntry;
-								row.item._showDetails = true; 
+								row.item._showDetails = true;
 							})
 							.catch((error) => {
-							    this.contentEntries = [];
+								this.contentEntries = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingAssembly64 = false));
@@ -2411,23 +2444,27 @@
 						axios({
 							method: "get",
 							url:
-								"https://hackerswithstyle.se/leet/search/v2/binary/" + btoa(row.item.id) + "/" + row.item.categoryId + "/" + btoa(innerRow.item.id)
-							,
+								"https://hackerswithstyle.se/leet/search/v2/binary/" +
+								btoa(row.item.id) +
+								"/" +
+								row.item.categoryId +
+								"/" +
+								btoa(innerRow.item.id),
 							responseType: "blob",
 						})
-						.then((response) => {
-						    new File([response.data], fileName);
-/*							var reader = new window.FileReader();
+							.then((response) => {
+								new File([response.data], fileName);
+								/*							var reader = new window.FileReader();
 							reader.readAsDataURL(response.data);
 							reader.onload = function () {
 								var bytes = reader.result;
 								console.log(bytes.length);
 							};*/
-						})
-						.catch((error) => {
-							console.log(error);
-						})
-						.finally(() => (this.loadingAssembly64 = false));
+							})
+							.catch((error) => {
+								console.log(error);
+							})
+							.finally(() => (this.loadingAssembly64 = false));
 					},
 				},
 				created: function () {

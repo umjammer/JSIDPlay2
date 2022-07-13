@@ -1,3 +1,7 @@
+tr > [aria-sort=none], tr > [aria-sort=ascending], tr > [aria-sort=descending] {
+	background-position: right top !important;
+}
+
 div i {
 	margin-right: 8px;
 }
