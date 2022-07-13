@@ -250,8 +250,52 @@
 										small
 										fixed
 										responsive
-										sticky-header
 									>
+
+										<template #cell(name)="row">
+											<div>
+												<span>{{ row.item.name }}</span>
+											</div>
+											<div>
+												<span style="font-style: italic; font-size: small;">{{ row.item.group }}</span>
+											</div>
+										</template>
+										<template #head(actions)="row">
+											<span></span>
+										</template>
+										<template #cell(actions)="row">
+										        <b-button size="sm" @click="requestContentEntries(row)" class="mr-1">
+										          <i class="fas fa-download"></i>
+										        </b-button>
+										</template>
+										<template #row-details="row">
+										  <b-card>
+										    <b-button size="sm" @click="row.toggleDetails" style="float: right;">Hide</b-button>
+
+											<b-table
+												striped
+												bordered
+												:items="contentEntries"
+												:fields="contentEntryFields"
+												primary-key="id"
+												small
+												fixed
+												responsive
+											>
+
+												<template #head(actions)="innerRow">
+													<span></span>
+												</template>
+												<template #cell(actions)="innerRow">
+												        <b-button size="sm" @click="requestContentEntry(row, innerRow)" class="mr-1">
+												          <i class="fas fa-download"></i>
+												        </b-button>
+												</template>
+
+											</b-table>
+										  </b-card>
+										</template>
+
 										<template #head(category)="data">
 											<label for="category">{{ data.label }}</label>
 											<b-form-select
@@ -344,6 +388,7 @@
 											/>
 										</template>
 									</b-table>
+
 								</b-card-text>
 							</b-tab>
 							<b-tab>
@@ -1694,6 +1739,7 @@
 					category: "",
 					categories: [],
 					searchResult: [],
+					contentEntries: [],
 					searchFields: [
 						{
 							key: "category",
@@ -1701,10 +1747,6 @@
 						},
 						{
 							key: "name",
-							sortable: true,
-						},
-						{
-							key: "group",
 							sortable: true,
 						},
 						{
@@ -1727,9 +1769,16 @@
 							key: "rating",
 							sortable: true,
 						},
+						{ key: "actions"},
+					],
+					contentEntryFields: [
+						{
+							key: "id",
+							label: "Program",
+						},
+						{ key: "actions"},
 					],
 					name: "",
-					group: "",
 					event: "",
 					released: "",
 					rating: "",
@@ -2255,9 +2304,6 @@
 						if (this.event !== "") {
 							parameterList.push("event=" + this.event);
 						}
-						if (this.group !== "") {
-							parameterList.push("group=" + this.group);
-						}
 						if (this.released.length === 4) {
 							parameterList.push("dateFrom=" + this.released + "0101");
 							parameterList.push("dateTo=" + this.released + "1231");
@@ -2324,6 +2370,7 @@
 										category: data.categories.filter(function (item) {
 											return item.id === obj.category;
 										})[0].description,
+										categoryId: obj.category,
 										name: obj.name,
 										group: obj.group,
 										event: obj.event,
@@ -2331,6 +2378,7 @@
 										year: obj.year,
 										handle: obj.handle,
 										rating: obj.rating,
+										_showDetails: false
 									};
 								});
 							})
@@ -2339,6 +2387,47 @@
 								console.log(error);
 							})
 							.finally(() => (this.loadingAssembly64 = false));
+					},
+					requestContentEntries: function (row) {
+						this.loadingAssembly64 = true; //the loading begin
+						axios({
+							method: "get",
+							url:
+								"https://hackerswithstyle.se/leet/search/v2/contententries/" + btoa(row.item.id) + "/" + row.item.categoryId,
+						})
+							.then((response) => {
+								this.contentEntries = response.data.contentEntry;
+								row.item._showDetails = true; 
+							})
+							.catch((error) => {
+							    this.contentEntries = [];
+								console.log(error);
+							})
+							.finally(() => (this.loadingAssembly64 = false));
+					},
+					requestContentEntry: function (row, innerRow) {
+						this.loadingAssembly64 = true; //the loading begin
+						console.log(row.item);
+						axios({
+							method: "get",
+							url:
+								"https://hackerswithstyle.se/leet/search/v2/binary/" + btoa(row.item.id) + "/" + row.item.categoryId + "/" + btoa(innerRow.item.id)
+							,
+							responseType: "blob",
+						})
+						.then((response) => {
+						    new File([response.data], fileName);
+/*							var reader = new window.FileReader();
+							reader.readAsDataURL(response.data);
+							reader.onload = function () {
+								var bytes = reader.result;
+								console.log(bytes.length);
+							};*/
+						})
+						.catch((error) => {
+							console.log(error);
+						})
+						.finally(() => (this.loadingAssembly64 = false));
 					},
 				},
 				created: function () {
