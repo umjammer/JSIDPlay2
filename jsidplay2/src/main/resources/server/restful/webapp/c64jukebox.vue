@@ -279,18 +279,11 @@
 												@click="requestContentEntries(row)"
 												class="mr-1"
 											>
-												<i class="fas fa-download"></i>
+												<i :class="row.detailsShowing? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
 											</b-button>
 										</template>
 										<template #row-details="row">
 											<b-card>
-												<b-button
-													size="sm"
-													@click="row.toggleDetails"
-													style="float: right"
-													>Hide</b-button
-												>
-
 												<b-table
 													striped
 													bordered
@@ -311,17 +304,14 @@
 														/>
 													</template>
 
-													<template #head(actions)="innerRow">
-														<span></span>
-													</template>
-													<template #cell(actions)="innerRow">
-														<b-button
-															size="sm"
-															@click="requestContentEntry(row, innerRow)"
-															class="mr-1"
+													<template #cell(id)="innerRow">
+														<a
+															v-bind:href="createConvertUrl('/' + btoa(innerRow.item.id)) + '&itemId='+btoa(row.item.id) + '&categoryId=' + row.item.categoryId"
+															target="c64"
+															style="margin-left: 16px"
 														>
-															<i class="fas fa-download"></i>
-														</b-button>
+															<span>{{ innerRow.item.id }}</span>
+														</a>
 													</template>
 												</b-table>
 											</b-card>
@@ -1806,7 +1796,6 @@
 							key: "id",
 							label: "Program",
 						},
-						{ key: "actions" },
 					],
 					name: "",
 					event: "",
@@ -2391,26 +2380,30 @@
 								this.assembly64SearchUrl(),
 						})
 							.then((response) => {
-								this.searchResult = response.data;
-
-								var data = this;
-								this.searchResult = this.searchResult.map((obj) => {
-									return {
-										id: obj.id,
-										category: data.categories.filter(function (item) {
-											return item.id === obj.category;
-										})[0].description,
-										categoryId: obj.category,
-										name: obj.name,
-										group: obj.group,
-										event: obj.event,
-										released: obj.released,
-										year: obj.year,
-										handle: obj.handle,
-										rating: obj.rating,
-										_showDetails: false,
-									};
-								});
+							    if (response.status === 200) {
+									this.searchResult = response.data;
+	
+									var data = this;
+									this.searchResult = this.searchResult.map((obj) => {
+										return {
+											id: obj.id,
+											category: data.categories.filter(function (item) {
+												return item.id === obj.category;
+											})[0].description,
+											categoryId: obj.category,
+											name: obj.name,
+											group: obj.group,
+											event: obj.event,
+											released: obj.released,
+											year: obj.year,
+											handle: obj.handle,
+											rating: obj.rating,
+											_showDetails: false,
+										};
+									});
+							    } else {
+									this.searchResult = [];
+							    }
 							})
 							.catch((error) => {
 								this.searchResult = [];
@@ -2419,6 +2412,10 @@
 							.finally(() => (this.loadingAssembly64 = false));
 					},
 					requestContentEntries: function (row) {
+						if (row.item._showDetails === true) {
+						    row.item._showDetails = false;
+						    return;
+						}
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
