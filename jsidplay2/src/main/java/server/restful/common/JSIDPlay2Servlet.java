@@ -24,11 +24,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
@@ -53,6 +55,7 @@ import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
+import ui.common.filefilter.AudioTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TapeFileFilter;
@@ -62,6 +65,7 @@ import ui.entities.config.Configuration;
 @SuppressWarnings("serial")
 public abstract class JSIDPlay2Servlet extends HttpServlet {
 
+	private static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
 	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 	private static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
 	private static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
@@ -205,7 +209,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			throws FileNotFoundException {
 		String path = servletParameters.getFilePath();
 		if (servletParameters.getItemId() != null && servletParameters.getCategoryId() != null) {
-			return fetchAssembly64Files(servletParameters.getItemId(), servletParameters.getCategoryId(), path);
+			return fetchAssembly64Files(servletParameters.getItemId(), servletParameters.getCategoryId(),
+					path.substring(1));
 		}
 		if (path == null) {
 			return null;
@@ -235,7 +240,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected File fetchAssembly64Files(String itemId, String categoryId, String fileId) {
 		try {
 			String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
-			URL url = new URL(assembly64Url + "/leet/search/v2/contententries/" + itemId + "/" + categoryId);
+			String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
+			URL url = new URL(assembly64Url + "/leet/search/v2/contententries/" + encodedItemId + "/" + categoryId);
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
 			ContentEntrySearchResult contentEntries = OBJECT_MAPPER.readValue(connection.getInputStream(),
@@ -245,21 +251,25 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			targetDir.deleteOnExit();
 			targetDir.mkdirs();
 
+			boolean isAudioTuneFile = AUDIO_TUNE_FILE_FILTER.accept(new File(fileId));
+
+			List<ContentEntry> contentEntriesToFetch = contentEntries.getContentEntry().stream()
+					.filter(contentEntry -> Objects.equals(contentEntry.getId(), fileId)
+							|| (!isAudioTuneFile && (DISK_FILE_FILTER.accept(new File(contentEntry.getId()))
+									|| TAPE_FILE_FILTER.accept(new File(contentEntry.getId()))
+									|| CART_FILE_FILTER.accept(new File(contentEntry.getId())))))
+					.collect(Collectors.toList());
+
 			File result = null;
-			for (ContentEntry contentEntry : contentEntries.getContentEntry()) {
-				File file = new File(contentEntry.getId());
-				String encodedContentEntryId = new String(Base64.getEncoder().encode(contentEntry.getId().getBytes()));
+			for (ContentEntry contentEntry : contentEntriesToFetch) {
 
-				if (DISK_FILE_FILTER.accept(file) || TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)
-						|| Objects.equals("/" + encodedContentEntryId, fileId)) {
-					File contentEntryFile = new File(targetDir, file.getName());
-					contentEntryFile.deleteOnExit();
+				File contentEntryFile = new File(targetDir, contentEntry.getId());
+				contentEntryFile.deleteOnExit();
 
-					File fetched = fetchAssembly64File(itemId, categoryId, encodedContentEntryId, contentEntryFile);
+				fetchAssembly64File(itemId, categoryId, contentEntry.getId(), contentEntryFile);
 
-					if (Objects.equals("/" + encodedContentEntryId, fileId)) {
-						result = fetched;
-					}
+				if (Objects.equals(contentEntry.getId(), fileId)) {
+					result = contentEntryFile;
 				}
 			}
 			return result;
@@ -269,24 +279,21 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return null;
 	}
 
-	private File fetchAssembly64File(String itemId, String categoryId, String fileId, File contentEntryFile) {
+	private void fetchAssembly64File(String itemId, String categoryId, String fileId, File contentEntryFile) {
 		try {
 			String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
-			URL url = new URL(assembly64Url + "/leet/search/v2/binary/" + itemId + "/" + categoryId + "/" + fileId);
+			String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
+			String encodedContentEntryId = new String(Base64.getEncoder().encode(fileId.getBytes()));
+			URL url = new URL(assembly64Url + "/leet/search/v2/binary/" + encodedItemId + "/" + categoryId + "/"
+					+ encodedContentEntryId);
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			ZipFileUtils.copy(connection.getInputStream(), os);
-			byte[] responseBytes = os.toByteArray();
-
 			try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {
-				outputStream.write(responseBytes);
-				return contentEntryFile;
+				ZipFileUtils.copy(connection.getInputStream(), outputStream);
 			}
 		} catch (IOException e) {
 			System.err.println("Unexpected result: " + e.getMessage());
 		}
-		return null;
 	}
 
 	private String thread() {

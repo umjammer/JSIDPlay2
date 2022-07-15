@@ -162,7 +162,12 @@
 													style="white-space: pre-line"
 													v-on:click="
 														updateSid(entry);
-														tabIndex = 2;
+														tabIndex = 3;
+														showAudio = true;
+														Vue.nextTick(function () {
+															$refs.audioElm.src = createConvertUrl(entry);
+															$refs.audioElm.play();
+														});
 													"
 												>
 													<div>
@@ -305,13 +310,81 @@
 													</template>
 
 													<template #cell(id)="innerRow">
-														<a
-															v-bind:href="createConvertUrl('/' + btoa(innerRow.item.id)) + '&itemId='+btoa(row.item.id) + '&categoryId=' + row.item.categoryId"
-															target="c64"
-															style="margin-left: 16px"
-														>
-															<span>{{ innerRow.item.id }}</span>
-														</a>
+
+
+
+														<template v-if="isMusic(innerRow.item.id)">
+															<div>
+																<i class="fas fa-music"></i>
+																<b-link
+																	style="white-space: pre-line"
+																	
+																	v-on:click="
+																		updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
+																		tabIndex = 3;
+																		showAudio = true;
+																		Vue.nextTick(function () {
+																			$refs.audioElm.src = createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId);
+																			$refs.audioElm.play();
+																		});
+																	"
+																>
+																	<span class="sid-file">{{
+																		shortEntry(innerRow.item.id)
+																	}}</span>
+																</b-link>
+															</div>
+														</template>
+														<template v-else-if="isVideo(innerRow.item.id)">
+															<span>
+																<template v-if="canFastload(innerRow.item.id)">
+																	<i class="fas fa-video"></i>
+																	<span>{{ shortEntry(innerRow.item.id) }}</span>
+			
+																	<a
+																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		target="c64"
+																		style="margin-left: 16px"
+																	>
+																		<span>{{ $t("load") }}</span>
+																	</a>
+																	<span> {{ $t("or") }} </span>
+																	<a
+																		v-bind:href="
+																			createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId) + '&jiffydos=true'
+																		"
+																		target="c64"
+																		style="margin-left: 16px"
+																	>
+																		<span>
+																			{{ $t("convertMessages.jiffydos") }}
+																		</span>
+																	</a>
+																</template>
+																<template v-else>
+																	<a
+																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		target="c64"
+																	>
+																		<i class="fas fa-video"></i
+																		><span>{{ shortEntry(innerRow.item.id) }}</span>
+																	</a>
+																</template>
+															</span>
+														</template>
+														<template v-else>
+															<div>
+																<i class="fas fa-download"></i>
+																<b-link
+																	style="white-space: pre-line"
+																>
+																	<a v-bind:href="createDownloadUrl(innerRow.item.id, row.item.id, row.item.categoryId)">
+																		<span>{{ shortEntry(innerRow.item.id) }}</span>
+																	</a>
+																</b-link>
+															</div>
+														</template>
+
 													</template>
 												</b-table>
 											</b-card>
@@ -425,23 +498,10 @@
 								<b-card-text>
 									<div class="button-box" v-if="currentSid">
 										<b-button
-											variant="success"
-											v-on:click="
-												showAudio = true;
-												Vue.nextTick(function () {
-													$refs.audioElm.src = createConvertUrl(currentSid);
-													$refs.audioElm.play();
-												});
-											"
-										>
-											<i class="fas fa-play"></i>
-											<span>{{ $t("play") }}</span></b-button
-										>
-										<b-button
 											variant="primary"
 											v-on:click="
 												playlist.push(currentSid);
-												tabIndex = 3;
+												tabIndex = 4;
 												playlistIndex = 0;
 											"
 										>
@@ -506,7 +566,8 @@
 											</b-button>
 											<b-button
 												v-if="importFile != null"
-												@click="importPlaylist"
+												@click="
+														if (confirm($i18n.t('removePlaylistReally'))) importPlaylist;"
 												class="mr-2"
 											>
 												<i class="fas fa-file-import"></i
@@ -1621,7 +1682,6 @@
 					},
 					username: "Username",
 					password: "Password",
-					play: "Play",
 					downloadMP3: "Download MP3",
 					downloadSID: "Download SID",
 					addToPlaylist: "Add To Playlist",
@@ -1699,7 +1759,6 @@
 					},
 					username: "Benutzername",
 					password: "Passwort",
-					play: "Abspielen",
 					downloadMP3: "Download MP3",
 					downloadSID: "Download SID",
 					addToPlaylist: "Zu Favoriten hinzuf\u00fcgen",
@@ -1833,7 +1892,7 @@
 				// Computed
 				computed: {
 					playlistEntryUrl: function () {
-						if (this.playlist.length === 0) {
+						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return undefined;
 						} else {
 							return this.createConvertUrl(this.playlist[this.playlistIndex]);
@@ -1970,7 +2029,7 @@
 							}
 							this.playlistIndex = 0;
 							this.importFile = null;
-							if (this.playlist.length === 0) {
+							if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 								return;
 							}
 							this.updateSid(this.playlist[this.playlistIndex]);
@@ -1997,6 +2056,9 @@
 							} else {
 								this.playlistIndex++;
 							}
+						}
+						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+							return;
 						}
 						this.updateSid(this.playlist[this.playlistIndex]);
 					},
@@ -2037,17 +2099,25 @@
 						this.convertOptions.config.emulationSection.thirdSIDFilter8580 =
 							this.reSIDfilters8580[1];
 					},
-					updateSid: function (entry) {
-						this.fetchInfo(entry);
-						this.fetchPhoto(entry);
+					updateSid: function (entry, itemId, categoryId) {
+					    if (entry) {
+							this.fetchInfo(entry, itemId, categoryId);
+							this.fetchPhoto(entry, itemId, categoryId);
+					    }
 					},
-					createConvertUrl: function (entry) {
+					createConvertUrl: function (entry, itemId, categoryId) {
+						var url;
+						if (itemId && categoryId) {
+						    url = uriEncode('/' + entry);
+						} else {
+						    url = uriEncode(entry);
+						}
 						return (
 							window.location.protocol +
 							"//" +
 							window.location.host +
 							"/jsidplay2service/JSIDPlay2REST/convert" +
-							uriEncode(entry) +
+							url +
 							"?enableSidDatabase=" +
 							this.convertOptions.config.sidplay2Section.enableDatabase +
 							"&single=" +
@@ -2170,7 +2240,8 @@
 							"&sidToRead=" +
 							this.convertOptions.config.emulationSection.sidToRead +
 							this.reuParameters +
-							this.stereoParameters
+							this.stereoParameters +
+							(itemId && categoryId ? "&itemId=" + itemId + "&categoryId=" + categoryId : "")
 						);
 					},
 					createDownloadMP3Url: function (entry) {
@@ -2189,7 +2260,13 @@
 								uriEncode(entry)
 						);
 					},
-					createDownloadUrl: function (entry) {
+					createDownloadUrl: function (entry, itemId, categoryId) {
+						var url;
+						if (itemId && categoryId) {
+						    url = uriEncode('/' + entry);
+						} else {
+						    url = uriEncode(entry);
+						}
 						return (
 							window.location.protocol +
 							"//" +
@@ -2198,8 +2275,7 @@
 							this.password +
 							"@" +
 							window.location.host +
-							"/jsidplay2service/JSIDPlay2REST/convert" +
-							uriEncode(entry)
+							"/jsidplay2service/JSIDPlay2REST/convert" + url
 						);
 					},
 					fetchDirectory: function (entry) {
@@ -2220,14 +2296,20 @@
 							})
 							.finally(() => (this.loadingSids = false));
 					},
-					fetchInfo: function (entry) {
+					fetchInfo: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
+						var url;
+						if (itemId && categoryId) {
+						    url = uriEncode('/' + entry) + "?list=true";
+						    url += "&itemId=" + itemId;
+						    url += "&categoryId=" + categoryId;
+						} else {
+						    url = uriEncode(entry) + "?list=true";
+						}
 						axios({
 							method: "get",
 							url:
-								"/jsidplay2service/JSIDPlay2REST/info" +
-								uriEncode(entry) +
-								"?list=true",
+								"/jsidplay2service/JSIDPlay2REST/info" + url,
 							auth: {
 								username: this.username,
 								password: this.password,
@@ -2239,11 +2321,19 @@
 							})
 							.finally(() => (this.loadingSid = false));
 					},
-					fetchPhoto: function (entry) {
+					fetchPhoto: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
+						var url;
+						if (itemId && categoryId) {
+						    url = uriEncode('/' + entry);
+						    url += "?itemId=" + itemId;
+						    url += "&categoryId=" + categoryId;
+						} else {
+						    url = uriEncode(entry);
+						}
 						axios({
 							method: "get",
-							url: "/jsidplay2service/JSIDPlay2REST/photo" + uriEncode(entry),
+							url: "/jsidplay2service/JSIDPlay2REST/photo" + url,
 							auth: {
 								username: this.username,
 								password: this.password,
@@ -2275,7 +2365,7 @@
 							.then((response) => {
 								this.playlist = response.data;
 								this.playlistIndex = 0;
-								if (this.playlist.length === 0) {
+								if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 									return;
 								}
 								this.updateSid(this.playlist[this.playlistIndex]);
@@ -2476,10 +2566,13 @@
 					}
 					if (localStorage.playlist) {
 						this.playlist = JSON.parse(localStorage.playlist);
-						if (this.playlist.length !== 0) {
-							this.updateSid(this.playlist[this.playlistIndex]);
-							this.showAudio = true;
-						}
+					}
+					if (this.playlistIndex >= this.playlist.length) {
+					    this.playlistIndex = 0;
+					}
+					if (this.playlist.length !== 0) {
+						this.updateSid(this.playlist[this.playlistIndex]);
+						this.showAudio = true;
 					}
 				},
 				watch: {
