@@ -224,10 +224,14 @@
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
 												>
-													<a v-bind:href="createDownloadUrl(entry)">
-														<i class="fas fa-download"></i
-														><span>{{ shortEntry(entry) }}</span>
-													</a>
+													<i class="fas fa-download"></i>
+													<b-link
+														style="white-space: pre-line"
+														
+														v-on:click="openDownloadUrl(entry)">
+
+														<span>{{ shortEntry(entry) }}</span>
+													</b-link>
 												</b-list-group-item>
 											</template>
 										</template>
@@ -377,10 +381,10 @@
 																<i class="fas fa-download"></i>
 																<b-link
 																	style="white-space: pre-line"
-																>
-																	<a v-bind:href="createDownloadUrl(innerRow.item.id, row.item.id, row.item.categoryId)">
-																		<span>{{ shortEntry(innerRow.item.id) }}</span>
-																	</a>
+																	
+																	v-on:click="openDownloadUrl(innerRow.item.id, row.item.id, row.item.categoryId)">
+
+																	<span>{{ shortEntry(innerRow.item.id) }}</span>
 																</b-link>
 															</div>
 														</template>
@@ -508,11 +512,11 @@
 											<i class="fas fa-plus"></i>
 											<span>{{ $t("addToPlaylist") }}</span></b-button
 										>
-										<b-button v-on:click="createDownloadMP3Url(currentSid)">
+										<b-button v-on:click="openDownloadMP3Url(currentSid)">
 											<i class="fas fa-download"></i>
 											<span>{{ $t("downloadMP3") }}</span></b-button
 										>
-										<b-button v-on:click="createDownloadSIDUrl(currentSid)">
+										<b-button v-on:click="openDownloadSIDUrl(currentSid)">
 											<i class="fas fa-download"></i>
 											<span>{{ $t("downloadSID") }}</span></b-button
 										>
@@ -2244,10 +2248,10 @@
 							(itemId && categoryId ? "&itemId=" + itemId + "&categoryId=" + categoryId : "")
 						);
 					},
-					createDownloadMP3Url: function (entry) {
+					openDownloadMP3Url: function (entry) {
 						window.open(this.createConvertUrl(entry) + "&download=true");
 					},
-					createDownloadSIDUrl: function (entry) {
+					openDownloadSIDUrl: function (entry) {
 						window.open(
 							window.location.protocol +
 								"//" +
@@ -2260,22 +2264,20 @@
 								uriEncode(entry)
 						);
 					},
-					createDownloadUrl: function (entry, itemId, categoryId) {
+					openDownloadUrl: function (entry, itemId, categoryId) {
 						var url;
 						if (itemId && categoryId) {
 						    url = uriEncode('/' + entry);
 						} else {
 						    url = uriEncode(entry);
 						}
-						return (
+						window.open(
 							window.location.protocol +
-							"//" +
-							this.username +
-							":" +
-							this.password +
-							"@" +
-							window.location.host +
-							"/jsidplay2service/JSIDPlay2REST/convert" + url
+								"//" +
+								window.location.host +
+								"/jsidplay2service/JSIDPlay2REST/convert" + url + "?" +
+								(itemId && categoryId ? "itemId=" + itemId + "&categoryId=" + categoryId : "") +
+								"&download=true"
 						);
 					},
 					fetchDirectory: function (entry) {
