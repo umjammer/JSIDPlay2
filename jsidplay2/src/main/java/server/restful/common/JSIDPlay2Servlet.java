@@ -59,13 +59,14 @@ import ui.common.filefilter.AudioTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TapeFileFilter;
+import ui.common.filefilter.VideoTuneFileFilter;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public abstract class JSIDPlay2Servlet extends HttpServlet {
 
-	private static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
+	private static final VideoTuneFileFilter VIDEO_TUNE_FILE_FILTER = new VideoTuneFileFilter();
 	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 	private static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
 	private static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
@@ -251,11 +252,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			targetDir.deleteOnExit();
 			targetDir.mkdirs();
 
-			boolean isAudioTuneFile = AUDIO_TUNE_FILE_FILTER.accept(new File(fileId));
+			File file = new File(fileId);
+			boolean mustFetchAttachments = VIDEO_TUNE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)
+					|| DISK_FILE_FILTER.accept(file) || TAPE_FILE_FILTER.accept(file);
 
 			List<ContentEntry> contentEntriesToFetch = contentEntries.getContentEntry().stream()
 					.filter(contentEntry -> Objects.equals(contentEntry.getId(), fileId)
-							|| (!isAudioTuneFile && (DISK_FILE_FILTER.accept(new File(contentEntry.getId()))
+							|| (mustFetchAttachments && (DISK_FILE_FILTER.accept(new File(contentEntry.getId()))
 									|| TAPE_FILE_FILTER.accept(new File(contentEntry.getId()))
 									|| CART_FILE_FILTER.accept(new File(contentEntry.getId())))))
 					.collect(Collectors.toList());
@@ -264,9 +267,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			for (ContentEntry contentEntry : contentEntriesToFetch) {
 
 				File contentEntryFile = new File(targetDir, contentEntry.getId());
-				contentEntryFile.deleteOnExit();
+				// create file as directory to handle sub-directories (subdir/file.txt)
+				contentEntryFile.mkdirs();
+				contentEntryFile.delete();
 
 				fetchAssembly64File(itemId, categoryId, contentEntry.getId(), contentEntryFile);
+				contentEntryFile.deleteOnExit();
 
 				if (Objects.equals(contentEntry.getId(), fileId)) {
 					result = contentEntryFile;
