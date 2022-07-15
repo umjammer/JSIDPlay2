@@ -29,6 +29,7 @@ import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.ServletBaseParameters;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.config.Configuration;
 import ui.musiccollection.SearchCriteria;
@@ -37,13 +38,10 @@ import ui.musiccollection.SearchCriteria;
 public class TuneInfoServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.TuneInfoServletParameters")
-	public static class ServletParameters {
+	public static class ServletParameters extends ServletBaseParameters {
 
 		@Parameter(names = "--list", arity = 1, descriptionKey = "LIST", order = -2)
 		private Boolean list = Boolean.FALSE;
-
-		@Parameter(descriptionKey = "FILE_PATH")
-		private String filePath;
 
 	}
 
@@ -72,11 +70,12 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.filePath == null) {
+			if (servletParameters.getFilePath() == null) {
 				commander.usage();
 				return;
 			}
-			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
+
+			final File file = getAbsoluteFile(servletParameters, request.isUserInRole(ROLE_ADMIN));
 
 			if (servletParameters.list) {
 				List<Map<String, String>> tuneInfos = hvscEntry2SortedList(createHVSCEntry(file));

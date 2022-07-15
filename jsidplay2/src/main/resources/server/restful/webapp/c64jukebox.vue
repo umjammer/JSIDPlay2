@@ -2361,7 +2361,7 @@
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
-							url: "https://hackerswithstyle.se/leet/search/v2/categories",
+							url: "$assembly64Url/leet/search/v2/categories",
 						})
 							.then((response) => {
 								this.categories = response.data;
@@ -2372,12 +2372,16 @@
 							.finally(() => (this.loadingAssembly64 = false));
 					},
 					requestSearchResults: function () {
+					    var url = this.assembly64SearchUrl();
+					    if (url.length === 0) {
+							this.searchResult = [];
+							return;
+					    }
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
 							url:
-								"https://hackerswithstyle.se/leet/search/v2" +
-								this.assembly64SearchUrl(),
+								"$assembly64Url/leet/search/v2" + url,
 						})
 							.then((response) => {
 							    if (response.status === 200) {
@@ -2420,7 +2424,7 @@
 						axios({
 							method: "get",
 							url:
-								"https://hackerswithstyle.se/leet/search/v2/contententries/" +
+								"$assembly64Url/leet/search/v2/contententries/" +
 								btoa(row.item.id) +
 								"/" +
 								row.item.categoryId,
@@ -2437,9 +2441,6 @@
 								console.log(error);
 							})
 							.finally(() => (this.loadingAssembly64 = false));
-					},
-					requestContentEntry: function (row, innerRow) {
-						window.open(this.createConvertUrl("/" + btoa(innerRow.item.id)) + "&itemId="+btoa(row.item.id) + "&categoryId=" + row.item.categoryId);
 					},
 				},
 				created: function () {

@@ -76,6 +76,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$convertOptions", CONVERT_OPTIONS);
 				replacements.put("$convertMessagesEn", CONVERT_MESSAGES_EN);
 				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);
+				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
 				ContentTypeAndFileExtensions mimeType = getMimeType(
 						PathUtils.getFilenameSuffix(servletParameters.filePath));
 				if (mimeType.isText()) {

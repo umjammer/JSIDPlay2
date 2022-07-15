@@ -72,6 +72,7 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.ServletBaseParameters;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -101,7 +102,7 @@ import ui.entities.config.Configuration;
 public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
-	public static class ServletParameters {
+	public static class ServletParameters extends ServletBaseParameters {
 
 		private Integer startSong;
 
@@ -180,37 +181,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.rtmp = rtmp;
 		}
 
-		private String itemId;
-
-		public String getItemId() {
-			return itemId;
-		}
-
-		@Parameter(names = { "--itemId" }, descriptionKey = "ITEM_ID", order = -2)
-		public void setItemId(String itemId) {
-			this.itemId = itemId;
-		}
-
-		private String categoryId;
-
-		public String getCategoryId() {
-			return categoryId;
-		}
-
-		@Parameter(names = { "--categoryId" }, descriptionKey = "CATEGORY_ID", order = -2)
-		public void setCategoryId(String categoryId) {
-			this.categoryId = categoryId;
-		}
-
 		@ParametersDelegate
 		private IniConfig config = new IniConfig();
 
 		public IniConfig getConfig() {
 			return config;
 		}
-
-		@Parameter(descriptionKey = "FILE_PATH")
-		private String filePath;
 
 		private volatile boolean started;
 
@@ -260,18 +236,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.filePath == null) {
+			if (servletParameters.getFilePath() == null) {
 				commander.usage();
 				return;
 			}
-
-			final File file;
-			if (servletParameters.getItemId() != null) {
-				file = getAssembly64File(servletParameters.getItemId(), servletParameters.getCategoryId(),
-						servletParameters.filePath);
-			} else {
-				file = getAbsoluteFile(servletParameters.filePath, true/* request.isUserInRole(ROLE_ADMIN) */);
-			}
+			final File file = getAbsoluteFile(servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
 
 			final IniConfig config = servletParameters.config;
 

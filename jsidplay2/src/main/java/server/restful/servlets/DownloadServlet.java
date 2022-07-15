@@ -14,23 +14,20 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.ServletBaseParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DownloadServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.DownloadServletParameters")
-	public static class ServletParameters {
-
-		@Parameter(descriptionKey = "FILE_PATH")
-		private String filePath;
+	public static class ServletParameters extends ServletBaseParameters {
 
 	}
 
@@ -59,13 +56,13 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.filePath == null) {
+			if (servletParameters.getFilePath() == null) {
 				commander.usage();
 				return;
 			}
-			final File file = getAbsoluteFile(servletParameters.filePath, request.isUserInRole(ROLE_ADMIN));
+			final File file = getAbsoluteFile(servletParameters, request.isUserInRole(ROLE_ADMIN));
 
-			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.filePath)).toString());
+			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
 			response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + file.getName());
 			copy(file, response.getOutputStream());
 
