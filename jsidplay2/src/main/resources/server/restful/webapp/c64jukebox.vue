@@ -125,116 +125,118 @@
 
 								<b-card-text>
 									<b-list-group>
-										<template v-for="entry in directory" :key="entry">
-											<template v-if="isParentDirectory(entry)">
-												<b-list-group-item
-													:button="!isVideo(entry)"
-													v-on:click="fetchDirectory(entry)"
-													:variant="getVariant(entry)"
-													style="white-space: pre-line"
-												>
-													<div class="directory parent">
-														<i class="fas fa-arrow-up"></i
-														><span>{{ entry }}</span>
-														<span class="parent-directory-hint"
-															>&larr; {{ $t("parentDirectoryHint") }}</span
-														>
-													</div>
-												</b-list-group-item>
-											</template>
-											<template v-else-if="isDirectory(entry)">
-												<b-list-group-item
-													:button="!isVideo(entry)"
-													:variant="getVariant(entry)"
-													style="white-space: pre-line"
-													v-on:click="fetchDirectory(entry)"
-												>
-													<div :class="directory">
-														<i class="fas fa-folder"></i
-														><span>{{ shortEntry(entry) }}</span>
-													</div>
-												</b-list-group-item>
-											</template>
-											<template v-else-if="isMusic(entry)">
-												<b-list-group-item
-													:button="!isVideo(entry)"
-													:variant="getVariant(entry)"
-													style="white-space: pre-line"
-													v-on:click="
-														updateSid(entry);
-														tabIndex = 3;
-														showAudio = true;
-														Vue.nextTick(function () {
-															$refs.audioElm.src = createConvertUrl(entry);
-															$refs.audioElm.play();
-														});
-													"
-												>
-													<div>
-														<i class="fas fa-music"></i
-														><span class="sid-file">{{
-															shortEntry(entry)
-														}}</span>
-													</div>
-												</b-list-group-item>
-											</template>
-											<template v-else-if="isVideo(entry)">
-												<b-list-group-item
-													:button="!isVideo(entry)"
-													:variant="getVariant(entry)"
-												>
-													<template v-if="canFastload(entry)">
-														<i class="fas fa-video"></i>
-														<span>{{ shortEntry(entry) }}</span>
-
-														<a
-															v-bind:href="createConvertUrl(entry)"
-															target="c64"
-															style="margin-left: 16px"
-														>
-															<span>{{ $t("load") }}</span>
-														</a>
-														<span> {{ $t("or") }} </span>
-														<a
-															v-bind:href="
-																createConvertUrl(entry) + '&jiffydos=true'
-															"
-															target="c64"
-															style="margin-left: 16px"
-														>
-															<span>
-																{{ $t("convertMessages.jiffydos") }}
-															</span>
-														</a>
-													</template>
-													<template v-else>
-														<a
-															v-bind:href="createConvertUrl(entry)"
-															target="c64"
-														>
-															<i class="fas fa-video"></i
-															><span>{{ shortEntry(entry) }}</span>
-														</a>
-													</template>
-												</b-list-group-item>
-											</template>
-											<template v-else>
-												<b-list-group-item
-													:button="!isVideo(entry)"
-													:variant="getVariant(entry)"
-													style="white-space: pre-line"
-												>
-													<i class="fas fa-download"></i>
-													<b-link
+										<div v-for="entry in directory" :key="entry">
+											<template>
+												<template v-if="isParentDirectory(entry)">
+													<b-list-group-item
+														:button="!isVideo(entry)"
+														v-on:click="fetchDirectory(entry)"
+														:variant="getVariant(entry)"
 														style="white-space: pre-line"
-														
-														v-on:click="openDownloadUrl(entry)">
-
-														<span>{{ shortEntry(entry) }}</span>
-													</b-link>
-												</b-list-group-item>
+													>
+														<div class="directory parent">
+															<i class="fas fa-arrow-up"></i
+															><span>{{ entry }}</span>
+															<span class="parent-directory-hint"
+																>&larr; {{ $t("parentDirectoryHint") }}</span
+															>
+														</div>
+													</b-list-group-item>
+												</template>
+												<template v-else-if="isDirectory(entry)">
+													<b-list-group-item
+														:button="!isVideo(entry)"
+														:variant="getVariant(entry)"
+														style="white-space: pre-line"
+														v-on:click="fetchDirectory(entry)"
+													>
+														<div :class="directory">
+															<i class="fas fa-folder"></i
+															><span>{{ shortEntry(entry) }}</span>
+														</div>
+													</b-list-group-item>
+												</template>
+												<template v-else-if="isMusic(entry)">
+													<b-list-group-item
+														:button="!isVideo(entry)"
+														:variant="getVariant(entry)"
+														style="white-space: pre-line"
+														v-on:click="
+															updateSid(entry);
+															tabIndex = 3;
+															showAudio = true;
+															Vue.nextTick(function () {
+																$refs.audioElm.src = createConvertUrl(entry);
+																$refs.audioElm.play();
+															});
+														"
+													>
+														<div>
+															<i class="fas fa-music"></i
+															><span class="sid-file">{{
+																shortEntry(entry)
+															}}</span>
+														</div>
+													</b-list-group-item>
+												</template>
+												<template v-else-if="isVideo(entry)">
+													<b-list-group-item
+														:button="!isVideo(entry)"
+														:variant="getVariant(entry)"
+													>
+														<template v-if="canFastload(entry)">
+															<i class="fas fa-video"></i>
+															<span>{{ shortEntry(entry) }}</span>
+	
+															<a
+																v-bind:href="createConvertUrl(entry)"
+																target="c64"
+																style="margin-left: 16px"
+															>
+																<span>{{ $t("load") }}</span>
+															</a>
+															<span> {{ $t("or") }} </span>
+															<a
+																v-bind:href="
+																	createConvertUrl(entry) + '&jiffydos=true'
+																"
+																target="c64"
+																style="margin-left: 16px"
+															>
+																<span>
+																	{{ $t("convertMessages.jiffydos") }}
+																</span>
+															</a>
+														</template>
+														<template v-else>
+															<a
+																v-bind:href="createConvertUrl(entry)"
+																target="c64"
+															>
+																<i class="fas fa-video"></i
+																><span>{{ shortEntry(entry) }}</span>
+															</a>
+														</template>
+													</b-list-group-item>
+												</template>
+												<template v-else>
+													<b-list-group-item
+														:button="!isVideo(entry)"
+														:variant="getVariant(entry)"
+														style="white-space: pre-line"
+													>
+														<i class="fas fa-download"></i>
+														<b-link
+															style="white-space: pre-line"
+															
+															v-on:click="openDownloadUrl(entry)">
+	
+															<span>{{ shortEntry(entry) }}</span>
+														</b-link>
+													</b-list-group-item>
+												</template>
 											</template>
-										</template>
+										</div>
 									</b-list-group>
 								</b-card-text>
 							</b-tab>
@@ -255,7 +257,6 @@
 										bordered
 										:items="searchResult"
 										:fields="searchFields"
-										primary-key="id"
 										small
 										fixed
 										responsive
@@ -298,7 +299,6 @@
 													bordered
 													:items="contentEntries"
 													:fields="contentEntryFields"
-													primary-key="id"
 													small
 													fixed
 													responsive
@@ -1945,7 +1945,7 @@
 					},
 					translatedInfos: function () {
 						if (!this.infos) {
-							return "[]";
+							return [];
 						}
 						return this.infos.map(function (obj) {
 							return {
