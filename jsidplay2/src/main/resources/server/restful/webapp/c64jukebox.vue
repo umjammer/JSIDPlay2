@@ -2464,8 +2464,8 @@
 						})
 							.then((response) => {
 								this.categories = response.data;
-								this.categories.sort(function (a, b) {
-									return a.description > b.description;
+								this.categories.sort((a, b) => {
+									return a.description.localeCompare(b.description);
 								});
 							})
 							.finally(() => (this.loadingAssembly64 = false));
