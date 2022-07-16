@@ -2201,10 +2201,10 @@
 					},
 					createConvertUrl: function (entry, itemId, categoryId) {
 						var url;
-						if ( itemId !== "" && categoryId !== "") {
-							url = uriEncode("/" + entry);
-						} else {
+						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
 							url = uriEncode(entry);
+						} else {
+							url = uriEncode("/" + entry);
 						}
 						return (
 							window.location.protocol +
@@ -2335,9 +2335,9 @@
 							this.convertOptions.config.emulationSection.sidToRead +
 							this.reuParameters +
 							this.stereoParameters +
-							(itemId !== "" && categoryId !== ""
-								? "&itemId=" + itemId + "&categoryId=" + categoryId
-								: "")
+							(typeof itemId === "undefined" && typeof categoryId === "undefined"
+								? ""
+								: "&itemId=" + itemId + "&categoryId=" + categoryId)
 						);
 					},
 					openDownloadMP3Url: function (entry) {
@@ -2358,10 +2358,10 @@
 					},
 					openDownloadUrl: function (entry, itemId, categoryId) {
 						var url;
-						if (itemId != "" && categoryId != "") {
-							url = uriEncode("/" + entry);
-						} else {
+						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
 							url = uriEncode(entry);
+						} else {
+							url = uriEncode("/" + entry);
 						}
 						window.open(
 							window.location.protocol +
@@ -2370,9 +2370,9 @@
 								"/jsidplay2service/JSIDPlay2REST/convert" +
 								url +
 								"?" +
-								(itemId != "" && categoryId != ""
-									? "itemId=" + itemId + "&categoryId=" + categoryId
-									: "") +
+								(typeof itemId === "undefined" && typeof categoryId === "undefined"
+									? ""
+									: "itemId=" + itemId + "&categoryId=" + categoryId) +
 								"&download=true"
 						);
 					},
@@ -2397,12 +2397,12 @@
 					fetchInfo: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
 						var url;
-						if (itemId != "" && categoryId != "") {
+						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
+							url = uriEncode(entry) + "?list=true";
+						} else {
 							url = uriEncode("/" + entry) + "?list=true";
 							url += "&itemId=" + itemId;
 							url += "&categoryId=" + categoryId;
-						} else {
-							url = uriEncode(entry) + "?list=true";
 						}
 						axios({
 							method: "get",
@@ -2421,12 +2421,12 @@
 					fetchPhoto: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
 						var url;
-						if (itemId != "" && categoryId != "") {
+						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
+							url = uriEncode(entry);
+						} else {
 							url = uriEncode("/" + entry);
 							url += "?itemId=" + itemId;
 							url += "&categoryId=" + categoryId;
-						} else {
-							url = uriEncode(entry);
 						}
 						axios({
 							method: "get",
