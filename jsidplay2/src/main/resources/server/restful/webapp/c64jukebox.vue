@@ -423,6 +423,7 @@
 												v-model="name"
 												@change="requestSearchResults"
 												style="max-width: 100%"
+												autocomplete="off"
 											/>
 										</template>
 										<template #head(group)="data">
@@ -433,6 +434,7 @@
 												v-model="group"
 												@change="requestSearchResults"
 												style="max-width: 100%"
+												autocomplete="off"
 											/>
 										</template>
 										<template #head(event)="data">
@@ -443,6 +445,7 @@
 												v-model="event"
 												@change="requestSearchResults"
 												style="max-width: 100%"
+												autocomplete="off"
 											/>
 										</template>
 										<template #head(released)="data">
@@ -453,6 +456,7 @@
 												v-model="released"
 												@change="requestSearchResults"
 												style="max-width: 100%"
+												autocomplete="off"
 											/>
 										</template>
 										<template #head(year)="data">
@@ -463,6 +467,7 @@
 												v-model.number="year"
 												@change="requestSearchResults"
 												style="max-width: 100%"
+												autocomplete="off"
 											/>
 										</template>
 										<template #head(handle)="data">
@@ -473,6 +478,7 @@
 												v-model.number="handle"
 												@change="requestSearchResults"
 												style="max-width: 100%"
+												autocomplete="off"
 											/>
 										</template>
 										<template #head(rating)="data">
@@ -483,6 +489,7 @@
 												v-model="rating"
 												@change="requestSearchResults"
 												style="max-width: 100%"
+												autocomplete="off"
 											/>
 										</template>
 									</b-table>
