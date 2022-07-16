@@ -7,36 +7,13 @@
 
 		<!-- favicon.ico -->
 		<link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
-		<link
-			id="favicon"
-			rel="icon"
-			href="/static/favicon.ico"
-			type="image/x-icon"
-		/>
-		<link
-			id="favicon-16x16"
-			rel="icon"
-			href="/static/favicon-16x16.png"
-			type="image/png"
-			sizes="16x16"
-		/>
+		<link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+		<link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
 		<!-- Load required Bootstrap and BootstrapVue CSS -->
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="https://unpkg.com/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-		/>
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"
-		/>
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-		/>
+		<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+		<link type="text/css" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
 
 		<!-- Load Vue followed by BootstrapVue -->
 		<script src="https://unpkg.com/vue@2.6.14/dist/vue.min.js"></script>
@@ -48,10 +25,7 @@
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 		<meta charset="UTF-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, shrink-to-fit=no"
-		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
 		<title>C64 Jukebox</title>
 	</head>
@@ -59,11 +33,7 @@
 		<div id="app">
 			<form>
 				<div class="locale-changer">
-					<select
-						@change="updateLanguage"
-						v-model="$i18n.locale"
-						style="float: right"
-					>
+					<select @change="updateLanguage" v-model="$i18n.locale" style="float: right">
 						<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
 							{{ lang }}
 						</option>
@@ -83,14 +53,7 @@
 						I'm sorry. Your browser doesn't support HTML5 audio
 					</audio>
 					<div>
-						<span
-							style="
-								white-space: pre-line;
-								font-style: italic;
-								font-size: small;
-							"
-							>{{ currentSid }}</span
-						>
+						<span style="white-space: pre-line; font-style: italic; font-size: small">{{ currentSid }}</span>
 					</div>
 				</div>
 				<div>
@@ -131,125 +94,93 @@
 							<b-tab active>
 								<template #title>
 									{{ $t("SIDS") }}
-									<b-spinner
-										type="border"
-										variant="primary"
-										small
-										v-if="loadingSids"
-									></b-spinner>
+									<b-spinner type="border" variant="primary" small v-if="loadingSids"></b-spinner>
 								</template>
 
 								<b-card-text>
 									<b-list-group>
 										<div v-for="entry in directory" :key="entry">
-											<template>
-												<template v-if="isParentDirectory(entry)">
-													<b-list-group-item
-														:button="!isVideo(entry)"
-														v-on:click="fetchDirectory(entry)"
-														:variant="getVariant(entry)"
-														style="white-space: pre-line"
-													>
-														<div class="directory parent">
-															<i class="fas fa-arrow-up"></i
-															><span>{{ entry }}</span>
-															<span class="parent-directory-hint"
-																>&larr; {{ $t("parentDirectoryHint") }}</span
-															>
-														</div>
-													</b-list-group-item>
-												</template>
-												<template v-else-if="isDirectory(entry)">
-													<b-list-group-item
-														:button="!isVideo(entry)"
-														:variant="getVariant(entry)"
-														style="white-space: pre-line"
-														v-on:click="fetchDirectory(entry)"
-													>
-														<div :class="directory">
-															<i class="fas fa-folder"></i
-															><span>{{ shortEntry(entry) }}</span>
-														</div>
-													</b-list-group-item>
-												</template>
-												<template v-else-if="isMusic(entry)">
-													<b-list-group-item
-														:button="!isVideo(entry)"
-														:variant="getVariant(entry)"
-														style="white-space: pre-line"
-														v-on:click="
-															updateSid(entry);
-															tabIndex = 3;
-															showAudio = true;
-															Vue.nextTick(function () {
-																$refs.audioElm.src = createConvertUrl(entry);
-																$refs.audioElm.play();
-															});
-														"
-													>
-														<div>
-															<i class="fas fa-music"></i
-															><span class="sid-file">{{
-																shortEntry(entry)
-															}}</span>
-														</div>
-													</b-list-group-item>
-												</template>
-												<template v-else-if="isVideo(entry)">
-													<b-list-group-item
-														:button="!isVideo(entry)"
-														:variant="getVariant(entry)"
-													>
-														<template v-if="canFastload(entry)">
-															<i class="fas fa-video"></i>
-															<span>{{ shortEntry(entry) }}</span>
+											<template v-if="isParentDirectory(entry)">
+												<b-list-group-item
+													:button="!isVideo(entry)"
+													:variant="getVariant(entry)"
+													style="white-space: pre-line"
+													v-on:click="fetchDirectory(entry)"
+												>
+													<div class="directory parent">
+														<i class="fas fa-arrow-up"></i><span>{{ entry }}</span>
+														<span class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</span>
+													</div>
+												</b-list-group-item>
+											</template>
+											<template v-else-if="isDirectory(entry)">
+												<b-list-group-item
+													:button="!isVideo(entry)"
+													:variant="getVariant(entry)"
+													style="white-space: pre-line"
+													v-on:click="fetchDirectory(entry)"
+												>
+													<div :class="directory">
+														<i class="fas fa-folder"></i><span>{{ shortEntry(entry) }}</span>
+													</div>
+												</b-list-group-item>
+											</template>
+											<template v-else-if="isMusic(entry)">
+												<b-list-group-item
+													:button="!isVideo(entry)"
+													:variant="getVariant(entry)"
+													style="white-space: pre-line"
+													v-on:click="
+														updateSid(entry);
+														tabIndex = 3;
+														showAudio = true;
+														$refs.audioElm.src = createConvertUrl(entry);
+														$refs.audioElm.play();
+													"
+												>
+													<div>
+														<i class="fas fa-music"></i><span class="sid-file">{{ shortEntry(entry) }}</span>
+													</div>
+												</b-list-group-item>
+											</template>
+											<template v-else-if="isVideo(entry)">
+												<b-list-group-item :button="!isVideo(entry)" :variant="getVariant(entry)">
+													<template v-if="canFastload(entry)">
+														<i class="fas fa-video"></i>
+														<span>{{ shortEntry(entry) }}</span>
 
-															<a
-																v-bind:href="createConvertUrl(entry)"
-																target="c64"
-																style="margin-left: 16px"
-															>
-																<span>{{ $t("load") }}</span>
-															</a>
-															<span> {{ $t("or") }} </span>
-															<a
-																v-bind:href="
-																	createConvertUrl(entry) + '&jiffydos=true'
-																"
-																target="c64"
-																style="margin-left: 16px"
-															>
-																<span>
-																	{{ $t("convertMessages.jiffydos") }}
-																</span>
-															</a>
-														</template>
-														<template v-else>
-															<a
-																v-bind:href="createConvertUrl(entry)"
-																target="c64"
-															>
-																<i class="fas fa-video"></i
-																><span>{{ shortEntry(entry) }}</span>
-															</a>
-														</template>
-													</b-list-group-item>
-												</template>
-												<template v-else>
-													<b-list-group-item
-														:button="!isVideo(entry)"
-														:variant="getVariant(entry)"
-														style="white-space: pre-line"
-													>
-														<i class="fas fa-download"></i>
-														<b-link
-															style="white-space: pre-line"
-															v-on:click="openDownloadUrl(entry)"
+														<a v-bind:href="createConvertUrl(entry)" target="c64" style="margin-left: 16px">
+															<span>{{ $t("load") }}</span>
+														</a>
+														<span> {{ $t("or") }} </span>
+														<a
+															v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
+															target="c64"
+															style="margin-left: 16px"
 														>
-															<span>{{ shortEntry(entry) }}</span>
-														</b-link>
-													</b-list-group-item>
-												</template>
+															<span>
+																{{ $t("convertMessages.jiffydos") }}
+															</span>
+														</a>
+													</template>
+													<template v-else>
+														<a v-bind:href="createConvertUrl(entry)" target="c64">
+															<i class="fas fa-video"></i><span>{{ shortEntry(entry) }}</span>
+														</a>
+													</template>
+												</b-list-group-item>
+											</template>
+											<template v-else>
+												<b-list-group-item
+													:button="!isVideo(entry)"
+													:variant="getVariant(entry)"
+													style="white-space: pre-line"
+												>
+													<i class="fas fa-download"></i>
+													<b-link style="white-space: pre-line" v-on:click="openDownloadUrl(entry)">
+														<span>{{ shortEntry(entry) }}</span>
+													</b-link>
+												</b-list-group-item>
 											</template>
 										</div>
 									</b-list-group>
@@ -258,24 +189,11 @@
 							<b-tab>
 								<template #title>
 									{{ $t("ASSEMBLY64") }}
-									<b-spinner
-										type="border"
-										variant="primary"
-										small
-										v-if="loadingAssembly64"
-									></b-spinner>
+									<b-spinner type="border" variant="primary" small v-if="loadingAssembly64"></b-spinner>
 								</template>
 
 								<b-card-text>
-									<b-table
-										striped
-										bordered
-										:items="searchResult"
-										:fields="searchFields"
-										small
-										fixed
-										responsive
-									>
+									<b-table striped bordered :items="searchResult" :fields="searchFields" small fixed responsive>
 										<template #table-colgroup="scope">
 											<col
 												v-for="field in scope.fields"
@@ -290,27 +208,15 @@
 												<span>{{ row.item.name }}</span>
 											</div>
 											<div>
-												<span style="font-style: italic; font-size: small">{{
-													row.item.group
-												}}</span>
+												<span style="font-style: italic; font-size: small">{{ row.item.group }}</span>
 											</div>
 										</template>
 										<template #head(actions)="row">
 											<span></span>
 										</template>
 										<template #cell(actions)="row">
-											<b-button
-												size="sm"
-												@click="requestContentEntries(row)"
-												class="mr-1"
-											>
-												<i
-													:class="
-														row.detailsShowing
-															? 'fas fa-caret-up'
-															: 'fas fa-caret-down'
-													"
-												></i>
+											<b-button size="sm" @click="requestContentEntries(row)" class="mr-1">
+												<i :class="row.detailsShowing ? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
 											</b-button>
 										</template>
 										<template #row-details="row">
@@ -341,26 +247,18 @@
 																<b-link
 																	style="white-space: pre-line"
 																	v-on:click="
-																		updateSid(
+																		updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
+																		tabIndex = 3;
+																		showAudio = true;
+																		$refs.audioElm.src = createConvertUrl(
 																			innerRow.item.id,
 																			row.item.id,
 																			row.item.categoryId
 																		);
-																		tabIndex = 3;
-																		showAudio = true;
-																		Vue.nextTick(function () {
-																			$refs.audioElm.src = createConvertUrl(
-																				innerRow.item.id,
-																				row.item.id,
-																				row.item.categoryId
-																			);
-																			$refs.audioElm.play();
-																		});
+																		$refs.audioElm.play();
 																	"
 																>
-																	<span class="sid-file">{{
-																		shortEntry(innerRow.item.id)
-																	}}</span>
+																	<span class="sid-file">{{ shortEntry(innerRow.item.id) }}</span>
 																</b-link>
 															</div>
 														</template>
@@ -368,18 +266,10 @@
 															<span>
 																<template v-if="canFastload(innerRow.item.id)">
 																	<i class="fas fa-video"></i>
-																	<span>{{
-																		shortEntry(innerRow.item.id)
-																	}}</span>
+																	<span>{{ shortEntry(innerRow.item.id) }}</span>
 
 																	<a
-																		v-bind:href="
-																			createConvertUrl(
-																				innerRow.item.id,
-																				row.item.id,
-																				row.item.categoryId
-																			)
-																		"
+																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
 																		target="c64"
 																		style="margin-left: 16px"
 																	>
@@ -388,11 +278,8 @@
 																	<span> {{ $t("or") }} </span>
 																	<a
 																		v-bind:href="
-																			createConvertUrl(
-																				innerRow.item.id,
-																				row.item.id,
-																				row.item.categoryId
-																			) + '&jiffydos=true'
+																			createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId) +
+																			'&jiffydos=true'
 																		"
 																		target="c64"
 																		style="margin-left: 16px"
@@ -404,19 +291,10 @@
 																</template>
 																<template v-else>
 																	<a
-																		v-bind:href="
-																			createConvertUrl(
-																				innerRow.item.id,
-																				row.item.id,
-																				row.item.categoryId
-																			)
-																		"
+																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
 																		target="c64"
 																	>
-																		<i class="fas fa-video"></i
-																		><span>{{
-																			shortEntry(innerRow.item.id)
-																		}}</span>
+																		<i class="fas fa-video"></i><span>{{ shortEntry(innerRow.item.id) }}</span>
 																	</a>
 																</template>
 															</span>
@@ -426,17 +304,9 @@
 																<i class="fas fa-download"></i>
 																<b-link
 																	style="white-space: pre-line"
-																	v-on:click="
-																		openDownloadUrl(
-																			innerRow.item.id,
-																			row.item.id,
-																			row.item.categoryId
-																		)
-																	"
+																	v-on:click="openDownloadUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
 																>
-																	<span>{{
-																		shortEntry(innerRow.item.id)
-																	}}</span>
+																	<span>{{ shortEntry(innerRow.item.id) }}</span>
 																</b-link>
 															</div>
 														</template>
@@ -460,9 +330,7 @@
 												style="margin: 0 !important; max-width: 100%"
 											>
 												<template #first>
-													<b-form-select-option value=""
-														>-- Select a category --</b-form-select-option
-													>
+													<b-form-select-option value="">-- Select a category --</b-form-select-option>
 												</template>
 											</b-form-select>
 										</template>
@@ -570,12 +438,7 @@
 							<b-tab>
 								<template #title>
 									{{ $t("SID") }}
-									<b-spinner
-										type="border"
-										variant="primary"
-										small
-										v-if="loadingSid"
-									></b-spinner>
+									<b-spinner type="border" variant="primary" small v-if="loadingSid"></b-spinner>
 								</template>
 
 								<b-card-text>
@@ -602,12 +465,7 @@
 									</div>
 
 									<div class="sid">
-										<b-table
-											striped
-											bordered
-											:items="translatedInfos"
-											:fields="translatedFields"
-										></b-table>
+										<b-table striped bordered :items="translatedInfos" :fields="translatedFields"></b-table>
 										<div class="picture-container">
 											<img :src="picture" id="img" class="picture" />
 										</div>
@@ -617,12 +475,7 @@
 							<b-tab>
 								<template #title>
 									{{ $t("PL") }}
-									<b-spinner
-										type="border"
-										variant="primary"
-										small
-										v-if="loadingPl"
-									></b-spinner>
+									<b-spinner type="border" variant="primary" small v-if="loadingPl"></b-spinner>
 								</template>
 
 								<b-card-text>
@@ -640,47 +493,24 @@
 												drop-placeholder="Drop favorites here..."
 											>
 											</b-form-file>
-											<b-button
-												v-if="importFile != null"
-												@click="importFile = null"
-											>
-												<i class="fas fa-trash"></i
-												><span>{{ $t("reset") }}</span>
+											<b-button v-if="importFile != null" @click="importFile = null">
+												<i class="fas fa-trash"></i><span>{{ $t("reset") }}</span>
 											</b-button>
-											<b-button
-												v-if="importFile != null"
-												@click="
-													if (confirm($i18n.t('removePlaylistReally')))
-														importPlaylist;
-												"
-												class="mr-2"
-											>
-												<i class="fas fa-file-import"></i
-												><span>{{ $t("startImport") }}</span>
+											<b-button v-if="importFile != null" @click="importPlaylist" class="mr-2">
+												<i class="fas fa-file-import"></i><span>{{ $t("startImport") }}</span>
 											</b-button>
 										</div>
-										<b-button v-on:click="fetchFavorites()">
+										<b-button @click="fetchFavorites">
 											<i class="fas fa-download"></i>
 											<span>{{ $t("fetchFavorites") }}</span></b-button
 										>
-										<b-button
-											variant="success"
-											v-on:click="setNextPlaylistEntry"
-											v-if="playlist.length > 0"
-										>
+										<b-button variant="success" v-on:click="setNextPlaylistEntry" v-if="playlist.length > 0">
 											<i class="fas fa-forward"></i>
 											<span>{{ $t("next") }}</span></b-button
 										>
 									</div>
 									<div class="button-box" v-if="playlist.length > 0">
-										<b-button
-											variant="danger"
-											size="sm"
-											v-on:click="
-												if (confirm($i18n.t('removePlaylistReally')))
-													playlist = [];
-											"
-										>
+										<b-button variant="danger" size="sm" @click="removePlaylist">
 											<i class="fas fa-trash"></i>
 											<span>{{ $t("removePlaylist") }}</span></b-button
 										>
@@ -690,25 +520,16 @@
 										<li
 											v-for="(entry, index) in playlist"
 											:key="index"
-											:class="
-												index == playlistIndex
-													? 'highlighted playlist-item'
-													: 'playlist-item'
-											"
+											:class="index == playlistIndex ? 'highlighted playlist-item' : 'playlist-item'"
 											v-on:click="
 												playlistIndex = index;
 												updateSid(playlist[playlistIndex]);
 											"
 										>
-											<span
-												style="display: flex; justify-content: space-between"
-											>
+											<span style="display: flex; justify-content: space-between">
 												<span>{{ entry }}</span>
 												<b-button
-													v-on:click="
-														if (confirm($i18n.t('removeReally')))
-															playlist.splice(index, 1);
-													"
+													@click="remove(index)"
 													pill
 													variant="outline-danger"
 													size="sm"
@@ -724,12 +545,7 @@
 							<b-tab>
 								<template #title>
 									{{ $t("CFG") }}
-									<b-spinner
-										type="border"
-										variant="primary"
-										small
-										v-if="loadingCfg"
-									></b-spinner>
+									<b-spinner type="border" variant="primary" small v-if="loadingCfg"></b-spinner>
 								</template>
 
 								<b-card-text>
@@ -751,32 +567,20 @@
 									<h3>{{ $t("audioStreamingCfgHeader") }}</h3>
 
 									<div class="settings-box">
-										<b-form-checkbox
-											v-model="convertOptions.config.audioSection.vbr"
-										>
+										<b-form-checkbox v-model="convertOptions.config.audioSection.vbr">
 											{{ $t("convertMessages.config.audioSection.vbr") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
 										<div>
-											<label for="cbr">{{
-												$t("convertMessages.config.audioSection.cbr")
-											}}</label>
-											<select
-												id="cbr"
-												v-model="convertOptions.config.audioSection.cbr"
-											>
+											<label for="cbr">{{ $t("convertMessages.config.audioSection.cbr") }}</label>
+											<select id="cbr" v-model="convertOptions.config.audioSection.cbr">
 												<option v-for="cbr in cbrs">{{ cbr }}</option>
 											</select>
 										</div>
 										<div>
-											<label for="vbrQuality">{{
-												$t("convertMessages.config.audioSection.vbrQuality")
-											}}</label>
-											<select
-												id="vbrQuality"
-												v-model="convertOptions.config.audioSection.vbrQuality"
-											>
+											<label for="vbrQuality">{{ $t("convertMessages.config.audioSection.vbrQuality") }}</label>
+											<select id="vbrQuality" v-model="convertOptions.config.audioSection.vbrQuality">
 												<option v-for="vbrQuality in vbrQualities">
 													{{ vbrQuality }}
 												</option>
@@ -793,19 +597,27 @@
 									</div>
 									<div class="settings-box">
 										<div>
+											<label for="audioCoderBitRate">{{
+												$t("convertMessages.config.audioSection.audioCoderBitRate")
+											}}</label>
+											<input
+												id="audioCoderBitRate"
+												type="number"
+												min="0"
+												oninput="validity.valid||(value='');"
+												v-model.number="convertOptions.config.audioSection.audioCoderBitRate"
+											/>
+										</div>
+										<div>
 											<label for="videoCoderBitRate">{{
-												$t(
-													"convertMessages.config.audioSection.videoCoderBitRate"
-												)
+												$t("convertMessages.config.audioSection.videoCoderBitRate")
 											}}</label>
 											<input
 												id="videoCoderBitRate"
 												type="number"
 												min="0"
 												oninput="validity.valid||(value='');"
-												v-model.number="
-													convertOptions.config.audioSection.videoCoderBitRate
-												"
+												v-model.number="convertOptions.config.audioSection.videoCoderBitRate"
 											/>
 										</div>
 									</div>
@@ -815,21 +627,12 @@
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
-										<label for="pressSpaceInterval">{{
-											$t("convertMessages.pressSpaceInterval")
-										}}</label>
-										<input
-											id="pressSpaceInterval"
-											v-model.number="convertOptions.pressSpaceInterval"
-											type="number"
-										/>
+										<label for="pressSpaceInterval">{{ $t("convertMessages.pressSpaceInterval") }}</label>
+										<input id="pressSpaceInterval" v-model.number="convertOptions.pressSpaceInterval" type="number" />
 									</div>
 									<div class="settings-box">
 										<b-form-group :label="$t('convertMessages.reuSize')">
-											<b-form-radio-group
-												v-model="convertOptions.reuSize"
-												style="display: flex"
-											>
+											<b-form-radio-group v-model="convertOptions.reuSize" style="display: flex">
 												<b-form-radio value="null">Auto</b-form-radio>
 												<b-form-radio value="64">64kb</b-form-radio>
 												<b-form-radio value="128">128kb</b-form-radio>
@@ -848,25 +651,13 @@
 										<b-form-checkbox id="random" v-model="random">
 											{{ $t("random") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.sidplay2Section.enableDatabase
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.sidplay2Section.enableDatabase"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.sidplay2Section.enableDatabase">
+											{{ $t("convertMessages.config.sidplay2Section.enableDatabase") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="convertOptions.config.sidplay2Section.single"
-										>
+										<b-form-checkbox v-model="convertOptions.config.sidplay2Section.single">
 											{{ $t("convertMessages.config.sidplay2Section.single") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="convertOptions.config.sidplay2Section.loop"
-										>
+										<b-form-checkbox v-model="convertOptions.config.sidplay2Section.loop">
 											{{ $t("convertMessages.config.sidplay2Section.loop") }}
 										</b-form-checkbox>
 									</div>
@@ -874,65 +665,28 @@
 									<h2>{{ $t("audioCfgHeader") }}</h2>
 
 									<div class="settings-box">
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.digiBoosted8580
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.digiBoosted8580"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.digiBoosted8580">
+											{{ $t("convertMessages.config.emulationSection.digiBoosted8580") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.fakeStereo
-											"
-										>
-											{{
-												$t("convertMessages.config.emulationSection.fakeStereo")
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.fakeStereo">
+											{{ $t("convertMessages.config.emulationSection.fakeStereo") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="convertOptions.config.audioSection.delayBypass"
-										>
-											{{
-												$t("convertMessages.config.audioSection.delayBypass")
-											}}
+										<b-form-checkbox v-model="convertOptions.config.audioSection.delayBypass">
+											{{ $t("convertMessages.config.audioSection.delayBypass") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="convertOptions.config.audioSection.reverbBypass"
-										>
-											{{
-												$t("convertMessages.config.audioSection.reverbBypass")
-											}}
+										<b-form-checkbox v-model="convertOptions.config.audioSection.reverbBypass">
+											{{ $t("convertMessages.config.audioSection.reverbBypass") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection
-													.detectPSID64ChipModel
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.detectPSID64ChipModel"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.detectPSID64ChipModel">
+											{{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
 										<div>
-											<label for="mainVolume">{{
-												$t("convertMessages.config.audioSection.mainVolume")
-											}}</label>
-											<span class="value"
-												>{{
-													convertOptions.config.audioSection.mainVolume
-												}}db</span
-											>
+											<label for="mainVolume">{{ $t("convertMessages.config.audioSection.mainVolume") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.mainVolume }}db</span>
 											<b-form-input
 												id="mainVolume"
 												v-model="convertOptions.config.audioSection.mainVolume"
@@ -943,19 +697,11 @@
 											></b-form-input>
 										</div>
 										<div>
-											<label for="secondVolume">{{
-												$t("convertMessages.config.audioSection.secondVolume")
-											}}</label>
-											<span class="value"
-												>{{
-													convertOptions.config.audioSection.secondVolume
-												}}db</span
-											>
+											<label for="secondVolume">{{ $t("convertMessages.config.audioSection.secondVolume") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.secondVolume }}db</span>
 											<b-form-input
 												id="secondVolume"
-												v-model="
-													convertOptions.config.audioSection.secondVolume
-												"
+												v-model="convertOptions.config.audioSection.secondVolume"
 												type="range"
 												min="-6"
 												max="6"
@@ -963,14 +709,8 @@
 											></b-form-input>
 										</div>
 										<div>
-											<label for="thirdVolume">{{
-												$t("convertMessages.config.audioSection.thirdVolume")
-											}}</label>
-											<span class="value"
-												>{{
-													convertOptions.config.audioSection.thirdVolume
-												}}db</span
-											>
+											<label for="thirdVolume">{{ $t("convertMessages.config.audioSection.thirdVolume") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.thirdVolume }}db</span>
 											<b-form-input
 												id="thirdVolume"
 												v-model="convertOptions.config.audioSection.thirdVolume"
@@ -983,12 +723,8 @@
 									</div>
 									<div class="settings-box">
 										<div>
-											<label for="mainBalance">{{
-												$t("convertMessages.config.audioSection.mainBalance")
-											}}</label>
-											<span class="value">{{
-												convertOptions.config.audioSection.mainBalance
-											}}</span>
+											<label for="mainBalance">{{ $t("convertMessages.config.audioSection.mainBalance") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.mainBalance }}</span>
 											<b-form-input
 												id="mainBalance"
 												v-model="convertOptions.config.audioSection.mainBalance"
@@ -999,17 +735,11 @@
 											></b-form-input>
 										</div>
 										<div>
-											<label for="secondBalance">{{
-												$t("convertMessages.config.audioSection.secondBalance")
-											}}</label>
-											<span class="value">{{
-												convertOptions.config.audioSection.secondBalance
-											}}</span>
+											<label for="secondBalance">{{ $t("convertMessages.config.audioSection.secondBalance") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.secondBalance }}</span>
 											<b-form-input
 												id="secondBalance"
-												v-model="
-													convertOptions.config.audioSection.secondBalance
-												"
+												v-model="convertOptions.config.audioSection.secondBalance"
 												type="range"
 												min="0"
 												max="1"
@@ -1017,17 +747,11 @@
 											></b-form-input>
 										</div>
 										<div>
-											<label for="thirdBalance">{{
-												$t("convertMessages.config.audioSection.thirdBalance")
-											}}</label>
-											<span class="value">{{
-												convertOptions.config.audioSection.thirdBalance
-											}}</span>
+											<label for="thirdBalance">{{ $t("convertMessages.config.audioSection.thirdBalance") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.thirdBalance }}</span>
 											<b-form-input
 												id="thirdBalance"
-												v-model="
-													convertOptions.config.audioSection.thirdBalance
-												"
+												v-model="convertOptions.config.audioSection.thirdBalance"
 												type="range"
 												min="0"
 												max="1"
@@ -1037,14 +761,8 @@
 									</div>
 									<div class="settings-box">
 										<div>
-											<label for="mainDelay">{{
-												$t("convertMessages.config.audioSection.mainDelay")
-											}}</label>
-											<span class="value"
-												>{{
-													convertOptions.config.audioSection.mainDelay
-												}}ms</span
-											>
+											<label for="mainDelay">{{ $t("convertMessages.config.audioSection.mainDelay") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.mainDelay }}ms</span>
 											<b-form-input
 												id="mainDelay"
 												v-model="convertOptions.config.audioSection.mainDelay"
@@ -1055,14 +773,8 @@
 											></b-form-input>
 										</div>
 										<div>
-											<label for="secondDelay">{{
-												$t("convertMessages.config.audioSection.secondDelay")
-											}}</label>
-											<span class="value"
-												>{{
-													convertOptions.config.audioSection.secondDelay
-												}}ms</span
-											>
+											<label for="secondDelay">{{ $t("convertMessages.config.audioSection.secondDelay") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.secondDelay }}ms</span>
 											<b-form-input
 												id="secondDelay"
 												v-model="convertOptions.config.audioSection.secondDelay"
@@ -1073,14 +785,8 @@
 											></b-form-input>
 										</div>
 										<div>
-											<label for="thirdDelay">{{
-												$t("convertMessages.config.audioSection.thirdDelay")
-											}}</label>
-											<span class="value"
-												>{{
-													convertOptions.config.audioSection.thirdDelay
-												}}ms</span
-											>
+											<label for="thirdDelay">{{ $t("convertMessages.config.audioSection.thirdDelay") }}</label>
+											<span class="value">{{ convertOptions.config.audioSection.thirdDelay }}ms</span>
 											<b-form-input
 												id="thirdDelay"
 												v-model="convertOptions.config.audioSection.thirdDelay"
@@ -1093,64 +799,47 @@
 									</div>
 									<div class="settings-box">
 										<div>
-											<label for="startTime">{{
-												$t("convertMessages.config.sidplay2Section.startTime")
-											}}</label>
+											<label for="startTime">{{ $t("convertMessages.config.sidplay2Section.startTime") }}</label>
 											<input
 												type="number"
 												min="0"
 												oninput="validity.valid||(value='');"
 												id="startTime"
-												v-model.number="
-													convertOptions.config.sidplay2Section.startTime
-												"
+												v-model.number="convertOptions.config.sidplay2Section.startTime"
 											/>
 										</div>
 										<div>
 											<label for="defaultPlayLength">{{
-												$t(
-													"convertMessages.config.sidplay2Section.defaultPlayLength"
-												)
+												$t("convertMessages.config.sidplay2Section.defaultPlayLength")
 											}}</label>
 											<input
 												type="number"
 												min="0"
 												oninput="validity.valid||(value='');"
 												id="defaultPlayLength"
-												v-model.number="
-													convertOptions.config.sidplay2Section
-														.defaultPlayLength
-												"
+												v-model.number="convertOptions.config.sidplay2Section.defaultPlayLength"
 											/>
 										</div>
 									</div>
 									<div class="settings-box">
 										<div>
-											<label for="fadeInTime">{{
-												$t("convertMessages.config.sidplay2Section.fadeInTime")
-											}}</label>
+											<label for="fadeInTime">{{ $t("convertMessages.config.sidplay2Section.fadeInTime") }}</label>
 											<input
 												type="number"
 												min="0"
 												oninput="validity.valid||(value='');"
 												id="fadeInTime"
-												v-model.number="
-													convertOptions.config.sidplay2Section.fadeInTime
-												"
+												v-model.number="convertOptions.config.sidplay2Section.fadeInTime"
 											/>
 										</div>
 										<div>
-											<label for="fadeOutTime">{{
-												$t("convertMessages.config.sidplay2Section.fadeOutTime")
-											}}</label>
+											<label for="fadeOutTime">{{ $t("convertMessages.config.sidplay2Section.fadeOutTime") }}</label>
 											<input
 												type="number"
 												min="0"
 												oninput="validity.valid||(value='');"
 												id="fadeOutTime"
-												v-model.number="
-													convertOptions.config.sidplay2Section.fadeOutTime
-												"
+												v-model.number="convertOptions.config.sidplay2Section.fadeOutTime"
 											/>
 										</div>
 									</div>
@@ -1160,11 +849,7 @@
 									<div class="settings-box">
 										<label for="stereoMode">{{ $t("stereoMode") }}</label>
 										<b-form-group>
-											<b-form-radio-group
-												id="stereoMode"
-												v-model="stereoMode"
-												style="display: flex"
-											>
+											<b-form-radio-group id="stereoMode" v-model="stereoMode" style="display: flex">
 												<b-form-radio value="AUTO">Auto</b-form-radio>
 												<b-form-radio value="FORCE_2SID">2-SID</b-form-radio>
 												<b-form-radio value="FORCE_3SID">3-SID</b-form-radio>
@@ -1173,16 +858,10 @@
 									</div>
 									<div class="settings-box">
 										<div>
-											<label for="dualSidBase">{{
-												$t(
-													"convertMessages.config.emulationSection.dualSidBase"
-												)
-											}}</label>
+											<label for="dualSidBase">{{ $t("convertMessages.config.emulationSection.dualSidBase") }}</label>
 											<b-form-select
 												id="dualSidBase"
-												v-model="
-													convertOptions.config.emulationSection.dualSidBase
-												"
+												v-model="convertOptions.config.emulationSection.dualSidBase"
 												size="sm"
 												class="mt-3"
 												:select-size="1"
@@ -1195,16 +874,10 @@
 											</b-form-select>
 										</div>
 										<div>
-											<label for="thirdSIDBase">{{
-												$t(
-													"convertMessages.config.emulationSection.thirdSIDBase"
-												)
-											}}</label>
+											<label for="thirdSIDBase">{{ $t("convertMessages.config.emulationSection.thirdSIDBase") }}</label>
 											<b-form-select
 												id="thirdSIDBase"
-												v-model="
-													convertOptions.config.emulationSection.thirdSIDBase
-												"
+												v-model="convertOptions.config.emulationSection.thirdSIDBase"
 												size="sm"
 												class="mt-3"
 												:select-size="1"
@@ -1218,42 +891,42 @@
 										</div>
 									</div>
 									<div class="settings-box">
-										<label for="sidToRead">{{
-											$t("convertMessages.config.emulationSection.sidToRead")
-										}}</label>
+										<label for="sidToRead">{{ $t("convertMessages.config.emulationSection.sidToRead") }}</label>
 										<b-form-group>
 											<b-form-radio-group
 												id="sidToRead"
-												v-model="
-													convertOptions.config.emulationSection.sidToRead
-												"
+												v-model="convertOptions.config.emulationSection.sidToRead"
 												style="display: flex"
 											>
-												<b-form-radio value="FIRST_SID">{{
-													$t("firstSid")
-												}}</b-form-radio>
-												<b-form-radio value="SECOND_SID">{{
-													$t("secondSid")
-												}}</b-form-radio>
-												<b-form-radio value="THIRD_SID">{{
-													$t("thirdSid")
-												}}</b-form-radio>
+												<b-form-radio value="FIRST_SID">{{ $t("firstSid") }}</b-form-radio>
+												<b-form-radio value="SECOND_SID">{{ $t("secondSid") }}</b-form-radio>
+												<b-form-radio value="THIRD_SID">{{ $t("thirdSid") }}</b-form-radio>
+											</b-form-radio-group>
+										</b-form-group>
+									</div>
+									<div class="settings-box">
+										<label for="defaultClockSpeed">{{
+											$t("convertMessages.config.emulationSection.defaultClockSpeed")
+										}}</label>
+										<b-form-group>
+											<b-form-radio-group
+												id="defaultClockSpeed"
+												v-model="convertOptions.config.emulationSection.defaultClockSpeed"
+												style="display: flex"
+											>
+												<b-form-radio value="PAL">PAL</b-form-radio>
+												<b-form-radio value="NTSC">NTSC</b-form-radio>
 											</b-form-radio-group>
 										</b-form-group>
 									</div>
 									<div class="settings-box">
 										<label for="defaultEmulation">{{
-											$t(
-												"convertMessages.config.emulationSection.defaultEmulation"
-											)
+											$t("convertMessages.config.emulationSection.defaultEmulation")
 										}}</label>
 										<b-form-group>
 											<b-form-radio-group
 												id="defaultEmulation"
-												v-model="
-													convertOptions.config.emulationSection
-														.defaultEmulation
-												"
+												v-model="convertOptions.config.emulationSection.defaultEmulation"
 												style="display: flex"
 											>
 												<b-form-radio value="RESIDFP">RESIDFP</b-form-radio>
@@ -1262,9 +935,7 @@
 										</b-form-group>
 									</div>
 									<div class="settings-box">
-										<label for="sampling">{{
-											$t("convertMessages.config.audioSection.sampling")
-										}}</label>
+										<label for="sampling">{{ $t("convertMessages.config.audioSection.sampling") }}</label>
 										<b-form-group>
 											<b-form-radio-group
 												id="sampling"
@@ -1277,15 +948,11 @@
 										</b-form-group>
 									</div>
 									<div class="settings-box">
-										<label for="samplingRate">{{
-											$t("convertMessages.config.audioSection.samplingRate")
-										}}</label>
+										<label for="samplingRate">{{ $t("convertMessages.config.audioSection.samplingRate") }}</label>
 										<b-form-group>
 											<b-form-radio-group
 												id="samplingRate"
-												v-model="
-													convertOptions.config.audioSection.samplingRate
-												"
+												v-model="convertOptions.config.audioSection.samplingRate"
 												style="display: flex"
 											>
 												<b-form-radio value="LOW">LOW</b-form-radio>
@@ -1296,16 +963,12 @@
 									</div>
 									<div class="settings-box">
 										<label for="defaultSidModel">{{
-											$t(
-												"convertMessages.config.emulationSection.defaultSidModel"
-											)
+											$t("convertMessages.config.emulationSection.defaultSidModel")
 										}}</label>
 										<b-form-group>
 											<b-form-radio-group
 												id="defaultSidModel"
-												v-model="
-													convertOptions.config.emulationSection.defaultSidModel
-												"
+												v-model="convertOptions.config.emulationSection.defaultSidModel"
 												style="display: flex"
 											>
 												<b-form-radio value="MOS6581">MOS6581</b-form-radio>
@@ -1314,17 +977,13 @@
 										</b-form-group>
 									</div>
 									<div class="settings-box">
-										<label for="bufferSize">{{
-											$t("convertMessages.config.audioSection.bufferSize")
-										}}</label>
+										<label for="bufferSize">{{ $t("convertMessages.config.audioSection.bufferSize") }}</label>
 										<input
 											type="number"
 											min="0"
 											oninput="validity.valid||(value='');"
 											id="bufferSize"
-											v-model.number="
-												convertOptions.config.audioSection.bufferSize
-											"
+											v-model.number="convertOptions.config.audioSection.bufferSize"
 										/>
 									</div>
 
@@ -1334,16 +993,11 @@
 										<div>
 											<div>
 												<label for="reSIDfpFilter6581">{{
-													$t(
-														"convertMessages.config.emulationSection.reSIDfpFilter6581"
-													)
+													$t("convertMessages.config.emulationSection.reSIDfpFilter6581")
 												}}</label>
 												<b-form-select
 													id="reSIDfpFilter6581"
-													v-model="
-														convertOptions.config.emulationSection
-															.reSIDfpFilter6581
-													"
+													v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
 													:options="reSIDfpFilters6581"
 													size="sm"
 													class="mt-3"
@@ -1352,16 +1006,11 @@
 											</div>
 											<div>
 												<label for="reSIDfpFilter8580">{{
-													$t(
-														"convertMessages.config.emulationSection.reSIDfpFilter8580"
-													)
+													$t("convertMessages.config.emulationSection.reSIDfpFilter8580")
 												}}</label>
 												<b-form-select
 													id="reSIDfpFilter8580"
-													v-model="
-														convertOptions.config.emulationSection
-															.reSIDfpFilter8580
-													"
+													v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
 													:options="reSIDfpFilters8580"
 													size="sm"
 													class="mt-3"
@@ -1372,16 +1021,11 @@
 										<div>
 											<div>
 												<label for="reSIDfpStereoFilter6581">{{
-													$t(
-														"convertMessages.config.emulationSection.reSIDfpStereoFilter6581"
-													)
+													$t("convertMessages.config.emulationSection.reSIDfpStereoFilter6581")
 												}}</label>
 												<b-form-select
 													id="reSIDfpStereoFilter6581"
-													v-model="
-														convertOptions.config.emulationSection
-															.reSIDfpStereoFilter6581
-													"
+													v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter6581"
 													:options="reSIDfpFilters6581"
 													size="sm"
 													class="mt-3"
@@ -1390,16 +1034,11 @@
 											</div>
 											<div>
 												<label for="reSIDfpStereoFilter8580">{{
-													$t(
-														"convertMessages.config.emulationSection.reSIDfpStereoFilter8580"
-													)
+													$t("convertMessages.config.emulationSection.reSIDfpStereoFilter8580")
 												}}</label>
 												<b-form-select
 													id="reSIDfpStereoFilter8580"
-													v-model="
-														convertOptions.config.emulationSection
-															.reSIDfpStereoFilter8580
-													"
+													v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter8580"
 													:options="reSIDfpFilters8580"
 													size="sm"
 													class="mt-3"
@@ -1410,16 +1049,11 @@
 										<div>
 											<div>
 												<label for="reSIDfpThirdSIDFilter6581">{{
-													$t(
-														"convertMessages.config.emulationSection.reSIDfpThirdSIDFilter6581"
-													)
+													$t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter6581")
 												}}</label>
 												<b-form-select
 													id="reSIDfpThirdSIDFilter6581"
-													v-model="
-														convertOptions.config.emulationSection
-															.reSIDfpThirdSIDFilter6581
-													"
+													v-model="convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581"
 													:options="reSIDfpFilters6581"
 													size="sm"
 													class="mt-3"
@@ -1428,16 +1062,11 @@
 											</div>
 											<div>
 												<label for="reSIDfpThirdSIDFilter8580">{{
-													$t(
-														"convertMessages.config.emulationSection.reSIDfpThirdSIDFilter8580"
-													)
+													$t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter8580")
 												}}</label>
 												<b-form-select
 													id="reSIDfpThirdSIDFilte8580"
-													v-model="
-														convertOptions.config.emulationSection
-															.reSIDfpThirdSIDFilter8580
-													"
+													v-model="convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580"
 													:options="reSIDfpFilters8580"
 													size="sm"
 													class="mt-3"
@@ -1450,16 +1079,10 @@
 									<div class="settings-box">
 										<div>
 											<div>
-												<label for="filter6581">{{
-													$t(
-														"convertMessages.config.emulationSection.filter6581"
-													)
-												}}</label>
+												<label for="filter6581">{{ $t("convertMessages.config.emulationSection.filter6581") }}</label>
 												<b-form-select
 													id="filter6581"
-													v-model="
-														convertOptions.config.emulationSection.filter6581
-													"
+													v-model="convertOptions.config.emulationSection.filter6581"
 													:options="reSIDfilters6581"
 													size="sm"
 													class="mt-3"
@@ -1467,16 +1090,10 @@
 												></b-form-select>
 											</div>
 											<div>
-												<label for="filter8580">{{
-													$t(
-														"convertMessages.config.emulationSection.filter8580"
-													)
-												}}</label>
+												<label for="filter8580">{{ $t("convertMessages.config.emulationSection.filter8580") }}</label>
 												<b-form-select
 													id="filter8580"
-													v-model="
-														convertOptions.config.emulationSection.filter8580
-													"
+													v-model="convertOptions.config.emulationSection.filter8580"
 													:options="reSIDfilters8580"
 													size="sm"
 													class="mt-3"
@@ -1487,16 +1104,11 @@
 										<div>
 											<div>
 												<label for="stereoFilter6581">{{
-													$t(
-														"convertMessages.config.emulationSection.stereoFilter6581"
-													)
+													$t("convertMessages.config.emulationSection.stereoFilter6581")
 												}}</label>
 												<b-form-select
 													id="stereoFilter6581"
-													v-model="
-														convertOptions.config.emulationSection
-															.stereoFilter6581
-													"
+													v-model="convertOptions.config.emulationSection.stereoFilter6581"
 													:options="reSIDfilters6581"
 													size="sm"
 													class="mt-3"
@@ -1505,16 +1117,11 @@
 											</div>
 											<div>
 												<label for="stereoFilter8580">{{
-													$t(
-														"convertMessages.config.emulationSection.stereoFilter8580"
-													)
+													$t("convertMessages.config.emulationSection.stereoFilter8580")
 												}}</label>
 												<b-form-select
 													id="stereoFilter8580"
-													v-model="
-														convertOptions.config.emulationSection
-															.stereoFilter8580
-													"
+													v-model="convertOptions.config.emulationSection.stereoFilter8580"
 													:options="reSIDfilters8580"
 													size="sm"
 													class="mt-3"
@@ -1525,16 +1132,11 @@
 										<div>
 											<div>
 												<label for="thirdSIDFilter6581">{{
-													$t(
-														"convertMessages.config.emulationSection.thirdSIDFilter6581"
-													)
+													$t("convertMessages.config.emulationSection.thirdSIDFilter6581")
 												}}</label>
 												<b-form-select
 													id="thirdSIDFilter6581"
-													v-model="
-														convertOptions.config.emulationSection
-															.thirdSIDFilter6581
-													"
+													v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
 													:options="reSIDfilters6581"
 													size="sm"
 													class="mt-3"
@@ -1543,16 +1145,11 @@
 											</div>
 											<div>
 												<label for="thirdSIDFilter8580">{{
-													$t(
-														"convertMessages.config.emulationSection.thirdSIDFilter8580"
-													)
+													$t("convertMessages.config.emulationSection.thirdSIDFilter8580")
 												}}</label>
 												<b-form-select
 													id="thirdSIDFilter8580"
-													v-model="
-														convertOptions.config.emulationSection
-															.thirdSIDFilter8580
-													"
+													v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
 													:options="reSIDfilters8580"
 													size="sm"
 													class="mt-3"
@@ -1565,137 +1162,45 @@
 									<h2>{{ $t("mutingCfgHeader") }}</h2>
 
 									<div class="settings-box">
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteVoice1
-											"
-										>
-											{{
-												$t("convertMessages.config.emulationSection.muteVoice1")
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteVoice1">
+											{{ $t("convertMessages.config.emulationSection.muteVoice1") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteVoice2
-											"
-										>
-											{{
-												$t("convertMessages.config.emulationSection.muteVoice2")
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteVoice2">
+											{{ $t("convertMessages.config.emulationSection.muteVoice2") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteVoice3
-											"
-										>
-											{{
-												$t("convertMessages.config.emulationSection.muteVoice3")
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteVoice3">
+											{{ $t("convertMessages.config.emulationSection.muteVoice3") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteVoice4
-											"
-										>
-											{{
-												$t("convertMessages.config.emulationSection.muteVoice4")
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteVoice4">
+											{{ $t("convertMessages.config.emulationSection.muteVoice4") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteStereoVoice1
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteStereoVoice1"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteStereoVoice1">
+											{{ $t("convertMessages.config.emulationSection.muteStereoVoice1") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteStereoVoice2
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteStereoVoice2"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteStereoVoice2">
+											{{ $t("convertMessages.config.emulationSection.muteStereoVoice2") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteStereoVoice3
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteStereoVoice3"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteStereoVoice3">
+											{{ $t("convertMessages.config.emulationSection.muteStereoVoice3") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection.muteStereoVoice4
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteStereoVoice4"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteStereoVoice4">
+											{{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection
-													.muteThirdSIDVoice1
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteThirdSIDVoice1"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteThirdSIDVoice1">
+											{{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice1") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection
-													.muteThirdSIDVoice2
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteThirdSIDVoice2"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteThirdSIDVoice2">
+											{{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice2") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection
-													.muteThirdSIDVoice3
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteThirdSIDVoice3"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteThirdSIDVoice3">
+											{{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice3") }}
 										</b-form-checkbox>
-										<b-form-checkbox
-											v-model="
-												convertOptions.config.emulationSection
-													.muteThirdSIDVoice4
-											"
-										>
-											{{
-												$t(
-													"convertMessages.config.emulationSection.muteThirdSIDVoice4"
-												)
-											}}
+										<b-form-checkbox v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4">
+											{{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }}
 										</b-form-checkbox>
 									</div>
 								</b-card-text>
@@ -1710,8 +1215,8 @@
 			function uriEncode(entry) {
 				// escape is deprecated and cannot handle utf8
 				// encodeURI() will not encode: ~!@#$&*()=:/,;?+'
-				// untested characters: !*=/,;?
-				// tested characters: ~@#$&():+''
+				// untested characters: !*=,;?
+				// tested characters: /~@#$&():+''
 				return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23");
 			}
 			// Month in JavaScript is 0-indexed (January is 0, February is 1, etc),
@@ -1777,8 +1282,7 @@
 					startImport: "Import",
 					fetchFavorites: "Download Playlist",
 					removePlaylist: "Remove Playlist",
-					removePlaylistReally:
-						"Do you really want to remove ALL playlist entries?",
+					removePlaylistReally: "Do you really want to remove ALL playlist entries?",
 					random: "Random Playback",
 					mobileProfile: "Mobile profile",
 					wifiProfile: "WiFi profile",
@@ -1848,15 +1352,13 @@
 					downloadSID: "Download SID",
 					addToPlaylist: "Zu Favoriten hinzuf\u00fcgen",
 					remove: "Letzten Tune l\u00f6schen",
-					removeReally:
-						"Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
+					removeReally: "Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
 					next: "N\u00e4chster Tune",
 					reset: "Zur\u00fccksetzen",
 					startImport: "Importieren",
 					fetchFavorites: "Favoriten herunterladen",
 					removePlaylist: "Favoriten l\u00f6schen",
-					removePlaylistReally:
-						"Wollen sie wirklich ALL Favoriten l\u00f6schen?",
+					removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
 					random: "Zuf\u00e4llige Wiedergabe",
 					mobileProfile: "Mobiles Profil",
 					wifiProfile: "WiFi Profil",
@@ -1938,7 +1440,7 @@
 					contentEntryFields: [
 						{
 							key: "id",
-							label: "Program",
+							label: "File",
 						},
 					],
 					name: "",
@@ -1954,15 +1456,12 @@
 					random: true,
 					// CFG (configuration)
 					stereoMode: "AUTO",
-
 					// pre-fetched filter definitions
 					reSIDfilters6581: [],
 					reSIDfilters8580: [],
 					reSIDfpFilters6581: [],
 					reSIDfpFilters8580: [],
-					cbrs: [
-						-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320,
-					],
+					cbrs: [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
 					vbrQualities: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 					// Misc.
 					tabIndex: 0,
@@ -1974,30 +1473,20 @@
 
 					convertOptions: $convertOptions,
 				},
-				// Computed
 				computed: {
 					playlistEntryUrl: function () {
-						if (
-							this.playlist.length === 0 ||
-							this.playlistIndex >= this.playlist.length
-						) {
+						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return undefined;
 						} else {
 							return this.createConvertUrl(this.playlist[this.playlistIndex]);
 						}
 					},
 					reuParameters: function () {
-						if (this.convertOptions.reuSize !== null) {
-							return "&reuSize=" + this.convertOptions.reuSize;
-						}
-						return "";
+						return this.convertOptions.reuSize !== null ? "&reuSize=" + this.convertOptions.reuSize : "";
 					},
 					stereoParameters: function () {
 						if (this.stereoMode === "FORCE_2SID") {
-							return (
-								"&dualSID=true&dualSIDBase=" +
-								this.convertOptions.config.emulationSection.dualSidBase
-							);
+							return "&dualSID=true&dualSIDBase=" + this.convertOptions.config.emulationSection.dualSidBase;
 						} else if (this.stereoMode === "FORCE_3SID") {
 							return (
 								"&dualSID=true&dualSIDBase=" +
@@ -2032,7 +1521,6 @@
 						});
 					},
 				},
-				// Methods
 				methods: {
 					updateLanguage() {
 						localStorage.locale = this.$i18n.locale;
@@ -2061,12 +1549,7 @@
 					},
 					isMusic: function (entry) {
 						entry = entry.toLowerCase();
-						return (
-							entry.endsWith(".sid") ||
-							entry.endsWith(".dat") ||
-							entry.endsWith(".mus") ||
-							entry.endsWith(".str")
-						);
+						return entry.endsWith(".sid") || entry.endsWith(".dat") || entry.endsWith(".mus") || entry.endsWith(".str");
 					},
 					isVideo: function (entry) {
 						entry = entry.toLowerCase();
@@ -2093,41 +1576,50 @@
 							entry.toLowerCase().endsWith(".nib")
 						);
 					},
-					importPlaylist: function () {
-						const reader = new FileReader();
-						reader.onload = (res) => {
-							var content = res.target.result;
-							var lines = content.split("\n");
-
+					remove: function (index) {
+						if (confirm(this.$i18n.t("removeReally"))) {
+							this.playlist.splice(index, 1);
+						}
+					},
+					removePlaylist: function () {
+						if (confirm(this.$i18n.t("removePlaylistReally"))) {
 							this.playlist = [];
-							for (var i = 0; i < lines.length; i++) {
-								if (lines[i].length > 0) {
-									if (
-										!(
-											lines[i].startsWith("/C64Music/") ||
-											lines[i].startsWith("/CGSC/") ||
-											lines[i].startsWith("/Assembly64/") ||
-											lines[i].startsWith("/REU/")
-										)
-									) {
-										lines[i] = "/C64Music" + lines[i];
+						}
+					},
+					importPlaylist: function () {
+						if (confirm(this.$i18n.t("removePlaylistReally"))) {
+							const reader = new FileReader();
+							reader.onload = (res) => {
+								var content = res.target.result;
+								var lines = content.split("\n");
+
+								this.playlist = [];
+								for (var i = 0; i < lines.length; i++) {
+									if (lines[i].length > 0) {
+										if (
+											!(
+												lines[i].startsWith("/C64Music/") ||
+												lines[i].startsWith("/CGSC/") ||
+												lines[i].startsWith("/Assembly64/") ||
+												lines[i].startsWith("/REU/")
+											)
+										) {
+											lines[i] = "/C64Music" + lines[i];
+										}
+										this.playlist.push(lines[i]);
 									}
-									this.playlist.push(lines[i]);
 								}
-							}
-							this.playlistIndex = 0;
-							this.importFile = null;
-							if (
-								this.playlist.length === 0 ||
-								this.playlistIndex >= this.playlist.length
-							) {
-								return;
-							}
-							this.updateSid(this.playlist[this.playlistIndex]);
-							this.showAudio = true;
-						};
-						reader.onerror = (err) => console.log(err);
-						reader.readAsText(this.importFile);
+								this.playlistIndex = 0;
+								this.importFile = null;
+								if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+									return;
+								}
+								this.updateSid(this.playlist[this.playlistIndex]);
+								this.showAudio = true;
+							};
+							reader.onerror = (err) => console.log(err);
+							reader.readAsText(this.importFile);
+						}
 					},
 					setNextPlaylistEntry: function () {
 						if (this.playlist.length === 0) {
@@ -2135,10 +1627,7 @@
 						}
 						if (this.random) {
 							this.playlistIndex = Math.max(
-								Math.min(
-									Math.ceil(Math.random() * this.playlist.length),
-									this.playlist.length - 1
-								),
+								Math.min(Math.ceil(Math.random() * this.playlist.length), this.playlist.length - 1),
 								0
 							);
 						} else {
@@ -2148,10 +1637,7 @@
 								this.playlistIndex++;
 							}
 						}
-						if (
-							this.playlist.length === 0 ||
-							this.playlistIndex >= this.playlist.length
-						) {
+						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return;
 						}
 						this.updateSid(this.playlist[this.playlistIndex]);
@@ -2159,39 +1645,29 @@
 					mobileProfile: function () {
 						this.convertOptions.config.audioSection.vbr = false;
 						this.convertOptions.config.audioSection.cbr = 64;
-						this.convertOptions.config.audioSection.videoCoderBitRate = 480000;
+						this.convertOptions.config.audioSection.audioCoderBitRate = 64000;
+						this.convertOptions.config.audioSection.videoCoderBitRate = 600000;
 					},
 					wifiProfile: function () {
 						this.convertOptions.config.audioSection.vbr = true;
 						this.convertOptions.config.audioSection.vbrQuality = 0;
-						this.convertOptions.config.audioSection.videoCoderBitRate = 600000;
+						this.convertOptions.config.audioSection.audioCoderBitRate = 320000;
+						this.convertOptions.config.audioSection.videoCoderBitRate = 1000000;
 					},
 					updateFilters: function () {
-						this.convertOptions.config.emulationSection.reSIDfpFilter6581 =
-							this.reSIDfpFilters6581[1];
-						this.convertOptions.config.emulationSection.reSIDfpFilter8580 =
-							this.reSIDfpFilters8580[1];
-						this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 =
-							this.reSIDfpFilters6581[1];
-						this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 =
-							this.reSIDfpFilters8580[1];
-						this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 =
-							this.reSIDfpFilters6581[1];
-						this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 =
-							this.reSIDfpFilters8580[1];
+						this.convertOptions.config.emulationSection.reSIDfpFilter6581 = this.reSIDfpFilters6581[1];
+						this.convertOptions.config.emulationSection.reSIDfpFilter8580 = this.reSIDfpFilters8580[1];
+						this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 = this.reSIDfpFilters6581[1];
+						this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 = this.reSIDfpFilters8580[1];
+						this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 = this.reSIDfpFilters6581[1];
+						this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 = this.reSIDfpFilters8580[1];
 
-						this.convertOptions.config.emulationSection.filter6581 =
-							this.reSIDfilters6581[3];
-						this.convertOptions.config.emulationSection.filter8580 =
-							this.reSIDfilters8580[1];
-						this.convertOptions.config.emulationSection.stereoFilter6581 =
-							this.reSIDfilters6581[3];
-						this.convertOptions.config.emulationSection.stereoFilter8580 =
-							this.reSIDfilters8580[1];
-						this.convertOptions.config.emulationSection.thirdSIDFilter6581 =
-							this.reSIDfilters6581[3];
-						this.convertOptions.config.emulationSection.thirdSIDFilter8580 =
-							this.reSIDfilters8580[1];
+						this.convertOptions.config.emulationSection.filter6581 = this.reSIDfilters6581[3];
+						this.convertOptions.config.emulationSection.filter8580 = this.reSIDfilters8580[1];
+						this.convertOptions.config.emulationSection.stereoFilter6581 = this.reSIDfilters6581[3];
+						this.convertOptions.config.emulationSection.stereoFilter8580 = this.reSIDfilters8580[1];
+						this.convertOptions.config.emulationSection.thirdSIDFilter6581 = this.reSIDfilters6581[3];
+						this.convertOptions.config.emulationSection.thirdSIDFilter8580 = this.reSIDfilters8580[1];
 					},
 					updateSid: function (entry, itemId, categoryId) {
 						if (entry) {
@@ -2200,12 +1676,9 @@
 						}
 					},
 					createConvertUrl: function (entry, itemId, categoryId) {
-						var url;
-						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
-							url = uriEncode(entry);
-						} else {
-							url = uriEncode("/" + entry);
-						}
+						var url = uriEncode(
+							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+						);
 						return (
 							window.location.protocol +
 							"//" +
@@ -2214,10 +1687,68 @@
 							url +
 							"?enableSidDatabase=" +
 							this.convertOptions.config.sidplay2Section.enableDatabase +
-							"&single=" +
-							this.convertOptions.config.sidplay2Section.single +
+							"&startTime=" +
+							this.convertOptions.config.sidplay2Section.startTime +
+							"&defaultLength=" +
+							this.convertOptions.config.sidplay2Section.defaultPlayLength +
+							"&fadeIn=" +
+							this.convertOptions.config.sidplay2Section.fadeInTime +
+							"&fadeOut=" +
+							this.convertOptions.config.sidplay2Section.fadeOutTime +
 							"&loop=" +
 							this.convertOptions.config.sidplay2Section.loop +
+							"&single=" +
+							this.convertOptions.config.sidplay2Section.single +
+							"&frequency=" +
+							this.convertOptions.config.audioSection.samplingRate +
+							"&sampling=" +
+							this.convertOptions.config.audioSection.sampling +
+							"&mainVolume=" +
+							this.convertOptions.config.audioSection.mainVolume +
+							"&secondVolume=" +
+							this.convertOptions.config.audioSection.secondVolume +
+							"&thirdVolume=" +
+							this.convertOptions.config.audioSection.thirdVolume +
+							"&mainBalance=" +
+							this.convertOptions.config.audioSection.mainBalance +
+							"&secondBalance=" +
+							this.convertOptions.config.audioSection.secondBalance +
+							"&thirdBalance=" +
+							this.convertOptions.config.audioSection.thirdBalance +
+							"&mainDelay=" +
+							this.convertOptions.config.audioSection.mainDelay +
+							"&secondDelay=" +
+							this.convertOptions.config.audioSection.secondDelay +
+							"&thirdDelay=" +
+							this.convertOptions.config.audioSection.thirdDelay +
+							"&bufferSize=" +
+							this.convertOptions.config.audioSection.bufferSize +
+							"&cbr=" +
+							this.convertOptions.config.audioSection.cbr +
+							"&vbrQuality=" +
+							this.convertOptions.config.audioSection.vbrQuality +
+							"&vbr=" +
+							this.convertOptions.config.audioSection.vbr +
+							"&acBitRate=" +
+							this.convertOptions.config.audioSection.audioCoderBitRate +
+							"&vcBitRate=" +
+							this.convertOptions.config.audioSection.videoCoderBitRate +
+							"&delayBypass=" +
+							this.convertOptions.config.audioSection.delayBypass +
+							"&reverbBypass=" +
+							this.convertOptions.config.audioSection.reverbBypass +
+							"&defaultEmulation=" +
+							this.convertOptions.config.emulationSection.defaultEmulation +
+							"&defaultClock=" +
+							this.convertOptions.config.emulationSection.defaultClockSpeed +
+							"&defaultModel=" +
+							this.convertOptions.config.emulationSection.defaultSidModel +
+							"&sidToRead=" +
+							this.convertOptions.config.emulationSection.sidToRead +
+							"&digiBoosted8580=" +
+							this.convertOptions.config.emulationSection.digiBoosted8580 +
+							"&fakeStereo=" +
+							this.convertOptions.config.emulationSection.fakeStereo +
 							"&muteVoice1=" +
 							this.convertOptions.config.emulationSection.muteVoice1 +
 							"&muteVoice2=" +
@@ -2242,42 +1773,6 @@
 							this.convertOptions.config.emulationSection.muteThirdSIDVoice3 +
 							"&muteThirdSidVoice4=" +
 							this.convertOptions.config.emulationSection.muteThirdSIDVoice4 +
-							"&bufferSize=" +
-							this.convertOptions.config.audioSection.bufferSize +
-							"&sampling=" +
-							this.convertOptions.config.audioSection.sampling +
-							"&frequency=" +
-							this.convertOptions.config.audioSection.samplingRate +
-							"&defaultEmulation=" +
-							this.convertOptions.config.emulationSection.defaultEmulation +
-							"&defaultModel=" +
-							this.convertOptions.config.emulationSection.defaultSidModel +
-							"&startTime=" +
-							this.convertOptions.config.sidplay2Section.startTime +
-							"&defaultLength=" +
-							this.convertOptions.config.sidplay2Section.defaultPlayLength +
-							"&fadeIn=" +
-							this.convertOptions.config.sidplay2Section.fadeInTime +
-							"&fadeOut=" +
-							this.convertOptions.config.sidplay2Section.fadeOutTime +
-							"&mainVolume=" +
-							this.convertOptions.config.audioSection.mainVolume +
-							"&secondVolume=" +
-							this.convertOptions.config.audioSection.secondVolume +
-							"&thirdVolume=" +
-							this.convertOptions.config.audioSection.thirdVolume +
-							"&mainBalance=" +
-							this.convertOptions.config.audioSection.mainBalance +
-							"&secondBalance=" +
-							this.convertOptions.config.audioSection.secondBalance +
-							"&thirdBalance=" +
-							this.convertOptions.config.audioSection.thirdBalance +
-							"&mainDelay=" +
-							this.convertOptions.config.audioSection.mainDelay +
-							"&secondDelay=" +
-							this.convertOptions.config.audioSection.secondDelay +
-							"&thirdDelay=" +
-							this.convertOptions.config.audioSection.thirdDelay +
 							"&filter6581=" +
 							this.convertOptions.config.emulationSection.filter6581 +
 							"&stereoFilter6581=" +
@@ -2293,46 +1788,23 @@
 							"&reSIDfpFilter6581=" +
 							this.convertOptions.config.emulationSection.reSIDfpFilter6581 +
 							"&reSIDfpStereoFilter6581=" +
-							this.convertOptions.config.emulationSection
-								.reSIDfpStereoFilter6581 +
+							this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 +
 							"&reSIDfpThirdFilter6581=" +
-							this.convertOptions.config.emulationSection
-								.reSIDfpThirdSIDFilter6581 +
+							this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 +
 							"&reSIDfpFilter8580=" +
 							this.convertOptions.config.emulationSection.reSIDfpFilter8580 +
 							"&reSIDfpStereoFilter8580=" +
-							this.convertOptions.config.emulationSection
-								.reSIDfpStereoFilter8580 +
+							this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 +
 							"&reSIDfpThirdFilter8580=" +
-							this.convertOptions.config.emulationSection
-								.reSIDfpThirdSIDFilter8580 +
-							"&digiBoosted8580=" +
-							this.convertOptions.config.emulationSection.digiBoosted8580 +
-							"&fakeStereo=" +
-							this.convertOptions.config.emulationSection.fakeStereo +
-							"&delayBypass=" +
-							this.convertOptions.config.audioSection.delayBypass +
-							"&reverbBypass=" +
-							this.convertOptions.config.audioSection.reverbBypass +
+							this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
 							"&detectPSID64ChipModel=" +
-							this.convertOptions.config.emulationSection
-								.detectPSID64ChipModel +
+							this.convertOptions.config.emulationSection.detectPSID64ChipModel +
 							"&rtmp=" +
 							this.convertOptions.rtmp +
-							"&cbr=" +
-							this.convertOptions.config.audioSection.cbr +
-							"&vbrQuality=" +
-							this.convertOptions.config.audioSection.vbrQuality +
-							"&vbr=" +
-							this.convertOptions.config.audioSection.vbr +
-							"&vcBitRate=" +
-							this.convertOptions.config.audioSection.videoCoderBitRate +
 							"&pressSpaceInterval=" +
 							this.convertOptions.pressSpaceInterval +
 							"&status=" +
 							this.convertOptions.status +
-							"&sidToRead=" +
-							this.convertOptions.config.emulationSection.sidToRead +
 							this.reuParameters +
 							this.stereoParameters +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"
@@ -2347,22 +1819,15 @@
 						window.open(
 							window.location.protocol +
 								"//" +
-								this.username +
-								":" +
-								this.password +
-								"@" +
 								window.location.host +
 								"/jsidplay2service/JSIDPlay2REST/download" +
 								uriEncode(entry)
 						);
 					},
 					openDownloadUrl: function (entry, itemId, categoryId) {
-						var url;
-						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
-							url = uriEncode(entry);
-						} else {
-							url = uriEncode("/" + entry);
-						}
+						var url = uriEncode(
+							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+						);
 						window.open(
 							window.location.protocol +
 								"//" +
@@ -2372,7 +1837,7 @@
 								"?" +
 								(typeof itemId === "undefined" && typeof categoryId === "undefined"
 									? ""
-									: "itemId=" + itemId + "&categoryId=" + categoryId) +
+									: "&itemId=" + itemId + "&categoryId=" + categoryId) +
 								"&download=true"
 						);
 					},
@@ -2396,14 +1861,12 @@
 					},
 					fetchInfo: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
-						var url;
-						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
-							url = uriEncode(entry) + "?list=true";
-						} else {
-							url = uriEncode("/" + entry) + "?list=true";
-							url += "&itemId=" + itemId;
-							url += "&categoryId=" + categoryId;
-						}
+						var url =
+							uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
+							"?list=true" +
+							(typeof itemId === "undefined" && typeof categoryId === "undefined"
+								? ""
+								: "&itemId=" + itemId + "&categoryId=" + categoryId);
 						axios({
 							method: "get",
 							url: "/jsidplay2service/JSIDPlay2REST/info" + url,
@@ -2420,14 +1883,11 @@
 					},
 					fetchPhoto: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
-						var url;
-						if (typeof itemId === "undefined" && typeof categoryId === "undefined") {
-							url = uriEncode(entry);
-						} else {
-							url = uriEncode("/" + entry);
-							url += "?itemId=" + itemId;
-							url += "&categoryId=" + categoryId;
-						}
+						var url =
+							uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
+							(typeof itemId === "undefined" && typeof categoryId === "undefined"
+								? ""
+								: "?itemId=" + itemId + "&categoryId=" + categoryId);
 						axios({
 							method: "get",
 							url: "/jsidplay2service/JSIDPlay2REST/photo" + url,
@@ -2442,46 +1902,35 @@
 								reader.readAsDataURL(response.data);
 								reader.onload = function () {
 									this.picture = reader.result;
-									document
-										.getElementById("img")
-										.setAttribute("src", this.picture);
+									document.getElementById("img").setAttribute("src", this.picture);
 								};
 							})
 							.finally(() => (this.loadingSid = false));
 					},
 					fetchFavorites: function () {
-						this.loadingPl = true; //the loading begin
-						axios({
-							method: "get",
-							url: "/jsidplay2service/JSIDPlay2REST/favorites",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						})
-							.then((response) => {
-								this.playlist = response.data;
-								this.playlistIndex = 0;
-								if (
-									this.playlist.length === 0 ||
-									this.playlistIndex >= this.playlist.length
-								) {
-									return;
-								}
-								this.updateSid(this.playlist[this.playlistIndex]);
-								this.showAudio = true;
+						if (confirm(this.$i18n.t("removePlaylistReally"))) {
+							this.loadingPl = true; //the loading begin
+							axios({
+								method: "get",
+								url: "/jsidplay2service/JSIDPlay2REST/favorites",
 							})
-							.finally(() => (this.loadingPl = false));
+								.then((response) => {
+									this.playlist = response.data;
+									this.playlistIndex = 0;
+									if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+										return;
+									}
+									this.updateSid(this.playlist[this.playlistIndex]);
+									this.showAudio = true;
+								})
+								.finally(() => (this.loadingPl = false));
+						}
 					},
 					fetchFilters: function () {
 						this.loadingCfg = true; //the loading begin
 						axios({
 							method: "get",
 							url: "/jsidplay2service/JSIDPlay2REST/filters",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
 						})
 							.then((response) => {
 								const filters = response.data;
@@ -2504,7 +1953,7 @@
 					},
 					assembly64SearchUrl: function () {
 						var parameterList = [];
-						if (this.name) {
+						if (this.name !== "") {
 							parameterList.push("name=" + this.name);
 						}
 						if (this.category !== "") {
@@ -2522,9 +1971,7 @@
 							var year = splitted[0];
 							var month = splitted[1];
 							parameterList.push("dateFrom=" + year + month + "01");
-							parameterList.push(
-								"dateTo=" + year + month + daysInMonth(month, year)
-							);
+							parameterList.push("dateTo=" + year + month + daysInMonth(month, year));
 						}
 						if (this.released.length === 10) {
 							var splitted = this.released.split("-");
@@ -2543,9 +1990,7 @@
 						if (this.handle !== "") {
 							parameterList.push("handle=" + this.handle);
 						}
-						return parameterList.length > 0
-							? "?" + parameterList.join("&")
-							: "";
+						return parameterList.length > 0 ? "?" + parameterList.join("&") : "";
 					},
 					fetchCategories: function () {
 						this.loadingAssembly64 = true; //the loading begin
@@ -2612,11 +2057,7 @@
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
-							url:
-								"$assembly64Url/leet/search/v2/contententries/" +
-								btoa(row.item.id) +
-								"/" +
-								row.item.categoryId,
+							url: "$assembly64Url/leet/search/v2/contententries/" + btoa(row.item.id) + "/" + row.item.categoryId,
 						})
 							.then((response) => {
 								if (response.status === 200) {
@@ -2655,8 +2096,7 @@
 						this.convertOptions.config.audioSection.thirdBalance = 0.5;
 						this.convertOptions.config.audioSection.secondDelay = 20;
 						this.convertOptions.config.audioSection.sampling = "RESAMPLE";
-						this.convertOptions.config.emulationSection.defaultSidModel =
-							"MOS8580";
+						this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
 						this.mobileProfile();
 					}
 					if (localStorage.random) {
