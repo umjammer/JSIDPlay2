@@ -103,11 +103,27 @@
 									<div class="settings-box">
 										<div>
 											<label for="username">{{ $t("username") }}</label>
-											<input type="text" id="username" v-model="username" />
+											<input
+												type="text"
+												id="username"
+												v-model="username"
+												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
+											/>
 										</div>
 										<div>
 											<label for="password">{{ $t("password") }}</label>
-											<input type="password" id="password" v-model="password" />
+											<input
+												type="password"
+												id="password"
+												v-model="password"
+												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
+											/>
 										</div>
 									</div>
 								</b-card-text>
@@ -187,7 +203,7 @@
 														<template v-if="canFastload(entry)">
 															<i class="fas fa-video"></i>
 															<span>{{ shortEntry(entry) }}</span>
-	
+
 															<a
 																v-bind:href="createConvertUrl(entry)"
 																target="c64"
@@ -228,9 +244,8 @@
 														<i class="fas fa-download"></i>
 														<b-link
 															style="white-space: pre-line"
-															
-															v-on:click="openDownloadUrl(entry)">
-	
+															v-on:click="openDownloadUrl(entry)"
+														>
 															<span>{{ shortEntry(entry) }}</span>
 														</b-link>
 													</b-list-group-item>
@@ -289,7 +304,13 @@
 												@click="requestContentEntries(row)"
 												class="mr-1"
 											>
-												<i :class="row.detailsShowing? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
+												<i
+													:class="
+														row.detailsShowing
+															? 'fas fa-caret-up'
+															: 'fas fa-caret-down'
+													"
+												></i>
 											</b-button>
 										</template>
 										<template #row-details="row">
@@ -314,21 +335,25 @@
 													</template>
 
 													<template #cell(id)="innerRow">
-
-
-
 														<template v-if="isMusic(innerRow.item.id)">
 															<div>
 																<i class="fas fa-music"></i>
 																<b-link
 																	style="white-space: pre-line"
-																	
 																	v-on:click="
-																		updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
+																		updateSid(
+																			innerRow.item.id,
+																			row.item.id,
+																			row.item.categoryId
+																		);
 																		tabIndex = 3;
 																		showAudio = true;
 																		Vue.nextTick(function () {
-																			$refs.audioElm.src = createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId);
+																			$refs.audioElm.src = createConvertUrl(
+																				innerRow.item.id,
+																				row.item.id,
+																				row.item.categoryId
+																			);
 																			$refs.audioElm.play();
 																		});
 																	"
@@ -343,10 +368,18 @@
 															<span>
 																<template v-if="canFastload(innerRow.item.id)">
 																	<i class="fas fa-video"></i>
-																	<span>{{ shortEntry(innerRow.item.id) }}</span>
-			
+																	<span>{{
+																		shortEntry(innerRow.item.id)
+																	}}</span>
+
 																	<a
-																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		v-bind:href="
+																			createConvertUrl(
+																				innerRow.item.id,
+																				row.item.id,
+																				row.item.categoryId
+																			)
+																		"
 																		target="c64"
 																		style="margin-left: 16px"
 																	>
@@ -355,7 +388,11 @@
 																	<span> {{ $t("or") }} </span>
 																	<a
 																		v-bind:href="
-																			createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId) + '&jiffydos=true'
+																			createConvertUrl(
+																				innerRow.item.id,
+																				row.item.id,
+																				row.item.categoryId
+																			) + '&jiffydos=true'
 																		"
 																		target="c64"
 																		style="margin-left: 16px"
@@ -367,11 +404,19 @@
 																</template>
 																<template v-else>
 																	<a
-																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		v-bind:href="
+																			createConvertUrl(
+																				innerRow.item.id,
+																				row.item.id,
+																				row.item.categoryId
+																			)
+																		"
 																		target="c64"
 																	>
 																		<i class="fas fa-video"></i
-																		><span>{{ shortEntry(innerRow.item.id) }}</span>
+																		><span>{{
+																			shortEntry(innerRow.item.id)
+																		}}</span>
 																	</a>
 																</template>
 															</span>
@@ -381,14 +426,20 @@
 																<i class="fas fa-download"></i>
 																<b-link
 																	style="white-space: pre-line"
-																	
-																	v-on:click="openDownloadUrl(innerRow.item.id, row.item.id, row.item.categoryId)">
-
-																	<span>{{ shortEntry(innerRow.item.id) }}</span>
+																	v-on:click="
+																		openDownloadUrl(
+																			innerRow.item.id,
+																			row.item.id,
+																			row.item.categoryId
+																		)
+																	"
+																>
+																	<span>{{
+																		shortEntry(innerRow.item.id)
+																	}}</span>
 																</b-link>
 															</div>
 														</template>
-
 													</template>
 												</b-table>
 											</b-card>
@@ -424,6 +475,9 @@
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
 											/>
 										</template>
 										<template #head(group)="data">
@@ -435,6 +489,9 @@
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
 											/>
 										</template>
 										<template #head(event)="data">
@@ -446,6 +503,9 @@
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
 											/>
 										</template>
 										<template #head(released)="data">
@@ -457,6 +517,9 @@
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
 											/>
 										</template>
 										<template #head(year)="data">
@@ -468,6 +531,9 @@
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
 											/>
 										</template>
 										<template #head(handle)="data">
@@ -479,6 +545,9 @@
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
 											/>
 										</template>
 										<template #head(rating)="data">
@@ -490,6 +559,9 @@
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
 											/>
 										</template>
 									</b-table>
@@ -578,7 +650,9 @@
 											<b-button
 												v-if="importFile != null"
 												@click="
-														if (confirm($i18n.t('removePlaylistReally'))) importPlaylist;"
+													if (confirm($i18n.t('removePlaylistReally')))
+														importPlaylist;
+												"
 												class="mr-2"
 											>
 												<i class="fas fa-file-import"></i
@@ -1903,7 +1977,10 @@
 				// Computed
 				computed: {
 					playlistEntryUrl: function () {
-						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+						if (
+							this.playlist.length === 0 ||
+							this.playlistIndex >= this.playlist.length
+						) {
 							return undefined;
 						} else {
 							return this.createConvertUrl(this.playlist[this.playlistIndex]);
@@ -2040,7 +2117,10 @@
 							}
 							this.playlistIndex = 0;
 							this.importFile = null;
-							if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+							if (
+								this.playlist.length === 0 ||
+								this.playlistIndex >= this.playlist.length
+							) {
 								return;
 							}
 							this.updateSid(this.playlist[this.playlistIndex]);
@@ -2068,7 +2148,10 @@
 								this.playlistIndex++;
 							}
 						}
-						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+						if (
+							this.playlist.length === 0 ||
+							this.playlistIndex >= this.playlist.length
+						) {
 							return;
 						}
 						this.updateSid(this.playlist[this.playlistIndex]);
@@ -2111,17 +2194,17 @@
 							this.reSIDfilters8580[1];
 					},
 					updateSid: function (entry, itemId, categoryId) {
-					    if (entry) {
+						if (entry) {
 							this.fetchInfo(entry, itemId, categoryId);
 							this.fetchPhoto(entry, itemId, categoryId);
-					    }
+						}
 					},
 					createConvertUrl: function (entry, itemId, categoryId) {
 						var url;
 						if (itemId && categoryId) {
-						    url = uriEncode('/' + entry);
+							url = uriEncode("/" + entry);
 						} else {
-						    url = uriEncode(entry);
+							url = uriEncode(entry);
 						}
 						return (
 							window.location.protocol +
@@ -2252,7 +2335,9 @@
 							this.convertOptions.config.emulationSection.sidToRead +
 							this.reuParameters +
 							this.stereoParameters +
-							(itemId && categoryId ? "&itemId=" + itemId + "&categoryId=" + categoryId : "")
+							(itemId && categoryId
+								? "&itemId=" + itemId + "&categoryId=" + categoryId
+								: "")
 						);
 					},
 					openDownloadMP3Url: function (entry) {
@@ -2274,16 +2359,20 @@
 					openDownloadUrl: function (entry, itemId, categoryId) {
 						var url;
 						if (itemId && categoryId) {
-						    url = uriEncode('/' + entry);
+							url = uriEncode("/" + entry);
 						} else {
-						    url = uriEncode(entry);
+							url = uriEncode(entry);
 						}
 						window.open(
 							window.location.protocol +
 								"//" +
 								window.location.host +
-								"/jsidplay2service/JSIDPlay2REST/convert" + url + "?" +
-								(itemId && categoryId ? "itemId=" + itemId + "&categoryId=" + categoryId : "") +
+								"/jsidplay2service/JSIDPlay2REST/convert" +
+								url +
+								"?" +
+								(itemId && categoryId
+									? "itemId=" + itemId + "&categoryId=" + categoryId
+									: "") +
 								"&download=true"
 						);
 					},
@@ -2309,16 +2398,15 @@
 						this.loadingSid = true; //the loading begin
 						var url;
 						if (itemId && categoryId) {
-						    url = uriEncode('/' + entry) + "?list=true";
-						    url += "&itemId=" + itemId;
-						    url += "&categoryId=" + categoryId;
+							url = uriEncode("/" + entry) + "?list=true";
+							url += "&itemId=" + itemId;
+							url += "&categoryId=" + categoryId;
 						} else {
-						    url = uriEncode(entry) + "?list=true";
+							url = uriEncode(entry) + "?list=true";
 						}
 						axios({
 							method: "get",
-							url:
-								"/jsidplay2service/JSIDPlay2REST/info" + url,
+							url: "/jsidplay2service/JSIDPlay2REST/info" + url,
 							auth: {
 								username: this.username,
 								password: this.password,
@@ -2334,11 +2422,11 @@
 						this.loadingSid = true; //the loading begin
 						var url;
 						if (itemId && categoryId) {
-						    url = uriEncode('/' + entry);
-						    url += "?itemId=" + itemId;
-						    url += "&categoryId=" + categoryId;
+							url = uriEncode("/" + entry);
+							url += "?itemId=" + itemId;
+							url += "&categoryId=" + categoryId;
 						} else {
-						    url = uriEncode(entry);
+							url = uriEncode(entry);
 						}
 						axios({
 							method: "get",
@@ -2374,7 +2462,10 @@
 							.then((response) => {
 								this.playlist = response.data;
 								this.playlistIndex = 0;
-								if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+								if (
+									this.playlist.length === 0 ||
+									this.playlistIndex >= this.playlist.length
+								) {
 									return;
 								}
 								this.updateSid(this.playlist[this.playlistIndex]);
@@ -2471,21 +2562,20 @@
 							.finally(() => (this.loadingAssembly64 = false));
 					},
 					requestSearchResults: function () {
-					    var url = this.assembly64SearchUrl();
-					    if (url.length === 0) {
+						var url = this.assembly64SearchUrl();
+						if (url.length === 0) {
 							this.searchResult = [];
 							return;
-					    }
+						}
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
-							url:
-								"$assembly64Url/leet/search/v2" + url,
+							url: "$assembly64Url/leet/search/v2" + url,
 						})
 							.then((response) => {
-							    if (response.status === 200) {
+								if (response.status === 200) {
 									this.searchResult = response.data;
-	
+
 									var data = this;
 									this.searchResult = this.searchResult.map((obj) => {
 										return {
@@ -2504,9 +2594,9 @@
 											_showDetails: false,
 										};
 									});
-							    } else {
+								} else {
 									this.searchResult = [];
-							    }
+								}
 							})
 							.catch((error) => {
 								this.searchResult = [];
@@ -2516,8 +2606,8 @@
 					},
 					requestContentEntries: function (row) {
 						if (row.item._showDetails === true) {
-						    row.item._showDetails = false;
-						    return;
+							row.item._showDetails = false;
+							return;
 						}
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
@@ -2529,13 +2619,13 @@
 								row.item.categoryId,
 						})
 							.then((response) => {
-							    if (response.status === 200) {
+								if (response.status === 200) {
 									this.contentEntries = response.data.contentEntry;
 									for (var i = 0; i < this.searchResult.length; i++) {
 										this.searchResult[i]._showDetails = false;
 									}
 									row.item._showDetails = true;
-							    }
+								}
 							})
 							.catch((error) => {
 								this.contentEntries = [];
@@ -2579,7 +2669,7 @@
 						this.playlist = JSON.parse(localStorage.playlist);
 					}
 					if (this.playlistIndex >= this.playlist.length) {
-					    this.playlistIndex = 0;
+						this.playlistIndex = 0;
 					}
 					if (this.playlist.length !== 0) {
 						this.updateSid(this.playlist[this.playlistIndex]);
