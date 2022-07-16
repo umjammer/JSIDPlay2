@@ -2201,7 +2201,7 @@
 					},
 					createConvertUrl: function (entry, itemId, categoryId) {
 						var url;
-						if (itemId && categoryId) {
+						if ( itemId !== "" && categoryId !== "") {
 							url = uriEncode("/" + entry);
 						} else {
 							url = uriEncode(entry);
@@ -2335,7 +2335,7 @@
 							this.convertOptions.config.emulationSection.sidToRead +
 							this.reuParameters +
 							this.stereoParameters +
-							(itemId && categoryId
+							(itemId !== "" && categoryId !== ""
 								? "&itemId=" + itemId + "&categoryId=" + categoryId
 								: "")
 						);
@@ -2358,7 +2358,7 @@
 					},
 					openDownloadUrl: function (entry, itemId, categoryId) {
 						var url;
-						if (itemId && categoryId) {
+						if (itemId != "" && categoryId != "") {
 							url = uriEncode("/" + entry);
 						} else {
 							url = uriEncode(entry);
@@ -2370,7 +2370,7 @@
 								"/jsidplay2service/JSIDPlay2REST/convert" +
 								url +
 								"?" +
-								(itemId && categoryId
+								(itemId != "" && categoryId != ""
 									? "itemId=" + itemId + "&categoryId=" + categoryId
 									: "") +
 								"&download=true"
@@ -2397,7 +2397,7 @@
 					fetchInfo: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
 						var url;
-						if (itemId && categoryId) {
+						if (itemId != "" && categoryId != "") {
 							url = uriEncode("/" + entry) + "?list=true";
 							url += "&itemId=" + itemId;
 							url += "&categoryId=" + categoryId;
@@ -2421,7 +2421,7 @@
 					fetchPhoto: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
 						var url;
-						if (itemId && categoryId) {
+						if (itemId != "" && categoryId != "") {
 							url = uriEncode("/" + entry);
 							url += "?itemId=" + itemId;
 							url += "&categoryId=" + categoryId;
