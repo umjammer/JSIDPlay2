@@ -134,8 +134,10 @@
 														updateSid(entry);
 														tabIndex = 3;
 														showAudio = true;
-														$refs.audioElm.src = createConvertUrl(entry);
-														$refs.audioElm.play();
+														Vue.nextTick(function () {
+															$refs.audioElm.src = createConvertUrl(entry);
+															$refs.audioElm.play();
+														});
 													"
 												>
 													<div>
@@ -250,12 +252,14 @@
 																		updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
 																		tabIndex = 3;
 																		showAudio = true;
-																		$refs.audioElm.src = createConvertUrl(
-																			innerRow.item.id,
-																			row.item.id,
-																			row.item.categoryId
-																		);
-																		$refs.audioElm.play();
+																		Vue.nextTick(function () {
+																			$refs.audioElm.src = createConvertUrl(
+																				innerRow.item.id,
+																				row.item.id,
+																				row.item.categoryId
+																			);
+																			$refs.audioElm.play();
+																		});
 																	"
 																>
 																	<span class="sid-file">{{ shortEntry(innerRow.item.id) }}</span>
