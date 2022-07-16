@@ -10,7 +10,7 @@ public interface IServletSystemProperties {
 	//
 
 	/**
-	 * Server base url
+	 * Server base
 	 */
 	String BASE_URL = getProperty("jsidplay2.base.url", "http://127.0.0.1:8080");
 
@@ -40,7 +40,7 @@ public interface IServletSystemProperties {
 
 	/**
 	 * Video streaming: Interval between simulated key presses of the space key in s
-	 * (required to watch some demos).
+	 * (required to watch some demos). 0 means no key presses.
 	 */
 	int PRESS_SPACE_INTERVALL = valueOf(getProperty("jsidplay2.rtmp.press_space_intervall", "90"));
 
@@ -67,39 +67,44 @@ public interface IServletSystemProperties {
 	int RTMP_NOT_YET_PLAYED_TIMEOUT = valueOf(getProperty("jsidplay2.rtmp.not_yet_played.timeout", "30"));
 
 	/**
-	 * Video streaming: HLS Live stream created but not yet played will be quit
-	 * after timeout in s.
+	 * Video streaming: HLS Live stream created but not yet received keep-alive
+	 * notification will be quit after timeout in s.
 	 */
 	int HLS_NOT_YET_PLAYED_TIMEOUT = valueOf(getProperty("jsidplay2.rtmp.not_yet_played.timeout", "10"));
 
 	/**
 	 * Video streaming: Live stream played and exceeds maximum duration will be quit
-	 * after timeout in s.
+	 * after timeout in s. This is to prevent endless video generation.
 	 */
 	int RTMP_EXCEEDS_MAXIMUM_DURATION = valueOf(getProperty("jsidplay2.rtmp.exceeds_maximum.duration", "3600"));
 
 	/**
-	 * Video streaming: Time in s to print current RTMP video players.
+	 * Video streaming: Time in s to print out currently generated RTMP video
+	 * streams.
 	 */
 	int RTMP_CLEANUP_PLAYER_COUNTER = valueOf(getProperty("jsidplay2.rtmp.cleanup.player.period", "30"));
 
 	/**
-	 * Video streaming: Upload url for the video creation process.
+	 * Video streaming: Upload for the video creation process (for example an nginx
+	 * endpoint).
 	 */
 	String RTMP_UPLOAD_URL = getProperty("jsidplay2.rtmp.upload.url", "rtmp://haendel.ddns.net/live");
 
 	/**
-	 * Video streaming: RTMP Download url for the video player.
+	 * Video streaming: RTMP Download for the currently generated video live stream
+	 * via RTMP protocol.
 	 */
 	String RTMP_DOWNLOAD_URL = getProperty("jsidplay2.rtmp.external.download.url", "rtmp://haendel.ddns.net/live");
 
 	/**
-	 * Video streaming: HLS Download url for the video player.
+	 * Video streaming: HLS Download for the currently generated video live stream
+	 * via HLS protocol.
+	 * 
 	 */
 	String HLS_DOWNLOAD_URL = getProperty("jsidplay2.hls.external.download.url", "http://haendel.ddns.net:90/hls");
 
 	/**
-	 * Video download: Maximum length in seconds the video download process can run.
+	 * Video download: Maximum length in seconds the video stream can run.
 	 */
 	int MAX_DOWNLOAD_LENGTH = valueOf(getProperty("jsidplay2.rtmp.max_seconds", "600"));
 
