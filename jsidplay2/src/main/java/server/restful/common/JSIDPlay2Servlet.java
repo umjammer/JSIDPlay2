@@ -41,6 +41,7 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -55,7 +56,6 @@ import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
-import ui.common.filefilter.AudioTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TapeFileFilter;
@@ -70,7 +70,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 	private static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
 	private static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule())
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	protected static final String C64_MUSIC = "/C64Music";
 	protected static final String CGSC = "/CGSC";
@@ -206,11 +207,11 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected File getAbsoluteFile(ServletBaseParameters servletParameters, boolean adminRole)
+	protected File getAbsoluteFile(ServletBaseParameters servletBaseParameters, boolean adminRole)
 			throws FileNotFoundException {
-		String path = servletParameters.getFilePath();
-		if (servletParameters.getItemId() != null && servletParameters.getCategoryId() != null) {
-			return fetchAssembly64Files(servletParameters.getItemId(), servletParameters.getCategoryId(),
+		String path = servletBaseParameters.getFilePath();
+		if (servletBaseParameters.getItemId() != null && servletBaseParameters.getCategoryId() != null) {
+			return fetchAssembly64Files(servletBaseParameters.getItemId(), servletBaseParameters.getCategoryId(),
 					path.substring(1));
 		}
 		if (path == null) {
