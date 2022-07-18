@@ -101,16 +101,15 @@
 									size="sm"
 									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 8px; right: 16px; z-index: 9999"
 									variant="primary"
-									v-show="directory.slice(1).filter(entry => isMusic(entry)).length > 0"
+									v-show="directory.filter(entry => isMusic(entry)).length > 0"
 									v-on:click="
-										directory.slice(1).forEach (entry =>
-											{ if (isMusic(entry)) playlist.push(entry);});
+										directory.filter(entry => isMusic(entry)).forEach (entry => playlist.push(entry));
 										tabIndex = 4;
 										showAudio = true;
 									"
 								>
 									<i class="fas fa-plus"></i>
-									<span>ALL</span>
+									<span>{{ $t("addAllToPlaylist") }}</span>
 								</b-button>
 								<b-card-text>
 									<b-list-group>
@@ -1347,6 +1346,7 @@
 					},
 					username: "Username",
 					password: "Password",
+					addAllToPlaylist: "All",
 					downloadMP3: "MP3",
 					downloadSID: "SID",
 					remove: "Remove last tune",
@@ -1422,6 +1422,7 @@
 					},
 					username: "Benutzername",
 					password: "Passwort",
+					addAllToPlaylist: "Alle",
 					downloadMP3: "MP3",
 					downloadSID: "SID",
 					remove: "Letzten Tune l\u00f6schen",
@@ -1469,7 +1470,7 @@
 					username: "jsidplay2",
 					password: "jsidplay2!",
 					// SIDS (directories containing SIDS)
-					directory: "",
+					directory: [],
 					// SID (info + picture)
 					infos: "",
 					picture: "",
