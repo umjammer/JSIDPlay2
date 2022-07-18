@@ -133,17 +133,22 @@
 												>
 													<div
 														style="flex-grow: 4; word-break: break-all;"
-														v-on:click="
-															updateSid(entry);
-															tabIndex = 3;
-															showAudio = true;
-															Vue.nextTick(function () {
-																$refs.audioElm.src = createConvertUrl(entry);
-																$refs.audioElm.play();
-															});
-														"
 													>
-														<i class="fas fa-music"></i><span class="sid-file">{{ shortEntry(entry) }}</span>
+														<i class="fas fa-music"></i>
+														<b-link
+															style="white-space: pre-line"
+															v-on:click="
+																updateSid(entry);
+																tabIndex = 3;
+																showAudio = true;
+																Vue.nextTick(function () {
+																	$refs.audioElm.src = createConvertUrl(entry);
+																	$refs.audioElm.play();
+																});
+															"
+														>
+															<span class="sid-file">{{ shortEntry(entry) }}</span>
+														</b-link>
 													</div>
 													<div>
 														<b-button
@@ -169,7 +174,7 @@
 															v-on:click="
 																playlist.push(entry);
 																tabIndex = 4;
-																playlistIndex = 0;
+																showAudio = true;
 															"
 														>
 															<i class="fas fa-plus"></i>
