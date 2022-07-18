@@ -101,9 +101,10 @@
 									size="sm"
 									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 8px; right: 16px; z-index: 9999"
 									variant="primary"
+									v-show="directory.slice(1).filter(entry => isMusic(entry)).length > 0"
 									v-on:click="
 										directory.slice(1).forEach (entry =>
-											playlist.push(entry));
+											{ if (isMusic(entry)) playlist.push(entry);});
 										tabIndex = 4;
 										showAudio = true;
 									"
@@ -1987,7 +1988,9 @@
 								reader.readAsDataURL(response.data);
 								reader.onload = function () {
 									this.picture = reader.result;
-									document.getElementById("img").setAttribute("src", this.picture);
+									if (document.getElementById("img")) {
+										document.getElementById("img").setAttribute("src", this.picture);
+									}
 								};
 							})
 							.finally(() => (this.loadingSid = false));
