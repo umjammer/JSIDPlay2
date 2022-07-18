@@ -102,7 +102,7 @@
 										<div v-for="entry in directory" :key="entry">
 											<template v-if="isParentDirectory(entry)">
 												<b-list-group-item
-													:button="!isVideo(entry)"
+													button
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
 													v-on:click="fetchDirectory(entry)"
@@ -115,7 +115,7 @@
 											</template>
 											<template v-else-if="isDirectory(entry)">
 												<b-list-group-item
-													:button="!isVideo(entry)"
+													button
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
 													v-on:click="fetchDirectory(entry)"
@@ -127,22 +127,54 @@
 											</template>
 											<template v-else-if="isMusic(entry)">
 												<b-list-group-item
-													:button="!isVideo(entry)"
+													button
 													:variant="getVariant(entry)"
-													style="white-space: pre-line"
-													v-on:click="
-														updateSid(entry);
-														tabIndex = 3;
-														showAudio = true;
-														Vue.nextTick(function () {
-															$refs.audioElm.src = createConvertUrl(entry);
-															$refs.audioElm.play();
-														});
-													"
+													style="white-space: pre-line; display: flex; justify-content: space-between;"
 												>
-													<div>
+													<div
+														style="flex-grow: 4; word-break: break-all;"
+														v-on:click="
+															updateSid(entry);
+															tabIndex = 3;
+															showAudio = true;
+															Vue.nextTick(function () {
+																$refs.audioElm.src = createConvertUrl(entry);
+																$refs.audioElm.play();
+															});
+														"
+													>
 														<i class="fas fa-music"></i><span class="sid-file">{{ shortEntry(entry) }}</span>
 													</div>
+													<div>
+														<b-button
+															size="sm"
+															style="font-size: smaller; padding: 2px 4px;"
+															v-on:click="openDownloadMP3Url(entry)">
+															<i class="fas fa-download"></i>
+															<span>{{ $t("downloadMP3") }}</span></b-button>
+													</div>
+													<div>
+														<b-button
+															size="sm"
+															style="font-size: smaller; padding: 2px 4px;"
+															v-on:click="openDownloadSIDUrl(entry)">
+															<i class="fas fa-download"></i>
+															<span>{{ $t("downloadSID") }}</span></b-button>
+													</div>
+													<div>
+														<b-button
+															size="sm"
+															style="font-size: smaller; padding: 2px 4px;"
+															variant="primary"
+															v-on:click="
+																playlist.push(entry);
+																tabIndex = 4;
+																playlistIndex = 0;
+															"
+														>
+															<i class="fas fa-plus"></i>
+														</b-button>
+													</div>														
 												</b-list-group-item>
 											</template>
 											<template v-else-if="isVideo(entry)">
@@ -244,26 +276,67 @@
 
 													<template #cell(id)="innerRow">
 														<template v-if="isMusic(innerRow.item.id)">
-															<div>
-																<i class="fas fa-music"></i>
-																<b-link
-																	style="white-space: pre-line"
-																	v-on:click="
-																		updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
-																		tabIndex = 3;
-																		showAudio = true;
-																		Vue.nextTick(function () {
-																			$refs.audioElm.src = createConvertUrl(
-																				innerRow.item.id,
-																				row.item.id,
-																				row.item.categoryId
-																			);
-																			$refs.audioElm.play();
-																		});
-																	"
-																>
-																	<span class="sid-file">{{ shortEntry(innerRow.item.id) }}</span>
-																</b-link>
+															<div
+																style="white-space: pre-line; display: flex; justify-content: space-between;"
+															>
+																<div
+																	style="flex-grow: 4; word-break: break-all;">
+
+																	<i class="fas fa-music"></i>
+																	<b-link
+																		style="white-space: pre-line"
+																		v-on:click="
+																			updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
+																			tabIndex = 3;
+																			showAudio = true;
+																			Vue.nextTick(function () {
+																				$refs.audioElm.src = createConvertUrl(
+																					innerRow.item.id,
+																					row.item.id,
+																					row.item.categoryId
+																				);
+																				$refs.audioElm.play();
+																			});
+																		"
+																	>
+																		<span class="sid-file">{{ shortEntry(innerRow.item.id) }}</span>
+																	</b-link>
+																</div>
+
+																<div>
+																	<b-button
+																		size="sm"
+																		style="font-size: smaller; padding: 2px 4px;"
+																		v-on:click="openDownloadMP3Url(innerRow.item.id, row.item.id, row.item.categoryId)">
+																		<i class="fas fa-download"></i>
+																		<span>{{ $t("downloadMP3") }}</span></b-button>
+																</div>
+																<div>
+																	<b-button
+																		size="sm"
+																		style="font-size: smaller; padding: 2px 4px;"
+																		v-on:click="openDownloadSIDUrl(innerRow.item.id, row.item.id, row.item.categoryId)">
+																		<i class="fas fa-download"></i>
+																		<span>{{ $t("downloadSID") }}</span></b-button>
+																</div>
+																<!--div>
+																	<b-button
+																		size="sm"
+																		style="font-size: smaller; padding: 2px 4px;"
+																		variant="primary"
+																		v-on:click="
+																			playlist.push(innerRow.item.id, row.item.id, row.item.categoryId);
+																			tabIndex = 4;
+																			playlistIndex = 0;
+																		"
+																	>
+																		<i class="fas fa-plus"></i>
+																	</b-button>
+																</div-->														
+		
+
+
+																
 															</div>
 														</template>
 														<template v-else-if="isVideo(innerRow.item.id)">
@@ -446,28 +519,6 @@
 								</template>
 
 								<b-card-text>
-									<div class="button-box" v-if="currentSid">
-										<b-button
-											variant="primary"
-											v-on:click="
-												playlist.push(currentSid);
-												tabIndex = 4;
-												playlistIndex = 0;
-											"
-										>
-											<i class="fas fa-plus"></i>
-											<span>{{ $t("addToPlaylist") }}</span></b-button
-										>
-										<b-button v-on:click="openDownloadMP3Url(currentSid)">
-											<i class="fas fa-download"></i>
-											<span>{{ $t("downloadMP3") }}</span></b-button
-										>
-										<b-button v-on:click="openDownloadSIDUrl(currentSid)">
-											<i class="fas fa-download"></i>
-											<span>{{ $t("downloadSID") }}</span></b-button
-										>
-									</div>
-
 									<div class="sid">
 										<b-table striped bordered :items="translatedInfos" :fields="translatedFields"></b-table>
 										<div class="picture-container">
@@ -1276,9 +1327,8 @@
 					},
 					username: "Username",
 					password: "Password",
-					downloadMP3: "Download MP3",
-					downloadSID: "Download SID",
-					addToPlaylist: "Add To Playlist",
+					downloadMP3: "MP3",
+					downloadSID: "SID",
 					remove: "Remove last tune",
 					removeReally: "Do you really want to remove the last playlist tune?",
 					next: "Next tune",
@@ -1352,9 +1402,8 @@
 					},
 					username: "Benutzername",
 					password: "Passwort",
-					downloadMP3: "Download MP3",
-					downloadSID: "Download SID",
-					addToPlaylist: "Zu Favoriten hinzuf\u00fcgen",
+					downloadMP3: "MP3",
+					downloadSID: "SID",
 					remove: "Letzten Tune l\u00f6schen",
 					removeReally: "Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
 					next: "N\u00e4chster Tune",
@@ -1816,16 +1865,29 @@
 								: "&itemId=" + itemId + "&categoryId=" + categoryId)
 						);
 					},
-					openDownloadMP3Url: function (entry) {
-						window.open(this.createConvertUrl(entry) + "&download=true");
+					openDownloadMP3Url: function (entry, itemId, categoryId) {
+						var url = this.createConvertUrl(
+							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+						);
+						window.open(url +
+							"&download=true" +
+							(typeof itemId === "undefined" && typeof categoryId === "undefined"
+								? ""
+								: "&itemId=" + itemId + "&categoryId=" + categoryId)
+						);
 					},
-					openDownloadSIDUrl: function (entry) {
+					openDownloadSIDUrl: function (entry, itemId, categoryId) {
+						var url = uriEncode(
+							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+						);
 						window.open(
 							window.location.protocol +
 								"//" +
 								window.location.host +
-								"/jsidplay2service/JSIDPlay2REST/download" +
-								uriEncode(entry)
+								"/jsidplay2service/JSIDPlay2REST/download" + url +
+								(typeof itemId === "undefined" && typeof categoryId === "undefined"
+									? ""
+									: "?itemId=" + itemId + "&categoryId=" + categoryId)
 						);
 					},
 					openDownloadUrl: function (entry, itemId, categoryId) {
