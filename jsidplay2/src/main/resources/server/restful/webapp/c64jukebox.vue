@@ -91,12 +91,26 @@
 									</div>
 								</b-card-text>
 							</b-tab>
-							<b-tab active>
+							<b-tab active style="position: relative;">
 								<template #title>
 									{{ $t("SIDS") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingSids"></b-spinner>
 								</template>
 
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 8px; right: 16px; z-index: 9999"
+									variant="primary"
+									v-on:click="
+										directory.slice(1).forEach (entry =>
+											playlist.push(entry));
+										tabIndex = 4;
+										showAudio = true;
+									"
+								>
+									<i class="fas fa-plus"></i>
+									<span>ALL</span>
+								</b-button>
 								<b-card-text>
 									<b-list-group>
 										<div v-for="entry in directory" :key="entry">
