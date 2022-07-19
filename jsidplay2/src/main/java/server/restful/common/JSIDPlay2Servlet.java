@@ -210,12 +210,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected File getAbsoluteFile(ServletBaseParameters servletBaseParameters, boolean adminRole)
 			throws FileNotFoundException {
 		String path = servletBaseParameters.getFilePath();
+		if (path == null) {
+			return null;
+		}
 		if (servletBaseParameters.getItemId() != null && servletBaseParameters.getCategoryId() != null) {
 			return fetchAssembly64Files(servletBaseParameters.getItemId(), servletBaseParameters.getCategoryId(),
 					path.substring(1));
-		}
-		if (path == null) {
-			return null;
 		}
 		if (path.startsWith(C64_MUSIC)) {
 			File rootFile = configuration.getSidplay2Section().getHvsc();
@@ -254,8 +254,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			targetDir.mkdirs();
 
 			File file = new File(fileId);
-			boolean mustFetchAttachments = VIDEO_TUNE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)
-					|| DISK_FILE_FILTER.accept(file) || TAPE_FILE_FILTER.accept(file);
+			boolean mustFetchAttachments = VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
+					|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file);
 
 			List<ContentEntry> contentEntriesToFetch = contentEntries.getContentEntry().stream()
 					.filter(contentEntry -> Objects.equals(contentEntry.getId(), fileId)
