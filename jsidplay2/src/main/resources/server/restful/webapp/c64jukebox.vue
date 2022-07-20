@@ -1623,7 +1623,7 @@
 					},
 					isMusic: function (entry) {
 						entry = entry.toLowerCase();
-						return entry.endsWith(".sid") || entry.endsWith(".dat") || entry.endsWith(".mus") || entry.endsWith(".str");
+						return entry.endsWith(".sid") || entry.endsWith(".dat") || entry.endsWith(".mus") || entry.endsWith(".str") || entry.endsWith(".mp3");
 					},
 					isVideo: function (entry) {
 						entry = entry.toLowerCase();
@@ -1944,6 +1944,10 @@
 							.then((response) => {
 								this.directory = response.data;
 							})
+							.catch((error) => {
+							    this.directory = [];
+								console.log(error);
+							})
 							.finally(() => (this.loadingSids = false));
 					},
 					fetchInfo: function (entry, itemId, categoryId) {
@@ -1965,6 +1969,10 @@
 							.then((response) => {
 								this.infos = response.data;
 								this.currentSid = entry;
+							})
+							.catch((error) => {
+							    this.infos = [];
+								console.log(error);
 							})
 							.finally(() => (this.loadingSid = false));
 					},
@@ -1994,6 +2002,10 @@
 									}
 								};
 							})
+							.catch((error) => {
+							    this.picture = "";
+								console.log(error);
+							})
 							.finally(() => (this.loadingSid = false));
 					},
 					fetchFavorites: function () {
@@ -2011,6 +2023,11 @@
 									}
 									this.updateSid(this.playlist[this.playlistIndex]);
 									this.showAudio = true;
+								})
+								.catch((error) => {
+								    this.playlist = [];
+									this.playlistIndex = 0;
+									console.log(error);
 								})
 								.finally(() => (this.loadingPl = false));
 						}
@@ -2037,6 +2054,13 @@
 									.map((filter) => filter.substring("RESIDFP_MOS8580_".length));
 
 								this.updateFilters();
+							})
+							.catch((error) => {
+							    this.reSIDfilters6581 = [];
+							    this.reSIDfilters8580 = [];
+							    this.reSIDfpFilters6581 = [];
+							    this.reSIDfpFilters8580 = [];
+								console.log(error);
 							})
 							.finally(() => (this.loadingCfg = false));
 					},
@@ -2164,15 +2188,19 @@
 							.finally(() => (this.loadingAssembly64 = false));
 					},
 				},
-				created: function () {
-					this.fetchDirectory("/");
-					this.fetchFilters();
-					this.fetchCategories();
-				},
 				mounted: function () {
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
 					}
+					if (localStorage.username) {
+						this.username = JSON.parse(localStorage.username);
+					}
+					if (localStorage.password) {
+						this.password = JSON.parse(localStorage.password);
+					}
+					this.fetchDirectory("/");
+					this.fetchFilters();
+					this.fetchCategories();
 					if (localStorage.convertOptions) {
 						// restore configuration from last run
 						this.convertOptions = JSON.parse(localStorage.convertOptions);
@@ -2206,6 +2234,12 @@
 					}
 				},
 				watch: {
+					username(newValue, oldValue) {
+						localStorage.username = JSON.stringify(this.username);
+					},
+					password(newValue, oldValue) {
+						localStorage.password = JSON.stringify(this.password);
+					},
 					random(newValue, oldValue) {
 						localStorage.random = JSON.stringify(this.random);
 					},
