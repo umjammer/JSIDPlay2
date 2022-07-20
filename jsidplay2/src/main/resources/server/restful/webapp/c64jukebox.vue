@@ -153,7 +153,6 @@
 															style="white-space: pre-line"
 															v-on:click="
 																updateSid(entry);
-																tabIndex = 3;
 																showAudio = true;
 																Vue.nextTick(function () {
 																	$refs.audioElm.src = createConvertUrl(entry);
@@ -202,12 +201,17 @@
 														<i class="fas fa-video"></i>
 														<span>{{ shortEntry(entry) }}</span>
 
-														<a v-bind:href="createConvertUrl(entry)" target="c64" style="margin-left: 16px">
+														<a
+															v-bind:href="createConvertUrl(entry)"
+															v-on:click="pause"
+															target="c64"
+															style="margin-left: 16px">
 															<span>{{ $t("load") }}</span>
 														</a>
 														<span> {{ $t("or") }} </span>
 														<a
 															v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
+															v-on:click="pause"
 															target="c64"
 															style="margin-left: 16px"
 														>
@@ -306,7 +310,6 @@
 																		style="white-space: pre-line"
 																		v-on:click="
 																			updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
-																			tabIndex = 3;
 																			showAudio = true;
 																			Vue.nextTick(function () {
 																				$refs.audioElm.src = createConvertUrl(
@@ -351,11 +354,7 @@
 																	>
 																		<i class="fas fa-plus"></i>
 																	</b-button>
-																</div-->														
-		
-
-
-																
+																</div-->
 															</div>
 														</template>
 														<template v-else-if="isVideo(innerRow.item.id)">
@@ -366,6 +365,7 @@
 
 																	<a
 																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		v-on:click="pause"
 																		target="c64"
 																		style="margin-left: 16px"
 																	>
@@ -377,6 +377,7 @@
 																			createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId) +
 																			'&jiffydos=true'
 																		"
+																		v-on:click="pause"
 																		target="c64"
 																		style="margin-left: 16px"
 																	>
@@ -1614,6 +1615,9 @@
 							return "success";
 						}
 						return "dark";
+					},
+					pause: function () {
+					    this.$refs.audioElm.pause();  
 					},
 					isDirectory: function (entry) {
 						return entry.endsWith("/");
