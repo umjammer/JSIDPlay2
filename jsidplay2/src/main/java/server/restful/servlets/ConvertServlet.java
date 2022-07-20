@@ -304,7 +304,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					File videoFile = convert2video(config, file, driver, servletParameters, null);
 					copy(videoFile, response.getOutputStream());
 					videoFile.delete();
-
 				}
 			} else {
 				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
@@ -313,10 +312,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 			}
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private Audio getAudioFormat(IConfig config) {

@@ -88,10 +88,10 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				}
 			}
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private InputStream getResourceAsStream(String filePath) throws FileNotFoundException {

@@ -73,10 +73,10 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			response.getOutputStream().write(photo);
 
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private byte[] getPhoto(File hvscRoot, File tuneFile) throws IOException, SidTuneError {

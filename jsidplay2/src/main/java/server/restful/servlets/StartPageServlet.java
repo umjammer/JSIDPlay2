@@ -43,10 +43,10 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 				setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 			}
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 }

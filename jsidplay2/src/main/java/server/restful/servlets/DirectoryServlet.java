@@ -76,10 +76,10 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(files));
 
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private List<String> getDirectory(ServletParameters servletParameters, boolean adminRole) {

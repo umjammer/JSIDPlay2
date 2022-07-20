@@ -87,10 +87,10 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 				setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(tuneInfos));
 			}
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private HVSCEntry createHVSCEntry(File tuneFile) throws Exception {
