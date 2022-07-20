@@ -2117,6 +2117,10 @@
 									return a.description.localeCompare(b.description);
 								});
 							})
+							.catch((error) => {
+							    this.categories = [];
+								console.log(error);
+							})
 							.finally(() => (this.loadingAssembly64 = false));
 					},
 					requestSearchResults: function () {
