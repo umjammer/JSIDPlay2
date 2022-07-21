@@ -288,7 +288,10 @@
 														</a>
 													</template>
 													<template v-else>
-														<a v-bind:href="createConvertUrl(entry)" target="c64">
+														<a
+															v-bind:href="createConvertUrl(entry)"
+															v-on:click="pause"
+															target="c64">
 															<i class="fas fa-video"></i><span>{{ shortEntry(entry) }}</span>
 														</a>
 													</template>
@@ -310,12 +313,74 @@
 									</b-list-group>
 								</b-card-text>
 							</b-tab>
-							<b-tab>
+							<b-tab style="position: relative;">
 								<template #title>
 									{{ $t("ASSEMBLY64") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingAssembly64"></b-spinner>
 								</template>
 
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 322px; z-index: 9999"
+									variant="secondary"
+									@click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
+								>
+									<i class="fas fa-filter"></i>
+									<span>Rob Hubbard</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 198px; z-index: 9999"
+									variant="secondary"
+									@click="(event) => requestSearchResults(event, 'Galway_Martin')"
+								>
+									<i class="fas fa-filter"></i>
+									<span>Martin Galway</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 70px; z-index: 9999"
+									variant="secondary"
+									@click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
+								>
+									<i class="fas fa-filter"></i>
+									<span>Chris Hülsbeck</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 281px; z-index: 9999"
+									variant="secondary"
+									@click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
+								>
+									<i class="fas fa-filter"></i>
+									<span>Reyn Ouwehand</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 179px; z-index: 9999"
+									variant="secondary"
+									@click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
+								>
+									<i class="fas fa-filter"></i>
+									<span>Jeroen Tel</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 70px; z-index: 9999"
+									variant="secondary"
+									@click="(event) => requestSearchResults(event, 'Daglish_Ben')"
+								>
+									<i class="fas fa-filter"></i>
+									<span>Ben Daglish</span>
+								</b-button>
+
+								<div style="height: 40px;" >
+								</div>
 								<b-card-text>
 									<b-table striped bordered :items="searchResult" :fields="searchFields" small fixed responsive>
 										<template #table-colgroup="scope">
@@ -2149,8 +2214,16 @@
 							})
 							.finally(() => (this.loadingCfg = false));
 					},
-					assembly64SearchUrl: function () {
+					assembly64SearchUrl: function (token) {
 						var parameterList = [];
+						if (typeof token === "undefined") {
+						} else if (token === "") {
+						} else {
+						    this.handle = token;
+						    this.category = this.categories.filter(function (item) {
+								return item.name === "hvscmusic";
+							})[0].id;
+						}
 						if (this.name !== "") {
 							parameterList.push("name=" + this.name);
 						}
@@ -2208,8 +2281,8 @@
 							})
 							.finally(() => (this.loadingAssembly64 = false));
 					},
-					requestSearchResults: function () {
-						var url = this.assembly64SearchUrl();
+					requestSearchResults: function (event, token) {
+						var url = this.assembly64SearchUrl(token);
 						if (url.length === 0) {
 							this.searchResult = [];
 							return;
