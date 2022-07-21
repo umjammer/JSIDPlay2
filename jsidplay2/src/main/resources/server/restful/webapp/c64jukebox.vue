@@ -521,6 +521,7 @@
 																<template v-else>
 																	<a
 																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		v-on:click="pause"
 																		target="c64"
 																	>
 																		<i class="fas fa-video"></i><span>{{ shortEntry(innerRow.item.id) }}</span>
