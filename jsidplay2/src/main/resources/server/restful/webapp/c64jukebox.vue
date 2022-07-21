@@ -97,9 +97,73 @@
 									<b-spinner type="border" variant="primary" small v-if="loadingSids"></b-spinner>
 								</template>
 
+								<span
+									style="font-style: italic; padding: 2px 4px; position: absolute; top: 0px; right: 304px; z-index: 9999"
+								>{{ $t("filter") }}</span>
+								
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 8px; right: 16px; z-index: 9999"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 224px; z-index: 9999"
+									variant="secondary"
+									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Top200');"
+								>
+									<i class="fas fa-filter"></i>
+									<span>{{ $t("top200") }}</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 140px; z-index: 9999"
+									variant="secondary"
+									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Onefile-top200');"
+								>
+									<i class="fas fa-filter"></i>
+									<span>{{ $t("onefilerTop200") }}</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 70px; z-index: 9999"
+									variant="secondary"
+									v-on:click="fetchDirectory('/Assembly64/Tools/CSDB/Top100');"
+								>
+									<i class="fas fa-filter"></i>
+									<span>{{ $t("toolsTop100") }}</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 240px; z-index: 9999"
+									variant="secondary"
+									v-on:click="fetchDirectory('/Assembly64/Music/CSDB/Top200');"
+								>
+									<i class="fas fa-filter"></i>
+									<span>{{ $t("musicTop200") }}</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 150px; z-index: 9999"
+									variant="secondary"
+									v-on:click="fetchDirectory('/Assembly64/Graphics/CSDB/Top200');"
+								>
+									<i class="fas fa-filter"></i>
+									<span>{{ $t("graphicsTop200") }}</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 70px; z-index: 9999"
+									variant="secondary"
+									v-on:click="fetchDirectory('/Assembly64/Games/CSDB/Top200');"
+								>
+									<i class="fas fa-filter"></i>
+									<span>{{ $t("gamesTop200") }}</span>
+								</b-button>
+
+								<b-button
+									size="sm"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 16px; z-index: 9999"
 									variant="primary"
 									v-show="directory.filter(entry => isMusic(entry)).length > 0"
 									v-on:click="
@@ -111,6 +175,9 @@
 									<i class="fas fa-plus"></i>
 									<span>{{ $t("addAllToPlaylist") }}</span>
 								</b-button>
+
+								<div style="height: 40px;">
+								</div>
 								<b-card-text>
 									<b-list-group>
 										<div v-for="entry in directory" :key="entry">
@@ -1347,6 +1414,13 @@
 					},
 					username: "Username",
 					password: "Password",
+					filter: "Top:",
+					onefilerTop200: "Onefiler",
+					toolsTop100: "Tools",
+					gamesTop200: "Games",
+					top200: "Demos",
+					musicTop200: "Music",
+					graphicsTop200: "Graphics",
 					addAllToPlaylist: "All",
 					downloadMP3: "MP3",
 					downloadSID: "SID",
@@ -1423,6 +1497,13 @@
 					},
 					username: "Benutzername",
 					password: "Passwort",
+					filter: "Top:",
+					onefilerTop200: "Onefiler",
+					toolsTop100: "Tools",
+					gamesTop200: "Games",
+					top200: "Demos",
+					musicTop200: "Music",
+					graphicsTop200: "Graphics",
 					addAllToPlaylist: "Alle",
 					downloadMP3: "MP3",
 					downloadSID: "SID",
