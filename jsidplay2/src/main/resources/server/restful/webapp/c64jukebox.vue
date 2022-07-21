@@ -321,7 +321,7 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 322px; z-index: 9999"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 252px; z-index: 9999"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
 								>
@@ -331,7 +331,7 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 198px; z-index: 9999"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 128px; z-index: 9999"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Galway_Martin')"
 								>
@@ -341,7 +341,7 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 70px; z-index: 9999"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 0px; z-index: 9999"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
 								>
@@ -351,7 +351,7 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 281px; z-index: 9999"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 211px; z-index: 9999"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
 								>
@@ -361,7 +361,7 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 179px; z-index: 9999"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 109px; z-index: 9999"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
 								>
@@ -371,7 +371,7 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 70px; z-index: 9999"
+									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 0px; z-index: 9999"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Daglish_Ben')"
 								>
