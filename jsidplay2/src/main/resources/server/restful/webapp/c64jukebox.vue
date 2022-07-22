@@ -91,21 +91,36 @@
 									</div>
 								</b-card-text>
 							</b-tab>
-							<b-tab active style="position: relative;">
+							<b-tab active style="position: relative">
 								<template #title>
 									{{ $t("SIDS") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingSids"></b-spinner>
 								</template>
 
 								<span
-									style="font-style: italic; padding: 2px 4px; position: absolute; top: 0px; right: 304px; z-index: 9999"
-								>{{ $t("filter") }}</span>
-								
+									style="
+										font-style: italic;
+										padding: 2px 4px;
+										position: absolute;
+										top: 0px;
+										right: 304px;
+										z-index: 9999;
+									"
+									>{{ $t("filter") }}</span
+								>
+
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 224px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 0px;
+										right: 224px;
+										z-index: 9999;
+									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Top200');"
+									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Top200')"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("top200") }}</span>
@@ -113,9 +128,16 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 140px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 0px;
+										right: 140px;
+										z-index: 9999;
+									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Onefile-top200');"
+									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Onefile-top200')"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("onefilerTop200") }}</span>
@@ -125,7 +147,7 @@
 									size="sm"
 									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 70px; z-index: 9999"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Tools/CSDB/Top100');"
+									v-on:click="fetchDirectory('/Assembly64/Tools/CSDB/Top100')"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("toolsTop100") }}</span>
@@ -133,9 +155,16 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 240px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 30px;
+										right: 240px;
+										z-index: 9999;
+									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Music/CSDB/Top200');"
+									v-on:click="fetchDirectory('/Assembly64/Music/CSDB/Top200')"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("musicTop200") }}</span>
@@ -143,9 +172,16 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 150px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 30px;
+										right: 150px;
+										z-index: 9999;
+									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Graphics/CSDB/Top200');"
+									v-on:click="fetchDirectory('/Assembly64/Graphics/CSDB/Top200')"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("graphicsTop200") }}</span>
@@ -153,9 +189,16 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 70px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 30px;
+										right: 70px;
+										z-index: 9999;
+									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Games/CSDB/Top200');"
+									v-on:click="fetchDirectory('/Assembly64/Games/CSDB/Top200')"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("gamesTop200") }}</span>
@@ -163,11 +206,18 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 16px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 30px;
+										right: 16px;
+										z-index: 9999;
+									"
 									variant="primary"
-									v-show="directory.filter(entry => isMusic(entry)).length > 0"
+									v-show="directory.filter((entry) => isMusic(entry)).length > 0"
 									v-on:click="
-										directory.filter(entry => isMusic(entry)).forEach (entry => playlist.push(entry));
+										directory.filter((entry) => isMusic(entry)).forEach((entry) => playlist.push(entry));
 										tabIndex = 4;
 										showAudio = true;
 									"
@@ -176,8 +226,7 @@
 									<span>{{ $t("addAllToPlaylist") }}</span>
 								</b-button>
 
-								<div style="height: 40px;">
-								</div>
+								<div style="height: 40px"></div>
 								<b-card-text>
 									<b-list-group>
 										<div v-for="entry in directory" :key="entry">
@@ -210,11 +259,9 @@
 												<b-list-group-item
 													button
 													:variant="getVariant(entry)"
-													style="white-space: pre-line; display: flex; justify-content: space-between;"
+													style="white-space: pre-line; display: flex; justify-content: space-between"
 												>
-													<div
-														style="flex-grow: 4; word-break: break-all;"
-													>
+													<div style="flex-grow: 4; word-break: break-all">
 														<i class="fas fa-music"></i>
 														<b-link
 															style="white-space: pre-line"
@@ -233,23 +280,27 @@
 													<div>
 														<b-button
 															size="sm"
-															style="font-size: smaller; padding: 2px 4px;"
-															v-on:click="openDownloadMP3Url(entry)">
+															style="font-size: smaller; padding: 2px 4px"
+															v-on:click="openDownloadMP3Url(entry)"
+														>
 															<i class="fas fa-download"></i>
-															<span>{{ $t("downloadMP3") }}</span></b-button>
+															<span>{{ $t("downloadMP3") }}</span></b-button
+														>
 													</div>
 													<div>
 														<b-button
 															size="sm"
-															style="font-size: smaller; padding: 2px 4px;"
-															v-on:click="openDownloadSIDUrl(entry)">
+															style="font-size: smaller; padding: 2px 4px"
+															v-on:click="openDownloadSIDUrl(entry)"
+														>
 															<i class="fas fa-download"></i>
-															<span>{{ $t("downloadSID") }}</span></b-button>
+															<span>{{ $t("downloadSID") }}</span></b-button
+														>
 													</div>
 													<div>
 														<b-button
 															size="sm"
-															style="font-size: smaller; padding: 2px 4px;"
+															style="font-size: smaller; padding: 2px 4px"
 															variant="primary"
 															v-on:click="
 																playlist.push(entry);
@@ -259,7 +310,7 @@
 														>
 															<i class="fas fa-plus"></i>
 														</b-button>
-													</div>														
+													</div>
 												</b-list-group-item>
 											</template>
 											<template v-else-if="isVideo(entry)">
@@ -272,7 +323,8 @@
 															v-bind:href="createConvertUrl(entry)"
 															v-on:click="pause"
 															target="c64"
-															style="margin-left: 16px">
+															style="margin-left: 16px"
+														>
 															<span>{{ $t("load") }}</span>
 														</a>
 														<span> {{ $t("or") }} </span>
@@ -288,10 +340,7 @@
 														</a>
 													</template>
 													<template v-else>
-														<a
-															v-bind:href="createConvertUrl(entry)"
-															v-on:click="pause"
-															target="c64">
+														<a v-bind:href="createConvertUrl(entry)" v-on:click="pause" target="c64">
 															<i class="fas fa-video"></i><span>{{ shortEntry(entry) }}</span>
 														</a>
 													</template>
@@ -313,7 +362,7 @@
 									</b-list-group>
 								</b-card-text>
 							</b-tab>
-							<b-tab style="position: relative;">
+							<b-tab style="position: relative">
 								<template #title>
 									{{ $t("ASSEMBLY64") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingAssembly64"></b-spinner>
@@ -321,7 +370,14 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 252px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 0px;
+										right: 252px;
+										z-index: 9999;
+									"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
 								>
@@ -331,7 +387,14 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 128px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 0px;
+										right: 128px;
+										z-index: 9999;
+									"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Galway_Martin')"
 								>
@@ -351,7 +414,14 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 211px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 30px;
+										right: 211px;
+										z-index: 9999;
+									"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
 								>
@@ -361,7 +431,14 @@
 
 								<b-button
 									size="sm"
-									style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 109px; z-index: 9999"
+									style="
+										font-size: smaller;
+										padding: 2px 4px;
+										position: absolute;
+										top: 30px;
+										right: 109px;
+										z-index: 9999;
+									"
 									variant="secondary"
 									@click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
 								>
@@ -379,8 +456,7 @@
 									<span>Ben Daglish</span>
 								</b-button>
 
-								<div style="height: 40px;" >
-								</div>
+								<div style="height: 40px"></div>
 								<b-card-text>
 									<b-table striped bordered :items="searchResult" :fields="searchFields" small fixed responsive>
 										<template #table-colgroup="scope">
@@ -431,12 +507,8 @@
 
 													<template #cell(id)="innerRow">
 														<template v-if="isMusic(innerRow.item.id)">
-															<div
-																style="white-space: pre-line; display: flex; justify-content: space-between;"
-															>
-																<div
-																	style="flex-grow: 4; word-break: break-all;">
-
+															<div style="white-space: pre-line; display: flex; justify-content: space-between">
+																<div style="flex-grow: 4; word-break: break-all">
 																	<i class="fas fa-music"></i>
 																	<b-link
 																		style="white-space: pre-line"
@@ -460,18 +532,22 @@
 																<div>
 																	<b-button
 																		size="sm"
-																		style="font-size: smaller; padding: 2px 4px;"
-																		v-on:click="openDownloadMP3Url(innerRow.item.id, row.item.id, row.item.categoryId)">
+																		style="font-size: smaller; padding: 2px 4px"
+																		v-on:click="openDownloadMP3Url(innerRow.item.id, row.item.id, row.item.categoryId)"
+																	>
 																		<i class="fas fa-download"></i>
-																		<span>{{ $t("downloadMP3") }}</span></b-button>
+																		<span>{{ $t("downloadMP3") }}</span></b-button
+																	>
 																</div>
 																<div>
 																	<b-button
 																		size="sm"
-																		style="font-size: smaller; padding: 2px 4px;"
-																		v-on:click="openDownloadSIDUrl(innerRow.item.id, row.item.id, row.item.categoryId)">
+																		style="font-size: smaller; padding: 2px 4px"
+																		v-on:click="openDownloadSIDUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																	>
 																		<i class="fas fa-download"></i>
-																		<span>{{ $t("downloadSID") }}</span></b-button>
+																		<span>{{ $t("downloadSID") }}</span></b-button
+																	>
 																</div>
 																<!--div>
 																	<b-button
@@ -1764,7 +1840,7 @@
 						return "dark";
 					},
 					pause: function () {
-					    this.$refs.audioElm.pause();  
+						this.$refs.audioElm.pause();
 					},
 					isDirectory: function (entry) {
 						return entry.endsWith("/");
@@ -1774,7 +1850,13 @@
 					},
 					isMusic: function (entry) {
 						entry = entry.toLowerCase();
-						return entry.endsWith(".sid") || entry.endsWith(".dat") || entry.endsWith(".mus") || entry.endsWith(".str") || entry.endsWith(".mp3");
+						return (
+							entry.endsWith(".sid") ||
+							entry.endsWith(".dat") ||
+							entry.endsWith(".mus") ||
+							entry.endsWith(".str") ||
+							entry.endsWith(".mp3")
+						);
 					},
 					isVideo: function (entry) {
 						entry = entry.toLowerCase();
@@ -2041,11 +2123,12 @@
 						var url = this.createConvertUrl(
 							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
 						);
-						window.open(url +
-							"&download=true" +
-							(typeof itemId === "undefined" && typeof categoryId === "undefined"
-								? ""
-								: "&itemId=" + itemId + "&categoryId=" + categoryId)
+						window.open(
+							url +
+								"&download=true" +
+								(typeof itemId === "undefined" && typeof categoryId === "undefined"
+									? ""
+									: "&itemId=" + itemId + "&categoryId=" + categoryId)
 						);
 					},
 					openDownloadSIDUrl: function (entry, itemId, categoryId) {
@@ -2056,7 +2139,8 @@
 							window.location.protocol +
 								"//" +
 								window.location.host +
-								"/jsidplay2service/JSIDPlay2REST/download" + url +
+								"/jsidplay2service/JSIDPlay2REST/download" +
+								url +
 								(typeof itemId === "undefined" && typeof categoryId === "undefined"
 									? ""
 									: "?itemId=" + itemId + "&categoryId=" + categoryId)
@@ -2096,7 +2180,7 @@
 								this.directory = response.data;
 							})
 							.catch((error) => {
-							    this.directory = [];
+								this.directory = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingSids = false));
@@ -2122,7 +2206,7 @@
 								this.currentSid = entry;
 							})
 							.catch((error) => {
-							    this.infos = [];
+								this.infos = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingSid = false));
@@ -2154,7 +2238,7 @@
 								};
 							})
 							.catch((error) => {
-							    this.picture = "";
+								this.picture = "";
 								console.log(error);
 							})
 							.finally(() => (this.loadingSid = false));
@@ -2176,7 +2260,7 @@
 									this.showAudio = true;
 								})
 								.catch((error) => {
-								    this.playlist = [];
+									this.playlist = [];
 									this.playlistIndex = 0;
 									console.log(error);
 								})
@@ -2207,10 +2291,10 @@
 								this.updateFilters();
 							})
 							.catch((error) => {
-							    this.reSIDfilters6581 = [];
-							    this.reSIDfilters8580 = [];
-							    this.reSIDfpFilters6581 = [];
-							    this.reSIDfpFilters8580 = [];
+								this.reSIDfilters6581 = [];
+								this.reSIDfilters8580 = [];
+								this.reSIDfpFilters6581 = [];
+								this.reSIDfpFilters8580 = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingCfg = false));
@@ -2220,8 +2304,8 @@
 						if (typeof token === "undefined") {
 						} else if (token === "") {
 						} else {
-						    this.handle = token;
-						    this.category = this.categories.filter(function (item) {
+							this.handle = token;
+							this.category = this.categories.filter(function (item) {
 								return item.name === "hvscmusic";
 							})[0].id;
 						}
@@ -2277,7 +2361,7 @@
 								});
 							})
 							.catch((error) => {
-							    this.categories = [];
+								this.categories = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingAssembly64 = false));

@@ -4,55 +4,29 @@
 		<style lang="scss" scoped>
 			@import "/static/convert.scss";
 		</style>
-		<link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet" />
+		<link href="/static/video.js@7.19.2/dist/video-js.css" rel="stylesheet" />
 		<!-- favicon.ico -->
 		<link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
-		<link
-			id="favicon"
-			rel="icon"
-			href="/static/favicon.ico"
-			type="image/x-icon"
-		/>
-		<link
-			id="favicon-16x16"
-			rel="icon"
-			href="/static/favicon-16x16.png"
-			type="image/png"
-			sizes="16x16"
-		/>
+		<link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+		<link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
 		<!-- Load required Bootstrap and BootstrapVue CSS -->
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="https://unpkg.com/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-		/>
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"
-		/>
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-		/>
+		<link type="text/css" rel="stylesheet" href="/static/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.css" />
+		<link type="text/css" rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.css" />
 
 		<!-- Load Vue followed by BootstrapVue -->
-		<script src="https://unpkg.com/vue@2.6.14/dist/vue.min.js"></script>
-		<script src="https://unpkg.com/vue-router@3.5.4/dist/vue-router.min.js"></script>
-		<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+		<script src="/static/vue@2.6.14/dist/vue.min.js"></script>
+		<script src="/static/vue-router@3.5.4/dist/vue-router.min.js"></script>
+		<script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.js"></script>
 
 		<!-- helpers -->
-		<script src="https://unpkg.com/vue-i18n@8.27.2"></script>
-		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		<script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+		<script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>
+		<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
+		<script src="/static/video.js@7.19.2/dist/video.min.js"></script>
 
 		<meta charset="UTF-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, shrink-to-fit=no"
-		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
 		<title>C64 Jukebox</title>
 	</head>
@@ -60,19 +34,13 @@
 		<div id="app">
 			<div class="left-button-container">
 				<div class="button-container">
-					<b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm"
-						>6581</b-button
-					>
+					<b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm">6581</b-button>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm"
-						>8580</b-button
-					>
+					<b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm">8580</b-button>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm"
-						>RESID</b-button
-					>
+					<b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm">RESID</b-button>
 				</div>
 				<div class="button-container">
 					<b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-secondary" size="sm"
@@ -90,19 +58,15 @@
 					</select>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="insertDisk()" pill variant="outline-secondary" size="sm"
-						>{{ $t("insertNextDisk") }}</b-button
-					>
+					<b-button v-on:click="insertDisk()" pill variant="outline-secondary" size="sm">{{
+						$t("insertNextDisk")
+					}}</b-button>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm"
-						>Joy1 Btn</b-button
-					>
+					<b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm">Joy1 Btn</b-button>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm"
-						>Joy2 Btn</b-button
-					>
+					<b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm">Joy2 Btn</b-button>
 				</div>
 			</div>
 
@@ -118,17 +82,16 @@
 					autoplay
 				>
 					<p class="vjs-no-js">
-						To view this video please enable JavaScript, and consider upgrading to a
-						web browser that
-						<a href="https://videojs.com/html5-video-support/" target="_blank">
-							supports HTML5 video
-						</a>
+						To view this video please enable JavaScript, and consider upgrading to a web browser that
+						<a href="https://videojs.com/html5-video-support/" target="_blank"> supports HTML5 video </a>
 					</p>
 					I'm sorry. Your browser doesn't support HTML5 video
 				</video>
 			</div>
 			<div class="video-bar">
-				<b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right;">{{ $t("barcode") }}</b-button>
+				<b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right">{{
+					$t("barcode")
+				}}</b-button>
 				<b-button v-b-toggle.collapse-keyboard variant="primary" size="sm">{{ $t("keyboard") }}</b-button>
 			</div>
 
@@ -158,162 +121,106 @@
 							</div>
 
 							<div class="section-a">
-							<div>
-								<div class="key num dual" v-on:click="typeKey('ARROW_LEFT')">
-									&#8592;<br />
-								</div>
+								<div>
+									<div class="key num dual" v-on:click="typeKey('ARROW_LEFT')">&#8592;<br /></div>
 
-								<div class="key num dual" v-on:click="typeKey('ONE')">
-									!<br />1
-								</div>
-								<div class="key num dual" v-on:click="typeKey('TWO')">
-									&quot;<br />2
-								</div>
-								<div class="key num dual" v-on:click="typeKey('THREE')">
-									#<br />3
-								</div>
-								<div class="key num dual" v-on:click="typeKey('FOUR')">
-									$<br />4
-								</div>
-								<div class="key num dual" v-on:click="typeKey('FIVE')">
-									%<br />5
-								</div>
-								<div class="key num dual" v-on:click="typeKey('SIX')">
-									&amp;<br />6
-								</div>
-								<div class="key num dual" v-on:click="typeKey('SEVEN')">
-									'<br />7
-								</div>
-								<div class="key num dual" v-on:click="typeKey('EIGHT')">
-									(<br />8
-								</div>
-								<div class="key num dual" v-on:click="typeKey('NINE')">
-									)<br />9
-								</div>
-								<div class="key letter" v-on:click="typeKey('ZERO')">0</div>
-								<div class="key letter" v-on:click="typeKey('PLUS')">+</div>
-								<div class="key letter" v-on:click="typeKey('MINUS')">-</div>
-								<div class="key letter" v-on:click="typeKey('POUND')">
-									&#163;
-								</div>
-								<div class="key clr-home" v-on:click="typeKey('CLEAR_HOME')">
-									Clr<br />Home
-								</div>
-								<div class="key ins-del" v-on:click="typeKey('INS_DEL')">
-									Ins<br />Del
-								</div>
+									<div class="key num dual" v-on:click="typeKey('ONE')">!<br />1</div>
+									<div class="key num dual" v-on:click="typeKey('TWO')">&quot;<br />2</div>
+									<div class="key num dual" v-on:click="typeKey('THREE')">#<br />3</div>
+									<div class="key num dual" v-on:click="typeKey('FOUR')">$<br />4</div>
+									<div class="key num dual" v-on:click="typeKey('FIVE')">%<br />5</div>
+									<div class="key num dual" v-on:click="typeKey('SIX')">&amp;<br />6</div>
+									<div class="key num dual" v-on:click="typeKey('SEVEN')">'<br />7</div>
+									<div class="key num dual" v-on:click="typeKey('EIGHT')">(<br />8</div>
+									<div class="key num dual" v-on:click="typeKey('NINE')">)<br />9</div>
+									<div class="key letter" v-on:click="typeKey('ZERO')">0</div>
+									<div class="key letter" v-on:click="typeKey('PLUS')">+</div>
+									<div class="key letter" v-on:click="typeKey('MINUS')">-</div>
+									<div class="key letter" v-on:click="typeKey('POUND')">&#163;</div>
+									<div class="key clr-home" v-on:click="typeKey('CLEAR_HOME')">Clr<br />Home</div>
+									<div class="key ins-del" v-on:click="typeKey('INS_DEL')">Ins<br />Del</div>
 
-								<!--END NUMBER KEYS -->
+									<!--END NUMBER KEYS -->
+								</div>
+								<div>
+									<div class="key tab" v-on:click="typeKey('CTRL')">Ctrl</div>
 
-							</div>
-							<div>
-
-								<div class="key tab" v-on:click="typeKey('CTRL')">Ctrl</div>
-
-								<div class="key letter" v-on:click="typeKey('Q')">Q</div>
-								<div class="key letter" v-on:click="typeKey('W')">W</div>
-								<div class="key letter" v-on:click="typeKey('E')">E</div>
-								<div class="key letter" v-on:click="typeKey('R')">R</div>
-								<div class="key letter" v-on:click="typeKey('T')">T</div>
-								<div class="key letter" v-on:click="typeKey('Y')">Y</div>
-								<div class="key letter" v-on:click="typeKey('U')">U</div>
-								<div class="key letter" v-on:click="typeKey('I')">I</div>
-								<div class="key letter" v-on:click="typeKey('O')">O</div>
-								<div class="key letter" v-on:click="typeKey('P')">P</div>
-								<div class="key letter" v-on:click="typeKey('AT')">@</div>
-								<div class="key letter" v-on:click="typeKey('STAR')">*</div>
-								<div class="key letter" v-on:click="typeKey('ARROW_UP')">
-									&#8593;
+									<div class="key letter" v-on:click="typeKey('Q')">Q</div>
+									<div class="key letter" v-on:click="typeKey('W')">W</div>
+									<div class="key letter" v-on:click="typeKey('E')">E</div>
+									<div class="key letter" v-on:click="typeKey('R')">R</div>
+									<div class="key letter" v-on:click="typeKey('T')">T</div>
+									<div class="key letter" v-on:click="typeKey('Y')">Y</div>
+									<div class="key letter" v-on:click="typeKey('U')">U</div>
+									<div class="key letter" v-on:click="typeKey('I')">I</div>
+									<div class="key letter" v-on:click="typeKey('O')">O</div>
+									<div class="key letter" v-on:click="typeKey('P')">P</div>
+									<div class="key letter" v-on:click="typeKey('AT')">@</div>
+									<div class="key letter" v-on:click="typeKey('STAR')">*</div>
+									<div class="key letter" v-on:click="typeKey('ARROW_UP')">&#8593;</div>
+									<div class="key restore">Restore</div>
 								</div>
-								<div class="key restore">Restore</div>
-
-							</div>
-							<div>
-
-								<div class="key num dual" v-on:click="typeKey('RUN_STOP')">
-									Run<br />Stop
+								<div>
+									<div class="key num dual" v-on:click="typeKey('RUN_STOP')">Run<br />Stop</div>
+									<div class="key num dual">Shft<br />Lck</div>
+									<div class="key letter" v-on:click="typeKey('A')">A</div>
+									<div class="key letter" v-on:click="typeKey('S')">S</div>
+									<div class="key letter" v-on:click="typeKey('D')">D</div>
+									<div class="key letter" v-on:click="typeKey('F')">F</div>
+									<div class="key letter" v-on:click="typeKey('G')">G</div>
+									<div class="key letter" v-on:click="typeKey('H')">H</div>
+									<div class="key letter" v-on:click="typeKey('J')">J</div>
+									<div class="key letter" v-on:click="typeKey('K')">K</div>
+									<div class="key letter" v-on:click="typeKey('L')">L</div>
+									<div class="key dual" v-on:click="typeKey('COLON')">:<br />[</div>
+									<div class="key dual" v-on:click="typeKey('SEMICOLON')">;<br />]</div>
+									<div class="key letter" v-on:click="typeKey('EQUALS')">=</div>
+									<div
+										class="key enter"
+										v-on:click="
+											typeKey('RETURN');
+											startVideo();
+										"
+									>
+										Return
+									</div>
 								</div>
-								<div class="key num dual">Shft<br />Lck</div>
-								<div class="key letter" v-on:click="typeKey('A')">A</div>
-								<div class="key letter" v-on:click="typeKey('S')">S</div>
-								<div class="key letter" v-on:click="typeKey('D')">D</div>
-								<div class="key letter" v-on:click="typeKey('F')">F</div>
-								<div class="key letter" v-on:click="typeKey('G')">G</div>
-								<div class="key letter" v-on:click="typeKey('H')">H</div>
-								<div class="key letter" v-on:click="typeKey('J')">J</div>
-								<div class="key letter" v-on:click="typeKey('K')">K</div>
-								<div class="key letter" v-on:click="typeKey('L')">L</div>
-								<div class="key dual" v-on:click="typeKey('COLON')">
-									:<br />[
+								<div>
+									<div class="key letter" v-on:click="typeKey('COMMODORE')">C=</div>
+									<div
+										:class="'key shift left' + (shiftPressed ? ' uppercase' : '')"
+										v-on:click="toggleKey(this, 'SHIFT_LEFT')"
+									>
+										Shift
+									</div>
+									<div class="key letter" v-on:click="typeKey('Z')">Z</div>
+									<div class="key letter" v-on:click="typeKey('X')">X</div>
+									<div class="key letter" v-on:click="typeKey('C')">C</div>
+									<div class="key letter" v-on:click="typeKey('V')">V</div>
+									<div class="key letter" v-on:click="typeKey('B')">B</div>
+									<div class="key letter" v-on:click="typeKey('N')">N</div>
+									<div class="key letter" v-on:click="typeKey('M')">M</div>
+									<div class="key dual" v-on:click="typeKey('COMMA')">&lt; <br />,</div>
+									<div class="key dual" v-on:click="typeKey('PERIOD')">&gt;<br />.</div>
+									<div class="key dual" v-on:click="typeKey('SLASH')">?<br />/</div>
+									<div
+										:class="'key shift right' + (shiftPressed ? ' uppercase' : '')"
+										v-on:click="toggleKey(this, 'SHIFT_RIGHT')"
+									>
+										Shift
+									</div>
+									<div class="key dual" v-on:click="typeKey('CURSOR_UP_DOWN')">&#8593;<br />&#8595;</div>
+									<div class="key dual" v-on:click="typeKey('CURSOR_LEFT_RIGHT')">&#8592;<br />&#8594;</div>
 								</div>
-								<div class="key dual" v-on:click="typeKey('SEMICOLON')">
-									;<br />]
+								<div>
+									<div
+										class="key space"
+										v-on:click="
+											typeKey('SPACE');
+											startVideo();
+										"
+									></div>
 								</div>
-								<div class="key letter" v-on:click="typeKey('EQUALS')">=</div>
-								<div
-									class="key enter"
-									v-on:click="
-										typeKey('RETURN');
-										startVideo();
-									"
-								>
-									Return
-								</div>
-
-							</div>
-							<div>
-
-								<div class="key letter" v-on:click="typeKey('COMMODORE')">
-									C=
-								</div>
-								<div
-									:class="'key shift left' + (shiftPressed ? ' uppercase' : '')"
-									v-on:click="toggleKey(this, 'SHIFT_LEFT')"
-								>
-									Shift
-								</div>
-								<div class="key letter" v-on:click="typeKey('Z')">Z</div>
-								<div class="key letter" v-on:click="typeKey('X')">X</div>
-								<div class="key letter" v-on:click="typeKey('C')">C</div>
-								<div class="key letter" v-on:click="typeKey('V')">V</div>
-								<div class="key letter" v-on:click="typeKey('B')">B</div>
-								<div class="key letter" v-on:click="typeKey('N')">N</div>
-								<div class="key letter" v-on:click="typeKey('M')">M</div>
-								<div class="key dual" v-on:click="typeKey('COMMA')">
-									&lt; <br />,
-								</div>
-								<div class="key dual" v-on:click="typeKey('PERIOD')">
-									&gt;<br />.
-								</div>
-								<div class="key dual" v-on:click="typeKey('SLASH')">
-									?<br />/
-								</div>
-								<div
-									:class="
-										'key shift right' + (shiftPressed ? ' uppercase' : '')
-									"
-									v-on:click="toggleKey(this, 'SHIFT_RIGHT')"
-								>
-									Shift
-								</div>
-								<div class="key dual" v-on:click="typeKey('CURSOR_UP_DOWN')">
-									&#8593;<br />&#8595;
-								</div>
-								<div class="key dual" v-on:click="typeKey('CURSOR_LEFT_RIGHT')">
-									&#8592;<br />&#8594;
-								</div>
-
-							</div>
-							<div>
-
-								<div
-									class="key space"
-									v-on:click="
-										typeKey('SPACE');
-										startVideo();
-									"
-								></div>
-							</div>
 							</div>
 							<!-- end section-a-->
 
@@ -348,11 +255,10 @@
 		<script>
 			const messages = {
 				en: {
-				    barcode: 'Barcode',
-				    keyboard: 'Keyboard',
-				    insertNextDisk: 'Next Disk',
-					mobilePlaybackTip1:
-						"Please install VLC player or MXPlayer on your phone!",
+					barcode: "Barcode",
+					keyboard: "Keyboard",
+					insertNextDisk: "Next Disk",
+					mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
 					regardingTimeoutsHeader: "Timeouts",
 					regardingTimeoutsTip1:
 						"Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.",
@@ -360,34 +266,31 @@
 						"If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
 					regardingTimeoutsTip3: "Actions and key presses are delayed a few seconds.",
 					regardingTimeoutsTip4: "Maximum play time is 1 hour.",
-					nextDiskDone: 'Next Disk has been inserted!',
-					defaultSidModel6581Done: 'Default SID model has been set to 6581!',
-					defaultSidModel8580Done: 'Default SID model has been set to 8580!',
-					defaultEmulationResidDone: 'Default emulation has been set to RESID!',
-					defaultEmulationResidFpDone: 'Default emulation has been set to RESIDFP!',
-					joyBtnDone: 'Joystick button has been pressed!'
+					nextDiskDone: "Next Disk has been inserted!",
+					defaultSidModel6581Done: "Default SID model has been set to 6581!",
+					defaultSidModel8580Done: "Default SID model has been set to 8580!",
+					defaultEmulationResidDone: "Default emulation has been set to RESID!",
+					defaultEmulationResidFpDone: "Default emulation has been set to RESIDFP!",
+					joyBtnDone: "Joystick button has been pressed!",
 				},
 				de: {
-				    barcode: 'Barcode',
-				    keyboard: 'Tastatur',
-				    insertNextDisk: 'N\u00e4chste Disk',
-					mobilePlaybackTip1:
-						"Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
+					barcode: "Barcode",
+					keyboard: "Tastatur",
+					insertNextDisk: "N\u00e4chste Disk",
+					mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
 					regardingTimeoutsHeader: "Timeouts",
 					regardingTimeoutsTip1:
 						"Starte das Video innerhalb von $notYetPlayedTimeout Sekunden oder das Video wird beendet, ist das der Fall, m\u00fcssen sie f\u00fcr einen neuen Versuch neu laden.",
 					regardingTimeoutsTip2:
 						"Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
-					regardingTimeoutsTip3:
-						"Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
-					regardingTimeoutsTip4:
-						"Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
-					nextDiskDone: 'N\u00e4chste Diskette wurde eingelegt!',
-					defaultSidModel6581Done: 'Default SID Chip ist jetzt 6581!',
-					defaultSidModel8580Done: 'Default SID Chip ist jetzt 8580!',
-					defaultEmulationResidDone: 'Default Emulation ist jetzt RESID!',
-					defaultEmulationResidFpDone: 'Default Emulation ist jetzt RESIDFP!',
-					joyBtnDone: 'Joystick Button wurde gedr\u00fcckt!'
+					regardingTimeoutsTip3: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
+					regardingTimeoutsTip4: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
+					nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
+					defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
+					defaultSidModel8580Done: "Default SID Chip ist jetzt 8580!",
+					defaultEmulationResidDone: "Default Emulation ist jetzt RESID!",
+					defaultEmulationResidFpDone: "Default Emulation ist jetzt RESIDFP!",
+					joyBtnDone: "Joystick Button wurde gedr\u00fcckt!",
 				},
 			};
 			const i18n = new VueI18n({
@@ -475,7 +378,7 @@
 						}).then((response) => {
 							let result = response.data;
 							//document.getElementsByClassName("my-filename")[0].innerHTML = result;
-							this.printMsg(this.$i18n.t('nextDiskDone'));
+							this.printMsg(this.$i18n.t("nextDiskDone"));
 							this.startVideo();
 						});
 					},
@@ -489,7 +392,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg(this.$i18n.t('defaultSidModel6581Done'));
+							this.printMsg(this.$i18n.t("defaultSidModel6581Done"));
 							this.startVideo();
 						});
 					},
@@ -503,7 +406,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg(this.$i18n.t('defaultSidModel8580Done'));
+							this.printMsg(this.$i18n.t("defaultSidModel8580Done"));
 							this.startVideo();
 						});
 					},
@@ -517,7 +420,7 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg(this.$i18n.t('defaultEmulationResidDone'));
+							this.printMsg(this.$i18n.t("defaultEmulationResidDone"));
 							this.startVideo();
 						});
 					},
@@ -531,25 +434,21 @@
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg(this.$i18n.t('defaultEmulationResidFpDone'));
+							this.printMsg(this.$i18n.t("defaultEmulationResidFpDone"));
 							this.startVideo();
 						});
 					},
 					setJoyBtn: function (number, value) {
 						axios({
 							method: "get",
-							url:
-								"/static/joystick?name=$uuid&number=" +
-								number +
-								"&value=" +
-								value,
+							url: "/static/joystick?name=$uuid&number=" + number + "&value=" + value,
 							auth: {
 								username: this.username,
 								password: this.password,
 							},
 						}).then((response) => {
 							let result = response.data;
-							this.printMsg(this.$i18n.t('joyBtnDone'));
+							this.printMsg(this.$i18n.t("joyBtnDone"));
 							this.startVideo();
 						});
 					},
@@ -569,12 +468,13 @@
 
 						setTimeout(function () {
 							var video = videojs("video-container");
-							video.on('resize', function() {this.fluid(true);});
-							video.src({
-								src: '/jsidplay2service/JSIDPlay2REST/proxy/$rtmp',
-								type: 'application/x-mpegURL'
+							video.on("resize", function () {
+								this.fluid(true);
 							});
-							
+							video.src({
+								src: "/jsidplay2service/JSIDPlay2REST/proxy/$rtmp",
+								type: "application/x-mpegURL",
+							});
 						}, this.waitForVideo);
 					} else {
 						this.startVideo();
