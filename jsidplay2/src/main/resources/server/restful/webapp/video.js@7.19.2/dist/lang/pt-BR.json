@@ -30,7 +30,6 @@
   "You aborted the media playback": "Você parou a execução do vídeo.",
   "A network error caused the media download to fail part-way.": "Um erro na rede causou falha durante o download da mídia.",
   "The media could not be loaded, either because the server or network failed or because the format is not supported.": "A mídia não pode ser carregada, por uma falha de rede ou servidor ou o formato não é suportado.",
-  "No compatible source was found for this media.": "Não foi encontrada fonte de mídia compatível.",
   "The media playback was aborted due to a corruption problem or because the media used features your browser did not support.": "A reprodução foi interrompida devido à um problema de mídia corrompida ou porque a mídia utiliza funções que seu navegador não suporta.",
   "No compatible source was found for this media.": "Nenhuma fonte foi encontrada para esta mídia.",
   "The media is encrypted and we do not have the keys to decrypt it.": "A mídia está criptografada e não temos as chaves para descriptografar.",
