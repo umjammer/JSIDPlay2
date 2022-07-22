@@ -11,18 +11,18 @@
 		<link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
 		<!-- Load required Bootstrap and BootstrapVue CSS -->
-		<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
-		<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-		<link type="text/css" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+		<link type="text/css" rel="stylesheet" href="/static/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.css" />
+		<link type="text/css" rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.css" />
 
 		<!-- Load Vue followed by BootstrapVue -->
-		<script src="https://unpkg.com/vue@2.6.14/dist/vue.min.js"></script>
-		<script src="https://unpkg.com/vue-router@3.5.4/dist/vue-router.min.js"></script>
-		<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+		<script src="/static/vue@2.6.14/dist/vue.min.js"></script>
+		<script src="/static/vue-router@3.5.4/dist/vue-router.min.js"></script>
+		<script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.js"></script>
 
 		<!-- helpers -->
-		<script src="https://unpkg.com/vue-i18n@8.27.2"></script>
-		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>
+		<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
 
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
