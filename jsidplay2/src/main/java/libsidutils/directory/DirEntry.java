@@ -3,6 +3,8 @@ package libsidutils.directory;
 import java.io.File;
 import java.io.IOException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class DirEntry {
 
 	/**
@@ -115,6 +117,7 @@ public class DirEntry {
 	 *
 	 * @return a valid filename to save this directory entry
 	 */
+	@JsonIgnore
 	public final String getValidFilename() {
 		final String convertFilename = convertFilename(filename, FILETYPE_NONE);
 		return convertFilename.substring(1, convertFilename.length() - 1).replace('/', '_');

@@ -303,6 +303,18 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
+	protected File extract(final File file) throws IOException, FileNotFoundException {
+		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
+		File targetFile = new File(targetDir, file.getName());
+		targetDir.deleteOnExit();
+		targetFile.deleteOnExit();
+		targetDir.mkdirs();
+		try (FileOutputStream out = new FileOutputStream(targetFile)) {
+			ZipFileUtils.copy(file, out);
+		}
+		return targetFile;
+	}
+
 	private String thread() {
 		return thread(Thread.currentThread());
 	}

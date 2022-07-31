@@ -52,6 +52,7 @@ import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerCleanupTimerTask;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.DirectoryServlet;
+import server.restful.servlets.DiskDirectoryServlet;
 import server.restful.servlets.DownloadServlet;
 import server.restful.servlets.FavoritesServlet;
 import server.restful.servlets.FiltersServlet;
@@ -160,11 +161,11 @@ public class JSIDPlay2Server {
 	 * Our servlets to serve
 	 */
 	private static final List<Class<? extends JSIDPlay2Servlet>> SERVLETS = asList(FiltersServlet.class,
-			DirectoryServlet.class, TuneInfoServlet.class, PhotoServlet.class, ConvertServlet.class,
-			DownloadServlet.class, FavoritesServlet.class, StaticServlet.class, StartPageServlet.class,
-			InsertTuneServlet.class, InsertHashesServlet.class, FindTuneServlet.class, FindHashServlet.class,
-			WhatsSidServlet.class, TuneExistsServlet.class, OnKeepAliveServlet.class, OnPlayDoneServlet.class,
-			OnPlayServlet.class, InsertNextDiskServlet.class, SetSidModel6581Servlet.class,
+			DirectoryServlet.class, DiskDirectoryServlet.class, TuneInfoServlet.class, PhotoServlet.class,
+			ConvertServlet.class, DownloadServlet.class, FavoritesServlet.class, StaticServlet.class,
+			StartPageServlet.class, InsertTuneServlet.class, InsertHashesServlet.class, FindTuneServlet.class,
+			FindHashServlet.class, WhatsSidServlet.class, TuneExistsServlet.class, OnKeepAliveServlet.class,
+			OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class, SetSidModel6581Servlet.class,
 			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
 			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class);
 

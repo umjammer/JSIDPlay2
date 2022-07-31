@@ -39,11 +39,13 @@ import static sidplay.audio.Audio.WAV;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -70,6 +72,9 @@ import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
+import libsidutils.directory.DirEntry;
+import libsidutils.directory.Directory;
+import libsidutils.directory.DiskDirectory;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.ServletBaseParameters;
@@ -110,7 +115,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -8)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -9)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
@@ -121,7 +126,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return download;
 		}
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -7)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -8)
 		public void setDownload(Boolean download) {
 			this.download = download;
 		}
@@ -132,7 +137,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return jiffydos;
 		}
 
-		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -6)
+		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -7)
 		public void setJiffydos(Boolean jiffydos) {
 			this.jiffydos = jiffydos;
 		}
@@ -143,7 +148,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return reuSize;
 		}
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -5)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -6)
 		public void setReuSize(Integer reuSize) {
 			this.reuSize = reuSize;
 		}
@@ -154,7 +159,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return pressSpaceInterval;
 		}
 
-		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -4)
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -5)
 		public void setPressSpaceInterval(Integer pressSpaceInterval) {
 			this.pressSpaceInterval = pressSpaceInterval;
 		}
@@ -165,7 +170,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return status;
 		}
 
-		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -3)
+		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -4)
 		public void setStatus(Boolean status) {
 			this.status = status;
 		}
@@ -176,9 +181,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return rtmp;
 		}
 
-		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -2)
+		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -3)
 		public void setRtmp(Boolean rtmp) {
 			this.rtmp = rtmp;
+		}
+
+		private String autostart;
+
+		public String getAutostart() {
+			return autostart;
+		}
+
+		@Parameter(names = { "--autostart" }, descriptionKey = "AUTOSTART", order = -2)
+		public void setAutostart(String autostart) {
+			this.autostart = autostart;
 		}
 
 		@ParametersDelegate
@@ -421,7 +437,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
-		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null);
+		File autoStartFile = getAutostartFile(file, servletParameters);
+		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, autoStartFile);
 
 		if (servletParameters.reuSize != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
@@ -441,6 +458,29 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		videoFile.deleteOnExit();
 		player.setRecordingFilenameProvider(tune -> PathUtils.getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
 		return videoFile;
+	}
+
+	private File getAutostartFile(File file, ServletParameters servletParameters)
+			throws IOException, FileNotFoundException {
+		File autoStartFile = null;
+		if (servletParameters.autostart != null) {
+			Directory directory = new DiskDirectory(extract(file));
+			Optional<DirEntry> optionalDirEntry = directory.getDirEntries().stream()
+					.filter(dirEntry -> Objects.equals(dirEntry.getDirectoryLine(), servletParameters.autostart))
+					.findFirst();
+			if (optionalDirEntry.isPresent()) {
+				DirEntry dirEntry = optionalDirEntry.get();
+				autoStartFile = new File(configuration.getSidplay2Section().getTmpDir(),
+						dirEntry.getValidFilename() + ".prg");
+				autoStartFile.deleteOnExit();
+				try {
+					dirEntry.save(autoStartFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return autoStartFile;
 	}
 
 	private Map<String, String> createReplacements(ServletParameters servletParameters, HttpServletRequest request,

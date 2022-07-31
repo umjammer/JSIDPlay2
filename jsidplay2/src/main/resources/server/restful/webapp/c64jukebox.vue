@@ -217,7 +217,7 @@
 									variant="primary"
 									v-show="directory.filter((entry) => isMusic(entry)).length > 0"
 									v-on:click="
-										directory.filter((entry) => isMusic(entry)).forEach((entry) => playlist.push(entry));
+										directory.filter((entry) => isMusic(entry)).forEach((entry) => playlist.push(entry.filename));
 										tabIndex = 4;
 										showAudio = true;
 									"
@@ -229,16 +229,16 @@
 								<div style="height: 40px"></div>
 								<b-card-text>
 									<b-list-group>
-										<div v-for="entry in directory" :key="entry">
+										<div v-for="entry in directory" :key="entry.filename">
 											<template v-if="isParentDirectory(entry)">
 												<b-list-group-item
 													button
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
-													v-on:click="fetchDirectory(entry)"
+													v-on:click="fetchDirectory(entry.filename)"
 												>
 													<div class="directory parent">
-														<i class="fas fa-arrow-up"></i><span>{{ entry }}</span>
+														<i class="fas fa-arrow-up"></i><span>{{ entry.filename }}</span>
 														<span class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</span>
 													</div>
 												</b-list-group-item>
@@ -248,7 +248,7 @@
 													button
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
-													v-on:click="fetchDirectory(entry)"
+													v-on:click="fetchDirectory(entry.filename)"
 												>
 													<div :class="directory">
 														<i class="fas fa-folder"></i><span>{{ shortEntry(entry) }}</span>
@@ -266,10 +266,10 @@
 														<b-link
 															style="white-space: pre-line"
 															v-on:click="
-																updateSid(entry);
+																updateSid(entry.filename);
 																showAudio = true;
 																Vue.nextTick(function () {
-																	$refs.audioElm.src = createConvertUrl(entry);
+																	$refs.audioElm.src = createConvertUrl('', entry.filename);
 																	$refs.audioElm.play();
 																});
 															"
@@ -281,7 +281,7 @@
 														<b-button
 															size="sm"
 															style="font-size: smaller; padding: 2px 4px"
-															v-on:click="openDownloadMP3Url(entry)"
+															v-on:click="openDownloadMP3Url(entry.filename)"
 														>
 															<i class="fas fa-download"></i>
 															<span>{{ $t("downloadMP3") }}</span></b-button
@@ -291,7 +291,7 @@
 														<b-button
 															size="sm"
 															style="font-size: smaller; padding: 2px 4px"
-															v-on:click="openDownloadSIDUrl(entry)"
+															v-on:click="openDownloadSIDUrl(entry.filename)"
 														>
 															<i class="fas fa-download"></i>
 															<span>{{ $t("downloadSID") }}</span></b-button
@@ -303,7 +303,7 @@
 															style="font-size: smaller; padding: 2px 4px"
 															variant="primary"
 															v-on:click="
-																playlist.push(entry);
+																playlist.push(entry.filename);
 																tabIndex = 4;
 																showAudio = true;
 															"
@@ -316,31 +316,56 @@
 											<template v-else-if="isVideo(entry)">
 												<b-list-group-item :button="!isVideo(entry)" :variant="getVariant(entry)">
 													<template v-if="canFastload(entry)">
-														<i class="fas fa-video"></i>
-														<span>{{ shortEntry(entry) }}</span>
+														<div>
+															<i class="fas fa-video"></i>
+															<span>{{ shortEntry(entry) }}</span>
 
-														<a
-															v-bind:href="createConvertUrl(entry)"
-															v-on:click="pause"
-															target="c64"
-															style="margin-left: 16px"
-														>
-															<span>{{ $t("load") }}</span>
-														</a>
-														<span> {{ $t("or") }} </span>
-														<a
-															v-bind:href="createConvertUrl(entry) + '&jiffydos=true'"
-															v-on:click="pause"
-															target="c64"
-															style="margin-left: 16px"
-														>
-															<span>
-																{{ $t("convertMessages.jiffydos") }}
-															</span>
-														</a>
+															<a
+																v-bind:href="createConvertUrl('', entry.filename)"
+																v-on:click="pause"
+																target="c64"
+																style="margin-left: 16px"
+															>
+																<span>{{ $t("load") }}</span>
+															</a>
+															<span> {{ $t("or") }} </span>
+															<a
+																v-bind:href="createConvertUrl('', entry.filename) + '&jiffydos=true'"
+																v-on:click="pause"
+																target="c64"
+																style="margin-left: 16px"
+															>
+																<span>
+																	{{ $t("convertMessages.jiffydos") }}
+																</span>
+															</a>
+															<span> {{ $t("or") }} </span>
+															<b-button size="sm" variant="primary" v-on:click="fetchDiskDirectory(entry)">
+																<i class="fas fa-save"></i>
+																<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+															</b-button>
+														</div>
+														<div>
+															<div v-show="entry.directoryMode > 0">
+																<div class="no-bullets">
+																	<div>
+																		<span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
+																	</div>
+																	<div v-for="(program, index) in entry.diskDirectory" :key="index">
+																		<a
+																			v-bind:href="createConvertUrl(program.directoryLine, entry.filename)"
+																			v-on:click="pause"
+																			target="c64"
+																		>
+																			<span class="c64-font">{{ program.formatted }}</span>
+																		</a>
+																	</div>
+																</div>
+															</div>
+														</div>
 													</template>
 													<template v-else>
-														<a v-bind:href="createConvertUrl(entry)" v-on:click="pause" target="c64">
+														<a v-bind:href="createConvertUrl('', entry.filename)" v-on:click="pause" target="c64">
 															<i class="fas fa-video"></i><span>{{ shortEntry(entry) }}</span>
 														</a>
 													</template>
@@ -353,7 +378,7 @@
 													style="white-space: pre-line"
 												>
 													<i class="fas fa-download"></i>
-													<b-link style="white-space: pre-line" v-on:click="openDownloadUrl(entry)">
+													<b-link style="white-space: pre-line" v-on:click="openDownloadUrl(entry.filename)">
 														<span>{{ shortEntry(entry) }}</span>
 													</b-link>
 												</b-list-group-item>
@@ -506,7 +531,7 @@
 													</template>
 
 													<template #cell(id)="innerRow">
-														<template v-if="isMusic(innerRow.item.id)">
+														<template v-if="isMusic(innerRow.item)">
 															<div style="white-space: pre-line; display: flex; justify-content: space-between">
 																<div style="flex-grow: 4; word-break: break-all">
 																	<i class="fas fa-music"></i>
@@ -517,6 +542,7 @@
 																			showAudio = true;
 																			Vue.nextTick(function () {
 																				$refs.audioElm.src = createConvertUrl(
+																					'',
 																					innerRow.item.id,
 																					row.item.id,
 																					row.item.categoryId
@@ -525,7 +551,7 @@
 																			});
 																		"
 																	>
-																		<span class="sid-file">{{ shortEntry(innerRow.item.id) }}</span>
+																		<span class="sid-file">{{ shortEntry(innerRow.item) }}</span>
 																	</b-link>
 																</div>
 
@@ -565,42 +591,86 @@
 																</div-->
 															</div>
 														</template>
-														<template v-else-if="isVideo(innerRow.item.id)">
+														<template v-else-if="isVideo(innerRow.item)">
 															<span>
-																<template v-if="canFastload(innerRow.item.id)">
-																	<i class="fas fa-video"></i>
-																	<span>{{ shortEntry(innerRow.item.id) }}</span>
+																<template v-if="canFastload(innerRow.item)">
+																	<div>
+																		<i class="fas fa-video"></i>
+																		<span>{{ shortEntry(innerRow.item) }}</span>
 
-																	<a
-																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
-																		v-on:click="pause"
-																		target="c64"
-																		style="margin-left: 16px"
-																	>
-																		<span>{{ $t("load") }}</span>
-																	</a>
-																	<span> {{ $t("or") }} </span>
-																	<a
-																		v-bind:href="
-																			createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId) +
-																			'&jiffydos=true'
-																		"
-																		v-on:click="pause"
-																		target="c64"
-																		style="margin-left: 16px"
-																	>
-																		<span>
-																			{{ $t("convertMessages.jiffydos") }}
-																		</span>
-																	</a>
+																		<a
+																			v-bind:href="
+																				createConvertUrl('', innerRow.item.id, row.item.id, row.item.categoryId)
+																			"
+																			v-on:click="pause"
+																			target="c64"
+																			style="margin-left: 16px"
+																		>
+																			<span>{{ $t("load") }}</span>
+																		</a>
+																		<a
+																			v-bind:href="
+																				createConvertUrl('', innerRow.item.id, row.item.id, row.item.categoryId) +
+																				'&jiffydos=true'
+																			"
+																			v-on:click="pause"
+																			target="c64"
+																			style="margin-left: 16px"
+																		>
+																			<span>
+																				{{ $t("convertMessages.jiffydos") }}
+																			</span>
+																		</a>
+																		<span> {{ $t("or") }} </span>
+																		<b-button
+																			size="sm"
+																			variant="primary"
+																			v-on:click="fetchDiskDirectory(innerRow.item, row.item.id, row.item.categoryId)"
+																		>
+																			<i class="fas fa-save"></i>
+																			<b-spinner
+																				type="border"
+																				variant="primary"
+																				small
+																				v-if="innerRow.item.loading"
+																			></b-spinner>
+																		</b-button>
+																	</div>
+																	<div>
+																		<div v-show="innerRow.item.directoryMode > 0">
+																			<div class="no-bullets">
+																				<div>
+																					<span class="c64-font">{{ innerRow.item.diskDirectoryHeader }}</span>
+																				</div>
+																				<div v-for="(program, index) in innerRow.item.diskDirectory" :key="index">
+																					<a
+																						v-bind:href="
+																							createConvertUrl(
+																								program.directoryLine,
+																								innerRow.item.id,
+																								row.item.id,
+																								row.item.categoryId
+																							)
+																						"
+																						v-on:click="pause"
+																						target="c64"
+																					>
+																						<span class="c64-font">{{ program.formatted }}</span>
+																					</a>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
 																</template>
 																<template v-else>
 																	<a
-																		v-bind:href="createConvertUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		v-bind:href="
+																			createConvertUrl('', innerRow.item.id, row.item.id, row.item.categoryId)
+																		"
 																		v-on:click="pause"
 																		target="c64"
 																	>
-																		<i class="fas fa-video"></i><span>{{ shortEntry(innerRow.item.id) }}</span>
+																		<i class="fas fa-video"></i><span>{{ shortEntry(innerRow.item) }}</span>
 																	</a>
 																</template>
 															</span>
@@ -612,7 +682,7 @@
 																	style="white-space: pre-line"
 																	v-on:click="openDownloadUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
 																>
-																	<span>{{ shortEntry(innerRow.item.id) }}</span>
+																	<span>{{ shortEntry(innerRow.item) }}</span>
 																</b-link>
 															</div>
 														</template>
@@ -1503,6 +1573,19 @@
 				// tested characters: /~@#$&():+''
 				return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23");
 			}
+			function toC64Chars(str, fontSet) {
+				var original = str;
+				var result = "";
+				for (var i = 0; i < original.length; i++) {
+					let c = original.charCodeAt(i);
+					if ((c & 0x60) == 0) {
+						result = result + String.fromCharCode(c | 0x40 | (fontSet ^ 0x0200));
+					} else {
+						result = result + String.fromCharCode(c | fontSet);
+					}
+				}
+				return result;
+			}
 			// Month in JavaScript is 0-indexed (January is 0, February is 1, etc),
 			// but by using 0 as the day it will give us the last day of the prior
 			// month. So passing in 1 as the month number will return the last day
@@ -1690,6 +1773,7 @@
 				data: {
 					showAudio: false,
 					langs: ["de", "en"],
+					directoryMode: 0,
 					// CON (connection parameters)
 					username: "jsidplay2",
 					password: "jsidplay2!",
@@ -1776,7 +1860,7 @@
 						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return undefined;
 						} else {
-							return this.createConvertUrl(this.playlist[this.playlistIndex]);
+							return this.createConvertUrl("", this.playlist[this.playlistIndex]);
 						}
 					},
 					reuParameters: function () {
@@ -1824,9 +1908,10 @@
 						localStorage.locale = this.$i18n.locale;
 					},
 					shortEntry: function (entry) {
-						return entry
+						let filename = entry.filename;
+						return filename
 							.split("/")
-							.slice(entry.endsWith("/") ? -2 : -1)
+							.slice(filename.endsWith("/") ? -2 : -1)
 							.join("/");
 					},
 					getVariant: function (entry) {
@@ -1843,44 +1928,44 @@
 						this.$refs.audioElm.pause();
 					},
 					isDirectory: function (entry) {
-						return entry.endsWith("/");
+						return entry.filename.endsWith("/");
 					},
 					isParentDirectory: function (entry) {
-						return entry.endsWith("../");
+						return entry.filename.endsWith("../");
 					},
 					isMusic: function (entry) {
-						entry = entry.toLowerCase();
+						let filename = entry.filename.toLowerCase();
 						return (
-							entry.endsWith(".sid") ||
-							entry.endsWith(".dat") ||
-							entry.endsWith(".mus") ||
-							entry.endsWith(".str") ||
-							entry.endsWith(".mp3")
+							filename.endsWith(".sid") ||
+							filename.endsWith(".dat") ||
+							filename.endsWith(".mus") ||
+							filename.endsWith(".str") ||
+							filename.endsWith(".mp3")
 						);
 					},
 					isVideo: function (entry) {
-						entry = entry.toLowerCase();
+						let filename = entry.filename.toLowerCase();
 						return (
-							entry.endsWith(".prg") ||
-							entry.endsWith(".c64") ||
-							entry.endsWith(".p00") ||
-							entry.endsWith(".d64") ||
-							entry.endsWith(".g64") ||
-							entry.endsWith(".nib") ||
-							entry.endsWith(".tap") ||
-							entry.endsWith(".t64") ||
-							entry.endsWith(".reu") ||
-							entry.endsWith(".ima") ||
-							entry.endsWith(".crt") ||
-							entry.endsWith(".img")
+							filename.endsWith(".prg") ||
+							filename.endsWith(".c64") ||
+							filename.endsWith(".p00") ||
+							filename.endsWith(".d64") ||
+							filename.endsWith(".g64") ||
+							filename.endsWith(".nib") ||
+							filename.endsWith(".tap") ||
+							filename.endsWith(".t64") ||
+							filename.endsWith(".reu") ||
+							filename.endsWith(".ima") ||
+							filename.endsWith(".crt") ||
+							filename.endsWith(".img")
 						);
 					},
 					canFastload: function (entry) {
-						entry = entry.toLowerCase();
+						let filename = entry.filename.toLowerCase();
 						return (
-							entry.toLowerCase().endsWith(".d64") ||
-							entry.toLowerCase().endsWith(".g64") ||
-							entry.toLowerCase().endsWith(".nib")
+							filename.toLowerCase().endsWith(".d64") ||
+							filename.toLowerCase().endsWith(".g64") ||
+							filename.toLowerCase().endsWith(".nib")
 						);
 					},
 					remove: function (index) {
@@ -1982,7 +2067,7 @@
 							this.fetchPhoto(entry, itemId, categoryId);
 						}
 					},
-					createConvertUrl: function (entry, itemId, categoryId) {
+					createConvertUrl: function (autostart, entry, itemId, categoryId) {
 						var url = uriEncode(
 							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
 						);
@@ -2116,11 +2201,13 @@
 							this.stereoParameters +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"
 								? ""
-								: "&itemId=" + itemId + "&categoryId=" + categoryId)
+								: "&itemId=" + itemId + "&categoryId=" + categoryId) +
+							(autostart ? "&autostart=" + autostart : "")
 						);
 					},
 					openDownloadMP3Url: function (entry, itemId, categoryId) {
 						var url = this.createConvertUrl(
+							"",
 							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
 						);
 						window.open(
@@ -2177,7 +2264,14 @@
 							},
 						})
 							.then((response) => {
-								this.directory = response.data;
+								this.directory = response.data.map((file) => {
+									return {
+										filename: file,
+										diskDirectory: [],
+										directoryMode: 0,
+										loading: false,
+									};
+								});
 							})
 							.catch((error) => {
 								this.directory = [];
@@ -2298,6 +2392,46 @@
 								console.log(error);
 							})
 							.finally(() => (this.loadingCfg = false));
+					},
+					fetchDiskDirectory: function (entry, itemId, categoryId) {
+						if (entry.directoryMode) {
+							if (entry.directoryMode === 0xe000) {
+								entry.directoryMode = 0xe100;
+							} else {
+								entry.directoryMode = 0;
+								return;
+							}
+						} else {
+							entry.directoryMode = 0xe000;
+						}
+						entry.loading = true; //the loading begin
+						var url =
+							uriEncode(
+								(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename
+							) +
+							(typeof itemId === "undefined" && typeof categoryId === "undefined"
+								? ""
+								: "?itemId=" + itemId + "&categoryId=" + categoryId);
+						axios({
+							method: "get",
+							url: "/jsidplay2service/JSIDPlay2REST/disk-directory" + url,
+						})
+							.then((response) => {
+								entry.diskDirectoryHeader = toC64Chars(response.data.title, entry.directoryMode | 0x200);
+								entry.diskDirectory = response.data.dirEntries.map((dirEntry) => {
+									return {
+										directoryLine: dirEntry.directoryLine,
+										formatted: toC64Chars(dirEntry.directoryLine, entry.directoryMode),
+									};
+								});
+							})
+							.catch((error) => {
+								entry.diskDirectoryHeader = null;
+								entry.diskDirectory = [];
+								entry.directoryMode = 0;
+								console.log(error);
+							})
+							.finally(() => (entry.loading = false));
 					},
 					assembly64SearchUrl: function (token) {
 						var parameterList = [];
@@ -2421,7 +2555,15 @@
 						})
 							.then((response) => {
 								if (response.status === 200) {
-									this.contentEntries = response.data.contentEntry;
+									this.contentEntries = response.data.contentEntry.map((contentEntry) => {
+										return {
+											id: contentEntry.id,
+											filename: contentEntry.id,
+											diskDirectory: [],
+											directoryMode: 0,
+											loading: false,
+										};
+									});
 									for (var i = 0; i < this.searchResult.length; i++) {
 										this.searchResult[i]._showDetails = false;
 									}

@@ -58,7 +58,12 @@ public enum ContentTypeAndFileExtensions {
 	/**
 	 * CSS
 	 */
-	MIME_TYPE_SCSS(create("text/css", StandardCharsets.UTF_8), true, ".scss", ".css");
+	MIME_TYPE_SCSS(create("text/css", StandardCharsets.UTF_8), true, ".scss", ".css"),
+	/**
+	 * FONTS
+	 */
+	MIME_TYPE_WOFF2(create("font/woff2", (Charset) null), false, ".woff2"),
+	MIME_TYPE_WOFF(create("font/woff", (Charset) null), false, ".woff");
 
 	private final ContentType contentType;
 	private boolean isText;

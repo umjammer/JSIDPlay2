@@ -1,3 +1,24 @@
+div.no-bullets {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+@font-face {
+    font-family: 'C64 Elite Mono';
+    src: url('/static/fonts/C64EliteMono-Style.woff2') format('woff2'),
+        url('/static/fonts/C64EliteMono-Style.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.c64-font {
+    font-family: 'C64 Elite Mono';
+    font-weight: normal;
+    font-style: normal;
+}
+
 tr > [aria-sort=none], tr > [aria-sort=ascending], tr > [aria-sort=descending] {
 	background-position: right top !important;
 }
