@@ -1,9 +1,3 @@
-div.no-bullets {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
 @font-face {
     font-family: 'C64 Elite Mono';
     src: url('/static/fonts/C64EliteMono-Style.woff2') format('woff2'),
@@ -17,6 +11,8 @@ div.no-bullets {
     font-family: 'C64 Elite Mono';
     font-weight: normal;
     font-style: normal;
+    white-space: nowrap;
+    font-size: 0.7em;
 }
 
 tr > [aria-sort=none], tr > [aria-sort=ascending], tr > [aria-sort=descending] {

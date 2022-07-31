@@ -340,26 +340,30 @@
 																</span>
 															</a>
 															<span> {{ $t("or") }} </span>
-															<b-button size="sm" variant="primary" v-on:click="fetchDiskDirectory(entry)">
-																<i class="fas fa-save"></i>
-																<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+															<b-button
+																size="sm"
+																style="font-size: smaller; padding: 2px 4px"
+																variant="primary"
+																v-on:click="fetchDiskDirectory(entry)"
+																:disabled="entry.loading"
+															>
+																<span> {{ $t("showDirectory") }} </span>
 															</b-button>
+															<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 														</div>
 														<div>
 															<div v-show="entry.directoryMode > 0">
-																<div class="no-bullets">
-																	<div>
-																		<span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
-																	</div>
-																	<div v-for="(program, index) in entry.diskDirectory" :key="index">
-																		<a
-																			v-bind:href="createConvertUrl(program.directoryLine, entry.filename)"
-																			v-on:click="pause"
-																			target="c64"
-																		>
-																			<span class="c64-font">{{ program.formatted }}</span>
-																		</a>
-																	</div>
+																<div>
+																	<span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
+																</div>
+																<div v-for="(program, index) in entry.diskDirectory" :key="index">
+																	<a
+																		v-bind:href="createConvertUrl(program.directoryLine, entry.filename)"
+																		v-on:click="pause"
+																		target="c64"
+																	>
+																		<span class="c64-font">{{ program.formatted }}</span>
+																	</a>
 																</div>
 															</div>
 														</div>
@@ -483,13 +487,13 @@
 
 								<div style="height: 40px"></div>
 								<b-card-text>
-									<b-table striped bordered :items="searchResult" :fields="searchFields" small fixed responsive>
+									<b-table striped bordered :items="searchResults" :fields="searchFields" small fixed responsive>
 										<template #table-colgroup="scope">
 											<col
 												v-for="field in scope.fields"
 												:key="field.key"
 												:style="{
-													width: field.key === 'actions' ? '54px' : '',
+													width: field.key === 'actions' ? '32px' : '',
 												}"
 											/>
 										</template>
@@ -505,7 +509,7 @@
 											<span></span>
 										</template>
 										<template #cell(actions)="row">
-											<b-button size="sm" @click="requestContentEntries(row)" class="mr-1">
+											<b-button size="sm" @click="requestContentEntries(row.item)" class="mr-1" style="padding: .25rem .25rem">
 												<i :class="row.detailsShowing ? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
 											</b-button>
 										</template>
@@ -530,7 +534,7 @@
 														/>
 													</template>
 
-													<template #cell(id)="innerRow">
+													<template #cell(filename)="innerRow">
 														<template v-if="isMusic(innerRow.item)">
 															<div style="white-space: pre-line; display: flex; justify-content: space-between">
 																<div style="flex-grow: 4; word-break: break-all">
@@ -538,12 +542,12 @@
 																	<b-link
 																		style="white-space: pre-line"
 																		v-on:click="
-																			updateSid(innerRow.item.id, row.item.id, row.item.categoryId);
+																			updateSid(innerRow.item.filename, row.item.id, row.item.categoryId);
 																			showAudio = true;
 																			Vue.nextTick(function () {
 																				$refs.audioElm.src = createConvertUrl(
 																					'',
-																					innerRow.item.id,
+																					innerRow.item.filename,
 																					row.item.id,
 																					row.item.categoryId
 																				);
@@ -559,7 +563,7 @@
 																	<b-button
 																		size="sm"
 																		style="font-size: smaller; padding: 2px 4px"
-																		v-on:click="openDownloadMP3Url(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		v-on:click="openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)"
 																	>
 																		<i class="fas fa-download"></i>
 																		<span>{{ $t("downloadMP3") }}</span></b-button
@@ -569,7 +573,7 @@
 																	<b-button
 																		size="sm"
 																		style="font-size: smaller; padding: 2px 4px"
-																		v-on:click="openDownloadSIDUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																		v-on:click="openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)"
 																	>
 																		<i class="fas fa-download"></i>
 																		<span>{{ $t("downloadSID") }}</span></b-button
@@ -581,7 +585,7 @@
 																		style="font-size: smaller; padding: 2px 4px;"
 																		variant="primary"
 																		v-on:click="
-																			playlist.push(innerRow.item.id, row.item.id, row.item.categoryId);
+																			playlist.push(innerRow.item.filename, row.item.id, row.item.categoryId);
 																			tabIndex = 4;
 																			playlistIndex = 0;
 																		"
@@ -600,7 +604,7 @@
 
 																		<a
 																			v-bind:href="
-																				createConvertUrl('', innerRow.item.id, row.item.id, row.item.categoryId)
+																				createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
 																			"
 																			v-on:click="pause"
 																			target="c64"
@@ -610,7 +614,7 @@
 																		</a>
 																		<a
 																			v-bind:href="
-																				createConvertUrl('', innerRow.item.id, row.item.id, row.item.categoryId) +
+																				createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId) +
 																				'&jiffydos=true'
 																			"
 																			v-on:click="pause"
@@ -624,17 +628,19 @@
 																		<span> {{ $t("or") }} </span>
 																		<b-button
 																			size="sm"
+																			style="font-size: smaller; padding: 2px 4px"
 																			variant="primary"
 																			v-on:click="fetchDiskDirectory(innerRow.item, row.item.id, row.item.categoryId)"
+																			:disabled="innerRow.item.loading"
 																		>
-																			<i class="fas fa-save"></i>
-																			<b-spinner
-																				type="border"
-																				variant="primary"
-																				small
-																				v-if="innerRow.item.loading"
-																			></b-spinner>
+																			<span> {{ $t("showDirectory") }} </span>
 																		</b-button>
+																		<b-spinner
+																			type="border"
+																			variant="primary"
+																			small
+																			v-if="innerRow.item.loading"
+																		></b-spinner>
 																	</div>
 																	<div>
 																		<div v-show="innerRow.item.directoryMode > 0">
@@ -647,7 +653,7 @@
 																						v-bind:href="
 																							createConvertUrl(
 																								program.directoryLine,
-																								innerRow.item.id,
+																								innerRow.item.filename,
 																								row.item.id,
 																								row.item.categoryId
 																							)
@@ -665,7 +671,7 @@
 																<template v-else>
 																	<a
 																		v-bind:href="
-																			createConvertUrl('', innerRow.item.id, row.item.id, row.item.categoryId)
+																			createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
 																		"
 																		v-on:click="pause"
 																		target="c64"
@@ -680,7 +686,7 @@
 																<i class="fas fa-download"></i>
 																<b-link
 																	style="white-space: pre-line"
-																	v-on:click="openDownloadUrl(innerRow.item.id, row.item.id, row.item.categoryId)"
+																	v-on:click="openDownloadUrl(innerRow.item.filename, row.item.id, row.item.categoryId)"
 																>
 																	<span>{{ shortEntry(innerRow.item) }}</span>
 																</b-link>
@@ -758,20 +764,6 @@
 												type="text"
 												id="released"
 												v-model="released"
-												@change="requestSearchResults"
-												style="max-width: 100%"
-												autocomplete="off"
-												autocorrect="off"
-												autocapitalize="off"
-												spellcheck="false"
-											/>
-										</template>
-										<template #head(year)="data">
-											<label for="year">{{ data.label }}</label>
-											<input
-												type="text"
-												id="year"
-												v-model.number="year"
 												@change="requestSearchResults"
 												style="max-width: 100%"
 												autocomplete="off"
@@ -986,7 +978,7 @@
 									</div>
 									<div class="settings-box">
 										<b-form-group :label="$t('convertMessages.reuSize')">
-											<b-form-radio-group v-model="convertOptions.reuSize" style="display: flex">
+											<b-form-radio-group v-model="convertOptions.reuSize">
 												<b-form-radio value="null">Auto</b-form-radio>
 												<b-form-radio value="64">64kb</b-form-radio>
 												<b-form-radio value="128">128kb</b-form-radio>
@@ -1671,6 +1663,7 @@
 					filterCfgHeader: "Filter Configuration",
 					load: "Normal Load",
 					or: "or",
+					showDirectory: "Directory",
 					firstSid: "Main SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
@@ -1754,6 +1747,7 @@
 					filterCfgHeader: "Filter konfigurieren",
 					load: "Normal Laden",
 					or: "oder",
+					showDirectory: "Directory",
 					firstSid: "Haupt SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
@@ -1786,7 +1780,7 @@
 					// ASSEMBLY64
 					category: "",
 					categories: [],
-					searchResult: [],
+					searchResults: [],
 					contentEntries: [],
 					searchFields: [
 						{
@@ -1806,10 +1800,6 @@
 							sortable: true,
 						},
 						{
-							key: "year",
-							sortable: true,
-						},
-						{
 							key: "handle",
 							sortable: true,
 						},
@@ -1821,7 +1811,7 @@
 					],
 					contentEntryFields: [
 						{
-							key: "id",
+							key: "filename",
 							label: "File",
 						},
 					],
@@ -1829,7 +1819,6 @@
 					event: "",
 					released: "",
 					rating: "",
-					year: "",
 					handle: "",
 					// PL (Playlist)
 					importFile: null,
@@ -2038,7 +2027,7 @@
 						this.convertOptions.config.audioSection.vbr = false;
 						this.convertOptions.config.audioSection.cbr = 64;
 						this.convertOptions.config.audioSection.audioCoderBitRate = 64000;
-						this.convertOptions.config.audioSection.videoCoderBitRate = 600000;
+						this.convertOptions.config.audioSection.videoCoderBitRate = 480000;
 					},
 					wifiProfile: function () {
 						this.convertOptions.config.audioSection.vbr = true;
@@ -2398,6 +2387,8 @@
 							if (entry.directoryMode === 0xe000) {
 								entry.directoryMode = 0xe100;
 							} else {
+								entry.diskDirectoryHeader = null;
+								entry.diskDirectory = [];
 								entry.directoryMode = 0;
 								return;
 							}
@@ -2435,13 +2426,15 @@
 					},
 					assembly64SearchUrl: function (token) {
 						var parameterList = [];
-						if (typeof token === "undefined") {
-						} else if (token === "") {
-						} else {
-							this.handle = token;
+						if (typeof token !== "undefined") {
+						    this.name = "";
 							this.category = this.categories.filter(function (item) {
 								return item.name === "hvscmusic";
 							})[0].id;
+							this.event = "";
+							this.released = "";
+							this.rating = "";
+							this.handle = token;
 						}
 						if (this.name !== "") {
 							parameterList.push("name=" + this.name);
@@ -2474,9 +2467,6 @@
 						if (this.rating !== "") {
 							parameterList.push("rating=" + this.rating);
 						}
-						if (this.year !== "") {
-							parameterList.push("year=" + this.year);
-						}
 						if (this.handle !== "") {
 							parameterList.push("handle=" + this.handle);
 						}
@@ -2503,7 +2493,7 @@
 					requestSearchResults: function (event, token) {
 						var url = this.assembly64SearchUrl(token);
 						if (url.length === 0) {
-							this.searchResult = [];
+							this.searchResults = [];
 							return;
 						}
 						this.loadingAssembly64 = true; //the loading begin
@@ -2513,10 +2503,10 @@
 						})
 							.then((response) => {
 								if (response.status === 200) {
-									this.searchResult = response.data;
+									this.searchResults = response.data;
 
 									var data = this;
-									this.searchResult = this.searchResult.map((obj) => {
+									this.searchResults = this.searchResults.map((obj) => {
 										return {
 											id: obj.id,
 											category: data.categories.filter(function (item) {
@@ -2527,47 +2517,45 @@
 											group: obj.group,
 											event: obj.event,
 											released: obj.released,
-											year: obj.year,
 											handle: obj.handle,
 											rating: obj.rating,
 											_showDetails: false,
 										};
 									});
 								} else {
-									this.searchResult = [];
+									this.searchResults = [];
 								}
 							})
 							.catch((error) => {
-								this.searchResult = [];
+								this.searchResults = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingAssembly64 = false));
 					},
-					requestContentEntries: function (row) {
-						if (row.item._showDetails === true) {
-							row.item._showDetails = false;
+					requestContentEntries: function (searchResult) {
+						if (searchResult._showDetails === true) {
+						    searchResult._showDetails = false;
 							return;
 						}
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
-							url: "$assembly64Url/leet/search/v2/contententries/" + btoa(row.item.id) + "/" + row.item.categoryId,
+							url: "$assembly64Url/leet/search/v2/contententries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
 						})
 							.then((response) => {
 								if (response.status === 200) {
 									this.contentEntries = response.data.contentEntry.map((contentEntry) => {
 										return {
-											id: contentEntry.id,
 											filename: contentEntry.id,
 											diskDirectory: [],
 											directoryMode: 0,
 											loading: false,
 										};
 									});
-									for (var i = 0; i < this.searchResult.length; i++) {
-										this.searchResult[i]._showDetails = false;
+									for (var i = 0; i < this.searchResults.length; i++) {
+										this.searchResults[i]._showDetails = false;
 									}
-									row.item._showDetails = true;
+									searchResult._showDetails = true;
 								}
 							})
 							.catch((error) => {
@@ -2596,6 +2584,7 @@
 					} else {
 						// initialize configuration
 						this.convertOptions.rtmp = false;
+						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.audioSection.reverbBypass = false;
 						this.convertOptions.config.audioSection.mainBalance = 0.3;
 						this.convertOptions.config.audioSection.secondBalance = 0.7;

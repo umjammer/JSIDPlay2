@@ -1,7 +1,6 @@
 package server.restful.servlets;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
-import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
@@ -61,7 +60,7 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet implements C64Font {
 				return;
 			}
 
-			final File file = getAbsoluteFile(servletParameters, request.isUserInRole(ROLE_ADMIN));
+			final File file = getAbsoluteFile(servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
 
 			Directory directory = new DiskDirectory(extract(file));
 
