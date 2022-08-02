@@ -274,7 +274,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 		} else {
 			try {
 				File extractedFile = extract(file);
-				if (convenience.autostart(extractedFile, Convenience.LEXICALLY_FIRST_MEDIA, autoStartFile)) {
+				if (convenience.autostart(extractedFile, Convenience.LEXICALLY_FIRST_MEDIA, autoStartFile, null)) {
 					util.setPlayingTab(this);
 				}
 			} catch (IOException | SidTuneError e) {

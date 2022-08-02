@@ -39,13 +39,11 @@ import static sidplay.audio.Audio.WAV;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -72,9 +70,6 @@ import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
-import libsidutils.directory.DirEntry;
-import libsidutils.directory.Directory;
-import libsidutils.directory.DiskDirectory;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.ServletBaseParameters;
@@ -437,8 +432,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
-		File autoStartFile = getAutostartFile(file, servletParameters);
-		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, autoStartFile);
+		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null, servletParameters.autostart);
 
 		if (servletParameters.reuSize != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
@@ -458,29 +452,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		videoFile.deleteOnExit();
 		player.setRecordingFilenameProvider(tune -> PathUtils.getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
 		return videoFile;
-	}
-
-	private File getAutostartFile(File file, ServletParameters servletParameters)
-			throws IOException, FileNotFoundException {
-		File autoStartFile = null;
-		if (servletParameters.autostart != null) {
-			Directory directory = new DiskDirectory(extract(file));
-			Optional<DirEntry> optionalDirEntry = directory.getDirEntries().stream()
-					.filter(dirEntry -> Objects.equals(dirEntry.getDirectoryLine(), servletParameters.autostart))
-					.findFirst();
-			if (optionalDirEntry.isPresent()) {
-				DirEntry dirEntry = optionalDirEntry.get();
-				autoStartFile = new File(configuration.getSidplay2Section().getTmpDir(),
-						dirEntry.getValidFilename() + ".prg");
-				autoStartFile.deleteOnExit();
-				try {
-					dirEntry.save(autoStartFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return autoStartFile;
 	}
 
 	private Map<String, String> createReplacements(ServletParameters servletParameters, HttpServletRequest request,

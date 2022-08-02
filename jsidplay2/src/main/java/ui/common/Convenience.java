@@ -106,6 +106,10 @@ public class Convenience {
 		this.autoStartedFile = autoStartedFile;
 	}
 
+	public boolean autostart(File file) throws IOException, SidTuneError {
+		return autostart(file, LEXICALLY_FIRST_MEDIA, null, null);
+	}
+
 	/**
 	 * Auto-start C64 bundle (ZIP containing well-known formats or un-zipped entry).
 	 * Attach specific disk/tape/cartridge and automatically start entry.<BR>
@@ -120,7 +124,7 @@ public class Convenience {
 	 * @throws IOException  image read error
 	 * @throws SidTuneError invalid tune
 	 */
-	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, File autoStartFile)
+	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, File autoStartFile, String dirEntry)
 			throws IOException, SidTuneError {
 		player.getC64().ejectCartridge();
 		File tmpDir = player.getConfig().getSidplay2Section().getTmpDir();
@@ -165,7 +169,7 @@ public class Convenience {
 				return true;
 			} else if (diskFileFilter.accept(toAttach)) {
 				player.insertDisk(toAttach);
-				autoStart(autoStartFile, LOAD_8_1_RUN);
+				autoStart(autoStartFile, getDiskLoadCommand(dirEntry));
 				return true;
 			} else if (tapeFileFilter.accept(toAttach)) {
 				player.insertTape(toAttach);
@@ -181,6 +185,17 @@ public class Convenience {
 			}
 		}
 		return false;
+	}
+
+	private String getDiskLoadCommand(String dirEntry) {
+		if (dirEntry != null) {
+			return "Lo\"" + getFilename(dirEntry, 13) + "*\",8,1\rRu\r";
+		}
+		return LOAD_8_1_RUN;
+	}
+
+	private String getFilename(String dirEntry, int rest) {
+		return dirEntry.substring(6, dirEntry.length() - rest - 5);
 	}
 
 	/**

@@ -145,8 +145,7 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 						addView(Video.ID);
 						util.setPlayingTab(tabbedPane.getTabs().stream().filter(tab -> tab.getId().equals(Video.ID))
 								.findFirst().get().getContent());
-						new Convenience(util.getPlayer()).autostart(files.get(0), Convenience.LEXICALLY_FIRST_MEDIA,
-								null);
+						new Convenience(util.getPlayer()).autostart(files.get(0));
 					} catch (IOException | SidTuneError e) {
 						openErrorDialog(String.format(util.getBundle().getString("ERR_IO_ERROR"), e.getMessage()));
 					}

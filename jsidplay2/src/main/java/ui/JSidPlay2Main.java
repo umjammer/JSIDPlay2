@@ -229,7 +229,7 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 		Optional<String> filename = filenames.stream().findFirst();
 		if (filename.isPresent()) {
 			try {
-				new Convenience(player).autostart(new File(filename.get()), Convenience.LEXICALLY_FIRST_MEDIA, null);
+				new Convenience(player).autostart(new File(filename.get()));
 			} catch (IOException | SidTuneError e) {
 				System.err.println(e.getMessage());
 			}

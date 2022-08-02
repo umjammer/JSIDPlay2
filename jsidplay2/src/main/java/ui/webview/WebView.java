@@ -118,7 +118,7 @@ public class WebView extends C64VBox implements UIPart {
 									Files.move(Paths.get(downloadedFile.getAbsolutePath()),
 											Paths.get(targetFile.getAbsolutePath()), REPLACE_EXISTING);
 
-									convenience.autostart(targetFile, Convenience.LEXICALLY_FIRST_MEDIA, null);
+									convenience.autostart(targetFile);
 									Platform.runLater(() -> util.setPlayingTab(WebView.this));
 								}
 							} catch (IOException | SidTuneError e) {
