@@ -164,7 +164,7 @@ public class MenuBar extends C64VBox implements UIPart {
 
 	}
 
-	private BooleanProperty btnNextFavoriteDisabledState;
+	private BooleanProperty btnNextFavoriteDisabledState, btnNextSongDisabledState;
 	private int hardcopyCounter;
 	private StateChangeListener propertyChangeListener;
 
@@ -187,6 +187,7 @@ public class MenuBar extends C64VBox implements UIPart {
 		btnFastForward.selectedProperty().bindBidirectional(fastForward.selectedProperty());
 		btnNextFavoriteDisabledState = new SimpleBooleanProperty(true);
 		btnNextFavorite.disableProperty().bind(btnNextFavoriteDisabledState);
+		btnNextSongDisabledState = new SimpleBooleanProperty(true);
 
 		turboTape.selectedProperty().bindBidirectional(sidplay2Section.turboTapeProperty());
 		driveOn.selectedProperty().bindBidirectional(c1541Section.driveOnProperty());
@@ -1004,10 +1005,10 @@ public class MenuBar extends C64VBox implements UIPart {
 		boolean isPlayOrPause = state == State.PLAY || state == State.PAUSE;
 
 		pauseContinue.setSelected(state == State.PAUSE);
-		previousSong.setDisable(btnNextFavoriteDisabledState.get() || !playList.hasPrevious());
+		previousSong.setDisable(btnNextSongDisabledState.get() || !playList.hasPrevious());
 		previousSong.setText(String.format(util.getBundle().getString("PREVIOUS_SONG") + " (%d/%d)",
 				playList.getPrevious(), playList.getLength()));
-		nextSong.setDisable(btnNextFavoriteDisabledState.get() || !playList.hasNext());
+		nextSong.setDisable(btnNextSongDisabledState.get() || !playList.hasNext());
 		nextSong.setText(String.format(util.getBundle().getString("NEXT_SONG") + " (%d/%d)", playList.getNext(),
 				playList.getLength()));
 		normalSpeed.setSelected(!(isPlayOrPause && isFastForward));

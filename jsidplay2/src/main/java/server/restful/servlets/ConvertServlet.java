@@ -64,7 +64,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.cart.CartridgeType;
-import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
@@ -110,7 +109,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -9)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -8)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
@@ -121,20 +120,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return download;
 		}
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -8)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -7)
 		public void setDownload(Boolean download) {
 			this.download = download;
-		}
-
-		private Boolean jiffydos = Boolean.FALSE;
-
-		public Boolean getJiffydos() {
-			return jiffydos;
-		}
-
-		@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = -7)
-		public void setJiffydos(Boolean jiffydos) {
-			this.jiffydos = jiffydos;
 		}
 
 		private Integer reuSize;
@@ -417,9 +405,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		File videoFile = null;
 
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
-		IC1541Section c1541Section = config.getC1541Section();
-
-		c1541Section.setJiffyDosInstalled(Boolean.TRUE.equals(servletParameters.jiffydos));
 
 		Player player = new Player(config);
 		if (Boolean.TRUE.equals(servletParameters.download)) {

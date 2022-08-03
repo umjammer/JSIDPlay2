@@ -329,17 +329,6 @@
 																<span>{{ $t("load") }}</span>
 															</a>
 															<span> {{ $t("or") }} </span>
-															<a
-																v-bind:href="createConvertUrl('', entry.filename) + '&jiffydos=true'"
-																v-on:click="pause"
-																target="c64"
-																style="margin-left: 16px"
-															>
-																<span>
-																	{{ $t("convertMessages.jiffydos") }}
-																</span>
-															</a>
-															<span> {{ $t("or") }} </span>
 															<b-button
 																size="sm"
 																style="font-size: smaller; padding: 2px 4px"
@@ -611,19 +600,6 @@
 																			style="margin-left: 16px"
 																		>
 																			<span>{{ $t("load") }}</span>
-																		</a>
-																		<a
-																			v-bind:href="
-																				createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId) +
-																				'&jiffydos=true'
-																			"
-																			v-on:click="pause"
-																			target="c64"
-																			style="margin-left: 16px"
-																		>
-																			<span>
-																				{{ $t("convertMessages.jiffydos") }}
-																			</span>
 																		</a>
 																		<span> {{ $t("or") }} </span>
 																		<b-button
@@ -1005,6 +981,9 @@
 										</b-form-checkbox>
 										<b-form-checkbox v-model="convertOptions.config.sidplay2Section.loop">
 											{{ $t("convertMessages.config.sidplay2Section.loop") }}
+										</b-form-checkbox>
+										<b-form-checkbox v-model="convertOptions.config.c1541Section.jiffyDosInstalled">
+											{{ $t("convertMessages.config.c1541Section.jiffyDosInstalled") }}
 										</b-form-checkbox>
 									</div>
 
@@ -1661,7 +1640,7 @@
 					mutingCfgHeader: "Muting Configuration",
 					emulationCfgHeader: "Emulation Configuration",
 					filterCfgHeader: "Filter Configuration",
-					load: "Normal Load",
+					load: "Load",
 					or: "or",
 					showDirectory: "Directory",
 					firstSid: "Main SID",
@@ -1745,7 +1724,7 @@
 					mutingCfgHeader: "Stummschalten konfigurieren",
 					emulationCfgHeader: "Emulation konfigurieren",
 					filterCfgHeader: "Filter konfigurieren",
-					load: "Normal Laden",
+					load: "Laden",
 					or: "oder",
 					showDirectory: "Directory",
 					firstSid: "Haupt SID",
@@ -2186,12 +2165,14 @@
 							this.convertOptions.pressSpaceInterval +
 							"&status=" +
 							this.convertOptions.status +
+							"&jiffydos=" +
+							this.convertOptions.config.c1541Section.jiffyDosInstalled +
 							this.reuParameters +
 							this.stereoParameters +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"
 								? ""
 								: "&itemId=" + itemId + "&categoryId=" + categoryId) +
-							(autostart ? "&autostart=" + autostart : "")
+							(autostart ? "&autostart=" + uriEncode(autostart) : "")
 						);
 					},
 					openDownloadMP3Url: function (entry, itemId, categoryId) {

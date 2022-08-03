@@ -10,6 +10,9 @@ import static sidplay.ini.IniDefaults.DEFAULT_RAM_EXPAND_0X6000;
 import static sidplay.ini.IniDefaults.DEFAULT_RAM_EXPAND_0X8000;
 import static sidplay.ini.IniDefaults.DEFAULT_RAM_EXPAND_0XA000;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
+
 import libsidplay.components.c1541.FloppyType;
 import libsidplay.config.IC1541Section;
 import sidplay.ini.converter.BeanToStringConverter;
@@ -20,6 +23,7 @@ import sidplay.ini.converter.BeanToStringConverter;
  * @author Ken Händel
  *
  */
+@Parameters(resourceBundle = "sidplay.ini.IniC1541Section")
 public class IniC1541Section extends IniSection implements IC1541Section {
 
 	private static final String SECTION_ID = "C1541";
@@ -74,6 +78,7 @@ public class IniC1541Section extends IniSection implements IC1541Section {
 	}
 
 	@Override
+	@Parameter(names = "--jiffydos", arity = 1, descriptionKey = "JIFFYDOS", order = 50)
 	public final void setJiffyDosInstalled(boolean on) {
 		iniReader.setProperty(SECTION_ID, "JiffyDos Installed", on);
 	}
