@@ -189,15 +189,21 @@ public class Convenience {
 
 	private String getDiskLoadCommand(String dirEntry) {
 		if (dirEntry != null) {
-			return "Lo\"" + getFilename(dirEntry, 13) + "*\",8,1\rRu\r";
+			return "Lo\"" + getFilename(dirEntry) + "*\",8,1\rRu\r";
 		}
 		return LOAD_8_1_RUN;
 	}
 
-	private String getFilename(String dirEntry, int rest) {
+	private String getFilename(String dirEntry) {
 		String[] parts = dirEntry.split("\"");
+		if (parts.length < 2) {
+			return "";
+		}
 		String filename = parts[1];
-		return filename.substring(0, filename.length() - rest);
+		filename = filename.replace((char) 0xa0, ' ');
+		filename = filename.replaceFirst("\\s++$", "");
+		System.err.println(filename);
+		return filename.substring(0, Math.min(3, Math.max(0, filename.length())));
 	}
 
 	/**
