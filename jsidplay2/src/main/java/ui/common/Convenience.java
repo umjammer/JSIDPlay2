@@ -195,7 +195,9 @@ public class Convenience {
 	}
 
 	private String getFilename(String dirEntry, int rest) {
-		return dirEntry.substring(6, dirEntry.length() - rest - 5);
+		String[] parts = dirEntry.split("\"");
+		String filename = parts[1];
+		return filename.substring(0, filename.length() - rest);
 	}
 
 	/**
