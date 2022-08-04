@@ -498,7 +498,12 @@
 											<span></span>
 										</template>
 										<template #cell(actions)="row">
-											<b-button size="sm" @click="requestContentEntries(row.item)" class="mr-1" style="padding: .25rem .25rem">
+											<b-button
+												size="sm"
+												@click="requestContentEntries(row.item)"
+												class="mr-1"
+												style="padding: 0.25rem 0.25rem"
+											>
 												<i :class="row.detailsShowing ? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
 											</b-button>
 										</template>
@@ -552,7 +557,9 @@
 																	<b-button
 																		size="sm"
 																		style="font-size: smaller; padding: 2px 4px"
-																		v-on:click="openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)"
+																		v-on:click="
+																			openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)
+																		"
 																	>
 																		<i class="fas fa-download"></i>
 																		<span>{{ $t("downloadMP3") }}</span></b-button
@@ -562,7 +569,9 @@
 																	<b-button
 																		size="sm"
 																		style="font-size: smaller; padding: 2px 4px"
-																		v-on:click="openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)"
+																		v-on:click="
+																			openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
+																		"
 																	>
 																		<i class="fas fa-download"></i>
 																		<span>{{ $t("downloadSID") }}</span></b-button
@@ -2408,7 +2417,7 @@
 					assembly64SearchUrl: function (token) {
 						var parameterList = [];
 						if (typeof token !== "undefined") {
-						    this.name = "";
+							this.name = "";
 							this.category = this.categories.filter(function (item) {
 								return item.name === "hvscmusic";
 							})[0].id;
@@ -2515,13 +2524,14 @@
 					},
 					requestContentEntries: function (searchResult) {
 						if (searchResult._showDetails === true) {
-						    searchResult._showDetails = false;
+							searchResult._showDetails = false;
 							return;
 						}
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
-							url: "$assembly64Url/leet/search/v2/contententries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
+							url:
+								"$assembly64Url/leet/search/v2/contententries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
 						})
 							.then((response) => {
 								if (response.status === 200) {
