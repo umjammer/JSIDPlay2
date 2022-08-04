@@ -121,30 +121,30 @@ public class Petscii {
 	 * @param petscii PETSCII byte
 	 * @return screen RAM characters
 	 */
-	public static final int petsciiToScreenRam(final int i) {
-		if (i < 32) {
-			return i + 128;
+	public static final int petsciiToScreenRam(final int petscii) {
+		if (petscii < 32) {
+			return petscii + 128;
 		}
-		if (i < 64) {
-			return i;
+		if (petscii < 64) {
+			return petscii;
 		}
-		if (i < 96) {
-			return i - 64;
+		if (petscii < 96) {
+			return petscii - 64;
 		}
-		if (i < 128) {
-			return i - 32;
+		if (petscii < 128) {
+			return petscii - 32;
 		}
-		if (i < 160) {
-			return i + 164;
+		if (petscii < 160) {
+			return petscii + 164;
 		}
-		if (i < 192) {
-			return i - 64;
+		if (petscii < 192) {
+			return petscii - 64;
 		}
-		if (i < 224) {
-			return i - 128;
+		if (petscii < 224) {
+			return petscii - 128;
 		}
-		if (i < 255) {
-			return i - 128;
+		if (petscii < 255) {
+			return petscii - 128;
 		}
 		return 94;
 	}
