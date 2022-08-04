@@ -583,10 +583,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	public final void typeInCommand(String command) {
 		String[] lines = command.split("\r");
 		for (String line : lines) {
-			int i = 1024 + 6 * 40;
-			for (char ch : line.toCharArray()) {
-				c64.getRAM()[i++] = (byte) (petsciiToScreenRam(ch & 0xff));
-			}
+			byte[] screenRam = petsciiToScreenRam(line);
+			System.arraycopy(screenRam, 0, c64.getRAM(), 1024 + 6 * 40 + 1, screenRam.length);
 			break;
 		}
 		int indexOf = command.indexOf('\r');
