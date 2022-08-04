@@ -260,7 +260,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 		}
 	}
 
-	protected void attachAndRunDemo(File file, final File autoStartFile) {
+	protected void attachAndRunDemo(File file, final String dirEntry) {
 		if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".pdf")) {
 			File tmpDir = util.getConfig().getSidplay2Section().getTmpDir();
 			File dst = new File(tmpDir, file.getName());
@@ -274,7 +274,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 		} else {
 			try {
 				File extractedFile = extract(file);
-				if (convenience.autostart(extractedFile, Convenience.LEXICALLY_FIRST_MEDIA, autoStartFile, null)) {
+				if (convenience.autostart(extractedFile, Convenience.LEXICALLY_FIRST_MEDIA, dirEntry)) {
 					util.setPlayingTab(this);
 				}
 			} catch (IOException | SidTuneError e) {

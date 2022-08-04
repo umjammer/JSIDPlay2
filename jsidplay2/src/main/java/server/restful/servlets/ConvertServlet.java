@@ -417,7 +417,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
-		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, null, servletParameters.autostart);
+		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart);
 
 		if (servletParameters.reuSize != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);

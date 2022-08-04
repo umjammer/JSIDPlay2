@@ -117,6 +117,10 @@ public class WebView extends C64VBox implements UIPart {
 									targetDir.mkdirs();
 									Files.move(Paths.get(downloadedFile.getAbsolutePath()),
 											Paths.get(targetFile.getAbsolutePath()), REPLACE_EXISTING);
+									if (showTuneInfos && PathUtils.getFilenameSuffix(targetFile.getName())
+											.equalsIgnoreCase(".sid")) {
+										showTuneInfos(util.getPlayer().getTune(), targetFile);
+									}
 
 									convenience.autostart(targetFile);
 									Platform.runLater(() -> util.setPlayingTab(WebView.this));
@@ -201,11 +205,6 @@ public class WebView extends C64VBox implements UIPart {
 		};
 
 		convenience = new Convenience(util.getPlayer());
-		convenience.setAutoStartedFile(file -> {
-			if (showTuneInfos && PathUtils.getFilenameSuffix(file.getName()).equalsIgnoreCase(".sid")) {
-				showTuneInfos(util.getPlayer().getTune(), file);
-			}
-		});
 
 		engine = webView.getEngine();
 		engine.getHistory().currentIndexProperty().addListener(historyListener);

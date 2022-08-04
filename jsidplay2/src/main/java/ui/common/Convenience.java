@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 
 import libsidplay.components.cart.CartridgeType;
@@ -95,19 +94,13 @@ public class Convenience {
 	private static final String LOAD_8_1_RUN = "LOAD\"*\",8,1\rRUN\r", LOAD_RUN = "LOAD\rRUN\r";
 
 	private Player player;
-	private Consumer<File> autoStartedFile = file -> {
-	};
 
 	public Convenience(Player player) {
 		this.player = player;
 	}
 
-	public void setAutoStartedFile(Consumer<File> autoStartedFile) {
-		this.autoStartedFile = autoStartedFile;
-	}
-
 	public boolean autostart(File file) throws IOException, SidTuneError {
-		return autostart(file, LEXICALLY_FIRST_MEDIA, null, null);
+		return autostart(file, LEXICALLY_FIRST_MEDIA, null);
 	}
 
 	/**
@@ -118,13 +111,13 @@ public class Convenience {
 	 *
 	 * @param file            file to open
 	 * @param isMediaToAttach tester for media to attach
-	 * @param autoStartFile   if media to attach is a disk/tape/cartridge this tune
-	 *                        is loaded after attaching the media (null means just
+	 * @param dirEntry        if media to attach is a disk this directory entry is
+	 *                        loaded after attaching the media (null means just
 	 *                        reset C64, instead).
 	 * @throws IOException  image read error
 	 * @throws SidTuneError invalid tune
 	 */
-	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, File autoStartFile, String dirEntry)
+	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
 			throws IOException, SidTuneError {
 		player.getC64().ejectCartridge();
 		File tmpDir = player.getConfig().getSidplay2Section().getTmpDir();
@@ -165,22 +158,21 @@ public class Convenience {
 		if (toAttach != null) {
 			if (tuneFileFilter.accept(toAttach)) {
 				player.play(SidTune.load(toAttach));
-				autoStartedFile.accept(toAttach);
 				return true;
 			} else if (diskFileFilter.accept(toAttach)) {
 				player.insertDisk(toAttach);
-				autoStart(autoStartFile, getDiskLoadCommand(dirEntry));
+				player.resetC64(getDiskLoadCommand(dirEntry));
 				return true;
 			} else if (tapeFileFilter.accept(toAttach)) {
 				player.insertTape(toAttach);
-				autoStart(autoStartFile, LOAD_RUN);
+				player.resetC64(LOAD_RUN);
 				return true;
 			} else if (toAttach.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
 				playVideo(toAttach);
 				return true;
 			} else if (cartFileFilter.accept(toAttach)) {
 				player.insertCartridge(CartridgeType.CRT, toAttach);
-				autoStart(autoStartFile, null);
+				player.resetC64(null);
 				return true;
 			}
 		}
@@ -189,7 +181,7 @@ public class Convenience {
 
 	private String getDiskLoadCommand(String dirEntry) {
 		if (dirEntry != null) {
-			return "Lo\"" + getFilename(dirEntry) + "*\",8,1\rRu\r";
+			return "LOAD\"" + getFilename(dirEntry) + "\",8,1\rRUN\r";
 		}
 		return LOAD_8_1_RUN;
 	}
@@ -199,28 +191,7 @@ public class Convenience {
 		if (parts.length < 2) {
 			return "";
 		}
-		String filename = parts[1];
-		filename = filename.replace((char) 0xa0, ' ');
-		filename = filename.replaceFirst("\\s++$", "");
-		System.err.println(filename);
-		return filename.substring(0, Math.min(3, Math.max(0, filename.length())));
-	}
-
-	/**
-	 * Load tune or reset C64 and type-in command automatically
-	 *
-	 * @param file    tune file to load and play
-	 * @param command command to type-in after reset (if no file is specified)
-	 * @throws IOException  image read error
-	 * @throws SidTuneError invalid tune
-	 */
-	private void autoStart(File file, String command) throws IOException, SidTuneError {
-		if (file != null) {
-			player.play(SidTune.load(file));
-			autoStartedFile.accept(file);
-		} else {
-			player.resetC64(command);
-		}
+		return parts[1];
 	}
 
 	/**

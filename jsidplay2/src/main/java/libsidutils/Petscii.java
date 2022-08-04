@@ -115,4 +115,38 @@ public class Petscii {
 		return result.toString();
 	}
 
+	/**
+	 * Converts PETSCII to screen RAM characters.
+	 * 
+	 * @param petscii PETSCII byte
+	 * @return screen RAM characters
+	 */
+	public static final int petsciiToScreenRam(final int i) {
+		if (i < 32) {
+			return i + 128;
+		}
+		if (i < 64) {
+			return i;
+		}
+		if (i < 96) {
+			return i - 64;
+		}
+		if (i < 128) {
+			return i - 32;
+		}
+		if (i < 160) {
+			return i + 164;
+		}
+		if (i < 192) {
+			return i - 64;
+		}
+		if (i < 224) {
+			return i - 128;
+		}
+		if (i < 255) {
+			return i - 128;
+		}
+		return 94;
+	}
+
 }

@@ -12,6 +12,7 @@ package sidplay;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static libsidplay.common.SIDEmu.NONE;
 import static libsidplay.sidtune.SidTune.RESET;
+import static libsidutils.Petscii.petsciiToScreenRam;
 import static sidplay.ini.IniDefaults.DEFAULT_AUDIO;
 import static sidplay.ini.IniDefaults.DEFAULT_TMP_DIR;
 import static sidplay.player.State.END;
@@ -579,7 +580,17 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 *
 	 * @param command command to type-in
 	 */
-	public final void typeInCommand(final String command) {
+	public final void typeInCommand(String command) {
+		String[] lines = command.split("\r");
+		for (String line : lines) {
+			int i = 1024 + 6 * 40;
+			for (char ch : line.toCharArray()) {
+				c64.getRAM()[i++] = (byte) (petsciiToScreenRam(ch & 0xff));
+			}
+			break;
+		}
+		int indexOf = command.indexOf('\r');
+		command = command.substring(indexOf);
 		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
 		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
 		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
@@ -1132,7 +1143,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * Get song length database info.
 	 *
 	 * @param function     SidDatabase function to apply
-	 * @param              <T> SidDatabase return type
+	 * @param <T>          SidDatabase return type
 	 * @param defaultValue default value, if database is not set
 	 * @return song length database info
 	 */

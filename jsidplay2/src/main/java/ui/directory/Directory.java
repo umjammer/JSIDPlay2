@@ -51,7 +51,7 @@ public class Directory extends C64VBox implements UIPart, C64Font {
 
 	private ObservableList<DirectoryItem> directoryEntries;
 
-	private ObjectProperty<File> autoStartFileProperty = new SimpleObjectProperty<>();
+	private ObjectProperty<String> autoStartFileProperty = new SimpleObjectProperty<>();
 
 	private int fontSet = TRUE_TYPE_FONT_BIG;
 	private int fontSetHeader = TRUE_TYPE_FONT_INVERSE_BIG;
@@ -105,25 +105,17 @@ public class Directory extends C64VBox implements UIPart, C64Font {
 
 	@FXML
 	private void autoStartProgram() {
-		try {
-			DirectoryItem dirItem = directory.getSelectionModel().getSelectedItem();
-			if (dirItem == null) {
-				return;
-			}
-			DirEntry dirEntry = dirItem.getDirEntry();
-			if (dirEntry != null) {
-				File autoStartFile = new File(util.getConfig().getSidplay2Section().getTmpDir(),
-						dirEntry.getValidFilename() + ".prg");
-				autoStartFile.deleteOnExit();
-				dirEntry.save(autoStartFile);
-				autoStartFileProperty.set(autoStartFile);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		DirectoryItem dirItem = directory.getSelectionModel().getSelectedItem();
+		if (dirItem == null) {
+			return;
+		}
+		DirEntry dirEntry = dirItem.getDirEntry();
+		if (dirEntry != null) {
+			autoStartFileProperty.set(dirEntry.getDirectoryLine());
 		}
 	}
 
-	public ObjectProperty<File> getAutoStartFileProperty() {
+	public ObjectProperty<String> getAutoStartFileProperty() {
 		return autoStartFileProperty;
 	}
 
