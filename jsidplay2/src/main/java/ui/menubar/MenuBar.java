@@ -1001,6 +1001,7 @@ public class MenuBar extends C64VBox implements UIPart {
 
 		btnNextFavoriteDisabledState.set(sidTune == RESET || state == State.QUIT
 				|| sidplay2Section.getPlaybackType() == PlaybackType.PLAYBACK_OFF);
+		btnNextSongDisabledState.set(sidTune == RESET || state == State.QUIT);
 
 		boolean isPlayOrPause = state == State.PLAY || state == State.PAUSE;
 
