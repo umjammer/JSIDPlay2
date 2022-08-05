@@ -1555,7 +1555,7 @@
 				// encodeURI() will not encode: ~!@#$&*()=:/,;?+'
 				// untested characters: !*=,;?
 				// tested characters: /~@#$&():+''
-				return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23");
+				return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23").replace(/&/g, "%26");
 			}
 			function toC64Chars(str, fontSet) {
 				var original = str;
