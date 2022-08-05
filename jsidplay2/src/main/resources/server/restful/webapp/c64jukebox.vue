@@ -796,7 +796,11 @@
 
 								<b-card-text>
 									<div class="sid">
-										<b-table striped bordered :items="translatedInfos" :fields="translatedFields"></b-table>
+										<b-table striped bordered :items="translatedInfos" :fields="translatedFields">
+											<template #cell(Value)="row">
+												<span :style="row.item.opacity? 'opacity: 0.5;' : ''">{{ row.item.Value }}</span>
+											</template>
+										</b-table>
 										<div class="picture-container">
 											<img :src="picture" id="img" class="picture" />
 										</div>
@@ -1876,6 +1880,7 @@
 							return {
 								Name: i18n.t(obj.Name),
 								Value: obj.Value,
+								opacity: obj.Name == 'HVSCEntry.path',
 							};
 						});
 					},
