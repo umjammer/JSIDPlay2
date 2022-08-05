@@ -1,2 +1,8 @@
 Release Notes:
 ==============
+
+JSIDPlay2:
+Bugfix: Changing sub-tunes was impossible, if favorites playback option was turned off.
+
+JSIDPlay2Server:
+- C64 Jukebox: Improvements for VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)

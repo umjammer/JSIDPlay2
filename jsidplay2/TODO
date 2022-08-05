@@ -1,6 +1,8 @@
 TODO:
 =====
 
+-  I'd like to request a new feature: an option that would switch between the 1,2...11 ordering and
+  the current default 3,4...11,1,2 ordering of the subsongs.
 - Test classes seem not always to work with JDK17.
 - Playlists are wanted to be shared online
 - the ability to have music playback occur alongside your SID dump feature. This would look a bit like a tracker,
