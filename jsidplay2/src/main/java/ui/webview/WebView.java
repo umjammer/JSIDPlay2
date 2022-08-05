@@ -1,6 +1,7 @@
 package ui.webview;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +123,7 @@ public class WebView extends C64VBox implements UIPart {
 										showTuneInfos(util.getPlayer().getTune(), targetFile);
 									}
 
-									convenience.autostart(targetFile);
+									convenience.autostart(targetFile, LEXICALLY_FIRST_MEDIA, null);
 									Platform.runLater(() -> util.setPlayingTab(WebView.this));
 								}
 							} catch (IOException | SidTuneError e) {

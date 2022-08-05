@@ -78,7 +78,7 @@ public class DirEntry {
 	 * @param fileType file type
 	 * @return quoted file name and type string
 	 */
-	public final static String convertFilename(final byte[] fileName, final byte fileType) {
+	public final static String toQuotedFilenameAndType(final byte[] fileName, final byte fileType) {
 		StringBuffer fn = new StringBuffer();
 		// BEGIN include filename in quotes
 		fn.append("\"");
@@ -106,10 +106,24 @@ public class DirEntry {
 	}
 
 	/**
+	 * Un-quote filename.
+	 * 
+	 * @param directoryLine
+	 * @return unquoted file name
+	 */
+	public final static String toFilename(String directoryLine) {
+		String[] parts = directoryLine.split("\"");
+		if (parts.length < 2) {
+			return "*";
+		}
+		return parts[1];
+	}
+
+	/**
 	 * Get string representation of this directory entry.
 	 */
 	public String getDirectoryLine() {
-		return String.format("%-3d  %s", blocks, convertFilename(filename, fileType));
+		return String.format("%-3d  %s", blocks, toQuotedFilenameAndType(filename, fileType));
 	}
 
 	/**
@@ -119,7 +133,7 @@ public class DirEntry {
 	 */
 	@JsonIgnore
 	public final String getValidFilename() {
-		final String convertFilename = convertFilename(filename, FILETYPE_NONE);
+		final String convertFilename = toQuotedFilenameAndType(filename, FILETYPE_NONE);
 		return convertFilename.substring(1, convertFilename.length() - 1).replace('/', '_');
 	}
 

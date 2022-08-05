@@ -1,7 +1,7 @@
 package libsidutils.directory;
 
 import static libsidutils.directory.DirEntry.FILETYPE_NONE;
-import static libsidutils.directory.DirEntry.convertFilename;
+import static libsidutils.directory.DirEntry.toQuotedFilenameAndType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +42,7 @@ public abstract class Directory {
 	public String getTitle() {
 		StringBuilder header = new StringBuilder();
 		header.append(singleSided ? "0 " : "1 ");
-		header.append(convertFilename(title, FILETYPE_NONE));
+		header.append(toQuotedFilenameAndType(title, FILETYPE_NONE));
 		if (id != null) {
 			header.append(" ");
 			for (byte element : id) {

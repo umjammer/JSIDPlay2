@@ -128,6 +128,10 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	private static final int PREV_SONG_TIMEOUT = 4;
 	/**
+	 * RAM screen address for a user typed-in command.
+	 */
+	private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
+	/**
 	 * RAM location for a user typed-in command.
 	 */
 	private static final int RAM_COMMAND = 0x277;
@@ -578,17 +582,22 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	/**
 	 * Simulate a user typed-in command.
 	 *
-	 * @param command command to type-in
+	 * @param multiLineCommand command to type-in
 	 */
-	public final void typeInCommand(String command) {
-		String[] lines = command.split("\r");
-		for (String line : lines) {
-			byte[] screenRam = petsciiToScreenRam(line);
-			System.arraycopy(screenRam, 0, c64.getRAM(), 1024 + 6 * 40 + 1, screenRam.length);
-			break;
+	public final void typeInCommand(final String multiLineCommand) {
+		String command;
+		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
+			String[] lines = multiLineCommand.split("\r");
+			for (String line : lines) {
+				byte[] screenRam = petsciiToScreenRam(line);
+				System.arraycopy(screenRam, 0, c64.getRAM(), RAM_COMMAND_SCREEN_ADDRESS, screenRam.length);
+				break;
+			}
+			int indexOf = multiLineCommand.indexOf('\r');
+			command = indexOf != -1 ? multiLineCommand.substring(indexOf) : "\r";
+		} else {
+			command = multiLineCommand;
 		}
-		int indexOf = command.indexOf('\r');
-		command = command.substring(indexOf);
 		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
 		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
 		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;

@@ -1,5 +1,7 @@
 package ui;
 
+import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -229,7 +231,7 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 		Optional<String> filename = filenames.stream().findFirst();
 		if (filename.isPresent()) {
 			try {
-				new Convenience(player).autostart(new File(filename.get()));
+				new Convenience(player).autostart(new File(filename.get()), LEXICALLY_FIRST_MEDIA, null);
 			} catch (IOException | SidTuneError e) {
 				System.err.println(e.getMessage());
 			}

@@ -1,5 +1,7 @@
 package ui.common;
 
+import static libsidutils.directory.DirEntry.toFilename;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -91,16 +93,12 @@ public class Convenience {
 	/**
 	 * Auto-start commands.
 	 */
-	private static final String LOAD_8_1_RUN = "LOAD\"*\",8,1\rRUN\r", LOAD_RUN = "LOAD\rRUN\r";
+	private static final String LOAD_8_1_RUN = "LOAD\"%s\",8,1\rRUN\r", LOAD_RUN = "LOAD\rRUN\r";
 
 	private Player player;
 
 	public Convenience(Player player) {
 		this.player = player;
-	}
-
-	public boolean autostart(File file) throws IOException, SidTuneError {
-		return autostart(file, LEXICALLY_FIRST_MEDIA, null);
 	}
 
 	/**
@@ -161,14 +159,17 @@ public class Convenience {
 				return true;
 			} else if (diskFileFilter.accept(toAttach)) {
 				player.insertDisk(toAttach);
-				player.resetC64(getDiskLoadCommand(dirEntry));
+				player.resetC64(String.format(LOAD_8_1_RUN, dirEntry != null ? toFilename(dirEntry) : "*"));
 				return true;
 			} else if (tapeFileFilter.accept(toAttach)) {
 				player.insertTape(toAttach);
 				player.resetC64(LOAD_RUN);
 				return true;
 			} else if (toAttach.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
-				playVideo(toAttach);
+				try (InputStream is = new ByteArrayInputStream(NUVIE_PLAYER)) {
+					player.insertCartridge(CartridgeType.REU, toAttach);
+					player.play(SidTune.load("nuvieplayer-v1.0.prg", is));
+				}
 				return true;
 			} else if (cartFileFilter.accept(toAttach)) {
 				player.insertCartridge(CartridgeType.CRT, toAttach);
@@ -177,21 +178,6 @@ public class Convenience {
 			}
 		}
 		return false;
-	}
-
-	private String getDiskLoadCommand(String dirEntry) {
-		if (dirEntry != null) {
-			return "LOAD\"" + getFilename(dirEntry) + "\",8,1\rRUN\r";
-		}
-		return LOAD_8_1_RUN;
-	}
-
-	private String getFilename(String dirEntry) {
-		String[] parts = dirEntry.split("\"");
-		if (parts.length < 2) {
-			return "";
-		}
-		return parts[1];
 	}
 
 	/**
@@ -257,12 +243,4 @@ public class Convenience {
 				|| tapeFileFilter.accept(file);
 	}
 
-	private void playVideo(File file) {
-		try (InputStream is = new ByteArrayInputStream(NUVIE_PLAYER)) {
-			player.insertCartridge(CartridgeType.REU, file);
-			player.play(SidTune.load("nuvieplayer-v1.0.prg", is));
-		} catch (IOException | SidTuneError e) {
-			System.err.println();
-		}
-	}
 }

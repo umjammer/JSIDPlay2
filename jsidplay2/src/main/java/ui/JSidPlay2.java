@@ -2,6 +2,7 @@ package ui;
 
 import static libsidplay.sidtune.SidTune.RESET;
 import static sidplay.Player.LAST_MODIFIED;
+import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -145,7 +146,7 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 						addView(Video.ID);
 						util.setPlayingTab(tabbedPane.getTabs().stream().filter(tab -> tab.getId().equals(Video.ID))
 								.findFirst().get().getContent());
-						new Convenience(util.getPlayer()).autostart(files.get(0));
+						new Convenience(util.getPlayer()).autostart(files.get(0), LEXICALLY_FIRST_MEDIA, null);
 					} catch (IOException | SidTuneError e) {
 						openErrorDialog(String.format(util.getBundle().getString("ERR_IO_ERROR"), e.getMessage()));
 					}
