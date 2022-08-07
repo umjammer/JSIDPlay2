@@ -5,9 +5,8 @@
 <title>WhatsSID</title>
 </head>
 <body>
-	<!--script src="https://unpkg.com/vue"></script-->
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="/static/vue@2.6.14/dist/vue.min.js"></script>
+	<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
 
 	<h1>WhatsSID?</h1>
 
