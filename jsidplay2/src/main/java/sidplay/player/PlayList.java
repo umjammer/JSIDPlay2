@@ -39,27 +39,29 @@ public class PlayList {
 	private PlayList() {
 	}
 
-	private PlayList(final IConfig config, final SidTune tune) {
+	private PlayList(final IConfig config, final SidTune tune, boolean firstPlayListEntryIsOne) {
 		this.config = config;
 		this.tune = tune;
 		this.current = tune.getInfo().getSelectedSong();
 		this.length = tune.getInfo().getSongs();
-		this.first = current;
+		this.first = firstPlayListEntryIsOne ? 1 : current;
 	}
 
 	/**
 	 * Get instance results in a new play-list each time the tune changes.
 	 *
-	 * @param config configuration
-	 * @param tune   SID tune
+	 * @param config                  configuration
+	 * @param tune                    SID tune
+	 * @param firstPlayListEntryIsOne First entry of the play-list is first song
+	 *                                (otherwise start song)
 	 * @return play list of the current tune
 	 */
-	public static PlayList getInstance(final IConfig config, final SidTune tune) {
+	public static PlayList getInstance(final IConfig config, final SidTune tune, boolean firstPlayListEntryIsOne) {
 		if (tune == SidTune.RESET) {
 			return NONE;
 		}
 		if (singleton.tune != tune) {
-			singleton = new PlayList(config, tune);
+			singleton = new PlayList(config, tune, firstPlayListEntryIsOne);
 		}
 		singleton.tune.getInfo().setSelectedSong(singleton.current);
 		singleton.tune.prepare();
@@ -221,4 +223,5 @@ public class PlayList {
 	 * Single instance play list per tune.
 	 */
 	private static PlayList singleton = NONE;
+
 }

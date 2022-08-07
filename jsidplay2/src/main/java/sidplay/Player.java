@@ -231,6 +231,10 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	private boolean psid64Detected;
 	/**
+	 * First entry of the play-list is first song (otherwise start song).
+	 */
+	private boolean firstPlayListEntryIsOne;
+	/**
 	 * SID builder being used to create SID chips (real hardware or emulation).
 	 */
 	private SIDBuilder sidBuilder;
@@ -329,7 +333,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	public Player(final IConfig config, final Class<? extends MOS6510> cpuClass) {
 		super(config, cpuClass);
-		this.playList = PlayList.getInstance(config, tune);
+		this.playList = PlayList.getInstance(config, tune, firstPlayListEntryIsOne);
 		this.timer = new Timer(this) {
 
 			/**
@@ -403,6 +407,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		checkDefaultLengthInRecordMode = true;
 		checkLoopOffInRecordMode = true;
 		forceCheckSongLength = false;
+		firstPlayListEntryIsOne = false;
 		recordingFilenameProvider = tune -> new File(config.getSidplay2Section().getTmpDir(), "jsidplay2")
 				.getAbsolutePath();
 	}
@@ -796,7 +801,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		final IAudioSection audioSection = config.getAudioSection();
 
 		fastForwardVICFrames = 0;
-		playList = PlayList.getInstance(config, tune);
+		playList = PlayList.getInstance(config, tune, firstPlayListEntryIsOne);
 		timer.setStart(sidplay2Section.getStartTime());
 		stateProperty.addListener(pauseListener);
 
@@ -948,6 +953,16 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	public void setForceCheckSongLength(boolean forceCheckSongLength) {
 		this.forceCheckSongLength = forceCheckSongLength;
+	}
+
+	/**
+	 * Set first entry of the play-list is first song (otherwise start song).
+	 * 
+	 * @param firstPlayListEntryIsOne First entry of the play-list is first song
+	 *                                (otherwise start song)
+	 */
+	public void setFirstPlayListEntryIsOne(boolean firstPlayListEntryIsOne) {
+		this.firstPlayListEntryIsOne = firstPlayListEntryIsOne;
 	}
 
 	/**

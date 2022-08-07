@@ -3,6 +3,7 @@ Release Notes:
 
 JSIDPlay2:
 Bugfix: Changing sub-tunes was impossible, if favorites playback option was turned off.
+Sub song ordering has been changed to start with 1 instead of the start song (E.G. Last_Ninja.sid: 1..(3)..11) for the UI version.
 
 JSIDPlay2Server:
 - C64 Jukebox: Improvements for VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)
