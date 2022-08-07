@@ -287,7 +287,7 @@
 															<span>{{ $t("downloadMP3") }}</span></b-button
 														>
 													</div>
-													<div>
+													<div v-show="isSid(entry)">
 														<b-button
 															size="sm"
 															style="font-size: smaller; padding: 2px 4px"
@@ -1923,6 +1923,15 @@
 							filename.endsWith(".mus") ||
 							filename.endsWith(".str") ||
 							filename.endsWith(".mp3")
+						);
+					},
+					isSid: function (entry) {
+						let filename = entry.filename.toLowerCase();
+						return (
+							filename.endsWith(".sid") ||
+							filename.endsWith(".dat") ||
+							filename.endsWith(".mus") ||
+							filename.endsWith(".str")
 						);
 					},
 					isVideo: function (entry) {
