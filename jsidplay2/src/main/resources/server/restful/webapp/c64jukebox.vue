@@ -2267,7 +2267,6 @@
 								});
 							})
 							.catch((error) => {
-								this.directory = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingSids = false));
