@@ -43,7 +43,7 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 	}
 
 	/**
-	 * Set default emulation to RESID for Player running as a RTMP live video
+	 * Set default emulation to RESIDFP for Player running as a RTMP live video
 	 * stream.
 	 *
 	 * {@code
