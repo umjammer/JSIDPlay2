@@ -93,6 +93,7 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 	private int statusTextOffset, statusTextX, statusTextOverflow;
 	private long frameNo, framesPerKeyFrames, firstAudioTimeStamp, firstVideoTimeStamp;
 	private double ticksPerMicrosecond;
+	private int audioDelayInMs;
 
 	private ByteBuffer sampleBuffer;
 
@@ -244,6 +245,10 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 		this.statusTextX = statusTextX;
 	}
 
+	public void setAudioDelay(int audioDelayInMs) {
+		this.audioDelayInMs = audioDelayInMs;
+	}
+
 	private IStreamCoder createVideoCoder(IAudioSection audioSection, CPUClock cpuClock) {
 		IStreamCoder videoCoder = container.addNewStream(getVideoCodec()).getStreamCoder();
 		videoCoder.setNumPicturesInGroupOfPictures(audioSection.getVideoCoderNumPicturesInGroupOfPictures());
@@ -284,7 +289,7 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 		if (firstAudioTimeStamp == 0) {
 			firstAudioTimeStamp = now;
 		}
-		return (long) ((now - firstAudioTimeStamp) / ticksPerMicrosecond);
+		return (long) ((now - firstAudioTimeStamp) / ticksPerMicrosecond) + (audioDelayInMs * 1000);
 	}
 
 	private long getVideoTimeStamp() {

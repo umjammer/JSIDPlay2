@@ -931,6 +931,10 @@
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
+										<label for="audioDelay">{{ $t("convertMessages.audioDelay") }}</label>
+										<input id="audioDelay" v-model.number="convertOptions.audioDelay" type="number" />
+									</div>
+									<div class="settings-box">
 										<div>
 											<label for="audioCoderBitRate">{{
 												$t("convertMessages.config.audioSection.audioCoderBitRate")
@@ -2186,6 +2190,8 @@
 							this.convertOptions.rtmp +
 							"&pressSpaceInterval=" +
 							this.convertOptions.pressSpaceInterval +
+							"&audioDelay=" +
+							this.convertOptions.audioDelay +
 							"&status=" +
 							this.convertOptions.status +
 							"&jiffydos=" +
@@ -2585,9 +2591,13 @@
 					if (localStorage.convertOptions) {
 						// restore configuration from last run
 						this.convertOptions = JSON.parse(localStorage.convertOptions);
+						if (typeof this.convertOptions.audioDelay === "undefined") {
+						    this.convertOptions.audioDelay = 200;
+						}
 					} else {
 						// initialize configuration
 						this.convertOptions.rtmp = false;
+						this.convertOptions.audioDelay = 200;
 						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.audioSection.reverbBypass = false;
 						this.convertOptions.config.audioSection.mainBalance = 0.3;

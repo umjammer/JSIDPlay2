@@ -81,6 +81,7 @@ import sidplay.audio.AVIDriver.AVIFileDriver;
 import sidplay.audio.Audio;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.FLACDriver.FLACStreamDriver;
+import sidplay.audio.FLVDriver;
 import sidplay.audio.FLVDriver.FLVFileDriver;
 import sidplay.audio.FLVDriver.FLVStreamDriver;
 import sidplay.audio.MP3Driver.MP3StreamDriver;
@@ -99,6 +100,17 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ServletParameters extends ServletBaseParameters {
+
+		private Integer audioDelay = Integer.valueOf(0);
+
+		public Integer getAudioDelay() {
+			return audioDelay;
+		}
+
+		@Parameter(names = { "--audioDelay" }, descriptionKey = "AUDIO_DELAY", order = -9)
+		public void setAudioDelay(Integer audioDelay) {
+			this.audioDelay = audioDelay;
+		}
 
 		private Integer startSong;
 
@@ -253,7 +265,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				UUID uuid = UUID.randomUUID();
 
 				Audio audio = getVideoFormat(config);
-				AudioDriver driver = getAudioDriverOfVideoFormat(audio, uuid, servletParameters.download);
+				AudioDriver driver = getAudioDriverOfVideoFormat(audio, uuid, servletParameters);
 
 				if (Boolean.FALSE.equals(servletParameters.download) && audio == FLV) {
 					if (getAllStackTraces().keySet().stream().map(Thread::getName).filter("RTMP"::equals)
@@ -381,15 +393,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private AudioDriver getAudioDriverOfVideoFormat(Audio audio, UUID uuid, Boolean download) {
+	private AudioDriver getAudioDriverOfVideoFormat(Audio audio, UUID uuid, ServletParameters servletParameters) {
 		switch (audio) {
 		case FLV:
 		default:
-			if (Boolean.TRUE.equals(download)) {
-				return new FLVFileDriver();
+			AudioDriver audioDriver;
+			FLVDriver flvDriver;
+			if (Boolean.TRUE.equals(servletParameters.download)) {
+				audioDriver = flvDriver = new FLVFileDriver();
 			} else {
-				return new ProxyDriver(new SleepDriver(), new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid));
+				flvDriver = new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid);
+				audioDriver = new ProxyDriver(new SleepDriver(), flvDriver);
 			}
+			flvDriver.setAudioDelay(servletParameters.getAudioDelay());
+			return audioDriver;
 		case AVI:
 			return new AVIFileDriver();
 		case MP4:
