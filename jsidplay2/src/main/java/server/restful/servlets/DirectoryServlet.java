@@ -17,7 +17,6 @@ import java.util.Properties;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,7 +72,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			}
 			List<String> files = getDirectory(servletParameters, request.isUserInRole(ROLE_ADMIN));
 
-			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(files));
+			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(files));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

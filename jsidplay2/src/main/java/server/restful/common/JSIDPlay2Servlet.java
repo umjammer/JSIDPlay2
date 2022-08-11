@@ -56,6 +56,7 @@ import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
+import ui.common.filefilter.AudioTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TapeFileFilter;
@@ -66,11 +67,12 @@ import ui.entities.config.Configuration;
 @SuppressWarnings("serial")
 public abstract class JSIDPlay2Servlet extends HttpServlet {
 
-	private static final VideoTuneFileFilter VIDEO_TUNE_FILE_FILTER = new VideoTuneFileFilter();
-	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
-	private static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
-	private static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule())
+	protected static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
+	protected static final VideoTuneFileFilter VIDEO_TUNE_FILE_FILTER = new VideoTuneFileFilter();
+	protected static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
+	protected static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
+	protected static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
+	protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule())
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	protected static final String C64_MUSIC = "/C64Music";
@@ -145,7 +147,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		try (ServletInputStream inputStream = request.getInputStream()) {
 			String contentType = request.getContentType();
 			if (contentType == null || MIME_TYPE_JSON.isCompatible(contentType)) {
-				return new ObjectMapper().readValue(inputStream, tClass);
+				return OBJECT_MAPPER.readValue(inputStream, tClass);
 			} else if (MIME_TYPE_XML.isCompatible(contentType)) {
 				return (T) JAXBContext.newInstance(tClass).createUnmarshaller().unmarshal(inputStream);
 			} else if (ServletFileUpload.isMultipartContent(request)) {
@@ -179,7 +181,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
 			if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
 				response.setContentType(MIME_TYPE_JSON.toString());
-				new ObjectMapper().writeValue(out, result);
+				OBJECT_MAPPER.writeValue(out, result);
 			} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
 				response.setContentType(MIME_TYPE_XML.toString());
 				JAXBContext.newInstance(tClass).createMarshaller().marshal(result, out);

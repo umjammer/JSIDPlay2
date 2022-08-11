@@ -22,7 +22,7 @@ public interface IServletSystemProperties {
 	/**
 	 * JSIDPlay2Server cache control max age of static resources in s.
 	 */
-	int STATIC_RES_MAX_AGE = valueOf(getProperty("jsidplay2.connection.timeout", String.valueOf(30 * 24 * 60 * 60)));
+	int STATIC_RES_MAX_AGE = valueOf(getProperty("jsidplay2.cache.max.age", String.valueOf(30 * 24 * 60 * 60)));
 
 	//
 	// ConvertServlet

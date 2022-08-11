@@ -90,11 +90,6 @@ import sidplay.audio.SleepDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
 import ui.common.Convenience;
-import ui.common.filefilter.AudioTuneFileFilter;
-import ui.common.filefilter.CartFileFilter;
-import ui.common.filefilter.DiskFileFilter;
-import ui.common.filefilter.TapeFileFilter;
-import ui.common.filefilter.VideoTuneFileFilter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -194,11 +189,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	public static final String CONVERT_PATH = "/convert";
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(ConvertServlet.class.getName());
-	private static final AudioTuneFileFilter audioTuneFileFilter = new AudioTuneFileFilter();
-	private static final VideoTuneFileFilter videoTuneFileFilter = new VideoTuneFileFilter();
-	private static final DiskFileFilter diskFileFilter = new DiskFileFilter();
-	private static final TapeFileFilter tapeFileFilter = new TapeFileFilter();
-	private static final CartFileFilter cartFileFilter = new CartFileFilter();
 
 	public ConvertServlet(Configuration configuration, Properties directoryProperties) {
 		super(configuration, directoryProperties);
@@ -243,7 +233,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 			final IniConfig config = servletParameters.config;
 
-			if (audioTuneFileFilter.accept(file)) {
+			if (AUDIO_TUNE_FILE_FILTER.accept(file)) {
 
 				Audio audio = getAudioFormat(config);
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream());
@@ -255,8 +245,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				response.setContentType(getMimeType(driver.getExtension()).toString());
 				convert2audio(config, file, driver, servletParameters);
 
-			} else if (videoTuneFileFilter.accept(file) || cartFileFilter.accept(file) || diskFileFilter.accept(file)
-					|| tapeFileFilter.accept(file)) {
+			} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
+					|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
 
 				UUID uuid = UUID.randomUUID();
 

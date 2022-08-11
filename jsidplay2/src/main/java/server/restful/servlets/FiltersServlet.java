@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,7 +42,7 @@ public class FiltersServlet extends JSIDPlay2Servlet {
 		try {
 			List<String> filters = getFilters();
 
-			setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(filters));
+			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(filters));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

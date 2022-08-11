@@ -20,7 +20,6 @@ import java.util.stream.IntStream;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,16 +75,16 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			}
 
 			final File file = getAbsoluteFile(servletParameters, request.isUserInRole(ROLE_ADMIN));
+			HVSCEntry hvscEntry = createHVSCEntry(file);
 
+			Object tuneInfos;
 			if (servletParameters.list) {
-				List<Map<String, String>> tuneInfos = hvscEntry2SortedList(createHVSCEntry(file));
-
-				setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(tuneInfos));
+				tuneInfos = hvscEntry2SortedList(hvscEntry);
 			} else {
-				TreeMap<String, String> tuneInfos = hvscEntry2SortedMap(createHVSCEntry(file));
-
-				setOutput(response, MIME_TYPE_JSON, new ObjectMapper().writer().writeValueAsString(tuneInfos));
+				tuneInfos = hvscEntry2SortedMap(hvscEntry);
 			}
+			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(tuneInfos));
+
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
