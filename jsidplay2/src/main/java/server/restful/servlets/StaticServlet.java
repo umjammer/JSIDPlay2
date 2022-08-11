@@ -80,6 +80,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				ContentTypeAndFileExtensions mimeType = getMimeType(
 						PathUtils.getFilenameSuffix(servletParameters.filePath));
 				if (mimeType.isText()) {
+					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
 					setOutput(response, mimeType, ZipFileUtils.convertStreamToString(source, "UTF-8", replacements));
 				} else {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
