@@ -1,5 +1,6 @@
 package server.restful.servlets;
 
+import static java.lang.Math.min;
 import static java.lang.String.format;
 import static java.lang.Thread.getAllStackTraces;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -15,9 +16,10 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
+import static server.restful.common.IServletSystemProperties.MAX_AUD_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
-import static server.restful.common.IServletSystemProperties.MAX_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.MAX_VID_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.NOTIFY_FOR_HLS;
 import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
 import static server.restful.common.IServletSystemProperties.RTMP_DOWNLOAD_URL;
@@ -345,14 +347,19 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	private void convert2audio(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters)
 			throws IOException, SidTuneError {
+		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
+
 		Player player = new Player(config);
+		if (Boolean.TRUE.equals(servletParameters.download)) {
+			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
+		}
 		File root = configuration.getSidplay2Section().getHvsc();
 		if (root != null) {
 			player.setSidDatabase(new SidDatabase(root));
 		}
 		player.setAudioDriver(driver);
 		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
-		player.setDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
+		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 
@@ -398,12 +405,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		Player player = new Player(config);
 		if (Boolean.TRUE.equals(servletParameters.download)) {
-			sidplay2Section.setDefaultPlayLength(Math.min(sidplay2Section.getDefaultPlayLength(), MAX_DOWNLOAD_LENGTH));
+			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_VID_DOWNLOAD_LENGTH));
 			videoFile = createVideoFile(player, driver);
 		}
 		player.setAudioDriver(driver);
 		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
-		player.setDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
+		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(true);
 

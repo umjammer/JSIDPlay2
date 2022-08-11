@@ -165,7 +165,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	private SidTune tune;
 	/**
-	 * Auto-start command to be typed-in after reset.
+	 * Auto-start command to be typed-in after reset (PETSCII).
 	 */
 	private String command;
 	/**
@@ -587,7 +587,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	/**
 	 * Simulate a user typed-in command.
 	 *
-	 * @param multiLineCommand command to type-in
+	 * @param multiLineCommand command to type-in (PETSCII)
 	 */
 	public final void typeInCommand(final String multiLineCommand) {
 		String command;
@@ -609,7 +609,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	}
 
 	/**
-	 * Enter basic command after reset.
+	 * Enter basic command after reset (PETSCII).
 	 *
 	 * @param command basic command after reset
 	 */
@@ -933,7 +933,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * 
 	 * @param checkDefaultLengthInRecordMode check default length in record mode
 	 */
-	public void setDefaultLengthInRecordMode(boolean checkDefaultLengthInRecordMode) {
+	public void setCheckDefaultLengthInRecordMode(boolean checkDefaultLengthInRecordMode) {
 		this.checkDefaultLengthInRecordMode = checkDefaultLengthInRecordMode;
 	}
 
