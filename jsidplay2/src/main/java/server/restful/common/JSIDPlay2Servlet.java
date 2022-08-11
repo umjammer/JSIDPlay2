@@ -117,6 +117,70 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		log(thread(thread) + t.getMessage());
 	}
 
+	private String thread() {
+		return thread(Thread.currentThread());
+	}
+
+	private String thread(Thread thread) {
+		StringBuilder result = new StringBuilder();
+		result.append(thread.getName());
+		result.append(": ");
+		return result.toString();
+	}
+
+	private String request(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		result.append(request.getMethod());
+		result.append(" ");
+		result.append(request.getRequestURI());
+		return result.toString();
+	}
+
+	private String queryString(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		if (request.getQueryString() != null) {
+			result.append("?");
+			result.append(request.getQueryString());
+		}
+		return result.toString();
+	}
+
+	private String remoteAddr(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		result.append(", from ");
+		result.append(request.getRemoteAddr());
+		result.append(" (");
+		result.append(request.getRemotePort());
+		result.append(")");
+		return result.toString();
+	}
+
+	private String localAddr(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		result.append(", to ");
+		result.append(request.getLocalAddr());
+		result.append(" (");
+		result.append(request.getLocalPort());
+		result.append(")");
+		return result.toString();
+	}
+
+	private String memory() {
+		StringBuilder result = new StringBuilder();
+		Runtime runtime = Runtime.getRuntime();
+		result.append(String.format(", %,dMb/%,dMb", runtime.totalMemory() - runtime.freeMemory() >> 20,
+				runtime.maxMemory() >> 20));
+		return result.toString();
+	}
+
+	private String[] getRequestParameters(HttpServletRequest request) {
+		return concat(Collections.list(request.getParameterNames()).stream()
+				.flatMap(name -> asList(request.getParameterValues(name)).stream().filter(v -> !"null".equals(v))
+						.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
+				.flatMap(Function.identity()),
+				Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
+	}
+
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
 			final Object parameterObject, String programName) throws IOException {
 		return parseRequestParameters(request, response, parameterObject, programName, false);
@@ -132,14 +196,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		commander.setUsageFormatter(new ServletUsageFormatter(commander, request, response));
 		commander.parse(getRequestParameters(request));
 		return commander;
-	}
-
-	private String[] getRequestParameters(HttpServletRequest request) {
-		return concat(Collections.list(request.getParameterNames()).stream()
-				.flatMap(name -> asList(request.getParameterValues(name)).stream().filter(v -> !"null".equals(v))
-						.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
-				.flatMap(Function.identity()),
-				Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -315,62 +371,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			ZipFileUtils.copy(file, out);
 		}
 		return targetFile;
-	}
-
-	private String thread() {
-		return thread(Thread.currentThread());
-	}
-
-	private String thread(Thread thread) {
-		StringBuilder result = new StringBuilder();
-		result.append(thread.getName());
-		result.append(": ");
-		return result.toString();
-	}
-
-	private String request(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append(request.getMethod());
-		result.append(" ");
-		result.append(request.getRequestURI());
-		return result.toString();
-	}
-
-	private String queryString(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		if (request.getQueryString() != null) {
-			result.append("?");
-			result.append(request.getQueryString());
-		}
-		return result.toString();
-	}
-
-	private String remoteAddr(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append(", from ");
-		result.append(request.getRemoteAddr());
-		result.append(" (");
-		result.append(request.getRemotePort());
-		result.append(")");
-		return result.toString();
-	}
-
-	private String localAddr(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append(", to ");
-		result.append(request.getLocalAddr());
-		result.append(" (");
-		result.append(request.getLocalPort());
-		result.append(")");
-		return result.toString();
-	}
-
-	private String memory() {
-		StringBuilder result = new StringBuilder();
-		Runtime runtime = Runtime.getRuntime();
-		result.append(String.format(", %,dMb/%,dMb", runtime.totalMemory() - runtime.freeMemory() >> 20,
-				runtime.maxMemory() >> 20));
-		return result.toString();
 	}
 
 }
