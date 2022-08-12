@@ -410,6 +410,24 @@ public interface IAudioSection {
 	void setVideoCoderPreset(VideoCoderPreset preset);
 
 	/**
+	 * Video Driver: Getter of the audio delay to sync audio and video. A positive
+	 * value will delay the audio while a negative value will hasten the audio in
+	 * the video.
+	 * 
+	 * @return audio delay to sync audio and video
+	 */
+	int getVideoCoderAudioDelay();
+
+	/**
+	 * Video Driver: Setter of the audio delay to sync audio and video. A positive
+	 * value will delay the audio while a negative value will hasten the audio in
+	 * the video.
+	 * 
+	 * @param audioDelay audio delay to sync audio and video
+	 */
+	void setVideoCoderAudioDelay(int audioDelay);
+
+	/**
 	 * Getter of the delay bypass setting
 	 *
 	 * @return delay bypass setting

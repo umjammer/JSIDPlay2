@@ -36,6 +36,7 @@ import static sidplay.ini.IniDefaults.DEFAULT_THIRD_DELAY;
 import static sidplay.ini.IniDefaults.DEFAULT_THIRD_VOLUME;
 import static sidplay.ini.IniDefaults.DEFAULT_VBR;
 import static sidplay.ini.IniDefaults.DEFAULT_VBR_QUALITY;
+import static sidplay.ini.IniDefaults.DEFAULT_VIDEO_CODER_AUDIO_DELAY;
 import static sidplay.ini.IniDefaults.DEFAULT_VIDEO_CODER_BIT_RATE;
 import static sidplay.ini.IniDefaults.DEFAULT_VIDEO_CODER_BIT_RATE_TOLERANCE;
 import static sidplay.ini.IniDefaults.DEFAULT_VIDEO_CODER_GLOBAL_QUALITY;
@@ -572,6 +573,23 @@ public class AudioSection implements IAudioSection {
 	@Override
 	public void setVideoCoderPreset(VideoCoderPreset videoEncoderPreset) {
 		this.videoCoderPreset.set(videoEncoderPreset);
+	}
+
+	private ShadowField<IntegerProperty, Number> videoCoderAudioDelay = new ShadowField<>(
+			number -> new SimpleIntegerProperty(number.intValue()), DEFAULT_VIDEO_CODER_AUDIO_DELAY);
+
+	@Override
+	public int getVideoCoderAudioDelay() {
+		return videoCoderAudioDelay.get().intValue();
+	}
+
+	@Override
+	public void setVideoCoderAudioDelay(int audioDelay) {
+		this.videoCoderAudioDelay.set(audioDelay);
+	}
+
+	public final IntegerProperty videoCoderAudioDelayProperty() {
+		return videoCoderAudioDelay.property();
 	}
 
 	public final ObjectProperty<VideoCoderPreset> sidVideoEncoderPresetProperty() {

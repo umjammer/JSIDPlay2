@@ -137,6 +137,7 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 		statusTextOffset = MAX_WIDTH * ((cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) + STATUS_TEXT_Y);
 		statusTextX = 0;
 		statusTextOverflow = 0;
+		audioDelayInMs = audioSection.getVideoCoderAudioDelay();
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
 		framesPerKeyFrames = (int) cpuClock.getScreenRefresh();
 
@@ -243,10 +244,6 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 
 	public void setStatusTextX(int statusTextX) {
 		this.statusTextX = statusTextX;
-	}
-
-	public void setAudioDelay(int audioDelayInMs) {
-		this.audioDelayInMs = audioDelayInMs;
 	}
 
 	private IStreamCoder createVideoCoder(IAudioSection audioSection, CPUClock cpuClock) {

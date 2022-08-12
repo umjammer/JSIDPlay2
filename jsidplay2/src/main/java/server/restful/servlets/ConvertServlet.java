@@ -81,7 +81,6 @@ import sidplay.audio.AVIDriver.AVIFileDriver;
 import sidplay.audio.Audio;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.FLACDriver.FLACStreamDriver;
-import sidplay.audio.FLVDriver;
 import sidplay.audio.FLVDriver.FLVFileDriver;
 import sidplay.audio.FLVDriver.FLVStreamDriver;
 import sidplay.audio.MP3Driver.MP3StreamDriver;
@@ -100,17 +99,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ServletParameters extends ServletBaseParameters {
-
-		private Integer audioDelay = Integer.valueOf(0);
-
-		public Integer getAudioDelay() {
-			return audioDelay;
-		}
-
-		@Parameter(names = { "--audioDelay" }, descriptionKey = "AUDIO_DELAY", order = -9)
-		public void setAudioDelay(Integer audioDelay) {
-			this.audioDelay = audioDelay;
-		}
 
 		private Integer startSong;
 
@@ -397,16 +385,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		switch (audio) {
 		case FLV:
 		default:
-			AudioDriver audioDriver;
-			FLVDriver flvDriver;
 			if (Boolean.TRUE.equals(servletParameters.download)) {
-				audioDriver = flvDriver = new FLVFileDriver();
+				return new FLVFileDriver();
 			} else {
-				flvDriver = new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid);
-				audioDriver = new ProxyDriver(new SleepDriver(), flvDriver);
+				return new ProxyDriver(new SleepDriver(), new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid));
 			}
-			flvDriver.setAudioDelay(servletParameters.getAudioDelay());
-			return audioDriver;
 		case AVI:
 			return new AVIFileDriver();
 		case MP4:

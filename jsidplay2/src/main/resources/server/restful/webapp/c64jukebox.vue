@@ -931,8 +931,8 @@
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
-										<label for="audioDelay">{{ $t("convertMessages.audioDelay") }}</label>
-										<input id="audioDelay" v-model.number="convertOptions.audioDelay" type="number" />
+										<label for="videoCoderAudioDelay">{{ $t("convertMessages.config.audioSection.videoCoderAudioDelay") }}</label>
+										<input id="videoCoderAudioDelay" v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay" type="number" />
 									</div>
 									<div class="settings-box">
 										<div>
@@ -2120,6 +2120,8 @@
 							this.convertOptions.config.audioSection.audioCoderBitRate +
 							"&vcBitRate=" +
 							this.convertOptions.config.audioSection.videoCoderBitRate +
+							"&vcAudioDelay=" +
+							this.convertOptions.config.audioSection.videoCoderAudioDelay +
 							"&delayBypass=" +
 							this.convertOptions.config.audioSection.delayBypass +
 							"&reverbBypass=" +
@@ -2190,8 +2192,6 @@
 							this.convertOptions.rtmp +
 							"&pressSpaceInterval=" +
 							this.convertOptions.pressSpaceInterval +
-							"&audioDelay=" +
-							this.convertOptions.audioDelay +
 							"&status=" +
 							this.convertOptions.status +
 							"&jiffydos=" +
@@ -2591,13 +2591,13 @@
 					if (localStorage.convertOptions) {
 						// restore configuration from last run
 						this.convertOptions = JSON.parse(localStorage.convertOptions);
-						if (typeof this.convertOptions.audioDelay === "undefined") {
-						    this.convertOptions.audioDelay = 200;
+						// migration:
+						if (typeof this.convertOptions.config.audioSection.videoCoderAudioDelay === "undefined") {
+						    this.convertOptions.config.audioSection.videoCoderAudioDelay = 0;
 						}
 					} else {
 						// initialize configuration
 						this.convertOptions.rtmp = false;
-						this.convertOptions.audioDelay = 200;
 						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.audioSection.reverbBypass = false;
 						this.convertOptions.config.audioSection.mainBalance = 0.3;

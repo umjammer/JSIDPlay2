@@ -117,6 +117,7 @@ public interface IniDefaults {
 	int DEFAULT_VIDEO_CODER_BIT_RATE_TOLERANCE = AUDIO_SECTION.getVideoCoderBitRateTolerance();
 	int DEFAULT_VIDEO_CODER_GLOBAL_QUALITY = AUDIO_SECTION.getVideoCoderGlobalQuality();
 	VideoCoderPreset DEFAULT_VIDEO_CODER_PRESET = AUDIO_SECTION.getVideoCoderPreset();
+	int DEFAULT_VIDEO_CODER_AUDIO_DELAY = AUDIO_SECTION.getVideoCoderAudioDelay();
 	boolean DEFAULT_EXSID_FAKE_STEREO = AUDIO_SECTION.isExsidFakeStereo();
 	boolean DEFAULT_DELAY_BYPASS = AUDIO_SECTION.getDelayBypass();
 	int DEFAULT_DELAY = AUDIO_SECTION.getDelay();
