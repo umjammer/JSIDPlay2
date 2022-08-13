@@ -38,8 +38,8 @@ import javafx.util.Duration;
 import libsidplay.Ultimate64;
 import libsidplay.common.CPUClock;
 import libsidplay.common.VICChipModel;
+import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.PALEmulation;
-import libsidplay.components.mos656x.Palette;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidutils.fingerprinting.IFingerprintMatcher;
@@ -171,7 +171,7 @@ public class Ultimate64Window extends C64Window implements Ultimate64 {
 
 			palEmulation = new PALEmulation(VICChipModel.MOS6567R8);
 			palEmulation.setPalEmulationEnable(enablePalEmulation.isSelected());
-			Palette palette = palEmulation.getPalette();
+			IPalette palette = palEmulation.getPalette();
 			palette.setBrightness(sidplay2Section.getBrightness());
 			palette.setContrast(sidplay2Section.getContrast());
 			palette.setGamma(sidplay2Section.getGamma());

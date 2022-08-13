@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import libsidplay.common.VICChipModel;
 
-public class PALEmulation {
+public class PALEmulation implements IPALEmulation {
 	/** Alpha channel of ARGB pixel data. */
 	private static final int ALPHA = 0xff000000;
 
@@ -47,10 +47,12 @@ public class PALEmulation {
 		this.palEmulationEnable = true;
 	}
 
+	@Override
 	public void setPalEmulationEnable(boolean palEmulationEnable) {
 		this.palEmulationEnable = palEmulationEnable;
 	}
 
+	@Override
 	public void setVicPaletteNoPal(int[] vicPaletteNoPal) {
 		assert vicPaletteNoPal.length == 16;
 
@@ -62,13 +64,15 @@ public class PALEmulation {
 	 *
 	 * @return The currently used palette.
 	 */
-	public Palette getPalette() {
+	@Override
+	public IPalette getPalette() {
 		return palette;
 	}
 
 	/**
 	 * Updates the palette using the current palette settings.
 	 */
+	@Override
 	public void updatePalette() {
 		palette.calculatePalette(Palette.buildPaletteVariant(model));
 		System.arraycopy(palette.getEvenLines(), 0, combinedLinesEven, 0, combinedLinesEven.length);
@@ -83,6 +87,7 @@ public class PALEmulation {
 	 * @param rasterY      current raster line
 	 * @param isFrameStart a new frame is about to start?
 	 */
+	@Override
 	public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
 		if (isFrameStart) {
 			/* current row odd? -> start with even, init, swap */
@@ -105,6 +110,7 @@ public class PALEmulation {
 	 *                           0x0-0xF)
 	 * @param pixelConsumer      consumer of the corresponding RGBA pixels
 	 */
+	@Override
 	public void drawPixels(int graphicsDataBuffer, Consumer<Integer> pixelConsumer) {
 		/* Pixels arrive in 0x12345678 order. */
 		for (int j = 0; j < 2; j++) {
@@ -127,5 +133,69 @@ public class PALEmulation {
 		}
 
 	}
+
+	public static final IPALEmulation NONE = new IPALEmulation() {
+		@Override
+		public void updatePalette() {
+		}
+
+		@Override
+		public void setVicPaletteNoPal(int[] vicPaletteNoPal) {
+		}
+
+		@Override
+		public void setPalEmulationEnable(boolean palEmulationEnable) {
+		}
+
+		@Override
+		public IPalette getPalette() {
+			return new IPalette() {
+
+				@Override
+				public void setTint(float tint) {
+				}
+
+				@Override
+				public void setSaturation(float saturation) {
+				}
+
+				@Override
+				public void setPhaseShift(float phaseShift) {
+				}
+
+				@Override
+				public void setOffset(float offset) {
+				}
+
+				@Override
+				public void setLuminanceC(float luminanceC) {
+				}
+
+				@Override
+				public void setGamma(float gamma) {
+				}
+
+				@Override
+				public void setDotCreep(float dotCreep) {
+				}
+
+				@Override
+				public void setContrast(float contrast) {
+				}
+
+				@Override
+				public void setBrightness(float brightness) {
+				}
+			};
+		}
+
+		@Override
+		public void drawPixels(int graphicsDataBuffer, Consumer<Integer> pixelConsumer) {
+		}
+
+		@Override
+		public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
+		}
+	};
 
 }

@@ -66,6 +66,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.cart.CartridgeType;
+import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
@@ -350,6 +351,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 
 		Player player = new Player(config);
+		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
 		}

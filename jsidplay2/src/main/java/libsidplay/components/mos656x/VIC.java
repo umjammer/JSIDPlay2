@@ -110,7 +110,7 @@ public abstract class VIC extends Bank {
 	/** xscroll-delayed phi1 data */
 	private int phi1DataPipe;
 
-	protected PALEmulation palEmulation;
+	protected IPALEmulation palEmulation;
 
 	/** PLA chip */
 	private final PLA pla;
@@ -1103,8 +1103,12 @@ public abstract class VIC extends Bank {
 	/**
 	 * PAL emulation
 	 */
-	public PALEmulation getPalEmulation() {
+	public IPALEmulation getPalEmulation() {
 		return palEmulation;
+	}
+
+	public void setPalEmulation(IPALEmulation palEmulation) {
+		this.palEmulation = palEmulation;
 	}
 
 	/**

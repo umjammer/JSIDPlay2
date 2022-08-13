@@ -58,7 +58,7 @@ import libsidplay.common.VICChipModel;
  *
  * @author Antti Lankila
  */
-public class Palette {
+public class Palette implements IPalette {
 	/* YUV generation defaults */
 	private float saturation = 0.5f;
 	private float phaseShift = -15f;
@@ -390,6 +390,7 @@ public class Palette {
 		return gamma;
 	}
 
+	@Override
 	public void setGamma(final float gamma) {
 		this.gamma = gamma;
 	}
@@ -398,6 +399,7 @@ public class Palette {
 		return contrast;
 	}
 
+	@Override
 	public void setContrast(final float contrast) {
 		this.contrast = contrast;
 	}
@@ -406,6 +408,7 @@ public class Palette {
 		return brightness;
 	}
 
+	@Override
 	public void setBrightness(final float brightness) {
 		this.brightness = brightness;
 	}
@@ -414,6 +417,7 @@ public class Palette {
 		return luminanceC;
 	}
 
+	@Override
 	public void setLuminanceC(final float luminanceC) {
 		this.luminanceC = luminanceC;
 	}
@@ -422,6 +426,7 @@ public class Palette {
 		return tint;
 	}
 
+	@Override
 	public void setTint(final float tint) {
 		this.tint = tint;
 	}
@@ -430,6 +435,7 @@ public class Palette {
 		return phaseShift;
 	}
 
+	@Override
 	public void setPhaseShift(final float phaseShift) {
 		this.phaseShift = phaseShift;
 	}
@@ -438,6 +444,7 @@ public class Palette {
 		return offset;
 	}
 
+	@Override
 	public void setOffset(final float offset) {
 		this.offset = offset;
 	}
@@ -446,16 +453,18 @@ public class Palette {
 		return saturation;
 	}
 
+	@Override
 	public void setSaturation(final float saturation) {
 		this.saturation = saturation;
 	}
 
-	public void setDotCreep(final float dotCreep) {
-		this.dotCreep = dotCreep;
-	}
-
 	public float getDotCreep() {
 		return dotCreep;
+	}
+
+	@Override
+	public void setDotCreep(final float dotCreep) {
+		this.dotCreep = dotCreep;
 	}
 
 	public static PaletteEntry[] buildPaletteVariant(final VICChipModel model) {
