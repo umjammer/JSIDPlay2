@@ -41,15 +41,7 @@
 					<h1>C64 Jukebox</h1>
 				</div>
 				<div class="audio">
-					<audio
-						ref="audioElm"
-						v-bind:src="playlistEntryUrl"
-						v-show="showAudio"
-						v-on:ended="setNextPlaylistEntry"
-						type="audio/mpeg"
-						controls
-						autoplay
-					>
+					<audio ref="audioElm" v-show="showAudio" v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls>
 						I'm sorry. Your browser doesn't support HTML5 audio
 					</audio>
 					<div>
@@ -798,7 +790,7 @@
 									<div class="sid">
 										<b-table striped bordered :items="translatedInfos" :fields="translatedFields">
 											<template #cell(Value)="row">
-												<span :style="row.item.opacity? 'opacity: 0.5;' : ''">{{ row.item.Value }}</span>
+												<span :style="row.item.opacity ? 'opacity: 0.5;' : ''">{{ row.item.Value }}</span>
 											</template>
 										</b-table>
 										<div class="picture-container">
@@ -858,6 +850,10 @@
 											:class="index == playlistIndex ? 'highlighted playlist-item' : 'playlist-item'"
 											v-on:click="
 												playlistIndex = index;
+												Vue.nextTick(function () {
+													$refs.audioElm.src = createConvertUrl('', playlist[playlistIndex]);
+													$refs.audioElm.play();
+												});
 												updateSid(playlist[playlistIndex]);
 											"
 										>
@@ -931,8 +927,14 @@
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
-										<label for="videoCoderAudioDelay">{{ $t("convertMessages.config.audioSection.videoCoderAudioDelay") }}</label>
-										<input id="videoCoderAudioDelay" v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay" type="number" />
+										<label for="videoCoderAudioDelay">{{
+											$t("convertMessages.config.audioSection.videoCoderAudioDelay")
+										}}</label>
+										<input
+											id="videoCoderAudioDelay"
+											v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay"
+											type="number"
+										/>
 									</div>
 									<div class="settings-box">
 										<div>
@@ -1884,7 +1886,7 @@
 							return {
 								Name: i18n.t(obj.Name),
 								Value: obj.Value,
-								opacity: obj.Name == 'HVSCEntry.path',
+								opacity: obj.Name == "HVSCEntry.path",
 							};
 						});
 					},
@@ -2027,6 +2029,8 @@
 						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return;
 						}
+						this.$refs.audioElm.src = this.createConvertUrl("", this.playlist[this.playlistIndex]);
+						this.$refs.audioElm.play();
 						this.updateSid(this.playlist[this.playlistIndex]);
 					},
 					mobileProfile: function () {
@@ -2349,6 +2353,7 @@
 										return;
 									}
 									this.updateSid(this.playlist[this.playlistIndex]);
+									this.$refs.audioElm.src = this.createConvertUrl("", this.playlist[this.playlistIndex]);
 									this.showAudio = true;
 								})
 								.catch((error) => {
@@ -2593,7 +2598,7 @@
 						this.convertOptions = JSON.parse(localStorage.convertOptions);
 						// migration:
 						if (typeof this.convertOptions.config.audioSection.videoCoderAudioDelay === "undefined") {
-						    this.convertOptions.config.audioSection.videoCoderAudioDelay = 0;
+							this.convertOptions.config.audioSection.videoCoderAudioDelay = 0;
 						}
 					} else {
 						// initialize configuration
@@ -2622,7 +2627,9 @@
 					}
 					if (this.playlist.length !== 0) {
 						this.updateSid(this.playlist[this.playlistIndex]);
+
 						this.showAudio = true;
+						this.$refs.audioElm.src = this.createConvertUrl("", this.playlist[this.playlistIndex]);
 					}
 				},
 				watch: {
