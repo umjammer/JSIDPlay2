@@ -473,43 +473,43 @@
 								src: "/jsidplay2service/JSIDPlay2REST/proxy/$rtmp",
 								type: "application/x-mpegURL",
 							});
-							
-							  // Play video which returns a promise
-							  var promise = video.play();
 
-							  // +++ Use promise to see if video is playing or not +++
-							  if (promise !== undefined) {
-							    promise
-							      .then(function() {
-							        // Autoplay started!
-							        // If video playing unmute and set the volume
-							        video.muted(false);
-							      })
-							      .catch(function(error) {
-							        // Autoplay was prevented.
-							        // // +++ If autoplay prevented mute the video, play video and display unmute button +++
-							        video.muted(true);
-							        video.play();
+							// Play video which returns a promise
+							var promise = video.play();
 
-								        var button = document.createElement("button");
-	
-								        // +++ Add button's event listener +++
-								        button.addEventListener("click", function() {
-								            video.muted(false);
-								          playerContainer.removeChild(button);
-								        });
-	
-								        // +++ Configure the button +++
-								        button.textContent = "Unmute";
-								        button.classList.add("inner");
-								        button.setAttribute(
-								          "style",
-								          "color:black; background-color:red; width:100px; height:50px; opacity: .4;"
-								        );
-								        
-								        playerContainer.appendChild(button);
-							        });
-							  }
+							// +++ Use promise to see if video is playing or not +++
+							if (promise !== undefined) {
+								promise
+									.then(function () {
+										// Autoplay started!
+										// If video playing unmute
+										video.muted(false);
+									})
+									.catch(function (error) {
+										// Autoplay was prevented.
+										// If autoplay prevented mute the video, play video and display unmute button
+										video.muted(true);
+										video.play();
+
+										var button = document.createElement("button");
+
+										// Add button's event listener
+										button.addEventListener("click", function () {
+											video.muted(false);
+											playerContainer.removeChild(button);
+										});
+
+										// Configure the button
+										button.textContent = "Unmute";
+										button.classList.add("inner");
+										button.setAttribute(
+											"style",
+											"color:black; background-color:red; width:100px; height:50px; opacity: .4;"
+										);
+
+										playerContainer.appendChild(button);
+									});
+							}
 						}, this.waitForVideo);
 					} else {
 						this.startVideo();
