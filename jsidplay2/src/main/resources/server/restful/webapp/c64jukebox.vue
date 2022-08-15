@@ -219,6 +219,7 @@
 								</b-button>
 
 								<div style="height: 40px"></div>
+
 								<b-card-text>
 									<b-list-group>
 										<div v-for="entry in directory" :key="entry.filename">
@@ -234,6 +235,51 @@
 														<span class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</span>
 													</div>
 												</b-list-group-item>
+
+												<b-carousel
+													v-show="directory.filter((entry) => isPicture(entry)).length > 0"
+													id="picture-carousel"
+													v-model="slide"
+													:interval="3000"
+													controls
+													indicators
+													background="#ababab"
+													@sliding-start="onSlideStart"
+													@sliding-end="onSlideEnd"
+												>
+													<b-carousel-slide v-for="entry in directory.filter((entry) => isPicture(entry))">
+														<template #img>
+															<img
+																:src="createConvertUrl('', entry.filename)"
+																:alt="entry.filename"
+																style="
+																	height: 320px;
+																	width: auto;
+																	display: block;
+																	margin-left: auto;
+																	margin-right: auto;
+																"
+															/>
+														</template>
+														<template #default>
+															<i class="fas fa-download"></i>
+															<b-link
+																style="
+																	white-space: pre-line;
+																	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+																	font-family: sans;
+																	color: #007bff;
+																	background-color: white;
+																	padding: 2px;
+																	opacity: 0.75;
+																"
+																v-on:click="openDownloadUrl(entry.filename)"
+															>
+																<span>{{ shortEntry(entry) }}</span>
+															</b-link>
+														</template>
+													</b-carousel-slide>
+												</b-carousel>
 											</template>
 											<template v-else-if="isDirectory(entry)">
 												<b-list-group-item
@@ -1763,6 +1809,8 @@
 				el: "#app",
 				i18n, //import mutil-lang
 				data: {
+					slide: 0,
+					sliding: null,
 					showAudio: false,
 					langs: ["de", "en"],
 					directoryMode: 0,
@@ -1892,6 +1940,12 @@
 					},
 				},
 				methods: {
+					onSlideStart(slide) {
+						this.sliding = true;
+					},
+					onSlideEnd(slide) {
+						this.sliding = false;
+					},
 					updateLanguage() {
 						localStorage.locale = this.$i18n.locale;
 					},
@@ -1930,6 +1984,10 @@
 							filename.endsWith(".str") ||
 							filename.endsWith(".mp3")
 						);
+					},
+					isPicture: function (entry) {
+						let filename = entry.filename.toLowerCase();
+						return filename.endsWith(".jpg") || filename.endsWith(".jpeg");
 					},
 					isSid: function (entry) {
 						let filename = entry.filename.toLowerCase();
