@@ -255,10 +255,10 @@
 																:alt="entry.filename"
 																block
 																center
-																style="
-																	height: 480px;
-																	width: auto;
-																"
+																fluid
+																:style="{
+																height: halfWindowHeight + 'px', width: 'auto'
+																}"
 															/>
 														</template>
 														<template #default>
@@ -1809,6 +1809,7 @@
 				el: "#app",
 				i18n, //import mutil-lang
 				data: {
+				    halfWindowHeight: (window.innerHeight / 2),
 					slide: 0,
 					sliding: null,
 					showAudio: false,
@@ -2650,6 +2651,9 @@
 					},
 				},
 				mounted: function () {
+				    window.addEventListener('resize', () => {
+					    this.halfWindowHeight = (window.innerHeight / 2);
+					  });
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
 					}
