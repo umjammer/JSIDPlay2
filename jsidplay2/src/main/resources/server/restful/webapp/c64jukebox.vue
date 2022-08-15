@@ -250,15 +250,14 @@
 												>
 													<b-carousel-slide v-for="entry in directory.filter((entry) => isPicture(entry))">
 														<template #img>
-															<img
+															<b-img-lazy
 																:src="createConvertUrl('', entry.filename)"
 																:alt="entry.filename"
+																block
+																center
 																style="
-																	height: 320px;
+																	height: 480px;
 																	width: auto;
-																	display: block;
-																	margin-left: auto;
-																	margin-right: auto;
 																"
 															/>
 														</template>
