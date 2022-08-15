@@ -257,7 +257,7 @@
 																center
 																fluid
 																:style="{
-																height: halfWindowHeight + 'px', width: 'auto'
+																height: carouselImageHeight + 'px', width: 'auto'
 																}"
 															/>
 														</template>
@@ -1809,7 +1809,7 @@
 				el: "#app",
 				i18n, //import mutil-lang
 				data: {
-				    halfWindowHeight: (window.innerHeight / 2),
+				    carouselImageHeight: window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8,
 					slide: 0,
 					sliding: null,
 					showAudio: false,
@@ -2652,7 +2652,7 @@
 				},
 				mounted: function () {
 				    window.addEventListener('resize', () => {
-					    this.halfWindowHeight = (window.innerHeight / 2);
+					    this.carouselImageHeight = window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
 					  });
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
