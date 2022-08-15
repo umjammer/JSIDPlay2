@@ -1988,7 +1988,17 @@
 					},
 					isPicture: function (entry) {
 						let filename = entry.filename.toLowerCase();
-						return filename.endsWith(".jpg") || filename.endsWith(".jpeg");
+						return filename.endsWith(".apng") ||
+						filename.endsWith(".gif") ||
+						filename.endsWith(".ico") ||
+						filename.endsWith(".cur") ||
+						filename.endsWith(".jpg") ||
+						filename.endsWith(".jpeg") ||
+						filename.endsWith(".jfif") ||
+						filename.endsWith(".pjpeg") ||
+						filename.endsWith(".pjp") ||
+						filename.endsWith(".png") ||
+						filename.endsWith(".svg");
 					},
 					isSid: function (entry) {
 						let filename = entry.filename.toLowerCase();
