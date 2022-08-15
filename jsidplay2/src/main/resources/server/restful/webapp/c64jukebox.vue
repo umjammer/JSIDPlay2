@@ -243,6 +243,7 @@
 													:interval="3000"
 													controls
 													indicators
+													fade
 													background="#ababab"
 													@sliding-start="onSlideStart"
 													@sliding-end="onSlideEnd"
