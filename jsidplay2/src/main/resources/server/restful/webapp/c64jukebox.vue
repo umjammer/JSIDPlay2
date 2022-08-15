@@ -240,7 +240,7 @@
 													v-show="directory.filter((entry) => isPicture(entry)).length > 0"
 													id="picture-carousel"
 													v-model="slide"
-													:interval="3000"
+													:interval="5000"
 													controls
 													indicators
 													fade
