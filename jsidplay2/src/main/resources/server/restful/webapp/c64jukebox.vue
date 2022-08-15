@@ -2326,6 +2326,7 @@
 							},
 						})
 							.then((response) => {
+							    this.slide = 0;
 								this.directory = response.data.map((file) => {
 									return {
 										filename: file,
