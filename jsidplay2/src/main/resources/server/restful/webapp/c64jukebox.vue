@@ -550,7 +550,7 @@
 												<b-table
 													striped
 													bordered
-													:items="contentEntries"
+													:items="row.item.contentEntries"
 													:fields="contentEntryFields"
 													small
 													fixed
@@ -1828,7 +1828,6 @@
 					category: "",
 					categories: [],
 					searchResults: [],
-					contentEntries: [],
 					searchFields: [
 						{
 							key: "category",
@@ -2621,6 +2620,10 @@
 							searchResult._showDetails = false;
 							return;
 						}
+						if (searchResult.contentEntries) {
+							searchResult._showDetails = true;
+							return;
+						}
 						this.loadingAssembly64 = true; //the loading begin
 						axios({
 							method: "get",
@@ -2629,7 +2632,7 @@
 						})
 							.then((response) => {
 								if (response.status === 200) {
-									this.contentEntries = response.data.contentEntry.map((contentEntry) => {
+									searchResult.contentEntries = response.data.contentEntry.map((contentEntry) => {
 										return {
 											filename: contentEntry.id,
 											diskDirectory: [],
@@ -2637,14 +2640,11 @@
 											loading: false,
 										};
 									});
-									for (var i = 0; i < this.searchResults.length; i++) {
-										this.searchResults[i]._showDetails = false;
-									}
 									searchResult._showDetails = true;
 								}
 							})
 							.catch((error) => {
-								this.contentEntries = [];
+								searchResult.contentEntries = [];
 								console.log(error);
 							})
 							.finally(() => (this.loadingAssembly64 = false));
