@@ -418,8 +418,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart);
 
-		if (servletParameters.reuSize != null) {
+		if (servletParameters.reuSize != null && player.getC64().getCartridge().toString().isEmpty()) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
+		}
+		if (TAPE_FILE_FILTER.accept(file)) {
+			player.getConfig().getC1541Section().setJiffyDosInstalled(false);
 		}
 		if (uuid != null) {
 			create(uuid, player, file, servletParameters, RESOURCE_BUNDLE);
