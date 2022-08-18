@@ -251,7 +251,7 @@
 													<b-carousel-slide v-for="entry in directory.filter((entry) => isPicture(entry))">
 														<template #img>
 															<b-img-lazy
-																:src="createConvertUrl('', entry.filename)"
+																:src="createDownloadUrl(entry.filename)"
 																:alt="entry.filename"
 																block
 																center
@@ -355,18 +355,15 @@
 												<b-list-group-item :button="!isVideo(entry)" :variant="getVariant(entry)">
 													<template v-if="canFastload(entry)">
 														<div>
-															<i class="fas fa-video"></i>
-															<span>{{ shortEntry(entry) }}</span>
-
 															<a
 																v-bind:href="createConvertUrl('', entry.filename)"
 																v-on:click="pause"
 																target="c64"
 																style="margin-left: 16px"
 															>
-																<span>{{ $t("load") }}</span>
+																<i class="fas fa-video"></i>
+																<span>{{ shortEntry(entry) }}</span>
 															</a>
-															<span> {{ $t("or") }} </span>
 															<b-button
 																size="sm"
 																style="font-size: smaller; padding: 2px 4px"
@@ -376,6 +373,14 @@
 															>
 																<span> {{ $t("showDirectory") }} </span>
 															</b-button>
+															<b-button
+																size="sm"
+																style="font-size: smaller; padding: 2px 4px"
+																v-on:click="openDownloadSIDUrl(entry.filename)"
+															>
+																<i class="fas fa-download"></i>
+																<span>{{ $t("download") }}</span></b-button
+															>
 															<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 														</div>
 														<div>
@@ -635,9 +640,6 @@
 															<span>
 																<template v-if="canFastload(innerRow.item)">
 																	<div>
-																		<i class="fas fa-video"></i>
-																		<span>{{ shortEntry(innerRow.item) }}</span>
-
 																		<a
 																			v-bind:href="
 																				createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
@@ -646,9 +648,9 @@
 																			target="c64"
 																			style="margin-left: 16px"
 																		>
-																			<span>{{ $t("load") }}</span>
+																			<i class="fas fa-video"></i>
+																			<span>{{ shortEntry(innerRow.item) }}</span>
 																		</a>
-																		<span> {{ $t("or") }} </span>
 																		<b-button
 																			size="sm"
 																			style="font-size: smaller; padding: 2px 4px"
@@ -658,6 +660,16 @@
 																		>
 																			<span> {{ $t("showDirectory") }} </span>
 																		</b-button>
+																		<b-button
+																			size="sm"
+																			style="font-size: smaller; padding: 2px 4px"
+																			v-on:click="
+																				openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
+																			"
+																		>
+																			<i class="fas fa-download"></i>
+																			<span>{{ $t("download") }}</span></b-button
+																		>
 																		<b-spinner
 																			type="border"
 																			variant="primary"
@@ -1018,6 +1030,11 @@
 										<input id="pressSpaceInterval" v-model.number="convertOptions.pressSpaceInterval" type="number" />
 									</div>
 									<div class="settings-box">
+										<b-form-checkbox v-model="convertOptions.config.c1541Section.jiffyDosInstalled">
+											{{ $t("convertMessages.config.c1541Section.jiffyDosInstalled") }}
+										</b-form-checkbox>
+									</div>
+									<div class="settings-box">
 										<b-form-group :label="$t('convertMessages.reuSize')">
 											<b-form-radio-group v-model="convertOptions.reuSize">
 												<b-form-radio value="null">Auto</b-form-radio>
@@ -1046,9 +1063,6 @@
 										</b-form-checkbox>
 										<b-form-checkbox v-model="convertOptions.config.sidplay2Section.loop">
 											{{ $t("convertMessages.config.sidplay2Section.loop") }}
-										</b-form-checkbox>
-										<b-form-checkbox v-model="convertOptions.config.c1541Section.jiffyDosInstalled">
-											{{ $t("convertMessages.config.c1541Section.jiffyDosInstalled") }}
 										</b-form-checkbox>
 									</div>
 
@@ -1705,8 +1719,7 @@
 					mutingCfgHeader: "Muting Configuration",
 					emulationCfgHeader: "Emulation Configuration",
 					filterCfgHeader: "Filter Configuration",
-					load: "Load",
-					or: "or",
+					download: "Download",
 					showDirectory: "Directory",
 					firstSid: "Main SID",
 					secondSid: "Stereo SID",
@@ -1789,8 +1802,7 @@
 					mutingCfgHeader: "Stummschalten konfigurieren",
 					emulationCfgHeader: "Emulation konfigurieren",
 					filterCfgHeader: "Filter konfigurieren",
-					load: "Laden",
-					or: "oder",
+					download: "Runterladen",
 					showDirectory: "Directory",
 					firstSid: "Haupt SID",
 					secondSid: "Stereo SID",
@@ -2134,6 +2146,21 @@
 							this.fetchPhoto(entry, itemId, categoryId);
 						}
 					},
+					createDownloadUrl: function (entry, itemId, categoryId) {
+						var url = uriEncode(
+							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+						);
+						return (
+							window.location.protocol +
+							"//" +
+							window.location.host +
+							"/jsidplay2service/JSIDPlay2REST/convert" +
+							url +
+							(typeof itemId === "undefined" && typeof categoryId === "undefined"
+								? ""
+								: "?itemId=" + itemId + "&categoryId=" + categoryId)
+						);
+					},
 					createConvertUrl: function (autostart, entry, itemId, categoryId) {
 						var url = uriEncode(
 							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
@@ -2308,18 +2335,7 @@
 						var url = uriEncode(
 							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
 						);
-						window.open(
-							window.location.protocol +
-								"//" +
-								window.location.host +
-								"/jsidplay2service/JSIDPlay2REST/convert" +
-								url +
-								"?" +
-								(typeof itemId === "undefined" && typeof categoryId === "undefined"
-									? ""
-									: "&itemId=" + itemId + "&categoryId=" + categoryId) +
-								"&download=true"
-						);
+						window.open(this.createDownloadUrl(entry, itemId, categoryId));
 					},
 					fetchDirectory: function (entry) {
 						this.loadingSids = true; //the loading begin

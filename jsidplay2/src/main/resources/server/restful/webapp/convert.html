@@ -93,6 +93,10 @@
 				<b-button v-b-toggle.collapse-keyboard variant="primary" size="sm">{{ $t("keyboard") }}</b-button>
 			</div>
 
+			<div style="text-align: center !important;">
+				<b-spinner v-if="loading" style="width: 3rem; height: 3rem;" type="border" variant="primary"></b-spinner>
+			</div>
+			
 			<p>
 				{{ msg }}
 			</p>
@@ -306,6 +310,7 @@
 					notifyForHLS: $notifyForHLS,
 					barcodeImgTop: "$barcodeImgTop",
 					barcodeImgRight: "$barcodeImgRight",
+					loading: false,
 					shiftPressed: false,
 					msg: "",
 				},
@@ -451,8 +456,14 @@
 						});
 					},
 				},
-				created: function () {
-					if (this.hls) {
+				mounted: function () {
+					if (localStorage.locale) {
+						this.$i18n.locale = localStorage.locale;
+					}
+				    var outer = this;
+
+				    if (this.hls) {
+						outer.loading = true;
 						setInterval(function () {
 							var xhttp = new XMLHttpRequest();
 							xhttp.onreadystatechange = function () {
@@ -465,6 +476,7 @@
 						}, this.notifyForHLS);
 
 						setTimeout(function () {
+							outer.loading = false;
 							var video = videojs("video-container");
 							video.on("resize", function () {
 								this.fluid(true);
@@ -473,7 +485,7 @@
 								src: "/jsidplay2service/JSIDPlay2REST/proxy/$rtmp",
 								type: "application/x-mpegURL",
 							});
-
+							
 							// Play video which returns a promise
 							var promise = video.play();
 
