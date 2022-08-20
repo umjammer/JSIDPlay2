@@ -292,6 +292,7 @@
 													controls
 													indicators
 													fade
+													no-hover-pause
 													background="#ababab"
 													@sliding-start="onSlideStart"
 													@sliding-end="onSlideEnd"
