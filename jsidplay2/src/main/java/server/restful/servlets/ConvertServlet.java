@@ -9,6 +9,7 @@ import static libsidutils.PathUtils.getFilenameSuffix;
 import static libsidutils.PathUtils.getFilenameWithoutSuffix;
 import static libsidutils.ZipFileUtils.convertStreamToString;
 import static libsidutils.ZipFileUtils.copy;
+import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.ATTACHMENT;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
@@ -283,7 +284,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						}
 					} else {
 						response.setContentType(MIME_TYPE_TEXT.toString());
-						response.sendError(429, "Too Many Requests");
+						response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
 						return;
 					}
 				} else {
@@ -402,7 +403,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	private File convert2video(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters,
 			UUID uuid) throws IOException, SidTuneError {
 		File videoFile = null;
-
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 
 		Player player = new Player(config);
