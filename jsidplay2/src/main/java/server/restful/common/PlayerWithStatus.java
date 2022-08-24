@@ -284,6 +284,7 @@ public final class PlayerWithStatus {
 		StringBuilder result = new StringBuilder();
 
 		if (Boolean.TRUE.equals(servletParameters.getStatus())) {
+			String filename = filenameTopetscii(diskImage.getName());
 			String determinePSID64 = status.determinePSID64();
 			String determineCartridge = status.determineCartridge();
 
@@ -299,9 +300,13 @@ public final class PlayerWithStatus {
 			result.append(", ");
 			result.append(status.determineTapeActivity(false));
 			result.append(status.determineDiskActivity(false));
-			result.append(diskImage.getName());
+			result.append(filename);
 		}
 		return result.toString();
+	}
+
+	private String filenameTopetscii(final String str) {
+		return str.replace('_', '-');
 	}
 
 }
