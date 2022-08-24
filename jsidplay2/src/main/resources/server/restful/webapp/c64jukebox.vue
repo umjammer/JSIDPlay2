@@ -1114,7 +1114,7 @@
 														<span>{{ shortEntry(entry) }}</span>
 													</div>
 													<div>
-														<span style="font-size: smaller">{{ pathEntry(entry) }}</span>
+														<span style="font-size: smaller; line-break: anywhere;">{{ pathEntry(entry) }}</span>
 													</div>
 												</div>
 												<b-button
