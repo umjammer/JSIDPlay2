@@ -22,6 +22,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -222,7 +223,7 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 	}
 
 	public void setStatusText(String text) {
-		String c64Chars = toC64Chars(text.toUpperCase(), TRUE_TYPE_FONT_BIG);
+		String c64Chars = toC64Chars(text.toUpperCase(Locale.ENGLISH), TRUE_TYPE_FONT_BIG);
 
 		BufferedImage statusImage = new BufferedImage(MAX_WIDTH, c64Font.getSize(), TYPE_INT_ARGB);
 		Graphics2D graphics = statusImage.createGraphics();
