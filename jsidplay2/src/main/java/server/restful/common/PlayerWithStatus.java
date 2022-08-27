@@ -284,7 +284,7 @@ public final class PlayerWithStatus {
 		StringBuilder result = new StringBuilder();
 
 		if (Boolean.TRUE.equals(servletParameters.getStatus())) {
-			String filename = filenameTopetscii(diskImage.getName());
+			String filename = replaceIllegalFilenameCharacters(diskImage.getName());
 			String determinePSID64 = status.determinePSID64();
 			String determineCartridge = status.determineCartridge();
 
@@ -305,7 +305,7 @@ public final class PlayerWithStatus {
 		return result.toString();
 	}
 
-	private String filenameTopetscii(final String str) {
+	private String replaceIllegalFilenameCharacters(final String str) {
 		return str.replace('_', '-');
 	}
 

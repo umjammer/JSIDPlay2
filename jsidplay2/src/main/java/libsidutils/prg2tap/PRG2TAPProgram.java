@@ -21,11 +21,11 @@ public class PRG2TAPProgram {
 		sidTune.placeProgramInMemory(mem);
 		startAddr = sidTune.getInfo().getLoadAddr();
 		length = sidTune.getInfo().getC64dataLen();
-		final byte[] petscii = filenameTopetscii(name, 16);
+		final byte[] petscii = replaceIllegalFilenameCharacters(name, 16);
 		System.arraycopy(petscii, 0, this.name, 0, petscii.length);
 	}
 
-	public final static byte[] filenameTopetscii(final String str, int maxLen) {
+	public final static byte[] replaceIllegalFilenameCharacters(final String str, int maxLen) {
 		return str.substring(0, Math.min(maxLen, str.length())).toUpperCase().replace('_', '-').getBytes(ISO88591);
 	}
 
