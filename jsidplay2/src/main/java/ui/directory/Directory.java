@@ -1,5 +1,11 @@
 package ui.directory;
 
+import static libsidutils.C64Font.TRUE_TYPE_FONT_BIG;
+import static libsidutils.C64Font.TRUE_TYPE_FONT_INVERSE_BIG;
+import static libsidutils.C64Font.TRUE_TYPE_FONT_INVERSE_SMALL;
+import static libsidutils.C64Font.TRUE_TYPE_FONT_SMALL;
+import static libsidutils.C64Font.petsciiToFont;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -17,7 +23,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Priority;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.C64Font;
 import libsidutils.directory.CartridgeDirectory;
 import libsidutils.directory.DirEntry;
 import libsidutils.directory.DiskDirectory;
@@ -31,7 +36,7 @@ import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TuneFileFilter;
 import ui.entities.config.SidPlay2Section;
 
-public class Directory extends C64VBox implements UIPart, C64Font {
+public class Directory extends C64VBox implements UIPart {
 
 	private static TuneFileFilter tuneFilter = new TuneFileFilter();
 
@@ -131,20 +136,20 @@ public class Directory extends C64VBox implements UIPart, C64Font {
 			if (dir != null) {
 				// Print directory title/id
 				DirectoryItem headerItem = new DirectoryItem();
-				headerItem.setText(toC64Chars(dir.getTitle(), fontSetHeader));
+				headerItem.setText(petsciiToFont(dir.getTitle(), fontSetHeader));
 				directoryEntries.add(headerItem);
 				Collection<DirEntry> dirEntries = dir.getDirEntries();
 				// Print directory entries
 				for (DirEntry dirEntry : dirEntries) {
 					DirectoryItem dirItem = new DirectoryItem();
-					dirItem.setText(toC64Chars(dirEntry.getDirectoryLine(), fontSet));
+					dirItem.setText(petsciiToFont(dirEntry.getDirectoryLine(), fontSet));
 					dirItem.setDirEntry(dirEntry);
 					directoryEntries.add(dirItem);
 				}
 				// Print directory result
 				if (dir.getStatusLine() != null) {
 					DirectoryItem dirItem = new DirectoryItem();
-					dirItem.setText(toC64Chars(dir.getStatusLine(), fontSet));
+					dirItem.setText(petsciiToFont(dir.getStatusLine(), fontSet));
 					directoryEntries.add(dirItem);
 				}
 			} else {
@@ -152,11 +157,11 @@ public class Directory extends C64VBox implements UIPart, C64Font {
 			}
 		} catch (IOException | SidTuneError ioE) {
 			DirectoryItem dirItem = new DirectoryItem();
-			dirItem.setText(toC64Chars("SORRY, NO PREVIEW AVAILABLE!", TRUE_TYPE_FONT_BIG));
+			dirItem.setText(petsciiToFont("SORRY, NO PREVIEW AVAILABLE!", TRUE_TYPE_FONT_BIG));
 			directoryEntries.add(dirItem);
 		}
 		DirectoryItem dirItem = new DirectoryItem();
-		dirItem.setText(toC64Chars("READY.", TRUE_TYPE_FONT_BIG));
+		dirItem.setText(petsciiToFont("READY.", TRUE_TYPE_FONT_BIG));
 		directoryEntries.add(dirItem);
 	}
 

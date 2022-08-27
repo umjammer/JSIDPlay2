@@ -1,6 +1,7 @@
 package libsidutils.psid64;
 
 import static libsidplay.sidtune.SidTune.Compatibility.RSID_BASIC;
+import static libsidutils.Petscii.iso88591ToPetscii;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +18,6 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
 import libsidutils.PathUtils;
-import libsidutils.Petscii;
 import libsidutils.assembler.KickAssembler;
 import libsidutils.cruncher.PUCrunch;
 import libsidutils.stil.STIL.Info;
@@ -159,7 +159,7 @@ public class Psid64 {
 		if (freePages.getStilPage() != null) {
 			byte[] data = new byte[stilText.length()];
 			for (int i = 0; i < stilText.length(); i++) {
-				data[i] = Petscii.iso88591ToPetscii(stilText.charAt(i));
+				data[i] = iso88591ToPetscii(stilText.charAt(i));
 			}
 			data[data.length - 1] = (byte) 0xff;
 			memoryBlock = new MemoryBlock();

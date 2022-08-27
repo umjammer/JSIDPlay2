@@ -1940,7 +1940,7 @@
 				// tested characters: /~@#$&():+''
 				return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23").replace(/&/g, "%26");
 			}
-			function toC64Chars(str, fontSet) {
+			function petsciiToFont(str, fontSet) {
 				var original = str;
 				var result = "";
 				for (var i = 0; i < original.length; i++) {
@@ -2859,14 +2859,14 @@
 							url: "/jsidplay2service/JSIDPlay2REST/disk-directory" + url,
 						})
 							.then((response) => {
-								entry.diskDirectoryHeader = toC64Chars(
+								entry.diskDirectoryHeader = petsciiToFont(
 									response.data.title,
 									entry.directoryMode | 0x200
 								);
 								entry.diskDirectory = response.data.dirEntries.map((dirEntry) => {
 									return {
 										directoryLine: dirEntry.directoryLine,
-										formatted: toC64Chars(dirEntry.directoryLine, entry.directoryMode),
+										formatted: petsciiToFont(dirEntry.directoryLine, entry.directoryMode),
 									};
 								});
 							})

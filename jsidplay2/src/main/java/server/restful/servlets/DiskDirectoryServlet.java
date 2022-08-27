@@ -14,7 +14,6 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.C64Font;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
 import server.restful.common.JSIDPlay2Servlet;
@@ -22,7 +21,7 @@ import server.restful.common.ServletBaseParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
-public class DiskDirectoryServlet extends JSIDPlay2Servlet implements C64Font {
+public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.DiskDirectoryServletParameters")
 	public static class ServletParameters extends ServletBaseParameters {

@@ -1,6 +1,6 @@
 package libsidutils;
 
-public class Petscii {
+public class Petscii extends C64Font {
 	/**
 	 * ISO-8859-1 to Petscii conversion table.
 	 */

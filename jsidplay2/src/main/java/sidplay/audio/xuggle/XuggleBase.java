@@ -1,5 +1,7 @@
 package sidplay.audio.xuggle;
 
+import static libsidutils.C64Font.FONT_NAME;
+
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -14,9 +16,7 @@ import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.video.ArgbConverter;
 import com.xuggle.xuggler.video.ConverterFactory;
 
-import libsidutils.C64Font;
-
-public class XuggleBase implements C64Font {
+public class XuggleBase {
 
 	public static class VideoInfo {
 

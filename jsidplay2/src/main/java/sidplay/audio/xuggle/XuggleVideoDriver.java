@@ -11,6 +11,8 @@ import static libsidplay.common.CPUClock.PAL;
 import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_WIDTH;
+import static libsidutils.C64Font.TRUE_TYPE_FONT_BIG;
+import static libsidutils.C64Font.petsciiToFont;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -223,12 +225,12 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 	}
 
 	public void setStatusText(String text) {
-		String c64Chars = toC64Chars(text.toUpperCase(Locale.ENGLISH), TRUE_TYPE_FONT_BIG);
+		String fontText = petsciiToFont(text.toUpperCase(Locale.ENGLISH), TRUE_TYPE_FONT_BIG);
 
 		BufferedImage statusImage = new BufferedImage(MAX_WIDTH, c64Font.getSize(), TYPE_INT_ARGB);
 		Graphics2D graphics = statusImage.createGraphics();
 		graphics.setFont(c64Font);
-		graphics.drawString(c64Chars, -statusTextX, graphics.getFontMetrics(c64Font).getAscent());
+		graphics.drawString(fontText, -statusTextX, graphics.getFontMetrics(c64Font).getAscent());
 		graphics.dispose();
 
 		statusTextOverflow = Math.max(0, c64Font.getSize() * text.length() - statusTextX - MAX_WIDTH);
