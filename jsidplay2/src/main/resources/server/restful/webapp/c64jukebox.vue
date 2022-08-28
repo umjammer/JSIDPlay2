@@ -255,7 +255,11 @@
 									v-on:click="
 										directory
 											.filter((entry) => isMusic(entry))
-											.forEach((entry) => playlist.push(entry.filename));
+											.forEach((entry) =>
+												playlist.push({
+													filename: entry.filename,
+												})
+											);
 										tabIndex = 4;
 										showAudio = true;
 									"
@@ -404,7 +408,9 @@
 															style="font-size: smaller; padding: 2px 4px"
 															variant="primary"
 															v-on:click="
-																playlist.push(entry.filename);
+																playlist.push({
+																	filename: entry.filename,
+																});
 																tabIndex = 4;
 																showAudio = true;
 															"
@@ -763,20 +769,24 @@
 																		<span>{{ $t("downloadSID") }}</span></b-button
 																	>
 																</div>
-																<!--div>
+																<div>
 																	<b-button
 																		size="sm"
-																		style="font-size: smaller; padding: 2px 4px;"
+																		style="font-size: smaller; padding: 2px 4px"
 																		variant="primary"
 																		v-on:click="
-																			playlist.push(innerRow.item.filename, row.item.id, row.item.categoryId);
+																			playlist.push({
+																				filename: innerRow.item.filename,
+																				itemId: row.item.id,
+																				categoryId: row.item.categoryId,
+																			});
 																			tabIndex = 4;
 																			playlistIndex = 0;
 																		"
 																	>
 																		<i class="fas fa-plus"></i>
 																	</b-button>
-																</div-->
+																</div>
 															</div>
 														</template>
 														<template v-else-if="isVideo(innerRow.item)">
@@ -1102,19 +1112,30 @@
 											v-on:click="
 												playlistIndex = index;
 												Vue.nextTick(function () {
-													$refs.audioElm.src = createConvertUrl('', playlist[playlistIndex]);
+													$refs.audioElm.src = createConvertUrl(
+														'',
+														playlist[playlistIndex].filename,
+														playlist[playlistIndex].itemId,
+														playlist[playlistIndex].categoryId
+													);
 													$refs.audioElm.play();
 												});
-												updateSid(playlist[playlistIndex]);
+												updateSid(
+													playlist[playlistIndex].filename,
+													playlist[playlistIndex].itemId,
+													playlist[playlistIndex].categoryId
+												);
 											"
 										>
 											<span style="display: flex; justify-content: space-between">
 												<div>
 													<div class="playlist-item">
-														<span>{{ shortEntry(entry) }}</span>
+														<span>{{ shortEntry(entry.filename) }}</span>
 													</div>
-													<div>
-														<span style="font-size: smaller; line-break: anywhere;">{{ pathEntry(entry) }}</span>
+													<div v-show="pathEntry(entry.filename).length > 1">
+														<span style="font-size: smaller; line-break: anywhere">{{
+															pathEntry(entry.filename)
+														}}</span>
 													</div>
 												</div>
 												<b-button
@@ -1953,6 +1974,18 @@
 				}
 				return result;
 			}
+			/**
+			 * Returns a random integer between min (inclusive) and max (inclusive).
+			 * The value is no lower than min (or the next integer greater than min
+			 * if min isn't an integer) and no greater than max (or the next integer
+			 * lower than max if max isn't an integer).
+			 * Using Math.round() will give you a non-uniform distribution!
+			 */
+			function getRandomInt(min, max) {
+				min = Math.ceil(min);
+				max = Math.floor(max);
+				return Math.floor(Math.random() * (max - min + 1)) + min;
+			}
 			// Month in JavaScript is 0-indexed (January is 0, February is 1, etc),
 			// but by using 0 as the day it will give us the last day of the prior
 			// month. So passing in 1 as the month number will return the last day
@@ -2232,7 +2265,12 @@
 						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return undefined;
 						} else {
-							return this.createConvertUrl("", this.playlist[this.playlistIndex]);
+							return this.createConvertUrl(
+								"",
+								this.playlist[this.playlistIndex].filename,
+								this.playlist[this.playlistIndex].itemId,
+								this.playlist[this.playlistIndex].categoryId
+							);
 						}
 					},
 					reuParameters: function () {
@@ -2407,7 +2445,9 @@
 										) {
 											lines[i] = "/C64Music" + lines[i];
 										}
-										this.playlist.push(lines[i]);
+										this.playlist.push({
+											filename: lines[i],
+										});
 									}
 								}
 								this.playlistIndex = 0;
@@ -2415,7 +2455,11 @@
 								if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 									return;
 								}
-								this.updateSid(this.playlist[this.playlistIndex]);
+								this.updateSid(
+									this.playlist[this.playlistIndex].filename,
+									this.playlist[this.playlistIndex].itemId,
+									this.playlist[this.playlistIndex].categoryId
+								);
 								this.showAudio = true;
 							};
 							reader.onerror = (err) => console.log(err);
@@ -2427,10 +2471,7 @@
 							return;
 						}
 						if (this.random) {
-							this.playlistIndex = Math.max(
-								Math.min(Math.ceil(Math.random() * this.playlist.length), this.playlist.length - 1),
-								0
-							);
+							this.playlistIndex = getRandomInt(0, this.playlist.length - 1);
 						} else {
 							if (this.playlistIndex === this.playlist.length - 1) {
 								this.playlistIndex = 0;
@@ -2441,9 +2482,18 @@
 						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return;
 						}
-						this.$refs.audioElm.src = this.createConvertUrl("", this.playlist[this.playlistIndex]);
+						this.$refs.audioElm.src = this.createConvertUrl(
+							"",
+							this.playlist[this.playlistIndex].filename,
+							this.playlist[this.playlistIndex].itemId,
+							this.playlist[this.playlistIndex].categoryId
+						);
 						this.$refs.audioElm.play();
-						this.updateSid(this.playlist[this.playlistIndex]);
+						this.updateSid(
+							this.playlist[this.playlistIndex].filename,
+							this.playlist[this.playlistIndex].itemId,
+							this.playlist[this.playlistIndex].categoryId
+						);
 					},
 					setDefault: function () {
 						if (confirm(this.$i18n.t("setDefaultReally"))) {
@@ -2780,15 +2830,25 @@
 								url: "/jsidplay2service/JSIDPlay2REST/favorites",
 							})
 								.then((response) => {
-									this.playlist = response.data;
+									this.playlist = response.data.map((file) => {
+										return {
+											filename: file,
+										};
+									});
 									this.playlistIndex = 0;
 									if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 										return;
 									}
-									this.updateSid(this.playlist[this.playlistIndex]);
+									this.updateSid(
+										this.playlist[this.playlistIndex].filename,
+										this.playlist[this.playlistIndex].itemId,
+										this.playlist[this.playlistIndex].categoryId
+									);
 									this.$refs.audioElm.src = this.createConvertUrl(
 										"",
-										this.playlist[this.playlistIndex]
+										this.playlist[this.playlistIndex].filename,
+										this.playlist[this.playlistIndex].itemId,
+										this.playlist[this.playlistIndex].categoryId
 									);
 									this.showAudio = true;
 								})
@@ -3071,17 +3131,38 @@
 					if (localStorage.playlistIndex) {
 						this.playlistIndex = JSON.parse(localStorage.playlistIndex);
 					}
+					// migration:
 					if (localStorage.playlist) {
-						this.playlist = JSON.parse(localStorage.playlist);
+						this.playlist = JSON.parse(localStorage.playlist).map((file) => {
+							return {
+								filename: file,
+							};
+						});
+					}
+					if (localStorage.playlistV2) {
+						this.playlist = JSON.parse(localStorage.playlistV2);
+						// migration:
+						if (localStorage.playlist) {
+							localStorage.removeItem('playlist');
+						}
 					}
 					if (this.playlistIndex >= this.playlist.length) {
 						this.playlistIndex = 0;
 					}
 					if (this.playlist.length !== 0) {
-						this.updateSid(this.playlist[this.playlistIndex]);
+						this.updateSid(
+							this.playlist[this.playlistIndex].filename,
+							this.playlist[this.playlistIndex].itemId,
+							this.playlist[this.playlistIndex].categoryId
+						);
 
 						this.showAudio = true;
-						this.$refs.audioElm.src = this.createConvertUrl("", this.playlist[this.playlistIndex]);
+						this.$refs.audioElm.src = this.createConvertUrl(
+							"",
+							this.playlist[this.playlistIndex].filename,
+							this.playlist[this.playlistIndex].itemId,
+							this.playlist[this.playlistIndex].categoryId
+						);
 					}
 					if (localStorage.category) {
 						this.category = JSON.parse(localStorage.category);
@@ -3141,7 +3222,7 @@
 						localStorage.playlistIndex = JSON.stringify(this.playlistIndex);
 					},
 					playlist(newValue, oldValue) {
-						localStorage.playlist = JSON.stringify(this.playlist);
+						localStorage.playlistV2 = JSON.stringify(this.playlist);
 					},
 					convertOptions: {
 						handler: function (after, before) {
