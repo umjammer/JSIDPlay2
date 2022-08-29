@@ -664,6 +664,10 @@ public final class PLA {
 		this.cartridge = cartridge;
 	}
 
+	public boolean isCartridge() {
+		return cartridge != nullCartridge;
+	}
+
 	public void setCpu(final MOS6510 cpu) {
 		this.cpu = cpu;
 	}

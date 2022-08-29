@@ -658,6 +658,14 @@ public abstract class C64 implements DatasetteEnvironment, C1541Environment, Use
 	}
 
 	/**
+	 * @return is a multi purpose cartridge inserted into the expansion port of the
+	 *         C64?
+	 */
+	public boolean isCartridge() {
+		return pla.isCartridge();
+	}
+
+	/**
 	 * Eject multi purpose cartridge from the expansion port of the C64.
 	 */
 	public final void ejectCartridge() {
