@@ -2004,7 +2004,7 @@
 			}
 			function download(filename, contentType, text) {
 				var pom = document.createElement("a");
-				pom.setAttribute("href", "data:" + contentType + ";charset=utf-8," + encodeURIComponent(text));
+				pom.setAttribute("href", "data:" + contentType + "," + encodeURIComponent(text));
 				pom.setAttribute("download", filename);
 
 				if (document.createEvent) {
@@ -2528,7 +2528,7 @@
 								const suggestedFileName = response.headers["x-suggested-filename"];
 								const effectiveFileName =
 									suggestedFileName === undefined ? "test.js2web" : suggestedFileName;
-								const contentType = response.headers["Content-Type"];
+								const contentType = response.headers["content-type"];
 
 								download(effectiveFileName, contentType, JSON.stringify(response.data));
 							})
