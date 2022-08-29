@@ -1067,7 +1067,7 @@
 										<div>
 											<b-form-file
 												v-model="importFile"
-												accept=".js2,.js2web"
+												accept=".js2,.json"
 												:state="Boolean(importFile)"
 												ref="file-input"
 												class="mb-2"
@@ -2495,7 +2495,7 @@
 									this.showAudio = true;
 								};
 								reader.readAsText(this.importFile);
-							} else if (extension === "js2web") {
+							} else if (extension === "json") {
 								reader.onload = (res) => {
 									this.playlist = JSON.parse(res.target.result);
 									this.playlistIndex = 0;
@@ -2517,7 +2517,7 @@
 					exportPlaylist: function () {
 						axios({
 							method: "post",
-							url: "/jsidplay2service/JSIDPlay2REST/save_as" + "?filename=jsidplay2.js2web",
+							url: "/jsidplay2service/JSIDPlay2REST/save_as" + "?filename=jsidplay2.json",
 							auth: {
 								username: this.username,
 								password: this.password,
@@ -2527,7 +2527,7 @@
 							.then((response) => {
 								const suggestedFileName = response.headers["x-suggested-filename"];
 								const effectiveFileName =
-									suggestedFileName === undefined ? "test.js2web" : suggestedFileName;
+									suggestedFileName === undefined ? "test.json" : suggestedFileName;
 								const contentType = response.headers["content-type"];
 
 								download(effectiveFileName, contentType, JSON.stringify(response.data));

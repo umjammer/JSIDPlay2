@@ -48,7 +48,7 @@ public class SaveAsServlet extends JSIDPlay2Servlet {
 	 *
 	 * <BR>
 	 * {@code
-	 * http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/save_as&filename=playlist.js2web
+	 * http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/save_as&filename=playlist.json
 	 * }
 	 */
 	@Override
