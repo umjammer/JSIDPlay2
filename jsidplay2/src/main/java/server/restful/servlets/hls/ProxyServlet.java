@@ -2,6 +2,7 @@ package server.restful.servlets.hls;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -61,23 +61,23 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			URL url = new URL(servletParameters.url.substring(1).replaceFirst("/", "//"));
-
-			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
+			String spec = servletParameters.url.substring(1).replaceFirst("/", "//");
+			if (!spec.startsWith(HLS_DOWNLOAD_URL)) {
+				throw new IOException("Resource is not allowed!");
+			}
+			URLConnection connection = InternetUtil.openConnection(new URL(spec), configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ZipFileUtils.copy(connection.getInputStream(), bos);
 
-			for (String header : connection.getHeaderFields().keySet().stream().filter(Objects::nonNull)
-					.collect(Collectors.toList())) {
-				String value = connection.getHeaderFields().get(header).stream().findFirst().get();
-				response.setHeader(header, value);
-			}
+			connection.getHeaderFields().entrySet().stream().filter(entry -> Objects.nonNull(entry.getKey())).forEach(
+					entry -> response.setHeader(entry.getKey(), entry.getValue().stream().findFirst().orElse(null)));
+
 			response.setContentLength(bos.size());
 			response.getOutputStream().write(bos.toByteArray());
 			response.setStatus(HttpServletResponse.SC_OK);
 
 		} catch (IOException e) {
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 		} catch (Throwable t) {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
