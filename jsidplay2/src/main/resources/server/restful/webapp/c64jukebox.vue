@@ -1067,14 +1067,14 @@
 										<div>
 											<b-form-file
 												v-model="importFile"
-												accept=".js2"
+												accept=".js2,.js2web"
 												:state="Boolean(importFile)"
 												ref="file-input"
 												class="mb-2"
 												label-cols-sm="2"
 												label-size="sm"
-												placeholder="Choose favorites or drop it here..."
-												drop-placeholder="Drop favorites here..."
+												:placeholder="$t('importPlaylistPlaceholder')"
+												:drop-placeholder="$t('importPlaylistDropPlaceholder')"
 											>
 											</b-form-file>
 											<b-button v-if="importFile != null" @click="importFile = null">
@@ -1084,9 +1084,14 @@
 												<i class="fas fa-file-import"></i><span>{{ $t("startImport") }}</span>
 											</b-button>
 										</div>
-										<b-button @click="fetchFavorites">
+										<b-button size="sm" @click="fetchFavorites">
 											<i class="fas fa-download"></i>
 											<span>{{ $t("fetchFavorites") }}</span></b-button
+										>
+										<b-button variant="success" size="sm" @click="exportPlaylist"
+										 v-if="playlist.length > 0">
+											<i class="fas fa-file-export"></i>
+											<span>{{ $t("exportPlaylist") }}</span></b-button
 										>
 										<b-button
 											variant="success"
@@ -1993,6 +1998,20 @@
 			function daysInMonth(month, year) {
 				return new Date(year, month, 0).getDate();
 			}
+			function download(filename, contentType, text) {
+			    var pom = document.createElement('a');
+			    pom.setAttribute('href', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(text));
+			    pom.setAttribute('download', filename);
+
+			    if (document.createEvent) {
+			        var event = document.createEvent('MouseEvents');
+			        event.initEvent('click', true, true);
+			        pom.dispatchEvent(event);
+			    }
+			    else {
+			        pom.click();
+			    }
+			}
 			const messages = {
 				en: {
 					CON: "Login",
@@ -2051,12 +2070,15 @@
 					downloadSID: "SID",
 					remove: "Remove last tune",
 					removeReally: "Do you really want to remove the last playlist tune?",
-					next: "Next tune",
+					next: "Next",
 					reset: "Reset",
 					startImport: "Import",
-					fetchFavorites: "Download Playlist",
-					removePlaylist: "Remove Playlist",
+					fetchFavorites: "Download",
+					removePlaylist: "Remove All",
 					removePlaylistReally: "Do you really want to remove ALL playlist entries?",
+					exportPlaylist: "Export",
+					importPlaylistPlaceholder: "Import favorites or drop it here...",
+					importPlaylistDropPlaceholder: "Drop favorites here...",
 					random: "Random Playback",
 					mobileProfile: "Mobile profile",
 					wifiProfile: "WiFi profile",
@@ -2137,12 +2159,15 @@
 					downloadSID: "SID",
 					remove: "Letzten Tune l\u00f6schen",
 					removeReally: "Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
-					next: "N\u00e4chster Tune",
+					next: "N\u00e4chster",
 					reset: "Zur\u00fccksetzen",
 					startImport: "Importieren",
-					fetchFavorites: "Favoriten herunterladen",
-					removePlaylist: "Favoriten l\u00f6schen",
+					fetchFavorites: "Laden",
+					removePlaylist: "L\u00f6schen",
 					removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
+					exportPlaylist: "Export",
+					importPlaylistPlaceholder: "Importiere Favoriten oder DnD...",
+					importPlaylistDropPlaceholder: "DnD Favoriten hier...",
 					random: "Zuf\u00e4llige Wiedergabe",
 					mobileProfile: "Mobiles Profil",
 					wifiProfile: "WiFi Profil",
@@ -2428,43 +2453,87 @@
 					importPlaylist: function () {
 						if (confirm(this.$i18n.t("removePlaylistReally"))) {
 							const reader = new FileReader();
-							reader.onload = (res) => {
-								var content = res.target.result;
-								var lines = content.split("\n");
-
-								this.playlist = [];
-								for (var i = 0; i < lines.length; i++) {
-									if (lines[i].length > 0) {
-										if (
-											!(
-												lines[i].startsWith("/C64Music/") ||
-												lines[i].startsWith("/CGSC/") ||
-												lines[i].startsWith("/Assembly64/") ||
-												lines[i].startsWith("/REU/")
-											)
-										) {
-											lines[i] = "/C64Music" + lines[i];
-										}
-										this.playlist.push({
-											filename: lines[i],
-										});
-									}
-								}
-								this.playlistIndex = 0;
-								this.importFile = null;
-								if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-									return;
-								}
-								this.updateSid(
-									this.playlist[this.playlistIndex].filename,
-									this.playlist[this.playlistIndex].itemId,
-									this.playlist[this.playlistIndex].categoryId
-								);
-								this.showAudio = true;
-							};
 							reader.onerror = (err) => console.log(err);
-							reader.readAsText(this.importFile);
+							var extension = this.importFile.name.split('.').pop().toLowerCase();
+
+							if (extension === "js2") {
+								reader.onload = (res) => {
+									var content = res.target.result;
+									var lines = content.split("\n");
+
+									this.playlist = [];
+									for (var i = 0; i < lines.length; i++) {
+										if (lines[i].length > 0) {
+											if (
+												!(
+													lines[i].startsWith("/C64Music/") ||
+													lines[i].startsWith("/CGSC/") ||
+													lines[i].startsWith("/Assembly64/") ||
+													lines[i].startsWith("/REU/")
+												)
+											) {
+												lines[i] = "/C64Music" + lines[i];
+											}
+											this.playlist.push({
+												filename: lines[i],
+											});
+										}
+									}
+									this.playlistIndex = 0;
+									this.importFile = null;
+									if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+										return;
+									}
+									this.updateSid(
+										this.playlist[this.playlistIndex].filename,
+										this.playlist[this.playlistIndex].itemId,
+										this.playlist[this.playlistIndex].categoryId
+									);
+									this.showAudio = true;
+								};
+								reader.readAsText(this.importFile);
+
+							} else if (extension === "js2web") {
+							    reader.onload = (res) => {
+								this.playlist = JSON.parse(res.target.result);
+									this.playlistIndex = 0;
+									this.importFile = null;
+									if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+										return;
+									}
+									this.updateSid(
+										this.playlist[this.playlistIndex].filename,
+										this.playlist[this.playlistIndex].itemId,
+										this.playlist[this.playlistIndex].categoryId
+									);
+									this.showAudio = true;
+								};
+								reader.readAsText(this.importFile);
+							}
 						}
+					},
+					exportPlaylist: function() {
+						axios({
+							method: "post",
+							url: "/jsidplay2service/JSIDPlay2REST/save_as" + "?filename=jsidplay2.js2web",
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+							data: this.playlist,
+						})
+							.then((response) => {
+						        const suggestedFileName = response.headers["x-suggested-filename"];
+						        const effectiveFileName = (suggestedFileName === undefined
+						                    ? "test.js2web"
+						                    : suggestedFileName);
+						        const contentType = response.headers['Content-Type'];
+
+						        download(effectiveFileName, contentType, JSON.stringify(response.data));
+							})
+							.catch((error) => {
+								console.log(error);
+							});
 					},
 					setNextPlaylistEntry: function () {
 						if (this.playlist.length === 0) {
@@ -3238,6 +3307,7 @@
 			window.addEventListener("popstate", function () {
 				history.pushState(null, null, document.URL);
 			});
+			
 		</script>
 	</body>
 </html>

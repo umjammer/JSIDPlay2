@@ -42,7 +42,7 @@ public enum ContentTypeAndFileExtensions {
 	/**
 	 * Json
 	 */
-	MIME_TYPE_JSON(create("application/json", StandardCharsets.UTF_8), true, ".json"),
+	MIME_TYPE_JSON(create("application/json", StandardCharsets.UTF_8), true, ".json", ".js2web"),
 	/**
 	 * Xml
 	 */
