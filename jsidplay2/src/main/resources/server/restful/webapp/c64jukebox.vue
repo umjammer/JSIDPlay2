@@ -1088,8 +1088,12 @@
 											<i class="fas fa-download"></i>
 											<span>{{ $t("fetchFavorites") }}</span></b-button
 										>
-										<b-button variant="success" size="sm" @click="exportPlaylist"
-										 v-if="playlist.length > 0">
+										<b-button
+											variant="success"
+											size="sm"
+											@click="exportPlaylist"
+											v-if="playlist.length > 0"
+										>
 											<i class="fas fa-file-export"></i>
 											<span>{{ $t("exportPlaylist") }}</span></b-button
 										>
@@ -1999,18 +2003,17 @@
 				return new Date(year, month, 0).getDate();
 			}
 			function download(filename, contentType, text) {
-			    var pom = document.createElement('a');
-			    pom.setAttribute('href', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(text));
-			    pom.setAttribute('download', filename);
+				var pom = document.createElement("a");
+				pom.setAttribute("href", "data:" + contentType + ";charset=utf-8," + encodeURIComponent(text));
+				pom.setAttribute("download", filename);
 
-			    if (document.createEvent) {
-			        var event = document.createEvent('MouseEvents');
-			        event.initEvent('click', true, true);
-			        pom.dispatchEvent(event);
-			    }
-			    else {
-			        pom.click();
-			    }
+				if (document.createEvent) {
+					var event = document.createEvent("MouseEvents");
+					event.initEvent("click", true, true);
+					pom.dispatchEvent(event);
+				} else {
+					pom.click();
+				}
 			}
 			const messages = {
 				en: {
@@ -2454,7 +2457,7 @@
 						if (confirm(this.$i18n.t("removePlaylistReally"))) {
 							const reader = new FileReader();
 							reader.onerror = (err) => console.log(err);
-							var extension = this.importFile.name.split('.').pop().toLowerCase();
+							var extension = this.importFile.name.split(".").pop().toLowerCase();
 
 							if (extension === "js2") {
 								reader.onload = (res) => {
@@ -2492,10 +2495,9 @@
 									this.showAudio = true;
 								};
 								reader.readAsText(this.importFile);
-
 							} else if (extension === "js2web") {
-							    reader.onload = (res) => {
-								this.playlist = JSON.parse(res.target.result);
+								reader.onload = (res) => {
+									this.playlist = JSON.parse(res.target.result);
 									this.playlistIndex = 0;
 									this.importFile = null;
 									if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
@@ -2512,7 +2514,7 @@
 							}
 						}
 					},
-					exportPlaylist: function() {
+					exportPlaylist: function () {
 						axios({
 							method: "post",
 							url: "/jsidplay2service/JSIDPlay2REST/save_as" + "?filename=jsidplay2.js2web",
@@ -2523,13 +2525,12 @@
 							data: this.playlist,
 						})
 							.then((response) => {
-						        const suggestedFileName = response.headers["x-suggested-filename"];
-						        const effectiveFileName = (suggestedFileName === undefined
-						                    ? "test.js2web"
-						                    : suggestedFileName);
-						        const contentType = response.headers['Content-Type'];
+								const suggestedFileName = response.headers["x-suggested-filename"];
+								const effectiveFileName =
+									suggestedFileName === undefined ? "test.js2web" : suggestedFileName;
+								const contentType = response.headers["Content-Type"];
 
-						        download(effectiveFileName, contentType, JSON.stringify(response.data));
+								download(effectiveFileName, contentType, JSON.stringify(response.data));
 							})
 							.catch((error) => {
 								console.log(error);
@@ -3212,7 +3213,7 @@
 						this.playlist = JSON.parse(localStorage.playlistV2);
 						// migration:
 						if (localStorage.playlist) {
-							localStorage.removeItem('playlist');
+							localStorage.removeItem("playlist");
 						}
 					}
 					if (this.playlistIndex >= this.playlist.length) {
@@ -3307,7 +3308,6 @@
 			window.addEventListener("popstate", function () {
 				history.pushState(null, null, document.URL);
 			});
-			
 		</script>
 	</body>
 </html>
