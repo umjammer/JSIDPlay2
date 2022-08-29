@@ -414,7 +414,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
 		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
-		player.setForceCheckSongLength(true);
+		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
 
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart);
 
