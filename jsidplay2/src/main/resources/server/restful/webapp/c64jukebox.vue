@@ -497,6 +497,13 @@
 															<i class="fas fa-video"></i
 															><span>{{ shortEntry(entry.filename) }}</span>
 														</a>
+														<b-button
+															size="sm"
+															style="font-size: smaller; padding: 2px 4px"
+															v-on:click="openDownloadSIDUrl(entry.filename)"
+														>
+															<i class="fas fa-download"></i
+														></b-button>
 													</template>
 												</b-list-group-item>
 											</template>
@@ -899,6 +906,19 @@
 																			shortEntry(innerRow.item.filename)
 																		}}</span>
 																	</a>
+																	<b-button
+																		size="sm"
+																		style="font-size: smaller; padding: 2px 4px"
+																		v-on:click="
+																			openDownloadSIDUrl(
+																				innerRow.item.filename,
+																				row.item.id,
+																				row.item.categoryId
+																			)
+																		"
+																	>
+																		<i class="fas fa-download"></i
+																	></b-button>
 																</template>
 															</span>
 														</template>
@@ -2093,7 +2113,7 @@
 					mutingCfgHeader: "Muting Configuration",
 					emulationCfgHeader: "Emulation Configuration",
 					filterCfgHeader: "Filter Configuration",
-					showDirectory: "Dir",
+					showDirectory: "DIR",
 					firstSid: "Main SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
@@ -2182,7 +2202,7 @@
 					mutingCfgHeader: "Stummschalten konfigurieren",
 					emulationCfgHeader: "Emulation konfigurieren",
 					filterCfgHeader: "Filter konfigurieren",
-					showDirectory: "Dir",
+					showDirectory: "DIR",
 					firstSid: "Haupt SID",
 					secondSid: "Stereo SID",
 					thirdSid: "3-SID",
