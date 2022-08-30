@@ -300,7 +300,8 @@
 															small
 															v-if="entry.loading"
 														></b-spinner>
-														<i class="fas fa-arrow-up"></i><span>{{ entry.filename }}</span>
+														<i class="fas fa-arrow-up" v-if="!entry.loading"></i
+														><span>{{ entry.filename }}</span>
 														<span class="parent-directory-hint"
 															>&larr; {{ $t("parentDirectoryHint") }}</span
 														>
@@ -371,7 +372,7 @@
 															small
 															v-if="entry.loading"
 														></b-spinner>
-														<i class="fas fa-folder"></i
+														<i class="fas fa-folder" v-if="!entry.loading"></i
 														><span>{{ shortEntry(entry.filename) }}</span>
 													</div>
 												</b-list-group-item>
@@ -393,7 +394,7 @@
 															small
 															v-if="entry.loading"
 														></b-spinner>
-														<i class="fas fa-music"></i>
+														<i class="fas fa-music" v-if="!entry.loading"></i>
 														<b-link
 															style="white-space: pre-line"
 															v-on:click="
@@ -458,19 +459,22 @@
 												>
 													<template v-if="canFastload(entry)">
 														<div>
-															<b-spinner
-																type="border"
-																variant="primary"
-																small
-																v-if="entry.loading || entry.loadingDisk"
-															></b-spinner>
 															<a
 																v-bind:href="createConvertUrl('', entry.filename)"
 																v-on:click="pause"
 																target="c64"
 																style="margin-left: 16px"
 															>
-																<i class="fas fa-video"></i>
+																<b-spinner
+																	type="border"
+																	variant="primary"
+																	small
+																	v-if="entry.loading || entry.loadingDisk"
+																></b-spinner>
+																<i
+																	class="fas fa-video"
+																	v-if="!(entry.loading || entry.loadingDisk)"
+																></i>
 																<span>{{ shortEntry(entry.filename) }}</span>
 															</a>
 															<b-button
@@ -520,18 +524,18 @@
 														</div>
 													</template>
 													<template v-else>
-														<b-spinner
-															type="border"
-															variant="primary"
-															small
-															v-if="entry.loading"
-														></b-spinner>
 														<a
 															v-bind:href="createConvertUrl('', entry.filename)"
 															v-on:click="pause"
 															target="c64"
 														>
-															<i class="fas fa-video"></i
+															<b-spinner
+																type="border"
+																variant="primary"
+																small
+																v-if="entry.loading"
+															></b-spinner>
+															<i class="fas fa-video" v-if="!entry.loading"></i
 															><span>{{ shortEntry(entry.filename) }}</span>
 														</a>
 														<b-button
@@ -556,7 +560,7 @@
 														small
 														v-if="entry.loading"
 													></b-spinner>
-													<i class="fas fa-download"></i>
+													<i class="fas fa-download" v-if="!entry.loading"></i>
 													<b-link
 														style="white-space: pre-line"
 														v-on:click="openDownloadUrl(entry.filename)"
