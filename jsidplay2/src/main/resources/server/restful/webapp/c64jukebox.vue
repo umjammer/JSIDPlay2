@@ -123,7 +123,7 @@
 							<b-tab active style="position: relative">
 								<template #title>
 									{{ $t("SIDS") }}
-									<b-spinner type="border" variant="primary" small v-if="loadingSids"></b-spinner>
+									<b-spinner type="border" variant="primary" small v-if="rootDir.loading || top200Dir.loading || oneFilerTop200Dir.loading || toolsTop200Dir.loading || musicTop200Dir.loading || graphicsTop200Dir.loading || gamesTop200Dir.loading"></b-spinner>
 								</template>
 
 								<span
@@ -149,7 +149,7 @@
 										z-index: 9999;
 									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Top200')"
+									v-on:click="fetchDirectory(top200Dir)"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("top200") }}</span>
@@ -166,7 +166,7 @@
 										z-index: 9999;
 									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Demos/CSDB/Onefile-top200')"
+									v-on:click="fetchDirectory(oneFilerTop200Dir)"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("onefilerTop200") }}</span>
@@ -183,7 +183,7 @@
 										z-index: 9999;
 									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Tools/CSDB/Top100')"
+									v-on:click="fetchDirectory(toolsTop200Dir)"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("toolsTop100") }}</span>
@@ -200,7 +200,7 @@
 										z-index: 9999;
 									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Music/CSDB/Top200')"
+									v-on:click="fetchDirectory(musicTop200Dir)"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("musicTop200") }}</span>
@@ -217,7 +217,7 @@
 										z-index: 9999;
 									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Graphics/CSDB/Top200')"
+									v-on:click="fetchDirectory(graphicsTop200Dir)"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("graphicsTop200") }}</span>
@@ -234,7 +234,7 @@
 										z-index: 9999;
 									"
 									variant="secondary"
-									v-on:click="fetchDirectory('/Assembly64/Games/CSDB/Top200')"
+									v-on:click="fetchDirectory(gamesTop200Dir)"
 								>
 									<i class="fas fa-filter"></i>
 									<span>{{ $t("gamesTop200") }}</span>
@@ -278,9 +278,10 @@
 													button
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
-													v-on:click="fetchDirectory(entry.filename)"
+													v-on:click="fetchDirectory(entry)"
 												>
 													<div class="directory parent">
+														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 														<i class="fas fa-arrow-up"></i><span>{{ entry.filename }}</span>
 														<span class="parent-directory-hint"
 															>&larr; {{ $t("parentDirectoryHint") }}</span
@@ -343,9 +344,10 @@
 													button
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
-													v-on:click="fetchDirectory(entry.filename)"
+													v-on:click="fetchDirectory(entry)"
 												>
 													<div :class="directory">
+														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 														<i class="fas fa-folder"></i
 														><span>{{ shortEntry(entry.filename) }}</span>
 													</div>
@@ -362,6 +364,7 @@
 													"
 												>
 													<div style="flex-grow: 4; word-break: break-all">
+														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 														<i class="fas fa-music"></i>
 														<b-link
 															style="white-space: pre-line"
@@ -427,6 +430,7 @@
 												>
 													<template v-if="canFastload(entry)">
 														<div>
+															<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 															<a
 																v-bind:href="createConvertUrl('', entry.filename)"
 																v-on:click="pause"
@@ -441,7 +445,7 @@
 																style="font-size: smaller; padding: 2px 4px"
 																variant="primary"
 																v-on:click="fetchDiskDirectory(entry)"
-																:disabled="entry.loading"
+																:disabled="entry.loadingDisk"
 															>
 																<span> {{ $t("showDirectory") }} </span>
 															</b-button>
@@ -456,7 +460,7 @@
 																type="border"
 																variant="primary"
 																small
-																v-if="entry.loading"
+																v-if="entry.loadingDisk"
 															></b-spinner>
 														</div>
 														<div>
@@ -489,6 +493,7 @@
 														</div>
 													</template>
 													<template v-else>
+														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 														<a
 															v-bind:href="createConvertUrl('', entry.filename)"
 															v-on:click="pause"
@@ -513,6 +518,7 @@
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
 												>
+													<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
 													<i class="fas fa-download"></i>
 													<b-link
 														style="white-space: pre-line"
@@ -829,7 +835,7 @@
 																					row.item.categoryId
 																				)
 																			"
-																			:disabled="innerRow.item.loading"
+																			:disabled="innerRow.item.loadingDisk"
 																		>
 																			<span> {{ $t("showDirectory") }} </span>
 																		</b-button>
@@ -850,7 +856,7 @@
 																			type="border"
 																			variant="primary"
 																			small
-																			v-if="innerRow.item.loading"
+																			v-if="innerRow.item.loadingDisk"
 																		></b-spinner>
 																	</div>
 																	<div>
@@ -2236,6 +2242,34 @@
 					password: "jsidplay2!",
 					// SIDS (directories containing SIDS)
 					directory: [],
+					rootDir: {
+					  filename: "/",
+					  loading: false,
+					},
+					top200Dir: {
+						filename: '/Assembly64/Demos/CSDB/Top200',
+						loading: false,
+					},
+					oneFilerTop200Dir: {
+						filename: '/Assembly64/Demos/CSDB/Onefile-top200',
+						loading: false,
+					},
+					toolsTop200Dir: {
+						filename: '/Assembly64/Tools/CSDB/Top100',
+						loading: false,
+					},
+					musicTop200Dir: {
+						filename: '/Assembly64/Music/CSDB/Top200',
+						loading: false,
+					},
+					graphicsTop200Dir: {
+						filename: '/Assembly64/Graphics/CSDB/Top200',
+						loading: false,
+					},
+					gamesTop200Dir: {
+						filename: '/Assembly64/Games/CSDB/Top200',
+						loading: false,
+					},
 					// SID (info + picture)
 					infos: "",
 					picture: "",
@@ -2298,7 +2332,6 @@
 					vbrQualities: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 					// Misc.
 					tabIndex: 0,
-					loadingSids: false,
 					loadingSid: false,
 					loadingAssembly64: false,
 					loadingPl: false,
@@ -2805,10 +2838,10 @@
 						window.open(this.createDownloadUrl(entry, itemId, categoryId));
 					},
 					fetchDirectory: function (entry) {
-						this.loadingSids = true; //the loading begin
+						entry.loading = true; //the loading begin
 						axios({
 							method: "get",
-							url: "/jsidplay2service/JSIDPlay2REST/directory" + uriEncode(entry) + "?filter=.*",
+							url: "/jsidplay2service/JSIDPlay2REST/directory" + uriEncode(entry.filename) + "?filter=.*",
 							auth: {
 								username: this.username,
 								password: this.password,
@@ -2822,13 +2855,14 @@
 										diskDirectory: [],
 										directoryMode: 0,
 										loading: false,
+										loadingDisk: false,
 									};
 								});
 							})
 							.catch((error) => {
 								console.log(error);
 							})
-							.finally(() => (this.loadingSids = false));
+							.finally(() => (entry.loading = false));
 					},
 					fetchInfo: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin
@@ -2975,7 +3009,7 @@
 						} else {
 							entry.directoryMode = 0xe000;
 						}
-						entry.loading = true; //the loading begin
+						entry.loadingDisk = true; //the loading begin
 						var url =
 							uriEncode(
 								(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") +
@@ -3006,7 +3040,7 @@
 								entry.directoryMode = 0;
 								console.log(error);
 							})
-							.finally(() => (entry.loading = false));
+							.finally(() => (entry.loadingDisk = false));
 					},
 					assembly64SearchUrl: function (token) {
 						var parameterList = [];
@@ -3141,7 +3175,7 @@
 											filename: contentEntry.id,
 											diskDirectory: [],
 											directoryMode: 0,
-											loading: false,
+											loadingDisk: false,
 										};
 									});
 									searchResult._showDetails = true;
@@ -3171,7 +3205,7 @@
 					if (localStorage.directory) {
 						this.directory = JSON.parse(localStorage.directory);
 					} else {
-						this.fetchDirectory("/");
+						this.fetchDirectory(rootDir);
 					}
 					this.fetchFilters();
 					this.fetchCategories();
