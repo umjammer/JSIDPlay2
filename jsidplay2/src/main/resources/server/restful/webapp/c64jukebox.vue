@@ -837,9 +837,8 @@
 																				)
 																			"
 																		>
-																			<i class="fas fa-download"></i>
-																			<span>{{ $t("download") }}</span></b-button
-																		>
+																			<i class="fas fa-download"></i
+																		></b-button>
 																		<b-spinner
 																			type="border"
 																			variant="primary"
@@ -2515,26 +2514,7 @@
 						}
 					},
 					exportPlaylist: function () {
-						axios({
-							method: "post",
-							url: "/jsidplay2service/JSIDPlay2REST/save_as" + "?filename=jsidplay2.json",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-							data: this.playlist,
-						})
-							.then((response) => {
-								const suggestedFileName = response.headers["x-suggested-filename"];
-								const effectiveFileName =
-									suggestedFileName === undefined ? "test.json" : suggestedFileName;
-								const contentType = response.headers["content-type"];
-
-								download(effectiveFileName, contentType, JSON.stringify(response.data));
-							})
-							.catch((error) => {
-								console.log(error);
-							});
+						download("jsidplay2.json", "application/json; charset=utf-8; ", JSON.stringify(this.playlist));
 					},
 					setNextPlaylistEntry: function () {
 						if (this.playlist.length === 0) {

@@ -57,7 +57,6 @@ import server.restful.servlets.DownloadServlet;
 import server.restful.servlets.FavoritesServlet;
 import server.restful.servlets.FiltersServlet;
 import server.restful.servlets.PhotoServlet;
-import server.restful.servlets.SaveAsServlet;
 import server.restful.servlets.StartPageServlet;
 import server.restful.servlets.StaticServlet;
 import server.restful.servlets.TuneInfoServlet;
@@ -168,8 +167,7 @@ public class JSIDPlay2Server {
 			FindHashServlet.class, WhatsSidServlet.class, TuneExistsServlet.class, OnKeepAliveServlet.class,
 			OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class, SetSidModel6581Servlet.class,
 			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
-			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
-			SaveAsServlet.class);
+			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class);
 
 	private static EntityManagerFactory entityManagerFactory;
 
@@ -401,7 +399,6 @@ public class JSIDPlay2Server {
 		collection.addPattern(CONTEXT_ROOT_SERVLET + DirectoryServlet.DIRECTORY_PATH + "/*");
 		collection.addPattern(CONTEXT_ROOT_SERVLET + PhotoServlet.PHOTO_PATH + "/*");
 		collection.addPattern(CONTEXT_ROOT_SERVLET + TuneInfoServlet.TUNE_INFO_PATH + "/*");
-		collection.addPattern(CONTEXT_ROOT_SERVLET + SaveAsServlet.SAVEAS_PATH + "/*");
 
 		constraint.addCollection(collection);
 		context.addConstraint(constraint);
