@@ -123,7 +123,20 @@
 							<b-tab active style="position: relative">
 								<template #title>
 									{{ $t("SIDS") }}
-									<b-spinner type="border" variant="primary" small v-if="rootDir.loading || top200Dir.loading || oneFilerTop200Dir.loading || toolsTop200Dir.loading || musicTop200Dir.loading || graphicsTop200Dir.loading || gamesTop200Dir.loading"></b-spinner>
+									<b-spinner
+										type="border"
+										variant="primary"
+										small
+										v-if="
+											rootDir.loading ||
+											top200Dir.loading ||
+											oneFilerTop200Dir.loading ||
+											toolsTop200Dir.loading ||
+											musicTop200Dir.loading ||
+											graphicsTop200Dir.loading ||
+											gamesTop200Dir.loading
+										"
+									></b-spinner>
 								</template>
 
 								<span
@@ -281,7 +294,12 @@
 													v-on:click="fetchDirectory(entry)"
 												>
 													<div class="directory parent">
-														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+														<b-spinner
+															type="border"
+															variant="primary"
+															small
+															v-if="entry.loading"
+														></b-spinner>
 														<i class="fas fa-arrow-up"></i><span>{{ entry.filename }}</span>
 														<span class="parent-directory-hint"
 															>&larr; {{ $t("parentDirectoryHint") }}</span
@@ -347,7 +365,12 @@
 													v-on:click="fetchDirectory(entry)"
 												>
 													<div :class="directory">
-														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+														<b-spinner
+															type="border"
+															variant="primary"
+															small
+															v-if="entry.loading"
+														></b-spinner>
 														<i class="fas fa-folder"></i
 														><span>{{ shortEntry(entry.filename) }}</span>
 													</div>
@@ -364,7 +387,12 @@
 													"
 												>
 													<div style="flex-grow: 4; word-break: break-all">
-														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+														<b-spinner
+															type="border"
+															variant="primary"
+															small
+															v-if="entry.loading"
+														></b-spinner>
 														<i class="fas fa-music"></i>
 														<b-link
 															style="white-space: pre-line"
@@ -430,7 +458,12 @@
 												>
 													<template v-if="canFastload(entry)">
 														<div>
-															<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+															<b-spinner
+																type="border"
+																variant="primary"
+																small
+																v-if="entry.loading"
+															></b-spinner>
 															<a
 																v-bind:href="createConvertUrl('', entry.filename)"
 																v-on:click="pause"
@@ -493,7 +526,12 @@
 														</div>
 													</template>
 													<template v-else>
-														<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+														<b-spinner
+															type="border"
+															variant="primary"
+															small
+															v-if="entry.loading"
+														></b-spinner>
 														<a
 															v-bind:href="createConvertUrl('', entry.filename)"
 															v-on:click="pause"
@@ -518,7 +556,12 @@
 													:variant="getVariant(entry)"
 													style="white-space: pre-line"
 												>
-													<b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+													<b-spinner
+														type="border"
+														variant="primary"
+														small
+														v-if="entry.loading"
+													></b-spinner>
 													<i class="fas fa-download"></i>
 													<b-link
 														style="white-space: pre-line"
@@ -2243,31 +2286,31 @@
 					// SIDS (directories containing SIDS)
 					directory: [],
 					rootDir: {
-					  filename: "/",
-					  loading: false,
+						filename: "/",
+						loading: false,
 					},
 					top200Dir: {
-						filename: '/Assembly64/Demos/CSDB/Top200',
+						filename: "/Assembly64/Demos/CSDB/Top200",
 						loading: false,
 					},
 					oneFilerTop200Dir: {
-						filename: '/Assembly64/Demos/CSDB/Onefile-top200',
+						filename: "/Assembly64/Demos/CSDB/Onefile-top200",
 						loading: false,
 					},
 					toolsTop200Dir: {
-						filename: '/Assembly64/Tools/CSDB/Top100',
+						filename: "/Assembly64/Tools/CSDB/Top100",
 						loading: false,
 					},
 					musicTop200Dir: {
-						filename: '/Assembly64/Music/CSDB/Top200',
+						filename: "/Assembly64/Music/CSDB/Top200",
 						loading: false,
 					},
 					graphicsTop200Dir: {
-						filename: '/Assembly64/Graphics/CSDB/Top200',
+						filename: "/Assembly64/Graphics/CSDB/Top200",
 						loading: false,
 					},
 					gamesTop200Dir: {
-						filename: '/Assembly64/Games/CSDB/Top200',
+						filename: "/Assembly64/Games/CSDB/Top200",
 						loading: false,
 					},
 					// SID (info + picture)
