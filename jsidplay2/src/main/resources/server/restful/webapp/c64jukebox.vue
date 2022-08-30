@@ -462,7 +462,7 @@
 																type="border"
 																variant="primary"
 																small
-																v-if="entry.loading"
+																v-if="entry.loading || entry.loadingDisk"
 															></b-spinner>
 															<a
 																v-bind:href="createConvertUrl('', entry.filename)"
@@ -489,12 +489,6 @@
 															>
 																<i class="fas fa-download"></i
 															></b-button>
-															<b-spinner
-																type="border"
-																variant="primary"
-																small
-																v-if="entry.loadingDisk"
-															></b-spinner>
 														</div>
 														<div>
 															<div v-show="entry.directoryMode > 0">
@@ -849,6 +843,12 @@
 															<span>
 																<template v-if="canFastload(innerRow.item)">
 																	<div>
+																		<b-spinner
+																			type="border"
+																			variant="primary"
+																			small
+																			v-if="innerRow.item.loadingDisk"
+																		></b-spinner>
 																		<a
 																			v-bind:href="
 																				createConvertUrl(
@@ -895,12 +895,6 @@
 																		>
 																			<i class="fas fa-download"></i
 																		></b-button>
-																		<b-spinner
-																			type="border"
-																			variant="primary"
-																			small
-																			v-if="innerRow.item.loadingDisk"
-																		></b-spinner>
 																	</div>
 																	<div>
 																		<div v-show="innerRow.item.directoryMode > 0">
