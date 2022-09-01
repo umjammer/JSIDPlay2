@@ -615,7 +615,7 @@
 								</manifestEntries>
 							</archive>
 							<outputDirectory>${project.build.directory}/standalone</outputDirectory>
-							<finalName>${project.artifactId}_sidblastertool-${project.version}</finalName>
+							<finalName>${project.artifactId}-sidblastertool-${project.version}</finalName>
 							<excludes>
 								<exclude>**/*</exclude>
 							</excludes>
