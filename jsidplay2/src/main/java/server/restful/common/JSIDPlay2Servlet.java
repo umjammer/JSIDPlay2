@@ -297,7 +297,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		throw new FileNotFoundException(path);
 	}
 
-	protected File fetchAssembly64Files(String itemId, String categoryId, String fileId) {
+	private File fetchAssembly64Files(String itemId, String categoryId, String fileId) {
 		try {
 			String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 			String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
