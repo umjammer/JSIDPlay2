@@ -3246,7 +3246,7 @@
 					if (localStorage.directory) {
 						this.directory = JSON.parse(localStorage.directory);
 					} else {
-						this.fetchDirectory(rootDir);
+						this.fetchDirectory(this.rootDir);
 					}
 					this.fetchFilters();
 					this.fetchCategories();
