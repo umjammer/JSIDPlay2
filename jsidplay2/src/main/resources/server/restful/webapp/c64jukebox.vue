@@ -40,7 +40,7 @@
 					</select>
 					<h2>C64 Jukebox</h2>
 				</div>
-				<div class="audio" style="position: relative;">
+				<div class="audio" style="position: relative">
 					<audio
 						ref="audioElm"
 						v-show="showAudio"
@@ -50,7 +50,7 @@
 					>
 						I'm sorry. Your browser doesn't support HTML5 audio
 					</audio>
-					<div style="position: absolute; bottom: 1px; left: 0px;line-height: 0.7;">
+					<div style="position: absolute; bottom: 1px; left: 0px; line-height: 0.7">
 						<span style="white-space: pre-line; font-style: italic; font-size: small">{{
 							currentSid
 						}}</span>
@@ -1111,19 +1111,18 @@
 									<div class="sid">
 										<b-table striped bordered :items="translatedInfos" :fields="translatedFields">
 											<template #cell(Value)="row">
-												<span :style="row.item.opacity ? 'opacity: 0.5; line-break: anywhere;' : 'line-break: anywhere;'">{{
-													row.item.Value
-												}}</span>
+												<span
+													:style="
+														row.item.opacity
+															? 'opacity: 0.5; line-break: anywhere;'
+															: 'line-break: anywhere;'
+													"
+													>{{ row.item.Value }}</span
+												>
 											</template>
 										</b-table>
 										<div class="picture-container">
-											<b-img-lazy
-												:src="picture"
-												id="img"
-												class="picture"
-												fluid>
-												</b-img-lazy>
-
+											<b-img-lazy :src="picture" id="img" class="picture" fluid> </b-img-lazy>
 										</div>
 									</div>
 								</b-card-text>
@@ -1160,11 +1159,7 @@
 											<i class="fas fa-download"></i>
 											<span>{{ $t("fetchFavorites") }}</span></b-button
 										>
-										<b-button
-											size="sm"
-											@click="exportPlaylist"
-											v-if="playlist.length > 0"
-										>
+										<b-button size="sm" @click="exportPlaylist" v-if="playlist.length > 0">
 											<i class="fas fa-file-export"></i>
 											<span>{{ $t("exportPlaylist") }}</span></b-button
 										>
@@ -1213,7 +1208,7 @@
 														<span>{{ shortEntry(entry.filename) }}</span>
 													</div>
 													<div v-show="pathEntry(entry.filename).length > 1">
-														<span style="font-size: smaller; line-break: anywhere;">{{
+														<span style="font-size: smaller; line-break: anywhere">{{
 															pathEntry(entry.filename)
 														}}</span>
 													</div>
