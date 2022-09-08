@@ -2272,7 +2272,7 @@
 				i18n, //import mutil-lang
 				data: {
 					carouselImageHeight:
-						window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8,
+						window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
 					slide: 0,
 					sliding: null,
 					showAudio: false,
