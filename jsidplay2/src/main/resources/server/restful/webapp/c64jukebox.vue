@@ -38,9 +38,9 @@
 							{{ lang }}
 						</option>
 					</select>
-					<h1>C64 Jukebox</h1>
+					<h2>C64 Jukebox</h2>
 				</div>
-				<div class="audio">
+				<div class="audio" style="position: relative;">
 					<audio
 						ref="audioElm"
 						v-show="showAudio"
@@ -50,7 +50,7 @@
 					>
 						I'm sorry. Your browser doesn't support HTML5 audio
 					</audio>
-					<div>
+					<div style="position: absolute; bottom: 1px; left: 0px;line-height: 0.7;">
 						<span style="white-space: pre-line; font-style: italic; font-size: small">{{
 							currentSid
 						}}</span>
@@ -96,7 +96,7 @@
 											/>
 										</div>
 									</div>
-									<p style="text-align: center; font-size: smaller; padding: 32px">
+									<p style="text-align: center; font-size: smaller; padding: 16px">
 										C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
 										JSIDPlay2 is copyrighted to:<br />
 										2007-
@@ -1111,13 +1111,19 @@
 									<div class="sid">
 										<b-table striped bordered :items="translatedInfos" :fields="translatedFields">
 											<template #cell(Value)="row">
-												<span :style="row.item.opacity ? 'opacity: 0.5;' : ''">{{
+												<span :style="row.item.opacity ? 'opacity: 0.5; line-break: anywhere;' : 'line-break: anywhere;'">{{
 													row.item.Value
 												}}</span>
 											</template>
 										</b-table>
 										<div class="picture-container">
-											<img :src="picture" id="img" class="picture" />
+											<b-img-lazy
+												:src="picture"
+												id="img"
+												class="picture"
+												fluid>
+												</b-img-lazy>
+
 										</div>
 									</div>
 								</b-card-text>
@@ -1155,7 +1161,6 @@
 											<span>{{ $t("fetchFavorites") }}</span></b-button
 										>
 										<b-button
-											variant="success"
 											size="sm"
 											@click="exportPlaylist"
 											v-if="playlist.length > 0"
@@ -1208,7 +1213,7 @@
 														<span>{{ shortEntry(entry.filename) }}</span>
 													</div>
 													<div v-show="pathEntry(entry.filename).length > 1">
-														<span style="font-size: smaller; line-break: anywhere">{{
+														<span style="font-size: smaller; line-break: anywhere;">{{
 															pathEntry(entry.filename)
 														}}</span>
 													</div>

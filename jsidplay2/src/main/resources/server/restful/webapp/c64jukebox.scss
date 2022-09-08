@@ -49,7 +49,7 @@ div i {
 }
 
 .picture {
-	max-width: 160px;
+	max-width: 160px !important;
 	opacity: 0.5;
 }
 
@@ -62,7 +62,7 @@ div i {
 }
 
 .audio {
-	padding: 16px 0;
+	padding-bottom: 16px;
 }
 
 .playlist-item {
