@@ -96,7 +96,7 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 		if (tuneFile == null) {
 			return null;
 		}
-		SidTune tune = SidTune.load(tuneFile);
+		SidTune tune = SidTune.load(extract(tuneFile));
 		File root = configuration.getSidplay2Section().getHvsc();
 		DoubleSupplier songLengthFnct = () -> 0;
 		if (root != null) {

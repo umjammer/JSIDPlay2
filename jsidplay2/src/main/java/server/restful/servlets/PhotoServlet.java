@@ -86,7 +86,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 		}
 		String author = null;
 		if (tuneFile != null) {
-			SidTuneInfo info = SidTune.load(tuneFile).getInfo();
+			SidTuneInfo info = SidTune.load(extract(tuneFile)).getInfo();
 			if (info.getInfoString().size() > 1) {
 				Iterator<String> iterator = info.getInfoString().iterator();
 				/* title = */iterator.next();
