@@ -696,6 +696,9 @@
 										small
 										fixed
 										responsive
+										:sort-by="sortBy"
+										:sort-desc="sortDesc"
+										@sort-changed="sortChanged"
 									>
 										<template #table-colgroup="scope">
 											<col
@@ -2352,6 +2355,8 @@
 							label: "File",
 						},
 					],
+					sortBy: null,
+					sortDesc: null,
 					name: "",
 					event: "",
 					released: "",
@@ -2438,6 +2443,12 @@
 					},
 				},
 				methods: {
+				    sortChanged(e) {
+						localStorage.sortBy = JSON.stringify(e.sortBy);
+						localStorage.sortDesc = JSON.stringify(e.sortDesc);
+						this.sortBy = e.sortBy
+						this.sortDesc = e.sortDesc
+					},
 					onSlideStart(slide) {
 						this.sliding = true;
 					},
@@ -3308,6 +3319,12 @@
 							this.playlist[this.playlistIndex].itemId,
 							this.playlist[this.playlistIndex].categoryId
 						);
+					}
+					if (localStorage.sortBy) {
+						this.sortBy = JSON.parse(localStorage.sortBy);
+					}
+					if (localStorage.sortDesc) {
+						this.sortDesc = JSON.parse(localStorage.sortDesc);
 					}
 					if (localStorage.category) {
 						this.category = JSON.parse(localStorage.category);
