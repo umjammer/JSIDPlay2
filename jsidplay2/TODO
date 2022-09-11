@@ -8,8 +8,11 @@ TODO:
 - Drag and Drop of HVSC zip file
 - Support SIDBlaster reads (for configuru and fpgasid)
 - SID Reg should report reads as well.
+- freely configurable filter definitions
 
 HTML Client app:
 - Search collections
 - Export playlists
 - show current number of videos in parallel
+- support of several playlists
+- USB device support
