@@ -409,6 +409,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_VID_DOWNLOAD_LENGTH));
 			videoFile = createVideoFile(player, driver);
+		} else {
+			sidplay2Section.setDefaultPlayLength(0);
 		}
 		player.setAudioDriver(driver);
 		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
