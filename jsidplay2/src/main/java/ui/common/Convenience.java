@@ -122,36 +122,38 @@ public class Convenience {
 		boolean fileIsModule = cartFileFilter.accept(file);
 		TFile zip = new TFile(file);
 		File toAttach = null;
-		if (zip.isArchive()) {
-			// uncompress zip
-			TFile.cp_rp(zip, tmpDir, TArchiveDetector.ALL);
-			// search media file to attach
-			toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, true, fileIsModule);
-			TFile.rm_r(zip);
-		} else if (file.getName().toLowerCase(Locale.US).endsWith(".gz")) {
-			File dst = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()));
-			try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
-				TFile.cp(is, dst);
+		if (zip.exists()) {
+			if (zip.isArchive()) {
+				// uncompress zip
+				TFile.cp_rp(zip, tmpDir, TArchiveDetector.ALL);
+				// search media file to attach
+				toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, true, fileIsModule);
+				TFile.rm_r(zip);
+			} else if (file.getName().toLowerCase(Locale.US).endsWith(".gz")) {
+				File dst = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()));
+				try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
+					TFile.cp(is, dst);
+				}
+				toAttach = getToAttach(file.getParentFile(), file.getParentFile(), isMediaToAttach, null, true,
+						fileIsModule);
+				TFile.rm_r(zip);
+			} else if (file.getName().toLowerCase(Locale.US).endsWith("7z")) {
+				Extract7ZipUtil extract7Zip = new Extract7ZipUtil(zip, tmpDir);
+				extract7Zip.extract();
+				toAttach = getToAttach(tmpDir, extract7Zip.getZipFile(), isMediaToAttach, null, true, fileIsModule);
+				TFile.rm_r(zip);
+			} else if (zip.isEntry()) {
+				// uncompress zip entry
+				File zipEntry = new File(tmpDir, zip.getName());
+				zipEntry.deleteOnExit();
+				TFile.cp_rp(zip, zipEntry, TArchiveDetector.ALL);
+				// search media file to attach
+				getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
+				toAttach = zipEntry;
+			} else if (isSupportedMedia(file)) {
+				getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
+				toAttach = file;
 			}
-			toAttach = getToAttach(file.getParentFile(), file.getParentFile(), isMediaToAttach, null, true,
-					fileIsModule);
-			TFile.rm_r(zip);
-		} else if (file.getName().toLowerCase(Locale.US).endsWith("7z")) {
-			Extract7ZipUtil extract7Zip = new Extract7ZipUtil(zip, tmpDir);
-			extract7Zip.extract();
-			toAttach = getToAttach(tmpDir, extract7Zip.getZipFile(), isMediaToAttach, null, true, fileIsModule);
-			TFile.rm_r(zip);
-		} else if (zip.isEntry()) {
-			// uncompress zip entry
-			File zipEntry = new File(tmpDir, zip.getName());
-			zipEntry.deleteOnExit();
-			TFile.cp_rp(zip, zipEntry, TArchiveDetector.ALL);
-			// search media file to attach
-			getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
-			toAttach = zipEntry;
-		} else if (isSupportedMedia(file)) {
-			getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
-			toAttach = file;
 		}
 		if (toAttach != null) {
 			if (tuneFileFilter.accept(toAttach)) {
