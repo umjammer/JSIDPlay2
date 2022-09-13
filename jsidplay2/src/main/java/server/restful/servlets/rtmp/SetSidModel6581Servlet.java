@@ -26,7 +26,7 @@ public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.SetSidModel6581ServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class)
+		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
 		private UUID uuid;
 
 	}

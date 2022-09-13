@@ -117,6 +117,7 @@ public class PathUtils {
 						}
 					}
 				}
+				// XXX throw new FileNotFoundException(path);
 				return Collections.emptyList();
 			}
 			return pathSegs;

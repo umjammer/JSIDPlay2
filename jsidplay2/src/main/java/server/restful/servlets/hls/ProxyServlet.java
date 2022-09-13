@@ -31,7 +31,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.hls.ProxyServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class)
+		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class, required = true)
 		private URL url;
 
 	}

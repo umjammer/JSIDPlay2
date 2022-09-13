@@ -40,6 +40,7 @@ import org.apache.tomcat.util.http.fileupload.FileItemIterator;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -193,8 +194,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				.console(new PrintStreamConsole(
 						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
 				.acceptUnknownOptions(acceptUnknownOptions).build();
-		commander.setUsageFormatter(new ServletUsageFormatter(commander, request, response));
-		commander.parse(getRequestParameters(request));
+		ServletUsageFormatter usageFormatter = new ServletUsageFormatter(commander, request, response);
+		commander.setUsageFormatter(usageFormatter);
+		try {
+			commander.parse(getRequestParameters(request));
+		} catch (ParameterException e) {
+			usageFormatter.setParameterException(e);
+		}
 		return commander;
 	}
 
@@ -252,7 +258,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
 				Optional.ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
-			e.printStackTrace(out);
+			out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 

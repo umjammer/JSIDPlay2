@@ -36,7 +36,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(descriptionKey = "FILE_PATH")
+		@Parameter(descriptionKey = "FILE_PATH", required = true)
 		private String filePath;
 
 	}
