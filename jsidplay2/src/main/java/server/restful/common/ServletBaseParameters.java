@@ -26,13 +26,13 @@ public class ServletBaseParameters {
 		this.categoryId = categoryId;
 	}
 
+	@Parameter(descriptionKey = "FILE_PATH")
 	private String filePath;
 
 	public String getFilePath() {
 		return filePath;
 	}
 
-	@Parameter(descriptionKey = "FILE_PATH")
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
