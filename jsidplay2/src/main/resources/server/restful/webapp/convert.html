@@ -34,13 +34,19 @@
 		<div id="app">
 			<div class="left-button-container">
 				<div class="button-container">
-					<b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm">6581</b-button>
+					<b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm"
+						>6581</b-button
+					>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm">8580</b-button>
+					<b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm"
+						>8580</b-button
+					>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm">RESID</b-button>
+					<b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm"
+						>RESID</b-button
+					>
 				</div>
 				<div class="button-container">
 					<b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-secondary" size="sm"
@@ -63,10 +69,14 @@
 					}}</b-button>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm">Joy1 Btn</b-button>
+					<b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm"
+						>Joy1 Btn</b-button
+					>
 				</div>
 				<div class="button-container">
-					<b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm">Joy2 Btn</b-button>
+					<b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm"
+						>Joy2 Btn</b-button
+					>
 				</div>
 			</div>
 
@@ -102,7 +112,7 @@
 					<b-card-text>
 						<div class="barcode-container">
 							<b-alert v-if="!hls" variant="success" show>{{ $t("mobilePlaybackTip1") }}</b-alert>
-							$barcodeImg
+							$qrCodeImgTag
 						</div>
 					</b-card-text>
 				</b-card>
@@ -207,8 +217,12 @@
 									>
 										Shift
 									</div>
-									<div class="key dual" v-on:click="typeKey('CURSOR_UP_DOWN')">&#8593;<br />&#8595;</div>
-									<div class="key dual" v-on:click="typeKey('CURSOR_LEFT_RIGHT')">&#8592;<br />&#8594;</div>
+									<div class="key dual" v-on:click="typeKey('CURSOR_UP_DOWN')">
+										&#8593;<br />&#8595;
+									</div>
+									<div class="key dual" v-on:click="typeKey('CURSOR_LEFT_RIGHT')">
+										&#8592;<br />&#8594;
+									</div>
 								</div>
 								<div>
 									<div
@@ -304,8 +318,6 @@
 					hls: $hls,
 					waitForVideo: $waitForVideo,
 					notifyForHLS: $notifyForHLS,
-					barcodeImgTop: "$barcodeImgTop",
-					barcodeImgRight: "$barcodeImgRight",
 					shiftPressed: false,
 					msg: "",
 				},
@@ -314,7 +326,7 @@
 						if (!this.hls) {
 							setTimeout(() => {
 								window.open(
-									"$rtmp",
+									"$videoUrl",
 									"c64video",
 									"resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, titlebar=no, location=no, fullscreen=yes"
 								);
@@ -455,7 +467,7 @@
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
 					}
-				    if (this.hls) {
+					if (this.hls) {
 						setInterval(function () {
 							var xhttp = new XMLHttpRequest();
 							xhttp.onreadystatechange = function () {
@@ -473,10 +485,10 @@
 								this.fluid(true);
 							});
 							video.src({
-								src: "/jsidplay2service/JSIDPlay2REST/proxy/$rtmp",
+								src: "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl",
 								type: "application/x-mpegURL",
 							});
-							
+
 							// Play video which returns a promise
 							var promise = video.play();
 

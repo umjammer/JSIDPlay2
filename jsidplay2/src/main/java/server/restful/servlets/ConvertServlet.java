@@ -364,7 +364,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
 		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
-		player.setForceCheckSongLength(true);
+		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
 
 		SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(servletParameters.startSong);
@@ -445,13 +445,13 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	private Map<String, String> createReplacements(ServletParameters servletParameters, HttpServletRequest request,
 			File file, UUID uuid) throws IOException, WriterException {
-		String rtmpUrl = getRTMPUrl(servletParameters, request.getRemoteAddr(), uuid);
-		String createQrCodeImgTag = createQrCodeImgTag(rtmpUrl, "UTF-8", "png", 320, 320);
+		String videoUrl = getVideoUrl(servletParameters, request.getRemoteAddr(), uuid);
+		String qrCodeImgTag = createQrCodeImgTag(videoUrl, "UTF-8", "png", 320, 320);
 
 		Map<String, String> result = new HashMap<>();
 		result.put("$uuid", uuid.toString());
-		result.put("$barcodeImg", createQrCodeImgTag);
-		result.put("$rtmp", rtmpUrl);
+		result.put("$qrCodeImgTag", qrCodeImgTag);
+		result.put("$videoUrl", videoUrl);
 		result.put("$hls", String.valueOf(!Boolean.TRUE.equals(servletParameters.rtmp)));
 		result.put("$waitForVideo", String.valueOf(getWaitForVideo(servletParameters)));
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
@@ -467,12 +467,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
 	}
 
-	private String getRTMPUrl(ServletParameters servletParameters, String remoteAddress, UUID uuid) {
+	private String getVideoUrl(ServletParameters servletParameters, String remoteAddress, UUID uuid) {
 		if (Boolean.TRUE.equals(servletParameters.rtmp)) {
 			// RTMP protocol
 			return RTMP_DOWNLOAD_URL + "/" + uuid;
 		} else {
-			// HLS
+			// HLS protocol
 			return HLS_DOWNLOAD_URL + "/" + uuid + ".m3u8";
 		}
 	}
