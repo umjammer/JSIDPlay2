@@ -27,15 +27,15 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.JoystickServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = -4)
+		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = 0)
 		private UUID uuid;
 
 		@Parameter(names = {
-				"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = -3)
+				"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = 1)
 		private int number;
 
 		@Parameter(names = {
-				"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = -2)
+				"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = 2)
 		private int value;
 	}
 

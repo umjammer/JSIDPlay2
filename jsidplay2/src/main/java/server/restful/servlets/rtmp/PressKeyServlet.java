@@ -26,16 +26,16 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.PressKeyServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = -5)
+		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = 0)
 		private UUID uuid;
 
-		@Parameter(names = { "--type" }, descriptionKey = "TYPE", order = -4)
+		@Parameter(names = { "--type" }, descriptionKey = "TYPE", order = 1)
 		private String type;
 
-		@Parameter(names = { "--press" }, descriptionKey = "PRESS", order = -3)
+		@Parameter(names = { "--press" }, descriptionKey = "PRESS", order = 2)
 		private String press;
 
-		@Parameter(names = { "--release" }, descriptionKey = "RELEASE", order = -2)
+		@Parameter(names = { "--release" }, descriptionKey = "RELEASE", order = 3)
 		private String release;
 
 	}

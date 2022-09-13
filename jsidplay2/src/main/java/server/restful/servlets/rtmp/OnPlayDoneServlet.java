@@ -26,7 +26,7 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.OnPlayDoneServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = -2)
+		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class)
 		private UUID uuid;
 
 	}

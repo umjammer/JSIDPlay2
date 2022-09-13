@@ -26,7 +26,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.hls.OnKeepAliveServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = -2)
+		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class)
 		private UUID uuid;
 
 	}
@@ -63,7 +63,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath(), true);
+			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {
 				commander.usage();
 				return;

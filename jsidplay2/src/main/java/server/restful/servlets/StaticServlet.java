@@ -8,8 +8,6 @@ import static server.restful.common.ServletParameterHelper.CONVERT_MESSAGES_DE;
 import static server.restful.common.ServletParameterHelper.CONVERT_MESSAGES_EN;
 import static server.restful.common.ServletParameterHelper.CONVERT_OPTIONS;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,14 +94,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	}
 
 	private InputStream getResourceAsStream(String filePath) throws FileNotFoundException {
-		if (filePath.startsWith("/")) {
-			filePath = filePath.substring(1);
-		}
-		File localFile = new File(configuration.getSidplay2Section().getTmpDir(), filePath);
-		if (localFile.exists() && localFile.canRead()) {
-			return new FileInputStream(localFile);
-		}
-		InputStream resourceAsStream = StaticServlet.class.getResourceAsStream("/server/restful/webapp/" + filePath);
+		InputStream resourceAsStream = StaticServlet.class.getResourceAsStream("/server/restful/webapp" + filePath);
 		if (resourceAsStream == null) {
 			throw new FileNotFoundException(filePath + " (No such file or directory)");
 		}

@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -20,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.ZipFileUtils;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.converter.RequestPathURLConverter;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 
@@ -29,8 +31,8 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.hls.ProxyServletParameters")
 	public static class ServletParameters {
 
-		@Parameter(descriptionKey = "URL")
-		private String url;
+		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class)
+		private URL url;
 
 	}
 
@@ -61,11 +63,12 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			String spec = servletParameters.url.substring(1).replaceFirst("/", "//");
-			if (!spec.startsWith(HLS_DOWNLOAD_URL)) {
-				throw new IOException("Resource is not allowed!");
+			URL url = servletParameters.url;
+
+			if (!url.toExternalForm().startsWith(HLS_DOWNLOAD_URL)) {
+				throw new ParameterException("Resource is not allowed! (found " + url.toExternalForm() + ")");
 			}
-			URLConnection connection = InternetUtil.openConnection(new URL(spec), configuration.getSidplay2Section());
+			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ZipFileUtils.copy(connection.getInputStream(), bos);
 
