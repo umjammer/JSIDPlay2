@@ -299,9 +299,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				String directoryValue = splitted.length > 0 ? splitted[0] : null;
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
-					File file = PathUtils.getFile(directoryValue + path.substring(directoryLogicalName.length()),
-							new TFile(directoryValue), null);
-					if (file.exists()) {
+					TFile rootFile = new TFile(directoryValue);
+					File file = PathUtils.getFile(path.substring(directoryLogicalName.length()), rootFile, null);
+					if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
 						return file;
 					}
 				}
