@@ -283,20 +283,27 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 		if (path.startsWith(C64_MUSIC)) {
 			File rootFile = configuration.getSidplay2Section().getHvsc();
-			return PathUtils.getFile(path.substring(C64_MUSIC.length()), rootFile, null);
+			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), rootFile, null);
+			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+				return file;
+			}
 		} else if (path.startsWith(CGSC)) {
 			File rootFile = configuration.getSidplay2Section().getCgsc();
-			return PathUtils.getFile(path.substring(CGSC.length()), null, rootFile);
-		}
-		for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
-			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-			String directoryValue = splitted.length > 0 ? splitted[0] : null;
-			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-			if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
-				File file = PathUtils.getFile(directoryValue + path.substring(directoryLogicalName.length()),
-						new TFile(directoryValue), null);
-				if (file.exists()) {
-					return file;
+			File file = PathUtils.getFile(path.substring(CGSC.length()), null, rootFile);
+			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+				return file;
+			}
+		} else {
+			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
+				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
+				String directoryValue = splitted.length > 0 ? splitted[0] : null;
+				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
+				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
+					File file = PathUtils.getFile(directoryValue + path.substring(directoryLogicalName.length()),
+							new TFile(directoryValue), null);
+					if (file.exists()) {
+						return file;
+					}
 				}
 			}
 		}
