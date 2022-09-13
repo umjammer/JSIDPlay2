@@ -3264,12 +3264,8 @@
 					if (localStorage.convertOptions) {
 						// restore configuration from last run
 						this.convertOptions = JSON.parse(localStorage.convertOptions);
-						// migration:
-						if (typeof this.convertOptions.config.audioSection.videoCoderAudioDelay === "undefined") {
-							this.convertOptions.config.audioSection.videoCoderAudioDelay = 0;
-						}
 					} else {
-						// initialize configuration
+						// initialize configuration (if they differ from the default settings)
 						this.convertOptions.rtmp = false;
 						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
@@ -3285,26 +3281,14 @@
 					if (localStorage.random) {
 						this.random = JSON.parse(localStorage.random);
 					}
-					if (localStorage.playlistIndex) {
-						this.playlistIndex = JSON.parse(localStorage.playlistIndex);
-					}
-					// migration:
-					if (localStorage.playlist) {
-						this.playlist = JSON.parse(localStorage.playlist).map((file) => {
-							return {
-								filename: file,
-							};
-						});
-					}
 					if (localStorage.playlistV2) {
 						this.playlist = JSON.parse(localStorage.playlistV2);
-						// migration:
-						if (localStorage.playlist) {
-							localStorage.removeItem("playlist");
-						}
 					}
-					if (this.playlistIndex >= this.playlist.length) {
-						this.playlistIndex = 0;
+					if (localStorage.playlistIndex) {
+						this.playlistIndex = JSON.parse(localStorage.playlistIndex);
+						if (this.playlistIndex >= this.playlist.length) {
+							this.playlistIndex = 0;
+						}
 					}
 					if (this.playlist.length !== 0) {
 						this.updateSid(
