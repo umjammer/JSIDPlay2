@@ -42,6 +42,7 @@ import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.DocsFileFilter;
 import ui.common.filefilter.ScreenshotFileFilter;
 import ui.common.filefilter.TapeFileFilter;
+import ui.common.filefilter.TuneFileFilter;
 import ui.common.util.DesktopUtil;
 import ui.directory.Directory;
 import ui.entities.config.SidPlay2Section;
@@ -83,6 +84,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 	protected final FileFilter diskFileFilter = new DiskFileFilter();
 	private final FileFilter fileBrowserFileFilter = new FileFilter() {
 
+		private final TuneFileFilter tuneFileFilter = new TuneFileFilter();
 		private final TapeFileFilter tapeFileFilter = new TapeFileFilter();
 		private final DocsFileFilter docsFileFilter = new DocsFileFilter();
 
@@ -92,8 +94,8 @@ public class DiskCollection extends C64VBox implements UIPart {
 				return false;
 			}
 			return file.getName().toLowerCase(Locale.US).endsWith(".zip")
-					|| file.getName().toLowerCase(Locale.US).endsWith(".gz") || diskFileFilter.accept(file)
-					|| tapeFileFilter.accept(file) || docsFileFilter.accept(file);
+					|| file.getName().toLowerCase(Locale.US).endsWith(".gz") || tuneFileFilter.accept(file)
+					|| diskFileFilter.accept(file) || tapeFileFilter.accept(file) || docsFileFilter.accept(file);
 		}
 	};
 
