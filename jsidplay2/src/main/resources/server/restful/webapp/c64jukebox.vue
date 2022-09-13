@@ -1125,7 +1125,7 @@
 											</template>
 										</b-table>
 										<div class="picture-container">
-											<b-img-lazy :src="picture" id="img" class="picture" fluid> </b-img-lazy>
+											<b-img :src="picture" id="img" class="picture" fluid> </b-img>
 										</div>
 									</div>
 								</b-card-text>
@@ -2967,9 +2967,12 @@
 								reader.readAsDataURL(response.data);
 								reader.onload = function () {
 									this.picture = reader.result;
-									if (document.getElementById("img")) {
-										document.getElementById("img").setAttribute("src", this.picture);
-									}
+									var imgSrc = this.picture;
+									Vue.nextTick(function () {
+										if (document.getElementById("img")) {
+											document.getElementById("img").setAttribute("src", imgSrc);
+										}
+									});
 								};
 							})
 							.catch((error) => {
