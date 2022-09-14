@@ -204,6 +204,46 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return commander;
 	}
 
+	protected File parseRequestPath(JCommander commander, ServletBaseParameters servletBaseParameters,
+			boolean adminRole) {
+		String path = servletBaseParameters.getFilePath();
+		if (path == null) {
+			return null;
+		}
+		if (servletBaseParameters.getItemId() != null && servletBaseParameters.getCategoryId() != null) {
+			return fetchAssembly64Files(servletBaseParameters.getItemId(), servletBaseParameters.getCategoryId(),
+					path.substring(1));
+		}
+		if (path.startsWith(C64_MUSIC)) {
+			File rootFile = configuration.getSidplay2Section().getHvsc();
+			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), rootFile, null);
+			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+				return file;
+			}
+		} else if (path.startsWith(CGSC)) {
+			File rootFile = configuration.getSidplay2Section().getCgsc();
+			File file = PathUtils.getFile(path.substring(CGSC.length()), null, rootFile);
+			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+				return file;
+			}
+		} else {
+			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
+				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
+				String directoryValue = splitted.length > 0 ? splitted[0] : null;
+				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
+				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
+					TFile rootFile = new TFile(directoryValue);
+					File file = PathUtils.getFile(path.substring(directoryLogicalName.length()), rootFile, null);
+					if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+						return file;
+					}
+				}
+			}
+		}
+		((ServletUsageFormatter) commander.getUsageFormatter()).setException(new FileNotFoundException(path));
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected <T> T getInput(HttpServletRequest request, Class<T> tClass) throws IOException {
 		try (ServletInputStream inputStream = request.getInputStream()) {
@@ -269,46 +309,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				Optional.ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			out.print(string);
 		}
-	}
-
-	protected File getAbsoluteFile(JCommander commander, ServletBaseParameters servletBaseParameters,
-			boolean adminRole) {
-		String path = servletBaseParameters.getFilePath();
-		if (path == null) {
-			return null;
-		}
-		if (servletBaseParameters.getItemId() != null && servletBaseParameters.getCategoryId() != null) {
-			return fetchAssembly64Files(servletBaseParameters.getItemId(), servletBaseParameters.getCategoryId(),
-					path.substring(1));
-		}
-		if (path.startsWith(C64_MUSIC)) {
-			File rootFile = configuration.getSidplay2Section().getHvsc();
-			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), rootFile, null);
-			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
-				return file;
-			}
-		} else if (path.startsWith(CGSC)) {
-			File rootFile = configuration.getSidplay2Section().getCgsc();
-			File file = PathUtils.getFile(path.substring(CGSC.length()), null, rootFile);
-			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
-				return file;
-			}
-		} else {
-			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
-				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-				String directoryValue = splitted.length > 0 ? splitted[0] : null;
-				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
-					TFile rootFile = new TFile(directoryValue);
-					File file = PathUtils.getFile(path.substring(directoryLogicalName.length()), rootFile, null);
-					if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
-						return file;
-					}
-				}
-			}
-		}
-		((ServletUsageFormatter) commander.getUsageFormatter()).setException(new FileNotFoundException(path));
-		return null;
 	}
 
 	private File fetchAssembly64Files(String itemId, String categoryId, String fileId) {

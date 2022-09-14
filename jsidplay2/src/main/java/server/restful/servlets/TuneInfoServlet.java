@@ -69,18 +69,15 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.getFilePath() == null) {
-				commander.usage();
-				return;
-			}
-			final File file = getAbsoluteFile(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
+
+			final File file = parseRequestPath(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
 			if (file == null) {
 				commander.usage();
 				return;
 			}
-			HVSCEntry hvscEntry = createHVSCEntry(file);
 
 			Object tuneInfos;
+			HVSCEntry hvscEntry = createHVSCEntry(file);
 			if (servletParameters.list) {
 				tuneInfos = hvscEntry2SortedList(hvscEntry);
 			} else {

@@ -229,11 +229,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			final ServletParameters servletParameters = new ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.getFilePath() == null) {
-				commander.usage();
-				return;
-			}
-			final File file = getAbsoluteFile(commander, servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
+
+			final File file = parseRequestPath(commander, servletParameters, true);
 			if (file == null) {
 				commander.usage();
 				return;
