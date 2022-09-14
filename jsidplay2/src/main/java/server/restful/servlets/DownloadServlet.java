@@ -59,8 +59,11 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			final File file = getAbsoluteFile(servletParameters, true /* request.isUserInRole(ROLE_ADMIN) */);
-
+			final File file = getAbsoluteFile(commander, servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
+			if (file == null) {
+				commander.usage();
+				return;
+			}
 			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
 			response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + file.getName());
 			copy(file, response.getOutputStream());

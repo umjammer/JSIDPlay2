@@ -233,8 +233,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			final File file = getAbsoluteFile(servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
-
+			final File file = getAbsoluteFile(commander, servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
+			if (file == null) {
+				commander.usage();
+				return;
+			}
 			final IniConfig config = servletParameters.config;
 
 			if (AUDIO_TUNE_FILE_FILTER.accept(file)) {

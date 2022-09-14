@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
-import com.beust.jcommander.ParameterException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +22,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private JCommander commander;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	private ParameterException parameterException;
+	private Exception exception;
 
 	public ServletUsageFormatter(JCommander commander, HttpServletRequest request, HttpServletResponse response) {
 		super(commander);
@@ -32,8 +31,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		this.response = response;
 	}
 
-	public void setParameterException(ParameterException parameterException) {
-		this.parameterException = parameterException;
+	public void setException(Exception Exception) {
+		this.exception = Exception;
 	}
 
 	@Override
@@ -43,9 +42,13 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.setContentType(MIME_TYPE_TEXT.toString());
 
-			if (parameterException != null) {
-				out.append("Servlet-Parameter ERROR:\n");
-				out.append(parameterException.getMessage());
+			// optional error message
+			if (exception != null) {
+				out.append("Servlet-Parameter ERROR!");
+				out.append("\n");
+				out.append(exception.getClass().getSimpleName());
+				out.append(": ");
+				out.append(exception.getMessage());
 				out.append("\n");
 				out.append("\n");
 			}

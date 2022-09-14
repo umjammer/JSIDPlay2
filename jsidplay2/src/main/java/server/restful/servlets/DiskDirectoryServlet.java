@@ -57,9 +57,11 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-
-			final File file = getAbsoluteFile(servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
-
+			final File file = getAbsoluteFile(commander, servletParameters, true/* request.isUserInRole(ROLE_ADMIN) */);
+			if (file == null) {
+				commander.usage();
+				return;
+			}
 			Directory directory = new DiskDirectory(extract(file));
 
 			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(directory));

@@ -63,9 +63,11 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-
-			final File file = getAbsoluteFile(servletParameters, request.isUserInRole(ROLE_ADMIN));
-
+			final File file = getAbsoluteFile(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
+			if (file == null) {
+				commander.usage();
+				return;
+			}
 			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), file);
 
 			response.setContentLength(photo.length);

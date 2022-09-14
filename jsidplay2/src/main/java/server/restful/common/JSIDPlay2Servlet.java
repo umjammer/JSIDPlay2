@@ -199,7 +199,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		try {
 			commander.parse(getRequestParameters(request));
 		} catch (ParameterException e) {
-			usageFormatter.setParameterException(e);
+			usageFormatter.setException(e);
 		}
 		return commander;
 	}
@@ -271,8 +271,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected File getAbsoluteFile(ServletBaseParameters servletBaseParameters, boolean adminRole)
-			throws FileNotFoundException {
+	protected File getAbsoluteFile(JCommander commander, ServletBaseParameters servletBaseParameters,
+			boolean adminRole) {
 		String path = servletBaseParameters.getFilePath();
 		if (path == null) {
 			return null;
@@ -307,7 +307,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				}
 			}
 		}
-		throw new FileNotFoundException(path);
+		((ServletUsageFormatter) commander.getUsageFormatter()).setException(new FileNotFoundException(path));
+		return null;
 	}
 
 	private File fetchAssembly64Files(String itemId, String categoryId, String fileId) {
