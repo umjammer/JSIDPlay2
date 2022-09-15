@@ -81,6 +81,7 @@
 												autocorrect="off"
 												autocapitalize="off"
 												spellcheck="false"
+												@change="fetchDirectory(rootDir)"
 											/>
 										</div>
 										<div>
@@ -93,6 +94,7 @@
 												autocorrect="off"
 												autocapitalize="off"
 												spellcheck="false"
+												@change="fetchDirectory(rootDir)"
 											/>
 										</div>
 									</div>
@@ -1424,6 +1426,7 @@
 												min="-6"
 												max="6"
 												step="1"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 										<div>
@@ -1440,6 +1443,7 @@
 												min="-6"
 												max="6"
 												step="1"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 										<div>
@@ -1456,6 +1460,7 @@
 												min="-6"
 												max="6"
 												step="1"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 									</div>
@@ -1474,6 +1479,7 @@
 												min="0"
 												max="1"
 												step="0.1"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 										<div>
@@ -1490,6 +1496,7 @@
 												min="0"
 												max="1"
 												step="0.1"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 										<div>
@@ -1506,6 +1513,7 @@
 												min="0"
 												max="1"
 												step="0.1"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 									</div>
@@ -1524,6 +1532,7 @@
 												min="0"
 												max="100"
 												step="10"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 										<div>
@@ -1540,6 +1549,7 @@
 												min="0"
 												max="100"
 												step="10"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 										<div>
@@ -1556,6 +1566,7 @@
 												min="0"
 												max="100"
 												step="10"
+												no-wheel="true"
 											></b-form-input>
 										</div>
 									</div>
@@ -1564,24 +1575,16 @@
 											<label for="startTime">{{
 												$t("convertMessages.config.sidplay2Section.startTime")
 											}}</label>
-											<input
-												type="number"
-												min="0"
-												oninput="validity.valid||(value='');"
-												id="startTime"
-												v-model.number="convertOptions.config.sidplay2Section.startTime"
+											<b-form-timepicker
+												v-model="convertOptions.config.sidplay2Section.startTime"
 											/>
 										</div>
 										<div>
 											<label for="defaultPlayLength">{{
 												$t("convertMessages.config.sidplay2Section.defaultPlayLength")
 											}}</label>
-											<input
-												type="number"
-												min="0"
-												oninput="validity.valid||(value='');"
-												id="defaultPlayLength"
-												v-model.number="convertOptions.config.sidplay2Section.defaultPlayLength"
+											<b-form-timepicker
+												v-model="convertOptions.config.sidplay2Section.defaultPlayLength"
 											/>
 										</div>
 									</div>
@@ -1590,24 +1593,16 @@
 											<label for="fadeInTime">{{
 												$t("convertMessages.config.sidplay2Section.fadeInTime")
 											}}</label>
-											<input
-												type="number"
-												min="0"
-												oninput="validity.valid||(value='');"
-												id="fadeInTime"
-												v-model.number="convertOptions.config.sidplay2Section.fadeInTime"
+											<b-form-timepicker
+												v-model="convertOptions.config.sidplay2Section.fadeInTime"
 											/>
 										</div>
 										<div>
 											<label for="fadeOutTime">{{
 												$t("convertMessages.config.sidplay2Section.fadeOutTime")
 											}}</label>
-											<input
-												type="number"
-												min="0"
-												oninput="validity.valid||(value='');"
-												id="fadeOutTime"
-												v-model.number="convertOptions.config.sidplay2Section.fadeOutTime"
+											<b-form-timepicker
+												v-model="convertOptions.config.sidplay2Section.fadeOutTime"
 											/>
 										</div>
 									</div>
@@ -2071,6 +2066,15 @@
 			function daysInMonth(month, year) {
 				return new Date(year, month, 0).getDate();
 			}
+			function timeConverter(time) {
+				if (("" + time).includes(":")) {
+					// HH:MM:SS -> MM:SS
+					return time.split(":").slice(0, 2).join(":");
+				} else {
+					// SS -> MM:SS
+					return new Date(time * 1000).toISOString().slice(14, 19);
+				}
+			}
 			function download(filename, contentType, text) {
 				var pom = document.createElement("a");
 				pom.setAttribute("href", "data:" + contentType + "," + encodeURIComponent(text));
@@ -2443,11 +2447,11 @@
 					},
 				},
 				methods: {
-				    sortChanged(e) {
+					sortChanged(e) {
 						localStorage.sortBy = JSON.stringify(e.sortBy);
 						localStorage.sortDesc = JSON.stringify(e.sortDesc);
-						this.sortBy = e.sortBy
-						this.sortDesc = e.sortDesc
+						this.sortBy = e.sortBy;
+						this.sortDesc = e.sortDesc;
 					},
 					onSlideStart(slide) {
 						this.sliding = true;
@@ -2653,6 +2657,16 @@
 					setDefault: function () {
 						if (confirm(this.$i18n.t("setDefaultReally"))) {
 							this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
+							this.convertOptions.rtmp = false;
+							this.convertOptions.config.sidplay2Section.single = true;
+							this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
+							this.convertOptions.config.audioSection.reverbBypass = false;
+							this.convertOptions.config.audioSection.mainBalance = 0.3;
+							this.convertOptions.config.audioSection.secondBalance = 0.7;
+							this.convertOptions.config.audioSection.thirdBalance = 0.5;
+							this.convertOptions.config.audioSection.secondDelay = 20;
+							this.convertOptions.config.audioSection.sampling = "RESAMPLE";
+							this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
 						}
 					},
 					setDefaultUser: function () {
@@ -3376,6 +3390,18 @@
 					},
 					convertOptions: {
 						handler: function (after, before) {
+							this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(
+								this.convertOptions.config.sidplay2Section.defaultPlayLength
+							);
+							this.convertOptions.config.sidplay2Section.startTime = timeConverter(
+								this.convertOptions.config.sidplay2Section.startTime
+							);
+							this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(
+								this.convertOptions.config.sidplay2Section.fadeInTime
+							);
+							this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(
+								this.convertOptions.config.sidplay2Section.fadeOutTime
+							);
 							localStorage.convertOptions = JSON.stringify(this.convertOptions);
 						},
 						deep: true,
