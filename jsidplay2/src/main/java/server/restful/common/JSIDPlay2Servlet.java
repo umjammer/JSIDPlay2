@@ -194,10 +194,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				.console(new PrintStreamConsole(
 						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
 				.acceptUnknownOptions(acceptUnknownOptions).build();
-		ServletUsageFormatter usageFormatter = new ServletUsageFormatter(commander, request, response);
+		String[] requestParameters = getRequestParameters(request);
+		ServletUsageFormatter usageFormatter = new ServletUsageFormatter(commander, request, response,
+				requestParameters);
 		commander.setUsageFormatter(usageFormatter);
 		try {
-			commander.parse(getRequestParameters(request));
+			commander.parse(requestParameters);
 		} catch (ParameterException e) {
 			usageFormatter.setException(e);
 		}
@@ -240,7 +242,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				}
 			}
 		}
-		((ServletUsageFormatter) commander.getUsageFormatter()).setException(new FileNotFoundException(path));
+		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
+		usageFormatter.setException(new FileNotFoundException(path));
 		return null;
 	}
 

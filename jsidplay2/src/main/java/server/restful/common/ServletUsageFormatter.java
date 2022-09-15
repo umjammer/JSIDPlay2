@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
+import com.beust.jcommander.Strings;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,16 +24,21 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private Exception exception;
+	private String[] requestParameters;
 
-	public ServletUsageFormatter(JCommander commander, HttpServletRequest request, HttpServletResponse response) {
+	public ServletUsageFormatter(JCommander commander, HttpServletRequest request, HttpServletResponse response,
+			String[] requestParameters) {
 		super(commander);
 		this.commander = commander;
 		this.request = request;
 		this.response = response;
+		this.requestParameters = requestParameters;
 	}
 
 	public void setException(Exception Exception) {
-		this.exception = Exception;
+		if (this.exception == null) {
+			this.exception = Exception;
+		}
 	}
 
 	@Override
@@ -50,6 +56,14 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 				out.append(": ");
 				out.append(exception.getMessage());
 				out.append("\n");
+				out.append("\n");
+				out.append("Current Servlet-Parameter options:");
+				out.append("\n");
+				out.append(Strings.join(" ", requestParameters));
+				out.append("\n");
+				out.append("\n");
+
+				out.append("Example Usage:");
 				out.append("\n");
 			}
 
