@@ -213,8 +213,11 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			return null;
 		}
 		if (servletBaseParameters.getItemId() != null && servletBaseParameters.getCategoryId() != null) {
-			return fetchAssembly64Files(servletBaseParameters.getItemId(), servletBaseParameters.getCategoryId(),
+			File file = fetchAssembly64Files(servletBaseParameters.getItemId(), servletBaseParameters.getCategoryId(),
 					path.substring(1));
+			if (file != null && file.exists()) {
+				return file;
+			}
 		}
 		if (path.startsWith(C64_MUSIC)) {
 			File rootFile = configuration.getSidplay2Section().getHvsc();
