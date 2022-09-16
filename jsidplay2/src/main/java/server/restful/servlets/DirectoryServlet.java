@@ -90,16 +90,17 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 		} else if (servletParameters.filePath.startsWith(CGSC)) {
 			File root = configuration.getSidplay2Section().getCgsc();
 			return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter, CGSC, adminRole);
-		}
-		for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
-			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-			String directoryValue = splitted.length > 0 ? splitted[0] : null;
-			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-			if ((!needToBeAdmin || adminRole) && servletParameters.filePath.startsWith(directoryLogicalName)
-					&& directoryValue != null) {
-				File root = new TFile(directoryValue);
-				return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter,
-						directoryLogicalName, adminRole);
+		} else {
+			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
+				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
+				String directoryValue = splitted.length > 0 ? splitted[0] : null;
+				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
+				if ((!needToBeAdmin || adminRole) && servletParameters.filePath.startsWith(directoryLogicalName)
+						&& directoryValue != null) {
+					File root = new TFile(directoryValue);
+					return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter,
+							directoryLogicalName, adminRole);
+				}
 			}
 		}
 		return getRoot(adminRole);

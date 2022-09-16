@@ -57,12 +57,14 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 				out.append(exception.getMessage());
 				out.append("\n");
 				out.append("\n");
-				out.append("Current Servlet-Parameter options:");
-				out.append("\n");
-				out.append(Strings.join(" ", requestParameters));
-				out.append("\n");
-				out.append("\n");
 
+				if (requestParameters.length > 0) {
+					out.append("Current Servlet-Parameter options:");
+					out.append("\n");
+					out.append(Strings.join(" ", requestParameters));
+					out.append("\n");
+					out.append("\n");
+				}
 				out.append("Example Usage:");
 				out.append("\n");
 			}

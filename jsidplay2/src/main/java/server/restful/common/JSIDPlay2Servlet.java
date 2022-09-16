@@ -218,8 +218,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			if (file != null && file.exists()) {
 				return file;
 			}
-		}
-		if (path.startsWith(C64_MUSIC)) {
+		} else if (path.startsWith(C64_MUSIC)) {
 			File rootFile = configuration.getSidplay2Section().getHvsc();
 			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), rootFile, null);
 			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
