@@ -110,8 +110,8 @@ public class Convenience {
 	 * @param file            file to open
 	 * @param isMediaToAttach tester for media to attach
 	 * @param dirEntry        if media to attach is a disk this directory entry is
-	 *                        loaded after attaching the media (null means just
-	 *                        reset C64, instead).
+	 *                        loaded after attaching the media (null means load
+	 *                        first file on disk).
 	 * @throws IOException  image read error
 	 * @throws SidTuneError invalid tune
 	 */

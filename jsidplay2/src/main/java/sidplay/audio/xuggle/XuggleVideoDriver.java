@@ -61,7 +61,7 @@ import sidplay.audio.exceptions.IniConfigException;
  * Video possibilities (file, RTMP and HLS):
  * /home/ken/.jsidplay2/jsidplay2.flv
  * rtmp://localhost/live/test
- * http://localhost:90/hls/test.m3u8
+ * http://localhost:90/hls/test.m3u8	(provided by NGINX RTMP as HLS)
  * </pre>
  * 
  * <B>The Kush Gauge:</B> To find a decent bitrate simply multiply the target

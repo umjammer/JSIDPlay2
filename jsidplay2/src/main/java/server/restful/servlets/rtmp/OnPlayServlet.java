@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -73,9 +72,8 @@ public class OnPlayServlet extends JSIDPlay2Servlet {
 		try {
 			final ServletParameters servletParameters = new ServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath(), true);
+			parseRequestParameters(request, response, servletParameters, getServletPath(), true);
 			if (servletParameters.uuid == null) {
-				commander.usage();
 				return;
 			}
 			UUID uuid = servletParameters.uuid;
