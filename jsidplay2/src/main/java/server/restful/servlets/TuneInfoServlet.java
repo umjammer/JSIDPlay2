@@ -75,7 +75,6 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-
 			Object tuneInfos;
 			HVSCEntry hvscEntry = createHVSCEntry(file);
 			if (servletParameters.list) {

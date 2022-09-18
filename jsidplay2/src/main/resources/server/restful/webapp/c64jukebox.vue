@@ -1134,6 +1134,41 @@
 							</b-tab>
 							<b-tab>
 								<template #title>
+									{{ $t("STIL") }}
+									<b-spinner type="border" variant="primary" small v-if="loadingStil"></b-spinner>
+								</template>
+
+								<b-card-text>
+									<div class="stil">
+										<div><span>{{stil.comment}}</span></div>
+										<ul>
+											<li v-for="info in stil.infos" v-show="isValidStil(info)">
+												<div><span>NAME:</span> <span>{{info.name}}</span></div>
+												<div><span>AUTHOR:</span> <span>{{info.author}}</span></div>
+												<div><span>TITLE:</span> <span>{{info.title}}</span></div>
+												<div><span>ARTIST:</span> <span>{{info.artist}}</span></div>
+												<div><span>COMMENT:</span> <span>{{info.comment}}</span></div>
+											</li>
+										</ul>
+										<ul>
+											<li v-for="subtune in stil.subtunes">
+												<div>{{subtune.tuneNo}}</div>
+												<ul>
+													<li v-for="info in subtune.infos" v-show="isValidStil(info)">
+														<div><span>NAME:</span> <span>{{info.name}}</span></div>
+														<div><span>AUTHOR:</span> <span>{{info.author}}</span></div>
+														<div><span>TITLE:</span> <span>{{info.title}}</span></div>
+														<div><span>ARTIST:</span> <span>{{info.artist}}</span></div>
+														<div><span>COMMENT:</span> <span>{{info.comment}}</span></div>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</div>
+								</b-card-text>
+							</b-tab>
+							<b-tab>
+								<template #title>
 									{{ $t("PL") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingPl"></b-spinner>
 								</template>
@@ -2094,6 +2129,7 @@
 					SIDS: "Directories",
 					ASSEMBLY64: "Search",
 					SID: "SID",
+					STIL: "STIL",
 					PL: "Playlist",
 					CFG: "Configuration",
 					parentDirectoryHint: "Go up one Level",
@@ -2183,6 +2219,7 @@
 					SIDS: "Verzeichnisse",
 					ASSEMBLY64: "Suche",
 					SID: "SID",
+					STIL: "STIL",
 					PL: "Favoriten",
 					CFG: "Konfiguration",
 					parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
@@ -2320,6 +2357,7 @@
 					},
 					// SID (info + picture)
 					infos: "",
+					stil: [],
 					picture: "",
 					currentSid: "",
 					// ASSEMBLY64
@@ -2383,6 +2421,7 @@
 					// Misc.
 					tabIndex: 0,
 					loadingSid: false,
+					loadingStil: false,
 					loadingAssembly64: false,
 					loadingPl: false,
 					loadingCfg: false,
@@ -2516,6 +2555,9 @@
 							filename.endsWith(".png") ||
 							filename.endsWith(".svg")
 						);
+					},
+					isValidStil: function (entry) {
+					    return entry.name || entry.author || entry.title || entry.artist || entry.comment;
 					},
 					isSid: function (entry) {
 						let filename = entry.filename.toLowerCase();
@@ -2709,6 +2751,7 @@
 					updateSid: function (entry, itemId, categoryId) {
 						if (entry) {
 							this.fetchInfo(entry, itemId, categoryId);
+							this.fetchStil(entry, itemId, categoryId);
 							this.fetchPhoto(entry, itemId, categoryId);
 						}
 					},
@@ -2957,6 +3000,35 @@
 								console.log(error);
 							})
 							.finally(() => (this.loadingSid = false));
+					},
+					fetchStil: function (entry, itemId, categoryId) {
+						this.loadingStil = true; //the loading begin
+						var url =
+							uriEncode(
+								(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+							) +
+							(typeof itemId === "undefined" && typeof categoryId === "undefined"
+								? ""
+								: "?itemId=" + itemId + "&categoryId=" + categoryId);
+						axios({
+							method: "get",
+							url: "/jsidplay2service/JSIDPlay2REST/stil" + url,
+							auth: {
+								username: this.username,
+								password: this.password,
+							},
+						})
+							.then((response) => {
+								this.stil = response.data;
+								if (!this.stil) {
+									this.stil = [];
+								}
+							})
+							.catch((error) => {
+								this.stil = [];
+								console.log(error);
+							})
+							.finally(() => (this.loadingStil = false));
 					},
 					fetchPhoto: function (entry, itemId, categoryId) {
 						this.loadingSid = true; //the loading begin

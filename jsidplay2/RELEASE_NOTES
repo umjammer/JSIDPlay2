@@ -7,3 +7,5 @@ Sub song ordering has been changed to start with 1 instead of the start song (E.
 
 JSIDPlay2Server:
 - C64 Jukebox: Improvements for VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)
+- Fetch Directory contents
+- Fetch SID tune information list
