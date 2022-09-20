@@ -1132,7 +1132,7 @@
 									</div>
 								</b-card-text>
 							</b-tab>
-							<b-tab>
+							<b-tab v-if="stil.infos">
 								<template #title>
 									{{ $t("STIL") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingStil"></b-spinner>
@@ -1140,26 +1140,69 @@
 
 								<b-card-text>
 									<div class="stil">
-										<div><span>{{stil.comment}}</span></div>
+										<div class="stil-comment">
+											<span>{{ stil.comment }}</span>
+										</div>
 										<ul>
 											<li v-for="info in stil.infos" v-show="isValidStil(info)">
-												<div><span>NAME:</span> <span>{{info.name}}</span></div>
-												<div><span>AUTHOR:</span> <span>{{info.author}}</span></div>
-												<div><span>TITLE:</span> <span>{{info.title}}</span></div>
-												<div><span>ARTIST:</span> <span>{{info.artist}}</span></div>
-												<div><span>COMMENT:</span> <span>{{info.comment}}</span></div>
+												<div class="stil-name" v-show="info.name">
+													<span class="stil-name-header">{{ $t("STILINFO.NAME") }}:</span>
+													<span>{{ info.name }}</span>
+												</div>
+												<div class="stil-author" v-show="info.author">
+													<span class="stil-author-header">{{ $t("STILINFO.AUTHOR") }}:</span>
+													<span>{{ info.author }}</span>
+												</div>
+												<div class="stil-title" v-show="info.title">
+													<span class="stil-title-header">{{ $t("STILINFO.TITLE") }}:</span>
+													<span>{{ info.title }}</span>
+												</div>
+												<div class="stil-artist" v-show="info.artist">
+													<span class="stil-artist-header">{{ $t("STILINFO.ARTIST") }}:</span>
+													<span>{{ info.artist }}</span>
+												</div>
+												<div class="stil-comment" v-show="info.comment">
+													<span>{{ info.comment }}</span>
+												</div>
 											</li>
 										</ul>
 										<ul>
 											<li v-for="subtune in stil.subtunes">
-												<div>{{subtune.tuneNo}}</div>
+												<div class="stil-subtune" v-show="subtune.tuneNo">
+													<span class="stil-subtune-header"
+														>{{ $t("STILINFO.SUBTUNE") }}:</span
+													>
+													<span>{{ subtune.tuneNo }}</span>
+												</div>
 												<ul>
 													<li v-for="info in subtune.infos" v-show="isValidStil(info)">
-														<div><span>NAME:</span> <span>{{info.name}}</span></div>
-														<div><span>AUTHOR:</span> <span>{{info.author}}</span></div>
-														<div><span>TITLE:</span> <span>{{info.title}}</span></div>
-														<div><span>ARTIST:</span> <span>{{info.artist}}</span></div>
-														<div><span>COMMENT:</span> <span>{{info.comment}}</span></div>
+														<div class="stil-name" v-show="info.name">
+															<span class="stil-name-header"
+																>{{ $t("STILINFO.NAME") }}:</span
+															>
+															<span>{{ info.name }}</span>
+														</div>
+														<div class="stil-author" v-show="info.author">
+															<span class="stil-author-header"
+																>{{ $t("STILINFO.AUTHOR") }}:</span
+															>
+															<span>{{ info.author }}</span>
+														</div>
+														<div class="stil-title" v-show="info.title">
+															<span class="stil-title-header"
+																>{{ $t("STILINFO.TITLE") }}:</span
+															>
+															<span>{{ info.title }}</span>
+														</div>
+														<div class="stil-artist" v-show="info.artist">
+															<span class="stil-artist-header"
+																>{{ $t("STILINFO.ARTIST") }}:</span
+															>
+															<span>{{ info.artist }}</span>
+														</div>
+														<div class="stil-comment" v-show="info.comment">
+															<span>{{ info.comment }}</span>
+														</div>
 													</li>
 												</ul>
 											</li>
@@ -2130,6 +2173,13 @@
 					ASSEMBLY64: "Search",
 					SID: "SID",
 					STIL: "STIL",
+					STILINFO: {
+						SUBTUNE: "Song",
+						NAME: "Name",
+						AUTHOR: "Author",
+						TITLE: "Title",
+						ARTIST: "Artist",
+					},
 					PL: "Playlist",
 					CFG: "Configuration",
 					parentDirectoryHint: "Go up one Level",
@@ -2220,6 +2270,13 @@
 					ASSEMBLY64: "Suche",
 					SID: "SID",
 					STIL: "STIL",
+					STILINFO: {
+						SUBTUNE: "Song",
+						NAME: "Name",
+						AUTHOR: "Autor",
+						TITLE: "Titel",
+						ARTIST: "K\u00fcnstler",
+					},
 					PL: "Favoriten",
 					CFG: "Konfiguration",
 					parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
@@ -2557,7 +2614,7 @@
 						);
 					},
 					isValidStil: function (entry) {
-					    return entry.name || entry.author || entry.title || entry.artist || entry.comment;
+						return entry.name || entry.author || entry.title || entry.artist || entry.comment;
 					},
 					isSid: function (entry) {
 						let filename = entry.filename.toLowerCase();
