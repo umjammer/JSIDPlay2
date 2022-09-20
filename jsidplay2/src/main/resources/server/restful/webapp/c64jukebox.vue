@@ -2766,6 +2766,7 @@
 							this.convertOptions.config.audioSection.secondDelay = 20;
 							this.convertOptions.config.audioSection.sampling = "RESAMPLE";
 							this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
+							this.mobileProfile();
 						}
 					},
 					setDefaultUser: function () {
