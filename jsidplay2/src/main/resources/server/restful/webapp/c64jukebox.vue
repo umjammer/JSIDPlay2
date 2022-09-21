@@ -465,7 +465,6 @@
 																v-bind:href="createConvertUrl('', entry.filename)"
 																v-on:click="pause"
 																target="c64"
-																style="margin-left: 16px"
 															>
 																<b-spinner
 																	type="border"
@@ -869,7 +868,6 @@
 																			"
 																			v-on:click="pause"
 																			target="c64"
-																			style="margin-left: 16px"
 																		>
 																			<i class="fas fa-video"></i>
 																			<span>{{
@@ -1301,7 +1299,7 @@
 													pill
 													variant="outline-danger"
 													size="sm"
-													style="height: fit-content; margin-left: 16px !important"
+													style="height: fit-content"
 												>
 													<i class="fas fa-minus" style="margin: 2px"></i>
 												</b-button>
