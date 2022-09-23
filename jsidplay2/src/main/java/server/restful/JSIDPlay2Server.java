@@ -403,6 +403,7 @@ public class JSIDPlay2Server {
 		collection.addPattern(CONTEXT_ROOT_SERVLET + DirectoryServlet.DIRECTORY_PATH + "/*");
 		collection.addPattern(CONTEXT_ROOT_SERVLET + PhotoServlet.PHOTO_PATH + "/*");
 		collection.addPattern(CONTEXT_ROOT_SERVLET + TuneInfoServlet.TUNE_INFO_PATH + "/*");
+		collection.addPattern(CONTEXT_ROOT_SERVLET + STILServlet.STIL_PATH + "/*");
 
 		constraint.addCollection(collection);
 		context.addConstraint(constraint);
