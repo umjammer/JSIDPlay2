@@ -283,9 +283,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 						}
 					} else {
-						response.setContentType(MIME_TYPE_TEXT.toString());
 						response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
-						return;
 					}
 				} else {
 

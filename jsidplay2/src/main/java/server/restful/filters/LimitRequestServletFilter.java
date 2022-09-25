@@ -1,7 +1,5 @@
 package server.restful.filters;
 
-import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,7 +30,6 @@ public final class LimitRequestServletFilter implements Filter {
 			} else {
 				// handle limit case, e.g. return status code 429 (Too Many Requests)
 				HttpServletResponse response = (HttpServletResponse) servletResponse;
-				response.setContentType(MIME_TYPE_TEXT.toString());
 				response.sendError(429, "Too Many Requests");
 			}
 		} finally {
