@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -52,10 +53,10 @@ public final class PlayerWithStatus {
 
 	private Boolean currentDirection;
 	private boolean newDirection;
+	private double waitForScrollInFrames;
+	private String lastStatusText;
 
 	private int playCounter, statusScrollCounter;
-
-	private double waitForScrollInFrames;
 
 	public PlayerWithStatus(Player player, File diskImage, ServletParameters servletParameters,
 			ResourceBundle resourceBundle) {
@@ -249,13 +250,17 @@ public final class PlayerWithStatus {
 			if (event.getNewValue() == State.START) {
 
 				waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
+				lastStatusText = createStatusText();
 
 				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override
 					public void event() throws InterruptedException {
 
 						getXuggleVideoDriver().ifPresent(xuggleVideoDriver -> {
-							xuggleVideoDriver.setStatusText(createStatusText());
+							String newStatusText = createStatusText();
+							if (!Objects.equals(newStatusText, lastStatusText)) {
+								xuggleVideoDriver.setStatusText(newStatusText);
+							}
 
 							int statusTextX = xuggleVideoDriver.getStatusTextX();
 							int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
