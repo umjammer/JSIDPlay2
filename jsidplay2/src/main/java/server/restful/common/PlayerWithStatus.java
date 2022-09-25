@@ -32,6 +32,10 @@ import ui.common.filefilter.DiskFileFilter;
 
 public final class PlayerWithStatus {
 
+	private static final int WAIT_FOR_SCROLL_IN_SECONDS = 10;
+
+	private static final int SCROLL_EVERY_NTH_FRAME = 2;
+
 	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 
 	private final Player player;
@@ -46,7 +50,12 @@ public final class PlayerWithStatus {
 
 	private LocalDateTime validUntil;
 
+	private Boolean currentDirection;
+	private boolean newDirection;
+
 	private int playCounter, statusScrollCounter;
+
+	private double waitForScrollInFrames;
 
 	public PlayerWithStatus(Player player, File diskImage, ServletParameters servletParameters,
 			ResourceBundle resourceBundle) {
@@ -239,6 +248,8 @@ public final class PlayerWithStatus {
 		player.stateProperty().addListener(event -> {
 			if (event.getNewValue() == State.START) {
 
+				waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
+
 				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override
 					public void event() throws InterruptedException {
@@ -249,22 +260,42 @@ public final class PlayerWithStatus {
 							int statusTextX = xuggleVideoDriver.getStatusTextX();
 							int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
 
-							// scroll forward after some time
-							if (statusScrollCounter++ > 10) {
-								if (statusTextOverflow > 0) {
-									xuggleVideoDriver.setStatusTextX(statusTextX + 8);
+							if (currentDirection == null) {
+								// wait for scroll start
+								if (statusScrollCounter++ >= waitForScrollInFrames) {
+									currentDirection = newDirection;
+									statusScrollCounter = 0;
 								}
-							}
-							// reset scroll status if scroll has finished
-							if (statusTextOverflow == 0) {
-								statusScrollCounter = 0;
-								xuggleVideoDriver.setStatusTextX(0);
+							} else if (!currentDirection) {
+								// scroll forward
+								if (statusScrollCounter++ == SCROLL_EVERY_NTH_FRAME) {
+									if (statusTextOverflow > 0) {
+										xuggleVideoDriver.setStatusTextX(statusTextX + 1);
+									} else {
+										// scroll has finished, change direction
+										newDirection = !currentDirection;
+										currentDirection = null;
+									}
+									statusScrollCounter = 0;
+								}
+							} else {
+								// scroll backwards
+								if (statusScrollCounter++ == SCROLL_EVERY_NTH_FRAME) {
+									if (statusTextX > 0) {
+										xuggleVideoDriver.setStatusTextX(statusTextX - 1);
+									} else {
+										// scroll has finished, change direction
+										newDirection = !currentDirection;
+										currentDirection = null;
+									}
+									statusScrollCounter = 0;
+								}
 							}
 						});
 						player.getC64().getEventScheduler().schedule(this,
-								(long) (player.getC64().getClock().getCpuFrequency()));
+								player.getC64().getClock().getCyclesPerFrame());
 					}
-				}, (long) (player.getC64().getClock().getCpuFrequency()));
+				}, 0);
 			}
 		});
 	}
