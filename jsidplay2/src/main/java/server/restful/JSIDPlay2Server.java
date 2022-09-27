@@ -29,7 +29,6 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11Nio2Protocol;
-import org.apache.coyote.http2.Http2Protocol;
 import org.apache.tomcat.JarScanFilter;
 import org.apache.tomcat.JarScanType;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
@@ -344,7 +343,7 @@ public class JSIDPlay2Server {
 		httpsConnector.setScheme(Connectors.HTTPS.getPreferredProtocol());
 		httpsConnector.setPort(emulationSection.getAppServerSecurePort());
 		httpsConnector.setSecure(true);
-		httpsConnector.addUpgradeProtocol(new Http2Protocol());
+//		httpsConnector.addUpgradeProtocol(new Http2Protocol()); HTML5 audio stops too early
 
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpsConnector.getProtocolHandler();
 		protocol.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
