@@ -29,6 +29,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11Nio2Protocol;
+import org.apache.coyote.http2.Http2Protocol;
 import org.apache.tomcat.JarScanFilter;
 import org.apache.tomcat.JarScanType;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
@@ -328,9 +329,9 @@ public class JSIDPlay2Server {
 		Connector httpConnector = new Connector(Http11Nio2Protocol.class.getName());
 		httpConnector.setURIEncoding(UTF_8.name());
 		httpConnector.setScheme(Connectors.HTTP.getPreferredProtocol());
+		httpConnector.setPort(emulationSection.getAppServerPort());
 
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpConnector.getProtocolHandler();
-		protocol.setPort(emulationSection.getAppServerPort());
 		protocol.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
 		protocol.setCompression("on");
 
@@ -341,12 +342,13 @@ public class JSIDPlay2Server {
 		Connector httpsConnector = new Connector(Http11Nio2Protocol.class.getName());
 		httpsConnector.setURIEncoding(UTF_8.name());
 		httpsConnector.setScheme(Connectors.HTTPS.getPreferredProtocol());
+		httpsConnector.setPort(emulationSection.getAppServerSecurePort());
+		httpsConnector.setSecure(true);
+		httpsConnector.addUpgradeProtocol(new Http2Protocol());
 
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpsConnector.getProtocolHandler();
-		protocol.setPort(emulationSection.getAppServerSecurePort());
 		protocol.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
 		protocol.setCompression("on");
-		protocol.setSecure(true);
 		protocol.setSSLEnabled(true);
 
 		SSLHostConfig sslHostConfig = new SSLHostConfig();
@@ -359,7 +361,7 @@ public class JSIDPlay2Server {
 		certificate.setCertificateKeyPassword(emulationSection.getAppServerKeyPassword());
 
 		sslHostConfig.addCertificate(certificate);
-		protocol.addSslHostConfig(sslHostConfig);
+		httpsConnector.addSslHostConfig(sslHostConfig);
 
 		return httpsConnector;
 	}
