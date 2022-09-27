@@ -164,7 +164,10 @@ public abstract class Timer {
 	 */
 	private double schedule(final double seconds, final Event event) {
 		EventScheduler eventScheduler = player.getC64().getEventScheduler();
-		long absoluteCycles = (long) (seconds * eventScheduler.getCyclesPerSecond());
+
+		long initDelay = SidTune.getInitDelay(player.getTune());
+
+		long absoluteCycles = (long) (initDelay + seconds * eventScheduler.getCyclesPerSecond());
 		if (absoluteCycles < eventScheduler.getTime(Phase.PHI1)) {
 			// event is in the past? Trigger immediately!
 			eventScheduler.scheduleAbsolute(event, 0, Phase.PHI1);
