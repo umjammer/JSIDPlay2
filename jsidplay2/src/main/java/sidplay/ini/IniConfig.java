@@ -160,6 +160,11 @@ public class IniConfig implements IConfig {
 	public static File getINIPath() {
 		for (final String parent : new String[] { System.getProperty("user.dir"), System.getProperty("user.home"), }) {
 			File configPlace = new File(parent, FILE_NAME);
+			File oldConfig = new File(parent, "sidplay2.ini");
+			if (oldConfig.exists()) {
+				System.err.println(String.format("Warning, %s is NOT used anymore, please use the new name %s!",
+						oldConfig, configPlace));
+			}
 			if (configPlace.exists()) {
 				return configPlace;
 			}
