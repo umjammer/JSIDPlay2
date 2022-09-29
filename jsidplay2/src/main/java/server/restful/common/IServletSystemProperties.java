@@ -20,6 +20,65 @@ public interface IServletSystemProperties {
 	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
 
 	/**
+	 * JSIDPlay2Server uses HTTP/2 (or HTTP/1.1) protocol.
+	 */
+	boolean USE_HTTP2 = Boolean.valueOf(getProperty("jsidplay2.protocol.h2.enable", "true"));
+
+	/**
+	 * The time, in milliseconds, that Tomcat will wait for additional data when a
+	 * partial HTTP/2 frame has been received. Negative values will be treated as an
+	 * infinite timeout.
+	 */
+	int HTTP2_READ_TIMEOUT = valueOf(getProperty("jsidplay2.read.timeout", String.valueOf(5 * 60 * 1000)));
+
+	/**
+	 * The time, in milliseconds, that Tomcat will wait to write additional data
+	 * when an HTTP/2 frame has been partially written. Negative values will be
+	 * treated as an infinite timeout.
+	 */
+	int HTTP2_WRITE_TIMEOUT = valueOf(getProperty("jsidplay2.write.timeout", String.valueOf(60 * 60 * 1000)));
+
+	/**
+	 * The time, in milliseconds, that Tomcat will wait between HTTP/2 frames when
+	 * there is no active Stream before closing the connection. Negative values will
+	 * be treated as an infinite timeout.
+	 */
+	int HTTP2_KEEP_ALIVE_TIMEOUT = valueOf(getProperty("jsidplay2.keepalive.timeout", String.valueOf(20 * 1000)));
+
+	/**
+	 * The HTTP/2 protocol may use compression in an attempt to save server
+	 * bandwidth. The acceptable values for the parameter is "off" (disable
+	 * compression), "on" (allow compression, which causes text data to be
+	 * compressed), "force" (forces compression in all cases), or a numerical
+	 * integer value (which is equivalent to "on", but specifies the minimum amount
+	 * of data before the output is compressed). If the content-length is not known
+	 * and compression is set to "on" or more aggressive, the output will also be
+	 * compressed. If not specified, this attribute is set to "off".
+	 * 
+	 * Note: There is a tradeoff between using compression (saving your bandwidth)
+	 * and using the sendfile feature (saving your CPU cycles). If the connector
+	 * supports the sendfile feature, e.g. the NIO2 connector, using sendfile will
+	 * take precedence over compression. The symptoms will be that static files
+	 * greater that 48 Kb will be sent uncompressed. You can turn off sendfile by
+	 * setting useSendfile attribute of the protocol, as documented below, or change
+	 * the sendfile usage threshold in the configuration of the DefaultServlet in
+	 * the default conf/web.xml or in the web.xml of your web application.
+	 */
+	String COMPRESSION = getProperty("jsidplay2.protocol.h2.compression", "on");
+
+	/**
+	 * Use this boolean attribute to enable or disable sendfile capability. The
+	 * default value is true.
+	 * 
+	 * This setting is ignored, and the sendfile capability disabled, if the
+	 * useAsyncIO attribute of the associated Connector is set to false.
+	 * 
+	 * The HTTP/2 sendfile capability uses MappedByteBuffer which is known to cause
+	 * file locking on Windows.
+	 */
+	boolean USE_SENDFILE = Boolean.valueOf(getProperty("jsidplay2.protocol.h2.sendfile", "false"));
+
+	/**
 	 * JSIDPlay2Server cache control max age of static resources in s.
 	 */
 	int STATIC_RES_MAX_AGE = valueOf(getProperty("jsidplay2.cache.max.age", String.valueOf(30 * 24 * 60 * 60)));

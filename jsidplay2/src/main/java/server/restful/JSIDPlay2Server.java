@@ -4,7 +4,13 @@ import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.apache.catalina.startup.Tomcat.addServlet;
+import static server.restful.common.IServletSystemProperties.COMPRESSION;
 import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
+import static server.restful.common.IServletSystemProperties.HTTP2_KEEP_ALIVE_TIMEOUT;
+import static server.restful.common.IServletSystemProperties.HTTP2_READ_TIMEOUT;
+import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT;
+import static server.restful.common.IServletSystemProperties.USE_HTTP2;
+import static server.restful.common.IServletSystemProperties.USE_SENDFILE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +35,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11Nio2Protocol;
+import org.apache.coyote.http2.Http2Protocol;
 import org.apache.tomcat.JarScanFilter;
 import org.apache.tomcat.JarScanType;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
@@ -332,7 +339,7 @@ public class JSIDPlay2Server {
 
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpConnector.getProtocolHandler();
 		protocol.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
-		protocol.setCompression("on");
+		protocol.setCompression(COMPRESSION);
 
 		return httpConnector;
 	}
@@ -343,11 +350,17 @@ public class JSIDPlay2Server {
 		httpsConnector.setScheme(Connectors.HTTPS.getPreferredProtocol());
 		httpsConnector.setPort(emulationSection.getAppServerSecurePort());
 		httpsConnector.setSecure(true);
-//		httpsConnector.addUpgradeProtocol(new Http2Protocol()); HTML5 audio stops too early
-
+		if (USE_HTTP2) {
+			Http2Protocol h2 = new Http2Protocol();
+			h2.setReadTimeout(HTTP2_READ_TIMEOUT);
+			h2.setWriteTimeout(HTTP2_WRITE_TIMEOUT);
+			h2.setKeepAliveTimeout(HTTP2_KEEP_ALIVE_TIMEOUT);
+			h2.setUseSendfile(USE_SENDFILE);
+			httpsConnector.addUpgradeProtocol(h2);
+		}
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpsConnector.getProtocolHandler();
 		protocol.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
-		protocol.setCompression("on");
+		protocol.setCompression(COMPRESSION);
 		protocol.setSSLEnabled(true);
 
 		SSLHostConfig sslHostConfig = new SSLHostConfig();

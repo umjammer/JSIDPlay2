@@ -9,6 +9,7 @@ TODO:
 - Support SIDBlaster reads (for configuru and fpgasid)
 - SID Reg should report reads as well.
 - freely configurable filter definitions
+- Support of executable .command files on MACOSX
 
 HTML Client app:
 - Search collections
