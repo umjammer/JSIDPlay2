@@ -76,7 +76,7 @@ public interface IServletSystemProperties {
 	 * The HTTP/2 sendfile capability uses MappedByteBuffer which is known to cause
 	 * file locking on Windows.
 	 */
-	boolean USE_SENDFILE = Boolean.valueOf(getProperty("jsidplay2.protocol.h2.sendfile", "false"));
+	boolean HTTP2_USE_SENDFILE = Boolean.valueOf(getProperty("jsidplay2.protocol.h2.sendfile", "false"));
 
 	/**
 	 * JSIDPlay2Server cache control max age of static resources in s.

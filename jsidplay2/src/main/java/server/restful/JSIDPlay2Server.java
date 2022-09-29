@@ -10,7 +10,7 @@ import static server.restful.common.IServletSystemProperties.HTTP2_KEEP_ALIVE_TI
 import static server.restful.common.IServletSystemProperties.HTTP2_READ_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.USE_HTTP2;
-import static server.restful.common.IServletSystemProperties.USE_SENDFILE;
+import static server.restful.common.IServletSystemProperties.HTTP2_USE_SENDFILE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -355,7 +355,7 @@ public class JSIDPlay2Server {
 			h2.setReadTimeout(HTTP2_READ_TIMEOUT);
 			h2.setWriteTimeout(HTTP2_WRITE_TIMEOUT);
 			h2.setKeepAliveTimeout(HTTP2_KEEP_ALIVE_TIMEOUT);
-			h2.setUseSendfile(USE_SENDFILE);
+			h2.setUseSendfile(HTTP2_USE_SENDFILE);
 			httpsConnector.addUpgradeProtocol(h2);
 		}
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpsConnector.getProtocolHandler();
