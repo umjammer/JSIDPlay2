@@ -43,7 +43,7 @@ public interface IServletSystemProperties {
 	 * there is no active Stream before closing the connection. Negative values will
 	 * be treated as an infinite timeout.
 	 */
-	int HTTP2_KEEP_ALIVE_TIMEOUT = valueOf(getProperty("jsidplay2.keepalive.timeout", String.valueOf(20 * 1000)));
+	int HTTP2_KEEP_ALIVE_TIMEOUT = valueOf(getProperty("jsidplay2.keepalive.timeout", String.valueOf(60 * 60 * 1000)));
 
 	/**
 	 * The HTTP/2 protocol may use compression in an attempt to save server
