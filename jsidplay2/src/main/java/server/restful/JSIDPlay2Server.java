@@ -338,7 +338,7 @@ public class JSIDPlay2Server {
 		httpConnector.setPort(emulationSection.getAppServerPort());
 
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpConnector.getProtocolHandler();
-		protocol.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
+		protocol.setConnectionTimeout(CONNECTION_TIMEOUT);
 		protocol.setCompression(COMPRESSION);
 
 		return httpConnector;
@@ -359,7 +359,7 @@ public class JSIDPlay2Server {
 			httpsConnector.addUpgradeProtocol(h2);
 		}
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpsConnector.getProtocolHandler();
-		protocol.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
+		protocol.setConnectionTimeout(CONNECTION_TIMEOUT);
 		protocol.setCompression(COMPRESSION);
 		protocol.setSSLEnabled(true);
 
