@@ -250,7 +250,7 @@ public final class PlayerWithStatus {
 			if (event.getNewValue() == State.START) {
 
 				waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
-				lastStatusText = createStatusText();
+				lastStatusText = null;
 
 				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override
@@ -260,6 +260,7 @@ public final class PlayerWithStatus {
 							String newStatusText = createStatusText();
 							if (!Objects.equals(newStatusText, lastStatusText)) {
 								xuggleVideoDriver.setStatusText(newStatusText);
+								lastStatusText = newStatusText;
 							}
 
 							int statusTextX = xuggleVideoDriver.getStatusTextX();
