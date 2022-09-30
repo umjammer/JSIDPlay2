@@ -24,7 +24,7 @@ import ui.entities.config.Configuration;
 public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.OnKeepAliveServletParameters")
-	public static class ServletParameters {
+	public static class OnKeepAliveServletParameters {
 
 		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
 		private UUID uuid;
@@ -61,7 +61,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 //		super.doGet(request);   // Calls are very frequent, therefore we are silent here
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final OnKeepAliveServletParameters servletParameters = new OnKeepAliveServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import org.apache.juli.logging.Log;
 
-import server.restful.servlets.ConvertServlet.ServletParameters;
+import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import sidplay.Player;
 
 public final class PlayerCleanupTimerTask extends TimerTask {
@@ -32,9 +32,10 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 		this.logger = logger;
 	}
 
-	public static final void create(UUID uuid, Player player, File diskImage, ServletParameters servletParameters,
-			ResourceBundle resourceBundle) {
-		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, servletParameters, resourceBundle));
+	public static final void create(UUID uuid, Player player, File diskImage,
+			ConvertServletParameters servletParameters, ResourceBundle resourceBundle) {
+		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, servletParameters.getStatus(),
+				servletParameters.getPressSpaceInterval(), resourceBundle));
 	}
 
 	public static final void update(UUID uuid, Consumer<PlayerWithStatus> playerWithStatusConsumer) {

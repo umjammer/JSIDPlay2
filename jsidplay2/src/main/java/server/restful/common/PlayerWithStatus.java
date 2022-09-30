@@ -23,7 +23,6 @@ import libsidplay.components.keyboard.KeyTableEntry;
 import libsidutils.status.Status;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
-import server.restful.servlets.ConvertServlet.ServletParameters;
 import sidplay.Player;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.ProxyDriver;
@@ -43,7 +42,9 @@ public final class PlayerWithStatus {
 
 	private final Status status;
 
-	private final ServletParameters servletParameters;
+	private final boolean showStatus;
+
+	private int pressSpaceInterval;
 
 	private File diskImage;
 
@@ -58,11 +59,12 @@ public final class PlayerWithStatus {
 
 	private int playCounter, statusScrollCounter;
 
-	public PlayerWithStatus(Player player, File diskImage, ServletParameters servletParameters,
+	public PlayerWithStatus(Player player, File diskImage, boolean showStatus, int pressSpaceInterval,
 			ResourceBundle resourceBundle) {
 		this.player = player;
 		this.diskImage = diskImage;
-		this.servletParameters = servletParameters;
+		this.showStatus = showStatus;
+		this.pressSpaceInterval = pressSpaceInterval;
 		status = new Status(player, resourceBundle);
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
@@ -215,8 +217,6 @@ public final class PlayerWithStatus {
 	}
 
 	private void addPressSpaceListener() {
-		Integer pressSpaceInterval = servletParameters.getPressSpaceInterval();
-
 		if (pressSpaceInterval > 0) {
 			player.stateProperty().addListener(event -> {
 				if (event.getNewValue() == State.START) {
@@ -319,7 +319,7 @@ public final class PlayerWithStatus {
 	private String createStatusText() {
 		StringBuilder result = new StringBuilder();
 
-		if (Boolean.TRUE.equals(servletParameters.getStatus())) {
+		if (Boolean.TRUE.equals(showStatus)) {
 			String filename = replaceIllegalFilenameCharacters(diskImage.getName());
 			String determinePSID64 = status.determinePSID64();
 			String determineCartridge = status.determineCartridge();

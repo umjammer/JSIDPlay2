@@ -19,14 +19,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.ServletBaseParameters;
+import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DownloadServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.DownloadServletParameters")
-	public static class ServletParameters extends ServletBaseParameters {
+	public static class DownloadServletParameters extends FileRequestPathServletParameters {
 
 	}
 
@@ -52,11 +52,11 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final DownloadServletParameters servletParameters = new DownloadServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = parseRequestPath(commander, servletParameters, true);
+			final File file = getFile(commander, servletParameters, true);
 			if (file == null) {
 				commander.usage();
 				return;

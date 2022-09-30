@@ -22,14 +22,14 @@ import libsidutils.stil.STIL.STILEntry;
 import net.java.truevfs.access.TFile;
 import net.java.truevfs.access.TFileInputStream;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.ServletBaseParameters;
+import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class STILServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.STILServletParameters")
-	public static class ServletParameters extends ServletBaseParameters {
+	public static class STILServletParameters extends FileRequestPathServletParameters {
 
 	}
 
@@ -55,11 +55,11 @@ public class STILServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final STILServletParameters servletParameters = new STILServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = parseRequestPath(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
+			final File file = getFile(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
 			if (file == null) {
 				commander.usage();
 				return;

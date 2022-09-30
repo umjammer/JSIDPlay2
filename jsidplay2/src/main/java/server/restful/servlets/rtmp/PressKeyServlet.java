@@ -24,7 +24,7 @@ import ui.entities.config.Configuration;
 public class PressKeyServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.PressKeyServletParameters")
-	public static class ServletParameters {
+	public static class PressKeyServletParameters {
 
 		@Parameter(names = {
 				"--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = 0, required = true)
@@ -67,7 +67,7 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final PressKeyServletParameters servletParameters = new PressKeyServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {

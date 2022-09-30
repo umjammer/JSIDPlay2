@@ -24,7 +24,7 @@ import ui.entities.config.Configuration;
 public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.SetDefaultEmulationReSidFpServletParameters")
-	public static class ServletParameters {
+	public static class SetDefaultEmulationReSidFpServletParameters {
 
 		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
 		private UUID uuid;
@@ -56,7 +56,7 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final SetDefaultEmulationReSidFpServletParameters servletParameters = new SetDefaultEmulationReSidFpServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {

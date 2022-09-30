@@ -75,7 +75,7 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.ServletBaseParameters;
+import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -100,7 +100,7 @@ import ui.entities.config.Configuration;
 public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
-	public static class ServletParameters extends ServletBaseParameters {
+	public static class ConvertServletParameters extends FileRequestPathServletParameters {
 
 		private Integer startSong;
 
@@ -135,14 +135,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.reuSize = reuSize;
 		}
 
-		private Integer pressSpaceInterval = PRESS_SPACE_INTERVALL;
+		private int pressSpaceInterval = PRESS_SPACE_INTERVALL;
 
-		public Integer getPressSpaceInterval() {
+		public int getPressSpaceInterval() {
 			return pressSpaceInterval;
 		}
 
 		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -5)
-		public void setPressSpaceInterval(Integer pressSpaceInterval) {
+		public void setPressSpaceInterval(int pressSpaceInterval) {
 			this.pressSpaceInterval = pressSpaceInterval;
 		}
 
@@ -226,11 +226,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final ConvertServletParameters servletParameters = new ConvertServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = parseRequestPath(commander, servletParameters, true);
+			final File file = getFile(commander, servletParameters, true);
 			if (file == null) {
 				commander.usage();
 				return;
@@ -345,8 +345,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private void convert2audio(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters)
-			throws IOException, SidTuneError {
+	private void convert2audio(IConfig config, File file, AudioDriver driver,
+			ConvertServletParameters servletParameters) throws IOException, SidTuneError {
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 
 		Player player = new Player(config);
@@ -382,7 +382,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private AudioDriver getAudioDriverOfVideoFormat(Audio audio, UUID uuid, ServletParameters servletParameters) {
+	private AudioDriver getAudioDriverOfVideoFormat(Audio audio, UUID uuid,
+			ConvertServletParameters servletParameters) {
 		switch (audio) {
 		case FLV:
 		default:
@@ -398,8 +399,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private File convert2video(IConfig config, File file, AudioDriver driver, ServletParameters servletParameters,
-			UUID uuid) throws IOException, SidTuneError {
+	private File convert2video(IConfig config, File file, AudioDriver driver,
+			ConvertServletParameters servletParameters, UUID uuid) throws IOException, SidTuneError {
 		File videoFile = null;
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 
@@ -441,8 +442,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return videoFile;
 	}
 
-	private Map<String, String> createReplacements(ServletParameters servletParameters, HttpServletRequest request,
-			File file, UUID uuid) throws IOException, WriterException {
+	private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
+			HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
 		String videoUrl = getVideoUrl(servletParameters, request.getRemoteAddr(), uuid);
 		String qrCodeImgTag = createQrCodeImgTag(videoUrl, "UTF-8", "png", 320, 320);
 
@@ -465,7 +466,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
 	}
 
-	private String getVideoUrl(ServletParameters servletParameters, String remoteAddress, UUID uuid) {
+	private String getVideoUrl(ConvertServletParameters servletParameters, String remoteAddress, UUID uuid) {
 		if (Boolean.TRUE.equals(servletParameters.rtmp)) {
 			// RTMP protocol
 			return RTMP_DOWNLOAD_URL + "/" + uuid;
@@ -475,7 +476,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private int getWaitForVideo(ServletParameters servletParameters) {
+	private int getWaitForVideo(ConvertServletParameters servletParameters) {
 		return Boolean.TRUE.equals(servletParameters.rtmp) ? WAIT_FOR_RTMP : WAIT_FOR_HLS;
 	}
 

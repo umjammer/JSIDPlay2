@@ -25,19 +25,17 @@ import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.RequestPathServletParameters.DirectoryRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DirectoryServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.DirectoryServletParameters")
-	public static class ServletParameters {
+	public static class DirectoryServletParameters extends DirectoryRequestPathServletParameters {
 
 		@Parameter(names = { "--filter" }, descriptionKey = "FILTER")
 		private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";
-
-		@Parameter(descriptionKey = "FILE_PATH", required = true)
-		private String filePath;
 
 	}
 
@@ -63,10 +61,10 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final DirectoryServletParameters servletParameters = new DirectoryServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.filePath == null) {
+			if (servletParameters.getDirectory() == null) {
 				commander.usage();
 				return;
 			}
@@ -81,24 +79,25 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private List<String> getDirectory(ServletParameters servletParameters, boolean adminRole) {
-		if (servletParameters.filePath == null || servletParameters.filePath.equals("/")) {
+	private List<String> getDirectory(DirectoryServletParameters servletParameters, boolean adminRole) {
+		if (servletParameters.getDirectory() == null || servletParameters.getDirectory().equals("/")) {
 			return getRoot(adminRole);
-		} else if (servletParameters.filePath.startsWith(C64_MUSIC)) {
+		} else if (servletParameters.getDirectory().startsWith(C64_MUSIC)) {
 			File root = configuration.getSidplay2Section().getHvsc();
-			return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter, C64_MUSIC, adminRole);
-		} else if (servletParameters.filePath.startsWith(CGSC)) {
+			return getCollectionFiles(root, servletParameters.getDirectory(), servletParameters.filter, C64_MUSIC,
+					adminRole);
+		} else if (servletParameters.getDirectory().startsWith(CGSC)) {
 			File root = configuration.getSidplay2Section().getCgsc();
-			return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter, CGSC, adminRole);
+			return getCollectionFiles(root, servletParameters.getDirectory(), servletParameters.filter, CGSC, adminRole);
 		} else {
 			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
 				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
 				String directoryValue = splitted.length > 0 ? splitted[0] : null;
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-				if ((!needToBeAdmin || adminRole) && servletParameters.filePath.startsWith(directoryLogicalName)
+				if ((!needToBeAdmin || adminRole) && servletParameters.getDirectory().startsWith(directoryLogicalName)
 						&& directoryValue != null) {
 					File root = new TFile(directoryValue);
-					return getCollectionFiles(root, servletParameters.filePath, servletParameters.filter,
+					return getCollectionFiles(root, servletParameters.getDirectory(), servletParameters.filter,
 							directoryLogicalName, adminRole);
 				}
 			}

@@ -17,14 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.ServletBaseParameters;
+import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.DiskDirectoryServletParameters")
-	public static class ServletParameters extends ServletBaseParameters {
+	public static class DiskDirectoryServletParameters extends FileRequestPathServletParameters {
 
 	}
 
@@ -50,11 +50,11 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final DiskDirectoryServletParameters servletParameters = new DiskDirectoryServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = parseRequestPath(commander, servletParameters, true);
+			final File file = getFile(commander, servletParameters, true);
 			if (file == null) {
 				commander.usage();
 				return;

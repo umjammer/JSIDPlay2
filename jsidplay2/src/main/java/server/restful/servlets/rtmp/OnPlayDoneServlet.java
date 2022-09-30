@@ -23,7 +23,7 @@ import ui.entities.config.Configuration;
 public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.OnPlayDoneServletParameters")
-	public static class ServletParameters {
+	public static class OnPlayDoneServletParameters {
 
 		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
 		private UUID uuid;
@@ -70,7 +70,7 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doPost(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final OnPlayDoneServletParameters servletParameters = new OnPlayDoneServletParameters();
 
 			parseRequestParameters(request, response, servletParameters, getServletPath(), true);
 			if (servletParameters.uuid == null) {

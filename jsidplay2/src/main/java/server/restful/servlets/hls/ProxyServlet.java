@@ -29,7 +29,7 @@ import ui.entities.config.Configuration;
 public class ProxyServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.ProxyServletParameters")
-	public static class ServletParameters {
+	public static class ProxyServletParameters {
 
 		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class, required = true)
 		private URL url;
@@ -56,7 +56,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 //		super.doGet(request);   // Calls are very frequent, therefore we are silent here
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final ProxyServletParameters servletParameters = new ProxyServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.url == null) {

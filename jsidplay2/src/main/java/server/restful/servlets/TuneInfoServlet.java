@@ -28,7 +28,7 @@ import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.ServletBaseParameters;
+import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.config.Configuration;
 import ui.musiccollection.SearchCriteria;
@@ -37,7 +37,7 @@ import ui.musiccollection.SearchCriteria;
 public class TuneInfoServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.TuneInfoServletParameters")
-	public static class ServletParameters extends ServletBaseParameters {
+	public static class TuneInfoServletParameters extends FileRequestPathServletParameters {
 
 		@Parameter(names = "--list", arity = 1, descriptionKey = "LIST")
 		private Boolean list = Boolean.FALSE;
@@ -66,11 +66,11 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final TuneInfoServletParameters servletParameters = new TuneInfoServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = parseRequestPath(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
+			final File file = getFile(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
 			if (file == null) {
 				commander.usage();
 				return;

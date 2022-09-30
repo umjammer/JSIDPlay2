@@ -25,7 +25,7 @@ import ui.entities.config.Configuration;
 public class JoystickServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.JoystickServletParameters")
-	public static class ServletParameters {
+	public static class JoystickServletParameters {
 
 		@Parameter(names = {
 				"--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = 0, required = true)
@@ -65,7 +65,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final JoystickServletParameters servletParameters = new JoystickServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {

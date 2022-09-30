@@ -24,7 +24,7 @@ import ui.entities.config.Configuration;
 public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.SetSidModel6581ServletParameters")
-	public static class ServletParameters {
+	public static class SetSidModel6581ServletParameters {
 
 		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
 		private UUID uuid;
@@ -56,7 +56,7 @@ public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final SetSidModel6581ServletParameters servletParameters = new SetSidModel6581ServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {

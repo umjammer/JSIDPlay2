@@ -23,7 +23,7 @@ import ui.entities.config.Configuration;
 public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.InsertNextDiskServletParameters")
-	public static class ServletParameters {
+	public static class InsertNextDiskServletParameters {
 
 		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
 		private UUID uuid;
@@ -54,7 +54,7 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final InsertNextDiskServletParameters servletParameters = new InsertNextDiskServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 			if (servletParameters.uuid == null) {

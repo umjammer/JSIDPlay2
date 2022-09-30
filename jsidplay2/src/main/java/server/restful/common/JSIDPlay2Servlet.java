@@ -55,6 +55,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
+import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
 import ui.common.filefilter.AudioTuneFileFilter;
@@ -206,15 +207,16 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return commander;
 	}
 
-	protected File parseRequestPath(JCommander commander, ServletBaseParameters servletBaseParameters,
+	protected File getFile(JCommander commander, FileRequestPathServletParameters fileRequestPathServletParameters,
 			boolean adminRole) {
-		String path = servletBaseParameters.getFilePath();
+		String path = fileRequestPathServletParameters.getFilePath();
 		if (path == null) {
 			return null;
 		}
-		if (servletBaseParameters.getItemId() != null && servletBaseParameters.getCategoryId() != null) {
-			File file = fetchAssembly64Files(servletBaseParameters.getItemId(), servletBaseParameters.getCategoryId(),
-					path.substring(1));
+		if (fileRequestPathServletParameters.getItemId() != null
+				&& fileRequestPathServletParameters.getCategoryId() != null) {
+			File file = fetchAssembly64Files(fileRequestPathServletParameters.getItemId(),
+					fileRequestPathServletParameters.getCategoryId(), path.substring(1));
 			if (file != null && file.exists()) {
 				return file;
 			}

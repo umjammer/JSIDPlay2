@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import server.restful.servlets.ConvertServlet;
-import server.restful.servlets.ConvertServlet.ServletParameters;
+import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import sidplay.ini.IniAudioSection;
 import sidplay.ini.IniC1541Section;
 import sidplay.ini.IniConfig;
@@ -37,11 +37,11 @@ public class ServletParameterHelper {
 	static {
 		try {
 			CONVERT_OPTIONS = new ObjectMapper().writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ServletParameters());
+					.writeValueAsString(new ConvertServlet.ConvertServletParameters());
 			CONVERT_MESSAGES_EN = createObjectMapper(Locale.ROOT).writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ServletParameters());
+					.writeValueAsString(new ConvertServlet.ConvertServletParameters());
 			CONVERT_MESSAGES_DE = createObjectMapper(Locale.GERMAN).writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ServletParameters());
+					.writeValueAsString(new ConvertServlet.ConvertServletParameters());
 		} catch (JsonProcessingException e) {
 			throw new ExceptionInInitializerError(e);
 		}
@@ -110,7 +110,7 @@ public class ServletParameterHelper {
 	}
 
 	private static ObjectMapper createObjectMapper(Locale locale) {
-		return new ObjectMapper().addMixIn(ServletParameters.class, ServletParametersMixIn.class)
+		return new ObjectMapper().addMixIn(ConvertServletParameters.class, ServletParametersMixIn.class)
 				.addMixIn(IniConfig.class, IniConfigMixIn.class)
 				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
 				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)

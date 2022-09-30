@@ -23,14 +23,14 @@ import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
 import libsidutils.PathUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.ServletBaseParameters;
+import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class PhotoServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.PhotoServletParameters")
-	public static class ServletParameters extends ServletBaseParameters {
+	public static class PhotoServletParameters extends FileRequestPathServletParameters {
 
 	}
 
@@ -56,11 +56,11 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final ServletParameters servletParameters = new ServletParameters();
+			final PhotoServletParameters servletParameters = new PhotoServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = parseRequestPath(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
+			final File file = getFile(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
 			if (file == null) {
 				commander.usage();
 				return;
