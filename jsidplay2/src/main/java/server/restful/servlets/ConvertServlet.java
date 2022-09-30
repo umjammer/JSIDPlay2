@@ -24,6 +24,7 @@ import static server.restful.common.IServletSystemProperties.MAX_VID_DOWNLOAD_LE
 import static server.restful.common.IServletSystemProperties.NOTIFY_FOR_HLS;
 import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
 import static server.restful.common.IServletSystemProperties.RTMP_DOWNLOAD_URL;
+import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_HLS;
@@ -409,7 +410,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_VID_DOWNLOAD_LENGTH));
 			videoFile = createVideoFile(player, driver);
 		} else {
-			sidplay2Section.setDefaultPlayLength(MAX_VID_DOWNLOAD_LENGTH);
+			sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
 		}
 		player.setAudioDriver(driver);
 		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
