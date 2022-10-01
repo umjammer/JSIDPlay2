@@ -94,6 +94,7 @@ import sidplay.audio.SIDRegDriver.SIDRegStreamDriver;
 import sidplay.audio.SleepDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
+import sidplay.ini.converter.NegatedBooleanConverter;
 import ui.common.Convenience;
 import ui.entities.config.Configuration;
 
@@ -136,37 +137,37 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.reuSize = reuSize;
 		}
 
-		private int pressSpaceInterval = PRESS_SPACE_INTERVALL;
+		private Integer pressSpaceInterval = PRESS_SPACE_INTERVALL;
 
-		public int getPressSpaceInterval() {
+		public Integer getPressSpaceInterval() {
 			return pressSpaceInterval;
 		}
 
 		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -5)
-		public void setPressSpaceInterval(int pressSpaceInterval) {
+		public void setPressSpaceInterval(Integer pressSpaceInterval) {
 			this.pressSpaceInterval = pressSpaceInterval;
 		}
 
-		private Boolean status = Boolean.TRUE;
+		private Boolean showStatus = Boolean.TRUE;
 
-		public Boolean getStatus() {
-			return status;
+		public Boolean getShowStatus() {
+			return showStatus;
 		}
 
 		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -4)
-		public void setStatus(Boolean status) {
-			this.status = status;
+		public void setShowStatus(Boolean showStatus) {
+			this.showStatus = showStatus;
 		}
 
-		private Boolean rtmp = Boolean.TRUE;
+		private Boolean useHls = Boolean.FALSE;
 
-		public Boolean getRtmp() {
-			return rtmp;
+		public Boolean getUseHls() {
+			return useHls;
 		}
 
-		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -3)
-		public void setRtmp(Boolean rtmp) {
-			this.rtmp = rtmp;
+		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", converter = NegatedBooleanConverter.class, order = -3)
+		public void setUseHls(Boolean useHls) {
+			this.useHls = useHls;
 		}
 
 		private String autostart;
@@ -452,7 +453,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put("$uuid", uuid.toString());
 		result.put("$qrCodeImgTag", qrCodeImgTag);
 		result.put("$videoUrl", videoUrl);
-		result.put("$hls", String.valueOf(!Boolean.TRUE.equals(servletParameters.rtmp)));
+		result.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
 		result.put("$waitForVideo", String.valueOf(getWaitForVideo(servletParameters)));
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
@@ -468,17 +469,17 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private String getVideoUrl(ConvertServletParameters servletParameters, String remoteAddress, UUID uuid) {
-		if (Boolean.TRUE.equals(servletParameters.rtmp)) {
-			// RTMP protocol
-			return RTMP_DOWNLOAD_URL + "/" + uuid;
-		} else {
+		if (Boolean.TRUE.equals(servletParameters.useHls)) {
 			// HLS protocol
 			return HLS_DOWNLOAD_URL + "/" + uuid + ".m3u8";
+		} else {
+			// RTMP protocol
+			return RTMP_DOWNLOAD_URL + "/" + uuid;
 		}
 	}
 
 	private int getWaitForVideo(ConvertServletParameters servletParameters) {
-		return Boolean.TRUE.equals(servletParameters.rtmp) ? WAIT_FOR_RTMP : WAIT_FOR_HLS;
+		return Boolean.TRUE.equals(servletParameters.useHls) ? WAIT_FOR_HLS : WAIT_FOR_RTMP;
 	}
 
 }

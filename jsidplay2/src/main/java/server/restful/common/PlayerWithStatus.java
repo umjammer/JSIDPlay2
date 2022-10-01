@@ -44,7 +44,7 @@ public final class PlayerWithStatus {
 
 	private final boolean showStatus;
 
-	private int pressSpaceInterval;
+	private final int pressSpaceInterval;
 
 	private File diskImage;
 
@@ -52,6 +52,7 @@ public final class PlayerWithStatus {
 
 	private LocalDateTime validUntil;
 
+	// status text scrolling
 	private Boolean currentDirection;
 	private boolean newDirection;
 	private double waitForScrollInFrames;
@@ -250,7 +251,6 @@ public final class PlayerWithStatus {
 			if (event.getNewValue() == State.START) {
 
 				waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
-				lastStatusText = null;
 
 				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -34,8 +35,8 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 
 	public static final void create(UUID uuid, Player player, File diskImage,
 			ConvertServletParameters servletParameters, ResourceBundle resourceBundle) {
-		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, servletParameters.getStatus(),
-				servletParameters.getPressSpaceInterval(), resourceBundle));
+		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, servletParameters.getShowStatus(),
+				Optional.ofNullable(servletParameters.getPressSpaceInterval()).orElse(0), resourceBundle));
 	}
 
 	public static final void update(UUID uuid, Consumer<PlayerWithStatus> playerWithStatusConsumer) {
