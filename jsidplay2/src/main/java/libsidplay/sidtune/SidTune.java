@@ -42,7 +42,7 @@ public abstract class SidTune {
 	/**
 	 * Delay in cycles to wait for completion of a normal RESET.
 	 */
-	protected static final int RESET_INIT_DELAY = 2500000;
+	public static final int RESET_INIT_DELAY = 2500000;
 
 	protected static boolean USE_KICKASSEMBLER;
 
