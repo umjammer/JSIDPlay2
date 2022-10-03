@@ -13,7 +13,6 @@ import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -66,7 +65,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			URL url = servletParameters.url;
 
 			if (!url.toExternalForm().startsWith(HLS_DOWNLOAD_URL)) {
-				throw new ParameterException("Resource is not allowed! (found " + url.toExternalForm() + ")");
+				throw new IOException();
 			}
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
