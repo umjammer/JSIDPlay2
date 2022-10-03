@@ -2,6 +2,8 @@ package server.restful.common.converter;
 
 import java.net.URL;
 
+import com.beust.jcommander.converters.URLConverter;
+
 /**
  * URLs sent as a servlet request parameter are converted here.<BR>
  * <BR>
@@ -18,7 +20,7 @@ import java.net.URL;
  * @author ken
  *
  */
-public final class RequestPathURLConverter extends com.beust.jcommander.converters.URLConverter {
+public final class RequestPathURLConverter extends URLConverter {
 
 	public RequestPathURLConverter(String optionName) {
 		super(optionName);
