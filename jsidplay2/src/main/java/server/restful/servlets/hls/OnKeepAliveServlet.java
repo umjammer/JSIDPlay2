@@ -9,7 +9,6 @@ import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -17,17 +16,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
-import server.restful.common.converter.UUIDConverter;
+import server.restful.common.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.OnKeepAliveServletParameters")
-	public static class OnKeepAliveServletParameters {
-
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
-		private UUID uuid;
+	public static class OnKeepAliveServletParameters extends VideoRequestParamServletParameters {
 
 	}
 
@@ -64,11 +60,11 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			final OnKeepAliveServletParameters servletParameters = new OnKeepAliveServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.uuid == null) {
+			if (servletParameters.getUuid() == null) {
 				commander.usage();
 				return;
 			}
-			UUID uuid = servletParameters.uuid;
+			UUID uuid = servletParameters.getUuid();
 
 //			info(String.format("onKeepAlive: HLS stream of: %s", uuid));   // Calls are very frequent, therefore we are silent here
 			update(uuid, PlayerWithStatus::onKeepAlive);

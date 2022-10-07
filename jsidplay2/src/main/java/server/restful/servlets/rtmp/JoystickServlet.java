@@ -16,7 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.converter.UUIDConverter;
+import server.restful.common.RequestParamServletParameters.VideoRequestParamServletParameters;
 import server.restful.common.validator.JoystickNumberValidator;
 import server.restful.common.validator.JoystickValueValidator;
 import ui.entities.config.Configuration;
@@ -25,19 +25,31 @@ import ui.entities.config.Configuration;
 public class JoystickServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.JoystickServletParameters")
-	public static class JoystickServletParameters {
+	public static class JoystickServletParameters extends VideoRequestParamServletParameters {
 
-		@Parameter(names = {
-				"--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = 0, required = true)
-		private UUID uuid;
+		private int number;
+
+		public int getNumber() {
+			return number;
+		}
 
 		@Parameter(names = {
 				"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = 1)
-		private int number;
+		public void setNumber(int number) {
+			this.number = number;
+		}
+
+		private int value;
+
+		public int getValue() {
+			return value;
+		}
 
 		@Parameter(names = {
 				"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = 2)
-		private int value;
+		public void setValue(int value) {
+			this.value = value;
+		}
 	}
 
 	public static final String JOYSTICK_PATH = "/joystick";
@@ -68,13 +80,13 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 			final JoystickServletParameters servletParameters = new JoystickServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.uuid == null) {
+			if (servletParameters.getUuid() == null) {
 				commander.usage();
 				return;
 			}
-			UUID uuid = servletParameters.uuid;
-			int number = servletParameters.number;
-			int value = servletParameters.value;
+			UUID uuid = servletParameters.getUuid();
+			int number = servletParameters.getNumber();
+			int value = servletParameters.getValue();
 
 			info(String.format("joystick: RTMP stream of: %s, number=%d, value=%d", uuid, number, value));
 			update(uuid, rtmpPlayerWithStatus -> rtmpPlayerWithStatus.joystick(number, value));

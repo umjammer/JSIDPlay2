@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -16,17 +15,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
-import server.restful.common.converter.UUIDConverter;
+import server.restful.common.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class OnPlayServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.OnPlayServletParameters")
-	public static class OnPlayServletParameters {
-
-		@Parameter(names = { "--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, required = true)
-		private UUID uuid;
+	public static class OnPlayServletParameters extends VideoRequestParamServletParameters {
 
 	}
 
@@ -73,10 +69,10 @@ public class OnPlayServlet extends JSIDPlay2Servlet {
 			final OnPlayServletParameters servletParameters = new OnPlayServletParameters();
 
 			parseRequestParameters(request, response, servletParameters, getServletPath(), true);
-			if (servletParameters.uuid == null) {
+			if (servletParameters.getUuid() == null) {
 				return;
 			}
-			UUID uuid = servletParameters.uuid;
+			UUID uuid = servletParameters.getUuid();
 
 			info(String.format("onPlay: RTMP stream of: %s", uuid));
 			update(uuid, PlayerWithStatus::onPlay);

@@ -17,18 +17,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.converter.UUIDConverter;
+import server.restful.common.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class PressKeyServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.PressKeyServletParameters")
-	public static class PressKeyServletParameters {
-
-		@Parameter(names = {
-				"--name" }, descriptionKey = "NAME", converter = UUIDConverter.class, order = 0, required = true)
-		private UUID uuid;
+	public static class PressKeyServletParameters extends VideoRequestParamServletParameters {
 
 		@Parameter(names = { "--type" }, descriptionKey = "TYPE", order = 1)
 		private String type;
@@ -70,11 +66,11 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			final PressKeyServletParameters servletParameters = new PressKeyServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.uuid == null) {
+			if (servletParameters.getUuid() == null) {
 				commander.usage();
 				return;
 			}
-			UUID uuid = servletParameters.uuid;
+			UUID uuid = servletParameters.getUuid();
 
 			if (servletParameters.type != null) {
 				KeyTableEntry key = KeyTableEntry.valueOf(KeyTableEntry.class, servletParameters.type);
