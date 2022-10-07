@@ -22,9 +22,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -56,6 +59,7 @@ import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
 import ui.common.filefilter.AudioTuneFileFilter;
@@ -251,6 +255,49 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return null;
 	}
 
+	protected List<String> getDirectory(JCommander commander, DirectoryServletParameters servletParameters,
+			boolean adminRole) {
+		String path = servletParameters.getDirectory();
+		if (path == null) {
+			return null;
+		}
+		if (path.equals("/")) {
+			List<String> files = getRoot(adminRole);
+			if (!files.isEmpty()) {
+				return files;
+			}
+		} else if (path.startsWith(C64_MUSIC)) {
+			File root = configuration.getSidplay2Section().getHvsc();
+			List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(), C64_MUSIC, adminRole);
+			if (!files.isEmpty()) {
+				return files;
+			}
+		} else if (path.startsWith(CGSC)) {
+			File root = configuration.getSidplay2Section().getCgsc();
+			List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(), CGSC, adminRole);
+			if (!files.isEmpty()) {
+				return files;
+			}
+		} else {
+			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
+				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
+				String directoryValue = splitted.length > 0 ? splitted[0] : null;
+				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
+				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
+					File root = new TFile(directoryValue);
+					List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(),
+							directoryLogicalName, adminRole);
+					if (!files.isEmpty()) {
+						return files;
+					}
+				}
+			}
+		}
+		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
+		usageFormatter.setException(new FileNotFoundException(path));
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected <T> T getInput(HttpServletRequest request, Class<T> tClass) throws IOException {
 		try (ServletInputStream inputStream = request.getInputStream()) {
@@ -392,6 +439,65 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			ZipFileUtils.copy(file, out);
 		}
 		return targetFile;
+	}
+
+	private List<String> getRoot(boolean adminRole) {
+		List<String> result = new ArrayList<>(Arrays.asList(C64_MUSIC + "/", CGSC + "/"));
+
+		directoryProperties.stringPropertyNames().stream().sorted().forEach(directoryLogicalName -> {
+			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
+			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
+			if (!needToBeAdmin || adminRole) {
+				result.add(directoryLogicalName + "/");
+			}
+		});
+		return result;
+	}
+
+	private List<String> getCollectionFiles(File rootFile, String path, String filter, String virtualCollectionRoot,
+			boolean adminRole) {
+		ArrayList<String> result = new ArrayList<>();
+		if (rootFile != null) {
+			if (path.endsWith("/")) {
+				path = path.substring(0, path.length() - 1);
+			}
+			File file = ZipFileUtils.newFile(rootFile, path.substring(virtualCollectionRoot.length()));
+			File[] listFiles = file.listFiles(pathname -> {
+				if (pathname.isDirectory() && pathname.getName().endsWith(".tmp")) {
+					return false;
+				}
+				return pathname.isDirectory() || filter == null
+						|| pathname.getName().toLowerCase(Locale.US).matches(filter);
+			});
+			if (listFiles != null) {
+				List<File> asList = Arrays.asList(listFiles);
+				Collections.sort(asList, (file1, file2) -> {
+					if (file1.isDirectory() && !file2.isDirectory()) {
+						return -1;
+					} else if (!file1.isDirectory() && file2.isDirectory()) {
+						return 1;
+					} else {
+						return file1.getName().compareToIgnoreCase(file2.getName());
+					}
+				});
+				String currentPath = null;
+				addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/..", file);
+				for (File childFile : asList) {
+					if (currentPath == null) {
+						currentPath = PathUtils.getCollectionName(rootFile, childFile);
+					} else {
+						currentPath = new File(new File(currentPath).getParentFile(), childFile.getName())
+								.getAbsolutePath();
+					}
+					addPath(result, virtualCollectionRoot + currentPath, childFile);
+				}
+			}
+		}
+		return result;
+	}
+
+	private void addPath(ArrayList<String> result, String pathToAdd, File childFile) {
+		result.add(pathToAdd + (childFile.isDirectory() ? "/" : ""));
 	}
 
 }

@@ -5,13 +5,8 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
@@ -21,9 +16,6 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.PathUtils;
-import libsidutils.ZipFileUtils;
-import net.java.truevfs.access.TFile;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.RequestPathServletParameters.DirectoryRequestPathServletParameters;
 import ui.entities.config.Configuration;
@@ -34,9 +26,16 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.DirectoryServletParameters")
 	public static class DirectoryServletParameters extends DirectoryRequestPathServletParameters {
 
-		@Parameter(names = { "--filter" }, descriptionKey = "FILTER")
 		private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";
 
+		public String getFilter() {
+			return filter;
+		}
+
+		@Parameter(names = { "--filter" }, descriptionKey = "FILTER")
+		public void setFilter(String filter) {
+			this.filter = filter;
+		}
 	}
 
 	public static final String DIRECTORY_PATH = "/directory";
@@ -64,12 +63,12 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			final DirectoryServletParameters servletParameters = new DirectoryServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.getDirectory() == null) {
+
+			List<String> files = getDirectory(commander, servletParameters, request.isUserInRole(ROLE_ADMIN));
+			if (files == null) {
 				commander.usage();
 				return;
 			}
-			List<String> files = getDirectory(servletParameters, request.isUserInRole(ROLE_ADMIN));
-
 			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(files));
 
 		} catch (Throwable t) {
@@ -79,90 +78,4 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private List<String> getDirectory(DirectoryServletParameters servletParameters, boolean adminRole) {
-		if (servletParameters.getDirectory() == null || servletParameters.getDirectory().equals("/")) {
-			return getRoot(adminRole);
-		} else if (servletParameters.getDirectory().startsWith(C64_MUSIC)) {
-			File root = configuration.getSidplay2Section().getHvsc();
-			return getCollectionFiles(root, servletParameters.getDirectory(), servletParameters.filter, C64_MUSIC,
-					adminRole);
-		} else if (servletParameters.getDirectory().startsWith(CGSC)) {
-			File root = configuration.getSidplay2Section().getCgsc();
-			return getCollectionFiles(root, servletParameters.getDirectory(), servletParameters.filter, CGSC, adminRole);
-		} else {
-			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
-				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-				String directoryValue = splitted.length > 0 ? splitted[0] : null;
-				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-				if ((!needToBeAdmin || adminRole) && servletParameters.getDirectory().startsWith(directoryLogicalName)
-						&& directoryValue != null) {
-					File root = new TFile(directoryValue);
-					return getCollectionFiles(root, servletParameters.getDirectory(), servletParameters.filter,
-							directoryLogicalName, adminRole);
-				}
-			}
-		}
-		return getRoot(adminRole);
-	}
-
-	private List<String> getCollectionFiles(File rootFile, String path, String filter, String virtualCollectionRoot,
-			boolean adminRole) {
-		ArrayList<String> result = new ArrayList<>();
-		if (rootFile != null) {
-			if (path.endsWith("/")) {
-				path = path.substring(0, path.length() - 1);
-			}
-			File file = ZipFileUtils.newFile(rootFile, path.substring(virtualCollectionRoot.length()));
-			File[] listFiles = file.listFiles(pathname -> {
-				if (pathname.isDirectory() && pathname.getName().endsWith(".tmp")) {
-					return false;
-				}
-				return pathname.isDirectory() || filter == null
-						|| pathname.getName().toLowerCase(Locale.US).matches(filter);
-			});
-			if (listFiles != null) {
-				List<File> asList = Arrays.asList(listFiles);
-				Collections.sort(asList, (file1, file2) -> {
-					if (file1.isDirectory() && !file2.isDirectory()) {
-						return -1;
-					} else if (!file1.isDirectory() && file2.isDirectory()) {
-						return 1;
-					} else {
-						return file1.getName().compareToIgnoreCase(file2.getName());
-					}
-				});
-				String currentPath = null;
-				addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/../", null);
-				for (File f : asList) {
-					if (currentPath == null) {
-						currentPath = PathUtils.getCollectionName(rootFile, f);
-					} else {
-						currentPath = new File(new File(currentPath).getParentFile(), f.getName()).getAbsolutePath();
-					}
-					addPath(result, virtualCollectionRoot + currentPath, f);
-				}
-			}
-		}
-		if (result.isEmpty()) {
-			return getRoot(adminRole);
-		}
-		return result;
-	}
-
-	private void addPath(ArrayList<String> result, String path, File f) {
-		result.add(path + (f != null && f.isDirectory() ? "/" : ""));
-	}
-
-	private List<String> getRoot(boolean adminRole) {
-		List<String> result = new ArrayList<>(Arrays.asList(C64_MUSIC + "/", CGSC + "/"));
-
-		directoryProperties.stringPropertyNames().stream().sorted().forEach(directoryLogicalName -> {
-			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-			if (!needToBeAdmin || adminRole) {
-				result.add(directoryLogicalName + "/");
-			}
-		});
-		return result;
-	}
 }
