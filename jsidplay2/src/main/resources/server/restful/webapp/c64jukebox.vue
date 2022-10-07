@@ -1370,8 +1370,8 @@
 									<h3>{{ $t("videoStreamingCfgHeader") }}</h3>
 
 									<div class="settings-box">
-										<b-form-checkbox v-model="convertOptions.rtmp">
-											{{ $t("convertMessages.rtmp") }}
+										<b-form-checkbox v-model="convertOptions.useHls">
+											{{ $t("convertMessages.useHls") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
@@ -1411,8 +1411,8 @@
 										</div>
 									</div>
 									<div class="settings-box">
-										<b-form-checkbox v-model="convertOptions.status">
-											{{ $t("convertMessages.status") }}
+										<b-form-checkbox v-model="convertOptions.showStatus">
+											{{ $t("convertMessages.showStatus") }}
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
@@ -2754,7 +2754,7 @@
 					setDefault: function () {
 						if (confirm(this.$i18n.t("setDefaultReally"))) {
 							this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
-							this.convertOptions.rtmp = false;
+							this.convertOptions.useHls = true;
 							this.convertOptions.config.sidplay2Section.single = true;
 							this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
 							this.convertOptions.config.audioSection.reverbBypass = false;
@@ -2952,12 +2952,12 @@
 							this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
 							"&detectPSID64ChipModel=" +
 							this.convertOptions.config.emulationSection.detectPSID64ChipModel +
-							"&rtmp=" +
-							this.convertOptions.rtmp +
+							"&hls=" +
+							this.convertOptions.useHls +
 							"&pressSpaceInterval=" +
 							this.convertOptions.pressSpaceInterval +
 							"&status=" +
-							this.convertOptions.status +
+							this.convertOptions.showStatus +
 							"&jiffydos=" +
 							this.convertOptions.config.c1541Section.jiffyDosInstalled +
 							this.reuParameters +
@@ -3409,9 +3409,13 @@
 					if (localStorage.convertOptions) {
 						// restore configuration from last run
 						this.convertOptions = JSON.parse(localStorage.convertOptions);
+						// migration:
+						if (typeof this.convertOptions.useHls === "undefined") {
+							this.convertOptions.useHls = true;
+						}
 					} else {
 						// initialize configuration (if they differ from the default settings)
-						this.convertOptions.rtmp = false;
+						this.convertOptions.useHls = true;
 						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
 						this.convertOptions.config.audioSection.reverbBypass = false;

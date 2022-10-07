@@ -94,7 +94,6 @@ import sidplay.audio.SIDRegDriver.SIDRegStreamDriver;
 import sidplay.audio.SleepDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
-import sidplay.ini.converter.NegatedBooleanConverter;
 import ui.common.Convenience;
 import ui.entities.config.Configuration;
 
@@ -165,9 +164,30 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useHls;
 		}
 
-		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", converter = NegatedBooleanConverter.class, order = -3)
+		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -3)
 		public void setUseHls(Boolean useHls) {
 			this.useHls = useHls;
+		}
+
+		/**
+		 * @deprecated
+		 */
+		private Boolean rtmp = Boolean.TRUE;
+
+		/**
+		 * @deprecated
+		 */
+		public Boolean getRtmp() {
+			return rtmp;
+		}
+
+		/**
+		 * @deprecated
+		 */
+		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -3)
+		public void setRtmp(Boolean rtmp) {
+			this.useHls = !rtmp;
+			this.rtmp = rtmp;
 		}
 
 		private String autostart;
