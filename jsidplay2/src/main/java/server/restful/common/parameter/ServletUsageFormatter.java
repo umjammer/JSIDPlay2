@@ -65,9 +65,9 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 					out.append("\n");
 					out.append("\n");
 				}
-				out.append("Example Usage:");
-				out.append("\n");
 			}
+			out.append("Example Usage:");
+			out.append("\n");
 
 			StringBuilder mainLine = new StringBuilder();
 			mainLine.append(indent).append("HTTP-").append(request.getMethod()).append(" ");
@@ -117,9 +117,13 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 			// Request path description
 			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				out.append("{");
+				out.append(indent).append("Servlet-Path:");
+				out.append("\n");
+				out.append("      {");
 				out.append(commander.getMainParameterValue().getParameterized().getName());
-				out.append("}: ");
+				out.append("}");
+				out.append("\n");
+				out.append("      ");
 				out.append(commander.getMainParameterValue().getDescription());
 				out.append("\n");
 				out.append("\n");

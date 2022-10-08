@@ -58,8 +58,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
-import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
@@ -264,19 +264,19 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 		if (path.equals("/")) {
 			List<String> files = getRoot(adminRole);
-			if (!files.isEmpty()) {
+			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
 			File root = configuration.getSidplay2Section().getHvsc();
 			List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(), C64_MUSIC, adminRole);
-			if (!files.isEmpty()) {
+			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
 			File root = configuration.getSidplay2Section().getCgsc();
 			List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(), CGSC, adminRole);
-			if (!files.isEmpty()) {
+			if (files != null) {
 				return files;
 			}
 		} else {
@@ -288,7 +288,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					File root = new TFile(directoryValue);
 					List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(),
 							directoryLogicalName, adminRole);
-					if (!files.isEmpty()) {
+					if (files != null) {
 						return files;
 					}
 				}
@@ -457,7 +457,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	private List<String> getCollectionFiles(File rootFile, String path, String filter, String virtualCollectionRoot,
 			boolean adminRole) {
-		ArrayList<String> result = new ArrayList<>();
+		ArrayList<String> result = null;
 		if (rootFile != null) {
 			if (path.endsWith("/")) {
 				path = path.substring(0, path.length() - 1);
@@ -471,6 +471,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 						|| pathname.getName().toLowerCase(Locale.US).matches(filter);
 			});
 			if (listFiles != null) {
+				result = new ArrayList<>();
 				List<File> asList = Arrays.asList(listFiles);
 				Collections.sort(asList, (file1, file2) -> {
 					if (file1.isDirectory() && !file2.isDirectory()) {
