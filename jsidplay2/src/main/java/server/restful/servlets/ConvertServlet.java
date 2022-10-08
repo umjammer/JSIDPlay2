@@ -76,7 +76,7 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import server.restful.filters.LimitRequestServletFilter;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;

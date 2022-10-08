@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.parameter;
 
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;

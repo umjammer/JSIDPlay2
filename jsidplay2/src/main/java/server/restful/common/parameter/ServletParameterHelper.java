@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.parameter;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

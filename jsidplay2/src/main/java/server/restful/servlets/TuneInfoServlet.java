@@ -28,7 +28,7 @@ import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.config.Configuration;
 import ui.musiccollection.SearchCriteria;

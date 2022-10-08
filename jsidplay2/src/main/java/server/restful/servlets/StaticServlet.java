@@ -4,9 +4,9 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.STATIC_RES_MAX_AGE;
-import static server.restful.common.ServletParameterHelper.CONVERT_MESSAGES_DE;
-import static server.restful.common.ServletParameterHelper.CONVERT_MESSAGES_EN;
-import static server.restful.common.ServletParameterHelper.CONVERT_OPTIONS;
+import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_DE;
+import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_EN;
+import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPTIONS;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.RequestPathServletParameters.WebResourceRequestPathServletParameters;
+import server.restful.common.parameter.RequestPathServletParameters.WebResourceRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")

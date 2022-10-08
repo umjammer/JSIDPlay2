@@ -23,7 +23,7 @@ import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
 import libsidutils.PathUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")

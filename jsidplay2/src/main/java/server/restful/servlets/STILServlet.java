@@ -22,7 +22,7 @@ import libsidutils.stil.STIL.STILEntry;
 import net.java.truevfs.access.TFile;
 import net.java.truevfs.access.TFileInputStream;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")

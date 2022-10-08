@@ -29,7 +29,7 @@ public interface IServletSystemProperties {
 	 * partial HTTP/2 frame has been received. Negative values will be treated as an
 	 * infinite timeout.
 	 */
-	int HTTP2_READ_TIMEOUT = valueOf(getProperty("jsidplay2.read.timeout", String.valueOf(5 * 60 * 1000)));
+	int HTTP2_READ_TIMEOUT = valueOf(getProperty("jsidplay2.read.timeout", String.valueOf(10 * 60 * 1000)));
 
 	/**
 	 * The time, in milliseconds, that Tomcat will wait to write additional data

@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.RequestParamServletParameters.VideoRequestParamServletParameters;
+import server.restful.common.parameter.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")

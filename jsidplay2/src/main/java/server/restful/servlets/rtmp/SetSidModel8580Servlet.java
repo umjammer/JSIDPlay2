@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
-import server.restful.common.RequestParamServletParameters.VideoRequestParamServletParameters;
+import server.restful.common.parameter.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
