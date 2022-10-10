@@ -106,9 +106,11 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 					url.getQuery(), url.getRef());
 
 			String asciiString = uri.toASCIIString();
+
 			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				asciiString = asciiString.replace(commander.getMainParameterValue().getParameterized().getName(),
-						"{" + commander.getMainParameterValue().getParameterized().getName() + "}");
+				String requestPath = commander.getMainParameterValue().getParameterized().getName();
+				asciiString = (asciiString.replaceFirst("(.*)/" + requestPath + "($|[?])",
+						"$1/{" + requestPath + "}$2"));
 			}
 			mainLine.append(asciiString);
 			wrapDescription(out, indentCount, mainLine.toString());
