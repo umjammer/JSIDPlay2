@@ -24,6 +24,10 @@
 		<script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>
 		<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
 
+		<!-- USB -->
+		<script src="/static/usb/hardsid.js"></script>
+		<script src="/static/usb/outro.js"></script>
+		
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
@@ -120,6 +124,10 @@
 										the Free Software Foundation; either version 2 of the License, or<br />
 										(at your option) any later version.
 									</p>
+
+									<div v-show="navigator.usb !== undefined">
+										<button id="connect">Connect</button>
+									</div>
 								</b-card-text>
 							</b-tab>
 							<b-tab active style="position: relative">
@@ -2103,6 +2111,7 @@
 		</div>
 
 		<script>
+
 			function uriEncode(entry) {
 				// escape is deprecated and cannot handle utf8
 				// encodeURI() will not encode: ~!@#$&*()=:/,;?+'
@@ -3390,6 +3399,47 @@
 						this.carouselImageHeight =
 							window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
 					});
+
+					if (navigator.usb) {
+						let button = document.getElementById("connect");
+
+						button.addEventListener("click", async function (event) {
+							event.preventDefault();
+
+							try {
+								await hardsid_usb_init(true, SysMode.SIDPLAY);
+								let deviceCount = await hardsid_usb_getdevcount();
+								console.log(deviceCount);
+								if (deviceCount > 0) {
+									let chipCount = await hardsid_usb_getsidcount(0);
+									console.log(chipCount);
+
+									let deviceId = 0;
+									let chipNum = 0;
+									
+									await reset(deviceId, chipNum, 0xf);
+
+									for (var i = 0;i < regs.length; i++) {
+										let obj = regs[i];
+									    let cycles = obj[0];
+									    let reg = parseInt(obj[1].substring(3), 16);
+									    let value = parseInt(obj[2].substring(1), 16);
+
+									    await hardsid_usb_delay(deviceId, cycles);
+										while (await hardsid_usb_write(deviceId, ((chipNum << 5) | reg), value) == WState.BUSY) {
+										}
+									}
+									await reset(deviceId, chipNum, 0x0);
+								}
+
+							} catch(error) {
+								console.log(error);
+							} finally {
+								await hardsid_usb_abortplay(0);
+								await hardsid_usb_close();
+							}
+						});
+					}
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
 					}
