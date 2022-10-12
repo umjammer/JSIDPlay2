@@ -3,6 +3,7 @@ package server.restful;
 import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
+import static libsidutils.PathUtils.deleteDirectory;
 import static org.apache.catalina.startup.Tomcat.addServlet;
 import static server.restful.common.IServletSystemProperties.COMPRESSION;
 import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
@@ -19,12 +20,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.List;
@@ -410,6 +405,14 @@ public class JSIDPlay2Server {
 				return true;
 			}
 		});
+		Arrays.asList(Optional.ofNullable(configuration.getSidplay2Section().getTmpDir().listFiles(UUID_FILE_FILTER))
+				.orElse(new File[0])).forEach(file -> {
+					try {
+						deleteDirectory(file);
+					} catch (IOException e) {
+						context.getParent().getLogger().error(e.getMessage());
+					}
+				});
 
 		return context;
 	}
@@ -496,37 +499,12 @@ public class JSIDPlay2Server {
 								jsidplay2Server.whatsSidDatabasePassword, jsidplay2Server.whatsSidDatabaseDialect));
 			}
 
-			Arrays.asList(Optional
-					.ofNullable(
-							jsidplay2Server.configuration.getSidplay2Section().getTmpDir().listFiles(UUID_FILE_FILTER))
-					.orElse(new File[0])).forEach(jsidplay2Server::deleteDirectory);
-
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
 				| LifecycleException e) {
 			System.err.println(e.getMessage());
 			exit(1);
-		}
-	}
-
-	private void deleteDirectory(File directory) {
-		try {
-			Files.walkFileTree(Paths.get(directory.toURI()), new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-					Files.delete(dir);
-					return FileVisitResult.CONTINUE;
-				}
-
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					Files.delete(file);
-					return FileVisitResult.CONTINUE;
-				}
-			});
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
 		}
 	}
 

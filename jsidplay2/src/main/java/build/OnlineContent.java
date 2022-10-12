@@ -1,6 +1,7 @@
 package build;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static libsidutils.PathUtils.deleteDirectory;
 import static ui.entities.PersistenceProperties.CGSC_DS;
 import static ui.entities.PersistenceProperties.HVSC_DS;
 import static ui.musiccollection.MusicCollectionType.CGSC;
@@ -17,12 +18,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -345,22 +342,6 @@ public class OnlineContent {
 			properties.setProperty("crc32", DownloadThread.calculateCRC32(demosZipFile));
 			properties.store(writer, null);
 		}
-	}
-
-	private void deleteDirectory(File directory) throws IOException {
-		Files.walkFileTree(Paths.get(directory.toURI()), new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				Files.delete(dir);
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				Files.delete(file);
-				return FileVisitResult.CONTINUE;
-			}
-		});
 	}
 
 	public static void main(String[] args) throws Exception {
