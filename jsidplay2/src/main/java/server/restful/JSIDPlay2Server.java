@@ -8,9 +8,9 @@ import static server.restful.common.IServletSystemProperties.COMPRESSION;
 import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_KEEP_ALIVE_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_READ_TIMEOUT;
+import static server.restful.common.IServletSystemProperties.HTTP2_USE_SENDFILE;
 import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.USE_HTTP2;
-import static server.restful.common.IServletSystemProperties.HTTP2_USE_SENDFILE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,8 +19,16 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyStore;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Timer;
 
@@ -87,6 +95,7 @@ import server.restful.servlets.whatssid.TuneExistsServlet;
 import server.restful.servlets.whatssid.WhatsSidServlet;
 import sidplay.Player;
 import sidplay.player.DebugUtil;
+import ui.common.filefilter.UUIDFileFilter;
 import ui.entities.PersistenceProperties;
 import ui.entities.config.Configuration;
 import ui.entities.config.EmulationSection;
@@ -164,6 +173,8 @@ public class JSIDPlay2Server {
 	 * Configuration of usernames, passwords and roles
 	 */
 	private static final URL INTERNAL_REALM_CONFIG = JSIDPlay2Server.class.getResource("/" + REALM_CONFIG);
+
+	private static final UUIDFileFilter UUID_FILE_FILTER = new UUIDFileFilter();
 
 	/**
 	 * Our servlets to serve
@@ -484,12 +495,38 @@ public class JSIDPlay2Server {
 								jsidplay2Server.whatsSidDatabaseUrl, jsidplay2Server.whatsSidDatabaseUsername,
 								jsidplay2Server.whatsSidDatabasePassword, jsidplay2Server.whatsSidDatabaseDialect));
 			}
+
+			Arrays.asList(Optional
+					.ofNullable(
+							jsidplay2Server.configuration.getSidplay2Section().getTmpDir().listFiles(UUID_FILE_FILTER))
+					.orElse(new File[0])).forEach(jsidplay2Server::deleteDirectory);
+
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
 				| LifecycleException e) {
 			System.err.println(e.getMessage());
 			exit(1);
+		}
+	}
+
+	private void deleteDirectory(File directory) {
+		try {
+			Files.walkFileTree(Paths.get(directory.toURI()), new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
 		}
 	}
 
