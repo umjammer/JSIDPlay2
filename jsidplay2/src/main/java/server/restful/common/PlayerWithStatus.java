@@ -57,6 +57,7 @@ public final class PlayerWithStatus {
 	private boolean newDirection;
 	private double waitForScrollInFrames;
 	private String lastStatusText;
+	private int lastStatusTextX;
 
 	private int playCounter, statusScrollCounter;
 
@@ -258,14 +259,14 @@ public final class PlayerWithStatus {
 
 						getXuggleVideoDriver().ifPresent(xuggleVideoDriver -> {
 							String newStatusText = createStatusText();
-							if (!Objects.equals(newStatusText, lastStatusText)) {
-								xuggleVideoDriver.setStatusText(newStatusText);
-								lastStatusText = newStatusText;
-							}
-
 							int statusTextX = xuggleVideoDriver.getStatusTextX();
 							int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
 
+							if (!Objects.equals(newStatusText, lastStatusText) || statusTextX != lastStatusTextX) {
+								xuggleVideoDriver.setStatusText(newStatusText);
+								lastStatusText = newStatusText;
+								lastStatusTextX = statusTextX;
+							}
 							if (currentDirection == null) {
 								// wait for scroll start
 								if (statusScrollCounter++ >= waitForScrollInFrames) {
