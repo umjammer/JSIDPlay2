@@ -25,7 +25,7 @@ import libsidutils.fingerprinting.rest.beans.MusicInfoWithConfidenceBean;
 import libsidutils.fingerprinting.rest.beans.WAVBean;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
-import server.restful.filters.LimitRequestServletFilter;
+import server.restful.common.filters.LimitRequestServletFilter;
 import ui.entities.config.Configuration;
 import ui.entities.whatssid.service.WhatsSidService;
 

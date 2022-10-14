@@ -1,4 +1,4 @@
-package server.restful.filters;
+package server.restful.common.filters;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
