@@ -54,7 +54,7 @@ const DevType = {
 	HSUNO: 3,
 };
 
-var devhandles = new Array(MAX_DEVCOUNT)
+var devhandles = new Array(MAX_DEVCOUNT);
 
 var deviceTypes = new Array(MAX_DEVCOUNT);
 var writeBuffer = new Array(MAX_DEVCOUNT);
@@ -222,7 +222,7 @@ async function openAllDevices() {
 		}]
 	 })
 	if (device !== undefined) {				 
-		console.log(`Product name: ${device.productName}, Product Id: ${device.productId}`);
+		console.log(`Product name: ${device.productName}, Product Id: ${device.productId.toString(16)}`);
 
 		let devType = getDevType(device);
 
@@ -707,18 +707,20 @@ async function hardsid_usb_setmode(deviceId, newsysmode) {
  * @return {WState}
  *         state
  */
-async function reset(deviceId, chipNum, volume) {
-	for (let reg = 0; reg < 32; reg++) {
-		while (await hardsid_usb_write(deviceId, ((chipNum << 5) | reg), 0) == WState.BUSY) {
-		}
+async function hardsid_usb_reset(deviceId, chipNum, volume) {
+	for (var reg = 0; reg < 32; reg++) {
 		while (await hardsid_usb_delay(deviceId, SHORTEST_DELAY) == WState.BUSY) {
 		}
+		while (await hardsid_usb_write(deviceId, ((chipNum << 5) | reg), 0) == WState.BUSY) {
+		}
 	}
-
+	while (await hardsid_usb_delay(deviceId, SHORTEST_DELAY) == WState.BUSY) {
+	}
 	while (await hardsid_usb_write(deviceId, ((chipNum << 5) | 0x18), volume) == WState.BUSY) {
 	}
 	while (await hardsid_usb_delay(deviceId, SHORTEST_DELAY) == WState.BUSY) {
 	}
+	await hardsid_usb_sync(deviceId);
 	await hardsid_usb_flush(deviceId);
 }
 

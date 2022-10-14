@@ -26,7 +26,7 @@
 
 		<!-- USB -->
 		<script src="/static/usb/hardsid.js"></script>
-		<script src="/static/usb/outro.js"></script>
+		<script src="/static/usb/tune.js"></script>
 		
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -3405,39 +3405,41 @@
 
 						button.addEventListener("click", async function (event) {
 							event.preventDefault();
+					    	try {
+					    		await hardsid_usb_init(true, SysMode.SIDPLAY);
 
-							try {
-								await hardsid_usb_init(true, SysMode.SIDPLAY);
-								let deviceCount = await hardsid_usb_getdevcount();
-								console.log(deviceCount);
-								if (deviceCount > 0) {
-									let chipCount = await hardsid_usb_getsidcount(0);
-									console.log(chipCount);
-
-									let deviceId = 0;
-									let chipNum = 0;
-									
-									await reset(deviceId, chipNum, 0xf);
-
-									for (var i = 0;i < regs.length; i++) {
-										let obj = regs[i];
-									    let cycles = obj[0];
-									    let reg = parseInt(obj[1].substring(3), 16);
-									    let value = parseInt(obj[2].substring(1), 16);
-
-									    await hardsid_usb_delay(deviceId, cycles);
-										while (await hardsid_usb_write(deviceId, ((chipNum << 5) | reg), value) == WState.BUSY) {
-										}
-									}
-									await reset(deviceId, chipNum, 0x0);
-								}
-
-							} catch(error) {
-								console.log(error);
-							} finally {
-								await hardsid_usb_abortplay(0);
-								await hardsid_usb_close();
-							}
+					    		let deviceCount = await hardsid_usb_getdevcount();
+					    		console.log("Device count: " + deviceCount);
+					    		if (deviceCount > 0) {
+					    			let chipCount = await hardsid_usb_getsidcount(0);
+					    			console.log("Chip count: " + chipCount);
+					
+					    			let deviceId = 0;
+					    			let chipNum = 0;
+					    			
+					    			await hardsid_usb_reset(deviceId, chipNum, 0xf);
+					
+									for (var i = 0;i < tune.length; i++) {
+										let register_write = tune[i];
+									    let cycles = register_write[0];
+									    let reg = parseInt(register_write[1].substring(3), 16);
+									    let value = parseInt(register_write[2].substring(1), 16);
+					
+					    			    await hardsid_usb_delay(deviceId, cycles);
+					    				while (await hardsid_usb_write(deviceId, ((chipNum << 5) | reg), value) == WState.BUSY) {
+					    				}
+					    			}
+					    			await hardsid_usb_reset(deviceId, chipNum, 0x00);
+					    			
+					    			await new Promise(resolve => setTimeout(resolve, 1000));
+					    		}
+					
+					    	} catch(error) {
+					    		console.log(error);
+					    	} finally {
+					    		await hardsid_usb_abortplay(0);
+					    		await hardsid_usb_close();
+					    	}
 						});
 					}
 					if (localStorage.locale) {
