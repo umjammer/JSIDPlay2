@@ -190,6 +190,17 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.rtmp = rtmp;
 		}
 
+		private Boolean sidRegV2 = Boolean.FALSE;
+
+		public Boolean getSidRegV2() {
+			return sidRegV2;
+		}
+
+		@Parameter(names = "--sidRegV2", arity = 1, descriptionKey = "SID_REG_V2", order = -3)
+		public void setSidRegV2(Boolean sidRegV2) {
+			this.sidRegV2 = sidRegV2;
+		}
+
 		private String autostart;
 
 		public String getAutostart() {
@@ -262,7 +273,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			if (AUDIO_TUNE_FILE_FILTER.accept(file)) {
 
 				Audio audio = getAudioFormat(config);
-				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream());
+				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream(), servletParameters);
 
 				if (Boolean.TRUE.equals(servletParameters.download)) {
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
@@ -349,7 +360,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private AudioDriver getAudioDriverOfAudioFormat(Audio audio, OutputStream outputstream) {
+	private AudioDriver getAudioDriverOfAudioFormat(Audio audio, OutputStream outputstream,
+			ConvertServletParameters servletParameters) {
 		switch (audio) {
 		case WAV:
 			return new WAVStreamDriver(outputstream);
@@ -363,7 +375,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		case SID_DUMP:
 			return new SIDDumpStreamDriver(outputstream);
 		case SID_REG:
-			return new SIDRegStreamDriver(outputstream, true);
+			SIDRegStreamDriver sidRegStreamDriver = new SIDRegStreamDriver(outputstream, true);
+			sidRegStreamDriver.setJson(Boolean.TRUE.equals(servletParameters.getSidRegV2()));
+			return sidRegStreamDriver;
 		}
 	}
 

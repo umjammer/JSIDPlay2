@@ -77,12 +77,16 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 	public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("sidplay.audio.SIDRegDriver");
 
 	protected OutputStream out;
-	protected boolean small;
+	protected boolean small, json;
 
 	private EventScheduler context;
 
 	private long fTime;
 	private ByteBuffer sampleBuffer;
+
+	public void setJson(boolean equals) {
+		this.json = true;
+	}
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
@@ -93,7 +97,11 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		out = getOut(recordingFilename);
 
 		fTime = 0;
-		writeHeader(out);
+		if (!json) {
+			writeHeader(out);
+		} else {
+			out.write(String.format("[").getBytes(StandardCharsets.ISO_8859_1));
+		}
 
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
@@ -108,7 +116,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		final long relTime = time - fTime;
 
 		try {
-			new SidRegWrite(time, relTime, addr, data).writeSidRegister(out, small);
+			new SidRegWrite(time, relTime, addr, data).writeSidRegister(out, small, json);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -122,6 +130,14 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 
 	@Override
 	public void close() {
+		if (json) {
+			try {
+				out.write(String.format("{\"c\":\"4\",\"r\":\"$D418\", \"v\":\"$00\"}]")
+						.getBytes(StandardCharsets.ISO_8859_1));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -146,4 +162,5 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 	}
 
 	protected abstract OutputStream getOut(String recordingFilename) throws IOException;
+
 }

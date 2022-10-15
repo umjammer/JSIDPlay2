@@ -206,9 +206,9 @@ async function addAllDevices() {
 		}
 		return true;
 	} catch (error) {
-			console.log("No devices");
-			error = true;
-			return false;
+		console.log("Error: " + error);
+		error = true;
+		return false;
 	}
 }
 
