@@ -123,9 +123,14 @@
 										the Free Software Foundation; either version 2 of the License, or<br />
 										(at your option) any later version.
 									</p>
-
-									<div v-show="navigator.usb !== undefined">
-										<button id="connect">Connect to HardSID 4U, HardSID UPlay and HardSID Uno</button>
+									<div v-show="navigator.usb">
+										<b-button
+											size="sm"
+											variant="secondary"
+											v-on:click="init()"
+										>
+											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
+										</b-button>
 									</div>
 								</b-card-text>
 							</b-tab>
@@ -3526,14 +3531,6 @@
 						this.handle = JSON.parse(localStorage.handle);
 					}
 					this.requestSearchResults();
-					if (navigator.usb) {
-						let button = document.getElementById("connect");
-
-						button.addEventListener("click", function (event) {
-							event.preventDefault();
-				    		init();
-						});
-					}
 				},
 				watch: {
 					username(newValue, oldValue) {
