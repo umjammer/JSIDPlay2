@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 import libsidutils.PathUtils;
 import sidplay.Player;
 import sidplay.audio.SIDRegDriver;
+import sidplay.audio.SIDRegDriver.Format;
 import sidplay.audio.sidreg.SidRegWrite;
 import sidplay.player.State;
 import ui.common.C64VBox;
@@ -235,7 +236,7 @@ public class SidReg extends C64VBox implements UIPart {
 				SIDRegDriver.writeHeader(ps);
 				filteredSidRegWrites.stream().forEach(sidRegWrite -> {
 					try {
-						sidRegWrite.writeSidRegister(ps, false, false);
+						sidRegWrite.writeSidRegister(ps, Format.NORMAL, false);
 					} catch (IOException e) {
 						throw new RuntimeException("Error writing SIDRegDriver stream", e);
 					}

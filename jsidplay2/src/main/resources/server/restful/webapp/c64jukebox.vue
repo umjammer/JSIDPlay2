@@ -2561,7 +2561,7 @@
 								var url = this.createConvertUrl(autostart, entry, itemId, categoryId);
 								var response = await axios({
 									method: "get",
-									url: url + "&audio=SID_REG&sidRegV2=true"
+									url: url + "&audio=SID_REG&sidRegFormat=JSON"
 								})
 					    		await hardsid_usb_reset(this.deviceId, this.chipNum, 0xf);
 								for (let i=0;i<response.data.length; i++) {
@@ -3437,14 +3437,6 @@
 							window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
 					});
 
-					if (navigator.usb) {
-						let button = document.getElementById("connect");
-
-						button.addEventListener("click", function (event) {
-							event.preventDefault();
-				    		init();
-						});
-					}
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
 					}
@@ -3534,6 +3526,14 @@
 						this.handle = JSON.parse(localStorage.handle);
 					}
 					this.requestSearchResults();
+					if (navigator.usb) {
+						let button = document.getElementById("connect");
+
+						button.addEventListener("click", function (event) {
+							event.preventDefault();
+				    		init();
+						});
+					}
 				},
 				watch: {
 					username(newValue, oldValue) {

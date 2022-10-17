@@ -44,18 +44,24 @@ public class SidRegWrite {
 		return SIDRegDriver.BUNDLE.getString(DESCRIPTION[address & 0x1f]);
 	}
 
-	public void writeSidRegister(OutputStream out, boolean small, boolean json) throws IOException {
-		if (json) {
-			out.write(String.format("{\"c\":\"%d\",\"r\":\"$%04X\",\"v\":\"$%02X\"},", relCycles, address, value)
+	public void writeSidRegister(OutputStream out, SIDRegDriver.Format format, boolean firstFrame) throws IOException {
+		switch (format) {
+		case NORMAL:
+		default:
+			out.write(String.format("\"%d\", \"%d\", \"$%04X\", \"$%02X\", \"%s\"\n", absCycles, relCycles, address,
+					value, getDescription()).getBytes(StandardCharsets.ISO_8859_1));
+			break;
+		case APP:
+			out.write(String.format(",\"%d\",\"$%04X\",\"$%02X\",\n", relCycles, address, value)
 					.getBytes(StandardCharsets.ISO_8859_1));
-		} else {
-			if (small) {
-				out.write(String.format(",\"%d\",\"$%04X\",\"$%02X\",\n", relCycles, address, value)
-						.getBytes(StandardCharsets.ISO_8859_1));
-			} else {
-				out.write(String.format("\"%d\", \"%d\", \"$%04X\", \"$%02X\", \"%s\"\n", absCycles, relCycles, address,
-						value, getDescription()).getBytes(StandardCharsets.ISO_8859_1));
+			break;
+		case JSON:
+			if (!firstFrame) {
+				out.write(",".getBytes(StandardCharsets.ISO_8859_1));
 			}
+			out.write(String.format("{\"c\":\"%d\",\"r\":\"$%04X\",\"v\":\"$%02X\"}", relCycles, address, value)
+					.getBytes(StandardCharsets.ISO_8859_1));
+			break;
 		}
 	}
 

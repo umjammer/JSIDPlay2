@@ -90,6 +90,7 @@ import sidplay.audio.MP3Driver.MP3StreamDriver;
 import sidplay.audio.MP4Driver.MP4FileDriver;
 import sidplay.audio.ProxyDriver;
 import sidplay.audio.SIDDumpDriver.SIDDumpStreamDriver;
+import sidplay.audio.SIDRegDriver.Format;
 import sidplay.audio.SIDRegDriver.SIDRegStreamDriver;
 import sidplay.audio.SleepDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
@@ -109,7 +110,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -8)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -9)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
@@ -120,7 +121,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return download;
 		}
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -7)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -8)
 		public void setDownload(Boolean download) {
 			this.download = download;
 		}
@@ -131,7 +132,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return reuSize;
 		}
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -6)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -7)
 		public void setReuSize(Integer reuSize) {
 			this.reuSize = reuSize;
 		}
@@ -142,7 +143,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return pressSpaceInterval;
 		}
 
-		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -5)
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -6)
 		public void setPressSpaceInterval(Integer pressSpaceInterval) {
 			this.pressSpaceInterval = pressSpaceInterval;
 		}
@@ -153,7 +154,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return showStatus;
 		}
 
-		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -4)
+		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -5)
 		public void setShowStatus(Boolean showStatus) {
 			this.showStatus = showStatus;
 		}
@@ -164,41 +165,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useHls;
 		}
 
-		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -3)
+		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -4)
 		public void setUseHls(Boolean useHls) {
 			this.useHls = useHls;
 		}
 
-		/**
-		 * @deprecated
-		 */
-		private Boolean rtmp = Boolean.TRUE;
+		private Format sidRegFormat = Format.APP;
 
-		/**
-		 * @deprecated
-		 */
-		public Boolean getRtmp() {
-			return rtmp;
+		public Format getSidRegFormat() {
+			return sidRegFormat;
 		}
 
-		/**
-		 * @deprecated
-		 */
-		@Parameter(names = "--rtmp", arity = 1, descriptionKey = "RTMP", order = -3)
-		public void setRtmp(Boolean rtmp) {
-			this.useHls = !rtmp;
-			this.rtmp = rtmp;
-		}
-
-		private Boolean sidRegV2 = Boolean.FALSE;
-
-		public Boolean getSidRegV2() {
-			return sidRegV2;
-		}
-
-		@Parameter(names = "--sidRegV2", arity = 1, descriptionKey = "SID_REG_V2", order = -3)
-		public void setSidRegV2(Boolean sidRegV2) {
-			this.sidRegV2 = sidRegV2;
+		@Parameter(names = "--sidRegFormat", descriptionKey = "SID_REG_FORMAT", order = -3)
+		public void setSidRegFormat(Format sidRegFormat) {
+			this.sidRegFormat = sidRegFormat;
 		}
 
 		private String autostart;
@@ -375,9 +355,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		case SID_DUMP:
 			return new SIDDumpStreamDriver(outputstream);
 		case SID_REG:
-			SIDRegStreamDriver sidRegStreamDriver = new SIDRegStreamDriver(outputstream, true);
-			sidRegStreamDriver.setJson(Boolean.TRUE.equals(servletParameters.getSidRegV2()));
-			return sidRegStreamDriver;
+			return new SIDRegStreamDriver(outputstream, servletParameters.getSidRegFormat());
 		}
 	}
 

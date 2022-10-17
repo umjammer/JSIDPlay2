@@ -19,6 +19,10 @@ import sidplay.audio.sidreg.SidRegWrite;
 
 public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 
+	public enum Format {
+		NORMAL, APP, JSON
+	}
+
 	/**
 	 * File based driver to create a SID reg file.
 	 *
@@ -60,11 +64,12 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		/**
 		 * Use several instances for parallel emulator instances, where applicable.
 		 *
-		 * @param out Output stream to write the SID reg to
+		 * @param out    Output stream to write the SID reg to
+		 * @param format SID register writes format
 		 */
-		public SIDRegStreamDriver(OutputStream out, boolean small) {
+		public SIDRegStreamDriver(OutputStream out, Format format) {
 			this.out = out;
-			this.small = small;
+			this.format = format;
 		}
 
 		@Override
@@ -77,16 +82,12 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 	public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("sidplay.audio.SIDRegDriver");
 
 	protected OutputStream out;
-	protected boolean small, json;
+	protected Format format;
 
 	private EventScheduler context;
 
 	private long fTime;
 	private ByteBuffer sampleBuffer;
-
-	public void setJson(boolean equals) {
-		this.json = true;
-	}
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
@@ -97,7 +98,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		out = getOut(recordingFilename);
 
 		fTime = 0;
-		if (!json) {
+		if (format != Format.JSON) {
 			writeHeader(out);
 		} else {
 			out.write(String.format("[").getBytes(StandardCharsets.ISO_8859_1));
@@ -116,7 +117,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		final long relTime = time - fTime;
 
 		try {
-			new SidRegWrite(time, relTime, addr, data).writeSidRegister(out, small, json);
+			new SidRegWrite(time, relTime, addr, data).writeSidRegister(out, format, relTime == 0);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -130,10 +131,9 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 
 	@Override
 	public void close() {
-		if (json) {
+		if (format == Format.JSON) {
 			try {
-				out.write(String.format("{\"c\":\"4\",\"r\":\"$D418\", \"v\":\"$00\"}]")
-						.getBytes(StandardCharsets.ISO_8859_1));
+				out.write(String.format("]").getBytes(StandardCharsets.ISO_8859_1));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

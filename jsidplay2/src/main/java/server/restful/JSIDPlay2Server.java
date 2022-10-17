@@ -367,6 +367,7 @@ public class JSIDPlay2Server {
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpsConnector.getProtocolHandler();
 		protocol.setConnectionTimeout(CONNECTION_TIMEOUT);
 		protocol.setCompression(COMPRESSION);
+		protocol.setCompressibleMimeType(protocol.getCompressibleMimeType() + ",text/csv");
 		protocol.setSSLEnabled(true);
 
 		SSLHostConfig sslHostConfig = new SSLHostConfig();
