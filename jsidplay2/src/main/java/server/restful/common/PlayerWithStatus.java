@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -20,31 +19,23 @@ import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
 import libsidplay.common.Event;
 import libsidplay.components.keyboard.KeyTableEntry;
-import libsidutils.status.Status;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
-import sidplay.audio.AudioDriver;
-import sidplay.audio.ProxyDriver;
-import sidplay.audio.xuggle.XuggleVideoDriver;
 import sidplay.player.State;
 import ui.common.filefilter.DiskFileFilter;
 
 public final class PlayerWithStatus {
 
-	private static final int WAIT_FOR_SCROLL_IN_SECONDS = 10;
-
-	private static final int SCROLL_EVERY_NTH_FRAME = 2;
-
 	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 
 	private final Player player;
 
-	private final Status status;
-
 	private final boolean showStatus;
 
 	private final int pressSpaceInterval;
+
+	private final ResourceBundle resourceBundle;
 
 	private File diskImage;
 
@@ -52,14 +43,9 @@ public final class PlayerWithStatus {
 
 	private LocalDateTime validUntil;
 
-	// status text scrolling
-	private Boolean currentDirection;
-	private boolean newDirection;
-	private double waitForScrollInFrames;
-	private String lastStatusText;
-	private int lastStatusTextX;
+	private StatusText statusText;
 
-	private int playCounter, statusScrollCounter;
+	private int playCounter;
 
 	public PlayerWithStatus(Player player, File diskImage, boolean showStatus, int pressSpaceInterval,
 			ResourceBundle resourceBundle) {
@@ -67,7 +53,7 @@ public final class PlayerWithStatus {
 		this.diskImage = diskImage;
 		this.showStatus = showStatus;
 		this.pressSpaceInterval = pressSpaceInterval;
-		status = new Status(player, resourceBundle);
+		this.resourceBundle = resourceBundle;
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
 		addPressSpaceListener();
@@ -251,100 +237,19 @@ public final class PlayerWithStatus {
 		player.stateProperty().addListener(event -> {
 			if (event.getNewValue() == State.START) {
 
-				waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
+				statusText = new StatusText(player, resourceBundle, showStatus);
 
 				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override
 					public void event() throws InterruptedException {
+						statusText.update(diskImage);
 
-						getXuggleVideoDriver().ifPresent(xuggleVideoDriver -> {
-							String newStatusText = createStatusText();
-							int statusTextX = xuggleVideoDriver.getStatusTextX();
-							int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
-
-							if (!Objects.equals(newStatusText, lastStatusText) || statusTextX != lastStatusTextX) {
-								xuggleVideoDriver.setStatusText(newStatusText);
-								lastStatusText = newStatusText;
-								lastStatusTextX = statusTextX;
-							}
-							if (currentDirection == null) {
-								// wait for scroll start
-								if (statusScrollCounter++ >= waitForScrollInFrames) {
-									currentDirection = newDirection;
-									statusScrollCounter = 0;
-								}
-							} else if (!currentDirection) {
-								// scroll forward
-								if (statusScrollCounter++ == SCROLL_EVERY_NTH_FRAME) {
-									if (statusTextOverflow > 0) {
-										xuggleVideoDriver.setStatusTextX(statusTextX + 1);
-									} else {
-										// scroll has finished, change direction
-										newDirection = !currentDirection;
-										currentDirection = null;
-									}
-									statusScrollCounter = 0;
-								}
-							} else {
-								// scroll backwards
-								if (statusScrollCounter++ == SCROLL_EVERY_NTH_FRAME) {
-									if (statusTextX > 0) {
-										xuggleVideoDriver.setStatusTextX(statusTextX - 1);
-									} else {
-										// scroll has finished, change direction
-										newDirection = !currentDirection;
-										currentDirection = null;
-									}
-									statusScrollCounter = 0;
-								}
-							}
-						});
 						player.getC64().getEventScheduler().schedule(this,
 								player.getC64().getClock().getCyclesPerFrame());
 					}
 				}, 0);
 			}
 		});
-	}
-
-	private Optional<XuggleVideoDriver> getXuggleVideoDriver() {
-		AudioDriver audioDriver = player.getAudioDriver();
-		if (audioDriver instanceof ProxyDriver) {
-			ProxyDriver proxyDriver = (ProxyDriver) audioDriver;
-			if (proxyDriver.getDriverTwo() instanceof XuggleVideoDriver) {
-				return Optional.of((XuggleVideoDriver) proxyDriver.getDriverTwo());
-			}
-		}
-		return Optional.empty();
-	}
-
-	private String createStatusText() {
-		StringBuilder result = new StringBuilder();
-
-		if (Boolean.TRUE.equals(showStatus)) {
-			String filename = replaceIllegalFilenameCharacters(diskImage.getName());
-			String determinePSID64 = status.determinePSID64();
-			String determineCartridge = status.determineCartridge();
-
-			result.append(status.determineTime(false));
-			result.append(", ");
-			result.append(status.determineVideoNorm());
-			result.append(", ");
-			result.append(status.determineChipModels());
-			result.append(", ");
-			result.append(status.determineEmulations());
-			result.append(determinePSID64.isEmpty() ? "" : ", " + determinePSID64);
-			result.append(determineCartridge.isEmpty() ? "" : ", " + determineCartridge);
-			result.append(", ");
-			result.append(status.determineTapeActivity(false));
-			result.append(status.determineDiskActivity(false));
-			result.append(filename);
-		}
-		return result.toString();
-	}
-
-	private String replaceIllegalFilenameCharacters(final String str) {
-		return str.replace('_', '-');
 	}
 
 }
