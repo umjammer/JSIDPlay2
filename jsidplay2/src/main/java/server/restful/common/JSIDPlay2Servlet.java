@@ -214,8 +214,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected File getFile(JCommander commander, FileRequestPathServletParameters fileRequestPathServletParameters,
 			boolean adminRole) {
+		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
+
 		String path = fileRequestPathServletParameters.getFilePath();
-		if (path == null) {
+		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
 		if (fileRequestPathServletParameters.getItemId() != null
@@ -251,15 +253,16 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				}
 			}
 		}
-		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 		usageFormatter.setException(new FileNotFoundException(path));
 		return null;
 	}
 
 	protected List<String> getDirectory(JCommander commander, DirectoryServletParameters servletParameters,
 			boolean adminRole) {
+		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
+
 		String path = servletParameters.getDirectory();
-		if (path == null) {
+		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
 		if (path.equals("/")) {
@@ -294,7 +297,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				}
 			}
 		}
-		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 		usageFormatter.setException(new FileNotFoundException(path));
 		return null;
 	}

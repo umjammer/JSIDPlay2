@@ -66,6 +66,7 @@ import server.restful.servlets.DiskDirectoryServlet;
 import server.restful.servlets.DownloadServlet;
 import server.restful.servlets.FavoritesServlet;
 import server.restful.servlets.FiltersServlet;
+import server.restful.servlets.HardSIDMappingServlet;
 import server.restful.servlets.PhotoServlet;
 import server.restful.servlets.STILServlet;
 import server.restful.servlets.StartPageServlet;
@@ -182,7 +183,7 @@ public class JSIDPlay2Server {
 			OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class, SetSidModel6581Servlet.class,
 			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
 			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
-			STILServlet.class);
+			STILServlet.class, HardSIDMappingServlet.class);
 
 	private static EntityManagerFactory entityManagerFactory;
 

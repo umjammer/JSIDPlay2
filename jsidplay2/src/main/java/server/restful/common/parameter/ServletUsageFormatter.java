@@ -41,6 +41,10 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 	}
 
+	public Exception getException() {
+		return exception;
+	}
+
 	@Override
 	public void appendMainLine(StringBuilder out, boolean hasOptions, boolean hasCommands, int indentCount,
 			String indent) {
