@@ -26,7 +26,7 @@
 
 		<!-- USB -->
 		<script src="/static/usb/hardsid.js"></script>
-		
+
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
@@ -53,6 +53,14 @@
 					>
 						I'm sorry. Your browser doesn't support HTML5 audio
 					</audio>
+					<div v-show="deviceCount > 0">
+						<b-button size="sm" variant="secondary" v-on:click="stop()">
+							<span>Stop Hardware Player</span>
+						</b-button>
+						<b-button size="sm" variant="secondary" v-on:click="end()">
+							<span>Quit Hardware Player</span>
+						</b-button>
+					</div>
 					<div style="position: absolute; bottom: 1px; left: 0px; line-height: 0.7">
 						<span style="white-space: pre-line; font-style: italic; font-size: small">{{
 							currentSid
@@ -124,11 +132,7 @@
 										(at your option) any later version.
 									</p>
 									<div v-show="navigator.usb">
-										<b-button
-											size="sm"
-											variant="secondary"
-											v-on:click="init()"
-										>
+										<b-button size="sm" variant="secondary" v-on:click="init()">
 											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
 										</b-button>
 									</div>
@@ -787,10 +791,12 @@
 																			);
 																			showAudio = true;
 																			Vue.nextTick(function () {
-																				play('',
+																				play(
+																					'',
 																					innerRow.item.filename,
 																					row.item.id,
-																					row.item.categoryId);
+																					row.item.categoryId
+																				);
 																			});
 																		"
 																	>
@@ -1277,7 +1283,8 @@
 														'',
 														playlist[playlistIndex].filename,
 														playlist[playlistIndex].itemId,
-														playlist[playlistIndex].categoryId);
+														playlist[playlistIndex].categoryId
+													);
 												});
 												updateSid(
 													playlist[playlistIndex].filename,
@@ -2106,18 +2113,15 @@
 		</div>
 
 		<script>
+			const DeviceStatus = {
+				UNDEF: 0,
+				INIT: 1,
+				PLAY: 2,
+				QUIT: 3,
+			};
 			var deviceCount = 0;
-			async function init() {
-				if (navigator.usb) {
-		    		await hardsid_usb_init(true, SysMode.SIDPLAY);
-		    		deviceCount = hardsid_usb_getdevcount();
-		    		console.log("Device count: " + deviceCount);
-		    		if (deviceCount > 0) {
-		    			let chipCount = hardsid_usb_getsidcount(0);
-		    			console.log("Chip count: " + chipCount);
-		    		}
-				}
-			}
+			var deviceStatus = DeviceStatus.QUIT;
+
 			function uriEncode(entry) {
 				// escape is deprecated and cannot handle utf8
 				// encodeURI() will not encode: ~!@#$&*()=:/,;?+'
@@ -2495,8 +2499,8 @@
 					loadingAssembly64: false,
 					loadingPl: false,
 					loadingCfg: false,
-		    		deviceId: 0,
-		    		chipNum: 0,
+					deviceId: 0,
+					chipNum: 0,
 					convertOptions: $convertOptions,
 					defaultConvertOptions: $convertOptions,
 				},
@@ -2557,43 +2561,75 @@
 					},
 				},
 				methods: {
-				    play: async function (autostart, entry, itemId, categoryId) {
-					
-			    		if (deviceCount > 0) {
-			    			entry.loading = true;
-			    			this.showAudio = false;
-					    	try {
+					end: function () {
+						deviceCount = 0;
+					},
+					stop: function () {
+						deviceStatus = DeviceStatus.QUIT;
+					},
+					init: async function () {
+						if (navigator.usb) {
+							await hardsid_usb_init(true, SysMode.SIDPLAY);
+							deviceCount = hardsid_usb_getdevcount();
+							console.log("Device count: " + deviceCount);
+							if (deviceCount > 0) {
+								let chipCount = hardsid_usb_getsidcount(0);
+								console.log("Chip count: " + chipCount);
+							}
+							this.showAudio = false;
+						}
+					},
+					play: async function (autostart, entry, itemId, categoryId) {
+						if (deviceCount > 0) {
+							this.pause();
+							if (deviceStatus == DeviceStatus.INIT) {
+								return;
+							}
+							deviceStatus = DeviceStatus.INIT;
+							entry.loading = true;
+							this.showAudio = false;
+							try {
 								var url = this.createConvertUrl(autostart, entry, itemId, categoryId);
 								var response = await axios({
 									method: "get",
-									url: url + "&audio=SID_REG&sidRegFormat=JSON"
-								})
-					    		await hardsid_usb_reset(this.deviceId, this.chipNum, 0xf);
-								for (let i=0;i<response.data.length; i++) {
-								    let register_write = response.data[i];
-								    let cycles = register_write.c;
-								    let reg = parseInt(register_write.r.substring(3), 16);
-								    let value = parseInt(register_write.v.substring(1), 16);
-				
-				    			    await hardsid_usb_delay(this.deviceId, cycles);
-				    				while (await hardsid_usb_write(this.deviceId, ((this.chipNum << 5) | reg), value) == WState.BUSY) {
-				    				}
+									url: url + "&audio=SID_REG&sidRegFormat=JSON",
+								});
+								if (deviceStatus != DeviceStatus.INIT) {
+									return;
 								}
-			    				while (await hardsid_usb_sync(this.deviceId) == WState.BUSY) {
-			    				}
-				    			await hardsid_usb_reset(this.deviceId, this.chipNum, 0x00);
-				    			entry.loading = false;
-				    			this.setNextPlaylistEntry();
-					    	} catch(error) {
-					    		deviceCount= 0;
-					    		console.log(error);
-					    	}
-			    		} else {
-				    		this.showAudio = true;
+								deviceStatus = DeviceStatus.PLAY;
+								await hardsid_usb_reset(this.deviceId, this.chipNum, 0xf);
+								for (let i = 0; i < response.data.length && deviceStatus == DeviceStatus.PLAY; i++) {
+									let register_write = response.data[i];
+									let cycles = register_write.c;
+									let reg = parseInt(register_write.r.substring(3), 16);
+									let value = parseInt(register_write.v.substring(1), 16);
+
+									await hardsid_usb_delay(this.deviceId, cycles);
+									while (
+										(await hardsid_usb_write(this.deviceId, (this.chipNum << 5) | reg, value)) ==
+										WState.BUSY
+									) {}
+								}
+								while ((await hardsid_usb_sync(this.deviceId)) == WState.BUSY) {}
+								await hardsid_usb_reset(this.deviceId, this.chipNum, 0x00);
+								entry.loading = false;
+								if (deviceStatus != DeviceStatus.INIT && deviceStatus != DeviceStatus.QUIT) {
+									Vue.nextTick(function () {
+										window.myAccessor.setNextPlaylistEntry();
+									});
+								}
+							} catch (error) {
+								deviceCount = 0;
+								console.log(error);
+								this.showAudio = true;
+							}
+						} else {
+							this.showAudio = true;
 							this.$refs.audioElm.src = this.createConvertUrl(autostart, entry, itemId, categoryId);
 							this.$refs.audioElm.play();
-			    		}
-				    },
+						}
+					},
 					sortChanged(e) {
 						localStorage.sortBy = JSON.stringify(e.sortBy);
 						localStorage.sortDesc = JSON.stringify(e.sortDesc);
@@ -2776,6 +2812,8 @@
 						download("jsidplay2.json", "application/json; charset=utf-8; ", JSON.stringify(this.playlist));
 					},
 					setNextPlaylistEntry: function () {
+						deviceStatus = DeviceStatus.QUIT;
+
 						if (this.playlist.length === 0) {
 							return;
 						}
@@ -2791,10 +2829,12 @@
 						if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
 							return;
 						}
-						this.play("",
+						this.play(
+							"",
 							this.playlist[this.playlistIndex].filename,
 							this.playlist[this.playlistIndex].itemId,
-							this.playlist[this.playlistIndex].categoryId);
+							this.playlist[this.playlistIndex].categoryId
+						);
 						this.updateSid(
 							this.playlist[this.playlistIndex].filename,
 							this.playlist[this.playlistIndex].itemId,
@@ -3436,7 +3476,7 @@
 					},
 				},
 				mounted: function () {
-
+					window.myAccessor = this;
 					window.addEventListener("resize", () => {
 						this.carouselImageHeight =
 							window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
