@@ -2616,12 +2616,13 @@
 									
 									let address = parseInt(register_write.r.substring(1), 16) & 0xffe0;
 									let chip = mapping[address];
-
-									await hardsid_usb_delay(this.deviceId, cycles);
-									while (
-										(await hardsid_usb_write(this.deviceId, (chip << 5) | reg, value)) ==
-										WState.BUSY
-									) {}
+									if (typeof chip !== "undefined") {
+										await hardsid_usb_delay(this.deviceId, cycles);
+										while (
+											(await hardsid_usb_write(this.deviceId, (chip << 5) | reg, value)) ==
+											WState.BUSY
+										) {}
+									}
 								}
 								while ((await hardsid_usb_sync(this.deviceId)) == WState.BUSY) {}
 								for (let chip = 0; chip < chipCount; chip++) {
