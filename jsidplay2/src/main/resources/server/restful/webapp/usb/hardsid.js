@@ -721,7 +721,8 @@ async function hardsid_usb_reset(deviceId, chipNum, volume) {
 	while (await hardsid_usb_delay(deviceId, SHORTEST_DELAY) == WState.BUSY) {
 	}
 	await hardsid_usb_sync(deviceId);
-	await hardsid_usb_flush(deviceId);
+	while (await hardsid_usb_flush(deviceId) == WState.BUSY) {
+	}
 }
 
 function concatenate(resultConstructor, ...arrays) {

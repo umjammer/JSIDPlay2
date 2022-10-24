@@ -2115,13 +2115,15 @@
 		<script>
 			const DeviceStatus = {
 				UNDEF: 0,
-				INIT: 1,
-				PLAY: 2,
-				QUIT: 3,
+				PLAY: 1,
+				QUIT: 2,
 			};
 			var deviceCount = 0;
 			var chipCount = 0;
 			var deviceStatus = DeviceStatus.QUIT;
+			var ajaxRequest;
+			var timer;
+			var queue = new Array();
 
 			function uriEncode(entry) {
 				// escape is deprecated and cannot handle utf8
@@ -2500,8 +2502,6 @@
 					loadingAssembly64: false,
 					loadingPl: false,
 					loadingCfg: false,
-					deviceId: 0,
-					chipNum: 0,
 					convertOptions: $convertOptions,
 					defaultConvertOptions: $convertOptions,
 				},
@@ -2562,12 +2562,6 @@
 					},
 				},
 				methods: {
-					end: function () {
-						deviceCount = 0;
-					},
-					stop: function () {
-						deviceStatus = DeviceStatus.QUIT;
-					},
 					init: async function () {
 						if (navigator.usb) {
 							await hardsid_usb_init(true, SysMode.SIDPLAY);
@@ -2580,70 +2574,118 @@
 							this.showAudio = false;
 						}
 					},
+					doPlay: async function () {
+						for (const write of queue) {
+							if (deviceStatus != DeviceStatus.PLAY) {
+								break;
+							}
+							let chip = write.chip;
+							let cycles = write.cycles;
+							let reg = write.reg;
+							let value = write.value;
+							await hardsid_usb_delay(0, cycles);
+							while ((await hardsid_usb_write(0, (chip << 5) | reg, value)) == WState.BUSY) {}
+						}
+						if (deviceStatus == DeviceStatus.PLAY) {
+							deviceStatus = DeviceStatus.QUIT;
+							let outer = this;
+							Vue.nextTick(function () {
+								outer.setNextPlaylistEntry();
+							});
+						}
+						await hardsid_usb_abortplay(0);
+						var start = new Date().getTime();
+						while (new Date().getTime() < start + 250) {}
+						for (let chipNum = 0; chipNum < chipCount; chipNum++) {
+							await hardsid_usb_reset(0, chipNum, 0x00);
+						}
+					},
 					play: async function (autostart, entry, itemId, categoryId) {
 						if (deviceCount > 0) {
 							this.pause();
-							if (deviceStatus == DeviceStatus.INIT) {
-								return;
-							}
-							deviceStatus = DeviceStatus.INIT;
-							entry.loading = true;
 							this.showAudio = false;
-							try {
-								var url2 = this.createHardSIDMappingUrl(entry, itemId, categoryId);
-								var response2 = await axios({
-									method: "get",
-									url: url2,
-								});
-								let mapping = response2.data;
-								var url = this.createConvertUrl(autostart, entry, itemId, categoryId);
-								var response = await axios({
-									method: "get",
-									url: url + "&audio=SID_REG&sidRegFormat=JSON",
-								});
-								if (deviceStatus != DeviceStatus.INIT) {
-									return;
-								}
-								deviceStatus = DeviceStatus.PLAY;
-								for (let chip = 0; chip < chipCount; chip++) {
-									await hardsid_usb_reset(this.deviceId, chip, 0xf);
-								}
-								for (let i = 0; i < response.data.length && deviceStatus == DeviceStatus.PLAY; i++) {
-									let register_write = response.data[i];
-									let cycles = register_write.c;
-									let reg = parseInt(register_write.r.substring(3), 16);
-									let value = parseInt(register_write.v.substring(1), 16);
-									
-									let address = parseInt(register_write.r.substring(1), 16) & 0xffe0;
-									let chip = mapping[address];
-									if (typeof chip !== "undefined") {
-										await hardsid_usb_delay(this.deviceId, cycles);
-										while (
-											(await hardsid_usb_write(this.deviceId, (chip << 5) | reg, value)) ==
-											WState.BUSY
-										) {}
-									}
-								}
-								while ((await hardsid_usb_sync(this.deviceId)) == WState.BUSY) {}
-								for (let chip = 0; chip < chipCount; chip++) {
-									await hardsid_usb_reset(this.deviceId, chip, 0x00);
-								}
-								entry.loading = false;
-								if (deviceStatus != DeviceStatus.INIT && deviceStatus != DeviceStatus.QUIT) {
-									Vue.nextTick(function () {
-										window.myAccessor.setNextPlaylistEntry();
-									});
-								}
-							} catch (error) {
-								deviceCount = 0;
-								console.log(error);
-								this.showAudio = true;
+
+							const response = await axios({
+								method: "get",
+								url: this.createHardSIDMappingUrl(entry, itemId, categoryId),
+							});
+							let mapping = response.data;
+
+							// cancel  previous ajax if exists
+							if (ajaxRequest) {
+								ajaxRequest.cancel();
 							}
+							// creates a new token for upcomming ajax (overwrite the previous one)
+							ajaxRequest = axios.CancelToken.source();
+
+							let start = 0;
+							let outer = this;
+
+							axios({
+								method: "get",
+								url:
+									this.createConvertUrl(autostart, entry, itemId, categoryId) +
+									"&audio=SID_REG&sidRegFormat=APP",
+								cancelToken: ajaxRequest.token,
+								onDownloadProgress: (progressEvent) => {
+									const dataChunk = progressEvent.currentTarget.response;
+									for (let i = start; i < dataChunk.length; i++) {
+										if (dataChunk[i] == "\n") {
+											const cells = dataChunk.substring(start, i).split(",");
+											if (!start) {
+												// header line marks start of the tune
+												queue.length = 0;
+												clearTimeout(timer);
+												timer = setTimeout(async function () {
+													await outer.doPlay();
+												}, 1000);
+												deviceStatus = DeviceStatus.PLAY;
+												start = i + 1;
+												continue;
+											}
+											if (deviceStatus != DeviceStatus.PLAY) {
+												break;
+											}
+											let chip = mapping[parseInt(cells[2].substring(2, 6), 16) & 0xffe0];
+											if (typeof chip !== "undefined") {
+												const write = new Object();
+												write.chip = chip;
+												write.cycles = parseInt(cells[1].substring(1, cells[1].length - 1));
+												write.reg = parseInt(cells[2].substring(4, 6), 16);
+												write.value = parseInt(cells[3].substring(2, 4), 16);
+												queue.push(write);
+											}
+											start = i + 1;
+										}
+									}
+								},
+							}).catch(function (err) {
+								if (axios.isCancel(err)) {
+									deviceStatus = DeviceStatus.QUIT;
+									clearTimeout(timer);
+									queue.length = 0;
+								}
+							});
 						} else {
 							this.showAudio = true;
 							this.$refs.audioElm.src = this.createConvertUrl(autostart, entry, itemId, categoryId);
 							this.$refs.audioElm.play();
 						}
+					},
+					stop: function () {
+						if (deviceCount > 0) {
+							deviceStatus = DeviceStatus.QUIT;
+							if (ajaxRequest) {
+								ajaxRequest.cancel();
+							}
+							clearTimeout(timer);
+							queue.length = 0;
+						}
+					},
+					end: function () {
+						this.stop();
+						this.showAudio = true;
+						deviceCount = 0;
 					},
 					sortChanged(e) {
 						localStorage.sortBy = JSON.stringify(e.sortBy);
@@ -2827,7 +2869,7 @@
 						download("jsidplay2.json", "application/json; charset=utf-8; ", JSON.stringify(this.playlist));
 					},
 					setNextPlaylistEntry: function () {
-						deviceStatus = DeviceStatus.QUIT;
+						this.stop();
 
 						if (this.playlist.length === 0) {
 							return;
