@@ -2123,7 +2123,26 @@
 			var deviceStatus = DeviceStatus.QUIT;
 			var ajaxRequest;
 			var timer;
-			var queue = new Array();
+
+			function Queue() {
+			    var head, tail;
+			    return Object.freeze({     
+			        enqueue(value) { 
+			            const link = {value, next: undefined};
+			            tail = head ? tail.next = link : head = link;
+			        },
+			        dequeue() {
+			            if (head) {
+			                const value = head.value;
+			                head = head.next;
+			                return value;
+			            }
+			        },
+			        peek() { return head?.value },
+			        clear() { tail = head = undefined }
+			    });
+			}
+			var queue = new Queue();
 
 			function uriEncode(entry) {
 				// escape is deprecated and cannot handle utf8
@@ -2572,33 +2591,42 @@
 								console.log("Chip count: " + chipCount);
 							}
 							this.showAudio = false;
+							timer = setTimeout(() => this.doPlay(), 0);
 						}
 					},
 					doPlay: async function () {
-						for (const write of queue) {
-							if (deviceStatus != DeviceStatus.PLAY) {
-								break;
+						var istart = new Date().getTime();
+					    var write;
+					    var count = 0;
+					    while(typeof (write = queue.dequeue()) !== 'undefined') {
+							if (write.chip == -1) {
+							    // END of tune
+								await hardsid_usb_sync(0);
+								while (await hardsid_usb_flush(0) == WState.BUSY) {
+								}
+								let outer = this;
+								Vue.nextTick(function () {
+									outer.setNextPlaylistEntry();
+								});
+							} else if (write.chip == -2) {
+							    // START of tune
+								await hardsid_usb_abortplay(0);
+								var start = new Date().getTime();
+								while (new Date().getTime() < start + 250) {}
+								for (let chipNum = 0; chipNum < chipCount; chipNum++) {
+									await hardsid_usb_reset(0, chipNum, 0x00);
+								}
+							} else {
+							    // NEXT SID WRITE
+								await hardsid_usb_delay(0, write.cycles);
+								while ((await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) == WState.BUSY) {}
 							}
-							let chip = write.chip;
-							let cycles = write.cycles;
-							let reg = write.reg;
-							let value = write.value;
-							await hardsid_usb_delay(0, cycles);
-							while ((await hardsid_usb_write(0, (chip << 5) | reg, value)) == WState.BUSY) {}
+							if (new Date().getTime() > istart + 3000 || count == 100000) {
+							    break;
+							}
+							count++;
 						}
-						if (deviceStatus == DeviceStatus.PLAY) {
-							deviceStatus = DeviceStatus.QUIT;
-							let outer = this;
-							Vue.nextTick(function () {
-								outer.setNextPlaylistEntry();
-							});
-						}
-						await hardsid_usb_abortplay(0);
-						var start = new Date().getTime();
-						while (new Date().getTime() < start + 250) {}
-						for (let chipNum = 0; chipNum < chipCount; chipNum++) {
-							await hardsid_usb_reset(0, chipNum, 0x00);
-						}
+						timer = setTimeout(() => this.doPlay());
 					},
 					play: async function (autostart, entry, itemId, categoryId) {
 						if (deviceCount > 0) {
@@ -2625,45 +2653,55 @@
 								method: "get",
 								url:
 									this.createConvertUrl(autostart, entry, itemId, categoryId) +
-									"&audio=SID_REG&sidRegFormat=APP",
+									"&audio=SID_REG&sidRegFormat=JSON",
 								cancelToken: ajaxRequest.token,
 								onDownloadProgress: (progressEvent) => {
 									const dataChunk = progressEvent.currentTarget.response;
-									for (let i = start; i < dataChunk.length; i++) {
-										if (dataChunk[i] == "\n") {
-											const cells = dataChunk.substring(start, i).split(",");
+									var address, chip, i = start;
+									while (i < dataChunk.length) {
+										if (dataChunk[i++] == "\n") {
+											const cells = dataChunk.substring(start, i - 1).split(",");
 											if (!start) {
 												// header line marks start of the tune
-												queue.length = 0;
-												clearTimeout(timer);
-												timer = setTimeout(async function () {
-													await outer.doPlay();
-												}, 1000);
+												queue.clear();
+											    // mark start of SID writes
+												const sidWrite = new Object();
+												sidWrite.chip = -2;
+											    queue.enqueue(sidWrite);
 												deviceStatus = DeviceStatus.PLAY;
-												start = i + 1;
+												start = i;
 												continue;
 											}
 											if (deviceStatus != DeviceStatus.PLAY) {
 												break;
 											}
-											let chip = mapping[parseInt(cells[2].substring(2, 6), 16) & 0xffe0];
+											address = cells[1];
+											chip = mapping[parseInt(address, 16) & 0xffe0];
 											if (typeof chip !== "undefined") {
 												const write = new Object();
 												write.chip = chip;
-												write.cycles = parseInt(cells[1].substring(1, cells[1].length - 1));
-												write.reg = parseInt(cells[2].substring(4, 6), 16);
-												write.value = parseInt(cells[3].substring(2, 4), 16);
-												queue.push(write);
+												write.cycles = parseInt(cells[0]);
+												write.reg = parseInt(address.substring(2), 16) & 0x1f;
+												write.value = parseInt(cells[2], 16);
+												queue.enqueue(write);
 											}
-											start = i + 1;
+											start = i;
 										}
 									}
 								},
+							}).then((response) => {
+							    // mark end of SID writes
+								const sidWrite = new Object();
+								sidWrite.chip = -1;
+							    queue.enqueue(sidWrite);
 							}).catch(function (err) {
 								if (axios.isCancel(err)) {
+									queue.clear();
+								    // mark start of SID writes
+									const sidWrite = new Object();
+									sidWrite.chip = -2;
+								    queue.enqueue(sidWrite);
 									deviceStatus = DeviceStatus.QUIT;
-									clearTimeout(timer);
-									queue.length = 0;
 								}
 							});
 						} else {
@@ -2674,12 +2712,14 @@
 					},
 					stop: function () {
 						if (deviceCount > 0) {
-							deviceStatus = DeviceStatus.QUIT;
-							if (ajaxRequest) {
+						    if (ajaxRequest) {
 								ajaxRequest.cancel();
 							}
-							clearTimeout(timer);
-							queue.length = 0;
+							queue.clear();
+						    // mark start of SID writes
+							const sidWrite = new Object();
+							sidWrite.chip = -2;
+						    queue.enqueue(sidWrite);
 						}
 					},
 					end: function () {

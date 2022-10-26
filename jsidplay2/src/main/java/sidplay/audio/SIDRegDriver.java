@@ -100,10 +100,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		fTime = 0;
 		if (format != Format.JSON) {
 			writeHeader(out);
-		} else {
-			out.write(String.format("[").getBytes(StandardCharsets.ISO_8859_1));
 		}
-
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
 	}
@@ -131,13 +128,6 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 
 	@Override
 	public void close() {
-		if (format == Format.JSON) {
-			try {
-				out.write(String.format("]").getBytes(StandardCharsets.ISO_8859_1));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	@Override

@@ -56,11 +56,7 @@ public class SidRegWrite {
 					.getBytes(StandardCharsets.ISO_8859_1));
 			break;
 		case JSON:
-			if (!firstFrame) {
-				out.write(",".getBytes(StandardCharsets.ISO_8859_1));
-			}
-			out.write(String.format("{\"c\":\"%d\",\"r\":\"$%04X\",\"v\":\"$%02X\"}", relCycles, address, value)
-					.getBytes(StandardCharsets.ISO_8859_1));
+			out.write(String.format("\n%d,%04X,%02X", relCycles, address, value).getBytes(StandardCharsets.ISO_8859_1));
 			break;
 		}
 	}
