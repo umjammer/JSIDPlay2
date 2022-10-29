@@ -54,6 +54,15 @@
 						I'm sorry. Your browser doesn't support HTML5 audio
 					</audio>
 					<div v-show="deviceCount > 0">
+						<b-button size="sm" variant="secondary" v-on:click="play(
+																				'',
+																				playlist[playlistIndex].filename,
+																				playlist[playlistIndex].itemId,
+																				playlist[playlistIndex].categoryId
+																				);
+																			">
+							<span>Play using Hardware</span>
+						</b-button>
 						<b-button size="sm" variant="secondary" v-on:click="stop()">
 							<span>Stop Hardware Player</span>
 						</b-button>
@@ -131,11 +140,6 @@
 										the Free Software Foundation; either version 2 of the License, or<br />
 										(at your option) any later version.
 									</p>
-									<div v-show="navigator.usb">
-										<b-button size="sm" variant="secondary" v-on:click="init()">
-											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
-										</b-button>
-									</div>
 								</b-card-text>
 							</b-tab>
 							<b-tab active style="position: relative">
@@ -1141,7 +1145,7 @@
 									</div>
 								</b-card-text>
 							</b-tab>
-							<b-tab v-show="stil.infos">
+							<b-tab v-show="typeof stil.infos !== 'undefined' && stil.infos != 'null'">
 								<template #title>
 									{{ $t("STIL") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingStil"></b-spinner>
@@ -1316,6 +1320,55 @@
 											</span>
 										</li>
 									</ol>
+								</b-card-text>
+							</b-tab>
+							<b-tab>
+								<template #title>
+									{{ $t("HARDWARE") }}
+								</template>
+
+								<b-card-text>
+									<div class="settings-box">
+										<div>
+											<label for="hardsid6581">{{
+												$t("convertMessages.config.emulationSection.hardsid6581")
+											}}</label>
+											<b-form-select
+												id="hardsid6581"
+												v-model="convertOptions.config.emulationSection.hardsid6581"
+												size="sm"
+												class="mt-3"
+												:select-size="1"
+											>
+												<option :value="0">1</option>
+												<option :value="1">2</option>
+												<option :value="2">3</option>
+												<option :value="3">4</option>
+											</b-form-select>
+										</div>
+										<div>
+											<label for="hardsid8580">{{
+												$t("convertMessages.config.emulationSection.hardsid8580")
+											}}</label>
+											<b-form-select
+												id="hardsid8580"
+												v-model="convertOptions.config.emulationSection.hardsid8580"
+												size="sm"
+												class="mt-3"
+												:select-size="1"
+											>
+												<option :value="0">1</option>
+												<option :value="1">2</option>
+												<option :value="2">3</option>
+												<option :value="3">4</option>
+											</b-form-select>
+										</div>
+									</div>
+									<div v-show="navigator.usb">
+										<b-button size="sm" variant="secondary" v-on:click="init()">
+											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
+										</b-button>
+									</div>
 								</b-card-text>
 							</b-tab>
 							<b-tab>
@@ -2136,9 +2189,6 @@
 							return value;
 						}
 					},
-					pushBack(value) {
-						head = { value, next: head };
-					},
 					peek() {
 						return head?.value;
 					},
@@ -2229,6 +2279,7 @@
 					},
 					PL: "Playlist",
 					CFG: "Configuration",
+					HARDWARE: 'Hardware',
 					parentDirectoryHint: "Go up one Level",
 					sidInfoKey: "Name",
 					sidInfoValue: "Value",
@@ -2326,6 +2377,7 @@
 					},
 					PL: "Favoriten",
 					CFG: "Konfiguration",
+					HARDWARE: 'Hardware',
 					parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
 					sidInfoKey: "Name",
 					sidInfoValue: "Wert",
@@ -2620,13 +2672,10 @@
 								Vue.nextTick(() => this.setNextPlaylistEntry());
 							} else {
 								await hardsid_usb_delay(0, write.cycles);
-								if (
+								while (
 									(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
 									WState.BUSY
-								) {
-									sidWriteQueue.pushBack(write);
-									break;
-								}
+								) { }
 							}
 						}
 						timer = setTimeout(() => this.doPlay());
@@ -2656,7 +2705,7 @@
 									method: "get",
 									url:
 										this.createConvertUrl(autostart, entry, itemId, categoryId) +
-										"&audio=SID_REG&sidRegFormat=JSON",
+										"&audio=SID_REG&sidRegFormat=C64_JUKEBOX",
 									cancelToken: ajaxRequest.token,
 									onDownloadProgress: (progressEvent) => {
 										const dataChunk = progressEvent.currentTarget.response;
@@ -3276,6 +3325,10 @@
 							this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
 							"&detectPSID64ChipModel=" +
 							this.convertOptions.config.emulationSection.detectPSID64ChipModel +
+							"&hardSid6581=" +
+							this.convertOptions.config.emulationSection.hardsid6581 +
+							"&hardSid8580=" +
+							this.convertOptions.config.emulationSection.hardsid8580 +
 							"&chipCount=" +
 							chipCount +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"

@@ -20,7 +20,7 @@ import sidplay.audio.sidreg.SidRegWrite;
 public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 
 	public enum Format {
-		NORMAL, APP, JSON
+		NORMAL, APP, C64_JUKEBOX
 	}
 
 	/**
@@ -98,7 +98,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		out = getOut(recordingFilename);
 
 		fTime = 0;
-		if (format != Format.JSON) {
+		if (format != Format.C64_JUKEBOX) {
 			writeHeader(out);
 		}
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
