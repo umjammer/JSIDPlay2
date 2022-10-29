@@ -54,13 +54,18 @@
 						I'm sorry. Your browser doesn't support HTML5 audio
 					</audio>
 					<div v-show="deviceCount > 0">
-						<b-button size="sm" variant="secondary" v-on:click="play(
-																				'',
-																				playlist[playlistIndex].filename,
-																				playlist[playlistIndex].itemId,
-																				playlist[playlistIndex].categoryId
-																				);
-																			">
+						<b-button
+							size="sm"
+							variant="secondary"
+							v-on:click="
+								play(
+									'',
+									playlist[playlistIndex].filename,
+									playlist[playlistIndex].itemId,
+									playlist[playlistIndex].categoryId
+								)
+							"
+						>
 							<span>Play using Hardware</span>
 						</b-button>
 						<b-button size="sm" variant="secondary" v-on:click="stop()">
@@ -2279,7 +2284,7 @@
 					},
 					PL: "Playlist",
 					CFG: "Configuration",
-					HARDWARE: 'Hardware',
+					HARDWARE: "Hardware",
 					parentDirectoryHint: "Go up one Level",
 					sidInfoKey: "Name",
 					sidInfoValue: "Value",
@@ -2377,7 +2382,7 @@
 					},
 					PL: "Favoriten",
 					CFG: "Konfiguration",
-					HARDWARE: 'Hardware',
+					HARDWARE: "Hardware",
 					parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
 					sidInfoKey: "Name",
 					sidInfoValue: "Wert",
@@ -2651,7 +2656,14 @@
 								console.log("Chip count: " + chipCount);
 							}
 							this.showAudio = false;
+							sidWriteQueue.clear();
+							sidWriteQueue.enqueue({
+								chip: Chip.RESET,
+							});
 							// regularly process SID write queue from now on!
+							if (typeof timer !== "undefined") {
+								clearTimeout(timer);
+							}
 							timer = setTimeout(() => this.doPlay(), 0);
 						}
 					},
@@ -2661,8 +2673,6 @@
 							write = sidWriteQueue.dequeue();
 							if (write.chip == Chip.RESET) {
 								await hardsid_usb_abortplay(0);
-								var start = new Date().getTime();
-								while (new Date().getTime() < start + 250) {}
 								for (let chipNum = 0; chipNum < chipCount; chipNum++) {
 									await hardsid_usb_reset(0, chipNum, 0x00);
 								}
@@ -2675,14 +2685,14 @@
 								while (
 									(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
 									WState.BUSY
-								) { }
+								) {}
 							}
 						}
 						timer = setTimeout(() => this.doPlay());
 					},
 					play: function (autostart, entry, itemId, categoryId) {
 						if (deviceCount > 0) {
-						    // Hardware PLAY
+							// Hardware PLAY
 							this.showAudio = false;
 							this.pause();
 
@@ -2722,14 +2732,15 @@
 										while ((i = dataChunk.indexOf("\n", start)) != -1) {
 											const cells = dataChunk.substring(start, i).split(",");
 											chip = mapping[parseInt(cells[1], 16) & 0xffe0];
-											if (typeof chip !== "undefined") {
-												sidWriteQueue.enqueue({
-													chip: chip,
-													cycles: parseInt(cells[0]),
-													reg: parseInt(cells[1].substring(2), 16) & 0x1f,
-													value: parseInt(cells[2], 16),
-												});
+											if (typeof chip === "undefined") {
+												chip = mapping[0xd400];
 											}
+											sidWriteQueue.enqueue({
+												chip: chip,
+												cycles: parseInt(cells[0]),
+												reg: parseInt(cells[1].substring(2), 16) & 0x1f,
+												value: parseInt(cells[2], 16),
+											});
 											start = i + 1;
 										}
 									},
@@ -2749,27 +2760,28 @@
 									});
 							});
 						} else {
-						    // Software PLAY
+							// Software PLAY
 							this.showAudio = true;
 							this.$refs.audioElm.src = this.createConvertUrl(autostart, entry, itemId, categoryId);
 							this.$refs.audioElm.play();
 						}
 					},
 					stop: function () {
-						if (deviceCount > 0) {
-							if (ajaxRequest) {
-								ajaxRequest.cancel();
-							}
-							sidWriteQueue.clear();
-							sidWriteQueue.enqueue({
-								chip: Chip.RESET,
-							});
+						if (ajaxRequest) {
+							ajaxRequest.cancel();
 						}
+						sidWriteQueue.clear();
+						sidWriteQueue.enqueue({
+							chip: Chip.RESET,
+						});
 					},
 					end: function () {
 						this.stop();
 						this.showAudio = true;
 						deviceCount = 0;
+						if (typeof timer !== "undefined") {
+							clearTimeout(timer);
+						}
 					},
 					sortChanged(e) {
 						localStorage.sortBy = JSON.stringify(e.sortBy);
