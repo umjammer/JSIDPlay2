@@ -2113,36 +2113,44 @@
 		</div>
 
 		<script>
-			const DeviceStatus = {
-				UNDEF: 0,
-				PLAY: 1,
-				QUIT: 2,
+			const Chip = {
+				NEXT: -1,
+				RESET: -2,
 			};
 			var deviceCount = 0;
 			var chipCount = 0;
-			var deviceStatus = DeviceStatus.QUIT;
 			var ajaxRequest;
 			var timer;
 
 			function Queue() {
-			    var head, tail;
-			    return Object.freeze({     
-			        enqueue(value) { 
-			            const link = {value, next: undefined};
-			            tail = head ? tail.next = link : head = link;
-			        },
-			        dequeue() {
-			            if (head) {
-			                const value = head.value;
-			                head = head.next;
-			                return value;
-			            }
-			        },
-			        peek() { return head?.value },
-			        clear() { tail = head = undefined }
-			    });
+				var head, tail;
+				return Object.freeze({
+					enqueue(value) {
+						const link = { value, next: undefined };
+						tail = head ? (tail.next = link) : (head = link);
+					},
+					dequeue() {
+						if (head) {
+							const value = head.value;
+							head = head.next;
+							return value;
+						}
+					},
+					pushBack(value) {
+						head = { value, next: head };
+					},
+					peek() {
+						return head?.value;
+					},
+					clear() {
+						tail = head = undefined;
+					},
+					isNotEmpty() {
+						return head;
+					},
+				});
 			}
-			var queue = new Queue();
+			var sidWriteQueue = new Queue();
 
 			function uriEncode(entry) {
 				// escape is deprecated and cannot handle utf8
@@ -2591,120 +2599,108 @@
 								console.log("Chip count: " + chipCount);
 							}
 							this.showAudio = false;
+							// regularly process SID write queue from now on!
 							timer = setTimeout(() => this.doPlay(), 0);
 						}
 					},
 					doPlay: async function () {
-						var istart = new Date().getTime();
-					    var write;
-					    var count = 0;
-					    while(typeof (write = queue.dequeue()) !== 'undefined') {
-							if (write.chip == -1) {
-							    // END of tune
-								await hardsid_usb_sync(0);
-								while (await hardsid_usb_flush(0) == WState.BUSY) {
-								}
-								let outer = this;
-								Vue.nextTick(function () {
-									outer.setNextPlaylistEntry();
-								});
-							} else if (write.chip == -2) {
-							    // START of tune
+						var write;
+						while (sidWriteQueue.isNotEmpty()) {
+							write = sidWriteQueue.dequeue();
+							if (write.chip == Chip.RESET) {
 								await hardsid_usb_abortplay(0);
 								var start = new Date().getTime();
 								while (new Date().getTime() < start + 250) {}
 								for (let chipNum = 0; chipNum < chipCount; chipNum++) {
 									await hardsid_usb_reset(0, chipNum, 0x00);
 								}
+							} else if (write.chip == Chip.NEXT) {
+								await hardsid_usb_sync(0);
+								while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
+								Vue.nextTick(() => this.setNextPlaylistEntry());
 							} else {
-							    // NEXT SID WRITE
 								await hardsid_usb_delay(0, write.cycles);
-								while ((await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) == WState.BUSY) {}
+								if (
+									(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
+									WState.BUSY
+								) {
+									sidWriteQueue.pushBack(write);
+									break;
+								}
 							}
-							if (new Date().getTime() > istart + 3000 || count == 100000) {
-							    break;
-							}
-							count++;
 						}
 						timer = setTimeout(() => this.doPlay());
 					},
-					play: async function (autostart, entry, itemId, categoryId) {
+					play: function (autostart, entry, itemId, categoryId) {
 						if (deviceCount > 0) {
-							this.pause();
+						    // Hardware PLAY
 							this.showAudio = false;
-
-							const response = await axios({
-								method: "get",
-								url: this.createHardSIDMappingUrl(entry, itemId, categoryId),
-							});
-							let mapping = response.data;
-
-							// cancel  previous ajax if exists
-							if (ajaxRequest) {
-								ajaxRequest.cancel();
-							}
-							// creates a new token for upcomming ajax (overwrite the previous one)
-							ajaxRequest = axios.CancelToken.source();
-
-							let start = 0;
-							let outer = this;
+							this.pause();
 
 							axios({
 								method: "get",
-								url:
-									this.createConvertUrl(autostart, entry, itemId, categoryId) +
-									"&audio=SID_REG&sidRegFormat=JSON",
-								cancelToken: ajaxRequest.token,
-								onDownloadProgress: (progressEvent) => {
-									const dataChunk = progressEvent.currentTarget.response;
-									var address, chip, i = start;
-									while (i < dataChunk.length) {
-										if (dataChunk[i++] == "\n") {
-											const cells = dataChunk.substring(start, i - 1).split(",");
-											if (!start) {
-												// header line marks start of the tune
-												queue.clear();
-											    // mark start of SID writes
-												const sidWrite = new Object();
-												sidWrite.chip = -2;
-											    queue.enqueue(sidWrite);
-												deviceStatus = DeviceStatus.PLAY;
-												start = i;
-												continue;
-											}
-											if (deviceStatus != DeviceStatus.PLAY) {
-												break;
-											}
-											address = cells[1];
-											chip = mapping[parseInt(address, 16) & 0xffe0];
-											if (typeof chip !== "undefined") {
-												const write = new Object();
-												write.chip = chip;
-												write.cycles = parseInt(cells[0]);
-												write.reg = parseInt(address.substring(2), 16) & 0x1f;
-												write.value = parseInt(cells[2], 16);
-												queue.enqueue(write);
-											}
-											start = i;
-										}
-									}
-								},
+								url: this.createHardSIDMappingUrl(entry, itemId, categoryId),
 							}).then((response) => {
-							    // mark end of SID writes
-								const sidWrite = new Object();
-								sidWrite.chip = -1;
-							    queue.enqueue(sidWrite);
-							}).catch(function (err) {
-								if (axios.isCancel(err)) {
-									queue.clear();
-								    // mark start of SID writes
-									const sidWrite = new Object();
-									sidWrite.chip = -2;
-								    queue.enqueue(sidWrite);
-									deviceStatus = DeviceStatus.QUIT;
+								let mapping = response.data;
+
+								// cancel  previous ajax if exists
+								if (ajaxRequest) {
+									ajaxRequest.cancel();
 								}
+								// creates a new token for upcomming ajax (overwrite the previous one)
+								ajaxRequest = axios.CancelToken.source();
+
+								let start = 0;
+
+								axios({
+									method: "get",
+									url:
+										this.createConvertUrl(autostart, entry, itemId, categoryId) +
+										"&audio=SID_REG&sidRegFormat=JSON",
+									cancelToken: ajaxRequest.token,
+									onDownloadProgress: (progressEvent) => {
+										const dataChunk = progressEvent.currentTarget.response;
+
+										if (!start) {
+											sidWriteQueue.clear();
+											sidWriteQueue.enqueue({
+												chip: Chip.RESET,
+											});
+											start = dataChunk.indexOf("\n", start) + 1;
+										}
+										var chip,
+											i = start;
+										while ((i = dataChunk.indexOf("\n", start)) != -1) {
+											const cells = dataChunk.substring(start, i).split(",");
+											chip = mapping[parseInt(cells[1], 16) & 0xffe0];
+											if (typeof chip !== "undefined") {
+												sidWriteQueue.enqueue({
+													chip: chip,
+													cycles: parseInt(cells[0]),
+													reg: parseInt(cells[1].substring(2), 16) & 0x1f,
+													value: parseInt(cells[2], 16),
+												});
+											}
+											start = i + 1;
+										}
+									},
+								})
+									.then((response) => {
+										sidWriteQueue.enqueue({
+											chip: Chip.NEXT,
+										});
+									})
+									.catch((err) => {
+										if (axios.isCancel(err)) {
+											sidWriteQueue.clear();
+											sidWriteQueue.enqueue({
+												chip: Chip.RESET,
+											});
+										}
+									});
 							});
 						} else {
+						    // Software PLAY
 							this.showAudio = true;
 							this.$refs.audioElm.src = this.createConvertUrl(autostart, entry, itemId, categoryId);
 							this.$refs.audioElm.play();
@@ -2712,14 +2708,13 @@
 					},
 					stop: function () {
 						if (deviceCount > 0) {
-						    if (ajaxRequest) {
+							if (ajaxRequest) {
 								ajaxRequest.cancel();
 							}
-							queue.clear();
-						    // mark start of SID writes
-							const sidWrite = new Object();
-							sidWrite.chip = -2;
-						    queue.enqueue(sidWrite);
+							sidWriteQueue.clear();
+							sidWriteQueue.enqueue({
+								chip: Chip.RESET,
+							});
 						}
 					},
 					end: function () {
