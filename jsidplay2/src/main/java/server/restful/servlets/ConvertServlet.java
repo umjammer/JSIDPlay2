@@ -2,8 +2,13 @@ package server.restful.servlets;
 
 import static java.lang.Math.min;
 import static java.lang.String.format;
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.getAllStackTraces;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.of;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static libsidutils.PathUtils.getFilenameSuffix;
 import static libsidutils.PathUtils.getFilenameWithoutSuffix;
@@ -47,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -273,10 +279,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				if (Boolean.FALSE.equals(servletParameters.download) && audio == FLV) {
 					if (getAllStackTraces().keySet().stream().map(Thread::getName).filter("RTMP"::equals)
 							.count() < MAX_RTMP_IN_PARALLEL) {
+						Thread parentThread = currentThread();
 						new Thread(() -> {
 							try {
 								info("START RTMP stream of: " + uuid);
-								convert2video(config, file, driver, servletParameters, uuid);
+								convert2video(config, file, driver, servletParameters, uuid, parentThread);
 								info("END RTMP stream of: " + uuid);
 							} catch (IOException | SidTuneError e) {
 								log("ERROR RTMP stream of: " + uuid, e);
@@ -372,8 +379,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (root != null) {
 			player.setSidDatabase(new SidDatabase(root));
 		}
+		List<Thread> parentThreads = of(currentThread()).collect(toList());
+
 		player.setAudioDriver(driver);
-		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
+		player.setUncaughtExceptionHandler(
+				(thread, throwable) -> uncaughtExceptionHandler(throwable, parentThreads, thread));
 		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
@@ -414,7 +424,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private File convert2video(IConfig config, File file, AudioDriver driver,
-			ConvertServletParameters servletParameters, UUID uuid) throws IOException, SidTuneError {
+			ConvertServletParameters servletParameters, UUID uuid, Thread... parentThread)
+			throws IOException, SidTuneError {
 		File videoFile = null;
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 
@@ -425,8 +436,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		} else {
 			sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
 		}
+		List<Thread> parentThreads = concat(asList(parentThread).stream(), of(currentThread())).collect(toList());
+
 		player.setAudioDriver(driver);
-		player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(thread, throwable));
+		player.setUncaughtExceptionHandler(
+				(thread, throwable) -> uncaughtExceptionHandler(throwable, parentThreads, thread));
 		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));

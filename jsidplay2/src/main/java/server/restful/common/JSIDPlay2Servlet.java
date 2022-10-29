@@ -120,8 +120,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		log(thread() + t.getMessage(), t);
 	}
 
-	protected void uncaughtExceptionHandler(Thread thread, Throwable t) {
-		log(thread(thread) + t.getMessage());
+	protected void uncaughtExceptionHandler(Throwable t, List<Thread> parentThreads, Thread thread) {
+		log(threads(parentThreads) + thread(thread) + t.getMessage());
+	}
+
+	private String threads(List<Thread> threads) {
+		return threads.stream().map(this::thread)
+				.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
 	}
 
 	private String thread() {
