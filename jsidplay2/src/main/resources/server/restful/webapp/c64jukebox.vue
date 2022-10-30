@@ -1150,7 +1150,7 @@
 									</div>
 								</b-card-text>
 							</b-tab>
-							<b-tab v-show="typeof stil.infos !== 'undefined' && stil.infos != 'null'">
+							<b-tab :disabled="!hasStil">
 								<template #title>
 									{{ $t("STIL") }}
 									<b-spinner type="border" variant="primary" small v-if="loadingStil"></b-spinner>
@@ -1327,7 +1327,7 @@
 									</ol>
 								</b-card-text>
 							</b-tab>
-							<b-tab>
+							<b-tab :disabled="!hasHardware">
 								<template #title>
 									{{ $t("HARDWARE") }}
 								</template>
@@ -1369,7 +1369,7 @@
 											</b-form-select>
 										</div>
 									</div>
-									<div v-show="navigator.usb">
+									<div>
 										<b-button size="sm" variant="secondary" v-on:click="init()">
 											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
 										</b-button>
@@ -2519,6 +2519,8 @@
 					// SID (info + picture)
 					infos: "",
 					stil: [],
+					hasStil: false,
+					hasHardware: false,
 					picture: "",
 					currentSid: "",
 					// ASSEMBLY64
@@ -2647,25 +2649,23 @@
 				},
 				methods: {
 					init: async function () {
-						if (navigator.usb) {
-							await hardsid_usb_init(true, SysMode.SIDPLAY);
-							deviceCount = hardsid_usb_getdevcount();
-							console.log("Device count: " + deviceCount);
-							if (deviceCount > 0) {
-								chipCount = hardsid_usb_getsidcount(0);
-								console.log("Chip count: " + chipCount);
-							}
-							this.showAudio = false;
-							sidWriteQueue.clear();
-							sidWriteQueue.enqueue({
-								chip: Chip.RESET,
-							});
-							// regularly process SID write queue from now on!
-							if (typeof timer !== "undefined") {
-								clearTimeout(timer);
-							}
-							timer = setTimeout(() => this.doPlay(), 0);
+						await hardsid_usb_init(true, SysMode.SIDPLAY);
+						deviceCount = hardsid_usb_getdevcount();
+						console.log("Device count: " + deviceCount);
+						if (deviceCount > 0) {
+							chipCount = hardsid_usb_getsidcount(0);
+							console.log("Chip count: " + chipCount);
 						}
+						this.showAudio = false;
+						sidWriteQueue.clear();
+						sidWriteQueue.enqueue({
+							chip: Chip.RESET,
+						});
+						// regularly process SID write queue from now on!
+						if (typeof timer !== "undefined") {
+							clearTimeout(timer);
+						}
+						timer = setTimeout(() => this.doPlay(), 0);
 					},
 					doPlay: async function () {
 						var write;
@@ -3457,7 +3457,10 @@
 							.then((response) => {
 								this.stil = response.data;
 								if (!this.stil) {
+								    this.hasStil = false;
 									this.stil = [];
+								} else {
+								    this.hasStil = true;
 								}
 							})
 							.catch((error) => {
@@ -3772,6 +3775,8 @@
 							window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
 					});
 
+					this.hasHardware = typeof navigator.usb !== "undefined";
+					    
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
 					}
