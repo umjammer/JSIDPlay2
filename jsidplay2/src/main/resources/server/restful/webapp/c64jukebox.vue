@@ -2174,11 +2174,13 @@
 			const Chip = {
 				NEXT: -1,
 				RESET: -2,
+				QUIT: -3,
 			};
 			var deviceCount = 0;
 			var chipCount = 0;
 			var ajaxRequest;
 			var timer;
+			var write;
 
 			function Queue() {
 				var head, tail;
@@ -2650,28 +2652,29 @@
 				methods: {
 					init: async function () {
 						await hardsid_usb_init(true, SysMode.SIDPLAY);
+						sidWriteQueue.clear();
+						if (typeof timer !== "undefined") {
+							clearTimeout(timer);
+						}
 						deviceCount = hardsid_usb_getdevcount();
 						console.log("Device count: " + deviceCount);
 						if (deviceCount > 0) {
 							chipCount = hardsid_usb_getsidcount(0);
 							console.log("Chip count: " + chipCount);
+							sidWriteQueue.enqueue({
+								chip: Chip.RESET,
+							});
+							// regularly process SID write queue from now on!
+							timer = setTimeout(() => this.doPlay());
+							this.showAudio = false;
 						}
-						this.showAudio = false;
-						sidWriteQueue.clear();
-						sidWriteQueue.enqueue({
-							chip: Chip.RESET,
-						});
-						// regularly process SID write queue from now on!
-						if (typeof timer !== "undefined") {
-							clearTimeout(timer);
-						}
-						timer = setTimeout(() => this.doPlay(), 0);
 					},
 					doPlay: async function () {
-						var write;
 						while (sidWriteQueue.isNotEmpty()) {
 							write = sidWriteQueue.dequeue();
-							if (write.chip == Chip.RESET) {
+							if (write.chip == Chip.QUIT) {
+								return;
+							} else if (write.chip == Chip.RESET) {
 								await hardsid_usb_abortplay(0);
 								for (let chipNum = 0; chipNum < chipCount; chipNum++) {
 									await hardsid_usb_reset(0, chipNum, 0x00);
@@ -2706,10 +2709,14 @@
 								if (ajaxRequest) {
 									ajaxRequest.cancel();
 								}
-								// creates a new token for upcomming ajax (overwrite the previous one)
+								// creates a new token for upcoming ajax (overwrite the previous one)
 								ajaxRequest = axios.CancelToken.source();
 
-								let start = 0;
+								let start = 1;
+								sidWriteQueue.clear();
+								sidWriteQueue.enqueue({
+									chip: Chip.RESET,
+								});
 
 								axios({
 									method: "get",
@@ -2720,25 +2727,14 @@
 									onDownloadProgress: (progressEvent) => {
 										const dataChunk = progressEvent.currentTarget.response;
 
-										if (!start) {
-											sidWriteQueue.clear();
-											sidWriteQueue.enqueue({
-												chip: Chip.RESET,
-											});
-											start = dataChunk.indexOf("\n", start) + 1;
-										}
-										var chip,
-											i = start;
+										var i = start;
 										while ((i = dataChunk.indexOf("\n", start)) != -1) {
 											const cells = dataChunk.substring(start, i).split(",");
-											chip = mapping[parseInt(cells[1], 16) & 0xffe0];
-											if (typeof chip === "undefined") {
-												chip = mapping[0xd400];
-											}
+											const address = parseInt(cells[1], 16);
 											sidWriteQueue.enqueue({
-												chip: chip,
-												cycles: parseInt(cells[0]),
-												reg: parseInt(cells[1].substring(2), 16) & 0x1f,
+												chip: mapping[address & 0xffe0] || mapping[0xd400],
+												cycles: cells[0],
+												reg: address & 0x1f,
 												value: parseInt(cells[2], 16),
 											});
 											start = i + 1;
@@ -2777,11 +2773,11 @@
 					},
 					end: function () {
 						this.stop();
+						sidWriteQueue.enqueue({
+							chip: Chip.QUIT,
+						});
 						this.showAudio = true;
 						deviceCount = 0;
-						if (typeof timer !== "undefined") {
-							clearTimeout(timer);
-						}
 					},
 					sortChanged(e) {
 						localStorage.sortBy = JSON.stringify(e.sortBy);
@@ -3457,10 +3453,10 @@
 							.then((response) => {
 								this.stil = response.data;
 								if (!this.stil) {
-								    this.hasStil = false;
+									this.hasStil = false;
 									this.stil = [];
 								} else {
-								    this.hasStil = true;
+									this.hasStil = true;
 								}
 							})
 							.catch((error) => {
@@ -3776,7 +3772,7 @@
 					});
 
 					this.hasHardware = typeof navigator.usb !== "undefined";
-					    
+
 					if (localStorage.locale) {
 						this.$i18n.locale = localStorage.locale;
 					}
