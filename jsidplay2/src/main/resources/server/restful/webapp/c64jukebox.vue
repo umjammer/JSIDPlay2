@@ -106,7 +106,6 @@
 												autocorrect="off"
 												autocapitalize="off"
 												spellcheck="false"
-												@change="fetchDirectory(rootDir)"
 											/>
 										</div>
 										<div>
@@ -119,7 +118,7 @@
 												autocorrect="off"
 												autocapitalize="off"
 												spellcheck="false"
-												@change="fetchDirectory(rootDir)"
+												v-on:blur="fetchDirectory(rootDir)"
 											/>
 										</div>
 									</div>
@@ -300,7 +299,7 @@
 													filename: entry.filename,
 												})
 											);
-										tabIndex = 4;
+										tabIndex = 5;
 										showAudio = true;
 									"
 								>
@@ -466,7 +465,7 @@
 																playlist.push({
 																	filename: entry.filename,
 																});
-																tabIndex = 4;
+																tabIndex = 5;
 																showAudio = true;
 															"
 														>
@@ -749,7 +748,7 @@
 												size="sm"
 												@click="requestContentEntries(row.item)"
 												class="mr-1"
-												style="padding: 0.25rem 0.25rem"
+												style="padding: 0.1rem 0.1rem"
 											>
 												<i
 													:class="
@@ -858,7 +857,7 @@
 																				itemId: row.item.id,
 																				categoryId: row.item.categoryId,
 																			});
-																			tabIndex = 4;
+																			tabIndex = 5;
 																			playlistIndex = 0;
 																		"
 																	>
@@ -1017,7 +1016,9 @@
 										</template>
 
 										<template #head(category)="data">
-											<label for="category">{{ data.label }}</label>
+											<label for="category" style="font-size: smaller; margin-left: 0px">{{
+												data.label
+											}}</label>
 											<b-form-select
 												id="category"
 												v-model="category"
@@ -1038,7 +1039,9 @@
 											</b-form-select>
 										</template>
 										<template #head(name)="data">
-											<label for="name">{{ data.label }}</label>
+											<label for="name" style="font-size: smaller; margin-left: 0px">{{
+												data.label
+											}}</label>
 											<input
 												type="text"
 												id="name"
@@ -1052,7 +1055,9 @@
 											/>
 										</template>
 										<template #head(group)="data">
-											<label for="group">{{ data.label }}</label>
+											<label for="group" style="font-size: smaller; margin-left: 0px">{{
+												data.label
+											}}</label>
 											<input
 												type="text"
 												id="group"
@@ -1066,7 +1071,9 @@
 											/>
 										</template>
 										<template #head(event)="data">
-											<label for="event">{{ data.label }}</label>
+											<label for="event" style="font-size: smaller; margin-left: 0px">{{
+												data.label
+											}}</label>
 											<input
 												type="text"
 												id="event"
@@ -1079,8 +1086,10 @@
 												spellcheck="false"
 											/>
 										</template>
-										<template #head(released)="data">
-											<label for="released">{{ data.label }}</label>
+										<template #head(released)="data" style="padding-right: calc(0.3rem + 0.1em)">
+											<label for="released" style="font-size: smaller; margin-left: 0px">{{
+												data.label
+											}}</label>
 											<input
 												type="text"
 												id="released"
@@ -1094,7 +1103,9 @@
 											/>
 										</template>
 										<template #head(handle)="data">
-											<label for="handle">{{ data.label }}</label>
+											<label for="handle" style="font-size: smaller; margin-left: 0px">{{
+												data.label
+											}}</label>
 											<input
 												type="text"
 												id="handle"
@@ -1108,7 +1119,9 @@
 											/>
 										</template>
 										<template #head(rating)="data">
-											<label for="rating">{{ data.label }}</label>
+											<label for="rating" style="font-size: smaller; margin-left: 0px">{{
+												data.label
+											}}</label>
 											<input
 												type="text"
 												id="rating"
