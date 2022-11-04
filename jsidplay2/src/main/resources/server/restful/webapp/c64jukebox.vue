@@ -2684,7 +2684,7 @@
 								while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
 								Vue.nextTick(() => this.setNextPlaylistEntry());
 							} else {
-								await hardsid_usb_delay(0, write.cycles);
+								while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
 								while (
 									(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
 									WState.BUSY
@@ -3217,128 +3217,17 @@
 							window.location.host +
 							"/jsidplay2service/JSIDPlay2REST/hardsid-mapping" +
 							url +
-							"?enableSidDatabase=" +
-							this.convertOptions.config.sidplay2Section.enableDatabase +
-							"&startTime=" +
-							this.convertOptions.config.sidplay2Section.startTime +
-							"&defaultLength=" +
-							this.convertOptions.config.sidplay2Section.defaultPlayLength +
-							"&fadeIn=" +
-							this.convertOptions.config.sidplay2Section.fadeInTime +
-							"&fadeOut=" +
-							this.convertOptions.config.sidplay2Section.fadeOutTime +
-							"&loop=" +
-							this.convertOptions.config.sidplay2Section.loop +
-							"&single=" +
-							this.convertOptions.config.sidplay2Section.single +
-							"&frequency=" +
-							this.convertOptions.config.audioSection.samplingRate +
-							"&sampling=" +
-							this.convertOptions.config.audioSection.sampling +
-							"&mainVolume=" +
-							this.convertOptions.config.audioSection.mainVolume +
-							"&secondVolume=" +
-							this.convertOptions.config.audioSection.secondVolume +
-							"&thirdVolume=" +
-							this.convertOptions.config.audioSection.thirdVolume +
-							"&mainBalance=" +
-							this.convertOptions.config.audioSection.mainBalance +
-							"&secondBalance=" +
-							this.convertOptions.config.audioSection.secondBalance +
-							"&thirdBalance=" +
-							this.convertOptions.config.audioSection.thirdBalance +
-							"&mainDelay=" +
-							this.convertOptions.config.audioSection.mainDelay +
-							"&secondDelay=" +
-							this.convertOptions.config.audioSection.secondDelay +
-							"&thirdDelay=" +
-							this.convertOptions.config.audioSection.thirdDelay +
-							"&bufferSize=" +
-							this.convertOptions.config.audioSection.bufferSize +
-							"&cbr=" +
-							this.convertOptions.config.audioSection.cbr +
-							"&vbrQuality=" +
-							this.convertOptions.config.audioSection.vbrQuality +
-							"&vbr=" +
-							this.convertOptions.config.audioSection.vbr +
-							"&acBitRate=" +
-							this.convertOptions.config.audioSection.audioCoderBitRate +
-							"&vcBitRate=" +
-							this.convertOptions.config.audioSection.videoCoderBitRate +
-							"&vcAudioDelay=" +
-							this.convertOptions.config.audioSection.videoCoderAudioDelay +
-							"&delayBypass=" +
-							this.convertOptions.config.audioSection.delayBypass +
-							"&reverbBypass=" +
-							this.convertOptions.config.audioSection.reverbBypass +
-							"&defaultEmulation=" +
-							this.convertOptions.config.emulationSection.defaultEmulation +
-							"&defaultClock=" +
-							this.convertOptions.config.emulationSection.defaultClockSpeed +
-							"&defaultModel=" +
+							"?defaultModel=" +
 							this.convertOptions.config.emulationSection.defaultSidModel +
-							"&sidToRead=" +
-							this.convertOptions.config.emulationSection.sidToRead +
-							"&digiBoosted8580=" +
-							this.convertOptions.config.emulationSection.digiBoosted8580 +
 							"&fakeStereo=" +
 							this.convertOptions.config.emulationSection.fakeStereo +
-							"&muteVoice1=" +
-							this.convertOptions.config.emulationSection.muteVoice1 +
-							"&muteVoice2=" +
-							this.convertOptions.config.emulationSection.muteVoice2 +
-							"&muteVoice3=" +
-							this.convertOptions.config.emulationSection.muteVoice3 +
-							"&muteVoice4=" +
-							this.convertOptions.config.emulationSection.muteVoice4 +
-							"&muteStereoVoice1=" +
-							this.convertOptions.config.emulationSection.muteStereoVoice1 +
-							"&muteStereoVoice2=" +
-							this.convertOptions.config.emulationSection.muteStereoVoice2 +
-							"&muteStereoVoice3=" +
-							this.convertOptions.config.emulationSection.muteStereoVoice3 +
-							"&muteStereoVoice4=" +
-							this.convertOptions.config.emulationSection.muteStereoVoice4 +
-							"&muteThirdSidVoice1=" +
-							this.convertOptions.config.emulationSection.muteThirdSIDVoice1 +
-							"&muteThirdSidVoice2=" +
-							this.convertOptions.config.emulationSection.muteThirdSIDVoice2 +
-							"&muteThirdSidVoice3=" +
-							this.convertOptions.config.emulationSection.muteThirdSIDVoice3 +
-							"&muteThirdSidVoice4=" +
-							this.convertOptions.config.emulationSection.muteThirdSIDVoice4 +
-							"&filter6581=" +
-							this.convertOptions.config.emulationSection.filter6581 +
-							"&stereoFilter6581=" +
-							this.convertOptions.config.emulationSection.stereoFilter6581 +
-							"&thirdFilter6581=" +
-							this.convertOptions.config.emulationSection.thirdSIDFilter6581 +
-							"&filter8580=" +
-							this.convertOptions.config.emulationSection.filter8580 +
-							"&stereoFilter8580=" +
-							this.convertOptions.config.emulationSection.stereoFilter8580 +
-							"&thirdFilter8580=" +
-							this.convertOptions.config.emulationSection.thirdSIDFilter8580 +
-							"&reSIDfpFilter6581=" +
-							this.convertOptions.config.emulationSection.reSIDfpFilter6581 +
-							"&reSIDfpStereoFilter6581=" +
-							this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 +
-							"&reSIDfpThirdFilter6581=" +
-							this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 +
-							"&reSIDfpFilter8580=" +
-							this.convertOptions.config.emulationSection.reSIDfpFilter8580 +
-							"&reSIDfpStereoFilter8580=" +
-							this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 +
-							"&reSIDfpThirdFilter8580=" +
-							this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
-							"&detectPSID64ChipModel=" +
-							this.convertOptions.config.emulationSection.detectPSID64ChipModel +
 							"&hardSid6581=" +
 							this.convertOptions.config.emulationSection.hardsid6581 +
 							"&hardSid8580=" +
 							this.convertOptions.config.emulationSection.hardsid8580 +
 							"&chipCount=" +
 							chipCount +
+							this.stereoParameters +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"
 								? ""
 								: "&itemId=" + itemId + "&categoryId=" + categoryId)
