@@ -26,6 +26,7 @@
 
 		<!-- USB -->
 		<script src="/static/usb/hardsid.js"></script>
+		<script src="/static/usb/exsid.js"></script>
 
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -1383,8 +1384,13 @@
 										</div>
 									</div>
 									<div>
-										<b-button size="sm" variant="secondary" v-on:click="init()">
+										<b-button size="sm" variant="secondary" v-on:click="initHardSid()">
 											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
+										</b-button>
+									</div>
+									<div>
+										<b-button size="sm" variant="secondary" v-on:click="initExSid()">
+											<span>Connect to ExSID, ExSID+</span>
 										</b-button>
 									</div>
 								</b-card-text>
@@ -2184,6 +2190,10 @@
 		</div>
 
 		<script>
+			const HardwareType = {
+				HARDSID: 1,
+				EXSID: 2
+			};
 			const Chip = {
 				NEXT: -1,
 				RESET: -2,
@@ -2536,6 +2546,7 @@
 					stil: [],
 					hasStil: false,
 					hasHardware: false,
+					hardwareType: undefined,
 					picture: "",
 					currentSid: "",
 					// ASSEMBLY64
@@ -2663,7 +2674,24 @@
 					},
 				},
 				methods: {
-					init: async function () {
+					initExSid: async function () {
+						var ok = await exSID_init();
+						sidWriteQueue.clear();
+						if (typeof timer !== "undefined") {
+							clearTimeout(timer);
+						}
+						if (ok != -1) {
+						    deviceCount = 1;
+							hardwareType = HardwareType.EXSID;
+							sidWriteQueue.enqueue({
+								chip: Chip.RESET,
+							});
+							// regularly process SID write queue from now on!
+							timer = setTimeout(() => this.doPlay(), 200);
+							this.showAudio = false;
+						}
+					},
+					initHardSid: async function () {
 						await hardsid_usb_init(true, SysMode.SIDPLAY);
 						sidWriteQueue.clear();
 						if (typeof timer !== "undefined") {
@@ -2672,6 +2700,7 @@
 						deviceCount = hardsid_usb_getdevcount();
 						console.log("Device count: " + deviceCount);
 						if (deviceCount > 0) {
+							hardwareType = HardwareType.HARDSID;
 							chipCount = hardsid_usb_getsidcount(0);
 							console.log("Chip count: " + chipCount);
 							sidWriteQueue.enqueue({
@@ -2686,22 +2715,36 @@
 						while (sidWriteQueue.isNotEmpty()) {
 							write = sidWriteQueue.dequeue();
 							if (write.chip == Chip.QUIT) {
+								hardwareType = undefined;
 								return;
 							} else if (write.chip == Chip.RESET) {
-								await hardsid_usb_abortplay(0);
-								for (let chipNum = 0; chipNum < chipCount; chipNum++) {
-									await hardsid_usb_reset(0, chipNum, 0x00);
-								}
+							    if (hardwareType == HardwareType.HARDSID) {
+									await hardsid_usb_abortplay(0);
+									for (let chipNum = 0; chipNum < chipCount; chipNum++) {
+										await hardsid_usb_reset(0, chipNum, 0x00);
+									}
+							    } else {
+									await exSID_reset(15);
+							    }
 							} else if (write.chip == Chip.NEXT) {
-								await hardsid_usb_sync(0);
-								while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
+							    if (hardwareType == HardwareType.EXSID) {
+									await hardsid_usb_sync(0);
+									while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
+							    } else {
+									await exSID_reset(0);
+							    }
 								Vue.nextTick(() => this.setNextPlaylistEntry());
 							} else {
-								while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
-								while (
-									(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
-									WState.BUSY
-								) {}
+							    if (hardwareType == HardwareType.HARDSID) {
+									while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
+									while (
+										(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
+										WState.BUSY
+									) {}
+							    } else {
+									await exSID_delay(write.cycles);
+									await exSID_clkdwrite(0, write.reg, write.value);
+							    }
 							}
 						}
 						timer = setTimeout(() => this.doPlay());
@@ -2746,7 +2789,7 @@
 											const address = parseInt(cells[1], 16);
 											sidWriteQueue.enqueue({
 												chip: mapping[address & 0xffe0] || mapping[0xd400],
-												cycles: cells[0],
+												cycles: parseInt(cells[0]),
 												reg: address & 0x1f,
 												value: parseInt(cells[2], 16),
 											});

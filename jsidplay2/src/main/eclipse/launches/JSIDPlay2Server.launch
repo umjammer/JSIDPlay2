@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
         <listEntry value="/jsidplay2/src/main/java/server/restful/JSIDPlay2Server.java"/>
     </listAttribute>
@@ -13,7 +14,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="server.restful.JSIDPlay2Server"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="jsidplay2"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--appServerConnectors HTTP --whatsSIDDatabaseDriver com.mysql.cj.jdbc.Driver --whatsSIDDatabaseUrl jdbc:mysql://192.168.1.150:3306/hvsc77?useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;autoReconnect=true --whatsSIDDatabaseUsername newuser --whatsSIDDatabasePassword password --whatsSIDDatabaseDialect org.hibernate.dialect.MySQL5InnoDBDialect"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--appServerConnectors HTTP --whatsSIDDatabaseDriver com.mysql.cj.jdbc.Driver --whatsSIDDatabaseUrl jdbc:mysql://192.168.1.150:3306/hvsc77new?useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;autoReconnect=true --whatsSIDDatabaseUsername newuser --whatsSIDDatabasePassword password --whatsSIDDatabaseDialect org.hibernate.dialect.MySQL5InnoDBDialect"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jsidplay2"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
