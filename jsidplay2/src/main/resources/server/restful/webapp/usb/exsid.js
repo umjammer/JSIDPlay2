@@ -1,5 +1,10 @@
 /**
- * Implements exsid.dll api calls Written by Thibaut Thezan
+ * exSID.c
+ * A simple I/O library for exSID/exSID+ USB
+ *
+ * (C) 2015-2018 Thibaut VARENE
+ * License: GPLv2 - http://www.gnu.org/licenses/gpl-2.0.html
+ *
  * http://hacks.slashdirt.org/hw/exsid/
  
  * Javascript port by Ken Händel
@@ -11,7 +16,7 @@
  * @author ken
  *
  */
-
+ 
 /** Hardware model return values for exSID_hwmodel() */
 const HardwareModel = {
 	/**
@@ -82,12 +87,6 @@ const ClockSelect = {
 	 * select 1MHz clock
 	 */
 	XS_CL_1MHZ: 2
-};
-
-const WState = {
-	OK: 1,
-	BUSY: 2,
-	ERROR: 3,
 };
 
 //
@@ -311,11 +310,14 @@ var exSID = new SupportedDevices(XS_USBDSC, XS_USBPID, XS_USBVID, XS_MODEL_STD, 
 var exSIDPlus = new SupportedDevices(XSP_USBDSC, XSP_USBPID, XSP_USBVID, XS_MODEL_PLUS, XSP_CYCIO, XSP_PRE_RD, XSP_POSTRD,
 	0, XSP_CYCCS, XSP_MINDEL, XSP_MAXADJ, XSP_LDOFFS);
 
-var clkdrift;
+var xSsupported = [exSID, exSIDPlus];
+
+var ftdi, clkdrift;
+
 var hardwareSpecs;
 
-backbuf = new Array(XS_BUFFSZ);
-backbufIdx = 0;
+var backbuf = new Array(XS_BUFFSZ);
+var backbufIdx = 0;
 
 /**
  * Write routine to send data to the device.
@@ -328,7 +330,14 @@ backbufIdx = 0;
  *         number of bytes to send
  */
 async function xSwrite(buff, size) {
-	device.write(buff, 0, size);
+	try {
+		const result = new Uint8Array(size);
+		for (var i = 0; i < size; i++) {
+			result[i] = buff[i];
+		}
+		await ftdi.writeAsync(result);
+	} catch (error) {
+	}
 }
 
 /**
@@ -339,11 +348,13 @@ async function xSwrite(buff, size) {
  * @param {Array} buff
  *         pointer to a byte array that will be filled with read data
  * @param size number of bytes to read
- * @return {byte}
- *         result
  */
 async function xSread(buff, size) {
-	return device.read(buff, 0, size);
+// XXX READ SUPPORT!
+	var result = await ftdi.read();
+	for (var i = 0; i < size; i++) {
+		buff[i] = result;
+	}
 }
 
 /**
@@ -378,30 +389,25 @@ async function xSoutb(b, flush) {
  *         0 on success, !0 otherwise.
  */
 async function exSID_init() {
-	if (device && device.isOpen()) {
+	if (ftdi && ftdi.isOpen()) {
 		console.log("Device is already open!");
 		return -1;
 	}
 
 	try {
 		/* Attempt to open all supported devices until first success. */
-		device = null;
-		// XXX get device from WebAPI Serial
-		/*		List<FTDevice> devices = FTDevice.getDevices(false).stream()
-						.sorted((d1, d2) -> d1.getDevSerialNumber().compareTo(d2.getDevSerialNumber()))
-						.collect(Collectors.toList());
+		device = {};
+		ftdi = new FTDI();
+		await ftdi.init(XS_USBVID, {baudRate: XS_BDRATE});
 		
-				for (FTDevice ftDevice : devices) {
-					for (SupportedDevices xSsup : xSsupported) {
-						logger.finest(String.format("Trying %s...\n", xSsup.getDescription()));
-						if (ftDevice.getDevDescription().equals(xSsup.getDescription())) {
-							device = ftDevice;
-							device.open();
-							hardwareSpecs = xSsup.getHardwareSpecs();
-							break;
-						}
-					}
-				}*/
+		for (xSsup of xSsupported) {
+			console.log("Trying " + xSsup.description + "...");
+			if (ftdi.device.productName === xSsup.description) {
+				device.ftdi = ftdi;
+				hardwareSpecs = xSsup.hardwareSpecs;
+				break;
+			}
+		}
 		if (device == null) {
 			console.log("No device could be opened");
 			return -1;
@@ -416,11 +422,12 @@ async function exSID_init() {
 		//	#endif
 
 		xSfw_usb_purge_buffers();
+		clkdrift = 0;
 
 		// Wait for device ready by trying to read FV and wait for the answer
 		// XXX Broken with libftdi due to non-blocking read :-/
 		xSoutb(XS_AD_IOCTFV, 1);
-		xSread(new byte[1], 1);
+		xSread(new Uint8Array(1), 1);
 		return 0;
 
 	} catch (err) {
@@ -455,14 +462,22 @@ async function exSID_exit() {
  *         volume to set the SIDs to after reset.
  */
 async function exSID_reset(volume) {
+	console.log(exSID_hwversion());
+	exSID_clockselect(ClockSelect.XS_CL_PAL);
+	exSID_chipselect(ChipSelect.XS_CS_CHIP0);
+	xSfw_usb_purge_buffers();
+	await delay(250); // wait for send/receive to complete
 	// this will stall
 	xSoutb(XS_AD_IOCTRS, 1);
 	// sleep for 100us
-	usleep(100);
+	await delay(100); // wait for send/receive to complete
 	// this only needs 2 bytes which matches the input buffer of the PIC so all is
 	// well
 	exSID_write(0x18, volume, 1);
 	clkdrift = 0;
+	backbuf = new Array(XS_BUFFSZ);
+	backbufIdx = 0;
+	
 }
 
 /**
@@ -483,19 +498,19 @@ async function exSID_clockselect(clock) {
 		return -1;
 
 	switch (clock) {
-		case XS_CL_PAL:
+		case ClockSelect.XS_CL_PAL:
 			xSoutb(XSP_AD_IOCTCP, 1);
 			break;
-		case XS_CL_NTSC:
+		case ClockSelect.XS_CL_NTSC:
 			xSoutb(XSP_AD_IOCTCN, 1);
 			break;
-		case XS_CL_1MHZ:
+		case ClockSelect.XS_CL_1MHZ:
 			xSoutb(XSP_AD_IOCTC1, 1);
 			break;
 		default:
 			return -1;
 	}
-	usleep(100); // sleep for 100us
+	await delay(1);
 
 	clkdrift = 0; // reset drift
 
@@ -519,22 +534,22 @@ async function exSID_audio_op(operation) {
 		return -1;
 
 	switch (operation) {
-		case XS_AU_6581_8580:
+		case AudioOp.XS_AU_6581_8580:
 			xSoutb(XSP_AD_IOCTA0, 0);
 			break;
-		case XS_AU_8580_6581:
+		case AudioOp.XS_AU_8580_6581:
 			xSoutb(XSP_AD_IOCTA1, 0);
 			break;
-		case XS_AU_8580_8580:
+		case AudioOp.XS_AU_8580_8580:
 			xSoutb(XSP_AD_IOCTA2, 0);
 			break;
-		case XS_AU_6581_6581:
+		case AudioOp.XS_AU_6581_6581:
 			xSoutb(XSP_AD_IOCTA3, 0);
 			break;
-		case XS_AU_MUTE:
+		case AudioOp.XS_AU_MUTE:
 			xSoutb(XSP_AD_IOCTAM, 0);
 			break;
-		case XS_AU_UNMUTE:
+		case AudioOp.XS_AU_UNMUTE:
 			xSoutb(XSP_AD_IOCTAU, 0);
 			break;
 		default:
@@ -555,14 +570,14 @@ async function exSID_audio_op(operation) {
 async function exSID_chipselect(chip) {
 	clkdrift -= hardwareSpecs.csioctlCycles;
 	switch (chip) {
-		case XS_CS_CHIP0:
+		case ChipSelect.XS_CS_CHIP0:
 			xSoutb(XS_AD_IOCTS0, 0);
 			break;
-		case XS_CS_CHIP1:
+		case ChipSelect.XS_CS_CHIP1:
 			xSoutb(XS_AD_IOCTS1, 0);
 			break;
 		default:
-			xSoutb(XS_AD_IOCTSB, 0);
+			ChipSelect.xSoutb(XS_AD_IOCTSB, 0);
 			break;
 	}
 }
@@ -599,7 +614,7 @@ async function exSID_hwversion() {
 	xSoutb(XS_AD_IOCTHV, 0);
 	xSoutb(XS_AD_IOCTFV, 1);
 
-	inbuf = new byte[2];
+	inbuf = new Uint8Array(2);
 	xSread(inbuf, 2);
 
 	// ensure proper order regardless of endianness
@@ -677,7 +692,7 @@ async function xSlongdelay(cycles) {
  * @param {number} cycles
  *         how many SID clocks to loop for.
  */
-async function exSID_delay() {
+async function exSID_delay(cycles) {
 	var delay;
 
 	clkdrift += cycles;
@@ -771,7 +786,7 @@ async function exSID_clkdwrite(cycles, addr, data) {
 async function exSID_read(addr, flush) {
 	data = new byte[1];
 
-	// XXX
+	// XXX read support
 	xSoutb(addr, flush);
 	// blocking
 	xSread(data, 1);
@@ -865,26 +880,230 @@ async function exSID_clkdread(cycles, addr) {
  *         Target latency
  */
 async function xSfw_usb_setup(baudrate, latency) {
-	device.setBaudRate(baudrate);
-	device.setDataCharacteristics(WordLength.BITS_8, StopBits.STOP_BITS_1, Parity.PARITY_NONE);
-	device.setFlowControl(FlowControl.FLOW_NONE);
-	device.setLatencyTimer(latency);
+//	device.setBaudRate(baudrate);
+//	device.setDataCharacteristics(WordLength.BITS_8, StopBits.STOP_BITS_1, Parity.PARITY_NONE);
+//	device.setFlowControl(FlowControl.FLOW_NONE);
+//	device.setLatencyTimer(latency);
 }
 
 async function xSfw_usb_purge_buffers() {
-	device.purgeBuffer(true, true);
+  console.log('Setting RESET');
+  await ftdi.device.controlTransferOut({
+      requestType: 'vendor',
+      recipient: 'device',
+      request: 0,
+      value: 0x0000,
+      index: 0,
+  });
 }
 
 async function xSfw_usb_close() {
-	device.close();
+	await device.ftdi.closeAsync();
 }
 
-async function usleep(delayUs) {
-	delayNs = delayUs * 1000;
-	start = window.performance.now();
-	end = 0;
-	do {
-		end = window.performance.now();
-	} while (start + delayNs >= end);
+
+/*
+* == BSD2 LICENSE ==
+* Copyright (c) 2020, Tidepool Project
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the associated License, which is identical to the BSD 2-Clause
+* License as published by the Open Source Initiative at opensource.org.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE. See the License for more details.
+*
+* You should have received a copy of the License along with this program; if
+* not, you can obtain one from Tidepool Project at tidepool.org.
+* == BSD2 LICENSE ==
+*/
+
+const H_CLK = 120000000;
+const C_CLK = 48000000;
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+function FTDIToClkbits(baud, clk, clkDiv) {
+    const fracCode = [0, 3, 2, 4, 1, 5, 6, 7];
+    let bestBaud = 0;
+    let divisor;
+    let bestDivisor;
+    let encodedDivisor;
+
+    if (baud >= clk / clkDiv) {
+        encodedDivisor = 0;
+        bestBaud = clk / dlkDiv;
+    } else if (baud >= clk / (clkDiv + clkDiv / 2)) {
+        encodedDivisor = 1;
+        bestBaud = clk / (clkDiv + clkDiv / 2);
+    } else if (baud >= clk / (2 * clkDiv)) {
+        encodedDivisor = 2;
+        bestBaud = clk / (2 * clkDiv);
+    } else {
+        divisor = clk * 16 / clkDiv / baud;
+        if (divisor & 1) {
+            bestDivisor = divisor / 2 + 1;
+        } else {
+            bestDivisor = divisor / 2;
+        }
+
+        if (bestDivisor > 0x20000) {
+            bestDivisor = 0x1ffff;
+        }
+
+        bestBaud = clk * 16 / clkDiv / bestDivisor;
+
+        if (bestBaud & 1) {
+            bestBaud = bestBaud / 2 + 1;
+        } else {
+            bestBaud = bestBaud / 2;
+        }
+
+        encodedDivisor = (bestDivisor >> 3) | (fracCode[bestDivisor & 0x7] << 14);
+    }
+
+    return [bestBaud, encodedDivisor];
 }
 
+function FTDIConvertBaudrate(baud) {
+    let bestBaud;
+    let encodedDivisor;
+    let value;
+    let index;
+
+    if (baud <= 0) {
+        throw new Error('Baud rate must be > 0');
+    }
+
+    [bestBaud, encodedDivisor] = FTDIToClkbits(baud, C_CLK, 16);
+
+    value = encodedDivisor & 0xffff;
+    index = encodedDivisor >> 16;
+
+    return [bestBaud, value, index];
+}
+
+class FTDI {
+  constructor() {
+  }
+  async init(vendorId, options) {
+    const self = this;
+
+      const device = await navigator.usb.requestDevice({
+        filters: [
+          {
+            vendorId,
+          }
+        ]
+      });
+
+      if (device == null) {
+        throw new Error('Could not find device');
+      }
+
+      await device.open();
+      console.log('Opened:', device.opened);
+
+      if (device.configuration === null) {
+        console.log('selectConfiguration');
+        await device.selectConfiguration(1);
+      }
+      await device.claimInterface(0);
+      await device.selectConfiguration(1);
+      await device.selectAlternateInterface(0, 0);
+
+      console.log('Setting Modem control RTS enable');
+      await device.controlTransferOut({
+          requestType: 'vendor',
+          recipient: 'device',
+          request: 1,
+          value: 0x0202,
+          index: 0,
+      });
+
+      console.log('Setting flow control XON/XOFF to zero');
+      await device.controlTransferOut({
+          requestType: 'vendor',
+          recipient: 'device',
+          request: 2,
+          value: 0x0000,
+          index: 0,
+      });
+
+      const [baud, value, index] = FTDIConvertBaudrate(options.baudRate);
+      console.log('Setting baud rate to', baud);
+      await device.controlTransferOut({
+          requestType: 'vendor',
+          recipient: 'device',
+          request: 3,
+          value ,
+          index,
+      });
+
+      console.log('Setting modem control DTR enable');
+      await device.controlTransferOut({
+          requestType: 'vendor',
+          recipient: 'device',
+          request: 1,
+          value: 0x0101,
+          index: 0,
+      });
+
+      console.log('Setting data 8 bit, no parity');
+      await device.controlTransferOut({
+          requestType: 'vendor',
+          recipient: 'device',
+          request: 4,
+          value: 0x0008,
+          index: 0,
+      });
+
+      console.log('Setting event characteristics');
+      await device.controlTransferOut({
+          requestType: 'vendor',
+          recipient: 'device',
+          request: 6,
+          value: 0x0000,
+          index: 0,
+      });
+      
+      self.device = device;
+      self.isClosing = false;
+      this.device.transferIn(1, 64); // flush buffer
+  }
+
+  async read() {
+	let transferred = await this.device.transferIn(1, 64);
+
+	if (transferred.status !== "ok") {
+		return;
+	}
+	return transferred.data;
+  }
+
+  async writeAsync(buffer) {
+    return await this.device.transferOut(2, buffer);
+  }
+
+  async closeAsync() {
+    this.isClosing = true;
+    try {
+      console.log('Sending EOT');
+
+      const result = new Uint8Array(1);
+      result[0] = 0x04;
+      await this.writeAsync(result);
+      await delay(2000); // wait for send/receive to complete
+      await this.device.releaseInterface(0);
+      await this.device.close();
+      console.log('Closed device');
+    } catch(err) {
+      console.log('Error:', err);
+    }
+  }
+
+  isOpen() {
+  	return this.device.opened;
+  }
+  
+}
