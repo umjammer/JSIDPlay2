@@ -413,7 +413,7 @@ async function exSID_init() {
 			return -1;
 		}
 
-		xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
+		await xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
 
 		//)	#ifdef	EXSID_THREADED
 		//		backbufIdx = frontbufIdx = 0;
@@ -421,13 +421,13 @@ async function exSID_init() {
 		//		exSIDthreadOutput.start();
 		//	#endif
 
-		xSfw_usb_purge_buffers();
+		await xSfw_usb_purge_buffers();
 		clkdrift = 0;
 
 		// Wait for device ready by trying to read FV and wait for the answer
 		// XXX Broken with libftdi due to non-blocking read :-/
-		xSoutb(XS_AD_IOCTFV, 1);
-		xSread(new Uint8Array(1), 1);
+		await xSoutb(XS_AD_IOCTFV, 1);
+		await xSread(new Uint8Array(1), 1);
 		return 0;
 
 	} catch (err) {
@@ -442,10 +442,10 @@ async function exSID_init() {
  */
 async function exSID_exit() {
 	if (device) {
-		exSID_reset(0);
-		xSfw_usb_purge_buffers();
+		await exSID_reset(0);
+		await xSfw_usb_purge_buffers();
 
-		xSfw_usb_close();
+		await xSfw_usb_close();
 		device = undefined;
 	}
 	clkdrift = 0;
@@ -462,18 +462,18 @@ async function exSID_exit() {
  *         volume to set the SIDs to after reset.
  */
 async function exSID_reset(volume) {
-	console.log(exSID_hwversion());
-	exSID_clockselect(ClockSelect.XS_CL_PAL);
-	exSID_chipselect(ChipSelect.XS_CS_CHIP0);
-	xSfw_usb_purge_buffers();
+//	console.log(exSID_hwversion());
+	await exSID_clockselect(ClockSelect.XS_CL_PAL);
+	await exSID_chipselect(ChipSelect.XS_CS_CHIP0);
+	await xSfw_usb_purge_buffers();
 	await delay(250); // wait for send/receive to complete
 	// this will stall
-	xSoutb(XS_AD_IOCTRS, 1);
+	await xSoutb(XS_AD_IOCTRS, 1);
 	// sleep for 100us
 	await delay(100); // wait for send/receive to complete
 	// this only needs 2 bytes which matches the input buffer of the PIC so all is
 	// well
-	exSID_write(0x18, volume, 1);
+	await exSID_write(0x18, volume, 1);
 	clkdrift = 0;
 	backbuf = new Array(XS_BUFFSZ);
 	backbufIdx = 0;
@@ -535,22 +535,22 @@ async function exSID_audio_op(operation) {
 
 	switch (operation) {
 		case AudioOp.XS_AU_6581_8580:
-			xSoutb(XSP_AD_IOCTA0, 0);
+			await xSoutb(XSP_AD_IOCTA0, 0);
 			break;
 		case AudioOp.XS_AU_8580_6581:
-			xSoutb(XSP_AD_IOCTA1, 0);
+			await xSoutb(XSP_AD_IOCTA1, 0);
 			break;
 		case AudioOp.XS_AU_8580_8580:
-			xSoutb(XSP_AD_IOCTA2, 0);
+			await xSoutb(XSP_AD_IOCTA2, 0);
 			break;
 		case AudioOp.XS_AU_6581_6581:
-			xSoutb(XSP_AD_IOCTA3, 0);
+			await xSoutb(XSP_AD_IOCTA3, 0);
 			break;
 		case AudioOp.XS_AU_MUTE:
-			xSoutb(XSP_AD_IOCTAM, 0);
+			await xSoutb(XSP_AD_IOCTAM, 0);
 			break;
 		case AudioOp.XS_AU_UNMUTE:
-			xSoutb(XSP_AD_IOCTAU, 0);
+			await xSoutb(XSP_AD_IOCTAU, 0);
 			break;
 		default:
 			return -1;
@@ -571,13 +571,13 @@ async function exSID_chipselect(chip) {
 	clkdrift -= hardwareSpecs.csioctlCycles;
 	switch (chip) {
 		case ChipSelect.XS_CS_CHIP0:
-			xSoutb(XS_AD_IOCTS0, 0);
+			await xSoutb(XS_AD_IOCTS0, 0);
 			break;
 		case ChipSelect.XS_CS_CHIP1:
-			xSoutb(XS_AD_IOCTS1, 0);
+			await xSoutb(XS_AD_IOCTS1, 0);
 			break;
 		default:
-			ChipSelect.xSoutb(XS_AD_IOCTSB, 0);
+			await xSoutb(ChipSelect.XS_AD_IOCTSB, 0);
 			break;
 	}
 }
@@ -589,7 +589,7 @@ async function exSID_chipselect(chip) {
  * @return {Object}
  *         hardware model, negative value on error.
  */
-async function exSID_hwmodel() {
+function exSID_hwmodel() {
 	switch (hardwareSpecs.model) {
 		case XS_MODEL_STD:
 			return HardwareModel.XS_MD_STD.hardwareModel;
@@ -611,11 +611,11 @@ async function exSID_hwmodel() {
  *         version information as described above.
  */
 async function exSID_hwversion() {
-	xSoutb(XS_AD_IOCTHV, 0);
-	xSoutb(XS_AD_IOCTFV, 1);
+	await xSoutb(XS_AD_IOCTHV, 0);
+	await xSoutb(XS_AD_IOCTFV, 1);
 
 	inbuf = new Uint8Array(2);
-	xSread(inbuf, 2);
+	await xSread(inbuf, 2);
 
 	// ensure proper order regardless of endianness
 	return (inbuf[0] << 8 | inbuf[1]);
@@ -632,7 +632,7 @@ async function exSID_hwversion() {
  */
 async function xSdelay(cycles) {
 	while (cycles >= hardwareSpecs.mindelCycles) {
-		xSoutb(XS_AD_IOCTD1, 0);
+		await xSoutb(XS_AD_IOCTD1, 0);
 		cycles -= hardwareSpecs.mindelCycles;
 		clkdrift -= hardwareSpecs.mindelCycles;
 	}
@@ -667,7 +667,7 @@ async function xSlongdelay(cycles) {
 	}
 
 	while (multiple >= 255) {
-		exSID_write(XS_AD_IOCTLD, 255, flush);
+		await exSID_write(XS_AD_IOCTLD, 255, flush);
 		if (flush != 0)
 			// wait for answer with blocking read
 			xSread(dummy, 1);
@@ -675,14 +675,14 @@ async function xSlongdelay(cycles) {
 	}
 
 	if (multiple != 0) {
-		exSID_write(XS_AD_IOCTLD, multiple, flush);
+		await exSID_write(XS_AD_IOCTLD, multiple, flush);
 		if (flush != 0)
 			// wait for answer with blocking read
 			xSread(dummy, 1);
 	}
 
 	// deal with remainder
-	xSdelay(delta);
+	await xSdelay(delta);
 }
 
 /**
@@ -712,7 +712,7 @@ async function exSID_delay(cycles) {
 		//			break;
 		//		}
 		default:
-			xSdelay(delay);
+			await xSdelay(delay);
 	}
 }
 
@@ -727,8 +727,8 @@ async function exSID_delay(cycles) {
  *         if non-zero, force immediate flush to device.
  */
 async function exSID_write(addr, data, flush) {
-	xSoutb(addr, 0);
-	xSoutb(data, flush);
+	await xSoutb(addr, 0);
+	await xSoutb(data, flush);
 }
 
 /**
