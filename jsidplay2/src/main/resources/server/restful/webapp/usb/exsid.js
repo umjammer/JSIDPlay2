@@ -464,7 +464,7 @@ async function exSID_exit() {
 async function exSID_reset(volume) {
 //	console.log(exSID_hwversion());
 	await exSID_clockselect(ClockSelect.XS_CL_PAL);
-	await exSID_chipselect(ChipSelect.XS_CS_CHIP0);
+	await exSID_chipselect(ChipSelect.XS_CS_CHIP1);
 	await xSfw_usb_purge_buffers();
 	await delay(250); // wait for send/receive to complete
 	// this will stall
@@ -499,13 +499,13 @@ async function exSID_clockselect(clock) {
 
 	switch (clock) {
 		case ClockSelect.XS_CL_PAL:
-			xSoutb(XSP_AD_IOCTCP, 1);
+			await xSoutb(XSP_AD_IOCTCP, 1);
 			break;
 		case ClockSelect.XS_CL_NTSC:
-			xSoutb(XSP_AD_IOCTCN, 1);
+			await xSoutb(XSP_AD_IOCTCN, 1);
 			break;
 		case ClockSelect.XS_CL_1MHZ:
-			xSoutb(XSP_AD_IOCTC1, 1);
+			await xSoutb(XSP_AD_IOCTC1, 1);
 			break;
 		default:
 			return -1;
