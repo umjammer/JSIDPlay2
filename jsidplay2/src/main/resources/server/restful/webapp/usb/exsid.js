@@ -456,10 +456,6 @@ async function exSID_exit() {
  *         volume to set the SIDs to after reset.
  */
 async function exSID_reset(volume) {
-//	console.log(exSID_hwversion());
-//	await exSID_clockselect(ClockSelect.XS_CL_PAL);
-//	await exSID_chipselect(ChipSelect.XS_CS_CHIP1);
-
 	await device.ftdi.ftdi_usb_reset();
 
 	await xSfw_usb_purge_buffers();
@@ -473,9 +469,8 @@ async function exSID_reset(volume) {
 	await exSID_write(0x18, volume, 1);
 
 	clkdrift = 0;
-	backbuf = new Array(XS_BUFFSZ);
+	backbuf.length = 0;
 	backbufIdx = 0;
-
 }
 
 /**

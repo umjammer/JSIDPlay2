@@ -2729,6 +2729,9 @@
 										await hardsid_usb_reset(0, chipNum, 0x00);
 									}
 							    } else {
+									await exSID_clockselect(ClockSelect.XS_CL_PAL);
+									await exSID_chipselect(ChipSelect.XS_CS_CHIP1);
+
 									await exSID_reset(15);
 							    }
 							} else if (write.chip == Chip.NEXT) {
