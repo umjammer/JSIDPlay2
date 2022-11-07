@@ -456,21 +456,22 @@ async function exSID_exit() {
  *         volume to set the SIDs to after reset.
  */
 async function exSID_reset(volume) {
-	await device.ftdi.ftdi_usb_reset();
+//	await device.ftdi.ftdi_usb_reset();
+//	await xSfw_usb_purge_buffers();
+//	await delay(250); // wait for send/receive to complete
 
-	await xSfw_usb_purge_buffers();
-	await delay(250); // wait for send/receive to complete
 	// this will stall
 	await xSoutb(XS_AD_IOCTRS, 1);
 	// sleep for 100us
-	await delay(100); // wait for send/receive to complete
+	await delay(1); // wait for send/receive to complete
 	// this only needs 2 bytes which matches the input buffer of the PIC so all is
 	// well
 	await exSID_write(0x18, volume, 1);
 
 	clkdrift = 0;
-	backbuf.length = 0;
-	backbufIdx = 0;
+	await delay(50); // wait for send/receive to complete
+//	backbuf.length = 0;
+//	backbufIdx = 0;
 }
 
 /**
