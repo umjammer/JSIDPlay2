@@ -26,6 +26,7 @@
 
 		<!-- USB -->
 		<script src="/static/usb/hardsid.js"></script>
+		<script src="/static/usb/ftdi.js"></script>
 		<script src="/static/usb/exsid.js"></script>
 
 		<meta charset="UTF-8" />
@@ -2715,6 +2716,10 @@
 						while (sidWriteQueue.isNotEmpty()) {
 							write = sidWriteQueue.dequeue();
 							if (write.chip == Chip.QUIT) {
+							    if (hardwareType == HardwareType.EXSID) {
+									xSfw_usb_close();
+							    }
+							    
 								hardwareType = undefined;
 								return;
 							} else if (write.chip == Chip.RESET) {

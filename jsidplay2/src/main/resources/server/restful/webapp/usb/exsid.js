@@ -398,7 +398,7 @@ async function exSID_init() {
 		/* Attempt to open all supported devices until first success. */
 		device = {};
 		ftdi = new FTDI();
-		await ftdi.init(XS_USBVID, {baudRate: XS_BDRATE});
+		await ftdi.init(XS_USBVID);
 		
 		for (xSsup of xSsupported) {
 			console.log("Trying " + xSsup.description + "...");
@@ -414,12 +414,6 @@ async function exSID_init() {
 		}
 
 		await xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
-
-		//)	#ifdef	EXSID_THREADED
-		//		backbufIdx = frontbufIdx = 0;
-		//		exSIDthreadOutput.setDaemon(true);
-		//		exSIDthreadOutput.start();
-		//	#endif
 
 		await xSfw_usb_purge_buffers();
 		clkdrift = 0;
@@ -463,8 +457,11 @@ async function exSID_exit() {
  */
 async function exSID_reset(volume) {
 //	console.log(exSID_hwversion());
-	await exSID_clockselect(ClockSelect.XS_CL_PAL);
-	await exSID_chipselect(ChipSelect.XS_CS_CHIP1);
+//	await exSID_clockselect(ClockSelect.XS_CL_PAL);
+//	await exSID_chipselect(ChipSelect.XS_CS_CHIP1);
+
+	await device.ftdi.ftdi_usb_reset();
+
 	await xSfw_usb_purge_buffers();
 	await delay(250); // wait for send/receive to complete
 	// this will stall
@@ -474,10 +471,11 @@ async function exSID_reset(volume) {
 	// this only needs 2 bytes which matches the input buffer of the PIC so all is
 	// well
 	await exSID_write(0x18, volume, 1);
+
 	clkdrift = 0;
 	backbuf = new Array(XS_BUFFSZ);
 	backbufIdx = 0;
-	
+
 }
 
 /**
@@ -880,21 +878,17 @@ async function exSID_clkdread(cycles, addr) {
  *         Target latency
  */
 async function xSfw_usb_setup(baudrate, latency) {
-//	device.setBaudRate(baudrate);
-//	device.setDataCharacteristics(WordLength.BITS_8, StopBits.STOP_BITS_1, Parity.PARITY_NONE);
-//	device.setFlowControl(FlowControl.FLOW_NONE);
-//	device.setLatencyTimer(latency);
+	await device.ftdi.ftdi_set_baudrate(baudrate);
+	await device.ftdi.ftdi_set_line_property(8, StopBits.STOP_BIT_1, Parity.NONE, Break.BREAK_OFF);
+	await device.ftdi.ftdi_setflowctrl_xonxoff(0, 0);
+	await device.ftdi.ftdi_set_latency_timer(latency);
+	//await device.ftdi.ftdi_setdtr_rts(0, SIO_SET_RTS_HIGH);
+	//await device.ftdi.ftdi_setdtr(SIO_SET_DTR_HIGH);
+	//await device.ftdi.ftdi_set_event_char(0, false);
 }
 
 async function xSfw_usb_purge_buffers() {
-  console.log('Setting RESET');
-  await ftdi.device.controlTransferOut({
-      requestType: 'vendor',
-      recipient: 'device',
-      request: 0,
-      value: 0x0000,
-      index: 0,
-  });
+  await device.ftdi.ftdi_usb_purge_buffers();
 }
 
 async function xSfw_usb_close() {
@@ -902,208 +896,3 @@ async function xSfw_usb_close() {
 }
 
 
-/*
-* == BSD2 LICENSE ==
-* Copyright (c) 2020, Tidepool Project
-*
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the associated License, which is identical to the BSD 2-Clause
-* License as published by the Open Source Initiative at opensource.org.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. See the License for more details.
-*
-* You should have received a copy of the License along with this program; if
-* not, you can obtain one from Tidepool Project at tidepool.org.
-* == BSD2 LICENSE ==
-*/
-
-const H_CLK = 120000000;
-const C_CLK = 48000000;
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-function FTDIToClkbits(baud, clk, clkDiv) {
-    const fracCode = [0, 3, 2, 4, 1, 5, 6, 7];
-    let bestBaud = 0;
-    let divisor;
-    let bestDivisor;
-    let encodedDivisor;
-
-    if (baud >= clk / clkDiv) {
-        encodedDivisor = 0;
-        bestBaud = clk / dlkDiv;
-    } else if (baud >= clk / (clkDiv + clkDiv / 2)) {
-        encodedDivisor = 1;
-        bestBaud = clk / (clkDiv + clkDiv / 2);
-    } else if (baud >= clk / (2 * clkDiv)) {
-        encodedDivisor = 2;
-        bestBaud = clk / (2 * clkDiv);
-    } else {
-        divisor = clk * 16 / clkDiv / baud;
-        if (divisor & 1) {
-            bestDivisor = divisor / 2 + 1;
-        } else {
-            bestDivisor = divisor / 2;
-        }
-
-        if (bestDivisor > 0x20000) {
-            bestDivisor = 0x1ffff;
-        }
-
-        bestBaud = clk * 16 / clkDiv / bestDivisor;
-
-        if (bestBaud & 1) {
-            bestBaud = bestBaud / 2 + 1;
-        } else {
-            bestBaud = bestBaud / 2;
-        }
-
-        encodedDivisor = (bestDivisor >> 3) | (fracCode[bestDivisor & 0x7] << 14);
-    }
-
-    return [bestBaud, encodedDivisor];
-}
-
-function FTDIConvertBaudrate(baud) {
-    let bestBaud;
-    let encodedDivisor;
-    let value;
-    let index;
-
-    if (baud <= 0) {
-        throw new Error('Baud rate must be > 0');
-    }
-
-    [bestBaud, encodedDivisor] = FTDIToClkbits(baud, C_CLK, 16);
-
-    value = encodedDivisor & 0xffff;
-    index = encodedDivisor >> 16;
-
-    return [bestBaud, value, index];
-}
-
-class FTDI {
-  constructor() {
-  }
-  async init(vendorId, options) {
-    const self = this;
-
-      const device = await navigator.usb.requestDevice({
-        filters: [
-          {
-            vendorId,
-          }
-        ]
-      });
-
-      if (device == null) {
-        throw new Error('Could not find device');
-      }
-
-      await device.open();
-      console.log('Opened:', device.opened);
-
-      if (device.configuration === null) {
-        console.log('selectConfiguration');
-        await device.selectConfiguration(1);
-      }
-      await device.claimInterface(0);
-      await device.selectConfiguration(1);
-      await device.selectAlternateInterface(0, 0);
-
-      console.log('Setting Modem control RTS enable');
-      await device.controlTransferOut({
-          requestType: 'vendor',
-          recipient: 'device',
-          request: 1,
-          value: 0x0202,
-          index: 0,
-      });
-
-      console.log('Setting flow control XON/XOFF to zero');
-      await device.controlTransferOut({
-          requestType: 'vendor',
-          recipient: 'device',
-          request: 2,
-          value: 0x0000,
-          index: 0,
-      });
-
-      const [baud, value, index] = FTDIConvertBaudrate(options.baudRate);
-      console.log('Setting baud rate to', baud);
-      await device.controlTransferOut({
-          requestType: 'vendor',
-          recipient: 'device',
-          request: 3,
-          value ,
-          index,
-      });
-
-      console.log('Setting modem control DTR enable');
-      await device.controlTransferOut({
-          requestType: 'vendor',
-          recipient: 'device',
-          request: 1,
-          value: 0x0101,
-          index: 0,
-      });
-
-      console.log('Setting data 8 bit, no parity');
-      await device.controlTransferOut({
-          requestType: 'vendor',
-          recipient: 'device',
-          request: 4,
-          value: 0x0008,
-          index: 0,
-      });
-
-      console.log('Setting event characteristics');
-      await device.controlTransferOut({
-          requestType: 'vendor',
-          recipient: 'device',
-          request: 6,
-          value: 0x0000,
-          index: 0,
-      });
-      
-      self.device = device;
-      self.isClosing = false;
-      this.device.transferIn(1, 64); // flush buffer
-  }
-
-  async read() {
-	let transferred = await this.device.transferIn(1, 64);
-
-	if (transferred.status !== "ok") {
-		return;
-	}
-	return transferred.data;
-  }
-
-  async writeAsync(buffer) {
-    return await this.device.transferOut(2, buffer);
-  }
-
-  async closeAsync() {
-    this.isClosing = true;
-    try {
-      console.log('Sending EOT');
-
-      const result = new Uint8Array(1);
-      result[0] = 0x04;
-      await this.writeAsync(result);
-      await delay(2000); // wait for send/receive to complete
-      await this.device.releaseInterface(0);
-      await this.device.close();
-      console.log('Closed device');
-    } catch(err) {
-      console.log('Error:', err);
-    }
-  }
-
-  isOpen() {
-  	return this.device.opened;
-  }
-  
-}
