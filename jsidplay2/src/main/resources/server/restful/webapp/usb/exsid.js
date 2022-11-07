@@ -335,7 +335,7 @@ async function xSwrite(buff, size) {
 		for (var i = 0; i < size; i++) {
 			result[i] = buff[i];
 		}
-		await ftdi.writeAsync(result);
+		/*await */ftdi.writeAsync(result);
 	} catch (error) {
 	}
 }
