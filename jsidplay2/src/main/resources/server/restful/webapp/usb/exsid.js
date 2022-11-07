@@ -375,7 +375,7 @@ async function xSoutb(b, flush) {
 	if (backbufIdx < XS_BUFFSZ && flush == 0)
 		return;
 
-	xSwrite(backbuf, backbufIdx);
+	await xSwrite(backbuf, backbufIdx);
 	backbufIdx = 0;
 }
 
@@ -742,7 +742,7 @@ async function exSID_clkdwrite(cycles, addr, data) {
 	// account for the write
 	clkdrift += cycles;
 	if (clkdrift > hardwareSpecs.writeCycles)
-		xSdelay(clkdrift - hardwareSpecs.writeCycles);
+		await xSdelay(clkdrift - hardwareSpecs.writeCycles);
 
 	// write is going to consume write_cycles clock ticks
 	clkdrift -= hardwareSpecs.writeCycles;
@@ -764,7 +764,7 @@ async function exSID_clkdwrite(cycles, addr, data) {
 		addr = (addr | (adj << 5));
 	}
 
-	exSID_write(addr, data, 0);
+	await exSID_write(addr, data, 0);
 }
 
 /**
