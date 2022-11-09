@@ -2738,13 +2738,23 @@
 									await exSID_reset(15);
 							    }
 							} else if (write.chip == Chip.NEXT) {
-							    if (hardwareType == HardwareType.EXSID) {
+							    if (hardwareType == HardwareType.HARDSID) {
 									await hardsid_usb_sync(0);
 									while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
+									Vue.nextTick(() => this.setNextPlaylistEntry());
 							    } else {
-									await exSID_reset(0);
+									if (await exSID_sync()) {
+									    sidWriteQueue.clear();
+										sidWriteQueue.enqueue({
+											chip: Chip.NEXT,
+										});
+										timer = setTimeout(() => this.doPlay(), 250);
+										return;
+									} else {
+										await exSID_reset(0);
+										Vue.nextTick(() => this.setNextPlaylistEntry());
+									}
 							    }
-								Vue.nextTick(() => this.setNextPlaylistEntry());
 							} else {
 							    if (hardwareType == HardwareType.HARDSID) {
 									while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}

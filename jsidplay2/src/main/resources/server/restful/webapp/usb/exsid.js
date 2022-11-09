@@ -344,7 +344,7 @@ function Queue() {
 			tail = head = undefined;
 		},
 		isNotEmpty() {
-			return head;
+			return typeof head !== "undefined";
 		},
 	});
 }
@@ -355,6 +355,7 @@ async function exSIDthreadOutput() {
 		bufferFrame = bufferQueue.dequeue();
 		// exit condition
 		if (bufferFrame.bufferIdx < 0) {
+			timer = null;
 			return;
 		}
 		await xSwrite(bufferFrame.buffer, bufferFrame.bufferIdx);
@@ -527,10 +528,6 @@ async function exSID_exit() {
  *         volume to set the SIDs to after reset.
  */
 async function exSID_reset(volume) {
-//	await device.ftdi.ftdi_usb_reset();
-//	await xSfw_usb_purge_buffers();
-//	await delay(250); // wait for send/receive to complete
-
 	// this will stall
 	await xSoutb(XS_AD_IOCTRS, 1);
 	// sleep for 100us
@@ -548,10 +545,10 @@ async function exSID_reset(volume) {
 	}
 	bufferQueue.clear();
 	timer = setTimeout(() => exSIDthreadOutput());
+}
 
-	
-//	backbuf.length = 0;
-//	backbufIdx = 0;
+async function exSID_sync() {
+	return bufferQueue.isNotEmpty();
 }
 
 /**
