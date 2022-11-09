@@ -16,7 +16,7 @@
  * @author ken
  *
  */
- 
+
 /** Hardware model return values for exSID_hwmodel() */
 const HardwareModel = {
 	/**
@@ -26,7 +26,7 @@ const HardwareModel = {
 	/**
 	 * exSID+ USB
 	 */
-	XS_MD_PLUS: 1
+	XS_MD_PLUS: 1,
 };
 
 /** Audio output operations for exSID_audio_op() */
@@ -54,7 +54,7 @@ const AudioOp = {
 	/**
 	 * unmute output
 	 */
-	XS_AU_UNMUTE: 5
+	XS_AU_UNMUTE: 5,
 };
 
 /** Chip selection values for exSID_chipselect() */
@@ -70,7 +70,7 @@ const ChipSelect = {
 	/**
 	 * Both chips. XXX Invalid for reads: undefined behavior!
 	 */
-	XS_CS_BOTH: 2
+	XS_CS_BOTH: 2,
 };
 
 /** Clock selection values for exSID_clockselect() */
@@ -86,7 +86,7 @@ const ClockSelect = {
 	/**
 	 * select 1MHz clock
 	 */
-	XS_CL_1MHZ: 2
+	XS_CL_1MHZ: 2,
 };
 
 //
@@ -108,11 +108,11 @@ const XS_SIDCLK = 1000000;
 /**
  * RS232 byte clock. Each RS232 byte is 10 bits long due to start and stop bits
  */
-const XS_RSBCLK = (XS_BDRATE / 10);
+const XS_RSBCLK = XS_BDRATE / 10;
 /**
  * SID cycles between two consecutive chars
  */
-const XS_CYCCHR = (XS_SIDCLK / XS_RSBCLK);
+const XS_CYCCHR = XS_SIDCLK / XS_RSBCLK;
 /**
  * FTDI latency: 2-255ms in 1ms increments
  */
@@ -120,7 +120,7 @@ const XS_USBLAT = 2;
 /**
  * Must be multiple of _62_ or USB won't be happy.
  */
-const XS_BUFFSZ = ((((XS_RSBCLK / 1000) * XS_BUFFMS) / 62) * 62);
+const XS_BUFFSZ = (((XS_RSBCLK / 1000) * XS_BUFFMS) / 62) * 62;
 /**
  * long delay SID cycle loop multiplier
  */
@@ -128,11 +128,11 @@ const XS_LDMULT = 501;
 /**
  * Smallest possible delay (with IOCTD1).
  */
-const XS_MINDEL = (XS_CYCCHR);
+const XS_MINDEL = XS_CYCCHR;
 /**
  * minimum cycles between two consecutive I/Os (addr + data)
  */
-const XS_CYCIO = (2 * XS_CYCCHR);
+const XS_CYCIO = 2 * XS_CYCCHR;
 /**
  * maximum encodable value for post write clock adjustment: must fit on 3 bits
  */
@@ -140,7 +140,7 @@ const XS_MAXADJ = 7;
 /**
  * long delay loop SID cycles offset
  */
-const XS_LDOFFS = (3 * XS_CYCCHR);
+const XS_LDOFFS = 3 * XS_CYCCHR;
 
 //
 // exSID+ hardware definitions
@@ -175,76 +175,76 @@ const XSP_CYCCS = 2;
 /**
  * Select PAL clock
  */
-const XSP_AD_IOCTCP = 0x3D;
+const XSP_AD_IOCTCP = 0x3d;
 /**
  * Select NTSC clock
  */
-const XSP_AD_IOCTCN = 0x3E;
+const XSP_AD_IOCTCN = 0x3e;
 /**
  * Select 1MHz clock
  */
-const XSP_AD_IOCTC1 = 0x3F;
+const XSP_AD_IOCTC1 = 0x3f;
 
 /**
  * Audio Mix: 6581 L / 8580 R
  */
-const XSP_AD_IOCTA0 = 0x5D;
+const XSP_AD_IOCTA0 = 0x5d;
 /**
  * Audio Mix: 8580 L / 6581 R
  */
-const XSP_AD_IOCTA1 = 0x5E;
+const XSP_AD_IOCTA1 = 0x5e;
 /**
  * Audio Mix: 8580 L / 8580 R
  */
-const XSP_AD_IOCTA2 = 0x5F;
+const XSP_AD_IOCTA2 = 0x5f;
 
 /**
  * Audio Mix: 6581 L / 6581 R
  */
-const XSP_AD_IOCTA3 = 0x7D;
+const XSP_AD_IOCTA3 = 0x7d;
 /**
  * Audio Mute
  */
-const XSP_AD_IOCTAM = 0x7E;
+const XSP_AD_IOCTAM = 0x7e;
 /**
  * Audio Unmute
  */
-const XSP_AD_IOCTAU = 0x7F;
+const XSP_AD_IOCTAU = 0x7f;
 
 /**
  * shortest delay (XS_MINDEL SID cycles)
  */
-const XS_AD_IOCTD1 = 0x9D;
+const XS_AD_IOCTD1 = 0x9d;
 /**
  * polled delay, amount of SID cycles to wait must be given in data
  */
-const XS_AD_IOCTLD = 0x9E;
+const XS_AD_IOCTLD = 0x9e;
 
 /**
  * select chip 0
  */
-const XS_AD_IOCTS0 = 0xBD;
+const XS_AD_IOCTS0 = 0xbd;
 /**
  * select chip 1
  */
-const XS_AD_IOCTS1 = 0xBE;
+const XS_AD_IOCTS1 = 0xbe;
 /**
  * select both chips. @warning Invalid for reads: unknown behaviour!
  */
-const XS_AD_IOCTSB = 0xBF;
+const XS_AD_IOCTSB = 0xbf;
 
 /**
  * Firmware version query
  */
-const XS_AD_IOCTFV = 0xFD;
+const XS_AD_IOCTFV = 0xfd;
 /**
  * Hardware version query
  */
-const XS_AD_IOCTHV = 0xFE;
+const XS_AD_IOCTHV = 0xfe;
 /**
  * SID reset
  */
-const XS_AD_IOCTRS = 0xFF;
+const XS_AD_IOCTRS = 0xff;
 
 /**
  * Default FTDI VID
@@ -270,8 +270,17 @@ const XS_MODEL_STD = 0;
 const XS_MODEL_PLUS = 1;
 
 class HardwareSpecs {
-
-	constructor(model, writeCycles, readPreCycles, readPostCycles, readOffsetCycles, csioctlCycles, mindelCycles, maxAdj, ldelayOffs) {
+	constructor(
+		model,
+		writeCycles,
+		readPreCycles,
+		readPostCycles,
+		readOffsetCycles,
+		csioctlCycles,
+		mindelCycles,
+		maxAdj,
+		ldelayOffs
+	) {
 		// exSID device model in use
 		this.model = model;
 		// number of SID clocks spent in write ops
@@ -294,21 +303,68 @@ class HardwareSpecs {
 }
 
 class SupportedDevices {
-	constructor(description, pid, vid, model, writeCycles, readPreCycles, readPostCycles, readOffsetCycles, csioctlCycles, mindelCycles, maxAdj, ldelayOffs) {
+	constructor(
+		description,
+		pid,
+		vid,
+		model,
+		writeCycles,
+		readPreCycles,
+		readPostCycles,
+		readOffsetCycles,
+		csioctlCycles,
+		mindelCycles,
+		maxAdj,
+		ldelayOffs
+	) {
 		this.description = description;
 		this.pid = pid;
 		this.vid = vid;
-		this.hardwareSpecs = new HardwareSpecs(model, writeCycles, readPreCycles, readPostCycles, readOffsetCycles, csioctlCycles, mindelCycles, maxAdj, ldelayOffs);
+		this.hardwareSpecs = new HardwareSpecs(
+			model,
+			writeCycles,
+			readPreCycles,
+			readPostCycles,
+			readOffsetCycles,
+			csioctlCycles,
+			mindelCycles,
+			maxAdj,
+			ldelayOffs
+		);
 	}
 }
 
 /* exSID USB */
-var exSID = new SupportedDevices(XS_USBDSC, XS_USBPID, XS_USBVID, XS_MODEL_STD, XS_CYCIO, XS_CYCCHR, XS_CYCCHR, -2,
-	XS_CYCCHR, XS_MINDEL, XS_MAXADJ, XS_LDOFFS);
+var exSID = new SupportedDevices(
+	XS_USBDSC,
+	XS_USBPID,
+	XS_USBVID,
+	XS_MODEL_STD,
+	XS_CYCIO,
+	XS_CYCCHR,
+	XS_CYCCHR,
+	-2,
+	XS_CYCCHR,
+	XS_MINDEL,
+	XS_MAXADJ,
+	XS_LDOFFS
+);
 
 /* exSID+ USB */
-var exSIDPlus = new SupportedDevices(XSP_USBDSC, XSP_USBPID, XSP_USBVID, XS_MODEL_PLUS, XSP_CYCIO, XSP_PRE_RD, XSP_POSTRD,
-	0, XSP_CYCCS, XSP_MINDEL, XSP_MAXADJ, XSP_LDOFFS);
+var exSIDPlus = new SupportedDevices(
+	XSP_USBDSC,
+	XSP_USBPID,
+	XSP_USBVID,
+	XS_MODEL_PLUS,
+	XSP_CYCIO,
+	XSP_PRE_RD,
+	XSP_POSTRD,
+	0,
+	XSP_CYCCS,
+	XSP_MINDEL,
+	XSP_MAXADJ,
+	XSP_LDOFFS
+);
 
 var xSsupported = [exSID, exSIDPlus];
 
@@ -316,41 +372,13 @@ var ftdi, clkdrift;
 
 var hardwareSpecs;
 
-var bufptr;
+var backbuf = new Array(XS_BUFFSZ);
+var backbufIdx = 0;
 
-var bufchar0 = new Array(XS_BUFFSZ);
-var bufchar1 = new Array(XS_BUFFSZ);
-var frontbuf = bufchar0, backbuf = bufchar1;
-var frontbufIdx = 0, backbufIdx = 0;
-
-function Queue() {
-	var head, tail;
-	return Object.freeze({
-		enqueue(value) {
-			const link = { value, next: undefined };
-			tail = head ? (tail.next = link) : (head = link);
-		},
-		dequeue() {
-			if (head) {
-				const value = head.value;
-				head = head.next;
-				return value;
-			}
-		},
-		peek() {
-			return head?.value;
-		},
-		clear() {
-			tail = head = undefined;
-		},
-		isNotEmpty() {
-			return typeof head !== "undefined";
-		},
-	});
-}
 var bufferQueue = new Queue();
 
 async function exSIDthreadOutput() {
+	var bufferFrame;
 	while (bufferQueue.isNotEmpty()) {
 		bufferFrame = bufferQueue.dequeue();
 		// exit condition
@@ -365,9 +393,9 @@ async function exSIDthreadOutput() {
 
 /**
  * Write routine to send data to the device.
- * 
+ *
  * <b>Note:</b> BLOCKING.
- * 
+ *
  * @param {Array} buff
  *         pointer to a byte array of data to send
  * @param {number} size
@@ -380,35 +408,33 @@ async function xSwrite(buff, size) {
 			result[i] = buff[i];
 		}
 		await ftdi.writeAsync(result);
-	} catch (error) {
-	}
+	} catch (error) {}
 }
 
 /**
  * Read routine to get data from the device.
- * 
+ *
  * <b>Note:</b> BLOCKING.
- * 
+ *
  * @param {Array} buff
  *         pointer to a byte array that will be filled with read data
  * @param size number of bytes to read
  */
 async function xSread(buff, size) {
-// XXX READ SUPPORT!
+	// XXX READ SUPPORT!
 	var result = await ftdi.read();
 	for (var i = 0; i < size; i++) {
 		buff[i] = result;
 	}
 }
 
-
 /**
  * Single byte output routine. ** producer ** Fills a static buffer with bytes
  * to send to the device until the buffer is full or a forced write is
  * triggered.
- * 
+ *
  * <b>Note:</b> No drift compensation is performed on read operations.
- * 
+ *
  * @param {byte} b
  *         byte to send
  * @param {boolean} flush
@@ -417,30 +443,19 @@ async function xSread(buff, size) {
 async function xSoutb(b, flush) {
 	backbuf[backbufIdx++] = b;
 
-	if (backbufIdx < XS_BUFFSZ && flush == 0)
-		return;
+	if (backbufIdx < XS_BUFFSZ && flush == 0) return;
 
 	if (flush < 0)
 		// indicate exit request
 		bufferQueue.enqueue({
-			bufferIdx: -1
+			bufferIdx: -1,
 		});
 	else {
-		// flip buffers
-		bufptr = frontbuf;
-		frontbuf = backbuf;
-		frontbufIdx = backbufIdx;
-		backbuf = bufptr;
-		backbufIdx = 0;
-		
-		const result = new Uint8Array(frontbufIdx);
-		for (var i = 0; i < frontbufIdx; i++) {
-			result[i] = frontbuf[i];
-		}
 		bufferQueue.enqueue({
-			buffer: result,
-			bufferIdx: frontbufIdx
+			buffer: [...backbuf],
+			bufferIdx: backbufIdx,
 		});
+		backbufIdx = 0;
 	}
 }
 
@@ -449,7 +464,7 @@ async function xSoutb(b, flush) {
  * the device. Opens first available device, and sets various parameters:
  * baudrate, parity, flow control and USB latency, and finally clears the RX and
  * TX buffers.
- * 
+ *
  * @return {number}
  *         0 on success, !0 otherwise.
  */
@@ -464,7 +479,7 @@ async function exSID_init() {
 		device = {};
 		ftdi = new FTDI();
 		await ftdi.init(XS_USBVID);
-		
+
 		for (xSsup of xSsupported) {
 			console.log("Trying " + xSsup.description + "...");
 			if (ftdi.device.productName === xSsup.description) {
@@ -481,7 +496,7 @@ async function exSID_init() {
 		await xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
 
 		bufferQueue.clear();
-		backbufIdx = frontbufIdx = 0;
+		backbufIdx = 0;
 		timer = setTimeout(() => exSIDthreadOutput());
 
 		await xSfw_usb_purge_buffers();
@@ -492,7 +507,6 @@ async function exSID_init() {
 		await xSoutb(XS_AD_IOCTFV, 1);
 		await xSread(new Uint8Array(1), 1);
 		return 0;
-
 	} catch (err) {
 		console.log(err);
 		return -1;
@@ -519,15 +533,19 @@ async function exSID_exit() {
 
 /**
  * SID reset routine. Performs a hardware reset on the SIDs.
- * 
+ *
  * <b>Note:</b> since the reset procedure in firmware will stall the device,
  * reset forcefully waits for enough time before resuming execution via a call
  * to usleep();
- * 
+ *
  * @param {number} volume
  *         volume to set the SIDs to after reset.
  */
 async function exSID_reset(volume) {
+	if (typeof timer !== "undefined") {
+		clearTimeout(timer);
+	}
+	bufferQueue.clear();
 	// this will stall
 	await xSoutb(XS_AD_IOCTRS, 1);
 	// sleep for 100us
@@ -538,12 +556,8 @@ async function exSID_reset(volume) {
 
 	clkdrift = 0;
 	await delay(50); // wait for send/receive to complete
-	
-	backbufIdx = frontbufIdx = 0;
-	if (typeof timer !== "undefined") {
-		clearTimeout(timer);
-	}
-	bufferQueue.clear();
+
+	backbufIdx = 0;
 	timer = setTimeout(() => exSIDthreadOutput());
 }
 
@@ -553,20 +567,19 @@ async function exSID_sync() {
 
 /**
  * exSID+ clock selection routine. Selects between PAL, NTSC and 1MHz clocks.
- * 
+ *
  * <B>Note:</B> upon clock change the hardware resync itself and resets the
  * SIDs, which takes approximately 50us: this function waits for enough time
  * before resuming execution via a call to usleep(); Output should be muted
  * before execution
- * 
+ *
  * @param {Object} clock
  *         clock selector value
  * @return {number}
  *         0 on success, !0 otherwise.
  */
 async function exSID_clockselect(clock) {
-	if (XS_MODEL_PLUS != hardwareSpecs.model)
-		return -1;
+	if (XS_MODEL_PLUS != hardwareSpecs.model) return -1;
 
 	switch (clock) {
 		case ClockSelect.XS_CL_PAL:
@@ -591,18 +604,17 @@ async function exSID_clockselect(clock) {
 /**
  * exSID+ audio operations routine. Selects the audio mixing / muting option.
  * Only implemented in exSID+ devices.
- * 
+ *
  * <B>Warning:</B> all these operations (excepting unmuting obviously) will mute
  * the output by default. <B>Note:</B> no accounting for SID cycles consumed.
- * 
+ *
  * @param {Object} operation
  *         audio operation value
  * @return {number}
  *         0 on success, !0 otherwise.
  */
 async function exSID_audio_op(operation) {
-	if (XS_MODEL_PLUS != hardwareSpecs.model)
-		return -1;
+	if (XS_MODEL_PLUS != hardwareSpecs.model) return -1;
 
 	switch (operation) {
 		case AudioOp.XS_AU_6581_8580:
@@ -634,7 +646,7 @@ async function exSID_audio_op(operation) {
  * SID chipselect routine. Selects which SID will play the tunes. If neither
  * CHIP0 or CHIP1 is chosen, both SIDs will operate together. Accounts for
  * elapsed cycles.
- * 
+ *
  * @param {Object} chip
  *         SID selector value
  */
@@ -656,7 +668,7 @@ async function exSID_chipselect(chip) {
 /**
  * Device hardware model. Queries the driver for the hardware model currently
  * identified.
- * 
+ *
  * @return {Object}
  *         hardware model, negative value on error.
  */
@@ -677,7 +689,7 @@ function exSID_hwmodel() {
  * of a 16bit integer: MSB is an ASCII character representing the hardware
  * revision (e.g. 0x42 = "B"), and LSB is a number representing the firmware
  * version in decimal integer. Does NOT account for elapsed cycles.
- * 
+ *
  * @return {Object}
  *         version information as described above.
  */
@@ -689,15 +701,15 @@ async function exSID_hwversion() {
 	await xSread(inbuf, 2);
 
 	// ensure proper order regardless of endianness
-	return (inbuf[0] << 8 | inbuf[1]);
+	return (inbuf[0] << 8) | inbuf[1];
 }
 
 /**
  * Private busy delay loop.
- * 
+ *
  * <B>Note:</B> will block every time a device write is triggered, blocking time
  * will be equal to the number of bytes written times mindelCycles.
- * 
+ *
  * @param {number} cycles
  *         how many SID clocks to loop for.
  */
@@ -715,9 +727,9 @@ async function xSdelay(cycles) {
  * better performance, the requested delay time should ideally be several
  * XS_LDMULT and be close to a multiple of XS_USBLAT milliseconds (on the
  * exSID).
- * 
+ *
  * <B>Warning:</B> polling and NOT CYCLE ACCURATE on exSID
- * 
+ *
  * @param {number} cycles
  *         how many SID clocks to wait for.
  */
@@ -725,9 +737,9 @@ async function xSlongdelay(cycles) {
 	var multiple;
 	var flush;
 	var delta;
-	var dummy = new byte[1];
+	var dummy = new byte[1]();
 
-	flush = (XS_MODEL_STD == hardwareSpecsmodel) ? 1 : 0;
+	flush = XS_MODEL_STD == hardwareSpecsmodel ? 1 : 0;
 
 	multiple = cycles - hardwareSpecs.ldelayOffs;
 	delta = multiple % XS_LDMULT;
@@ -741,7 +753,7 @@ async function xSlongdelay(cycles) {
 		await exSID_write(XS_AD_IOCTLD, 255, flush);
 		if (flush != 0)
 			// wait for answer with blocking read
-			xSread(dummy, 1);
+			await xSread(dummy, 1);
 		multiple -= 255;
 	}
 
@@ -749,7 +761,7 @@ async function xSlongdelay(cycles) {
 		await exSID_write(XS_AD_IOCTLD, multiple, flush);
 		if (flush != 0)
 			// wait for answer with blocking read
-			xSread(dummy, 1);
+			await xSread(dummy, 1);
 	}
 
 	// deal with remainder
@@ -759,7 +771,7 @@ async function xSlongdelay(cycles) {
 /**
  * Cycle accurate delay routine. Applies the most efficient strategy to delay
  * for cycles SID clocks while leaving enough lead time for an I/O operation.
- * 
+ *
  * @param {number} cycles
  *         how many SID clocks to loop for.
  */
@@ -789,7 +801,7 @@ async function exSID_delay(cycles) {
 
 /**
  * Private write routine for a tuple address + data.
- * 
+ *
  * @param {number} addr
  *         target address to write to.
  * @param {number} data
@@ -806,7 +818,7 @@ async function exSID_write(addr, data, flush) {
  * Timed write routine, attempts cycle-accurate writes. This function will be
  * cycle-accurate provided that no two consecutive reads or writes are less than
  * writeCycles apart and the leftover delay is &lt;= maxAdj SID clock cycles.
- * 
+ *
  * @param {number} cycles
  *         how many SID clocks to wait before the actual data write.
  * @param {number} addr
@@ -818,8 +830,7 @@ async function exSID_clkdwrite(cycles, addr, data) {
 	// actual write will cost writeCycles. Delay for cycles - write_cycles then
 	// account for the write
 	clkdrift += cycles;
-	if (clkdrift > hardwareSpecs.writeCycles)
-		await xSdelay(clkdrift - hardwareSpecs.writeCycles);
+	if (clkdrift > hardwareSpecs.writeCycles) await xSdelay(clkdrift - hardwareSpecs.writeCycles);
 
 	// write is going to consume write_cycles clock ticks
 	clkdrift -= hardwareSpecs.writeCycles;
@@ -838,7 +849,7 @@ async function exSID_clkdwrite(cycles, addr, data) {
 		 * all cases.
 		 */
 		// final delay encoded in top 3 bits of address
-		addr = (addr | (adj << 5));
+		addr = addr | (adj << 5);
 	}
 
 	await exSID_write(addr, data, 0);
@@ -846,7 +857,7 @@ async function exSID_clkdwrite(cycles, addr, data) {
 
 /**
  * Private read routine for a given address.
- * 
+ *
  * @param {number} addr
  *          target address to read from.
  * @param {boolean} flush
@@ -855,12 +866,12 @@ async function exSID_clkdwrite(cycles, addr, data) {
  *         data read from address.
  */
 async function exSID_read(addr, flush) {
-	data = new byte[1];
+	data = new byte[1]();
 
 	// XXX read support
-	xSoutb(addr, flush);
+	await xSoutb(addr, flush);
 	// blocking
-	xSread(data, 1);
+	await xSread(data, 1);
 
 	return data[0];
 }
@@ -874,41 +885,41 @@ async function exSID_read(addr, flush) {
  * same run time as clkdwrite(). There's a 2-cycle negative adjustment in the
  * code because that's the actual offset from the write calls ('/' denotes
  * falling clock edge latch), which the following ASCII tries to illustrate:
- * 
+ *
  * <br>
- * 
+ *
  * Write looks like this in firmware:
- * 
+ *
  * <pre>
  *  &gt; ...|_/_|...
  * </pre>
- * 
+ *
  * ...end of data byte read | cycle during which write is enacted / next cycle |
  * etc...
- * 
+ *
  * <br>
- * 
+ *
  * Read looks like this in firmware:
- * 
+ *
  * <pre>
  * &gt; ...|_|_|_/_|_|...
  * </pre>
- * 
+ *
  * ...end of address byte read | 2 cycles for address processing | cycle during
  * which SID is read / then half a cycle later the CYCCHR-long data TX starts,
  * cycle completes | another cycle | etc...
- * 
+ *
  * <br>
- * 
+ *
  * This explains why reads happen a relative 2-cycle later than then should with
  * respect to writes.
- * 
+ *
  * <B>Note:</B> The actual time the read will take to complete depends on the
  * USB bus activity and settings. It *should* complete in XS_USBLAT ms, but not
  * less, meaning that read operations are bound to introduce timing inaccuracy.
  * As such, this function is only really provided as a proof of concept but
  * SHOULD BETTER BE AVOIDED.
- * 
+ *
  * @param {number} cycles
  *         how many SID clocks to wait before the actual data read.
  * @param {number} addr
@@ -922,8 +933,7 @@ async function exSID_clkdread(cycles, addr) {
 	// 2-cycle offset adjustement, see function documentation.
 	clkdrift += hardwareSpecs.readOffsetCycles;
 	clkdrift += cycles;
-	if (clkdrift > hardwareSpecs.readPreCycles)
-		xSdelay(clkdrift - hardwareSpecs.readPreCycles);
+	if (clkdrift > hardwareSpecs.readPreCycles) await xSdelay(clkdrift - hardwareSpecs.readPreCycles);
 
 	// read request is going to consume read_pre_cycles clock ticks
 	clkdrift -= hardwareSpecs.readPreCycles;
@@ -932,19 +942,19 @@ async function exSID_clkdread(cycles, addr) {
 	if (clkdrift >= 0) {
 		// see clkdwrite()
 		adj = clkdrift % (hardwareSpecs.maxAdj + 1);
-		addr = (addr | (adj << 5)); // final delay encoded in top 3 bits of address
+		addr = addr | (adj << 5); // final delay encoded in top 3 bits of address
 	}
 
 	// after read has completed, at least another read_post_cycles will have been
 	// spent
 	clkdrift -= hardwareSpecs.readPostCycles;
 
-	return exSID_read(addr, 1);
+	return await exSID_read(addr, 1);
 }
 
 /**
  * Setup FTDI chip to match exSID firmware. Defaults to 8N1, no flow control.
- * 
+ *
  * @param {number} baudrate
  *         Target baudrate.
  * @param {number} latency
@@ -955,17 +965,38 @@ async function xSfw_usb_setup(baudrate, latency) {
 	await device.ftdi.ftdi_set_line_property(8, StopBits.STOP_BIT_1, Parity.NONE, Break.BREAK_OFF);
 	await device.ftdi.ftdi_setflowctrl_xonxoff(0, 0);
 	await device.ftdi.ftdi_set_latency_timer(latency);
-	//await device.ftdi.ftdi_setdtr_rts(0, SIO_SET_RTS_HIGH);
-	//await device.ftdi.ftdi_setdtr(SIO_SET_DTR_HIGH);
-	//await device.ftdi.ftdi_set_event_char(0, false);
 }
 
 async function xSfw_usb_purge_buffers() {
-  await device.ftdi.ftdi_usb_purge_buffers();
+	await device.ftdi.ftdi_usb_purge_buffers();
 }
 
 async function xSfw_usb_close() {
 	await device.ftdi.closeAsync();
 }
 
-
+function Queue() {
+	var head, tail;
+	return Object.freeze({
+		enqueue(value) {
+			const link = { value, next: undefined };
+			tail = head ? (tail.next = link) : (head = link);
+		},
+		dequeue() {
+			if (head) {
+				const value = head.value;
+				head = head.next;
+				return value;
+			}
+		},
+		peek() {
+			return head?.value;
+		},
+		clear() {
+			tail = head = undefined;
+		},
+		isNotEmpty() {
+			return head;
+		},
+	});
+}

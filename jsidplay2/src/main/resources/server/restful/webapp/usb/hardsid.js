@@ -1,8 +1,8 @@
 /**
  * Implements hardsid.dll api calls Written by Sandor Téli
- * 
+ *
  * Javascript port by Ken Händel
- * 
+ *
  * @author ken
  */
 
@@ -60,7 +60,10 @@ var deviceTypes = new Array(MAX_DEVCOUNT);
 var writeBuffer = new Array(MAX_DEVCOUNT);
 var lastaccsids = new Array(MAX_DEVCOUNT);
 
-var initialized, error, sync, buffChk = true;
+var initialized,
+	error,
+	sync,
+	buffChk = true;
 
 var deviceCount,
 	bufferSize = WRITEBUFF_SIZE,
@@ -72,7 +75,7 @@ var sysMode, lastRelaySwitch;
 
 /**
  * Initializes the management library
- * 
+ *
  * @param  {boolean} syncmode
  *         synchronous or asynchronous mode
  * @param  {SysMode} sysmode
@@ -103,7 +106,7 @@ async function hardsid_usb_init(syncmode, sysmode) {
 	error = false;
 
 	deviceCount = 0;
-	await  addAllDevices();
+	await addAllDevices();
 
 	if (!error && deviceCount > 0) {
 		sync = true;
@@ -121,30 +124,25 @@ async function hardsid_usb_close() {
 		if (initialized) {
 			// if (!sync)
 			// IsoStream(devhandles[0], true);
-	
+
 			for (var d = 0; d < deviceCount; d++) {
 				let deviceHandle = devhandles[d];
-	
+
 				if (deviceHandle === DevType.HSUP || deviceTypes[d] === DevType.HSUNO) {
 					// wait 5ms
-					while (await hardsid_usb_delay(d, 5000) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_delay(d, 5000)) == WState.BUSY) {}
 					// switch 5V on, start reset (POWER_DIS=0;RESET_DIS=1;MUTE_ENA=1)
-					while (await hardsid_usb_write_direct(d, 0xf0, 6) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_write_direct(d, 0xf0, 6)) == WState.BUSY) {}
 					// wait 60ms
-					while (await hardsid_usb_delay(d, 60000) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_delay(d, 60000)) == WState.BUSY) {}
 					// switch 5V off (POWER_DIS=1;RESET_DIS=1;MUTE_ENA=1)
-					while (await hardsid_usb_write_direct(d, 0xf0, 7) == WState.BUSY) {
-					}
-					while (await hardsid_usb_flush(d) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_write_direct(d, 0xf0, 7)) == WState.BUSY) {}
+					while ((await hardsid_usb_flush(d)) == WState.BUSY) {}
 					lastaccsids[d] = 0xff;
 				}
-				
+
 				await deviceHandle.releaseInterface(USB_INTERFACE);
-			    await deviceHandle.close();
+				await deviceHandle.close();
 			}
 			initialized = false;
 		}
@@ -156,7 +154,7 @@ async function hardsid_usb_close() {
 
 /**
  * Returns the number of USB HardSID devices plugged into the computer.
- * 
+ *
  * @return {number}
  *         number of USB HardSID devices
  */
@@ -169,7 +167,7 @@ function hardsid_usb_getdevcount() {
 
 /**
  * Returns the number of detected SID chips on the given device.
- * 
+ *
  * @return {number}
  *         number of detected SID chips on the given device
  */
@@ -191,14 +189,14 @@ function hardsid_usb_getsidcount(deviceId) {
 
 /**
  * Add allcompatible USB devices.
- * 
+ *
  * @return {boolean}
  *         init was ok or failed
  */
 async function addAllDevices() {
 	try {
 		await openAllDevices();
-	
+
 		if (deviceCount == 0) {
 			console.log("No devices");
 			error = true;
@@ -217,11 +215,13 @@ async function addAllDevices() {
  */
 async function openAllDevices() {
 	device = await navigator.usb.requestDevice({
-		filters: [{
-			vendorId: VENDOR_ID
-		}]
-	 })
-	if (device !== undefined) {				 
+		filters: [
+			{
+				vendorId: VENDOR_ID,
+			},
+		],
+	});
+	if (device !== undefined) {
 		console.log(`Product name: ${device.productName}, Product Id: ${device.productId.toString(16)}`);
 
 		let devType = getDevType(device);
@@ -242,7 +242,7 @@ async function openAllDevices() {
 
 /**
  * Get USB device type.
- * 
+ *
  * @param  {Object} device
  *         USB device
  * @return {DevType}
@@ -265,7 +265,7 @@ function getDevType(device) {
 
 /**
  * Read state of USB device.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @return {WState}
@@ -293,7 +293,7 @@ async function hardsid_usb_readstate(deviceId) {
 
 /**
  * Sync with USB device.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @return {WState}
@@ -304,21 +304,17 @@ async function hardsid_usb_sync(deviceId) {
 		return WState.ERROR;
 	}
 
-	if (await hardsid_usb_readstate(deviceId) != WState.OK) {
+	if ((await hardsid_usb_readstate(deviceId)) != WState.OK) {
 		error = true;
 		return WState.ERROR;
 	} else {
 		var freespace;
 
-		if (playCursor < circBuffCursor)
-			freespace = playCursor + HW_BUFFSIZE - circBuffCursor;
-		else if (playCursor > circBuffCursor)
-			freespace = playCursor - circBuffCursor;
-		else
-			freespace = HW_BUFFSIZE;
+		if (playCursor < circBuffCursor) freespace = playCursor + HW_BUFFSIZE - circBuffCursor;
+		else if (playCursor > circBuffCursor) freespace = playCursor - circBuffCursor;
+		else freespace = HW_BUFFSIZE;
 
-		if (freespace < HW_FILLRATIO)
-			return WState.BUSY;
+		if (freespace < HW_FILLRATIO) return WState.BUSY;
 
 		return WState.OK;
 	}
@@ -326,7 +322,7 @@ async function hardsid_usb_sync(deviceId) {
 
 /**
  * Perform the communication in async or sync mode.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @return {WState}
@@ -355,7 +351,7 @@ async function hardsid_usb_write_internal(deviceId) {
 
 		var buffer = new Uint8Array(writesize);
 		for (var i = 0; i < writeBuffer[deviceId].byteLength; i++) {
-		    buffer[i] = writeBuffer[deviceId][i];
+			buffer[i] = writeBuffer[deviceId][i];
 		}
 		writeBuffer[deviceId] = new Uint8Array();
 		let transferred = await devhandles[deviceId].transferOut(2, buffer);
@@ -369,7 +365,7 @@ async function hardsid_usb_write_internal(deviceId) {
 
 /**
  * Schedules a write command.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @param {number} reg
@@ -384,16 +380,11 @@ async function hardsid_usb_write_direct(deviceId, reg, data) {
 		return WState.ERROR;
 	}
 
-	if (sync && (writeBuffer[deviceId].byteLength == (bufferSize - 2))) {
+	if (sync && writeBuffer[deviceId].byteLength == bufferSize - 2) {
 		let ws = await hardsid_usb_sync(deviceId);
-		if (ws != WState.OK)
-			return ws;
+		if (ws != WState.OK) return ws;
 	}
-	writeBuffer[deviceId] = concatenate(
-		Uint8Array,
-		writeBuffer[deviceId],
-		Uint8Array.of(data & 0xff, reg & 0xff)
-	);
+	writeBuffer[deviceId] = concatenate(Uint8Array, writeBuffer[deviceId], Uint8Array.of(data & 0xff, reg & 0xff));
 	if (writeBuffer[deviceId].byteLength == bufferSize) {
 		return await hardsid_usb_write_internal(deviceId);
 	}
@@ -403,7 +394,7 @@ async function hardsid_usb_write_direct(deviceId, reg, data) {
 
 /**
  * Write to USB device.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @param {number} reg
@@ -418,122 +409,99 @@ async function hardsid_usb_write(deviceId, reg, data) {
 		let newsidmask;
 
 		switch (deviceTypes[deviceId]) {
-		case DevType.HS4U:
-			return await hardsid_usb_write_direct(deviceId, reg, data);
-		case DevType.HSUP:
-			if ((reg & 0xc0) != 0) {
-				// invalid SID number
-				return WState.ERROR;
-			} else {
-				if (lastaccsids[deviceId] != (reg & 0x20)) {
-					// writing to a new SID
-					lastaccsids[deviceId] = (reg & 0x20);
-					if ((reg & 0x20) != 0) {
-						newsidmask = 0xc0;
-					} else {
-						newsidmask = 0xa0;
-					}
+			case DevType.HS4U:
+				return await hardsid_usb_write_direct(deviceId, reg, data);
+			case DevType.HSUP:
+				if ((reg & 0xc0) != 0) {
+					// invalid SID number
+					return WState.ERROR;
+				} else {
+					if (lastaccsids[deviceId] != (reg & 0x20)) {
+						// writing to a new SID
+						lastaccsids[deviceId] = reg & 0x20;
+						if ((reg & 0x20) != 0) {
+							newsidmask = 0xc0;
+						} else {
+							newsidmask = 0xa0;
+						}
 
-					while (lastRelaySwitch > 0 && (new Date().getMilliseconds() - lastRelaySwitch) < 250) {
-					}
-					// timediff = GetTickCount() - lastrelayswitch;
-					lastRelaySwitch = new Date().getMilliseconds();
+						while (lastRelaySwitch > 0 && new Date().getMilliseconds() - lastRelaySwitch < 250) {}
+						// timediff = GetTickCount() - lastrelayswitch;
+						lastRelaySwitch = new Date().getMilliseconds();
 
-					// runtime = GetTickCount();
+						// runtime = GetTickCount();
+
+						// wait 4usecs (not a real delay, but an init. delay command)
+						while ((await hardsid_usb_delay(deviceId, 4)) == WState.BUSY) {}
+						// mute on (POWER_DIS=0;RESET_DIS=1;MUTE_ENA=1)
+						while ((await hardsid_usb_write_direct(deviceId, 0xf0, 6)) == WState.BUSY) {}
+						// wait 60ms
+						while ((await hardsid_usb_delay(deviceId, 60000)) == WState.BUSY) {}
+						// switch 5V off (POWER_DIS=1;RESET_DIS=1;MUTE_ENA=1)
+						while ((await hardsid_usb_write_direct(deviceId, 0xf0, 7)) == WState.BUSY) {}
+						// wait 30ms
+						while ((await hardsid_usb_delay(deviceId, 30000)) == WState.BUSY) {}
+						// relay switch
+						while ((await hardsid_usb_write_direct(deviceId, newsidmask, 0)) == WState.BUSY) {}
+						// wait 30ms
+						while ((await hardsid_usb_delay(deviceId, 30000)) == WState.BUSY) {}
+						// turn off the relay
+						while ((await hardsid_usb_write_direct(deviceId, 0x80, 0)) == WState.BUSY) {}
+						// wait 30ms
+						while ((await hardsid_usb_delay(deviceId, 30000)) == WState.BUSY) {}
+						// switch 5V on, start reset (POWER_DIS=0;RESET_DIS=0;MUTE_ENA=1)
+						while ((await hardsid_usb_write_direct(deviceId, 0xf0, 4)) == WState.BUSY) {}
+						// wait 60ms
+						while ((await hardsid_usb_delay(deviceId, 60000)) == WState.BUSY) {}
+						// end reset (POWER_DIS=0;RESET_DIS=1;MUTE_ENA=0)
+						while ((await hardsid_usb_write_direct(deviceId, 0xf0, 2)) == WState.BUSY) {}
+						// security 10usec wait
+						while ((await hardsid_usb_delay(deviceId, 10)) == WState.BUSY) {}
+
+						// send this all down to the hardware
+						while ((await hardsid_usb_flush(deviceId)) == WState.BUSY) {}
+
+						/*
+						 * timediff = GetTickCount() - runtime; if (timediff>=240) {
+						 * //for breakpoint purposes }
+						 */
+
+						// writing to the SID
+						return await hardsid_usb_write_direct(deviceId, (reg & 0x1f) | 0x80, data);
+					}
+					// writing to the same SID as last time..
+					else return await hardsid_usb_write_direct(deviceId, (reg & 0x1f) | 0x80, data);
+				}
+			case DevType.HSUNO:
+				if (lastaccsids[deviceId] == 0xff) {
+					// first write, we need the 5V
+
+					// indicate that we've enabled the 5V
+					lastaccsids[deviceId] = 0x01;
 
 					// wait 4usecs (not a real delay, but an init. delay command)
-					while (await hardsid_usb_delay(deviceId, 4) == WState.BUSY) {
-					}
-					// mute on (POWER_DIS=0;RESET_DIS=1;MUTE_ENA=1)
-					while (await hardsid_usb_write_direct(deviceId, 0xf0, 6) == WState.BUSY) {
-					}
-					// wait 60ms
-					while (await hardsid_usb_delay(deviceId, 60000) == WState.BUSY) {
-					}
-					// switch 5V off (POWER_DIS=1;RESET_DIS=1;MUTE_ENA=1)
-					while (await hardsid_usb_write_direct(deviceId, 0xf0, 7) == WState.BUSY) {
-					}
-					// wait 30ms
-					while (await hardsid_usb_delay(deviceId, 30000) == WState.BUSY) {
-					}
-					// relay switch
-					while (await hardsid_usb_write_direct(deviceId, newsidmask, 0) == WState.BUSY) {
-					}
-					// wait 30ms
-					while (await hardsid_usb_delay(deviceId, 30000) == WState.BUSY) {
-					}
-					// turn off the relay
-					while (await hardsid_usb_write_direct(deviceId, 0x80, 0) == WState.BUSY) {
-					}
-					// wait 30ms
-					while (await hardsid_usb_delay(deviceId, 30000) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_delay(deviceId, 4)) == WState.BUSY) {}
+					// wait 5ms
+					while ((await hardsid_usb_delay(deviceId, 5000)) == WState.BUSY) {}
 					// switch 5V on, start reset (POWER_DIS=0;RESET_DIS=0;MUTE_ENA=1)
-					while (await hardsid_usb_write_direct(deviceId, 0xf0, 4) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_write_direct(deviceId, 0xf0, 4)) == WState.BUSY) {}
 					// wait 60ms
-					while (await hardsid_usb_delay(deviceId, 60000) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_delay(deviceId, 60000)) == WState.BUSY) {}
 					// end reset (POWER_DIS=0;RESET_DIS=1;MUTE_ENA=0)
-					while (await hardsid_usb_write_direct(deviceId, 0xf0, 2) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_write_direct(deviceId, 0xf0, 2)) == WState.BUSY) {}
 					// security 10usec wait
-					while (await hardsid_usb_delay(deviceId, 10) == WState.BUSY) {
-					}
+					while ((await hardsid_usb_delay(deviceId, 10)) == WState.BUSY) {}
 
 					// send this all down to the hardware
-					while (await hardsid_usb_flush(deviceId) == WState.BUSY) {
-					}
-
-					/*
-					 * timediff = GetTickCount() - runtime; if (timediff>=240) { 
-					 * //for breakpoint purposes }
-					 */
+					while ((await hardsid_usb_flush(deviceId)) == WState.BUSY) {}
 
 					// writing to the SID
-					return await hardsid_usb_write_direct(deviceId, ((reg & 0x1f) | 0x80), data);
-				} else
-					// writing to the same SID as last time..
-					return await hardsid_usb_write_direct(deviceId, ((reg & 0x1f) | 0x80), data);
-			}
-		case DevType.HSUNO:
-			if (lastaccsids[deviceId] == 0xff) {
-
-				// first write, we need the 5V
-
-				// indicate that we've enabled the 5V
-				lastaccsids[deviceId] = 0x01;
-
-				// wait 4usecs (not a real delay, but an init. delay command)
-				while (await hardsid_usb_delay(deviceId, 4) == WState.BUSY) {
+					return await hardsid_usb_write_direct(deviceId, (reg & 0x1f) | 0x80, data);
 				}
-				// wait 5ms
-				while (await hardsid_usb_delay(deviceId, 5000) == WState.BUSY) {
-				}
-				// switch 5V on, start reset (POWER_DIS=0;RESET_DIS=0;MUTE_ENA=1)
-				while (await hardsid_usb_write_direct(deviceId, 0xf0, 4) == WState.BUSY) {
-				}
-				// wait 60ms
-				while (await hardsid_usb_delay(deviceId, 60000) == WState.BUSY) {
-				}
-				// end reset (POWER_DIS=0;RESET_DIS=1;MUTE_ENA=0)
-				while (await hardsid_usb_write_direct(deviceId, 0xf0, 2) == WState.BUSY) {
-				}
-				// security 10usec wait
-				while (await hardsid_usb_delay(deviceId, 10) == WState.BUSY) {
-				}
-
-				// send this all down to the hardware
-				while (await hardsid_usb_flush(deviceId) == WState.BUSY) {
-				}
-
-				// writing to the SID
-				return await hardsid_usb_write_direct(deviceId, ((reg & 0x1f) | 0x80), data);
-			} else
 				// writing to the SID normally..
-				return await hardsid_usb_write_direct(deviceId, ((reg & 0x1f) | 0x80), data);
-		default:
-			return WState.ERROR;
+				else return await hardsid_usb_write_direct(deviceId, (reg & 0x1f) | 0x80, data);
+			default:
+				return WState.ERROR;
 		}
 	} catch (error) {
 		console.log(error);
@@ -544,7 +512,7 @@ async function hardsid_usb_write(deviceId, reg, data) {
 
 /**
  * Schedules a delay command.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @param {number} cycles
@@ -561,23 +529,21 @@ async function hardsid_usb_delay(deviceId, cycles) {
 		// no command for zero delay
 	} else if (cycles < 0x100) {
 		// short delay
-		return await hardsid_usb_write_direct(deviceId, 0xee, (cycles & 0xff)); // short delay command
+		return await hardsid_usb_write_direct(deviceId, 0xee, cycles & 0xff); // short delay command
 	} else if ((cycles & 0xff) == 0) {
 		// long delay without low order byte
-		return await hardsid_usb_write_direct(deviceId, 0xef, (cycles >> 8)); // long delay command
+		return await hardsid_usb_write_direct(deviceId, 0xef, cycles >> 8); // long delay command
 	} else {
 		// long delay with low order byte
-		if (sync && (writeBuffer[deviceId].byteLength == (bufferSize - 2))) {
+		if (sync && writeBuffer[deviceId].byteLength == bufferSize - 2) {
 			let ws = await hardsid_usb_write_direct(deviceId, 0xff, 0xff);
-			if (ws != WState.OK)
-				return ws;
-		} else if (sync && (writeBuffer[deviceId].byteLength == (bufferSize - 4))) {
+			if (ws != WState.OK) return ws;
+		} else if (sync && writeBuffer[deviceId].byteLength == bufferSize - 4) {
 			let ws = await hardsid_usb_sync(deviceId);
-			if (ws != WState.OK)
-				return ws;
+			if (ws != WState.OK) return ws;
 		}
-		await hardsid_usb_write_direct(deviceId, 0xef, (cycles >> 8)); // long delay command
-		await hardsid_usb_write_direct(deviceId, 0xee, (cycles & 0xff)); // short delay command
+		await hardsid_usb_write_direct(deviceId, 0xef, cycles >> 8); // long delay command
+		await hardsid_usb_write_direct(deviceId, 0xee, cycles & 0xff); // short delay command
 	}
 
 	return WState.OK;
@@ -585,7 +551,7 @@ async function hardsid_usb_delay(deviceId, cycles) {
 
 /**
  * Sends a partial package to the hardware.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @return {WState}
@@ -599,15 +565,10 @@ async function hardsid_usb_flush(deviceId) {
 	if (writeBuffer[deviceId].byteLength > 0) {
 		if (sync && buffChk) {
 			let ws = await hardsid_usb_sync(deviceId);
-			if (ws != WState.OK)
-				return ws;
+			if (ws != WState.OK) return ws;
 		}
-		if ((writeBuffer[deviceId].byteLength % bufferSize) > 0) {
-			writeBuffer[deviceId] = concatenate(
-				Uint8Array,
-				writeBuffer[deviceId],
-				Uint8Array.of(0xff, 0xff)
-			);
+		if (writeBuffer[deviceId].byteLength % bufferSize > 0) {
+			writeBuffer[deviceId] = concatenate(Uint8Array, writeBuffer[deviceId], Uint8Array.of(0xff, 0xff));
 		}
 		await hardsid_usb_write_internal(deviceId);
 	}
@@ -617,7 +578,7 @@ async function hardsid_usb_flush(deviceId) {
 
 /**
  * Aborts the playback ASAP.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  */
@@ -630,7 +591,7 @@ async function hardsid_usb_abortplay(deviceId) {
 		return;
 	}
 
-	if (await hardsid_usb_readstate(deviceId) != WState.OK) {
+	if ((await hardsid_usb_readstate(deviceId)) != WState.OK) {
 		error = true;
 		return;
 	}
@@ -641,7 +602,7 @@ async function hardsid_usb_abortplay(deviceId) {
 	await hardsid_usb_write_direct(deviceId, 0xff, 0xff);
 	await hardsid_usb_write_internal(deviceId);
 	while (true) {
-		if (await hardsid_usb_readstate(deviceId) != WState.OK) {
+		if ((await hardsid_usb_readstate(deviceId)) != WState.OK) {
 			error = true;
 			break;
 		} else {
@@ -654,7 +615,7 @@ async function hardsid_usb_abortplay(deviceId) {
 
 /**
  * Selects one of the sysmodes on the device.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @param  {SysMode} newsysmode
@@ -670,7 +631,7 @@ async function hardsid_usb_setmode(deviceId, newsysmode) {
 		error = true;
 		return WState.ERROR;
 	}
-	if (await hardsid_usb_readstate(deviceId) != WState.OK) {
+	if ((await hardsid_usb_readstate(deviceId)) != WState.OK) {
 		error = true;
 		return WState.ERROR;
 	}
@@ -682,7 +643,7 @@ async function hardsid_usb_setmode(deviceId, newsysmode) {
 	await hardsid_usb_write_direct(deviceId, 0x00, newsysmode);
 	await hardsid_usb_write_internal(deviceId);
 	while (true) {
-		if (await hardsid_usb_readstate(deviceId) != WState.OK) {
+		if ((await hardsid_usb_readstate(deviceId)) != WState.OK) {
 			error = true;
 			break;
 		} else {
@@ -691,15 +652,13 @@ async function hardsid_usb_setmode(deviceId, newsysmode) {
 			}
 		}
 	}
-	if (error)
-		return WState.ERROR;
-	else
-		return WState.OK;
+	if (error) return WState.ERROR;
+	else return WState.OK;
 }
 
 /**
  * Reset all registers.
- * 
+ *
  * @param  {number} deviceId
  *         device ID
  * @param  {SysMode} newsysmode
@@ -709,20 +668,14 @@ async function hardsid_usb_setmode(deviceId, newsysmode) {
  */
 async function hardsid_usb_reset(deviceId, chipNum, volume) {
 	for (var reg = 0; reg < 32; reg++) {
-		while (await hardsid_usb_delay(deviceId, SHORTEST_DELAY) == WState.BUSY) {
-		}
-		while (await hardsid_usb_write(deviceId, ((chipNum << 5) | reg), 0) == WState.BUSY) {
-		}
+		while ((await hardsid_usb_delay(deviceId, SHORTEST_DELAY)) == WState.BUSY) {}
+		while ((await hardsid_usb_write(deviceId, (chipNum << 5) | reg, 0)) == WState.BUSY) {}
 	}
-	while (await hardsid_usb_delay(deviceId, SHORTEST_DELAY) == WState.BUSY) {
-	}
-	while (await hardsid_usb_write(deviceId, ((chipNum << 5) | 0x18), volume) == WState.BUSY) {
-	}
-	while (await hardsid_usb_delay(deviceId, SHORTEST_DELAY) == WState.BUSY) {
-	}
+	while ((await hardsid_usb_delay(deviceId, SHORTEST_DELAY)) == WState.BUSY) {}
+	while ((await hardsid_usb_write(deviceId, (chipNum << 5) | 0x18, volume)) == WState.BUSY) {}
+	while ((await hardsid_usb_delay(deviceId, SHORTEST_DELAY)) == WState.BUSY) {}
 	await hardsid_usb_sync(deviceId);
-	while (await hardsid_usb_flush(deviceId) == WState.BUSY) {
-	}
+	while ((await hardsid_usb_flush(deviceId)) == WState.BUSY) {}
 }
 
 function concatenate(resultConstructor, ...arrays) {

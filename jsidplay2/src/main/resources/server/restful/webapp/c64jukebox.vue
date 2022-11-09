@@ -2193,7 +2193,7 @@
 		<script>
 			const HardwareType = {
 				HARDSID: 1,
-				EXSID: 2
+				EXSID: 2,
 			};
 			const Chip = {
 				NEXT: -1,
@@ -2682,7 +2682,7 @@
 							clearTimeout(timer);
 						}
 						if (ok != -1) {
-						    deviceCount = 1;
+							deviceCount = 1;
 							hardwareType = HardwareType.EXSID;
 							sidWriteQueue.enqueue({
 								chip: Chip.RESET,
@@ -2716,19 +2716,19 @@
 						while (sidWriteQueue.isNotEmpty()) {
 							write = sidWriteQueue.dequeue();
 							if (write.chip == Chip.QUIT) {
-							    if (hardwareType == HardwareType.EXSID) {
+								if (hardwareType == HardwareType.EXSID) {
 									xSfw_usb_close();
-							    }
-							    
+								}
+
 								hardwareType = undefined;
 								return;
 							} else if (write.chip == Chip.RESET) {
-							    if (hardwareType == HardwareType.HARDSID) {
+								if (hardwareType == HardwareType.HARDSID) {
 									await hardsid_usb_abortplay(0);
 									for (let chipNum = 0; chipNum < chipCount; chipNum++) {
 										await hardsid_usb_reset(0, chipNum, 0x00);
 									}
-							    } else {
+								} else {
 									await exSID_chipselect(ChipSelect.XS_CS_BOTH);
 									await exSID_audio_op(AudioOp.XS_AU_MUTE);
 									await exSID_clockselect(ClockSelect.XS_CL_PAL);
@@ -2736,15 +2736,15 @@
 									await exSID_audio_op(AudioOp.XS_AU_UNMUTE);
 
 									await exSID_reset(15);
-							    }
+								}
 							} else if (write.chip == Chip.NEXT) {
-							    if (hardwareType == HardwareType.HARDSID) {
+								if (hardwareType == HardwareType.HARDSID) {
 									await hardsid_usb_sync(0);
 									while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
 									Vue.nextTick(() => this.setNextPlaylistEntry());
-							    } else {
+								} else {
 									if (await exSID_sync()) {
-									    sidWriteQueue.clear();
+										sidWriteQueue.clear();
 										sidWriteQueue.enqueue({
 											chip: Chip.NEXT,
 										});
@@ -2754,18 +2754,18 @@
 										await exSID_reset(0);
 										Vue.nextTick(() => this.setNextPlaylistEntry());
 									}
-							    }
+								}
 							} else {
-							    if (hardwareType == HardwareType.HARDSID) {
+								if (hardwareType == HardwareType.HARDSID) {
 									while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
 									while (
 										(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
 										WState.BUSY
 									) {}
-							    } else {
+								} else {
 									await exSID_delay(write.cycles);
 									await exSID_clkdwrite(0, write.reg, write.value);
-							    }
+								}
 							}
 						}
 						timer = setTimeout(() => this.doPlay());
