@@ -2729,7 +2729,7 @@
 										await hardsid_usb_reset(0, chipNum, 0x00);
 									}
 							    } else {
-									await exSID_chipselect(ChipSelect.XS_CS_CHIP1);
+									await exSID_chipselect(ChipSelect.XS_CS_BOTH);
 									await exSID_audio_op(AudioOp.XS_AU_MUTE);
 									await exSID_clockselect(ClockSelect.XS_CL_PAL);
 									await exSID_audio_op(AudioOp.XS_AU_6581_8580);

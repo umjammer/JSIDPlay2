@@ -316,8 +316,51 @@ var ftdi, clkdrift;
 
 var hardwareSpecs;
 
-var backbuf = new Array(XS_BUFFSZ);
-var backbufIdx = 0;
+var bufptr;
+
+var bufchar0 = new Array(XS_BUFFSZ);
+var bufchar1 = new Array(XS_BUFFSZ);
+var frontbuf = bufchar0, backbuf = bufchar1;
+var frontbufIdx = 0, backbufIdx = 0;
+
+function Queue() {
+	var head, tail;
+	return Object.freeze({
+		enqueue(value) {
+			const link = { value, next: undefined };
+			tail = head ? (tail.next = link) : (head = link);
+		},
+		dequeue() {
+			if (head) {
+				const value = head.value;
+				head = head.next;
+				return value;
+			}
+		},
+		peek() {
+			return head?.value;
+		},
+		clear() {
+			tail = head = undefined;
+		},
+		isNotEmpty() {
+			return head;
+		},
+	});
+}
+var bufferQueue = new Queue();
+
+async function exSIDthreadOutput() {
+	while (bufferQueue.isNotEmpty()) {
+		bufferFrame = bufferQueue.dequeue();
+		// exit condition
+		if (bufferFrame.bufferIdx < 0) {
+			return;
+		}
+		await xSwrite(bufferFrame.buffer, bufferFrame.bufferIdx);
+	}
+	timer = setTimeout(() => exSIDthreadOutput());
+}
 
 /**
  * Write routine to send data to the device.
@@ -335,7 +378,7 @@ async function xSwrite(buff, size) {
 		for (var i = 0; i < size; i++) {
 			result[i] = buff[i];
 		}
-		/*await */ftdi.writeAsync(result);
+		await ftdi.writeAsync(result);
 	} catch (error) {
 	}
 }
@@ -357,6 +400,7 @@ async function xSread(buff, size) {
 	}
 }
 
+
 /**
  * Single byte output routine. ** producer ** Fills a static buffer with bytes
  * to send to the device until the buffer is full or a forced write is
@@ -375,8 +419,28 @@ async function xSoutb(b, flush) {
 	if (backbufIdx < XS_BUFFSZ && flush == 0)
 		return;
 
-	await xSwrite(backbuf, backbufIdx);
-	backbufIdx = 0;
+	if (flush < 0)
+		// indicate exit request
+		bufferQueue.enqueue({
+			bufferIdx: -1
+		});
+	else {
+		// flip buffers
+		bufptr = frontbuf;
+		frontbuf = backbuf;
+		frontbufIdx = backbufIdx;
+		backbuf = bufptr;
+		backbufIdx = 0;
+		
+		const result = new Uint8Array(frontbufIdx);
+		for (var i = 0; i < frontbufIdx; i++) {
+			result[i] = frontbuf[i];
+		}
+		bufferQueue.enqueue({
+			buffer: result,
+			bufferIdx: frontbufIdx
+		});
+	}
 }
 
 /**
@@ -415,6 +479,10 @@ async function exSID_init() {
 
 		await xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
 
+		bufferQueue.clear();
+		backbufIdx = frontbufIdx = 0;
+		timer = setTimeout(() => exSIDthreadOutput());
+
 		await xSfw_usb_purge_buffers();
 		clkdrift = 0;
 
@@ -437,6 +505,9 @@ async function exSID_init() {
 async function exSID_exit() {
 	if (device) {
 		await exSID_reset(0);
+
+		xSoutb(XS_AD_IOCTFV, -1); // signal end of thread
+
 		await xSfw_usb_purge_buffers();
 
 		await xSfw_usb_close();
@@ -470,6 +541,15 @@ async function exSID_reset(volume) {
 
 	clkdrift = 0;
 	await delay(50); // wait for send/receive to complete
+	
+	backbufIdx = frontbufIdx = 0;
+	if (typeof timer !== "undefined") {
+		clearTimeout(timer);
+	}
+	bufferQueue.clear();
+	timer = setTimeout(() => exSIDthreadOutput());
+
+	
 //	backbuf.length = 0;
 //	backbufIdx = 0;
 }
