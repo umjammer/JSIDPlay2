@@ -346,11 +346,11 @@ class FTDI {
 		return transferred.data;
 	}
 
-	async writeAsync(buffer) {
+	async write(buffer) {
 		return await this.device.transferOut(2, buffer);
 	}
 
-	async closeAsync() {
+	async close() {
 		this.isClosing = true;
 		try {
 			console.log("Sending EOT");

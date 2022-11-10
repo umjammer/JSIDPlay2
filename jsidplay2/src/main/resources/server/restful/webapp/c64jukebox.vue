@@ -2735,7 +2735,7 @@
 									await exSID_audio_op(AudioOp.XS_AU_6581_8580);
 									await exSID_audio_op(AudioOp.XS_AU_UNMUTE);
 
-									await exSID_reset(15);
+									await exSID_reset(0);
 								}
 							} else if (write.chip == Chip.NEXT) {
 								if (hardwareType == HardwareType.HARDSID) {
@@ -2743,8 +2743,7 @@
 									while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
 									Vue.nextTick(() => this.setNextPlaylistEntry());
 								} else {
-									if (await exSID_sync()) {
-										sidWriteQueue.clear();
+									if (exSID_is_playing()) {
 										sidWriteQueue.enqueue({
 											chip: Chip.NEXT,
 										});

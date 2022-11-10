@@ -403,11 +403,7 @@ async function exSIDthreadOutput() {
  */
 async function xSwrite(buff, size) {
 	try {
-		const result = new Uint8Array(size);
-		for (var i = 0; i < size; i++) {
-			result[i] = buff[i];
-		}
-		await ftdi.writeAsync(result);
+		await ftdi.write(new Uint8Array(buff.slice(0, size)));
 	} catch (error) {}
 }
 
@@ -488,15 +484,15 @@ async function exSID_init() {
 				break;
 			}
 		}
-		if (device == null) {
+		if (device === {}) {
 			console.log("No device could be opened");
 			return -1;
 		}
 
 		await xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
 
-		bufferQueue.clear();
 		backbufIdx = 0;
+		bufferQueue.clear();
 		timer = setTimeout(() => exSIDthreadOutput());
 
 		await xSfw_usb_purge_buffers();
@@ -555,13 +551,13 @@ async function exSID_reset(volume) {
 	await exSID_write(0x18, volume, 1);
 
 	clkdrift = 0;
-	await delay(50); // wait for send/receive to complete
+	await delay(250); // wait for send/receive to complete
 
 	backbufIdx = 0;
 	timer = setTimeout(() => exSIDthreadOutput());
 }
 
-async function exSID_sync() {
+function exSID_is_playing() {
 	return bufferQueue.isNotEmpty();
 }
 
@@ -972,7 +968,7 @@ async function xSfw_usb_purge_buffers() {
 }
 
 async function xSfw_usb_close() {
-	await device.ftdi.closeAsync();
+	await device.ftdi.close();
 }
 
 function Queue() {
