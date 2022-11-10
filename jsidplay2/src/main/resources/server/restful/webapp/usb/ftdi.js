@@ -1,19 +1,22 @@
-/*
- * == BSD2 LICENSE ==
- * Copyright (c) 2020, Tidepool Project
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the associated License, which is identical to the BSD 2-Clause
- * License as published by the Open Source Initiative at opensource.org.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the License for more details.
- *
- * You should have received a copy of the License along with this program; if
- * not, you can obtain one from Tidepool Project at tidepool.org.
- * == BSD2 LICENSE ==
- */
+/***************************************************************************
+							ftdi.c  -  description
+							----------------------
+	begin                : Fri Apr 4 2003
+	copyright            : (C) 2003-2017 by Intra2net AG and the libftdi developers
+	email                : opensource@intra2net.com
+ ***************************************************************************
+ * 
+ * https://www.intra2net.com/en/developer/libftdi/index.php
+ * 
+ * Javascript port by Ken Händel
+ * 
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   version 2.1 as published by the Free Software Foundation;             *
+ *                                                                         *
+ ***************************************************************************/
 
 const SIO_RESET = 0; /* Reset the port */
 const SIO_RESET_SIO = 0;
@@ -66,7 +69,7 @@ const C_CLK = 48000000;
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class FTDI {
-	constructor() {}
+	constructor() { }
 	async init(vendorId) {
 		const self = this;
 
