@@ -26,7 +26,7 @@
 
 		<!-- USB -->
 		<script src="/static/usb/hardsid.js"></script>
-		<script src="/static/usb/ftdi.js"></script>
+		<script src="/static/usb/libftdi.js"></script>
 		<script src="/static/usb/exsid.js"></script>
 
 		<meta charset="UTF-8" />
@@ -1385,12 +1385,26 @@
 										</div>
 									</div>
 									<div>
-										<b-button size="sm" variant="secondary" v-on:click="initHardSid()">
+										<b-button size="sm" variant="secondary" v-on:click="
+																							HardwareFunctions.init = init_hardsid;
+																							HardwareFunctions.reset = reset_hardsid;
+																							HardwareFunctions.write = write_hardsid;
+																							HardwareFunctions.next = next_hardsid;
+																							HardwareFunctions.quit = quit_hardsid;
+																							HardwareFunctions.mapping = 'hardsid-mapping';
+																							init();">
 											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
 										</b-button>
 									</div>
 									<div>
-										<b-button size="sm" variant="secondary" v-on:click="initExSid()">
+										<b-button size="sm" variant="secondary" v-on:click="
+																							HardwareFunctions.init = init_exsid;
+																							HardwareFunctions.reset = reset_exsid;
+																							HardwareFunctions.write = write_exsid;
+																							HardwareFunctions.next = next_exsid;
+																							HardwareFunctions.quit = quit_exsid;
+																							HardwareFunctions.mapping = 'exsid-mapping';
+																							init();">
 											<span>Connect to ExSID, ExSID+</span>
 										</b-button>
 									</div>
@@ -2191,9 +2205,83 @@
 		</div>
 
 		<script>
-			const HardwareType = {
-				HARDSID: 1,
-				EXSID: 2,
+			async function init_exsid() {
+				var ok = await exSID_init();
+				if (ok != -1) {
+					deviceCount = 1;
+					return 0;
+				}
+				return -1;
+			};
+			async function init_hardsid() {
+			    await hardsid_usb_init(true, SysMode.SIDPLAY);
+				deviceCount = hardsid_usb_getdevcount();
+				console.log("Device count: " + deviceCount);
+				if (deviceCount > 0) {
+					chipCount = hardsid_usb_getsidcount(0);
+					console.log("Chip count: " + chipCount);
+					return 0;
+				}
+				return -1;
+			};
+			async function reset_hardsid() {
+				await hardsid_usb_abortplay(0);
+				for (let chipNum = 0; chipNum < chipCount; chipNum++) {
+					await hardsid_usb_reset(0, chipNum, 0x00);
+				}
+			};
+			async function reset_exsid() {
+				await exSID_chipselect(ChipSelect.XS_CS_BOTH);
+				await exSID_audio_op(AudioOp.XS_AU_MUTE);
+				await exSID_clockselect(ClockSelect.XS_CL_PAL);
+				await exSID_audio_op(AudioOp.XS_AU_6581_8580);
+				await exSID_audio_op(AudioOp.XS_AU_UNMUTE);
+
+				await exSID_reset(0);
+			};
+			async function write_hardsid(write) {
+				while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
+				while (
+					(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
+					WState.BUSY
+				) {}
+			};
+			async function write_exsid(write) {
+//			    if (lastChip !== write.chipModel) {
+//					await exSID_chipselect(write.chipModel == ChipModel.MOS8580 ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
+//					lastChip = write.chipModel;
+//				}
+				if (write.reg <= 0x18) {
+					// "Ragga Run.sid" denies to work!
+					await exSID_delay(write.cycles);
+					await exSID_clkdwrite(0, write.reg, write.value);
+				}
+			};
+			async function quit_hardsid() {
+			};
+			async function quit_exsid() {
+				xSfw_usb_close();
+			};
+			async function next_hardsid() {
+				await hardsid_usb_sync(0);
+				while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
+				return 0;
+			};
+			async function next_exsid() {
+				if (exSID_is_playing()) {
+					return -1;
+				} else {
+					await exSID_reset(0);
+					return 0;
+				}
+			};
+			const HardwareFunctions = {
+				init: undefined,
+				write: undefined,
+				next: undefined,
+				reset: undefined,
+				quit: undefined,
+				mapping: undefined
 			};
 			const Chip = {
 				NEXT: -1,
@@ -2547,7 +2635,6 @@
 					stil: [],
 					hasStil: false,
 					hasHardware: false,
-					hardwareType: undefined,
 					picture: "",
 					currentSid: "",
 					// ASSEMBLY64
@@ -2675,35 +2762,12 @@
 					},
 				},
 				methods: {
-					initExSid: async function () {
-						var ok = await exSID_init();
+				    init: async function () {
 						sidWriteQueue.clear();
 						if (typeof timer !== "undefined") {
 							clearTimeout(timer);
 						}
-						if (ok != -1) {
-							deviceCount = 1;
-							hardwareType = HardwareType.EXSID;
-							sidWriteQueue.enqueue({
-								chip: Chip.RESET,
-							});
-							// regularly process SID write queue from now on!
-							timer = setTimeout(() => this.doPlay(), 200);
-							this.showAudio = false;
-						}
-					},
-					initHardSid: async function () {
-						await hardsid_usb_init(true, SysMode.SIDPLAY);
-						sidWriteQueue.clear();
-						if (typeof timer !== "undefined") {
-							clearTimeout(timer);
-						}
-						deviceCount = hardsid_usb_getdevcount();
-						console.log("Device count: " + deviceCount);
-						if (deviceCount > 0) {
-							hardwareType = HardwareType.HARDSID;
-							chipCount = hardsid_usb_getsidcount(0);
-							console.log("Chip count: " + chipCount);
+						if (await HardwareFunctions.init() == 0) {
 							sidWriteQueue.enqueue({
 								chip: Chip.RESET,
 							});
@@ -2715,56 +2779,27 @@
 					doPlay: async function () {
 						while (sidWriteQueue.isNotEmpty()) {
 							write = sidWriteQueue.dequeue();
+
 							if (write.chip == Chip.QUIT) {
-								if (hardwareType == HardwareType.EXSID) {
-									xSfw_usb_close();
-								}
-
-								hardwareType = undefined;
+								await HardwareFunctions.quit();
 								return;
-							} else if (write.chip == Chip.RESET) {
-								if (hardwareType == HardwareType.HARDSID) {
-									await hardsid_usb_abortplay(0);
-									for (let chipNum = 0; chipNum < chipCount; chipNum++) {
-										await hardsid_usb_reset(0, chipNum, 0x00);
-									}
-								} else {
-									await exSID_chipselect(ChipSelect.XS_CS_BOTH);
-									await exSID_audio_op(AudioOp.XS_AU_MUTE);
-									await exSID_clockselect(ClockSelect.XS_CL_PAL);
-									await exSID_audio_op(AudioOp.XS_AU_6581_8580);
-									await exSID_audio_op(AudioOp.XS_AU_UNMUTE);
 
-									await exSID_reset(0);
-								}
+							} else if (write.chip == Chip.RESET) {
+							    await HardwareFunctions.reset();
+
 							} else if (write.chip == Chip.NEXT) {
-								if (hardwareType == HardwareType.HARDSID) {
-									await hardsid_usb_sync(0);
-									while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
+							    if (await HardwareFunctions.next() == 0) {
 									Vue.nextTick(() => this.setNextPlaylistEntry());
-								} else {
-									if (exSID_is_playing()) {
-										sidWriteQueue.enqueue({
-											chip: Chip.NEXT,
-										});
-										timer = setTimeout(() => this.doPlay(), 250);
-										return;
-									} else {
-										await exSID_reset(0);
-										Vue.nextTick(() => this.setNextPlaylistEntry());
-									}
-								}
+							    } else {
+									sidWriteQueue.enqueue({
+										chip: Chip.NEXT,
+									});
+									timer = setTimeout(() => this.doPlay(), 250);
+									return;
+							    }
+
 							} else {
-								if (hardwareType == HardwareType.HARDSID) {
-									while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
-									while (
-										(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
-										WState.BUSY
-									) {}
-								} else {
-									await exSID_delay(write.cycles);
-									await exSID_clkdwrite(0, write.reg, write.value);
-								}
+								await HardwareFunctions.write(write);
 							}
 						}
 						timer = setTimeout(() => this.doPlay());
@@ -2777,7 +2812,7 @@
 
 							axios({
 								method: "get",
-								url: this.createHardSIDMappingUrl(entry, itemId, categoryId),
+								url: this.createSIDMappingUrl(entry, itemId, categoryId),
 							}).then((response) => {
 								let mapping = response.data;
 
@@ -3283,7 +3318,7 @@
 							(autostart ? "&autostart=" + uriEncode(autostart) : "")
 						);
 					},
-					createHardSIDMappingUrl: function (entry, itemId, categoryId) {
+					createSIDMappingUrl: function (entry, itemId, categoryId) {
 						var url = uriEncode(
 							(typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
 						);
@@ -3291,7 +3326,7 @@
 							window.location.protocol +
 							"//" +
 							window.location.host +
-							"/jsidplay2service/JSIDPlay2REST/hardsid-mapping" +
+							"/jsidplay2service/JSIDPlay2REST/" + HardwareFunctions.mapping +
 							url +
 							"?defaultModel=" +
 							this.convertOptions.config.emulationSection.defaultSidModel +
@@ -3301,8 +3336,8 @@
 							this.convertOptions.config.emulationSection.hardsid6581 +
 							"&hardSid8580=" +
 							this.convertOptions.config.emulationSection.hardsid8580 +
-							"&chipCount=" +
-							chipCount +
+							(HardwareFunctions.mapping === "hardsid-mapping" ?
+								"&chipCount=" + chipCount : "") +
 							this.stereoParameters +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"
 								? ""
