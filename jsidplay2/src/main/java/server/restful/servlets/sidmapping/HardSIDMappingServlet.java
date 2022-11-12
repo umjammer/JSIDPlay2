@@ -107,10 +107,11 @@ public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 	/**
 	 * Get HardSID device index based on the desired chip model.
 	 * 
-	 * @param config
-	 * @param alreadyInUse
-	 *
-	 * @param chipModel    desired chip model
+	 * @param emulationSection configuration
+	 * @param chipCount        number of available devices
+	 * @param alreadyInUse     devices already in use
+	 * @param chipModel        desired chip model
+	 * 
 	 * @return SID index of the desired HardSID device
 	 */
 	private Integer getModelDependantChipNum(IEmulationSection emulationSection, final int chipCount,
