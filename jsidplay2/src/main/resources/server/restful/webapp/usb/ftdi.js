@@ -360,8 +360,8 @@ class FTDI {
 
 			const result = new Uint8Array(1);
 			result[0] = 0x04;
-			await this.writeAsync(result);
-			await delay(2000); // wait for send/receive to complete
+			await this.write(result);
+			await delay(1000); // wait for send/receive to complete
 			await this.device.releaseInterface(0);
 			await this.device.close();
 			console.log("Closed device");

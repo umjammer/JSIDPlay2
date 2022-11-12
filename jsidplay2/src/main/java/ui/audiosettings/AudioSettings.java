@@ -44,6 +44,7 @@ import ui.common.C64Window;
 import ui.common.converter.EnumToStringConverter;
 import ui.common.converter.NumberToStringConverter;
 import ui.entities.config.AudioSection;
+import ui.entities.config.EmulationSection;
 
 public class AudioSettings extends C64Window {
 
@@ -104,6 +105,7 @@ public class AudioSettings extends C64Window {
 	protected void initialize() {
 		ResourceBundle bundle = util.getBundle();
 		AudioSection audioSection = util.getConfig().getAudioSection();
+		EmulationSection emulationSection = util.getConfig().getEmulationSection();
 
 		bypassDelay.selectedProperty().bindBidirectional(audioSection.delayBypassProperty());
 
@@ -190,12 +192,13 @@ public class AudioSettings extends C64Window {
 		videoCoderPreset.valueProperty().bindBidirectional(audioSection.sidVideoEncoderPresetProperty());
 		videoCoderPreset.setItems(videoCoderPresets);
 
-		exsidFakeStereo.selectedProperty().bindBidirectional(audioSection.exsidFakeStereoProperty());
+		exsidFakeStereo.selectedProperty().bindBidirectional(emulationSection.exsidFakeStereoProperty());
 	}
 
 	@FXML
 	private void restoreDefaults() {
 		AudioSection audioSection = util.getConfig().getAudioSection();
+		EmulationSection emulationSection = util.getConfig().getEmulationSection();
 
 		audioSection.setDelayBypass(DEFAULT_DELAY_BYPASS);
 		audioSection.setDelay(DEFAULT_DELAY);
@@ -225,7 +228,7 @@ public class AudioSettings extends C64Window {
 		audioSection.setVideoCoderGlobalQuality(DEFAULT_VIDEO_CODER_GLOBAL_QUALITY);
 		audioSection.setVideoCoderPreset(DEFAULT_VIDEO_CODER_PRESET);
 
-		audioSection.setExsidFakeStereo(DEFAULT_EXSID_FAKE_STEREO);
+		emulationSection.setExsidFakeStereo(DEFAULT_EXSID_FAKE_STEREO);
 	}
 
 }

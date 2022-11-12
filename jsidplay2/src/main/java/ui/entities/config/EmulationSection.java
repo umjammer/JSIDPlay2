@@ -11,6 +11,7 @@ import static sidplay.ini.IniDefaults.DEFAULT_DIGI_BOOSTED_8580;
 import static sidplay.ini.IniDefaults.DEFAULT_DUAL_SID_BASE;
 import static sidplay.ini.IniDefaults.DEFAULT_EMULATION;
 import static sidplay.ini.IniDefaults.DEFAULT_ENGINE;
+import static sidplay.ini.IniDefaults.DEFAULT_EXSID_FAKE_STEREO;
 import static sidplay.ini.IniDefaults.DEFAULT_FAKE_STEREO;
 import static sidplay.ini.IniDefaults.DEFAULT_FILTER_6581;
 import static sidplay.ini.IniDefaults.DEFAULT_FILTER_8580;
@@ -485,6 +486,23 @@ public class EmulationSection implements IEmulationSection {
 
 	public final ObjectProperty<Short> sidBlasterLatencyTimerProperty() {
 		return sidBlasterLatencyTimer.property();
+	}
+
+	private ShadowField<BooleanProperty, Boolean> exsidFakeStereo = new ShadowField<>(SimpleBooleanProperty::new,
+			DEFAULT_EXSID_FAKE_STEREO);
+
+	@Override
+	public boolean isExsidFakeStereo() {
+		return exsidFakeStereo.get();
+	}
+
+	@Override
+	public void setExsidFakeStereo(boolean exsidFakeStereo) {
+		this.exsidFakeStereo.set(exsidFakeStereo);
+	}
+
+	public final BooleanProperty exsidFakeStereoProperty() {
+		return exsidFakeStereo.property();
 	}
 
 	private ShadowField<StringProperty, String> netSidDevHost = new ShadowField<>(SimpleStringProperty::new,

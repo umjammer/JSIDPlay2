@@ -12,7 +12,6 @@ import static sidplay.ini.IniDefaults.DEFAULT_DELAY_DRY_LEVEL;
 import static sidplay.ini.IniDefaults.DEFAULT_DELAY_FEEDBACK_LEVEL;
 import static sidplay.ini.IniDefaults.DEFAULT_DELAY_WET_LEVEL;
 import static sidplay.ini.IniDefaults.DEFAULT_DEVICE;
-import static sidplay.ini.IniDefaults.DEFAULT_EXSID_FAKE_STEREO;
 import static sidplay.ini.IniDefaults.DEFAULT_MAIN_BALANCE;
 import static sidplay.ini.IniDefaults.DEFAULT_MAIN_DELAY;
 import static sidplay.ini.IniDefaults.DEFAULT_MAIN_VOLUME;
@@ -815,23 +814,6 @@ public class AudioSection implements IAudioSection {
 
 	public final FloatProperty reverbDryWetMixProperty() {
 		return reverbDryWetMix.property();
-	}
-
-	private ShadowField<BooleanProperty, Boolean> exsidFakeStereo = new ShadowField<>(SimpleBooleanProperty::new,
-			DEFAULT_EXSID_FAKE_STEREO);
-
-	@Override
-	public boolean isExsidFakeStereo() {
-		return exsidFakeStereo.get();
-	}
-
-	@Override
-	public void setExsidFakeStereo(boolean exsidFakeStereo) {
-		this.exsidFakeStereo.set(exsidFakeStereo);
-	}
-
-	public final BooleanProperty exsidFakeStereoProperty() {
-		return exsidFakeStereo.property();
 	}
 
 	@Override

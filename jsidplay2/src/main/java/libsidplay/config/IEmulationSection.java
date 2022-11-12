@@ -264,6 +264,20 @@ public interface IEmulationSection {
 	void setSidBlasterLatencyTimer(final short sidBlasterLatencyTimer);
 
 	/**
+	 * ExSID engine: Use ExSID fake stereo mode. Send SID writes to both chips.
+	 *
+	 * @return send SID writes to both chips
+	 */
+	boolean isExsidFakeStereo();
+
+	/**
+	 * ExSID engine: Use ExSID fake stereo mode. Send SID writes to both chips.
+	 *
+	 * @param exsidFakeStereo send SID writes to both chips
+	 */
+	void setExsidFakeStereo(boolean exsidFakeStereo);
+
+	/**
 	 * Getter of the host name of a NetworkSIDDevice.
 	 *
 	 * @return host name of a NetworkSIDDevice

@@ -132,7 +132,7 @@ public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 		// Use exSID fake stereo (simultaneous write to both chips -> no delay possible)
 		// or
 		// JSIDPlay2 fake stereo (address both chips separately -> shared bandwidth)!
-		if (audioSection.isExsidFakeStereo()) {
+		if (emulationSection.isExsidFakeStereo()) {
 			if (sidNum == 0 && SidTune.isFakeStereoSid(emulationSection, tune, 1)) {
 				lastSidNum = sidNum;
 				exSID.exSID_chipselect(ChipSelect.XS_CS_BOTH.getChipSelect());

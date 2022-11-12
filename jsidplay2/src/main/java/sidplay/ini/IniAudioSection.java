@@ -12,7 +12,6 @@ import static sidplay.ini.IniDefaults.DEFAULT_DELAY_DRY_LEVEL;
 import static sidplay.ini.IniDefaults.DEFAULT_DELAY_FEEDBACK_LEVEL;
 import static sidplay.ini.IniDefaults.DEFAULT_DELAY_WET_LEVEL;
 import static sidplay.ini.IniDefaults.DEFAULT_DEVICE;
-import static sidplay.ini.IniDefaults.DEFAULT_EXSID_FAKE_STEREO;
 import static sidplay.ini.IniDefaults.DEFAULT_MAIN_BALANCE;
 import static sidplay.ini.IniDefaults.DEFAULT_MAIN_DELAY;
 import static sidplay.ini.IniDefaults.DEFAULT_MAIN_VOLUME;
@@ -592,17 +591,6 @@ public class IniAudioSection extends IniSection implements IAudioSection {
 	@Parameter(names = { "--reverbDryWetMix" }, descriptionKey = "REVERB_DRY_WET_MIX", order = 140)
 	public final void setReverbDryWetMix(float reverbDryWetMix) {
 		iniReader.setProperty(SECTION_ID, "Reverb DryWetMix", reverbDryWetMix);
-	}
-
-	@Override
-	public final boolean isExsidFakeStereo() {
-		return iniReader.getPropertyBool(SECTION_ID, "ExSID Fake Stereo", DEFAULT_EXSID_FAKE_STEREO);
-	}
-
-	@Override
-	@Parameter(names = { "--exsidFakeStereo" }, descriptionKey = "EXSID_FAKE_STEREO", arity = 1, order = 141)
-	public final void setExsidFakeStereo(boolean exsidFakeStereo) {
-		iniReader.setProperty(SECTION_ID, "ExSID Fake Stereo", exsidFakeStereo);
 	}
 
 	@Override
