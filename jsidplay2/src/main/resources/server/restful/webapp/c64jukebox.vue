@@ -2231,12 +2231,27 @@
 				}
 			};
 			async function reset_exsid() {
-				await exSID_chipselect(ChipSelect.XS_CS_BOTH);
-				await exSID_audio_op(AudioOp.XS_AU_MUTE);
-				await exSID_clockselect(ClockSelect.XS_CL_PAL);
-				await exSID_audio_op(AudioOp.XS_AU_6581_8580);
-				await exSID_audio_op(AudioOp.XS_AU_UNMUTE);
 
+			    await exSID_chipselect(ChipSelect.XS_CS_BOTH);
+				if (mapping) {
+					const chipModel = mapping[0];
+					const stereo = mapping[-1] === "true";
+					const fakeStereo = mapping[-2] === "true";
+					const cpuClock = mapping[-3];
+	
+				    if (fakeStereo) {
+						lastChipModel = chipModel;
+					    await exSID_chipselect(ChipSelect.XS_CS_BOTH);
+				    }
+				    await exSID_audio_op(AudioOp.XS_AU_MUTE);
+				    await exSID_clockselect(cpuClock === "PAL" ? ClockSelect.XS_CL_PAL: ClockSelect.XS_CL_NTSC);
+				    if (stereo) {
+						await exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_8580: AudioOp.XS_AU_8580_6581);
+				    } else {
+						await exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_6581: AudioOp.XS_AU_8580_8580);
+				    }
+					await exSID_audio_op(AudioOp.XS_AU_UNMUTE);
+			    }
 				await exSID_reset(0);
 			};
 			async function write_hardsid(write) {
@@ -2247,13 +2262,16 @@
 				) {}
 			};
 			async function write_exsid(write) {
-//			    if (lastChip !== write.chipModel) {
-//					await exSID_chipselect(write.chipModel == ChipModel.MOS8580 ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
-//					lastChip = write.chipModel;
-//				}
 				if (write.reg <= 0x18) {
 					// "Ragga Run.sid" denies to work!
+					
 					await exSID_delay(write.cycles);
+
+					const chipModel = mapping[write.chip];
+				    if (lastChipModel !== chipModel) {
+						await exSID_chipselect(chipModel === "MOS8580" ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
+						lastChipModel = chipModel;
+					}
 					await exSID_clkdwrite(0, write.reg, write.value);
 				}
 			};
@@ -2320,6 +2338,7 @@
 				});
 			}
 			var sidWriteQueue = new Queue();
+			var mapping, lastChipModel;
 
 			function uriEncode(entry) {
 				// escape is deprecated and cannot handle utf8
@@ -2786,6 +2805,8 @@
 
 							} else if (write.chip == Chip.RESET) {
 							    await HardwareFunctions.reset();
+								timer = setTimeout(() => this.doPlay(), 250);
+								return;
 
 							} else if (write.chip == Chip.NEXT) {
 							    if (await HardwareFunctions.next() == 0) {
@@ -2814,8 +2835,8 @@
 								method: "get",
 								url: this.createSIDMappingUrl(entry, itemId, categoryId),
 							}).then((response) => {
-								let mapping = response.data;
-
+								mapping = response.data;
+								
 								// cancel  previous ajax if exists
 								if (ajaxRequest) {
 									ajaxRequest.cancel();
@@ -2823,6 +2844,7 @@
 								// creates a new token for upcoming ajax (overwrite the previous one)
 								ajaxRequest = axios.CancelToken.source();
 
+								lastChipModel = undefined;
 								let start = 1;
 								sidWriteQueue.clear();
 								sidWriteQueue.enqueue({

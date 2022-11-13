@@ -444,6 +444,7 @@ async function xSoutb(b, flush) {
 	if (flush < 0)
 		// indicate exit request
 		bufferQueue.enqueue({
+			buffer: [...backbuf],
 			bufferIdx: -1,
 		});
 	else {
@@ -538,14 +539,11 @@ async function exSID_exit() {
  *         volume to set the SIDs to after reset.
  */
 async function exSID_reset(volume) {
-	if (typeof timer !== "undefined") {
-		clearTimeout(timer);
-	}
 	bufferQueue.clear();
 	// this will stall
 	await xSoutb(XS_AD_IOCTRS, 1);
 	// sleep for 100us
-	await delay(1); // wait for send/receive to complete
+	await delay(50); // wait for send/receive to complete
 	// this only needs 2 bytes which matches the input buffer of the PIC so all is
 	// well
 	await exSID_write(0x18, volume, 1);
@@ -554,7 +552,6 @@ async function exSID_reset(volume) {
 	await delay(250); // wait for send/receive to complete
 
 	backbufIdx = 0;
-	timer = setTimeout(() => exSIDthreadOutput());
 }
 
 function exSID_is_playing() {
@@ -656,7 +653,7 @@ async function exSID_chipselect(chip) {
 			await xSoutb(XS_AD_IOCTS1, 0);
 			break;
 		default:
-			await xSoutb(ChipSelect.XS_AD_IOCTSB, 0);
+			await xSoutb(XS_AD_IOCTSB, 0);
 			break;
 	}
 }

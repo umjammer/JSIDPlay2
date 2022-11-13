@@ -20,6 +20,7 @@ import com.beust.jcommander.ParametersDelegate;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
@@ -68,6 +69,8 @@ public class ExSIDMappingServlet extends JSIDPlay2Servlet {
 
 			SidTune tune = SidTune.load(file);
 
+			CPUClock cpuClock = CPUClock.getCPUClock(emulationSection, tune);
+
 			Set<ChipModel> alreadyInUse = new HashSet<>();
 			Map<Integer, String> result = new HashMap<>();
 			for (int sidNum = 0; sidNum < MAX_SIDS; sidNum++) {
@@ -85,10 +88,16 @@ public class ExSIDMappingServlet extends JSIDPlay2Servlet {
 					if (sidNum == 1 && isChipNumAlreadyUsed(alreadyInUse, chipModel)) {
 						chipModel = chipModel == ChipModel.MOS6581 ? ChipModel.MOS8580 : ChipModel.MOS6581;
 					}
+					result.put(sidNum, String.valueOf(chipModel));
 					result.put(address, String.valueOf(sidNum));
 					alreadyInUse.add(chipModel);
 				}
 			}
+			result.put(-1, String.valueOf(SidTune.isSIDUsed(emulationSection, tune, 1)));
+			result.put(-2, String.valueOf(
+					emulationSection.isExsidFakeStereo() && SidTune.isFakeStereoSid(emulationSection, tune, 1)));
+			result.put(-3, cpuClock.name());
+
 			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(result));
 
 		} catch (Throwable t) {
