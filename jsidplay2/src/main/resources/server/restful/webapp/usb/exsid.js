@@ -518,7 +518,7 @@ async function exSID_exit() {
 	if (device) {
 		await exSID_reset(0);
 
-		xSoutb(XS_AD_IOCTFV, -1); // signal end of thread
+		await xSoutb(XS_AD_IOCTFV, -1); // signal end of thread
 
 		await xSfw_usb_purge_buffers();
 

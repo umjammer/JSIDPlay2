@@ -2277,7 +2277,7 @@
 			async function quit_hardsid() {
 			};
 			async function quit_exsid() {
-				xSfw_usb_close();
+			    await exSID_exit();
 			};
 			async function next_hardsid() {
 				await hardsid_usb_sync(0);
