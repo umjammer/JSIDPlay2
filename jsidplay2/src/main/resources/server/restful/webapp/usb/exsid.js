@@ -436,7 +436,7 @@ async function xSread(buff, size) {
  * @param {boolean} flush
  *         force write flush if positive, trigger thread exit if negative
  */
-async function xSoutb(b, flush) {
+function xSoutb(b, flush) {
 	backbuf[backbufIdx++] = b;
 
 	if (backbufIdx < XS_BUFFSZ && flush == 0) return;
@@ -501,7 +501,7 @@ async function exSID_init() {
 
 		// Wait for device ready by trying to read FV and wait for the answer
 		// XXX Broken with libftdi due to non-blocking read :-/
-		await xSoutb(XS_AD_IOCTFV, 1);
+		xSoutb(XS_AD_IOCTFV, 1);
 		await xSread(new Uint8Array(1), 1);
 		return 0;
 	} catch (err) {
@@ -516,9 +516,9 @@ async function exSID_init() {
  */
 async function exSID_exit() {
 	if (device) {
-		await exSID_reset(0);
+		exSID_reset(0);
 
-		await xSoutb(XS_AD_IOCTFV, -1); // signal end of thread
+		xSoutb(XS_AD_IOCTFV, -1); // signal end of thread
 
 		await xSfw_usb_purge_buffers();
 
@@ -539,18 +539,18 @@ async function exSID_exit() {
  * @param {number} volume
  *         volume to set the SIDs to after reset.
  */
-async function exSID_reset(volume) {
+function exSID_reset(volume) {
 	bufferQueue.clear();
 	// this will stall
-	await xSoutb(XS_AD_IOCTRS, 1);
+	xSoutb(XS_AD_IOCTRS, 1);
 	// sleep for 100us
-	await delay(50); // wait for send/receive to complete
+	delay(50); // wait for send/receive to complete
 	// this only needs 2 bytes which matches the input buffer of the PIC so all is
 	// well
-	await exSID_write(0x18, volume, 1);
+	exSID_write(0x18, volume, 1);
 
 	clkdrift = 0;
-	await delay(250); // wait for send/receive to complete
+	delay(250); // wait for send/receive to complete
 
 	backbufIdx = 0;
 }
@@ -572,23 +572,23 @@ function exSID_is_playing() {
  * @return {number}
  *         0 on success, !0 otherwise.
  */
-async function exSID_clockselect(clock) {
+function exSID_clockselect(clock) {
 	if (XS_MODEL_PLUS != hardwareSpecs.model) return -1;
 
 	switch (clock) {
 		case ClockSelect.XS_CL_PAL:
-			await xSoutb(XSP_AD_IOCTCP, 1);
+			xSoutb(XSP_AD_IOCTCP, 1);
 			break;
 		case ClockSelect.XS_CL_NTSC:
-			await xSoutb(XSP_AD_IOCTCN, 1);
+			xSoutb(XSP_AD_IOCTCN, 1);
 			break;
 		case ClockSelect.XS_CL_1MHZ:
-			await xSoutb(XSP_AD_IOCTC1, 1);
+			xSoutb(XSP_AD_IOCTC1, 1);
 			break;
 		default:
 			return -1;
 	}
-	await delay(1);
+	delay(1);
 
 	clkdrift = 0; // reset drift
 
@@ -607,27 +607,27 @@ async function exSID_clockselect(clock) {
  * @return {number}
  *         0 on success, !0 otherwise.
  */
-async function exSID_audio_op(operation) {
+function exSID_audio_op(operation) {
 	if (XS_MODEL_PLUS != hardwareSpecs.model) return -1;
 
 	switch (operation) {
 		case AudioOp.XS_AU_6581_8580:
-			await xSoutb(XSP_AD_IOCTA0, 0);
+			xSoutb(XSP_AD_IOCTA0, 0);
 			break;
 		case AudioOp.XS_AU_8580_6581:
-			await xSoutb(XSP_AD_IOCTA1, 0);
+			xSoutb(XSP_AD_IOCTA1, 0);
 			break;
 		case AudioOp.XS_AU_8580_8580:
-			await xSoutb(XSP_AD_IOCTA2, 0);
+			xSoutb(XSP_AD_IOCTA2, 0);
 			break;
 		case AudioOp.XS_AU_6581_6581:
-			await xSoutb(XSP_AD_IOCTA3, 0);
+			xSoutb(XSP_AD_IOCTA3, 0);
 			break;
 		case AudioOp.XS_AU_MUTE:
-			await xSoutb(XSP_AD_IOCTAM, 0);
+			xSoutb(XSP_AD_IOCTAM, 0);
 			break;
 		case AudioOp.XS_AU_UNMUTE:
-			await xSoutb(XSP_AD_IOCTAU, 0);
+			xSoutb(XSP_AD_IOCTAU, 0);
 			break;
 		default:
 			return -1;
@@ -644,17 +644,17 @@ async function exSID_audio_op(operation) {
  * @param {Object} chip
  *         SID selector value
  */
-async function exSID_chipselect(chip) {
+function exSID_chipselect(chip) {
 	clkdrift -= hardwareSpecs.csioctlCycles;
 	switch (chip) {
 		case ChipSelect.XS_CS_CHIP0:
-			await xSoutb(XS_AD_IOCTS0, 0);
+			xSoutb(XS_AD_IOCTS0, 0);
 			break;
 		case ChipSelect.XS_CS_CHIP1:
-			await xSoutb(XS_AD_IOCTS1, 0);
+			xSoutb(XS_AD_IOCTS1, 0);
 			break;
 		default:
-			await xSoutb(XS_AD_IOCTSB, 0);
+			xSoutb(XS_AD_IOCTSB, 0);
 			break;
 	}
 }
@@ -688,8 +688,8 @@ function exSID_hwmodel() {
  *         version information as described above.
  */
 async function exSID_hwversion() {
-	await xSoutb(XS_AD_IOCTHV, 0);
-	await xSoutb(XS_AD_IOCTFV, 1);
+	xSoutb(XS_AD_IOCTHV, 0);
+	xSoutb(XS_AD_IOCTFV, 1);
 
 	inbuf = new Uint8Array(2);
 	await xSread(inbuf, 2);
@@ -707,9 +707,9 @@ async function exSID_hwversion() {
  * @param {number} cycles
  *         how many SID clocks to loop for.
  */
-async function xSdelay(cycles) {
+function xSdelay(cycles) {
 	while (cycles >= hardwareSpecs.mindelCycles) {
-		await xSoutb(XS_AD_IOCTD1, 0);
+		xSoutb(XS_AD_IOCTD1, 0);
 		cycles -= hardwareSpecs.mindelCycles;
 		clkdrift -= hardwareSpecs.mindelCycles;
 	}
@@ -744,7 +744,7 @@ async function xSlongdelay(cycles) {
 	}
 
 	while (multiple >= 255) {
-		await exSID_write(XS_AD_IOCTLD, 255, flush);
+		exSID_write(XS_AD_IOCTLD, 255, flush);
 		if (flush != 0)
 			// wait for answer with blocking read
 			await xSread(dummy, 1);
@@ -752,14 +752,14 @@ async function xSlongdelay(cycles) {
 	}
 
 	if (multiple != 0) {
-		await exSID_write(XS_AD_IOCTLD, multiple, flush);
+		exSID_write(XS_AD_IOCTLD, multiple, flush);
 		if (flush != 0)
 			// wait for answer with blocking read
 			await xSread(dummy, 1);
 	}
 
 	// deal with remainder
-	await xSdelay(delta);
+	xSdelay(delta);
 }
 
 /**
@@ -769,7 +769,7 @@ async function xSlongdelay(cycles) {
  * @param {number} cycles
  *         how many SID clocks to loop for.
  */
-async function exSID_delay(cycles) {
+function exSID_delay(cycles) {
 	var delay;
 
 	clkdrift += cycles;
@@ -789,7 +789,7 @@ async function exSID_delay(cycles) {
 		//			break;
 		//		}
 		default:
-			await xSdelay(delay);
+			xSdelay(delay);
 	}
 }
 
@@ -804,8 +804,8 @@ async function exSID_delay(cycles) {
  *         if non-zero, force immediate flush to device.
  */
 async function exSID_write(addr, data, flush) {
-	await xSoutb(addr, 0);
-	await xSoutb(data, flush);
+	xSoutb(addr, 0);
+	xSoutb(data, flush);
 }
 
 /**
@@ -820,11 +820,11 @@ async function exSID_write(addr, data, flush) {
  * @param {number} data
  *         data to write at that address.
  */
-async function exSID_clkdwrite(cycles, addr, data) {
+function exSID_clkdwrite(cycles, addr, data) {
 	// actual write will cost writeCycles. Delay for cycles - write_cycles then
 	// account for the write
 	clkdrift += cycles;
-	if (clkdrift > hardwareSpecs.writeCycles) await xSdelay(clkdrift - hardwareSpecs.writeCycles);
+	if (clkdrift > hardwareSpecs.writeCycles) xSdelay(clkdrift - hardwareSpecs.writeCycles);
 
 	// write is going to consume write_cycles clock ticks
 	clkdrift -= hardwareSpecs.writeCycles;
@@ -846,7 +846,7 @@ async function exSID_clkdwrite(cycles, addr, data) {
 		addr = addr | (adj << 5);
 	}
 
-	await exSID_write(addr, data, 0);
+	exSID_write(addr, data, 0);
 }
 
 /**
@@ -863,7 +863,7 @@ async function exSID_read(addr, flush) {
 	data = new byte[1]();
 
 	// XXX read support
-	await xSoutb(addr, flush);
+	xSoutb(addr, flush);
 	// blocking
 	await xSread(data, 1);
 
@@ -927,7 +927,7 @@ async function exSID_clkdread(cycles, addr) {
 	// 2-cycle offset adjustement, see function documentation.
 	clkdrift += hardwareSpecs.readOffsetCycles;
 	clkdrift += cycles;
-	if (clkdrift > hardwareSpecs.readPreCycles) await xSdelay(clkdrift - hardwareSpecs.readPreCycles);
+	if (clkdrift > hardwareSpecs.readPreCycles) xSdelay(clkdrift - hardwareSpecs.readPreCycles);
 
 	// read request is going to consume read_pre_cycles clock ticks
 	clkdrift -= hardwareSpecs.readPreCycles;

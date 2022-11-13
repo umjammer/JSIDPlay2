@@ -2240,18 +2240,18 @@
 	
 				    if (fakeStereo) {
 						lastChipModel = chipModel;
-					    await exSID_chipselect(ChipSelect.XS_CS_BOTH);
+					    exSID_chipselect(ChipSelect.XS_CS_BOTH);
 				    }
-				    await exSID_audio_op(AudioOp.XS_AU_MUTE);
-				    await exSID_clockselect(cpuClock === "PAL" ? ClockSelect.XS_CL_PAL: ClockSelect.XS_CL_NTSC);
+				    exSID_audio_op(AudioOp.XS_AU_MUTE);
+				    exSID_clockselect(cpuClock === "PAL" ? ClockSelect.XS_CL_PAL: ClockSelect.XS_CL_NTSC);
 				    if (stereo) {
-						await exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_8580: AudioOp.XS_AU_8580_6581);
+						exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_8580: AudioOp.XS_AU_8580_6581);
 				    } else {
-						await exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_6581: AudioOp.XS_AU_8580_8580);
+						exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_6581: AudioOp.XS_AU_8580_8580);
 				    }
-					await exSID_audio_op(AudioOp.XS_AU_UNMUTE);
+					exSID_audio_op(AudioOp.XS_AU_UNMUTE);
 			    }
-				await exSID_reset(0);
+				exSID_reset(0);
 			};
 			async function write_hardsid(write) {
 				while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
@@ -2264,14 +2264,14 @@
 				if (write.reg <= 0x18) {
 					// "Ragga Run.sid" denies to work!
 					
-					await exSID_delay(write.cycles);
+					exSID_delay(write.cycles);
 
 					const chipModel = mapping[write.chip];
 				    if (lastChipModel !== chipModel) {
-						await exSID_chipselect(chipModel === "MOS8580" ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
+						exSID_chipselect(chipModel === "MOS8580" ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
 						lastChipModel = chipModel;
 					}
-					await exSID_clkdwrite(0, write.reg, write.value);
+					exSID_clkdwrite(0, write.reg, write.value);
 				}
 			};
 			async function quit_hardsid() {
@@ -2288,7 +2288,7 @@
 				if (exSID_is_playing()) {
 					return -1;
 				} else {
-					await exSID_reset(0);
+					exSID_reset(0);
 					return 0;
 				}
 			};
