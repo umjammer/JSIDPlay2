@@ -88,14 +88,19 @@ public class ExSIDMappingServlet extends JSIDPlay2Servlet {
 					if (sidNum == 1 && isChipNumAlreadyUsed(alreadyInUse, chipModel)) {
 						chipModel = chipModel == ChipModel.MOS6581 ? ChipModel.MOS8580 : ChipModel.MOS6581;
 					}
+					// chipModel
 					result.put(sidNum, String.valueOf(chipModel));
+					// base address
 					result.put(address, String.valueOf(sidNum));
 					alreadyInUse.add(chipModel);
 				}
 			}
+			// stereo
 			result.put(-1, String.valueOf(SidTune.isSIDUsed(emulationSection, tune, 1)));
+			// fake-stereo
 			result.put(-2, String.valueOf(
 					emulationSection.isExsidFakeStereo() && SidTune.isFakeStereoSid(emulationSection, tune, 1)));
+			// CPUClock
 			result.put(-3, cpuClock.name());
 
 			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(result));

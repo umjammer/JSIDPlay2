@@ -2232,7 +2232,6 @@
 			};
 			async function reset_exsid() {
 
-			    await exSID_chipselect(ChipSelect.XS_CS_BOTH);
 				if (mapping) {
 					const chipModel = mapping[0];
 					const stereo = mapping[-1] === "true";
