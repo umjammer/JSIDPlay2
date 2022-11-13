@@ -526,6 +526,7 @@ async function exSID_exit() {
 		device = undefined;
 	}
 	clkdrift = 0;
+	ftdi = undefined;
 }
 
 /**

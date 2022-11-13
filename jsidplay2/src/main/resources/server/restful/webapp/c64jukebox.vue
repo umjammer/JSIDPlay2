@@ -2800,6 +2800,7 @@
 
 							if (write.chip == Chip.QUIT) {
 								await HardwareFunctions.quit();
+								deviceCount = 0;
 								return;
 
 							} else if (write.chip == Chip.RESET) {
@@ -2904,12 +2905,11 @@
 						});
 					},
 					end: function () {
-						this.stop();
+						stop();
 						sidWriteQueue.enqueue({
 							chip: Chip.QUIT,
 						});
 						this.showAudio = true;
-						deviceCount = 0;
 					},
 					sortChanged(e) {
 						localStorage.sortBy = JSON.stringify(e.sortBy);
