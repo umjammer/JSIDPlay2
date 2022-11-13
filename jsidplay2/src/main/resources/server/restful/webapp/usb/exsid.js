@@ -803,7 +803,7 @@ function exSID_delay(cycles) {
  * @param {boolean} flush
  *         if non-zero, force immediate flush to device.
  */
-async function exSID_write(addr, data, flush) {
+function exSID_write(addr, data, flush) {
 	xSoutb(addr, 0);
 	xSoutb(data, flush);
 }
