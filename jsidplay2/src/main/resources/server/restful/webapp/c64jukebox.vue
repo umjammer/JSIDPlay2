@@ -2800,7 +2800,6 @@
 
 							if (write.chip == Chip.QUIT) {
 								await HardwareFunctions.quit();
-								deviceCount = 0;
 								return;
 
 							} else if (write.chip == Chip.RESET) {
@@ -2909,6 +2908,7 @@
 						sidWriteQueue.enqueue({
 							chip: Chip.QUIT,
 						});
+						deviceCount = 0;
 						this.showAudio = true;
 					},
 					sortChanged(e) {
@@ -3726,7 +3726,7 @@
 											id: obj.id,
 											category: data.categories.filter(function (item) {
 												return item.id === obj.category;
-											})[0].description,
+											})[0]?.description,
 											categoryId: obj.category,
 											name: obj.name,
 											group: obj.group,
