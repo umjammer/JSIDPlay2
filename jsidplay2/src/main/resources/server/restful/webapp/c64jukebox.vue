@@ -1385,26 +1385,36 @@
 										</div>
 									</div>
 									<div>
-										<b-button size="sm" variant="secondary" v-on:click="
-																							HardwareFunctions.init = init_hardsid;
-																							HardwareFunctions.reset = reset_hardsid;
-																							HardwareFunctions.write = write_hardsid;
-																							HardwareFunctions.next = next_hardsid;
-																							HardwareFunctions.quit = quit_hardsid;
-																							HardwareFunctions.mapping = 'hardsid-mapping';
-																							init();">
+										<b-button
+											size="sm"
+											variant="secondary"
+											v-on:click="
+												HardwareFunctions.init = init_hardsid;
+												HardwareFunctions.reset = reset_hardsid;
+												HardwareFunctions.write = write_hardsid;
+												HardwareFunctions.next = next_hardsid;
+												HardwareFunctions.quit = quit_hardsid;
+												HardwareFunctions.mapping = 'hardsid-mapping';
+												init();
+											"
+										>
 											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
 										</b-button>
 									</div>
 									<div>
-										<b-button size="sm" variant="secondary" v-on:click="
-																							HardwareFunctions.init = init_exsid;
-																							HardwareFunctions.reset = reset_exsid;
-																							HardwareFunctions.write = write_exsid;
-																							HardwareFunctions.next = next_exsid;
-																							HardwareFunctions.quit = quit_exsid;
-																							HardwareFunctions.mapping = 'exsid-mapping';
-																							init();">
+										<b-button
+											size="sm"
+											variant="secondary"
+											v-on:click="
+												HardwareFunctions.init = init_exsid;
+												HardwareFunctions.reset = reset_exsid;
+												HardwareFunctions.write = write_exsid;
+												HardwareFunctions.next = next_exsid;
+												HardwareFunctions.quit = quit_exsid;
+												HardwareFunctions.mapping = 'exsid-mapping';
+												init();
+											"
+										>
 											<span>Connect to ExSID, ExSID+</span>
 										</b-button>
 									</div>
@@ -2205,16 +2215,8 @@
 		</div>
 
 		<script>
-			async function init_exsid() {
-				var ok = await exSID_init();
-				if (ok != -1) {
-					deviceCount = 1;
-					return 0;
-				}
-				return -1;
-			};
 			async function init_hardsid() {
-			    await hardsid_usb_init(true, SysMode.SIDPLAY);
+				await hardsid_usb_init(true, SysMode.SIDPLAY);
 				deviceCount = hardsid_usb_getdevcount();
 				console.log("Device count: " + deviceCount);
 				if (deviceCount > 0) {
@@ -2223,67 +2225,68 @@
 					return 0;
 				}
 				return -1;
-			};
+			}
+			async function init_exsid() {
+				var ok = await exSID_init();
+				if (ok != -1) {
+					deviceCount = 1;
+					return 0;
+				}
+				return -1;
+			}
 			async function reset_hardsid() {
 				await hardsid_usb_abortplay(0);
 				for (let chipNum = 0; chipNum < chipCount; chipNum++) {
 					await hardsid_usb_reset(0, chipNum, 0x00);
 				}
-			};
+			}
 			async function reset_exsid() {
-
 				if (mapping) {
 					const chipModel = mapping[0];
 					const stereo = mapping[-1] === "true";
 					const fakeStereo = mapping[-2] === "true";
 					const cpuClock = mapping[-3];
-	
-				    if (fakeStereo) {
+
+					if (fakeStereo) {
 						lastChipModel = chipModel;
-					    exSID_chipselect(ChipSelect.XS_CS_BOTH);
-				    }
-				    exSID_audio_op(AudioOp.XS_AU_MUTE);
-				    exSID_clockselect(cpuClock === "PAL" ? ClockSelect.XS_CL_PAL: ClockSelect.XS_CL_NTSC);
-				    if (stereo) {
-						exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_8580: AudioOp.XS_AU_8580_6581);
-				    } else {
-						exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_6581: AudioOp.XS_AU_8580_8580);
-				    }
+						exSID_chipselect(ChipSelect.XS_CS_BOTH);
+					}
+					exSID_audio_op(AudioOp.XS_AU_MUTE);
+					exSID_clockselect(cpuClock === "PAL" ? ClockSelect.XS_CL_PAL : ClockSelect.XS_CL_NTSC);
+					if (stereo) {
+						exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_8580 : AudioOp.XS_AU_8580_6581);
+					} else {
+						exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_6581 : AudioOp.XS_AU_8580_8580);
+					}
 					exSID_audio_op(AudioOp.XS_AU_UNMUTE);
-			    }
+				}
 				exSID_reset(0);
-			};
+			}
 			async function write_hardsid(write) {
 				while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
-				while (
-					(await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) ==
-					WState.BUSY
-				) {}
-			};
+				while ((await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) == WState.BUSY) {}
+			}
 			async function write_exsid(write) {
 				if (write.reg <= 0x18) {
 					// "Ragga Run.sid" denies to work!
-					
-					exSID_delay(write.cycles);
 
 					const chipModel = mapping[write.chip];
-				    if (lastChipModel !== chipModel) {
+					if (lastChipModel !== chipModel) {
 						exSID_chipselect(chipModel === "MOS8580" ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
 						lastChipModel = chipModel;
 					}
-					exSID_clkdwrite(0, write.reg, write.value);
+					exSID_clkdwrite(write.cycles, write.reg, write.value);
 				}
-			};
-			async function quit_hardsid() {
-			};
+			}
+			async function quit_hardsid() {}
 			async function quit_exsid() {
-			    await exSID_exit();
-			};
+				await exSID_exit();
+			}
 			async function next_hardsid() {
 				await hardsid_usb_sync(0);
 				while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
 				return 0;
-			};
+			}
 			async function next_exsid() {
 				if (exSID_is_playing()) {
 					return -1;
@@ -2291,14 +2294,14 @@
 					exSID_reset(0);
 					return 0;
 				}
-			};
+			}
 			const HardwareFunctions = {
 				init: undefined,
 				write: undefined,
 				next: undefined,
 				reset: undefined,
 				quit: undefined,
-				mapping: undefined
+				mapping: undefined,
 			};
 			const Chip = {
 				NEXT: -1,
@@ -2780,12 +2783,12 @@
 					},
 				},
 				methods: {
-				    init: async function () {
+					init: async function () {
 						sidWriteQueue.clear();
 						if (typeof timer !== "undefined") {
 							clearTimeout(timer);
 						}
-						if (await HardwareFunctions.init() == 0) {
+						if ((await HardwareFunctions.init()) == 0) {
 							sidWriteQueue.enqueue({
 								chip: Chip.RESET,
 							});
@@ -2801,23 +2804,20 @@
 							if (write.chip == Chip.QUIT) {
 								await HardwareFunctions.quit();
 								return;
-
 							} else if (write.chip == Chip.RESET) {
-							    await HardwareFunctions.reset();
+								await HardwareFunctions.reset();
 								timer = setTimeout(() => this.doPlay(), 250);
 								return;
-
 							} else if (write.chip == Chip.NEXT) {
-							    if (await HardwareFunctions.next() == 0) {
+								if ((await HardwareFunctions.next()) == 0) {
 									Vue.nextTick(() => this.setNextPlaylistEntry());
-							    } else {
+								} else {
 									sidWriteQueue.enqueue({
 										chip: Chip.NEXT,
 									});
 									timer = setTimeout(() => this.doPlay(), 250);
 									return;
-							    }
-
+								}
 							} else {
 								await HardwareFunctions.write(write);
 							}
@@ -2835,7 +2835,7 @@
 								url: this.createSIDMappingUrl(entry, itemId, categoryId),
 							}).then((response) => {
 								mapping = response.data;
-								
+
 								// cancel  previous ajax if exists
 								if (ajaxRequest) {
 									ajaxRequest.cancel();
@@ -3347,7 +3347,8 @@
 							window.location.protocol +
 							"//" +
 							window.location.host +
-							"/jsidplay2service/JSIDPlay2REST/" + HardwareFunctions.mapping +
+							"/jsidplay2service/JSIDPlay2REST/" +
+							HardwareFunctions.mapping +
 							url +
 							"?defaultModel=" +
 							this.convertOptions.config.emulationSection.defaultSidModel +
@@ -3357,8 +3358,7 @@
 							this.convertOptions.config.emulationSection.hardsid6581 +
 							"&hardSid8580=" +
 							this.convertOptions.config.emulationSection.hardsid8580 +
-							(HardwareFunctions.mapping === "hardsid-mapping" ?
-								"&chipCount=" + chipCount : "") +
+							(HardwareFunctions.mapping === "hardsid-mapping" ? "&chipCount=" + chipCount : "") +
 							this.stereoParameters +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"
 								? ""
