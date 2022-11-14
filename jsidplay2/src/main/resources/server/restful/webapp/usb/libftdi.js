@@ -69,7 +69,7 @@ const C_CLK = 48000000;
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class FTDI {
-	constructor() { }
+	constructor() {}
 	async init(vendorId) {
 		const self = this;
 
@@ -384,7 +384,7 @@ function ftdi_to_clkbits(baud, clk, clkDiv) {
 
 	if (baud >= clk / clkDiv) {
 		encodedDivisor = 0;
-		bestBaud = clk / dlkDiv;
+		bestBaud = clk / clkDiv;
 	} else if (baud >= clk / (clkDiv + clkDiv / 2)) {
 		encodedDivisor = 1;
 		bestBaud = clk / (clkDiv + clkDiv / 2);

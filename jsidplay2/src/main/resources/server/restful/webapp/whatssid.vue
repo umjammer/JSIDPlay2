@@ -1,64 +1,65 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8" />
-<title>WhatsSID</title>
-</head>
-<body>
-	<script src="/static/vue@2.6.14/dist/vue.min.js"></script>
-	<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
+	<head>
+		<meta charset="UTF-8" />
+		<title>WhatsSID</title>
+	</head>
+	<body>
+		<script src="/static/vue@2.6.14/dist/vue.min.js"></script>
+		<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
 
-	<h1>WhatsSID?</h1>
+		<h1>WhatsSID?</h1>
 
-	<div id="app">
-		<h1>Upload a WAV File</h1>
-		<form enctype="multipart/form-data">
-			<input type="file" name="file"
-				v-on:change="fileChange($event.target.files)" />
-			<button type="button" v-on:click="upload()">Upload</button>
-		</form>
-		<div>
-			<p>{{ match }}</p>
+		<div id="app">
+			<h1>Upload a WAV File</h1>
+			<form enctype="multipart/form-data">
+				<input type="file" name="file" v-on:change="fileChange($event.target.files)" />
+				<button type="button" v-on:click="upload()">Upload</button>
+			</form>
+			<div>
+				<p>{{ match }}</p>
+			</div>
 		</div>
-	</div>
 
-	<script>
-
-	new Vue({
-        el: '#app',
-        data() {
-            return {
-            	match: '',
-                files: new FormData()
-            }
-        },
-        methods: {
-            fileChange(fileList) {
-                this.files = new FormData();
-                this.files.append("file", fileList[0], fileList[0].name);
-            },
-            upload() {
-            	this.match = 'Please wait...';
-				axios({
-					method: 'post',
-					url: '/jsidplay2service/JSIDPlay2REST/whatssid',
-					data: this.files,
-					auth: {
-					  username: 'jsidplay2',
-					  password: 'jsidplay2!'
-					}
-				}).then(result => {
-                	if (result.data && result.headers['content-length']) {
-	                	this.match = result.data;
-	               	} else {
-	               		this.match = 'Sorry, no match!';
-	               	}
-                }, error => {
-                	console.error(error);
-                })
-            }
-        }
-	})
-</script>
-</body>
+		<script>
+			new Vue({
+				el: "#app",
+				data() {
+					return {
+						match: "",
+						files: new FormData(),
+					};
+				},
+				methods: {
+					fileChange(fileList) {
+						this.files = new FormData();
+						this.files.append("file", fileList[0], fileList[0].name);
+					},
+					upload() {
+						this.match = "Please wait...";
+						axios({
+							method: "post",
+							url: "/jsidplay2service/JSIDPlay2REST/whatssid",
+							data: this.files,
+							auth: {
+								username: "jsidplay2",
+								password: "jsidplay2!",
+							},
+						}).then(
+							(result) => {
+								if (result.data && result.headers["content-length"]) {
+									this.match = result.data;
+								} else {
+									this.match = "Sorry, no match!";
+								}
+							},
+							(error) => {
+								console.error(error);
+							}
+						);
+					},
+				},
+			});
+		</script>
+	</body>
 </html>
