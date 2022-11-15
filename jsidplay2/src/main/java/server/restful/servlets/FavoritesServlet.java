@@ -18,6 +18,7 @@ import libsidutils.PathUtils;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.config.Configuration;
+import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
 public class FavoritesServlet extends JSIDPlay2Servlet {
@@ -57,8 +58,8 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	private List<String> getFirstFavorites() {
 		List<String> filters = configuration.getFavorites().stream()
 				.filter(favorites -> !favorites.getFavorites().isEmpty()).findFirst()
-				.map(favoritesSection -> favoritesSection.getFavorites()).orElseGet(Collections::emptyList).stream()
-				.map(favorite -> getFavoriteFilename(favorite)).filter(Objects::nonNull).collect(Collectors.toList());
+				.map(FavoritesSection::getFavorites).orElseGet(Collections::emptyList).stream()
+				.map(this::getFavoriteFilename).filter(Objects::nonNull).collect(Collectors.toList());
 		return filters;
 	}
 

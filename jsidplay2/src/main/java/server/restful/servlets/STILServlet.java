@@ -83,10 +83,6 @@ public class STILServlet extends JSIDPlay2Servlet {
 			stil = new STIL(input);
 		}
 		String collectionName = PathUtils.getCollectionName(hvscRoot, file);
-		return getStilEntry(stil, collectionName);
-	}
-
-	private STILEntry getStilEntry(STIL stil, final String collectionName) {
 		return stil != null && collectionName != null ? stil.getSTILEntry(collectionName) : null;
 	}
 
