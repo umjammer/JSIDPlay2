@@ -1,8 +1,9 @@
 Work with Eclipse:
 ==================
+From the command-line:
 mvn -Djavafx.platform=linux clean install
 mvn eclipse:eclipse
-in Eclipse: Right-Click on Project Maven/"Update Project"
+then in Eclipse: Right-Click on Project Maven/"Update Project"
 
 Build JSIDPlay2
 ===============
