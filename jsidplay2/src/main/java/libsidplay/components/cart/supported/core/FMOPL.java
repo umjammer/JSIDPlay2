@@ -18,7 +18,7 @@ import libsidplay.common.Event;
  *
  * 
  * Adapted for use in VICE by Marco van den Heuvel
- * &lt;blackystardust68@yahoo.com>
+ * &lt;blackystardust68@yahoo.com&gt;
  *
  * XXX Unused and untested code!!!
  * 
