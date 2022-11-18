@@ -1,18 +1,18 @@
 Build JSIDPlay2
 ===============
-"mvn clean install"
+"mvn clean install -Djavafx.platform=linux"
 -> target/standalone	-	local PC version
 -> target/deploy		-	website version
 
 Deploy JSIDPlay2
 ================
-"mvn clean deploy"
-does mvn clean install
+"mvn -Djavafx.platform=linux clean deploy"
+does mvn -Djavafx.platform=linux clean install
 and uploads target/deploy to web-server
 
 Build JSIDPlay2 and runs UI-tests
 =================================
-mvn clean install -P release			"You should disable screensaver to not interfere with the tests"
+mvn -Djavafx.platform=linux clean install -P release			"You should disable screensaver to not interfere with the tests"
 
 Set the following optional properties in Eclipse to deploy additional online features:
 Open Preferences/Run/Debug/StringSubstitution or at command line: using -D
