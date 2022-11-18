@@ -1,14 +1,14 @@
-Build JSIDPlay2
-===============
-mvn -Djavafx.platform=linux clean install
--> target/standalone	-	local PC version
--> target/deploy		-	website version
-
 Work with Eclipse:
 ==================
 mvn -Djavafx.platform=linux clean install
 mvn eclipse:eclipse
 in Eclipse: Right-Click on Project Maven/"Update Project"
+
+Build JSIDPlay2
+===============
+mvn -Djavafx.platform=linux clean install
+-> target/standalone	-	local PC version
+-> target/deploy		-	website version
 
 Deploy JSIDPlay2
 ================
