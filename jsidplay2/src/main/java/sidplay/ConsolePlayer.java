@@ -1,11 +1,15 @@
 package sidplay;
 
+import static java.util.Arrays.stream;
 import static sidplay.ini.IniConfig.getINIPath;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.sound.sampled.Mixer.Info;
@@ -33,6 +37,7 @@ import sidplay.fingerprinting.FingerprintJsonClient;
 import sidplay.ini.IniConfig;
 import sidplay.ini.validator.VerboseValidator;
 import sidplay.player.DebugUtil;
+import sidplay.player.State;
 
 /**
  * 
@@ -44,6 +49,19 @@ import sidplay.player.DebugUtil;
 @Parameters(resourceBundle = "sidplay.ConsolePlayer")
 final public class ConsolePlayer {
 
+	public final static class AudioTuneFileFilter implements FileFilter {
+
+		private static final String DEFAULT_FILE_NAME_EXT[] = new String[] { ".sid", ".dat", ".mus", ".str" };
+
+		@Override
+		public boolean accept(File file) {
+			return file.isDirectory() || stream(DEFAULT_FILE_NAME_EXT)
+					.filter(file.getName().toLowerCase(Locale.ENGLISH)::endsWith).findFirst().isPresent();
+		}
+	}
+
+	protected static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
+
 	static {
 		DebugUtil.init();
 	}
@@ -54,17 +72,14 @@ final public class ConsolePlayer {
 	@Parameter(names = "--cpuDebug", hidden = true, descriptionKey = "DEBUG", order = 10001)
 	private Boolean cpuDebug = Boolean.FALSE;
 
-	@Parameter(names = { "--recordingFilename", "-r" }, descriptionKey = "RECORDING_FILENAME", order = 10002)
-	private String recordingFilename = "jsidplay2";
-
-	@Parameter(names = { "--startSong", "-o" }, descriptionKey = "START_SONG", order = 10003)
+	@Parameter(names = { "--startSong", "-o" }, descriptionKey = "START_SONG", order = 10002)
 	private Integer song = null;
 
 	@Parameter(names = { "--verbose",
-			"-v" }, descriptionKey = "VERBOSE", validateWith = VerboseValidator.class, order = 10004)
+			"-v" }, descriptionKey = "VERBOSE", validateWith = VerboseValidator.class, order = 10003)
 	private Integer verbose = 0;
 
-	@Parameter(names = { "--quiet", "-q" }, descriptionKey = "QUIET", order = 10005)
+	@Parameter(names = { "--quiet", "-q" }, descriptionKey = "QUIET", order = 10004)
 	private Boolean quiet = Boolean.FALSE;
 
 	@Parameter(description = "filename")
@@ -77,46 +92,73 @@ final public class ConsolePlayer {
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
-			Optional<String> filename = filenames.stream().findFirst();
-			if (help || !filename.isPresent()) {
+			Optional<String> optFilename = filenames.stream().findFirst();
+			if (help || !optFilename.isPresent()) {
 				commander.usage();
 				printSoundcardDevices();
 				printHardwareDevices();
 				exit(1);
 			}
-			IWhatsSidSection whatsSidSection = config.getWhatsSidSection();
-			whatsSidSection.setEnable(false);
-			String url = whatsSidSection.getUrl();
-			String username = whatsSidSection.getUsername();
-			String password = whatsSidSection.getPassword();
-			int connectionTimeout = whatsSidSection.getConnectionTimeout();
-
-			final SidTune tune = SidTune.load(new File(filename.get()));
-			tune.getInfo().setSelectedSong(song);
-			final Player player = new Player(config, cpuDebug ? MOS6510Debug.class : MOS6510.class);
-			player.setTune(tune);
-			final ConsoleIO consoleIO = new ConsoleIO(config, filename.get());
-			player.setMenuHook(obj -> consoleIO.menu(obj, verbose, quiet, System.out));
-			player.setInteractivityHook(obj -> consoleIO.decodeKeys(obj, System.in));
-			player.setWhatsSidHook(obj -> consoleIO.whatsSid(obj, quiet, System.out));
-			player.setFingerPrintMatcher(new FingerprintJsonClient(url, username, password, connectionTimeout));
-
-			if (config.getSidplay2Section().isEnableDatabase()) {
-				setSIDDatabase(player);
-			}
-			player.setRecordingFilenameProvider(theTune -> {
-				File file = new File(recordingFilename);
-				String basename = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()))
-						.getAbsolutePath();
-				if (theTune.getInfo().getSongs() > 1) {
-					basename += String.format("-%02d", theTune.getInfo().getCurrentSong());
+			for (String filename : filenames) {
+				File file = new File(filename);
+				if (file.isDirectory()) {
+					processDirectory(file);
+				} else {
+					processFile(file);
 				}
-				return basename;
-			});
-			player.startC64();
+			}
 		} catch (ParameterException | IOException | SidTuneError e) {
 			System.err.println(e.getMessage());
 			exit(1);
+		}
+	}
+
+	private void processDirectory(File dir) throws IOException, SidTuneError {
+		File[] listFiles = Optional.ofNullable(dir.listFiles(AUDIO_TUNE_FILE_FILTER)).orElse(new File[0]);
+		Arrays.sort(listFiles);
+		for (File file : listFiles) {
+			if (file.isDirectory()) {
+				processDirectory(file);
+			} else if (file.isFile()) {
+				processFile(file);
+			}
+		}
+	}
+
+	private void processFile(File currentFile) throws IOException, SidTuneError {
+		IWhatsSidSection whatsSidSection = config.getWhatsSidSection();
+		whatsSidSection.setEnable(false);
+		String url = whatsSidSection.getUrl();
+		String username = whatsSidSection.getUsername();
+		String password = whatsSidSection.getPassword();
+		int connectionTimeout = whatsSidSection.getConnectionTimeout();
+
+		final SidTune tune = SidTune.load(currentFile);
+		tune.getInfo().setSelectedSong(song);
+		final Player player = new Player(config, cpuDebug ? MOS6510Debug.class : MOS6510.class);
+		player.setTune(tune);
+		final ConsoleIO consoleIO = new ConsoleIO(config, currentFile.getAbsolutePath());
+		player.setMenuHook(obj -> consoleIO.menu(obj, verbose, quiet, System.out));
+		player.setInteractivityHook(obj -> consoleIO.decodeKeys(obj, System.in));
+		player.setWhatsSidHook(obj -> consoleIO.whatsSid(obj, quiet, System.out));
+		player.setFingerPrintMatcher(new FingerprintJsonClient(url, username, password, connectionTimeout));
+
+		if (config.getSidplay2Section().isEnableDatabase()) {
+			setSIDDatabase(player);
+		}
+		player.setRecordingFilenameProvider(theTune -> {
+			File file = new File(currentFile.getAbsolutePath());
+			String basename = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()))
+					.getAbsolutePath();
+			if (theTune.getInfo().getSongs() > 1) {
+				basename += String.format("-%02d", theTune.getInfo().getCurrentSong());
+			}
+			return basename;
+		});
+		player.startC64();
+		player.stopC64(false);
+		if (player.stateProperty().get() == State.QUIT) {
+			throw new IOException("QUIT by user");
 		}
 	}
 

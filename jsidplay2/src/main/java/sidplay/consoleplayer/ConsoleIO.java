@@ -11,6 +11,9 @@ import java.util.ResourceBundle;
 
 import builder.resid.SIDMixer;
 import libsidplay.common.ChipModel;
+import libsidplay.common.Emulation;
+import libsidplay.common.Engine;
+import libsidplay.components.pla.PLA;
 import libsidplay.config.IEmulationSection;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
@@ -69,6 +72,7 @@ public class ConsoleIO {
 			printHorizontalBottomLine(out, console);
 			printAddresses(out, console, tune);
 			printSIDDetails(out, console, tune);
+			printFilters(out, console, tune);
 		}
 		printHorizontalBottomLine(out, console);
 		printKeyboardControls(out);
@@ -369,6 +373,37 @@ public class ConsoleIO {
 			line.append(String.format("(%s)", thirdModel));
 			out.printf("%c %-12s : %37s %c\n", console.getVertical(), BUNDLE.getString("SID_DETAILS"), line.toString(),
 					console.getVertical());
+		}
+	}
+
+	private void printFilters(PrintStream out, final IniConsoleSection console, final SidTune tune) {
+		StringBuffer line = new StringBuffer();
+		IEmulationSection emulationSection = config.getEmulationSection();
+
+		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
+			Engine engine = Engine.getEngine(emulationSection, tune);
+			Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
+			ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
+			String filterName = emulationSection.getFilterName(sidNum, engine, emulation, chipModel);
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				line.append(String.format("%sfilter = %s", getSIDName(sidNum), filterName));
+				out.printf("%c %-12s : %37s %c\n", console.getVertical(), BUNDLE.getString("SID_DETAILS"),
+						line.toString(), console.getVertical());
+				line.setLength(0);
+			}
+		}
+	}
+
+	private String getSIDName(int sidNum) {
+		switch (sidNum) {
+		case 0:
+			return "Mono";
+		case 1:
+			return "Stereo";
+		case 2:
+			return "3-SID";
+		default:
+			throw new RuntimeException("Maximum supported SIDS exceeded!");
 		}
 	}
 
