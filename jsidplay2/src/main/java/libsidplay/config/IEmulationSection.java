@@ -1066,7 +1066,7 @@ public interface IEmulationSection {
 	 * <B>Note:</B> HARDSID filters are not software controllable (we return
 	 * emulation settings here)!
 	 *
-	 * @param sidNum    SId number
+	 * @param sidNum    SID number
 	 * @param emulation emulation type
 	 * @param chipModel SID chip model
 	 * @return the current filter name

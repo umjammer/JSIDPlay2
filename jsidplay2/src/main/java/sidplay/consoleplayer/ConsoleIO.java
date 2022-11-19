@@ -72,7 +72,6 @@ public class ConsoleIO {
 			printHorizontalBottomLine(out, console);
 			printAddresses(out, console, tune);
 			printSIDDetails(out, console, tune);
-			printFilters(out, console, tune);
 		}
 		printHorizontalBottomLine(out, console);
 		printKeyboardControls(out);
@@ -356,54 +355,41 @@ public class ConsoleIO {
 
 	private void printSIDDetails(PrintStream out, final IniConsoleSection console, final SidTune tune) {
 		StringBuffer line = new StringBuffer();
-		IEmulationSection emulation = config.getEmulationSection();
-		line.append(BUNDLE.getString("FILTER") + (emulation.isFilter() ? " = on, " : " = off, "));
-		ChipModel chipModel = ChipModel.getChipModel(emulation, tune, 0);
-		line.append(String.format(BUNDLE.getString("MODEL") + " = %s", chipModel));
-		if (SidTune.isSIDUsed(emulation, tune, 1)) {
-			ChipModel stereoModel = ChipModel.getChipModel(emulation, tune, 1);
-			line.append(String.format("(%s)", stereoModel));
-		}
+		IEmulationSection emulationSection = config.getEmulationSection();
+		line.append(BUNDLE.getString("FILTER") + (emulationSection.isFilter() ? " = on" : " = off"));
 		out.printf("%c %-12s : %37s %c\n", console.getVertical(), BUNDLE.getString("SID_DETAILS"), line.toString(),
 				console.getVertical());
 
-		if (SidTune.isSIDUsed(emulation, tune, 2)) {
-			ChipModel thirdModel = ChipModel.getChipModel(emulation, tune, 2);
-			line.setLength(0);
-			line.append(String.format("(%s)", thirdModel));
-			out.printf("%c %-12s : %37s %c\n", console.getVertical(), BUNDLE.getString("SID_DETAILS"), line.toString(),
-					console.getVertical());
-		}
-	}
-
-	private void printFilters(PrintStream out, final IniConsoleSection console, final SidTune tune) {
-		StringBuffer line = new StringBuffer();
-		IEmulationSection emulationSection = config.getEmulationSection();
-
 		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
-			Engine engine = Engine.getEngine(emulationSection, tune);
-			Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
-			ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
-			String filterName = emulationSection.getFilterName(sidNum, engine, emulation, chipModel);
 			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
-				line.append(String.format("%sfilter = %s", getSIDName(sidNum), filterName));
-				out.printf("%c %-12s : %37s %c\n", console.getVertical(), BUNDLE.getString("SID_DETAILS"),
-						line.toString(), console.getVertical());
-				line.setLength(0);
+				Engine engine = Engine.getEngine(emulationSection, tune);
+				out.printf("%c %-9s  %d : %37s %c\n", console.getVertical(), BUNDLE.getString("ENGINE"), sidNum + 1,
+						engine, console.getVertical());
 			}
 		}
-	}
-
-	private String getSIDName(int sidNum) {
-		switch (sidNum) {
-		case 0:
-			return "Mono";
-		case 1:
-			return "Stereo";
-		case 2:
-			return "3-SID";
-		default:
-			throw new RuntimeException("Maximum supported SIDS exceeded!");
+		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
+				out.printf("%c %-9s  %d : %37s %c\n", console.getVertical(), BUNDLE.getString("EMULATION"), sidNum + 1,
+						emulation, console.getVertical());
+			}
+		}
+		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
+				out.printf("%c %-9s %d : %37s %c\n", console.getVertical(), BUNDLE.getString("MODEL"), sidNum + 1,
+						chipModel, console.getVertical());
+			}
+		}
+		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				Engine engine = Engine.getEngine(emulationSection, tune);
+				Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
+				ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
+				String filterName = emulationSection.getFilterName(sidNum, engine, emulation, chipModel);
+				out.printf("%c %-9s  %d : %37s %c\n", console.getVertical(), BUNDLE.getString("SID_FILTER"), sidNum + 1,
+						filterName, console.getVertical());
+			}
 		}
 	}
 
