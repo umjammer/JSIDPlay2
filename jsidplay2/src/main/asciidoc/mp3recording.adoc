@@ -6,22 +6,19 @@ You can record SID as MP3 by command line using the following minimum options:
 ----
 java -jar jsidplay2-console-{version}.jar # <1>
 --audio LIVE_MP3 # <2>
---recordingFilename filename <3>
 ---- 
 <1> Launch command-line version
 <2> Record audio output as MP3 (and listen live on Soundcard)
-<3> Use filename as a basename for MP3 naming
 
 Example:
 [source,subs="attributes+"]
 ----
-Turrican_2-The_Final_Fight.sid --startSong 4 --single true --audio LIVE_MP3 --recordingFilename Turrican
+Turrican_2-The_Final_Fight.sid --startSong 4 --single true --audio LIVE_MP3
 ---- 
 
 In this example we record the tune Turrican_2-The_Final_Fight.sid starting with song 4.
 Since the SID file contains multiple songs and we want to record only song 4, we use
 the option named single.
-File output is specified using Turrican as a basename of the MP3 output file.
 
 The result is a file called Turrican-04.mp3, this is because the sub-song 4 will be part of the filename.
 

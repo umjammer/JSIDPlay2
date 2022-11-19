@@ -807,14 +807,14 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 
 		setClock(CPUClock.getCPUClock(emulationSection, tune));
 
-		verifyConfiguration(sidplay2Section);
-
 		reset();
 
 		// Audio configuration, if audio driver has not been set by setAudioDriver()!
 		if (getAudio() != null) {
 			setAudioAndDriver(audioSection.getAudio(), audioSection.getAudio().getAudioDriver(audioSection, tune));
 		}
+		verifyConfiguration(sidplay2Section);
+
 		if (getAudioDriver() instanceof VideoDriver) {
 			addVideoDriver((VideoDriver) getAudioDriver());
 		}
