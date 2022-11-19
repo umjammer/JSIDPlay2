@@ -49,7 +49,11 @@ import sidplay.player.State;
 @Parameters(resourceBundle = "sidplay.ConsolePlayer")
 final public class ConsolePlayer {
 
-	public final static class AudioTuneFileFilter implements FileFilter {
+	static {
+		DebugUtil.init();
+	}
+
+	private final static class AudioTuneFileFilter implements FileFilter {
 
 		private static final String DEFAULT_FILE_NAME_EXT[] = new String[] { ".sid", ".dat", ".mus", ".str" };
 
@@ -61,10 +65,6 @@ final public class ConsolePlayer {
 	}
 
 	protected static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
-
-	static {
-		DebugUtil.init();
-	}
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
 	private Boolean help = Boolean.FALSE;
@@ -82,7 +82,7 @@ final public class ConsolePlayer {
 	@Parameter(names = { "--quiet", "-q" }, descriptionKey = "QUIET", order = 10004)
 	private Boolean quiet = Boolean.FALSE;
 
-	@Parameter(description = "filename")
+	@Parameter(descriptionKey = "FILES")
 	private List<String> filenames = new ArrayList<>();
 
 	@ParametersDelegate
@@ -103,7 +103,7 @@ final public class ConsolePlayer {
 				File file = new File(filename);
 				if (file.isDirectory()) {
 					processDirectory(file);
-				} else {
+				} else if (file.isFile()) {
 					processFile(file);
 				}
 			}
