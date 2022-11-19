@@ -28,6 +28,7 @@
 		<script src="/static/usb/hardsid.js"></script>
 		<script src="/static/usb/libftdi.js"></script>
 		<script src="/static/usb/exsid.js"></script>
+		<script src="/static/usb/sidblaster.js"></script>
 
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -1418,6 +1419,23 @@
 											<span>Connect to ExSID, ExSID+</span>
 										</b-button>
 									</div>
+									<div>
+										<b-button
+											size="sm"
+											variant="secondary"
+											v-on:click="
+												HardwareFunctions.init = init_sidblaster;
+												HardwareFunctions.reset = reset_sidblaster;
+												HardwareFunctions.write = write_sidblaster;
+												HardwareFunctions.next = next_sidblaster;
+												HardwareFunctions.quit = quit_sidblaster;
+												HardwareFunctions.mapping = 'sidblaster-mapping';
+												init();
+											"
+										>
+											<span>SIDBlaster</span>
+										</b-button>
+									</div>
 								</b-card-text>
 							</b-tab>
 							<b-tab>
@@ -2234,6 +2252,14 @@
 				}
 				return -1;
 			}
+			async function init_sidblaster() {
+				var ok = await sidblaster_init();
+				if (ok != -1) {
+					deviceCount = 1;
+					return 0;
+				}
+				return -1;
+			}
 			async function reset_hardsid() {
 				await hardsid_usb_abortplay(0);
 				for (let chipNum = 0; chipNum < chipCount; chipNum++) {
@@ -2262,6 +2288,9 @@
 				}
 				exSID_reset(0);
 			}
+			async function reset_sidblaster() {
+			    sidblaster_reset(0);
+			}
 			async function write_hardsid(write) {
 				while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
 				while ((await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) == WState.BUSY) {}
@@ -2278,9 +2307,15 @@
 					exSID_clkdwrite(write.cycles, write.reg, write.value);
 				}
 			}
+			async function write_sidblaster(write) {
+			    sidblaster_write(write.cycles, write.reg, write.value);
+			}
 			async function quit_hardsid() {}
 			async function quit_exsid() {
 				await exSID_exit();
+			}
+			async function quit_sidblaster() {
+			    await sidblaster_exit();
 			}
 			async function next_hardsid() {
 				await hardsid_usb_sync(0);
@@ -2292,6 +2327,14 @@
 					return -1;
 				} else {
 					exSID_reset(0);
+					return 0;
+				}
+			}
+			async function next_sidblaster() {
+				if (sidblaster_is_playing()) {
+					return -1;
+				} else {
+				    sidblaster_reset();
 					return 0;
 				}
 			}

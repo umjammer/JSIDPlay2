@@ -466,7 +466,7 @@ function xSoutb(b, flush) {
  *         0 on success, !0 otherwise.
  */
 async function exSID_init() {
-	if (ftdi && ftdi.isOpen()) {
+	if (ftdi && ftdi.device && ftdi.isOpen()) {
 		console.log("Device is already open!");
 		return -1;
 	}
@@ -485,11 +485,6 @@ async function exSID_init() {
 				break;
 			}
 		}
-		if (device === {}) {
-			console.log("No device could be opened");
-			return -1;
-		}
-
 		await xSfw_usb_setup(XS_BDRATE, XS_USBLAT);
 
 		backbufIdx = 0;

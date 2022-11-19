@@ -84,6 +84,7 @@ import server.restful.servlets.rtmp.SetSidModel6581Servlet;
 import server.restful.servlets.rtmp.SetSidModel8580Servlet;
 import server.restful.servlets.sidmapping.ExSIDMappingServlet;
 import server.restful.servlets.sidmapping.HardSIDMappingServlet;
+import server.restful.servlets.sidmapping.SIDBlasterMappingServlet;
 import server.restful.servlets.whatssid.FindHashServlet;
 import server.restful.servlets.whatssid.FindTuneServlet;
 import server.restful.servlets.whatssid.InsertHashesServlet;
@@ -184,7 +185,7 @@ public class JSIDPlay2Server {
 			OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class, SetSidModel6581Servlet.class,
 			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
 			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
-			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class);
+			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class, SIDBlasterMappingServlet.class);
 
 	private static EntityManagerFactory entityManagerFactory;
 
