@@ -5,8 +5,12 @@ JSIDPlay2:
 Bugfix: Changing sub-tunes was impossible, if favorites playback option was turned off.
 Sub song ordering has been changed to start with 1 instead of the start song (E.G. Last_Ninja.sid: 1..(3)..11) for the UI version.
 song recording was delayed for RSID about 2.5 seconds (time to RESET) leading in too short songs, this has been fixed
+ConsolePlayer can now play or record whole folders. This is to support batch recording.
+ConsolePlayer's verbose mode now shows the filters being used
 
-JSIDPlay2Server:
-- C64 Jukebox: Improvements for VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)
-- Fetch Directory contents
-- Fetch SID tune information list
+JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue):
+- C64 Jukebox: Lots of improvements for VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)
+- C64 Jukebox: Hardware USB drivers have been added to make use of USB devices in Chrome Browser, Microsoft Edge or Opera.
+  This works for PC and Mobile devices.
+- Service added to fetch Directory contents
+- Service added to fetch SID tune information list

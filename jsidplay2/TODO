@@ -1,23 +1,18 @@
 TODO:
 =====
 
-- Batch mode for ConsolePlayer to record a whole directory is desired
 - for ConsolePlayer unknown parameters should be denied
-- Which filters are currently used by the Player, be more talkative to the user.
 - What to do to use your own filter, this is totally unclear to the user
 - Test classes seem not always to work with JDK17.
 - Playlists are wanted to be shared online
 - the ability to have music playback occur alongside your SID dump feature. This would look a bit like a tracker,
   and would allow a listener to see the connections between register values and sounds.
 - Drag and Drop of HVSC zip file
-- Support SIDBlaster reads (for configuru and fpgasid)
 - SID Reg should report reads as well.
 - freely configurable filter definitions
 - Support of executable .command files on MACOSX
 
 HTML Client app:
 - Search collections
-- Export playlists
 - show current number of videos in parallel
 - support of several playlists
-- USB device support
