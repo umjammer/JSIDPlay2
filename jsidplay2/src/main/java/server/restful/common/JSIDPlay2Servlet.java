@@ -61,13 +61,13 @@ import net.java.truevfs.access.TFile;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
+import sidplay.player.filefilter.AudioTuneFileFilter;
+import sidplay.player.filefilter.VideoTuneFileFilter;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
-import ui.common.filefilter.AudioTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
 import ui.common.filefilter.TapeFileFilter;
-import ui.common.filefilter.VideoTuneFileFilter;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 

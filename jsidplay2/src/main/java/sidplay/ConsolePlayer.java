@@ -1,15 +1,12 @@
 package sidplay;
 
-import static java.util.Arrays.stream;
 import static sidplay.ini.IniConfig.getINIPath;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.sound.sampled.Mixer.Info;
@@ -38,6 +35,8 @@ import sidplay.ini.IniConfig;
 import sidplay.ini.validator.VerboseValidator;
 import sidplay.player.DebugUtil;
 import sidplay.player.State;
+import sidplay.player.filefilter.AudioTuneFileFilter;
+import sidplay.player.filefilter.VideoTuneFileFilter;
 
 /**
  * 
@@ -53,18 +52,8 @@ final public class ConsolePlayer {
 		DebugUtil.init();
 	}
 
-	private final static class AudioTuneFileFilter implements FileFilter {
-
-		private static final String DEFAULT_FILE_NAME_EXT[] = new String[] { ".sid", ".dat", ".mus", ".str" };
-
-		@Override
-		public boolean accept(File file) {
-			return file.isDirectory() || stream(DEFAULT_FILE_NAME_EXT)
-					.filter(file.getName().toLowerCase(Locale.ENGLISH)::endsWith).findFirst().isPresent();
-		}
-	}
-
-	protected static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
+	private static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
+	private static final VideoTuneFileFilter VIDEO_TUNE_FILE_FILTER = new VideoTuneFileFilter();
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
 	private Boolean help = Boolean.FALSE;
@@ -82,7 +71,7 @@ final public class ConsolePlayer {
 	@Parameter(names = { "--quiet", "-q" }, descriptionKey = "QUIET", order = 10004)
 	private Boolean quiet = Boolean.FALSE;
 
-	@Parameter(descriptionKey = "FILES")
+	@Parameter(descriptionKey = "FILES_AND_FOLDERS")
 	private List<String> filenames = new ArrayList<>();
 
 	@ParametersDelegate
@@ -114,7 +103,10 @@ final public class ConsolePlayer {
 	}
 
 	private void processDirectory(File dir) throws IOException, SidTuneError {
-		File[] listFiles = Optional.ofNullable(dir.listFiles(AUDIO_TUNE_FILE_FILTER)).orElse(new File[0]);
+		File[] listFiles = Optional
+				.ofNullable(dir
+						.listFiles(file -> AUDIO_TUNE_FILE_FILTER.accept(file) || VIDEO_TUNE_FILE_FILTER.accept(file)))
+				.orElse(new File[0]);
 		Arrays.sort(listFiles);
 		for (File file : listFiles) {
 			if (file.isDirectory()) {
@@ -125,7 +117,7 @@ final public class ConsolePlayer {
 		}
 	}
 
-	private void processFile(File currentFile) throws IOException, SidTuneError {
+	private void processFile(File file) throws IOException, SidTuneError {
 		IWhatsSidSection whatsSidSection = config.getWhatsSidSection();
 		whatsSidSection.setEnable(false);
 		String url = whatsSidSection.getUrl();
@@ -133,11 +125,11 @@ final public class ConsolePlayer {
 		String password = whatsSidSection.getPassword();
 		int connectionTimeout = whatsSidSection.getConnectionTimeout();
 
-		final SidTune tune = SidTune.load(currentFile);
+		final SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(song);
 		final Player player = new Player(config, cpuDebug ? MOS6510Debug.class : MOS6510.class);
 		player.setTune(tune);
-		final ConsoleIO consoleIO = new ConsoleIO(config, currentFile.getAbsolutePath());
+		final ConsoleIO consoleIO = new ConsoleIO(config, file.getAbsolutePath());
 		player.setMenuHook(obj -> consoleIO.menu(obj, verbose, quiet, System.out));
 		player.setInteractivityHook(obj -> consoleIO.decodeKeys(obj, System.in));
 		player.setWhatsSidHook(obj -> consoleIO.whatsSid(obj, quiet, System.out));
@@ -147,8 +139,8 @@ final public class ConsolePlayer {
 			setSIDDatabase(player);
 		}
 		player.setRecordingFilenameProvider(theTune -> {
-			File file = new File(currentFile.getAbsolutePath());
-			String basename = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()))
+			File tuneFile = new File(file.getAbsolutePath());
+			String basename = new File(tuneFile.getParentFile(), PathUtils.getFilenameWithoutSuffix(tuneFile.getName()))
 					.getAbsolutePath();
 			if (theTune.getInfo().getSongs() > 1) {
 				basename += String.format("-%02d", theTune.getInfo().getCurrentSong());

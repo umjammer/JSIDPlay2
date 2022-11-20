@@ -3,6 +3,9 @@ package ui.common.filefilter;
 import java.io.File;
 import java.io.FileFilter;
 
+import sidplay.player.filefilter.AudioTuneFileFilter;
+import sidplay.player.filefilter.VideoTuneFileFilter;
+
 public final class TuneFileFilter implements FileFilter {
 
 	private AudioTuneFileFilter audioTuneFileFilter = new AudioTuneFileFilter();
