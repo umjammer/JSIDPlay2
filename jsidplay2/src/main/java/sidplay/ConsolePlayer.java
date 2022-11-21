@@ -74,7 +74,7 @@ final public class ConsolePlayer {
 	private Boolean quiet = Boolean.FALSE;
 
 	@Parameter(descriptionKey = "FILES_AND_FOLDERS", converter = FileToStringConverter.class, validateWith = FilesAndFoldersValidator.class)
-	private List<File> filenames = new ArrayList<>();
+	private List<File> filesAndFolders = new ArrayList<>();
 
 	@ParametersDelegate
 	private IniConfig config = new IniConfig(true);
@@ -83,14 +83,14 @@ final public class ConsolePlayer {
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
-			Optional<File> optFilename = filenames.stream().findFirst();
+			Optional<File> optFilename = filesAndFolders.stream().findFirst();
 			if (help || !optFilename.isPresent()) {
 				commander.usage();
 				printSoundcardDevices();
 				printHardwareDevices();
 				exit(1);
 			}
-			for (File file : filenames) {
+			for (File file : filesAndFolders) {
 				if (file.isDirectory()) {
 					processDirectory(file);
 				} else if (file.isFile()) {
