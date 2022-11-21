@@ -117,6 +117,9 @@ public class ReSIDfp extends ReSIDBase {
 		case MOS6581:
 			String filterName6581 = emulationSection.getFilterName(sidNum, Engine.EMULATION, Emulation.RESIDFP,
 					ChipModel.MOS6581);
+			if (filterName6581 == null) {
+				return;
+			}
 			final Filter6581 filter6581 = sidImpl.getFilter6581();
 			for (IFilterSection filter : config.getFilterSection()) {
 				if (filter.isReSIDfpFilter6581()) {
@@ -137,6 +140,9 @@ public class ReSIDfp extends ReSIDBase {
 		case MOS8580:
 			String filterName8580 = emulationSection.getFilterName(sidNum, Engine.EMULATION, Emulation.RESIDFP,
 					ChipModel.MOS8580);
+			if (filterName8580 == null) {
+				return;
+			}
 			final Filter8580 filter8580 = sidImpl.getFilter8580();
 			for (IFilterSection filter : config.getFilterSection()) {
 				if (filter.isReSIDfpFilter8580()) {
