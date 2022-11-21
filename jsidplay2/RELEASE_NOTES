@@ -7,9 +7,10 @@ Sub song ordering has been changed to start with 1 instead of the start song (E.
 song recording was delayed for RSID about 2.5 seconds (time to RESET) leading in too short songs, this has been fixed
 ConsolePlayer can now play or record whole folders. This is to support batch recording.
 ConsolePlayer's verbose mode now shows the filters being used
+ConsolePlayer validates and reports wrong filter names, now
 
 JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue):
-- C64 Jukebox: Lots of improvements for VUE based HTML client for JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue)
+- C64 Jukebox: Lots of improvements for VUE based HTML client for JSIDPlay2Server in general
 - C64 Jukebox: Hardware USB drivers have been added to make use of USB devices in Chrome Browser, Microsoft Edge or Opera.
   This works for PC and Mobile devices.
 - Service added to fetch Directory contents

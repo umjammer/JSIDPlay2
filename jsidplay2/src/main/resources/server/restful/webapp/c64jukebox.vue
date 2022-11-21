@@ -1349,7 +1349,29 @@
 								</template>
 
 								<b-card-text>
-									<div class="settings-box">
+									<p>
+										{{ $t("USE_REAL_HARDWARE") }}
+									</p>
+									<p>
+										{{ $t("HARDWARE_PREPARATION_1") }}
+										<a href="https://zadig.akeo.ie/">
+											{{ $t("HERE") }}
+										</a>
+										{{ $t("HARDWARE_PREPARATION_2") }}
+									</p>
+									<p>
+										<b> {{ $t("STREAMING_NOTES") }} </b>
+									</p>
+									<div class="settings-box" style="padding-top: 48px">
+										<div>
+											<b-img-lazy
+												src="/static/images/hardsid4u.jpeg"
+												alt="HardSID4U"
+												block
+												center
+												fluid
+											/>
+										</div>
 										<div>
 											<label for="hardsid6581">{{
 												$t("convertMessages.config.emulationSection.hardsid6581")
@@ -1384,58 +1406,84 @@
 												<option :value="3">4</option>
 											</b-form-select>
 										</div>
+										<div>
+											<b-button
+												size="sm"
+												variant="secondary"
+												v-on:click="
+													HardwareFunctions.init = init_hardsid;
+													HardwareFunctions.reset = reset_hardsid;
+													HardwareFunctions.write = write_hardsid;
+													HardwareFunctions.next = next_hardsid;
+													HardwareFunctions.quit = quit_hardsid;
+													HardwareFunctions.mapping = 'hardsid-mapping';
+													init();
+												"
+											>
+												<span>{{ $t("CONNECT_HARDSID") }}</span>
+											</b-button>
+										</div>
 									</div>
-									<div>
-										<b-button
-											size="sm"
-											variant="secondary"
-											v-on:click="
-												HardwareFunctions.init = init_hardsid;
-												HardwareFunctions.reset = reset_hardsid;
-												HardwareFunctions.write = write_hardsid;
-												HardwareFunctions.next = next_hardsid;
-												HardwareFunctions.quit = quit_hardsid;
-												HardwareFunctions.mapping = 'hardsid-mapping';
-												init();
-											"
+									<div class="settings-box" style="padding-top: 48px">
+										<div>
+											<b-img-lazy src="/static/images/exsid.jpg" alt="ExSID" block center fluid />
+										</div>
+										<div>
+											<b-button
+												size="sm"
+												variant="secondary"
+												v-on:click="
+													HardwareFunctions.init = init_exsid;
+													HardwareFunctions.reset = reset_exsid;
+													HardwareFunctions.write = write_exsid;
+													HardwareFunctions.next = next_exsid;
+													HardwareFunctions.quit = quit_exsid;
+													HardwareFunctions.mapping = 'exsid-mapping';
+													init();
+												"
+											>
+												<span>{{ $t("CONNECT_EXSID") }}</span>
+											</b-button>
+										</div>
+									</div>
+									<div class="settings-box" style="padding-top: 48px">
+										<div>
+											<b-img-lazy
+												src="/static/images/sidblaster.jpeg"
+												alt="SIDBlaster"
+												block
+												center
+												fluid
+											/>
+										</div>
+										<div>
+											<b-button
+												size="sm"
+												variant="secondary"
+												v-on:click="
+													HardwareFunctions.init = init_sidblaster;
+													HardwareFunctions.reset = reset_sidblaster;
+													HardwareFunctions.write = write_sidblaster;
+													HardwareFunctions.next = next_sidblaster;
+													HardwareFunctions.quit = quit_sidblaster;
+													HardwareFunctions.mapping = 'sidblaster-mapping';
+													init();
+												"
+											>
+												<span>{{ $t("CONNECT_SIDBLASTER") }}</span>
+											</b-button>
+										</div>
+									</div>
+									<p style="padding-top: 48px">
+										<span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
+
+										<a
+											href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
 										>
-											<span>Connect to HardSID 4U, HardSID UPlay and HardSID Uno</span>
-										</b-button>
-									</div>
-									<div>
-										<b-button
-											size="sm"
-											variant="secondary"
-											v-on:click="
-												HardwareFunctions.init = init_exsid;
-												HardwareFunctions.reset = reset_exsid;
-												HardwareFunctions.write = write_exsid;
-												HardwareFunctions.next = next_exsid;
-												HardwareFunctions.quit = quit_exsid;
-												HardwareFunctions.mapping = 'exsid-mapping';
-												init();
-											"
-										>
-											<span>Connect to ExSID, ExSID+</span>
-										</b-button>
-									</div>
-									<div>
-										<b-button
-											size="sm"
-											variant="secondary"
-											v-on:click="
-												HardwareFunctions.init = init_sidblaster;
-												HardwareFunctions.reset = reset_sidblaster;
-												HardwareFunctions.write = write_sidblaster;
-												HardwareFunctions.next = next_sidblaster;
-												HardwareFunctions.quit = quit_sidblaster;
-												HardwareFunctions.mapping = 'sidblaster-mapping';
-												init();
-											"
-										>
-											<span>Connect to SIDBlaster</span>
-										</b-button>
-									</div>
+											<span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
+										>.
+										<b-img-lazy src="/static/images/usbc.jpg" alt="HardSID4U" block center fluid />
+									</p>
 								</b-card-text>
 							</b-tab>
 							<b-tab>
@@ -2463,6 +2511,18 @@
 					PL: "Playlist",
 					CFG: "Configuration",
 					HARDWARE: "Hardware",
+					USE_REAL_HARDWARE:
+						"You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device. Please click the corresponding 'Connect to ...' button below.",
+					HARDWARE_PREPARATION_1: "Only on a Windows-PC WinUSB is required, download from",
+					HARDWARE_PREPARATION_2: ", but on Linux and MacOSX it works out-of-the-box.",
+					HERE: "here",
+					CONNECT_HARDSID: "Connect to HardSID 4U, HardSID UPlay and HardSID Uno",
+					CONNECT_EXSID: "Connect to ExSID, ExSID+",
+					CONNECT_SIDBLASTER: "Connect to SIDBlaster",
+					USE_MOBILE_DEVICES_1: "To use mobile devices, please use an",
+					USE_MOBILE_DEVICES_2: "USBC to USB adapter",
+					STREAMING_NOTES:
+						"This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsability for any costs, that arise from streaming from the internet!",
 					parentDirectoryHint: "Go up one Level",
 					sidInfoKey: "Name",
 					sidInfoValue: "Value",
@@ -2561,6 +2621,19 @@
 					PL: "Favoriten",
 					CFG: "Konfiguration",
 					HARDWARE: "Hardware",
+					USE_REAL_HARDWARE:
+						"Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy. Bitte klicken Sie den entsprechendem 'Verbinden mit ...' Button, siehe unten.",
+					HARDWARE_PREPARATION_1:
+						"Auf Linux und MacOSX funktioniert es auf Anhieb, nur auf einem Windows-PC ist WinUSB erforderlich, bitte",
+					HARDWARE_PREPARATION_2: " herunterladen.",
+					HERE: "hier",
+					CONNECT_HARDSID: "Verbinde mit HardSID 4U, HardSID UPlay and HardSID Uno",
+					CONNECT_EXSID: "Verbinde mit ExSID, ExSID+",
+					CONNECT_SIDBLASTER: "Verbinde mit SIDBlaster",
+					USE_MOBILE_DEVICES_1: "Um Mobilger\u00e4te zu verwenden, verwenden Sie bitte einen",
+					USE_MOBILE_DEVICES_2: "USBC nach USB adapter",
+					STREAMING_NOTES:
+						"Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming über das Internet entstehen k\u00f6nnten!",
 					parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
 					sidInfoKey: "Name",
 					sidInfoValue: "Wert",
