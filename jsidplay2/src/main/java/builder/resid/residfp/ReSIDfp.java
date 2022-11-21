@@ -15,7 +15,9 @@
  */
 package builder.resid.residfp;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import builder.resid.ReSIDBase;
 import libsidplay.common.ChipModel;
@@ -33,9 +35,8 @@ import libsidplay.config.IFilterSection;
 public class ReSIDfp extends ReSIDBase {
 
 	/**
-	 * FakeStereo mode uses two chips using the same base address. Write commands
-	 * are routed two both SIDs, while read command can be configured to be
-	 * processed by a specific SID chip.
+	 * FakeStereo mode uses two chips using the same base address. Write commands are routed two both SIDs, while read
+	 * command can be configured to be processed by a specific SID chip.
 	 *
 	 * @author ken
 	 *
@@ -46,7 +47,7 @@ public class ReSIDfp extends ReSIDBase {
 		private final List<ReSIDBase> sids;
 
 		public FakeStereo(final EventScheduler context, final IConfig config, final int prevNum,
-				final List<ReSIDBase> sids) {
+			final List<ReSIDBase> sids) {
 			super(context);
 			this.emulationSection = config.getEmulationSection();
 			this.prevNum = prevNum;
@@ -81,7 +82,8 @@ public class ReSIDfp extends ReSIDBase {
 	/**
 	 * Constructor
 	 *
-	 * @param context {@link EventScheduler} context to use.
+	 * @param context
+	 *            {@link EventScheduler} context to use.
 	 */
 	public ReSIDfp(EventScheduler context) {
 		super(context);
@@ -110,35 +112,44 @@ public class ReSIDfp extends ReSIDBase {
 	@Override
 	public void setFilter(IConfig config, int sidNum) {
 		IEmulationSection emulationSection = config.getEmulationSection();
+		List<String> availableFilterNames = new ArrayList<>();
 		switch (sidImpl.getChipModel()) {
 		case MOS6581:
 			String filterName6581 = emulationSection.getFilterName(sidNum, Engine.EMULATION, Emulation.RESIDFP,
 					ChipModel.MOS6581);
 			final Filter6581 filter6581 = sidImpl.getFilter6581();
 			for (IFilterSection filter : config.getFilterSection()) {
-				if (filter.getName().equals(filterName6581) && filter.isReSIDfpFilter6581()) {
-					filter6581.setCurveProperties(filter.getBaseresistance(), filter.getOffset(), filter.getSteepness(),
-							filter.getMinimumfetresistance());
-					filter6581.setDistortionProperties(filter.getAttenuation(), filter.getNonlinearity(),
-							filter.getResonanceFactor());
-					sidImpl.set6581VoiceNonlinearity(filter.getVoiceNonlinearity());
-					filter6581.setNonLinearity(filter.getVoiceNonlinearity());
-					break;
+				if (filter.isReSIDfpFilter6581()) {
+					availableFilterNames.add(filter.getName());
+					if (filter.getName().equals(filterName6581)) {
+						filter6581.setCurveProperties(filter.getBaseresistance(), filter.getOffset(), filter.getSteepness(),
+								filter.getMinimumfetresistance());
+						filter6581.setDistortionProperties(filter.getAttenuation(), filter.getNonlinearity(),
+								filter.getResonanceFactor());
+						sidImpl.set6581VoiceNonlinearity(filter.getVoiceNonlinearity());
+						filter6581.setNonLinearity(filter.getVoiceNonlinearity());
+						break;
+					}
 				}
 			}
-			break;
+			throw new RuntimeException(String.format("Filter name not found: %s, available={%s}", filterName6581,
+					availableFilterNames.stream().collect(Collectors.joining(","))));
 		case MOS8580:
 			String filterName8580 = emulationSection.getFilterName(sidNum, Engine.EMULATION, Emulation.RESIDFP,
 					ChipModel.MOS8580);
 			final Filter8580 filter8580 = sidImpl.getFilter8580();
 			for (IFilterSection filter : config.getFilterSection()) {
-				if (filter.getName().equals(filterName8580) && filter.isReSIDfpFilter8580()) {
-					filter8580.setCurveProperties(filter.getK(), filter.getB(), 0, 0);
-					filter8580.setDistortionProperties(0, 0, filter.getResonanceFactor());
-					break;
+				if (filter.isReSIDfpFilter8580()) {
+					availableFilterNames.add(filter.getName());
+					if (filter.getName().equals(filterName8580)) {
+						filter8580.setCurveProperties(filter.getK(), filter.getB(), 0, 0);
+						filter8580.setDistortionProperties(0, 0, filter.getResonanceFactor());
+						break;
+					}
 				}
 			}
-			break;
+			throw new RuntimeException(String.format("Filter name not found: %s, available={%s}", filterName8580,
+					availableFilterNames.stream().collect(Collectors.joining(","))));
 		default:
 			throw new RuntimeException("Unknown SID chip model: " + sidImpl.getChipModel());
 		}
