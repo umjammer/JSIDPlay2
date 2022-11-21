@@ -17,6 +17,7 @@ import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IDeviceMapping;
 import libsidplay.config.IEmulationSection;
+import libsidplay.config.IFilterSection;
 import libsidplay.config.IPrinterSection;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.config.IWhatsSidSection;
@@ -216,4 +217,8 @@ public interface IniDefaults {
 	int DEFAULT_WHATSSID_MATCH_RETRY_TIME = WHATSSID_SECTION.getMatchRetryTime();
 	float DEFAULT_WHATSSID_MINIMUM_RELATIVE_CONFIDENCE = WHATSSID_SECTION.getMinimumRelativeConfidence();
 	boolean DEFAULT_WHATSSID_DETECT_CHIP_MODEL = WHATSSID_SECTION.isDetectChipModel();
+
+	// Filter Section
+
+	List<? extends IFilterSection> FILTER_SECTIONS = DEFAULTS.getFilterSection();
 }
