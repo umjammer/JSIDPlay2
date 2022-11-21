@@ -123,7 +123,7 @@ public class ReSID extends ReSIDBase {
 					availableFilterNames.add(filter.getName());
 					if (filter.getName().equals(filterName6581)) {
 						filter6581.setFilterCurve(filter.getFilter6581CurvePosition());
-						break;
+						return;
 					}
 				}
 			}
@@ -138,7 +138,7 @@ public class ReSID extends ReSIDBase {
 					availableFilterNames.add(filter.getName());
 					if (filter.getName().equals(filterName8580) && filter.isReSIDFilter8580()) {
 						filter8580.setFilterCurve(filter.getFilter8580CurvePosition());
-						break;
+						return;
 					}
 				}
 			}

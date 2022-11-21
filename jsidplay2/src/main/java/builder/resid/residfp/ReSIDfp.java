@@ -128,7 +128,7 @@ public class ReSIDfp extends ReSIDBase {
 								filter.getResonanceFactor());
 						sidImpl.set6581VoiceNonlinearity(filter.getVoiceNonlinearity());
 						filter6581.setNonLinearity(filter.getVoiceNonlinearity());
-						break;
+						return;
 					}
 				}
 			}
@@ -144,7 +144,7 @@ public class ReSIDfp extends ReSIDBase {
 					if (filter.getName().equals(filterName8580)) {
 						filter8580.setCurveProperties(filter.getK(), filter.getB(), 0, 0);
 						filter8580.setDistortionProperties(0, 0, filter.getResonanceFactor());
-						break;
+						return;
 					}
 				}
 			}
