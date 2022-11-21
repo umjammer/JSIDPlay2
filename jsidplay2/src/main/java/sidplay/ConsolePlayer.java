@@ -34,6 +34,8 @@ import sidplay.filefilter.AudioTuneFileFilter;
 import sidplay.filefilter.VideoTuneFileFilter;
 import sidplay.fingerprinting.FingerprintJsonClient;
 import sidplay.ini.IniConfig;
+import sidplay.ini.converter.FileToStringConverter;
+import sidplay.ini.validator.FilesAndFoldersValidator;
 import sidplay.ini.validator.VerboseValidator;
 import sidplay.player.DebugUtil;
 import sidplay.player.State;
@@ -71,8 +73,8 @@ final public class ConsolePlayer {
 	@Parameter(names = { "--quiet", "-q" }, descriptionKey = "QUIET", order = 10004)
 	private Boolean quiet = Boolean.FALSE;
 
-	@Parameter(descriptionKey = "FILES_AND_FOLDERS")
-	private List<String> filenames = new ArrayList<>();
+	@Parameter(descriptionKey = "FILES_AND_FOLDERS", converter = FileToStringConverter.class, validateWith = FilesAndFoldersValidator.class)
+	private List<File> filenames = new ArrayList<>();
 
 	@ParametersDelegate
 	private IniConfig config = new IniConfig(true);
@@ -81,15 +83,14 @@ final public class ConsolePlayer {
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
-			Optional<String> optFilename = filenames.stream().findFirst();
+			Optional<File> optFilename = filenames.stream().findFirst();
 			if (help || !optFilename.isPresent()) {
 				commander.usage();
 				printSoundcardDevices();
 				printHardwareDevices();
 				exit(1);
 			}
-			for (String filename : filenames) {
-				File file = new File(filename);
+			for (File file : filenames) {
 				if (file.isDirectory()) {
 					processDirectory(file);
 				} else if (file.isFile()) {
