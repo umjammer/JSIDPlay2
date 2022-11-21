@@ -1433,7 +1433,7 @@
 												init();
 											"
 										>
-											<span>SIDBlaster</span>
+											<span>Connect to SIDBlaster</span>
 										</b-button>
 									</div>
 								</b-card-text>
@@ -2289,7 +2289,7 @@
 				exSID_reset(0);
 			}
 			async function reset_sidblaster() {
-			    sidblaster_reset(0);
+				sidblaster_reset(0);
 			}
 			async function write_hardsid(write) {
 				while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
@@ -2308,14 +2308,14 @@
 				}
 			}
 			async function write_sidblaster(write) {
-			    sidblaster_write(write.cycles, write.reg, write.value);
+				sidblaster_write(write.cycles, write.reg, write.value);
 			}
 			async function quit_hardsid() {}
 			async function quit_exsid() {
 				await exSID_exit();
 			}
 			async function quit_sidblaster() {
-			    await sidblaster_exit();
+				await sidblaster_exit();
 			}
 			async function next_hardsid() {
 				await hardsid_usb_sync(0);
@@ -2334,7 +2334,7 @@
 				if (sidblaster_is_playing()) {
 					return -1;
 				} else {
-				    sidblaster_reset();
+					sidblaster_reset();
 					return 0;
 				}
 			}
