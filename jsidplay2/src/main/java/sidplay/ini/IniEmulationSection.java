@@ -86,11 +86,11 @@ import libsidplay.config.IEmulationSection;
 import sidplay.ini.converter.BeanToStringConverter;
 import sidplay.ini.converter.NegatedBooleanConverter;
 import sidplay.ini.converter.ShortConverter;
-import sidplay.ini.validator.ReSidFilter6581Validator;
-import sidplay.ini.validator.ReSidFilter8580Validator;
+import sidplay.ini.validator.FilterNameValidator.ReSidFilter6581Validator;
+import sidplay.ini.validator.FilterNameValidator.ReSidFilter8580Validator;
+import sidplay.ini.validator.FilterNameValidator.ReSidFpFilter6581Validator;
+import sidplay.ini.validator.FilterNameValidator.ReSidFpFilter8580Validator;
 import sidplay.ini.validator.LatencyTimerValidator;
-import sidplay.ini.validator.ReSidFpFilter6581Validator;
-import sidplay.ini.validator.ReSidFpFilter8580Validator;
 
 /**
  * Emulation section of the INI file.
