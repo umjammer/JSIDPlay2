@@ -12,6 +12,5 @@ public class FilesAndFoldersValidator implements IParameterValidator {
 		if (!new File(value).exists()) {
 			throw new ParameterException("File or Folder " + value + " does not exist!");
 		}
-
 	}
 }
