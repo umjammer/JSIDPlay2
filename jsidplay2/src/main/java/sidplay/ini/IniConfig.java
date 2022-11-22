@@ -132,7 +132,9 @@ public class IniConfig implements IConfig {
 				clear();
 				/* validate loaded configuration */
 				if (sidplay2Section.getVersion() == REQUIRED_CONFIG_VERSION) {
-					System.out.println("Use INI file: " + iniPath);
+					if (createIfNotExists) {
+						System.out.println("Use INI file: " + iniPath);
+					}
 					return;
 				}
 			} catch (final Exception e) {
