@@ -43,6 +43,10 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 		ofNullable(PLAYER_MAP.get(uuid)).ifPresent(playerWithStatusConsumer);
 	}
 
+	public static final int count() {
+		return PLAYER_MAP.keySet().size();
+	}
+
 	@Override
 	public final void run() {
 		Collection<Entry<UUID, PlayerWithStatus>> playerEntriesToRemove = PLAYER_MAP.entrySet().stream()

@@ -3,7 +3,6 @@ package server.restful.servlets;
 import static java.lang.Math.min;
 import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
-import static java.lang.Thread.getAllStackTraces;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -34,6 +33,7 @@ import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_HLS;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_RTMP;
+import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static sidplay.audio.Audio.AAC;
@@ -277,8 +277,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				AudioDriver driver = getAudioDriverOfVideoFormat(audio, uuid, servletParameters);
 
 				if (Boolean.FALSE.equals(servletParameters.download) && audio == FLV) {
-					if (getAllStackTraces().keySet().stream().map(Thread::getName).filter("RTMP"::equals)
-							.count() < MAX_RTMP_IN_PARALLEL) {
+					if (count() < MAX_RTMP_IN_PARALLEL) {
 						Thread parentThread = currentThread();
 						new Thread(() -> {
 							try {
