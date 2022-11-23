@@ -83,8 +83,8 @@ final public class ConsolePlayer {
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
-			Optional<File> optFilename = filesAndFolders.stream().findFirst();
-			if (help || !optFilename.isPresent()) {
+
+			if (help || filesAndFolders.isEmpty()) {
 				commander.usage();
 				printSoundcardDevices();
 				printHardwareDevices();
