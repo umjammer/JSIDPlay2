@@ -1446,7 +1446,8 @@
 											</b-button>
 										</div>
 									</div>
-									<div class="settings-box" style="padding-top: 48px">
+									<!-- TODO timing not yet good enough -->
+									<!--div class="settings-box" style="padding-top: 48px">
 										<div>
 											<b-img-lazy
 												src="/static/images/sidblaster.jpeg"
@@ -1473,7 +1474,7 @@
 												<span>{{ $t("CONNECT_SIDBLASTER") }}</span>
 											</b-button>
 										</div>
-									</div>
+									</div-->
 									<p style="padding-top: 48px">
 										<span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
 
