@@ -772,7 +772,7 @@ public abstract class FMOPL {
 	}
 
 	/* OPL state */
-	private static class FmOPL {
+	public static class FmOPL {
 		//
 		// FM channel slots
 		//
