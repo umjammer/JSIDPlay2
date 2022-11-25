@@ -159,7 +159,7 @@ public class ToolBar extends C64VBox implements UIPart {
 			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, sidBlasterLatencyTimerLbl, sidBlasterReadLbl,
 			streamingIpAddress, streamingHostname;
 	@FXML
-	private Hyperlink appServerUsage, onlinePlayer, downloadApp, sidBlasterDoc;
+	private Hyperlink appServerUsage, onlinePlayer, sidBlasterDoc;
 	@FXML
 	private ProgressBar progress;
 
@@ -349,7 +349,6 @@ public class ToolBar extends C64VBox implements UIPart {
 		startAppServer.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			appServerUsage.setDisable(!newValue);
 			onlinePlayer.setDisable(!newValue);
-			downloadApp.setDisable(!newValue);
 		});
 
 		ultimate64StreamingTarget.textProperty()
@@ -544,11 +543,6 @@ public class ToolBar extends C64VBox implements UIPart {
 		} catch (MalformedURLException | URISyntaxException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@FXML
-	private void downloadApp() {
-		DesktopUtil.browse(util.getConfig().getOnlineSection().getAppUrl());
 	}
 
 	@FXML

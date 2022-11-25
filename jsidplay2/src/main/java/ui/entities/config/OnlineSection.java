@@ -20,7 +20,6 @@ public class OnlineSection {
 	 */
 	public static final String DEPLOYMENT_URL = "https://haendel.ddns.net/~ken/";
 
-	public static final String JSIDPLAY2_APP_URL = DEPLOYMENT_URL + "jsidplay2app.apk";
 	public static final String JSIDPLAY2_SIDBLASTER_DOC_URL = DEPLOYMENT_URL + "sidblaster.html";
 	public static final String JSIDPLAY2_C64MUSIC_URL = DEPLOYMENT_URL + "online/hvsc/C64Music.zip";
 	public static final String JSIDPLAY2_HVSC_SCRIPT_URL = DEPLOYMENT_URL + "online/hvsc/HVSC.script";
@@ -364,21 +363,6 @@ public class OnlineSection {
 
 	public final StringProperty favoritesUrlProperty() {
 		return favoritesUrl.property();
-	}
-
-	private ShadowField<StringProperty, String> appUrl = new ShadowField<>(SimpleStringProperty::new,
-			JSIDPLAY2_APP_URL);
-
-	public String getAppUrl() {
-		return appUrl.get();
-	}
-
-	public void setAppUrl(String appUrl) {
-		this.appUrl.set(appUrl);
-	}
-
-	public final StringProperty appUrlProperty() {
-		return appUrl.property();
 	}
 
 	private ShadowField<StringProperty, String> onlinePlayerUrl = new ShadowField<>(SimpleStringProperty::new,

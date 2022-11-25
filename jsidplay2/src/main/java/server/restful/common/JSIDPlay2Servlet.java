@@ -225,6 +225,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
+		File hvscRoot = configuration.getSidplay2Section().getHvsc();
+		File cgscRoot = configuration.getSidplay2Section().getCgsc();
 		if (fileRequestPathServletParameters.getItemId() != null
 				&& fileRequestPathServletParameters.getCategoryId() != null) {
 			File file = fetchAssembly64Files(fileRequestPathServletParameters.getItemId(),
@@ -232,16 +234,14 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			if (file != null && file.exists()) {
 				return file;
 			}
-		} else if (path.startsWith(C64_MUSIC)) {
-			File rootFile = configuration.getSidplay2Section().getHvsc();
-			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), rootFile, null);
-			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+		} else if (hvscRoot != null && hvscRoot.exists() && path.startsWith(C64_MUSIC)) {
+			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), hvscRoot, null);
+			if (file.exists() && file.getAbsolutePath().startsWith(hvscRoot.getAbsolutePath())) {
 				return file;
 			}
-		} else if (path.startsWith(CGSC)) {
-			File rootFile = configuration.getSidplay2Section().getCgsc();
-			File file = PathUtils.getFile(path.substring(CGSC.length()), null, rootFile);
-			if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+		} else if (cgscRoot != null && cgscRoot.exists() && path.startsWith(CGSC)) {
+			File file = PathUtils.getFile(path.substring(CGSC.length()), null, cgscRoot);
+			if (file.exists() && file.getAbsolutePath().startsWith(cgscRoot.getAbsolutePath())) {
 				return file;
 			}
 		} else {
@@ -250,9 +250,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				String directoryValue = splitted.length > 0 ? splitted[0] : null;
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
-					TFile rootFile = new TFile(directoryValue);
-					File file = PathUtils.getFile(path.substring(directoryLogicalName.length()), rootFile, null);
-					if (file.exists() && file.getAbsolutePath().startsWith(rootFile.getAbsolutePath())) {
+					TFile root = new TFile(directoryValue);
+					File file = PathUtils.getFile(path.substring(directoryLogicalName.length()), root, null);
+					if (file.exists() && file.getAbsolutePath().startsWith(root.getAbsolutePath())) {
 						return file;
 					}
 				}
@@ -270,20 +270,21 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
+		File hvscRoot = configuration.getSidplay2Section().getHvsc();
+		File cgscRoot = configuration.getSidplay2Section().getCgsc();
 		if (path.equals("/")) {
-			List<String> files = getRoot(adminRole);
+			List<String> files = getRoot(adminRole, hvscRoot, cgscRoot, usageFormatter);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
-			File root = configuration.getSidplay2Section().getHvsc();
-			List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(), C64_MUSIC, adminRole);
+			List<String> files = getCollectionFiles(hvscRoot, path, servletParameters.getFilter(), C64_MUSIC,
+					adminRole);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
-			File root = configuration.getSidplay2Section().getCgsc();
-			List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(), CGSC, adminRole);
+			List<String> files = getCollectionFiles(cgscRoot, path, servletParameters.getFilter(), CGSC, adminRole);
 			if (files != null) {
 				return files;
 			}
@@ -449,9 +450,15 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return targetFile;
 	}
 
-	private List<String> getRoot(boolean adminRole) {
-		List<String> result = new ArrayList<>(Arrays.asList(C64_MUSIC + "/", CGSC + "/"));
-
+	private List<String> getRoot(boolean adminRole, File hvscRoot, File cgscRoot,
+			ServletUsageFormatter usageFormatter) {
+		List<String> result = new ArrayList<>();
+		if (hvscRoot != null && hvscRoot.exists()) {
+			result.add(C64_MUSIC + "/");
+		}
+		if (cgscRoot != null && cgscRoot.exists()) {
+			result.add(CGSC + "/");
+		}
 		directoryProperties.stringPropertyNames().stream().sorted().forEach(directoryLogicalName -> {
 			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
 			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
