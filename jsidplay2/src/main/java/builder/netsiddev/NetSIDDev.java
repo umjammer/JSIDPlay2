@@ -142,4 +142,16 @@ public class NetSIDDev extends SIDEmu {
 		// XXX unsupported by JSIDDevice
 	}
 
+	/**
+	 * Credits string.
+	 *
+	 * @return String of credits.
+	 */
+	public static String credits() {
+		String credit = "Network SID Client:\n";
+		credit += "\tCopyright (©) 2017 Ken Händel\n";
+		credit += "\thttp://sourceforge.net/projects/jsidplay2/\n";
+		return credit;
+	}
+
 }

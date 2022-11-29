@@ -1366,9 +1366,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		credits.append("\tCopyright (©) 2011 Antti S. Lankila <alankila@bel.fi>\n");
 		credits.append("\tSupported by Wilfred Bos, The Netherlands\n");
 		credits.append("\thttp://www.acid64.com\n");
-		credits.append("Network SID Client:\n");
-		credits.append("\tCopyright (©) 2017 Ken Händel\n");
-		credits.append("\thttp://sourceforge.net/projects/jsidplay2/\n");
 		credits.append("WhatsSID? (tune recognition)\n");
 		credits.append("\tCopyright (©) 2020 Ken Händel\n");
 		credits.append("Based on Audio Fingerprinting\n");
@@ -1418,6 +1415,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		credits.append(VIC.credits());
 		credits.append(builder.resid.resid.ReSID.credits());
 		credits.append(builder.resid.residfp.ReSIDfp.credits());
+		credits.append(builder.netsiddev.NetSIDDev.credits());
 		credits.append(builder.jexsid.ExSIDEmu.credits());
 		credits.append(builder.jsidblaster.SIDBlasterEmu.credits());
 		credits.append(builder.jhardsid.JHardSIDEmu.credits());
