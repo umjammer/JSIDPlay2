@@ -8,6 +8,9 @@ import static org.apache.catalina.startup.Tomcat.addServlet;
 import static server.restful.common.IServletSystemProperties.COMPRESSION;
 import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_KEEP_ALIVE_TIMEOUT;
+import static server.restful.common.IServletSystemProperties.HTTP2_OVERHEAD_COUNT_FACTOR;
+import static server.restful.common.IServletSystemProperties.HTTP2_OVERHEAD_DATA_THRESHOLD;
+import static server.restful.common.IServletSystemProperties.HTTP2_OVERHEAD_WINDOW_UPDATE_THRESHOLD;
 import static server.restful.common.IServletSystemProperties.HTTP2_READ_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_USE_SENDFILE;
 import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT;
@@ -365,6 +368,9 @@ public class JSIDPlay2Server {
 			h2.setWriteTimeout(HTTP2_WRITE_TIMEOUT);
 			h2.setKeepAliveTimeout(HTTP2_KEEP_ALIVE_TIMEOUT);
 			h2.setUseSendfile(HTTP2_USE_SENDFILE);
+			h2.setOverheadCountFactor(HTTP2_OVERHEAD_COUNT_FACTOR);
+			h2.setOverheadDataThreshold(HTTP2_OVERHEAD_DATA_THRESHOLD);
+			h2.setOverheadWindowUpdateThreshold(HTTP2_OVERHEAD_WINDOW_UPDATE_THRESHOLD);
 			httpsConnector.addUpgradeProtocol(h2);
 		}
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpsConnector.getProtocolHandler();

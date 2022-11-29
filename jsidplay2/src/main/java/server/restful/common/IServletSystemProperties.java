@@ -20,30 +20,35 @@ public interface IServletSystemProperties {
 	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
 
 	/**
+	 * Prefix for HTTP2 settings
+	 */
+	String H2 = "jsidplay2.protocol.h2";
+
+	/**
 	 * JSIDPlay2Server uses HTTP/2 (or HTTP/1.1) protocol.
 	 */
-	boolean USE_HTTP2 = Boolean.valueOf(getProperty("jsidplay2.protocol.h2.enable", "true"));
+	boolean USE_HTTP2 = Boolean.valueOf(getProperty(H2 + ".enable", "true"));
 
 	/**
 	 * The time, in milliseconds, that Tomcat will wait for additional data when a
 	 * partial HTTP/2 frame has been received. Negative values will be treated as an
 	 * infinite timeout.
 	 */
-	int HTTP2_READ_TIMEOUT = valueOf(getProperty("jsidplay2.read.timeout", String.valueOf(10 * 60 * 1000)));
+	int HTTP2_READ_TIMEOUT = valueOf(getProperty(H2 + ".read.timeout", String.valueOf(10 * 60 * 1000)));
 
 	/**
 	 * The time, in milliseconds, that Tomcat will wait to write additional data
 	 * when an HTTP/2 frame has been partially written. Negative values will be
 	 * treated as an infinite timeout.
 	 */
-	int HTTP2_WRITE_TIMEOUT = valueOf(getProperty("jsidplay2.write.timeout", String.valueOf(60 * 60 * 1000)));
+	int HTTP2_WRITE_TIMEOUT = valueOf(getProperty(H2 + ".write.timeout", String.valueOf(60 * 60 * 1000)));
 
 	/**
 	 * The time, in milliseconds, that Tomcat will wait between HTTP/2 frames when
 	 * there is no active Stream before closing the connection. Negative values will
 	 * be treated as an infinite timeout.
 	 */
-	int HTTP2_KEEP_ALIVE_TIMEOUT = valueOf(getProperty("jsidplay2.keepalive.timeout", String.valueOf(60 * 60 * 1000)));
+	int HTTP2_KEEP_ALIVE_TIMEOUT = valueOf(getProperty(H2 + ".keepalive.timeout", String.valueOf(60 * 60 * 1000)));
 
 	/**
 	 * The HTTP/2 protocol may use compression in an attempt to save server
@@ -64,7 +69,7 @@ public interface IServletSystemProperties {
 	 * the sendfile usage threshold in the configuration of the DefaultServlet in
 	 * the default conf/web.xml or in the web.xml of your web application.
 	 */
-	String COMPRESSION = getProperty("jsidplay2.protocol.h2.compression", "on");
+	String COMPRESSION = getProperty(H2 + ".compression", "on");
 
 	/**
 	 * Use this boolean attribute to enable or disable sendfile capability. The
@@ -76,7 +81,44 @@ public interface IServletSystemProperties {
 	 * The HTTP/2 sendfile capability uses MappedByteBuffer which is known to cause
 	 * file locking on Windows.
 	 */
-	boolean HTTP2_USE_SENDFILE = Boolean.valueOf(getProperty("jsidplay2.protocol.h2.sendfile", "false"));
+	boolean HTTP2_USE_SENDFILE = Boolean.valueOf(getProperty(H2 + ".sendfile", "false"));
+
+	/**
+	 * The factor to apply when counting overhead frames to determine if a
+	 * connection has too high an overhead and should be closed. The overhead count
+	 * starts at -10 * overheadCountFactor. The count is decreased by 20 for each
+	 * data frame sent or received and each headers frame received. The count is
+	 * increased by the overheadCountFactor for each setting received, priority
+	 * frame received and ping received. If the overhead count exceeds zero, the
+	 * connection is closed. A value of less than 1 disables this protection. In
+	 * normal usage a value of approximately 20 or higher will close the connection
+	 * before any streams can complete. If not specified, a default value of 10 will
+	 * be used.
+	 */
+	int HTTP2_OVERHEAD_COUNT_FACTOR = valueOf(getProperty(H2 + ".overhead.count.factor", String.valueOf(-1)));
+
+	/**
+	 * The threshold below which the average payload size of the current and
+	 * previous non-final DATA frames will trigger an increase in the overhead count
+	 * (see overheadCountFactor). The overhead count will be increased by
+	 * overheadDataThreshold/average so that the smaller the average, the greater
+	 * the increase in the overhead count. A value of zero or less disables the
+	 * checking of non-final DATA frames. If not specified, a default value of 1024
+	 * will be used.
+	 */
+	int HTTP2_OVERHEAD_DATA_THRESHOLD = valueOf(getProperty(H2 + ".overhead.data.threshold", String.valueOf(0)));
+
+	/**
+	 * The threshold below which the average size of current and previous
+	 * WINDOW_UPDATE frame will trigger an increase in the overhead count (see
+	 * overheadCountFactor). The overhead count will be increased by
+	 * overheadWindowUpdateThreshold/average so that the smaller the average, the
+	 * greater the increase in the overhead count. A value of zero or less disables
+	 * the checking of WINDOW_UPDATE frames. If not specified, a default value of
+	 * 1024 will be used.
+	 */
+	int HTTP2_OVERHEAD_WINDOW_UPDATE_THRESHOLD = valueOf(
+			getProperty(H2 + ".overhead.window.update.threshold", String.valueOf(0)));
 
 	/**
 	 * JSIDPlay2Server cache control max age of static resources in s.
