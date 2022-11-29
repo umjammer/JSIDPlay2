@@ -64,7 +64,6 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 				return;
 			}
 			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
-			response.setCharacterEncoding("UTF-8");
 			response.addHeader(CONTENT_DISPOSITION,
 					ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
 			copy(file, response.getOutputStream());

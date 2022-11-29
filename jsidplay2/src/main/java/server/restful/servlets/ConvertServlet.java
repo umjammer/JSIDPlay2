@@ -264,7 +264,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream(), servletParameters);
 
 				if (Boolean.TRUE.equals(servletParameters.download)) {
-					response.setCharacterEncoding("UTF-8");
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 							+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8));
 				}
@@ -310,7 +309,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				} else {
 
 					if (Boolean.TRUE.equals(servletParameters.download)) {
-						response.setCharacterEncoding("UTF-8");
 						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 								+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8));
 					}
@@ -321,7 +319,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				}
 			} else {
 				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
-				response.setCharacterEncoding("UTF-8");
 				response.addHeader(CONTENT_DISPOSITION,
 						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
 				copy(file, response.getOutputStream());
