@@ -38,8 +38,11 @@ public class STILServlet extends JSIDPlay2Servlet {
 
 	public static final String STIL_PATH = "/stil";
 
+	private STIL stil;
+
 	public STILServlet(Configuration configuration, Properties directoryProperties) {
 		super(configuration, directoryProperties);
+		stil = createSTIL(configuration);
 	}
 
 	@Override
@@ -78,14 +81,19 @@ public class STILServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private STILEntry createSTIL(File file)
-			throws IOException, NoSuchFieldException, IllegalAccessException, SidTuneError {
-		STIL stil = null;
-
+	private STIL createSTIL(Configuration configuration) {
 		File hvscRoot = configuration.getSidplay2Section().getHvsc();
+
 		try (InputStream input = new TFileInputStream(new TFile(hvscRoot, STIL.STIL_FILE))) {
-			stil = new STIL(input);
+			return new STIL(input);
+		} catch (IOException | NoSuchFieldException | IllegalAccessException e) {
+			error(e);
 		}
+		return null;
+	}
+
+	private STILEntry createSTIL(File file) throws IOException, SidTuneError {
+		File hvscRoot = configuration.getSidplay2Section().getHvsc();
 		String collectionName = PathUtils.getCollectionName(hvscRoot, file);
 
 		if (collectionName.isEmpty()) {
