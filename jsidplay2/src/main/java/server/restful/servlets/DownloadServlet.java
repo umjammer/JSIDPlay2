@@ -10,6 +10,8 @@ import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
@@ -62,7 +64,9 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 				return;
 			}
 			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
-			response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + file.getName());
+			response.setCharacterEncoding("UTF-8");
+			response.addHeader(CONTENT_DISPOSITION,
+					ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
 			copy(file, response.getOutputStream());
 
 		} catch (Throwable t) {
