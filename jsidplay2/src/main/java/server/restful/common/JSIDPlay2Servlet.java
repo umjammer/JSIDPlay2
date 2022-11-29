@@ -67,6 +67,7 @@ import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
+import ui.common.filefilter.MP3TuneFileFilter;
 import ui.common.filefilter.TapeFileFilter;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
@@ -76,6 +77,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
 	protected static final VideoTuneFileFilter VIDEO_TUNE_FILE_FILTER = new VideoTuneFileFilter();
+	protected static final MP3TuneFileFilter MP3_TUNE_FILE_FILTER = new MP3TuneFileFilter();
 	protected static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 	protected static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
 	protected static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
@@ -439,6 +441,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected File extract(final File file) throws IOException, FileNotFoundException {
+		if (MP3_TUNE_FILE_FILTER.accept(file)) {
+			return file;
+		}
 		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 		File targetFile = new File(targetDir, file.getName());
 		targetDir.deleteOnExit();
