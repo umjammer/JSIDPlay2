@@ -38,11 +38,8 @@ public class STILServlet extends JSIDPlay2Servlet {
 
 	public static final String STIL_PATH = "/stil";
 
-	private STIL stil;
-
 	public STILServlet(Configuration configuration, Properties directoryProperties) {
 		super(configuration, directoryProperties);
-		stil = createSTIL(configuration);
 	}
 
 	@Override
@@ -81,19 +78,10 @@ public class STILServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private STIL createSTIL(Configuration configuration) {
+	private STILEntry createSTIL(File file)
+			throws IOException, SidTuneError, NoSuchFieldException, IllegalAccessException {
 		File hvscRoot = configuration.getSidplay2Section().getHvsc();
 
-		try (InputStream input = new TFileInputStream(new TFile(hvscRoot, STIL.STIL_FILE))) {
-			return new STIL(input);
-		} catch (IOException | NoSuchFieldException | IllegalAccessException e) {
-			error(e);
-		}
-		return null;
-	}
-
-	private STILEntry createSTIL(File file) throws IOException, SidTuneError {
-		File hvscRoot = configuration.getSidplay2Section().getHvsc();
 		String collectionName = PathUtils.getCollectionName(hvscRoot, file);
 
 		if (collectionName.isEmpty()) {
@@ -101,6 +89,10 @@ public class STILServlet extends JSIDPlay2Servlet {
 			if (hvscRoot != null) {
 				collectionName = new SidDatabase(hvscRoot).getPath(tune);
 			}
+		}
+		STIL stil = null;
+		try (InputStream input = new TFileInputStream(new TFile(hvscRoot, STIL.STIL_FILE))) {
+			stil = new STIL(input);
 		}
 		return stil != null && collectionName != null ? stil.getSTILEntry(collectionName) : null;
 	}

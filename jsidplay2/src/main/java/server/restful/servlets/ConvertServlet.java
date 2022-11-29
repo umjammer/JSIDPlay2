@@ -514,5 +514,3 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 }
-//DO WE NEED THAT FOR SOME BROWSER? response.addHeader(CONTENT_DISPOSITION,
-//ATTACHMENT + "; filename*=UTF-8''" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
