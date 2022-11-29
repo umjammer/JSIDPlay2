@@ -187,7 +187,6 @@
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
 			<version>10.0.22</version>
-			<!-- version>10.0.14</version> invalid POM -->
 		</dependency>
 		<dependency>
 			<groupId>net.java.jinput</groupId>
