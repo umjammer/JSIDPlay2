@@ -95,7 +95,7 @@ public interface IServletSystemProperties {
 	 * before any streams can complete. If not specified, a default value of 10 will
 	 * be used.
 	 */
-	int HTTP2_OVERHEAD_COUNT_FACTOR = valueOf(getProperty(H2 + ".overhead.count.factor", String.valueOf(-1)));
+	int HTTP2_OVERHEAD_COUNT_FACTOR = valueOf(getProperty(H2 + ".overhead.count.factor", String.valueOf(10)));
 
 	/**
 	 * The threshold below which the average payload size of the current and
@@ -106,7 +106,7 @@ public interface IServletSystemProperties {
 	 * checking of non-final DATA frames. If not specified, a default value of 1024
 	 * will be used.
 	 */
-	int HTTP2_OVERHEAD_DATA_THRESHOLD = valueOf(getProperty(H2 + ".overhead.data.threshold", String.valueOf(0)));
+	int HTTP2_OVERHEAD_DATA_THRESHOLD = valueOf(getProperty(H2 + ".overhead.data.threshold", String.valueOf(1024)));
 
 	/**
 	 * The threshold below which the average size of current and previous
@@ -118,7 +118,7 @@ public interface IServletSystemProperties {
 	 * 1024 will be used.
 	 */
 	int HTTP2_OVERHEAD_WINDOW_UPDATE_THRESHOLD = valueOf(
-			getProperty(H2 + ".overhead.window.update.threshold", String.valueOf(0)));
+			getProperty(H2 + ".overhead.window.update.threshold", String.valueOf(1024)));
 
 	/**
 	 * JSIDPlay2Server cache control max age of static resources in s.
