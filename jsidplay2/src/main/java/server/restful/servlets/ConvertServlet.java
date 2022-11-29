@@ -51,6 +51,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,8 +264,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream(), servletParameters);
 
 				if (Boolean.TRUE.equals(servletParameters.download)) {
+					response.setCharacterEncoding("UTF-8");
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-							+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
+							+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8));
 				}
 				response.setContentType(getMimeType(driver.getExtension()).toString());
 				convert2audio(config, file, driver, servletParameters);
@@ -307,8 +310,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				} else {
 
 					if (Boolean.TRUE.equals(servletParameters.download)) {
+						response.setCharacterEncoding("UTF-8");
 						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-								+ getFilenameWithoutSuffix(file.getName()) + driver.getExtension());
+								+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8));
 					}
 					response.setContentType(getMimeType(driver.getExtension()).toString());
 					File videoFile = convert2video(config, file, driver, servletParameters, null);
@@ -317,15 +321,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				}
 			} else {
 				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
-				response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + file.getName());
+				response.setCharacterEncoding("UTF-8");
+				response.addHeader(CONTENT_DISPOSITION,
+						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
 				copy(file, response.getOutputStream());
-
 			}
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
+	}
+
+	private String getAttachmentFilename(final File file, AudioDriver driver) {
+		return getFilenameWithoutSuffix(file.getName()) + driver.getExtension();
 	}
 
 	private Audio getAudioFormat(IConfig config) {
@@ -508,3 +517,5 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 }
+//DO WE NEED THAT FOR SOME BROWSER? response.addHeader(CONTENT_DISPOSITION,
+//ATTACHMENT + "; filename*=UTF-8''" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
