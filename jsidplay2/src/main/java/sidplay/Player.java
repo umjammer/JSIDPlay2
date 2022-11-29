@@ -1384,7 +1384,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		credits.append("\thttps://sourceforge.net/projects/lame/\n");
 		credits.append("Assembly64:\n");
 		credits.append("\tCopyright (©) " + LAST_MODIFIED.get(Calendar.YEAR) + " Fredrik Åberg\n");
-		credits.append("\thttp://hackerswithstyle.ddns.net/assembly/\n");
+		credits.append("\thttps://hackerswithstyle.se/assembly/\n");
 		credits.append("GB64 (We use the database of Game Base 64)\n");
 		credits.append("\thttp://www.gb64.com/\n");
 		credits.append("JCommander (Command Line Parser):\n");
