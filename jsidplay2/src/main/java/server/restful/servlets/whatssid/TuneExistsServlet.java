@@ -43,11 +43,11 @@ public class TuneExistsServlet extends JSIDPlay2Servlet {
 			setOutput(request, response, exists, Boolean.class);
 
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		} finally {
 			freeEntityManager();
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 }

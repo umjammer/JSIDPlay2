@@ -70,6 +70,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			update(uuid, PlayerWithStatus::onKeepAlive);
 
 		} catch (Throwable t) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
