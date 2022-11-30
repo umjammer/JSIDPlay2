@@ -23,7 +23,7 @@
 		<!-- helpers -->
 		<script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>
 		<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
-		<script src="/static/video.js@7.19.2/dist/video.min.js"></script>
+		<script src="$hlsScript"></script>
 
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -480,50 +480,69 @@
 						}, this.notifyForHLS);
 
 						setTimeout(function () {
-							var video = videojs("video-container");
-							video.on("resize", function () {
-								this.fluid(true);
-							});
-							video.src({
-								src: "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl",
-								type: "application/x-mpegURL",
-							});
-
-							// Play video which returns a promise
-							var promise = video.play();
-
-							// +++ Use promise to see if video is playing or not +++
-							if (promise !== undefined) {
-								promise
-									.then(function () {
-										// Autoplay started!
-										// If video playing unmute
-										video.muted(false);
-									})
-									.catch(function (error) {
-										// Autoplay was prevented.
-										// If autoplay prevented mute the video, play video and display unmute button
-										video.muted(true);
-										video.play();
-
-										var button = document.createElement("button");
-
-										// Add button's event listener
-										button.addEventListener("click", function () {
+							if ('$hlsType' === 'VIDEO_JS') {
+								var video = videojs("video-container");
+								video.on("resize", function () {
+									this.fluid(true);
+								});
+								video.src({
+									src: "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl",
+									type: "application/x-mpegURL",
+								});
+	
+								// Play video which returns a promise
+								var promise = video.play();
+	
+								// +++ Use promise to see if video is playing or not +++
+								if (promise !== undefined) {
+									promise
+										.then(function () {
+											// Autoplay started!
+											// If video playing unmute
 											video.muted(false);
-											playerContainer.removeChild(button);
+										})
+										.catch(function (error) {
+											// Autoplay was prevented.
+											// If autoplay prevented mute the video, play video and display unmute button
+											video.muted(true);
+											video.play();
+	
+											var button = document.createElement("button");
+	
+											// Add button's event listener
+											button.addEventListener("click", function () {
+												video.muted(false);
+												playerContainer.removeChild(button);
+											});
+	
+											// Configure the button
+											button.textContent = "Unmute";
+											button.classList.add("inner");
+											button.setAttribute(
+												"style",
+												"color:black; background-color:red; width:100px; height:50px; opacity: .4;"
+											);
+	
+											playerContainer.appendChild(button);
 										});
-
-										// Configure the button
-										button.textContent = "Unmute";
-										button.classList.add("inner");
-										button.setAttribute(
-											"style",
-											"color:black; background-color:red; width:100px; height:50px; opacity: .4;"
-										);
-
-										playerContainer.appendChild(button);
-									});
+								}
+							} else {
+							    var video = document.getElementById('video-container');
+							    var hls = new Hls();
+							    hls.attachMedia(video);
+							    // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
+							    hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+							      console.log('video and hls.js are now bound together !');
+							    });
+							    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+							      console.log(
+							        'manifest loaded, found ' + data.levels.length + ' quality level'
+							      );
+							    });
+							    hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
+							    // bind them together
+							    hls.attachMedia(video);
+							    video.play();							    
 							}
 						}, this.waitForVideo);
 					} else {

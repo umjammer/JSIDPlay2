@@ -14,8 +14,10 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public class ZipFileUtils {
@@ -86,7 +88,10 @@ public class ZipFileUtils {
 		try (java.util.Scanner s = new java.util.Scanner(is, charsetName)) {
 			s.useDelimiter("\\A");
 			String string = s.hasNext() ? s.next() : "";
-			for (Entry<String, String> replacement : replacements.entrySet()) {
+			List<Entry<String, String>> sortedEntries = replacements.entrySet().stream()
+					.sorted((e1, e2) -> -Integer.compare(e1.getKey().length(), e2.getKey().length()))
+					.collect(Collectors.toList());
+			for (Entry<String, String> replacement : sortedEntries) {
 				string = string.replace(replacement.getKey(), replacement.getValue());
 			}
 			return string;

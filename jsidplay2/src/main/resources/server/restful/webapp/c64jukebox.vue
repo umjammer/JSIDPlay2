@@ -1561,6 +1561,21 @@
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
+										<label for="hlsType">{{
+											$t("convertMessages.hlsType")
+										}}</label>
+										<b-form-group>
+											<b-form-radio-group
+												id="hlsType"
+												v-model="convertOptions.hlsType"
+												style="display: flex"
+											>
+												<b-form-radio value="VIDEO_JS">video-js</b-form-radio>
+												<b-form-radio value="HLS_JS">hls-js</b-form-radio>
+											</b-form-radio-group>
+										</b-form-group>
+									</div>
+									<div class="settings-box">
 										<label for="videoCoderAudioDelay">{{
 											$t("convertMessages.config.audioSection.videoCoderAudioDelay")
 										}}</label>
@@ -3449,6 +3464,8 @@
 							this.convertOptions.config.emulationSection.detectPSID64ChipModel +
 							"&hls=" +
 							this.convertOptions.useHls +
+							"&hlsType=" +
+							this.convertOptions.hlsType +
 							"&pressSpaceInterval=" +
 							this.convertOptions.pressSpaceInterval +
 							"&status=" +

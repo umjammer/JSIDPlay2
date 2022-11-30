@@ -83,6 +83,7 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
+import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.LimitRequestServletFilter;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
@@ -176,6 +177,17 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -4)
 		public void setUseHls(Boolean useHls) {
 			this.useHls = useHls;
+		}
+
+		private HlsType hlsType = HlsType.VIDEO_JS;
+
+		public HlsType getHlsType() {
+			return hlsType;
+		}
+
+		@Parameter(names = { "--hlsType" }, descriptionKey = "HLS_TYPE", order = -2)
+		public void setHlsType(HlsType hlsType) {
+			this.hlsType = hlsType;
 		}
 
 		private Format sidRegFormat = Format.APP;
@@ -485,6 +497,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put("$qrCodeImgTag", qrCodeImgTag);
 		result.put("$videoUrl", videoUrl);
 		result.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
+		result.put("$hlsType", servletParameters.getHlsType().name());
+		result.put("$hlsScript", servletParameters.getHlsType().getScript());
 		result.put("$waitForVideo", String.valueOf(getWaitForVideo(servletParameters)));
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
