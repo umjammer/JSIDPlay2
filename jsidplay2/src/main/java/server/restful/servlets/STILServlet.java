@@ -85,7 +85,7 @@ public class STILServlet extends JSIDPlay2Servlet {
 		String collectionName = PathUtils.getCollectionName(hvscRoot, file);
 
 		if (collectionName.isEmpty()) {
-			SidTune tune = SidTune.load(extract(file));
+			SidTune tune = SidTune.load(file);
 			if (hvscRoot != null) {
 				collectionName = new SidDatabase(hvscRoot).getPath(tune);
 			}

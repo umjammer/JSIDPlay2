@@ -441,9 +441,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected File extract(final File file) throws IOException, FileNotFoundException {
-		if (MP3_TUNE_FILE_FILTER.accept(file)) {
-			return file;
-		}
 		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 		File targetFile = new File(targetDir, file.getName());
 		targetDir.deleteOnExit();
