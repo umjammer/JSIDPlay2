@@ -5,8 +5,11 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.UUID;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameters;
@@ -14,6 +17,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.ZipFileUtils;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
 import server.restful.common.JSIDPlay2Servlet;
@@ -68,6 +72,18 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
+	}
+
+	protected File extract(final File file) throws IOException, FileNotFoundException {
+		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
+		File targetFile = new File(targetDir, file.getName());
+		targetDir.deleteOnExit();
+		targetFile.deleteOnExit();
+		targetDir.mkdirs();
+		try (FileOutputStream out = new FileOutputStream(targetFile)) {
+			ZipFileUtils.copy(file, out);
+		}
+		return targetFile;
 	}
 
 }

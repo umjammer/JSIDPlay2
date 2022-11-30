@@ -440,18 +440,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected File extract(final File file) throws IOException, FileNotFoundException {
-		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
-		File targetFile = new File(targetDir, file.getName());
-		targetDir.deleteOnExit();
-		targetFile.deleteOnExit();
-		targetDir.mkdirs();
-		try (FileOutputStream out = new FileOutputStream(targetFile)) {
-			ZipFileUtils.copy(file, out);
-		}
-		return targetFile;
-	}
-
 	private List<String> getRoot(boolean adminRole, File hvscRoot, File cgscRoot,
 			ServletUsageFormatter usageFormatter) {
 		List<String> result = new ArrayList<>();
