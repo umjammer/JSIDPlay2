@@ -469,8 +469,8 @@ public class HardwareEnsemble implements Ultimate64 {
 				}
 				c64.getCPU().setEODHack(hack);
 			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			System.err.println("Warning: installHack failed: " + e.getMessage());
 		}
 	}
 
