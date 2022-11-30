@@ -1561,9 +1561,7 @@
 										</b-form-checkbox>
 									</div>
 									<div class="settings-box">
-										<label for="hlsType">{{
-											$t("convertMessages.hlsType")
-										}}</label>
+										<label for="hlsType">{{ $t("convertMessages.hlsType") }}</label>
 										<b-form-group>
 											<b-form-radio-group
 												id="hlsType"

@@ -188,10 +188,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	private String[] getRequestParameters(HttpServletRequest request) {
-		return concat(Collections.list(request.getParameterNames()).stream()
-				.flatMap(name -> asList(request.getParameterValues(name)).stream().filter(v -> !"null".equals(v))
-						.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
-				.flatMap(Function.identity()),
+		return concat(
+				Collections.list(request.getParameterNames()).stream()
+						.flatMap(name -> asList(request.getParameterValues(name)).stream()
+								.filter(v -> !"null".equals(v) && !"undefined".equals(v))
+								.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
+						.flatMap(Function.identity()),
 				Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
 	}
 
