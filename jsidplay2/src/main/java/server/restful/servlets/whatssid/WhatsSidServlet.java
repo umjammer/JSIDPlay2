@@ -2,7 +2,7 @@ package server.restful.servlets.whatssid;
 
 import static java.lang.String.valueOf;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
-import static server.restful.JSIDPlay2Server.closeEntityManager;
+import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
@@ -84,7 +84,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		} finally {
-			closeEntityManager();
+			freeEntityManager();
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

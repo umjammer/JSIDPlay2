@@ -507,7 +507,6 @@ public class JSIDPlay2Server {
 								jsidplay2Server.whatsSidDatabaseUrl, jsidplay2Server.whatsSidDatabaseUsername,
 								jsidplay2Server.whatsSidDatabasePassword, jsidplay2Server.whatsSidDatabaseDialect));
 			}
-
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
@@ -530,7 +529,7 @@ public class JSIDPlay2Server {
 		return em;
 	}
 
-	public static void closeEntityManager() {
+	public static void freeEntityManager() {
 		EntityManager em = threadLocalEntityManager.get();
 
 		if (em != null) {

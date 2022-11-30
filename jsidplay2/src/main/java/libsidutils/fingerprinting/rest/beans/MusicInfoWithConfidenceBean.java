@@ -76,7 +76,7 @@ public class MusicInfoWithConfidenceBean {
 
 	@Override
 	public String toString() {
-		return String.format("WhatsSID? %s\n\t%d - %.2f [%d - %.2f]\n", musicInfo, confidence, relativeConfidence,
+		return String.format("WhatsSID? %s\n\t%.2f%% - %d# [%d - %.2fs]\n", musicInfo, relativeConfidence, confidence,
 				offset, offsetSeconds);
 	}
 
