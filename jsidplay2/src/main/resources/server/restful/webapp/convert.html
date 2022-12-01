@@ -489,62 +489,63 @@
 									src: "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl",
 									type: "application/x-mpegURL",
 								});
-
-								// Play video which returns a promise
 								var promise = video.play();
-
-								// +++ Use promise to see if video is playing or not +++
 								if (promise !== undefined) {
 									promise
 										.then(function () {
-											// Autoplay started!
-											// If video playing unmute
 											video.muted(false);
 										})
 										.catch(function (error) {
-											// Autoplay was prevented.
-											// If autoplay prevented mute the video, play video and display unmute button
 											video.muted(true);
 											video.play();
 
 											var button = document.createElement("button");
-
-											// Add button's event listener
 											button.addEventListener("click", function () {
 												video.muted(false);
 												playerContainer.removeChild(button);
 											});
-
-											// Configure the button
 											button.textContent = "Unmute";
 											button.classList.add("inner");
 											button.setAttribute(
 												"style",
 												"color:black; background-color:red; width:100px; height:50px; opacity: .4;"
 											);
-
 											playerContainer.appendChild(button);
 										});
 								}
-							} else {
+							} else if ("$hlsType" === "HLS_JS") {
 								var video = document.getElementById("video-container");
 
 								if (video.canPlayType("application/vnd.apple.mpegurl")) {
 									video.src = "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl";
 								} else if (Hls.isSupported()) {
 									var hls = new Hls();
-									hls.attachMedia(video);
-									// MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
-									hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-										console.log("video and hls.js are now bound together !");
-									});
-									hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-										console.log("manifest loaded, found " + data.levels.length + " quality level");
-									});
 									hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
-									// bind them together
 									hls.attachMedia(video);
-									video.play();
+									var promise = video.play();
+									if (promise !== undefined) {
+										promise
+											.then(function () {
+												video.muted = false;
+											})
+											.catch(function (error) {
+												video.muted = true;
+												video.play();
+
+												var button = document.createElement("button");
+												button.addEventListener("click", function () {
+													video.muted = false;
+													playerContainer.removeChild(button);
+												});
+												button.textContent = "Unmute";
+												button.classList.add("inner");
+												button.setAttribute(
+													"style",
+													"color:black; background-color:red; width:100px; height:50px; opacity: .4;"
+												);
+												playerContainer.appendChild(button);
+											});
+									}
 								}
 							}
 						}, this.waitForVideo);
