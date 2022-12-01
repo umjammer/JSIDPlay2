@@ -516,9 +516,7 @@
 							} else if ("$hlsType" === "HLS_JS") {
 								var video = document.getElementById("video-container");
 
-								if (video.canPlayType("application/vnd.apple.mpegurl")) {
-									video.src = "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl";
-								} else if (Hls.isSupported()) {
+								if (Hls.isSupported()) {
 									var hls = new Hls();
 									hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
 									hls.attachMedia(video);
@@ -546,6 +544,9 @@
 												playerContainer.appendChild(button);
 											});
 									}
+								} else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+									video.src = "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl";
+									video.play();
 								}
 							}
 						}, this.waitForVideo);
