@@ -7,6 +7,7 @@ import static server.restful.common.IServletSystemProperties.STATIC_RES_MAX_AGE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_DE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_EN;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPTIONS;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,10 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class StaticServlet extends JSIDPlay2Servlet {
+
+	static {
+		check(StaticServletParameters.class);
+	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
 	public static class StaticServletParameters extends WebResourceRequestPathServletParameters {

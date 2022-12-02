@@ -4,6 +4,7 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JPG;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,10 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class PhotoServlet extends JSIDPlay2Servlet {
+
+	static {
+		check(PhotoServletParameters.class);
+	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.PhotoServletParameters")
 	public static class PhotoServletParameters extends FileRequestPathServletParameters {

@@ -4,6 +4,7 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +23,10 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DirectoryServlet extends JSIDPlay2Servlet {
+
+	static {
+		check(DirectoryServletParameters.class);
+	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.DirectoryServletParameters")
 	public static class DirectoryServletParameters extends DirectoryRequestPathServletParameters {

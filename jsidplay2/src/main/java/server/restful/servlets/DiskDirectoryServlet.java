@@ -3,6 +3,7 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +27,10 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DiskDirectoryServlet extends JSIDPlay2Servlet {
+
+	static {
+		check(DiskDirectoryServletParameters.class);
+	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.DiskDirectoryServletParameters")
 	public static class DiskDirectoryServletParameters extends FileRequestPathServletParameters {

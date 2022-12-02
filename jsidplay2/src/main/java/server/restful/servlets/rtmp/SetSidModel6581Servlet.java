@@ -3,6 +3,7 @@ package server.restful.servlets.rtmp;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -21,6 +22,10 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
+
+	static {
+		check(SetSidModel6581ServletParameters.class);
+	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.SetSidModel6581ServletParameters")
 	public static class SetSidModel6581ServletParameters extends VideoRequestParamServletParameters {

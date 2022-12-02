@@ -3,6 +3,7 @@ package server.restful.servlets.rtmp;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -20,6 +21,10 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class InsertNextDiskServlet extends JSIDPlay2Servlet {
+
+	static {
+		check(InsertNextDiskServletParameters.class);
+	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.InsertNextDiskServletParameters")
 	public static class InsertNextDiskServletParameters extends VideoRequestParamServletParameters {

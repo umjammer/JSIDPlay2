@@ -1,7 +1,10 @@
 package server.restful.common.parameter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -38,10 +41,10 @@ public class ServletParameterHelper {
 		try {
 			CONVERT_OPTIONS = new ObjectMapper().writerWithDefaultPrettyPrinter()
 					.writeValueAsString(new ConvertServlet.ConvertServletParameters());
-			CONVERT_MESSAGES_EN = createObjectMapper(Locale.ROOT).writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ConvertServletParameters());
-			CONVERT_MESSAGES_DE = createObjectMapper(Locale.GERMAN).writerWithDefaultPrettyPrinter()
-					.writeValueAsString(new ConvertServlet.ConvertServletParameters());
+			CONVERT_MESSAGES_EN = createObjectMapper(new BeanParameterLocalizer(Locale.ROOT))
+					.writerWithDefaultPrettyPrinter().writeValueAsString(new ConvertServlet.ConvertServletParameters());
+			CONVERT_MESSAGES_DE = createObjectMapper(new BeanParameterLocalizer(Locale.GERMAN))
+					.writerWithDefaultPrettyPrinter().writeValueAsString(new ConvertServlet.ConvertServletParameters());
 		} catch (JsonProcessingException e) {
 			throw new ExceptionInInitializerError(e);
 		}
@@ -66,6 +69,53 @@ public class ServletParameterHelper {
 			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
 				super.serializeAsField(pojo, jgen, prov, writer);
 			}
+		}
+	}
+
+	private static final class BeanParameterChecker extends SimpleBeanPropertyFilter {
+
+		private static final Locale[] OTHER_LOCALES = new Locale[] { Locale.GERMAN };
+
+		private final Set<Integer> orders = new HashSet<>();
+
+		@Override
+		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
+				throws Exception {
+			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
+			Parameter parameter = writer.getAnnotation(Parameter.class);
+			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
+				if (orders.contains(parameter.order())) {
+					throw new Exception("Ambigous order attribute on parameter: " + parameter.order());
+				}
+				orders.add(parameter.order());
+
+				ResourceBundle rootResBundle = ResourceBundle.getBundle(parameters.resourceBundle(), Locale.ROOT);
+				if (!rootResBundle.containsKey(parameter.descriptionKey())) {
+					throw new Exception("Localization missing on parameter: " + parameter.descriptionKey());
+				}
+				for (Locale locale : OTHER_LOCALES) {
+					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
+					// Since ResourceBundle evaluates parent bundles as well, but we must know if
+					// localization is only contained in that bundle, therefore ==
+					if (resBundle.getString(parameter.descriptionKey()) == rootResBundle
+							.getString(parameter.descriptionKey())) {
+						throw new Exception("Localization missing on parameter: " + parameter.descriptionKey());
+					}
+				}
+
+			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
+				super.serializeAsField(pojo, jgen, prov, writer);
+			}
+		}
+	}
+
+	public static void check(Class<?> servletParameterClass) {
+		try {
+			createObjectMapper(new BeanParameterChecker()).writerWithDefaultPrettyPrinter()
+					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
+		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 
@@ -109,7 +159,7 @@ public class ServletParameterHelper {
 	private class IniFilterSectionMixIn {
 	}
 
-	private static ObjectMapper createObjectMapper(Locale locale) {
+	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
 		return new ObjectMapper().addMixIn(ConvertServletParameters.class, ServletParametersMixIn.class)
 				.addMixIn(IniConfig.class, IniConfigMixIn.class)
 				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
@@ -119,8 +169,8 @@ public class ServletParameterHelper {
 				.addMixIn(IniPrinterSection.class, IniPrinterSectionMixIn.class)
 				.addMixIn(IniConsoleSection.class, IniConsoleSectionMixIn.class)
 				.addMixIn(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class)
-				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class).setFilterProvider(
-						new SimpleFilterProvider().addFilter(FILTER_NAME, new BeanParameterLocalizer(locale)));
+				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class)
+				.setFilterProvider(new SimpleFilterProvider().addFilter(FILTER_NAME, filter));
 	}
 
 }
