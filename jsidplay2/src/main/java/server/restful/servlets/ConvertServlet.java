@@ -119,7 +119,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -9)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -10)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
@@ -130,7 +130,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return download;
 		}
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -8)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -9)
 		public void setDownload(Boolean download) {
 			this.download = download;
 		}
@@ -141,7 +141,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return reuSize;
 		}
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -7)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -8)
 		public void setReuSize(Integer reuSize) {
 			this.reuSize = reuSize;
 		}
@@ -152,7 +152,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return pressSpaceInterval;
 		}
 
-		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -6)
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -7)
 		public void setPressSpaceInterval(Integer pressSpaceInterval) {
 			this.pressSpaceInterval = pressSpaceInterval;
 		}
@@ -163,7 +163,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return showStatus;
 		}
 
-		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -5)
+		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -6)
 		public void setShowStatus(Boolean showStatus) {
 			this.showStatus = showStatus;
 		}
@@ -174,7 +174,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useHls;
 		}
 
-		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -4)
+		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -5)
 		public void setUseHls(Boolean useHls) {
 			this.useHls = useHls;
 		}
@@ -185,7 +185,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return hlsType;
 		}
 
-		@Parameter(names = { "--hlsType" }, descriptionKey = "HLS_TYPE", order = -2)
+		@Parameter(names = { "--hlsType" }, descriptionKey = "HLS_TYPE", order = -4)
 		public void setHlsType(HlsType hlsType) {
 			this.hlsType = hlsType;
 		}
