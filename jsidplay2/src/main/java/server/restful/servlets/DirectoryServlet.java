@@ -37,7 +37,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			return filter;
 		}
 
-		@Parameter(names = { "--filter" }, descriptionKey = "FILTER")
+		@Parameter(names = { "--filter" }, descriptionKey = "FILTER", order = -2)
 		public void setFilter(String filter) {
 			this.filter = filter;
 		}

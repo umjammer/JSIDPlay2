@@ -20,6 +20,26 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
+import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
+import server.restful.servlets.DiskDirectoryServlet;
+import server.restful.servlets.DownloadServlet.DownloadServletParameters;
+import server.restful.servlets.PhotoServlet.PhotoServletParameters;
+import server.restful.servlets.STILServlet.STILServletParameters;
+import server.restful.servlets.TuneInfoServlet.TuneInfoServletParameters;
+import server.restful.servlets.hls.OnKeepAliveServlet.OnKeepAliveServletParameters;
+import server.restful.servlets.hls.ProxyServlet.ProxyServletParameters;
+import server.restful.servlets.rtmp.InsertNextDiskServlet.InsertNextDiskServletParameters;
+import server.restful.servlets.rtmp.JoystickServlet.JoystickServletParameters;
+import server.restful.servlets.rtmp.OnPlayDoneServlet.OnPlayDoneServletParameters;
+import server.restful.servlets.rtmp.OnPlayServlet.OnPlayServletParameters;
+import server.restful.servlets.rtmp.PressKeyServlet.PressKeyServletParameters;
+import server.restful.servlets.rtmp.SetDefaultEmulationReSidFpServlet.SetDefaultEmulationReSidFpServletParameters;
+import server.restful.servlets.rtmp.SetDefaultEmulationReSidServlet.SetDefaultEmulationReSidServletParameters;
+import server.restful.servlets.rtmp.SetSidModel6581Servlet.SetSidModel6581ServletParameters;
+import server.restful.servlets.rtmp.SetSidModel8580Servlet.SetSidModel8580ServletParameters;
+import server.restful.servlets.sidmapping.ExSIDMappingServlet.ExSIDMappingServletParameters;
+import server.restful.servlets.sidmapping.HardSIDMappingServlet.HardSIDMappingServletParameters;
+import server.restful.servlets.sidmapping.SIDBlasterMappingServlet.SIDBlasterMappingServletParameters;
 import sidplay.ini.IniAudioSection;
 import sidplay.ini.IniC1541Section;
 import sidplay.ini.IniConfig;
@@ -102,7 +122,6 @@ public class ServletParameterHelper {
 						throw new Exception("Localization missing on parameter: " + parameter.descriptionKey());
 					}
 				}
-
 			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
 				super.serializeAsField(pojo, jgen, prov, writer);
 			}
@@ -120,7 +139,87 @@ public class ServletParameterHelper {
 	}
 
 	@JsonFilter(FILTER_NAME)
-	private class ServletParametersMixIn {
+	private class DirectoryServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class DiskDirectoryServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class TuneInfoServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class PhotoServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class ConvertServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class DownloadServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class OnKeepAliveServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class OnPlayDoneServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class OnPlayServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class InsertNextDiskServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class SetSidModel6581ServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class SetSidModel8580ServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class SetDefaultEmulationReSidServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class SetDefaultEmulationReSidFpServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class PressKeyServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class JoystickServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class ProxyServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class STILServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class HardSIDMappingServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class ExSIDMappingServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class SIDBlasterMappingServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
@@ -160,7 +259,29 @@ public class ServletParameterHelper {
 	}
 
 	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
-		return new ObjectMapper().addMixIn(ConvertServletParameters.class, ServletParametersMixIn.class)
+		return new ObjectMapper().addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
+				.addMixIn(DiskDirectoryServlet.class, DiskDirectoryServletParametersMixIn.class)
+				.addMixIn(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class)
+				.addMixIn(PhotoServletParameters.class, PhotoServletParametersMixIn.class)
+				.addMixIn(ConvertServletParameters.class, ConvertServletParametersMixIn.class)
+				.addMixIn(DownloadServletParameters.class, DownloadServletParametersMixIn.class)
+				.addMixIn(OnKeepAliveServletParameters.class, OnKeepAliveServletParametersMixIn.class)
+				.addMixIn(OnPlayDoneServletParameters.class, OnPlayDoneServletParametersMixIn.class)
+				.addMixIn(OnPlayServletParameters.class, OnPlayServletParametersMixIn.class)
+				.addMixIn(InsertNextDiskServletParameters.class, InsertNextDiskServletParametersMixIn.class)
+				.addMixIn(SetSidModel6581ServletParameters.class, SetSidModel6581ServletParametersMixIn.class)
+				.addMixIn(SetSidModel8580ServletParameters.class, SetSidModel8580ServletParametersMixIn.class)
+				.addMixIn(SetDefaultEmulationReSidServletParameters.class,
+						SetDefaultEmulationReSidServletParametersMixIn.class)
+				.addMixIn(SetDefaultEmulationReSidFpServletParameters.class,
+						SetDefaultEmulationReSidFpServletParametersMixIn.class)
+				.addMixIn(PressKeyServletParameters.class, PressKeyServletParametersMixIn.class)
+				.addMixIn(JoystickServletParameters.class, JoystickServletParametersMixIn.class)
+				.addMixIn(ProxyServletParameters.class, ProxyServletParametersMixIn.class)
+				.addMixIn(STILServletParameters.class, STILServletParametersMixIn.class)
+				.addMixIn(HardSIDMappingServletParameters.class, HardSIDMappingServletParametersMixIn.class)
+				.addMixIn(ExSIDMappingServletParameters.class, ExSIDMappingServletParametersMixIn.class)
+				.addMixIn(SIDBlasterMappingServletParameters.class, SIDBlasterMappingServletParametersMixIn.class)
 				.addMixIn(IniConfig.class, IniConfigMixIn.class)
 				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
 				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)
