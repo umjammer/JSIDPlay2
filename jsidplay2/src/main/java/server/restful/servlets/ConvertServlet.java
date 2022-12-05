@@ -282,7 +282,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				if (Boolean.TRUE.equals(servletParameters.download)) {
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-							+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8));
+							+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
 				}
 				response.setContentType(getMimeType(driver.getExtension()).toString());
 				convert2audio(config, file, driver, servletParameters);
@@ -327,7 +327,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 					if (Boolean.TRUE.equals(servletParameters.download)) {
 						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-								+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8));
+								+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
 					}
 					response.setContentType(getMimeType(driver.getExtension()).toString());
 					File videoFile = convert2video(config, file, driver, servletParameters, null);
@@ -337,7 +337,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			} else {
 				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
 				response.addHeader(CONTENT_DISPOSITION,
-						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
+						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.name()));
 				copy(file, response.getOutputStream());
 			}
 		} catch (Throwable t) {
