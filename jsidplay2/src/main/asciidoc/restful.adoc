@@ -566,7 +566,7 @@ link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil[Usage]
 
 Example:
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil/C64Music/MUSICIANS/D/DRAX/Acid.sid[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil/C64Music/MUSICIANS/D/DRAX/Acid.sid]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil/C64Music/MUSICIANS/D/DRAX/Airfunk.sid[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil/C64Music/MUSICIANS/D/DRAX/Airfunk.sid]
 
 Return a list of information of the specified tune file.
 
