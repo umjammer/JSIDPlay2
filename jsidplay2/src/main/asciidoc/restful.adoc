@@ -560,6 +560,26 @@ link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/info/C64Music
 
 Return a list of information of the specified tune file.
 
+==== Get SID tune information list (STIL)
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil/C64Music/MUSICIANS/D/DRAX/Acid.sid[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil/C64Music/MUSICIANS/D/DRAX/Acid.sid]
+
+Return a list of information of the specified tune file.
+
+==== Get D64 disk directory
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/disk-directory[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/disk-directory/C64Music/10_Years_HVSC_1.d64[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/disk-directory/C64Music/10_Years_HVSC_1.d64]
+
+Return a list of directory entries of a C64 disk as PETSCII characters.
+
 ==== Get contents of the first SID favorites tab
 
 link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites]
