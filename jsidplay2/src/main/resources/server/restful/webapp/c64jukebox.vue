@@ -13,7 +13,7 @@
 		<!-- Load required Bootstrap and BootstrapVue CSS -->
 		<link type="text/css" rel="stylesheet" href="/static/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 		<link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.css" />
-		<link type="text/css" rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.css" />
+		<link type="text/css" rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.min.css" />
 
 		<!-- Load Vue followed by BootstrapVue -->
 		<script src="/static/vue@2.6.14/dist/vue.min.js"></script>
