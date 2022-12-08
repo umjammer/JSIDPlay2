@@ -401,9 +401,9 @@ public class ConsoleIO {
 	private void printKeyboardControls(PrintStream out) {
 		out.println(BUNDLE.getString("KEYBOARD_CONTROLS"));
 		out.println(BUNDLE.getString("FORWARD_REWIND"));
-		out.println(BUNDLE.getString("FORWARD_TUNE"));
 		out.println(BUNDLE.getString("FIRST_LAST"));
 		out.println(BUNDLE.getString("NORMAL_FAST"));
+		out.println(BUNDLE.getString("FORWARD_TUNE"));
 		out.println(BUNDLE.getString("PAUSE_CONTINUE"));
 		out.println(BUNDLE.getString("MUTE_1"));
 		out.println(BUNDLE.getString("MUTE_2"));

@@ -5,7 +5,6 @@ import static sidplay.ini.IniConfig.getINIPath;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,7 +107,6 @@ final public class ConsolePlayer {
 				.ofNullable(dir
 						.listFiles(file -> AUDIO_TUNE_FILE_FILTER.accept(file) || VIDEO_TUNE_FILE_FILTER.accept(file)))
 				.orElse(new File[0]);
-		Arrays.sort(listFiles);
 		for (File file : listFiles) {
 			if (file.isDirectory()) {
 				processDirectory(file);
@@ -140,8 +138,7 @@ final public class ConsolePlayer {
 			setSIDDatabase(player);
 		}
 		player.setRecordingFilenameProvider(theTune -> {
-			File tuneFile = new File(file.getAbsolutePath());
-			String basename = new File(tuneFile.getParentFile(), PathUtils.getFilenameWithoutSuffix(tuneFile.getName()))
+			String basename = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()))
 					.getAbsolutePath();
 			if (theTune.getInfo().getSongs() > 1) {
 				basename += String.format("-%02d", theTune.getInfo().getCurrentSong());

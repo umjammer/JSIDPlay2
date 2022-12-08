@@ -107,7 +107,7 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 		AudioConfig cfg = new AudioConfig(audioSection);
 		String url = getUrl(audioSection, recordingFilename);
 		if (url == null) {
-			throw new FileNotFoundException("url is missing");
+			throw new FileNotFoundException("url is missing, please set option --vcStreamingUrl");
 		}
 
 		if (!getSupportedSamplingRates().contains(audioSection.getSamplingRate())) {
