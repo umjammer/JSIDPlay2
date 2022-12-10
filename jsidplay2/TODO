@@ -12,6 +12,7 @@ TODO:
 - freely configurable filter definitions
 - Support of executable .command files on MACOSX
 - Soundexpander module support (to support fmyam songs)
+- HardSID support for VICE project
 
 HTML Client app:
 - Search collections
