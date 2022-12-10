@@ -312,7 +312,7 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 	}
 
 	@Override
-	@Parameter(names = { "--exsidFakeStereo" }, descriptionKey = "EXSID_FAKE_STEREO", arity = 1, order = 2010)
+	@Parameter(names = { "--exsidFakeStereo" }, descriptionKey = "EXSID_FAKE_STEREO", arity = 1, order = 1010)
 	public final void setExsidFakeStereo(boolean exsidFakeStereo) {
 		iniReader.setProperty(SECTION_ID, "ExSID Fake Stereo", exsidFakeStereo);
 	}

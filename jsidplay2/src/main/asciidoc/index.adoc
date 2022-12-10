@@ -6,7 +6,9 @@
 ++++
 
 
-== link:https://sourceforge.net/projects/jsidplay2/[JSIDPlay2] - Homepage
+link:https://sourceforge.net/projects/jsidplay2/[JSIDPlay2@Sourceforge^]
+
+== link:https://haendel.ddns.net:8443/static/c64jukebox.vue[JSIDPlay2 - Online Demo^]
 
 == Introduction
 
@@ -77,11 +79,11 @@ link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (standalone
 link:{codebase}jsidplay2app.apk[Download jsidplay2app] (app for android)
 
 == JSIDPlay2 Server
-link:https://haendel.ddns.net:8443[JSIDPlay2 Server API Documentation^]
+link:https://haendel.ddns.net:8443/static/c64jukebox.vue[JSIDPlay2 - Online Demo^]
 
-link:https://haendel.ddns.net:8443/static/c64jukebox.vue[Example Client: JSIDPlay2 Online Player^]
+link:https://haendel.ddns.net:8443[API Documentation^]
 
-link:https://haendel.ddns.net:8443/static/whatssid.vue[Example Client: WhatsSID? Tune Recognition^]
+link:https://haendel.ddns.net:8443/static/whatssid.vue[WhatsSID? Tune Recognition^]
 
 == Metrics
 

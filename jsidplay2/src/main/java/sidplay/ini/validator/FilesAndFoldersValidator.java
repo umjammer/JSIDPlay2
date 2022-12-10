@@ -9,7 +9,8 @@ public class FilesAndFoldersValidator implements IParameterValidator {
 
 	@Override
 	public void validate(String name, String value) throws ParameterException {
-		if (!new File(value).exists()) {
+		File file = new File(value);
+		if (!file.exists() || !(file.isFile() || file.isDirectory())) {
 			throw new ParameterException("File or Folder " + value + " does not exist!");
 		}
 	}
