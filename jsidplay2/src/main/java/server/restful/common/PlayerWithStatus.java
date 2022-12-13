@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import libsidplay.common.ChipModel;
@@ -35,8 +34,6 @@ public final class PlayerWithStatus {
 
 	private final int pressSpaceInterval;
 
-	private final ResourceBundle resourceBundle;
-
 	private File diskImage;
 
 	private final LocalDateTime created;
@@ -47,13 +44,11 @@ public final class PlayerWithStatus {
 
 	private int playCounter;
 
-	public PlayerWithStatus(Player player, File diskImage, boolean showStatus, int pressSpaceInterval,
-			ResourceBundle resourceBundle) {
+	public PlayerWithStatus(Player player, File diskImage, boolean showStatus, int pressSpaceInterval) {
 		this.player = player;
 		this.diskImage = diskImage;
 		this.showStatus = showStatus;
 		this.pressSpaceInterval = pressSpaceInterval;
-		this.resourceBundle = resourceBundle;
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
 		addPressSpaceListener();
@@ -237,7 +232,7 @@ public final class PlayerWithStatus {
 		player.stateProperty().addListener(event -> {
 			if (event.getNewValue() == State.START) {
 
-				statusText = new StatusText(player, resourceBundle, showStatus);
+				statusText = new StatusText(player, showStatus);
 
 				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override

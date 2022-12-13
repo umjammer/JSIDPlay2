@@ -13,6 +13,8 @@ import sidplay.audio.xuggle.XuggleVideoDriver;
 
 public class StatusText {
 
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(StatusText.class.getName());
+
 	private static final int WAIT_FOR_SCROLL_IN_SECONDS = 10;
 
 	private static final int SCROLL_EVERY_NTH_FRAME = 2;
@@ -29,9 +31,9 @@ public class StatusText {
 	private String lastStatusText;
 	private int lastStatusTextX, statusScrollCounter;
 
-	public StatusText(Player player, ResourceBundle resourceBundle, boolean showStatus) {
+	public StatusText(Player player, boolean showStatus) {
 		this.player = player;
-		status = new Status(player, resourceBundle);
+		status = new Status(player, RESOURCE_BUNDLE);
 		this.showStatus = showStatus;
 		waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
 	}

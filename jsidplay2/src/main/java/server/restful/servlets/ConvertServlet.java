@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -230,8 +229,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	public static final String CONVERT_PATH = "/convert";
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(ConvertServlet.class.getName());
-
 	public ConvertServlet(Configuration configuration, Properties directoryProperties) {
 		super(configuration, directoryProperties);
 	}
@@ -326,8 +323,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				} else {
 
 					if (Boolean.TRUE.equals(servletParameters.download)) {
-						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-								+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
+						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + URLEncoder
+								.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
 					}
 					response.setContentType(getMimeType(driver.getExtension()).toString());
 					File videoFile = convert2video(config, file, driver, servletParameters, null);
@@ -476,7 +473,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			player.getConfig().getC1541Section().setJiffyDosInstalled(false);
 		}
 		if (uuid != null) {
-			create(uuid, player, file, servletParameters, RESOURCE_BUNDLE);
+			create(uuid, player, file, servletParameters);
 			servletParameters.started = true;
 		}
 		player.stopC64(false);
