@@ -43,7 +43,7 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 	}
 
 	public static final int count() {
-		return PLAYER_MAP.keySet().size();
+		return PLAYER_MAP.size();
 	}
 
 	@Override

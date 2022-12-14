@@ -173,7 +173,7 @@ final public class ConsolePlayer {
 
 	private void printHardwareDevices() {
 		try {
-			triggerFetchDevices();
+			new JSIDBlasterBuilder(null, config, null);
 			String[] serialNumbers = JSIDBlasterBuilder.getSerialNumbers();
 			if (serialNumbers.length > 0) {
 				System.out.println("\nDetected SIDBlaster devices: (please add to INI file: " + getINIPath() + ")");
@@ -184,6 +184,11 @@ final public class ConsolePlayer {
 					System.out.printf("    SIDBlasterMapping_%d=%s=%s\n", deviceIdx++, serialNumber, sidType.name());
 				}
 			}
+		} catch (UnsatisfiedLinkError e) {
+			// ignore to not bother non SIDBlaster users
+		}
+		try {
+			new JExSIDBuilder(null, config, null);
 			String[] exSidDeviceNames = JExSIDBuilder.getDeviceNames();
 			if (exSidDeviceNames.length > 0) {
 				System.out.println("\nDetected ExSID devices:");
@@ -191,6 +196,11 @@ final public class ConsolePlayer {
 					System.out.println("    " + deviceName);
 				}
 			}
+		} catch (UnsatisfiedLinkError e) {
+			// ignore to not bother non EXSID users
+		}
+		try {
+			new JHardSIDBuilder(null, config, null);
 			String[] hardSidDeviceNames = JHardSIDBuilder.getDeviceNames();
 			if (hardSidDeviceNames.length > 0) {
 				System.out.println("\nDetected HardSID devices:");
@@ -198,16 +208,9 @@ final public class ConsolePlayer {
 					System.out.println("    " + deviceName);
 				}
 			}
-
 		} catch (UnsatisfiedLinkError e) {
-			// ignore to not bother non SIDBlaster users
+			// ignore to not bother non HARDSID users
 		}
-	}
-
-	private void triggerFetchDevices() {
-		new JSIDBlasterBuilder(null, config, null);
-		new JExSIDBuilder(null, config, null);
-		new JHardSIDBuilder(null, config, null);
 	}
 
 	private void exit(int rc) {

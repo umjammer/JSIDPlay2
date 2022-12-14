@@ -282,13 +282,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
-			List<String> files = getCollectionFiles(hvscRoot, path, servletParameters.getFilter(), C64_MUSIC,
-					adminRole);
+			List<String> files = getCollectionFiles(hvscRoot, path, servletParameters, C64_MUSIC, adminRole);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
-			List<String> files = getCollectionFiles(cgscRoot, path, servletParameters.getFilter(), CGSC, adminRole);
+			List<String> files = getCollectionFiles(cgscRoot, path, servletParameters, CGSC, adminRole);
 			if (files != null) {
 				return files;
 			}
@@ -299,8 +298,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
 					File root = new TFile(directoryValue);
-					List<String> files = getCollectionFiles(root, path, servletParameters.getFilter(),
-							directoryLogicalName, adminRole);
+					List<String> files = getCollectionFiles(root, path, servletParameters, directoryLogicalName,
+							adminRole);
 					if (files != null) {
 						return files;
 					}
@@ -461,8 +460,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return result;
 	}
 
-	private List<String> getCollectionFiles(File rootFile, String path, String filter, String virtualCollectionRoot,
-			boolean adminRole) {
+	private List<String> getCollectionFiles(File rootFile, String path, DirectoryServletParameters servletParameters,
+			String virtualCollectionRoot, boolean adminRole) {
 		ArrayList<String> result = null;
 		if (rootFile != null) {
 			if (path.endsWith("/")) {
@@ -473,8 +472,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				if (pathname.isDirectory() && pathname.getName().endsWith(".tmp")) {
 					return false;
 				}
-				return pathname.isDirectory() || filter == null
-						|| pathname.getName().toLowerCase(Locale.US).matches(filter);
+				return pathname.isDirectory() || servletParameters.getFilter() == null
+						|| pathname.getName().toLowerCase(Locale.US).matches(servletParameters.getFilter());
 			});
 			if (listFiles != null) {
 				result = new ArrayList<>();
