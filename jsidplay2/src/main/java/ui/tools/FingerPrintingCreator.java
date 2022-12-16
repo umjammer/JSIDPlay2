@@ -83,9 +83,6 @@ public class FingerPrintingCreator {
 	@Parameter(names = { "--deleteAll" }, descriptionKey = "DELETE_ALL", arity = 1, order = 10007)
 	private Boolean deleteAll = Boolean.FALSE;
 
-	@Parameter(names = { "--reCreateRsid" }, descriptionKey = "RECREATE_RSID", arity = 1, order = 10008)
-	private Boolean reCreateRsid = Boolean.FALSE;
-
 	@Parameter(names = {
 			"--previousDirectory" }, descriptionKey = "PREVIOUS_DIRECTORY", converter = FileToStringConverter.class, order = 10008)
 	private File previousDirectory;
@@ -148,7 +145,7 @@ public class FingerPrintingCreator {
 				System.out.println(
 						"Create fingerprintings... (press q <return>, to abort after the current tune has been fingerprinted)");
 
-				processDirectory(directory, em, reCreateRsid);
+				processDirectory(directory, em);
 			}
 		} finally {
 			whatsSidService.close();
@@ -178,19 +175,19 @@ public class FingerPrintingCreator {
 		return System.in.read();
 	}
 
-	private void processDirectory(File dir, EntityManager em, boolean reCreateRsid) throws IOException, SidTuneError {
+	private void processDirectory(File dir, EntityManager em) throws IOException, SidTuneError {
 		File[] listFiles = Optional.ofNullable(dir.listFiles()).orElse(new File[0]);
 		Arrays.sort(listFiles);
 		for (File file : listFiles) {
 			if (file.isDirectory()) {
-				processDirectory(file, em, reCreateRsid);
+				processDirectory(file, em);
 			} else if (file.isFile()) {
 				if (TUNE_FILE_FILTER.accept(file)) {
 					SidTune tune = SidTune.load(file);
 					String collectionName = PathUtils.getCollectionName(config.getSidplay2Section().getHvsc(), file);
 
 					if (previousDirectory != null) {
-						copyRecordingsOfPreviousDirectory(file, tune, collectionName, reCreateRsid);
+						copyRecordingsOfPreviousDirectory(file, tune, collectionName);
 					}
 
 					whatsSidDriver.setCollectionName(collectionName);
@@ -213,7 +210,7 @@ public class FingerPrintingCreator {
 		}
 	}
 
-	private void copyRecordingsOfPreviousDirectory(File file, SidTune tune, String collectionName, boolean reCreateRsid)
+	private void copyRecordingsOfPreviousDirectory(File file, SidTune tune, String collectionName)
 			throws IOException, SidTuneError {
 		File previousFile = new File(previousDirectory, collectionName);
 		if (previousFile.exists()) {
@@ -221,8 +218,7 @@ public class FingerPrintingCreator {
 			if (Objects.equals(tune.getMD5Digest(MD5Method.MD5_CONTENTS),
 					previousTune.getMD5Digest(MD5Method.MD5_CONTENTS))
 					&& player.getSidDatabaseInfo(db -> db.getTuneLength(tune), 0.) == previousSidDatabase
-							.getTuneLength(previousTune)
-					&& (!reCreateRsid || SidTune.getInitDelay(tune) != SidTune.RESET_INIT_DELAY)) {
+							.getTuneLength(previousTune)) {
 				for (int songNo = 1; songNo <= tune.getInfo().getSongs(); songNo++) {
 					File wavFile = new File(getRecordingFilename(file, tune, songNo) + whatsSidDriver.getExtension());
 					File previousWavFile = new File(
