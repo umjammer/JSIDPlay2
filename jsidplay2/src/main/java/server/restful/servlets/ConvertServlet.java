@@ -183,7 +183,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.useHls = useHls;
 		}
 
-		private HlsType hlsType = HlsType.VIDEO_JS;
+		private HlsType hlsType = HlsType.HLS_JS;
 
 		public HlsType getHlsType() {
 			return hlsType;

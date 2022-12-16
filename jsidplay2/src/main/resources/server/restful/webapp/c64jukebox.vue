@@ -3956,6 +3956,9 @@
 						if (typeof this.convertOptions.useHls === "undefined") {
 							this.convertOptions.useHls = true;
 						}
+						if (typeof this.convertOptions.hlsType === "undefined") {
+							this.convertOptions.hlsType = "HLS_JS";
+						}
 					} else {
 						// initialize configuration (if they differ from the default settings)
 						this.convertOptions.useHls = true;
