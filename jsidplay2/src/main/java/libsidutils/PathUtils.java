@@ -12,6 +12,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -173,4 +174,15 @@ public class PathUtils {
 		return lastIndexOf != -1 ? filename.substring(lastIndexOf) : "";
 	}
 
+	/**
+	 * Add upper case file extensions to the file extensions list.
+	 * 
+	 * @param fileExtensions file extensions to add to
+	 * @return file extensions with added upper case file extensions
+	 */
+	public static List<String> addUpperCase(List<String> fileExtensions) {
+		List<String> result = new ArrayList<>(fileExtensions);
+		fileExtensions.stream().map(fileName -> fileName.toUpperCase(Locale.US)).forEach(result::add);
+		return result;
+	}
 }

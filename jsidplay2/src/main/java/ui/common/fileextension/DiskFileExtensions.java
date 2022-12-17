@@ -1,7 +1,7 @@
 package ui.common.fileextension;
 
 import static java.util.Arrays.asList;
-import static ui.common.fileextension.TuneFileExtensions.addUpperCase;
+import static libsidutils.PathUtils.addUpperCase;
 
 import java.util.List;
 import java.util.Locale;
