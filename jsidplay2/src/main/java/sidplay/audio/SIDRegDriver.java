@@ -82,7 +82,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 	public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("sidplay.audio.SIDRegDriver");
 
 	protected OutputStream out;
-	protected Format format;
+	protected Format format = Format.NORMAL;
 
 	private EventScheduler context;
 
