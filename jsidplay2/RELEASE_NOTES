@@ -11,12 +11,12 @@ Player menu has a new option for the UI version ("Playlist starts with song 1", 
 
 ConsolePlayer:
 ConsolePlayer can now play or record whole folders, just use a directory as command-line argument. This is to better support batch recording.
-Verbose mode now shows the filter names, that being used
+Verbose mode now shows settings and filter names, that are being used
 
 JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue):
 - Use of HTTP2 protocol and compression has been enabled
 - UTF8 filenames are now fully supported
 - Support of both: hls.js or video.js as video driver has been added as per configuration
 - Now you can enter a disk directory and start entries
-- SID tune information list entries are now shown in a separate Tab
+- SID tune information list (STIL) entries are now shown in a separate Tab
 - Now, you can make use of USB devices in Chrome Browser, Microsoft Edge and Opera for: ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay. This works for PC and Mobile devices.
