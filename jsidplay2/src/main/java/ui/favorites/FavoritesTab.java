@@ -392,7 +392,7 @@ public class FavoritesTab extends C64VBox implements UIPart {
 					try {
 						Object value = ((Method) getAttribute(name).getJavaMember()).invoke(hvscEntry);
 						String text = value != null ? value.toString() : "";
-						if (text.contains(filterText)) {
+						if (containsIgnoreCase(text, filterText)) {
 							filteredFavorites.add(hvscEntry);
 							continue outer;
 						}
@@ -402,6 +402,18 @@ public class FavoritesTab extends C64VBox implements UIPart {
 				}
 			}
 		}
+	}
+
+	public static boolean containsIgnoreCase(String str, String searchStr) {
+		final int length = searchStr.length();
+		if (length == 0)
+			return true;
+
+		for (int i = str.length() - length; i >= 0; i--) {
+			if (str.regionMatches(true, i, searchStr, 0, length))
+				return true;
+		}
+		return false;
 	}
 
 	public void selectAllFavorites() {
