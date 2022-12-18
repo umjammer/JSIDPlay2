@@ -112,7 +112,7 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 			int connectionTimeout = whatsSidSection.getConnectionTimeout();
 
 			player = new Player(configuration);
-			player.setFirstPlayListEntryIsOne(true);
+			player.setFirstPlayListEntryIsOne(sidplay2Section.isPlayListStartsWithOne());
 			player.setMenuHook(menuHook);
 			player.setRecordingFilenameProvider(this);
 			player.setFingerPrintMatcher(new FingerprintJsonClient(url, username, password, connectionTimeout));

@@ -64,6 +64,7 @@ public class SidPlay2Section implements ISidPlay2Section {
 	public static final boolean DEFAULT_MINIMIZED = false;
 	public static final float DEFAULT_VIDEO_SCALING = 1.75f;
 	public static final boolean DEFAULT_SHOW_MONITOR = true;
+	public static final boolean DEFAULT_PLAY_LIST_STARTS_WITH_ONE = true;
 
 	private int version;
 
@@ -209,6 +210,21 @@ public class SidPlay2Section implements ISidPlay2Section {
 
 	public final BooleanProperty singleProperty() {
 		return single.property();
+	}
+
+	private ShadowField<BooleanProperty, Boolean> playListStartsWithOne = new ShadowField<>(SimpleBooleanProperty::new,
+			DEFAULT_PLAY_LIST_STARTS_WITH_ONE);
+
+	public boolean isPlayListStartsWithOne() {
+		return playListStartsWithOne.get();
+	}
+
+	public void setPlayListStartsWithOne(boolean playListStartsWithOne) {
+		this.playListStartsWithOne.set(playListStartsWithOne);
+	}
+
+	public final BooleanProperty playListStartsWithOneProperty() {
+		return playListStartsWithOne.property();
 	}
 
 	private ShadowField<ObjectProperty<File>, File> hvmec = new ShadowField<>(SimpleObjectProperty::new, null);

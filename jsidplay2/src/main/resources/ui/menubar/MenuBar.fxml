@@ -155,6 +155,8 @@
 										control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
 								</accelerator>
 							</MenuItem>
+							<CheckMenuItem text="%PLAYLIST_STARTS_WITH_ONE" onAction="#playListStartsWithOne"
+								fx:id="playListStartsWithOne" />
 						</items>
 					</Menu>
 					<Menu text="%DEVICES">

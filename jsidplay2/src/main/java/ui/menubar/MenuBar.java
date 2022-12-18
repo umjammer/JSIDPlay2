@@ -123,8 +123,8 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
-	protected CheckMenuItem pauseContinue, turboTape, driveOn, driveSoundOn, parCable, installJiffyDos, expand2000,
-			expand4000, expand6000, expand8000, expandA000, turnPrinterOn;
+	protected CheckMenuItem pauseContinue, playListStartsWithOne, turboTape, driveOn, driveSoundOn, parCable,
+			installJiffyDos, expand2000, expand4000, expand6000, expand8000, expandA000, turnPrinterOn;
 
 	@FXML
 	protected RadioMenuItem fastForward, normalSpeed;
@@ -188,6 +188,7 @@ public class MenuBar extends C64VBox implements UIPart {
 		btnNextFavoriteDisabledState = new SimpleBooleanProperty(true);
 		btnNextFavorite.disableProperty().bind(btnNextFavoriteDisabledState);
 		btnNextSongDisabledState = new SimpleBooleanProperty(true);
+		playListStartsWithOne.selectedProperty().bindBidirectional(sidplay2Section.playListStartsWithOneProperty());
 
 		turboTape.selectedProperty().bindBidirectional(sidplay2Section.turboTapeProperty());
 		driveOn.selectedProperty().bindBidirectional(c1541Section.driveOnProperty());
@@ -455,6 +456,13 @@ public class MenuBar extends C64VBox implements UIPart {
 	@FXML
 	private void stop() {
 		util.getPlayer().quit();
+	}
+
+	@FXML
+	private void playListStartsWithOne() {
+		final SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
+
+		util.getPlayer().setFirstPlayListEntryIsOne(sidplay2Section.isPlayListStartsWithOne());
 	}
 
 	@FXML
