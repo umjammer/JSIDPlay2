@@ -1,21 +1,22 @@
 Release Notes:
 ==============
 
-JSIDPlay2:
-Default Java version has been changed to Java11 and higher, however java8 can still be used. There are separate executables and shell scripts where java8 is part of it's name.
-Bugfix: Changing sub-tunes was impossible, if favorites playback option was turned off.
-Sub song ordering can be configured in the Player menu to start with 1 instead of the start song. Default is true. (E.G. Last_Ninja.sid with start song 3: 1,2,(3)..11) instead of (3)..11,1,2 for the UI version.
-Song recording are delayed for RSID about 2.5 seconds (time to RESET) leading in too short songs e.g. in recordings, this has been fixed
-ConsolePlayer can now play or record whole folders. This is to support batch recording.
-ConsolePlayer's verbose mode now shows the filters being used
-ConsolePlayer validates and reports wrong filter names, now
+Default Java version has been changed to Java11 and higher, however java8 can still be used. There are additional executables and shell scripts where "-java8" is part of it's name.
+Bugfix: Recordings were too short for RSID tunes (RSID tunes are delayed about 2.5 seconds on reset).
+
+JSIDPlay2 UI version:
+Bugfix: Changing sub-tunes was impossible, if favorites playback option had been turned off (which is the default setting).
+Bugfix: validation and reporting of wrong filter names has been added
+Player menu has a new option for the UI version ("Playlist starts with song 1", default: true). (E.g. Last_Ninja.sid with start song 3 results in: 1,2,(3)..11) instead of (3)..11,1,2.
+
+ConsolePlayer:
+ConsolePlayer can now play or record whole folders, just use a directory as command-line argument. This is to better support batch recording.
+Verbose mode now shows the filter names, that being used
 
 JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue):
-- Use of HTTP2 protocol and compression
-- Use of UTF8 filenames
-- Support of hls.js or video.js as video driver)
-- Load disk directory entries
-- Hardware USB drivers have been added to make use of USB devices in Chrome Browser, Microsoft Edge or Opera.
-  This works for PC and Mobile devices.
-- Service added to fetch Directory contents
-- Service added to fetch SID tune information list
+- Use of HTTP2 protocol and compression has been enabled
+- UTF8 filenames are now fully supported
+- Support of both: hls.js or video.js as video driver has been added as per configuration
+- Now you can enter a disk directory and start entries
+- SID tune information list entries are now shown in a separate Tab
+- Now, you can make use of USB devices in Chrome Browser, Microsoft Edge and Opera for: ExSID, ExSID+, HardSID4U, HardSID Uno or HardSID UPlay. This works for PC and Mobile devices.
