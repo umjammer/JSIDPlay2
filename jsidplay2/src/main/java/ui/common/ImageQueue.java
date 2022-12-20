@@ -27,6 +27,7 @@ public final class ImageQueue<T> {
 
 	private static final int MAX_QUEUE_SIZE = 60;
 	private static final int DROP_NTH_FRAME = 10;
+	private static final int DROP_FRAMES_SIZE = DROP_NTH_FRAME << 1;
 
 	private QueueItem<T> head, tail;
 	private int size;
@@ -55,7 +56,7 @@ public final class ImageQueue<T> {
 
 	public final synchronized T pull() {
 		// prevent overflow by dropping in-between frames
-		if (size > DROP_NTH_FRAME) {
+		if (size > DROP_FRAMES_SIZE) {
 			QueueItem<T> prev = head, scan = head;
 			int count = size / DROP_NTH_FRAME;
 			while (count-- > 0) {
