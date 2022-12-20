@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
@@ -973,6 +975,7 @@ public interface IEmulationSection {
 	 *
 	 * @return stereo mode
 	 */
+	@JsonIgnore
 	default StereoMode getStereoMode() {
 		if (isForce3SIDTune()) {
 			return THREE_SID;
@@ -988,6 +991,7 @@ public interface IEmulationSection {
 	 *
 	 * @param stereoMode stereo mode
 	 */
+	@JsonIgnore
 	default void setStereoMode(StereoMode stereoMode) {
 		switch (stereoMode) {
 		case THREE_SID:
@@ -1011,6 +1015,7 @@ public interface IEmulationSection {
 	 * 
 	 * @return serial number to ChipModel map
 	 */
+	@JsonIgnore
 	default Map<String, ChipModel> getSidBlasterDeviceMap() {
 		return getSidBlasterDeviceList().stream().filter(IDeviceMapping::isUsed).collect(
 				Collectors.toMap(deviceMapping -> deviceMapping.getSerialNum(), tokens -> tokens.getChipModel()));
