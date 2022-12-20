@@ -55,9 +55,9 @@ public final class ImageQueue<T> {
 
 	public final synchronized T pull() {
 		// prevent overflow by dropping in-between frames
-		int count = size / DROP_NTH_FRAME;
-		if (count > 1) {
+		if (size > DROP_NTH_FRAME) {
 			QueueItem<T> prev = head, scan = head;
+			int count = size / DROP_NTH_FRAME;
 			while (count-- > 0) {
 				// skip frames
 				for (int i = 0; i < DROP_NTH_FRAME && scan != tail; i++) {
