@@ -1,18 +1,19 @@
 Release Notes:
 ==============
 
-Default SID Model has been changed to MOS8580, because most of new SID music releases require that chip.
-Default Java version has been changed to Java11 and higher, however java8 can still be used. There are additional executables and shell scripts where "-java8" is part of it's name.
-Bugfix: RSID tune recordings ended too early (RSID tunes are delayed about 2.5 seconds on reset).
+- Default Java version has been changed to Java11 and higher, however java8 can still be used. There are additional executables and shell scripts where "-java8" is part of it's name.
+- The configuration version changed, JSIDPlay2 creates a new one and backups the old one to jsidplay2.xml.bak and jsidplay2.ini.bak
+- Default SID Model has been changed to MOS8580, because most of new SID music releases require that chip.
+- Bugfix: RSID tune recordings ended too early (RSID tunes are delayed about 2.5 seconds on reset).
 
 JSIDPlay2 UI version:
-Bugfix: Changing sub-tunes was impossible, if favorites playback option had been turned off (which is the default setting).
-Bugfix: validation and reporting of wrong filter names was missing and has been added
-In the Player menu a new option for the UI version has been added ("Playlist starts with song 1", default: true). (E.g. Last_Ninja.sid with start song 3 results in: 1,2,(3)..11) instead of (3)..11,1,2.
+- Bugfix: Changing sub-tunes was impossible, if favorites playback option had been turned off (which is the default setting).
+- Bugfix: Validation and reporting of wrong filter names was missing and has been added
+- In the Player menu a new option for the UI version has been added ("Playlist starts with song 1", default: true). (E.g. Last_Ninja.sid with start song 3 results in: 1,2,(3)..11) instead of (3)..11,1,2.
 
 ConsolePlayer:
-ConsolePlayer can now play or record whole folders, just use a directory as command-line argument. This is to better support batch recordings.
-Verbose mode now shows settings and filter names, that are being used
+- ConsolePlayer can now play or record whole folders, just use a directory as command-line argument. This is to better support batch recordings.
+- Verbose mode now shows settings and filter names, that are currently being used
 
 JSIDPlay2Server (https://haendel.ddns.net:8443/static/c64jukebox.vue):
 - Use of HTTP2 protocol and compression has been enabled
