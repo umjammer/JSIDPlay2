@@ -104,11 +104,17 @@ public class ServletParameterHelper {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
+				// check parameter order
 				if (orders.contains(parameter.order())) {
 					throw new Exception("Ambigous order attribute on parameter: " + parameter.order());
 				}
 				orders.add(parameter.order());
-
+				// check arity of boolean parameter
+				if ((Boolean.class.equals(writer.getType().getRawClass())
+						|| writer.getType().getRawClass().equals(boolean.class)) && parameter.arity() != 1) {
+					throw new Exception("Arity of parameter must be 1: " + parameter.descriptionKey());
+				}
+				// check missing localization
 				ResourceBundle rootResBundle = ResourceBundle.getBundle(parameters.resourceBundle(), Locale.ROOT);
 				if (!rootResBundle.containsKey(parameter.descriptionKey())) {
 					throw new Exception("Localization missing on parameter: " + parameter.descriptionKey());
