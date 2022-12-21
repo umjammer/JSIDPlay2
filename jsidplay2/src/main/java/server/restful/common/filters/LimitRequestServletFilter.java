@@ -1,5 +1,7 @@
 package server.restful.common.filters;
 
+import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,7 +24,7 @@ public final class LimitRequestServletFilter implements Filter {
 
 	@Override
 	public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-			final FilterChain chain) throws IOException, ServletException {
+		final FilterChain chain) throws IOException, ServletException {
 		try {
 			if (atomicServletRequestCounter.getAndIncrement() < maxRequestServletCount) {
 				// let the request through and process as usual
@@ -30,7 +32,7 @@ public final class LimitRequestServletFilter implements Filter {
 			} else {
 				// handle limit case, e.g. return status code 429 (Too Many Requests)
 				HttpServletResponse response = (HttpServletResponse) servletResponse;
-				response.sendError(429, "Too Many Requests");
+				response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
 			}
 		} finally {
 			atomicServletRequestCounter.getAndDecrement();
