@@ -3968,7 +3968,7 @@
 						this.convertOptions.config.audioSection.mainBalance = 0.3;
 						this.convertOptions.config.audioSection.secondBalance = 0.7;
 						this.convertOptions.config.audioSection.thirdBalance = 0.5;
-						this.convertOptions.config.audioSection.secondDelay = 20;
+						this.convertOptions.config.audioSection.secondDelay = 10;
 						this.convertOptions.config.audioSection.sampling = "RESAMPLE";
 						this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
 						this.mobileProfile();
