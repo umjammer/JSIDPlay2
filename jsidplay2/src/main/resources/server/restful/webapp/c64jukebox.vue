@@ -2543,7 +2543,7 @@
 					USE_MOBILE_DEVICES_1: "To use mobile devices, please use an",
 					USE_MOBILE_DEVICES_2: "USBC to USB adapter",
 					STREAMING_NOTES:
-						"This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsability for any costs, that arise from streaming from the internet!",
+						"This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
 					parentDirectoryHint: "Go up one Level",
 					sidInfoKey: "Name",
 					sidInfoValue: "Value",
