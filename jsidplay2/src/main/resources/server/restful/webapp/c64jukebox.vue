@@ -142,16 +142,16 @@
 										<a href="https://sourceforge.net/projects/jsidplay2" target="_blank"
 											>https://sourceforge.net/projects/jsidplay2</a
 										><br /><br />
-										This program is free software; you can redistribute it and/or modify<br />
-										it under the terms of the GNU General Public License as published by<br />
-										the Free Software Foundation; either version 2 of the License, or<br />
-										(at your option) any later version.<br /><br />
 										The search function of this web-site is powered by Assembly64 by Fredrik
 										&Aring;berg.<br />
 										<a href="https://hackerswithstyle.se/assembly/" target="_blank"
 											>http://hackerswithstyle.ddns.net/assembly/</a
 										><br />
-										Thank you mate!
+										Thank you mate!<br /><br />
+										This program is free software; you can redistribute it and/or modify<br />
+										it under the terms of the GNU General Public License as published by<br />
+										the Free Software Foundation; either version 2 of the License, or<br />
+										(at your option) any later version.
 									</p>
 								</b-card-text>
 							</b-tab>
