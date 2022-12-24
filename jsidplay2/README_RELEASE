@@ -27,11 +27,11 @@ cd
 Change version in "server.sh" and "fingerprintCreater.sh"
 Change autostart:
 sudo vi /etc/systemd/system/jsidplay2.service
+sudo shutdown -r 0
+rm server.log
+Prüfe ob der Server neu gestartet wurde
 
-./server.sh
-less server.log
-
-Change version in local desktop files "~/Desktop/JSIDPlay2.desktop" und "~/Desktop/JSIDPlay2.desktop"
+Change version in local desktop files "~/Desktop/JSIDPlay2.desktop"
 
 Upload the following release files to sourceforge and
 mark it with the correct OS (only for jsidplay2-4.7-*.zip and jsidplay2app.apk)
