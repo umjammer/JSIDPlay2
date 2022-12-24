@@ -37,7 +37,7 @@
 		<hvmec.zip />
 		<upx.exe />
 		<!-- Optional: server database name -->
-		<hvsc.version>hvsc77</hvsc.version>
+		<hvsc.version>hvsc78</hvsc.version>
 	</properties>
 
 	<scm>
