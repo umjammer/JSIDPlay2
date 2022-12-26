@@ -11,6 +11,7 @@ TODO:
 - SID Reg should report reads as well.
 - freely configurable filter definitions
 - Support of executable .command files on MACOSX
+- Maximize oscilloscope view on demand
 - Soundexpander module support (to support fmyam songs)
 - HardSID support for VICE project
 
