@@ -435,7 +435,7 @@ public class JSIDPlay2Server {
 		constraint.setAuthConstraint(true);
 
 		SecurityCollection collection = new SecurityCollection();
-		// We cannot secure ConvertServlet here, since Chrome-app ignores basic
+		// We cannot secure ConvertServlet here, since Chrome browser ignores basic
 		// authentication in HTML5 audio tag src attribute
 		collection.addPattern(CONTEXT_ROOT_SERVLET + DirectoryServlet.DIRECTORY_PATH + "/*");
 		collection.addPattern(CONTEXT_ROOT_SERVLET + PhotoServlet.PHOTO_PATH + "/*");

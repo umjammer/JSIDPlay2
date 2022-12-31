@@ -106,7 +106,7 @@ public class ServletParameterHelper {
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
 				// check parameter order
 				if (orders.contains(parameter.order())) {
-					throw new Exception("Ambigous order attribute on parameter: " + parameter.order());
+					throw new Exception("Ambigous order attribute of parameter: " + parameter.order());
 				}
 				orders.add(parameter.order());
 				// check arity of boolean parameter
@@ -117,7 +117,7 @@ public class ServletParameterHelper {
 				// check missing localization
 				ResourceBundle rootResBundle = ResourceBundle.getBundle(parameters.resourceBundle(), Locale.ROOT);
 				if (!rootResBundle.containsKey(parameter.descriptionKey())) {
-					throw new Exception("Localization missing on parameter: " + parameter.descriptionKey());
+					throw new Exception("Localization missing of parameter: " + parameter.descriptionKey());
 				}
 				for (Locale locale : OTHER_LOCALES) {
 					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
@@ -125,7 +125,7 @@ public class ServletParameterHelper {
 					// localization is only contained in that bundle, therefore ==
 					if (resBundle.getString(parameter.descriptionKey()) == rootResBundle
 							.getString(parameter.descriptionKey())) {
-						throw new Exception("Localization missing on parameter: " + parameter.descriptionKey());
+						throw new Exception("Localization missing of parameter: " + parameter.descriptionKey());
 					}
 				}
 			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
