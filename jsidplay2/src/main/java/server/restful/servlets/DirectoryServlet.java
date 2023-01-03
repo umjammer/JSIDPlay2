@@ -54,6 +54,11 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + DIRECTORY_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Get directory contents containing music collections.
 	 *

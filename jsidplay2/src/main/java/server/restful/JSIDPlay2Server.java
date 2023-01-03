@@ -291,8 +291,11 @@ public class JSIDPlay2Server {
 
 		Context context = addWebApp(tomcat, sidplay2Section);
 
-		addSecurityConstraints(context);
-		addServlets(context);
+		context.setLoginConfig(new LoginConfig(BASIC_AUTH, null, null, null));
+
+		SecurityConstraint securityConstraint = addSecurityConstraint(context);
+
+		addServlets(context, securityConstraint);
 
 		new Timer().schedule(new PlayerCleanupTimerTask(context.getParent().getLogger()), 0, 1000L);
 
@@ -426,35 +429,33 @@ public class JSIDPlay2Server {
 		return context;
 	}
 
-	private void addSecurityConstraints(Context context) {
-		context.setLoginConfig(new LoginConfig(BASIC_AUTH, null, null, null));
+	private SecurityConstraint addSecurityConstraint(Context context) {
+		SecurityConstraint securityConstraint = new SecurityConstraint();
+		securityConstraint.addAuthRole(ROLE_ADMIN);
+		securityConstraint.addAuthRole(ROLE_USER);
+		securityConstraint.setAuthConstraint(true);
 
-		SecurityConstraint constraint = new SecurityConstraint();
-		constraint.addAuthRole(ROLE_ADMIN);
-		constraint.addAuthRole(ROLE_USER);
-		constraint.setAuthConstraint(true);
-
-		SecurityCollection collection = new SecurityCollection();
-		// We cannot secure ConvertServlet here, since Chrome browser ignores basic
-		// authentication in HTML5 audio tag src attribute
-		collection.addPattern(CONTEXT_ROOT_SERVLET + DirectoryServlet.DIRECTORY_PATH + "/*");
-		collection.addPattern(CONTEXT_ROOT_SERVLET + PhotoServlet.PHOTO_PATH + "/*");
-		collection.addPattern(CONTEXT_ROOT_SERVLET + TuneInfoServlet.TUNE_INFO_PATH + "/*");
-		collection.addPattern(CONTEXT_ROOT_SERVLET + STILServlet.STIL_PATH + "/*");
-
-		constraint.addCollection(collection);
-		context.addConstraint(constraint);
+		return securityConstraint;
 	}
 
-	private void addServlets(Context context) throws InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	private void addServlets(Context context, SecurityConstraint securityConstraint)
+			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException {
+		SecurityCollection securityCollection = new SecurityCollection();
 
 		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
 			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor(Configuration.class, Properties.class)
 					.newInstance(configuration, servletUtilProperties);
+
 			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getServletPath() + "/*");
 			addServletFilter(context, servlet);
+
+			if (servlet.isSecured()) {
+				securityCollection.addPattern(servlet.getServletPath() + "/*");
+			}
 		}
+		securityConstraint.addCollection(securityCollection);
+		context.addConstraint(securityConstraint);
 	}
 
 	private void addServletFilter(Context context, JSIDPlay2Servlet servlet) {

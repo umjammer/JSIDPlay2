@@ -50,6 +50,11 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + PHOTO_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Get photo of composer.
 	 *

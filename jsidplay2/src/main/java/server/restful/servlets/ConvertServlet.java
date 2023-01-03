@@ -243,6 +243,13 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return new LimitRequestServletFilter(MAX_CONVERT_IN_PARALLEL);
 	}
 
+	@Override
+	public boolean isSecured() {
+		// We cannot secure ConvertServlet here, since Chrome browser ignores basic
+		// authentication in HTML5 audio tag src attribute
+		return false;
+	}
+
 	/**
 	 * Stream e.g. SID as MP3 or D64 as RTMP video stream.
 	 *
@@ -270,11 +277,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			final IniConfig config = servletParameters.config;
 
 			if (AUDIO_TUNE_FILE_FILTER.accept(file)) {
 
-				Audio audio = getAudioFormat(config);
+				Audio audio = getAudioFormat(servletParameters.config);
 				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream(), servletParameters);
 
 				if (Boolean.TRUE.equals(servletParameters.download)) {
@@ -282,14 +288,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
 				}
 				response.setContentType(getMimeType(driver.getExtension()).toString());
-				convert2audio(config, file, driver, servletParameters);
+				convert2audio(file, driver, servletParameters);
 
 			} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
 					|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
 
 				UUID uuid = UUID.randomUUID();
 
-				Audio audio = getVideoFormat(config);
+				Audio audio = getVideoFormat(servletParameters.config);
 				AudioDriver driver = getAudioDriverOfVideoFormat(audio, uuid, servletParameters);
 
 				if (Boolean.FALSE.equals(servletParameters.download) && audio == FLV) {
@@ -298,7 +304,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						new Thread(() -> {
 							try {
 								info("START RTMP stream of: " + uuid);
-								convert2video(config, file, driver, servletParameters, uuid, parentThread);
+								convert2video(file, driver, servletParameters, uuid, parentThread);
 								info("END RTMP stream of: " + uuid);
 							} catch (IOException | SidTuneError e) {
 								log("ERROR RTMP stream of: " + uuid, e);
@@ -327,7 +333,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
 					}
 					response.setContentType(getMimeType(driver.getExtension()).toString());
-					File videoFile = convert2video(config, file, driver, servletParameters, null);
+					File videoFile = convert2video(file, driver, servletParameters, null);
 					copy(videoFile, response.getOutputStream());
 					videoFile.delete();
 				}
@@ -385,11 +391,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private void convert2audio(IConfig config, File file, AudioDriver driver,
-			ConvertServletParameters servletParameters) throws IOException, SidTuneError {
-		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
+	private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters)
+			throws IOException, SidTuneError {
+		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 
-		Player player = new Player(config);
+		Player player = new Player(servletParameters.config);
 		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
@@ -442,13 +448,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private File convert2video(IConfig config, File file, AudioDriver driver,
-			ConvertServletParameters servletParameters, UUID uuid, Thread... parentThread)
-			throws IOException, SidTuneError {
+	private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters, UUID uuid,
+			Thread... parentThread) throws IOException, SidTuneError {
 		File videoFile = null;
-		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
+		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 
-		Player player = new Player(config);
+		Player player = new Player(servletParameters.config);
 		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_VID_DOWNLOAD_LENGTH));
 			videoFile = createVideoFile(player, driver);

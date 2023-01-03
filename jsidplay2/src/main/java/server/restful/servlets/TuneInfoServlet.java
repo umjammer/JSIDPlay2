@@ -60,6 +60,11 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + TUNE_INFO_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Get SID tune infos.
 	 *
@@ -80,13 +85,8 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			Object tuneInfos;
-			HVSCEntry hvscEntry = createHVSCEntry(file);
-			if (servletParameters.list) {
-				tuneInfos = hvscEntry2SortedList(hvscEntry);
-			} else {
-				tuneInfos = hvscEntry2SortedMap(hvscEntry);
-			}
+			Object tuneInfos = getTuneInfos(file, servletParameters.list);
+
 			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(tuneInfos));
 
 		} catch (Throwable t) {
@@ -94,6 +94,17 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
+	}
+
+	private Object getTuneInfos(final File file, final boolean asList) throws Exception {
+		Object tuneInfos;
+		HVSCEntry hvscEntry = createHVSCEntry(file);
+		if (asList) {
+			tuneInfos = hvscEntry2SortedList(hvscEntry);
+		} else {
+			tuneInfos = hvscEntry2SortedMap(hvscEntry);
+		}
+		return tuneInfos;
 	}
 
 	private HVSCEntry createHVSCEntry(File tuneFile) throws Exception {
@@ -110,6 +121,16 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 		return new HVSCEntry(songLengthFnct, "", tuneFile, tune);
 	}
 
+	private List<Map<String, String>> hvscEntry2SortedList(HVSCEntry hvscEntry) {
+		return hvscEntry2SortedMap(hvscEntry).entrySet().stream().map(entry -> {
+			Map<String, String> map = new HashMap<>();
+			map.put("Name", entry.getKey());
+			map.put("Value", entry.getValue());
+			return map;
+		}).collect(Collectors.toList());
+
+	}
+
 	private TreeMap<String, String> hvscEntry2SortedMap(HVSCEntry hvscEntry) {
 		List<Pair<String, String>> attributeValues = SearchCriteria.getAttributeValues(hvscEntry,
 				field -> field.getAttribute().getDeclaringType().getJavaType().getSimpleName() + "."
@@ -123,15 +144,5 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 	private int index(List<Pair<String, String>> attributeValues, String o) {
 		return IntStream.range(0, attributeValues.size())
 				.filter(index -> Objects.equals(attributeValues.get(index).getKey(), o)).findFirst().getAsInt();
-	}
-
-	private List<Map<String, String>> hvscEntry2SortedList(HVSCEntry hvscEntry) {
-		return hvscEntry2SortedMap(hvscEntry).entrySet().stream().map(entry -> {
-			Map<String, String> map = new HashMap<>();
-			map.put("Name", entry.getKey());
-			map.put("Value", entry.getValue());
-			return map;
-		}).collect(Collectors.toList());
-
 	}
 }
