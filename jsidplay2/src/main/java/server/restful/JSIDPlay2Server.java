@@ -165,6 +165,11 @@ public class JSIDPlay2Server {
 	public static final String SERVLET_UTIL_CONFIG_FILE = "directoryServlet.properties";
 
 	/**
+	 * Realm name
+	 */
+	public static final String REALM_NAME = "jsidlay2-realm";
+
+	/**
 	 * Filename of the configuration containing username, password and role. For an
 	 * example please refer to the internal resource tomcat-users.xml
 	 */
@@ -279,21 +284,16 @@ public class JSIDPlay2Server {
 	private Tomcat createTomcat() throws MalformedURLException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
-		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
-		EmulationSection emulationSection = configuration.getEmulationSection();
-
 		Tomcat tomcat = new Tomcat();
 		tomcat.setAddDefaultWebXmlToWebapp(false);
-		tomcat.setBaseDir(sidplay2Section.getTmpDir().getAbsolutePath());
+		tomcat.setBaseDir(configuration.getSidplay2Section().getTmpDir().getAbsolutePath());
 
 		setRealm(tomcat);
-		setConnectors(tomcat, emulationSection);
+		setConnectors(tomcat);
 
-		Context context = addWebApp(tomcat, sidplay2Section);
+		Context context = addWebApp(tomcat);
 
-		context.setLoginConfig(new LoginConfig(BASIC_AUTH, null, null, null));
-
-		SecurityConstraint securityConstraint = addSecurityConstraint(context);
+		SecurityConstraint securityConstraint = createSecurityConstraint(context);
 
 		addServlets(context, securityConstraint);
 
@@ -327,7 +327,9 @@ public class JSIDPlay2Server {
 		return INTERNAL_REALM_CONFIG;
 	}
 
-	private void setConnectors(Tomcat tomcat, EmulationSection emulationSection) {
+	private void setConnectors(Tomcat tomcat) {
+		EmulationSection emulationSection = configuration.getEmulationSection();
+
 		switch (emulationSection.getAppServerConnectors()) {
 		case HTTP_HTTPS: {
 			tomcat.setConnector(createHttpConnector(emulationSection));
@@ -399,7 +401,9 @@ public class JSIDPlay2Server {
 	/**
 	 * <b>Note:</b> Base directory of the context root is .jsidplay2
 	 */
-	private Context addWebApp(Tomcat tomcat, SidPlay2Section sidplay2Section) {
+	private Context addWebApp(Tomcat tomcat) {
+		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
+
 		Context context = tomcat.addWebapp(tomcat.getHost(), CONTEXT_ROOT,
 				sidplay2Section.getTmpDir().getAbsolutePath());
 		// roles must be defined before being used in a security constraint, therefore:
@@ -417,8 +421,8 @@ public class JSIDPlay2Server {
 				return true;
 			}
 		});
-		Arrays.asList(Optional.ofNullable(configuration.getSidplay2Section().getTmpDir().listFiles(UUID_FILE_FILTER))
-				.orElse(new File[0])).forEach(file -> {
+		Arrays.asList(Optional.ofNullable(sidplay2Section.getTmpDir().listFiles(UUID_FILE_FILTER)).orElse(new File[0]))
+				.forEach(file -> {
 					try {
 						deleteDirectory(file);
 					} catch (IOException e) {
@@ -429,7 +433,7 @@ public class JSIDPlay2Server {
 		return context;
 	}
 
-	private SecurityConstraint addSecurityConstraint(Context context) {
+	private SecurityConstraint createSecurityConstraint(Context context) {
 		SecurityConstraint securityConstraint = new SecurityConstraint();
 		securityConstraint.addAuthRole(ROLE_ADMIN);
 		securityConstraint.addAuthRole(ROLE_USER);
@@ -447,33 +451,31 @@ public class JSIDPlay2Server {
 			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor(Configuration.class, Properties.class)
 					.newInstance(configuration, servletUtilProperties);
 
-			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getServletPath() + "/*");
-			addServletFilter(context, servlet);
+			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getURLPattern());
 
+			if (servlet.getServletFilter().isPresent()) {
+				addServletFilter(context, servlet.getServletFilter().get(), servlet.getURLPattern());
+			}
 			if (servlet.isSecured()) {
-				securityCollection.addPattern(servlet.getServletPath() + "/*");
+				securityCollection.addPattern(servlet.getURLPattern());
 			}
 		}
 		securityConstraint.addCollection(securityCollection);
+
 		context.addConstraint(securityConstraint);
+		context.setLoginConfig(new LoginConfig(BASIC_AUTH, REALM_NAME, null, null));
 	}
 
-	private void addServletFilter(Context context, JSIDPlay2Servlet servlet) {
-		Filter servletFilter = servlet.createServletFilter();
+	private void addServletFilter(Context context, Filter servletFilter, String urlPattern) {
+		FilterDef filterDefinition = new FilterDef();
+		filterDefinition.setFilterName(servletFilter.getClass().getSimpleName());
+		filterDefinition.setFilter(servletFilter);
+		context.addFilterDef(filterDefinition);
 
-		if (servletFilter != null) {
-			String servletFilterName = servletFilter.getClass().getSimpleName();
-
-			FilterDef filterDefinition = new FilterDef();
-			filterDefinition.setFilterName(servletFilterName);
-			filterDefinition.setFilter(servletFilter);
-			context.addFilterDef(filterDefinition);
-
-			FilterMap filterMapping = new FilterMap();
-			filterMapping.setFilterName(servletFilterName);
-			filterMapping.addURLPattern(servlet.getServletPath() + "/*");
-			context.addFilterMap(filterMapping);
-		}
+		FilterMap filterMapping = new FilterMap();
+		filterMapping.setFilterName(servletFilter.getClass().getSimpleName());
+		filterMapping.addURLPattern(urlPattern);
+		context.addFilterMap(filterMapping);
 	}
 
 	private static void exit(int rc) {

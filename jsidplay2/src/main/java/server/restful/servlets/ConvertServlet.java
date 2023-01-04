@@ -239,8 +239,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public Filter createServletFilter() {
-		return new LimitRequestServletFilter(MAX_CONVERT_IN_PARALLEL);
+	public Optional<Filter> getServletFilter() {
+		return Optional.of(new LimitRequestServletFilter(MAX_CONVERT_IN_PARALLEL));
 	}
 
 	@Override
