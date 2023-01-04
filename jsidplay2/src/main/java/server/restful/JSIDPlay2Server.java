@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -149,7 +150,7 @@ public class JSIDPlay2Server {
 	/**
 	 * User role
 	 */
-	private static final String ROLE_USER = "user";
+	public static final String ROLE_USER = "user";
 
 	/**
 	 * Admin role
@@ -293,9 +294,10 @@ public class JSIDPlay2Server {
 
 		Context context = addWebApp(tomcat);
 
-		SecurityConstraint securityConstraint = createSecurityConstraint(context);
+		List<JSIDPlay2Servlet> servlets = addServlets(context);
 
-		addServlets(context, securityConstraint);
+		addServletFilters(context, servlets);
+		addSecurityConstraint(context, servlets);
 
 		new Timer().schedule(new PlayerCleanupTimerTask(context.getParent().getLogger()), 0, 1000L);
 
@@ -429,23 +431,12 @@ public class JSIDPlay2Server {
 						context.getParent().getLogger().error(e.getMessage());
 					}
 				});
-
 		return context;
 	}
 
-	private SecurityConstraint createSecurityConstraint(Context context) {
-		SecurityConstraint securityConstraint = new SecurityConstraint();
-		securityConstraint.addAuthRole(ROLE_ADMIN);
-		securityConstraint.addAuthRole(ROLE_USER);
-		securityConstraint.setAuthConstraint(true);
-
-		return securityConstraint;
-	}
-
-	private void addServlets(Context context, SecurityConstraint securityConstraint)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException {
-		SecurityCollection securityCollection = new SecurityCollection();
+	private List<JSIDPlay2Servlet> addServlets(Context context) throws InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		List<JSIDPlay2Servlet> result = new ArrayList<>();
 
 		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
 			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor(Configuration.class, Properties.class)
@@ -453,29 +444,40 @@ public class JSIDPlay2Server {
 
 			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getURLPattern());
 
-			if (servlet.getServletFilter().isPresent()) {
-				addServletFilter(context, servlet.getServletFilter().get(), servlet.getURLPattern());
-			}
-			if (servlet.isSecured()) {
-				securityCollection.addPattern(servlet.getURLPattern());
-			}
+			result.add(servlet);
 		}
+		return result;
+	}
+
+	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets) {
+		servlets.stream().filter(servlet -> servlet.getServletFilter().isPresent()).forEach(servlet -> {
+			Filter servletFilter = servlet.getServletFilter().get();
+
+			FilterDef filterDefinition = new FilterDef();
+			filterDefinition.setFilterName(servletFilter.getClass().getSimpleName());
+			filterDefinition.setFilter(servletFilter);
+			context.addFilterDef(filterDefinition);
+
+			FilterMap filterMapping = new FilterMap();
+			filterMapping.setFilterName(servletFilter.getClass().getSimpleName());
+			filterMapping.addURLPattern(servlet.getURLPattern());
+			context.addFilterMap(filterMapping);
+		});
+	}
+
+	private void addSecurityConstraint(Context context, List<JSIDPlay2Servlet> servlets) {
+		SecurityCollection securityCollection = new SecurityCollection();
+		servlets.stream().filter(JSIDPlay2Servlet::isSecured).map(JSIDPlay2Servlet::getURLPattern)
+				.forEach(securityCollection::addPattern);
+
+		SecurityConstraint securityConstraint = new SecurityConstraint();
+		securityConstraint.addAuthRole(ROLE_ADMIN);
+		securityConstraint.addAuthRole(ROLE_USER);
+		securityConstraint.setAuthConstraint(true);
 		securityConstraint.addCollection(securityCollection);
 
 		context.addConstraint(securityConstraint);
 		context.setLoginConfig(new LoginConfig(BASIC_AUTH, REALM_NAME, null, null));
-	}
-
-	private void addServletFilter(Context context, Filter servletFilter, String urlPattern) {
-		FilterDef filterDefinition = new FilterDef();
-		filterDefinition.setFilterName(servletFilter.getClass().getSimpleName());
-		filterDefinition.setFilter(servletFilter);
-		context.addFilterDef(filterDefinition);
-
-		FilterMap filterMapping = new FilterMap();
-		filterMapping.setFilterName(servletFilter.getClass().getSimpleName());
-		filterMapping.addURLPattern(urlPattern);
-		context.addFilterMap(filterMapping);
 	}
 
 	private static void exit(int rc) {
