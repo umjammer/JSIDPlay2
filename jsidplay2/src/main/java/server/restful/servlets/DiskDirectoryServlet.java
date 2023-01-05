@@ -18,6 +18,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
@@ -68,7 +69,7 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			Directory directory = new DiskDirectory(extract(file));
+			Directory directory = createDiskDirectory(file);
 
 			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(directory));
 
@@ -79,11 +80,16 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 		}
 	}
 
+	private Directory createDiskDirectory(final File file) throws IOException, FileNotFoundException {
+		File extractedFile = extract(file);
+		Directory directory = new DiskDirectory(extractedFile);
+		PathUtils.deleteDirectory(extractedFile.getParentFile());
+		return directory;
+	}
+
 	protected File extract(final File file) throws IOException, FileNotFoundException {
 		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 		File targetFile = new File(targetDir, file.getName());
-		targetDir.deleteOnExit();
-		targetFile.deleteOnExit();
 		targetDir.mkdirs();
 		try (FileOutputStream out = new FileOutputStream(targetFile)) {
 			ZipFileUtils.copy(file, out);
