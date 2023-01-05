@@ -60,7 +60,6 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
-import jakarta.servlet.Filter;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerCleanupTimerTask;
@@ -408,9 +407,6 @@ public class JSIDPlay2Server {
 
 		Context context = tomcat.addWebapp(tomcat.getHost(), CONTEXT_ROOT,
 				sidplay2Section.getTmpDir().getAbsolutePath());
-		// roles must be defined before being used in a security constraint, therefore:
-		context.addSecurityRole(ROLE_ADMIN);
-		context.addSecurityRole(ROLE_USER);
 		context.getJarScanner().setJarScanFilter(new JarScanFilter() {
 
 			@Override
@@ -450,9 +446,7 @@ public class JSIDPlay2Server {
 	}
 
 	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets) {
-		servlets.stream().filter(servlet -> servlet.getServletFilter().isPresent()).forEach(servlet -> {
-			Filter servletFilter = servlet.getServletFilter().get();
-
+		servlets.forEach(servlet -> servlet.getServletFilter().ifPresent(servletFilter -> {
 			FilterDef filterDefinition = new FilterDef();
 			filterDefinition.setFilterName(servletFilter.getClass().getSimpleName());
 			filterDefinition.setFilter(servletFilter);
@@ -462,10 +456,14 @@ public class JSIDPlay2Server {
 			filterMapping.setFilterName(servletFilter.getClass().getSimpleName());
 			filterMapping.addURLPattern(servlet.getURLPattern());
 			context.addFilterMap(filterMapping);
-		});
+		}));
 	}
 
 	private void addSecurityConstraint(Context context, List<JSIDPlay2Servlet> servlets) {
+		// roles must be defined before being used in a security constraint, therefore:
+		context.addSecurityRole(ROLE_ADMIN);
+		context.addSecurityRole(ROLE_USER);
+
 		SecurityCollection securityCollection = new SecurityCollection();
 		servlets.stream().filter(JSIDPlay2Servlet::isSecured).map(JSIDPlay2Servlet::getURLPattern)
 				.forEach(securityCollection::addPattern);
@@ -475,8 +473,8 @@ public class JSIDPlay2Server {
 		securityConstraint.addAuthRole(ROLE_USER);
 		securityConstraint.setAuthConstraint(true);
 		securityConstraint.addCollection(securityCollection);
-
 		context.addConstraint(securityConstraint);
+
 		context.setLoginConfig(new LoginConfig(BASIC_AUTH, REALM_NAME, null, null));
 	}
 
