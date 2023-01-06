@@ -3,7 +3,6 @@ package server.restful;
 import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
-import static libsidutils.PathUtils.deleteDirectory;
 import static org.apache.catalina.startup.Tomcat.addServlet;
 import static server.restful.common.IServletSystemProperties.COMPRESSION;
 import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
@@ -25,9 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Timer;
 
@@ -96,7 +93,6 @@ import server.restful.servlets.whatssid.TuneExistsServlet;
 import server.restful.servlets.whatssid.WhatsSidServlet;
 import sidplay.Player;
 import sidplay.player.DebugUtil;
-import ui.common.filefilter.UUIDFileFilter;
 import ui.entities.PersistenceProperties;
 import ui.entities.config.Configuration;
 import ui.entities.config.EmulationSection;
@@ -180,8 +176,6 @@ public class JSIDPlay2Server {
 	 */
 	private static final URL INTERNAL_REALM_CONFIG = JSIDPlay2Server.class.getResource("/" + REALM_CONFIG);
 
-	private static final UUIDFileFilter UUID_FILE_FILTER = new UUIDFileFilter();
-
 	/**
 	 * Our servlets to serve
 	 */
@@ -201,6 +195,9 @@ public class JSIDPlay2Server {
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
 	private Boolean help = Boolean.FALSE;
+
+	@Parameter(names = { "--configurationType", "-c" }, descriptionKey = "CONFIGURATION_TYPE")
+	private ConfigurationType configurationType = ConfigurationType.XML;
 
 	@Parameter(names = { "--whatsSIDDatabaseDriver" }, descriptionKey = "WHATSSID_DATABASE_DRIVER", order = 10001)
 	private String whatsSidDatabaseDriver;
@@ -226,6 +223,10 @@ public class JSIDPlay2Server {
 
 	private static JSIDPlay2Server instance;
 
+	public static synchronized JSIDPlay2Server getInstance() {
+		return getInstance(null);
+	}
+
 	public static synchronized JSIDPlay2Server getInstance(Configuration configuration) {
 		if (instance == null) {
 			instance = new JSIDPlay2Server(configuration);
@@ -234,9 +235,9 @@ public class JSIDPlay2Server {
 	}
 
 	private JSIDPlay2Server(Configuration configuration) {
-		this.configuration = configuration;
+		this.configuration = configuration != null ? configuration : new ConfigService(configurationType).load();
 		this.servletUtilProperties = getServletUtilProperties();
-		Player.initializeTmpDir(configuration);
+		Player.initializeTmpDir(this.configuration);
 	}
 
 	public synchronized void start()
@@ -283,10 +284,11 @@ public class JSIDPlay2Server {
 
 	private Tomcat createTomcat() throws MalformedURLException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
 
 		Tomcat tomcat = new Tomcat();
 		tomcat.setAddDefaultWebXmlToWebapp(false);
-		tomcat.setBaseDir(configuration.getSidplay2Section().getTmpDir().getAbsolutePath());
+		tomcat.setBaseDir(sidplay2Section.getTmpDir().getAbsolutePath());
 
 		setRealm(tomcat);
 		setConnectors(tomcat);
@@ -298,7 +300,7 @@ public class JSIDPlay2Server {
 		addServletFilters(context, servlets);
 		addSecurityConstraint(context, servlets);
 
-		new Timer().schedule(new PlayerCleanupTimerTask(context.getParent().getLogger()), 0, 1000L);
+		new Timer().schedule(new PlayerCleanupTimerTask(context.getParent().getLogger(), sidplay2Section), 0, 1000L);
 
 		return tomcat;
 	}
@@ -419,14 +421,6 @@ public class JSIDPlay2Server {
 				return true;
 			}
 		});
-		Arrays.asList(Optional.ofNullable(sidplay2Section.getTmpDir().listFiles(UUID_FILE_FILTER)).orElse(new File[0]))
-				.forEach(file -> {
-					try {
-						deleteDirectory(file);
-					} catch (IOException e) {
-						context.getParent().getLogger().error(e.getMessage());
-					}
-				});
 		return context;
 	}
 
@@ -494,9 +488,7 @@ public class JSIDPlay2Server {
 
 	public static void main(String[] args) {
 		try {
-			final Configuration configuration = new ConfigService(ConfigurationType.XML).load();
-
-			JSIDPlay2Server jsidplay2Server = getInstance(configuration);
+			JSIDPlay2Server jsidplay2Server = getInstance();
 			JCommander commander = JCommander.newBuilder().addObject(jsidplay2Server)
 					.programName(jsidplay2Server.getClass().getName()).build();
 			commander.parse(args);

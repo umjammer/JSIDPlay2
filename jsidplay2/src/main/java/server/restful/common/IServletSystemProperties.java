@@ -20,6 +20,17 @@ public interface IServletSystemProperties {
 	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
 
 	/**
+	 * Time in s to check for obsolete directories to delete
+	 */
+	int CLEANUP_DIRECTORY_COUNTER = valueOf(getProperty("jsidplay2.cleanup.directory.period", "300"));
+
+	/**
+	 * Time in s after obsolete temporary directories to delete
+	 */
+	int MAXIMUM_DURATION_TEMP_DIRECTORIES = valueOf(
+			getProperty("jsidplay2.cleanup.directory.maximum.duration", String.valueOf(24 * 60 * 60)));
+
+	/**
 	 * Prefix for HTTP2 settings
 	 */
 	String H2 = "jsidplay2.protocol.h2";
