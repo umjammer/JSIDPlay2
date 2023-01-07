@@ -28,7 +28,7 @@ public interface IServletSystemProperties {
 	 * Time in s after obsolete temporary directories to delete
 	 */
 	int MAXIMUM_DURATION_TEMP_DIRECTORIES = valueOf(
-			getProperty("jsidplay2.cleanup.directory.maximum.duration", String.valueOf(24 * 60 * 60)));
+			getProperty("jsidplay2.cleanup.directory.maximum.duration", String.valueOf(6 * 60 * 60)));
 
 	/**
 	 * Prefix for HTTP2 settings
