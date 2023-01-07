@@ -22,7 +22,7 @@ public interface IServletSystemProperties {
 	/**
 	 * Time in s to check for obsolete directories to delete
 	 */
-	int CLEANUP_DIRECTORY_COUNTER = valueOf(getProperty("jsidplay2.cleanup.directory.period", "300"));
+	int CLEANUP_DIRECTORY_PERIOD = valueOf(getProperty("jsidplay2.cleanup.directory.period", "300"));
 
 	/**
 	 * Time in s after obsolete temporary directories to delete
@@ -194,7 +194,7 @@ public interface IServletSystemProperties {
 	 * Video streaming: Time in s to print out currently generated RTMP video
 	 * streams.
 	 */
-	int RTMP_CLEANUP_PLAYER_COUNTER = valueOf(getProperty("jsidplay2.rtmp.cleanup.player.period", "30"));
+	int RTMP_PRINT_PLAYER_PERIOD = valueOf(getProperty("jsidplay2.rtmp.print.player.period", "30"));
 
 	/**
 	 * Video streaming: Upload for the video creation process (for example an nginx

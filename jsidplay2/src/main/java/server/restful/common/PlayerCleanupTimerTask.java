@@ -2,9 +2,9 @@ package server.restful.common;
 
 import static java.util.Optional.ofNullable;
 import static libsidutils.PathUtils.deleteDirectory;
-import static server.restful.common.IServletSystemProperties.CLEANUP_DIRECTORY_COUNTER;
+import static server.restful.common.IServletSystemProperties.CLEANUP_DIRECTORY_PERIOD;
 import static server.restful.common.IServletSystemProperties.MAXIMUM_DURATION_TEMP_DIRECTORIES;
-import static server.restful.common.IServletSystemProperties.RTMP_CLEANUP_PLAYER_COUNTER;
+import static server.restful.common.IServletSystemProperties.RTMP_PRINT_PLAYER_PERIOD;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +50,7 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 	public static final void create(UUID uuid, Player player, File diskImage,
 			ConvertServletParameters servletParameters) {
 		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, servletParameters.getShowStatus(),
-				Optional.ofNullable(servletParameters.getPressSpaceInterval()).orElse(0)));
+				servletParameters.getPressSpaceInterval()));
 	}
 
 	public static final void update(UUID uuid, Consumer<PlayerWithStatus> playerWithStatusConsumer) {
@@ -70,10 +70,10 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 
 		PLAYER_MAP.entrySet().removeAll(playerEntriesToRemove);
 
-		if (timerCounter % RTMP_CLEANUP_PLAYER_COUNTER == 0) {
+		if (timerCounter % RTMP_PRINT_PLAYER_PERIOD == 0) {
 			PLAYER_MAP.entrySet().forEach(this::printPlayer);
 		}
-		if (timerCounter % CLEANUP_DIRECTORY_COUNTER == 0) {
+		if (timerCounter % CLEANUP_DIRECTORY_PERIOD == 0) {
 			deleteOutdatedOutdatedTempDirectories();
 		}
 		timerCounter++;
