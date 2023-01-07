@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -21,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.ZipFileUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.converter.RequestPathURLConverter;
+import server.restful.common.parameter.RequestPathServletParameters.URLRequestPathServletParameters;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 
@@ -33,10 +32,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.ProxyServletParameters")
-	public static class ProxyServletParameters {
-
-		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class, required = true)
-		private URL url;
+	public static class ProxyServletParameters extends URLRequestPathServletParameters {
 
 	}
 
@@ -63,11 +59,11 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			final ProxyServletParameters servletParameters = new ProxyServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.url == null) {
+			if (servletParameters.getUrl() == null) {
 				commander.usage();
 				return;
 			}
-			URL url = servletParameters.url;
+			URL url = servletParameters.getUrl();
 
 			if (!url.toExternalForm().startsWith(HLS_DOWNLOAD_URL)) {
 				throw new IOException();

@@ -1,15 +1,24 @@
 package server.restful.common.parameter;
 
 import java.io.InputStream;
+import java.net.URL;
 
 import com.beust.jcommander.Parameter;
 
+import server.restful.common.converter.RequestPathURLConverter;
 import server.restful.common.converter.WebResourceConverter;
 
+/**
+ * <B>Note:</B> Main parameters have been annotated on field level to support a
+ * better usage message.
+ * 
+ * @author ken
+ *
+ */
 public abstract class RequestPathServletParameters {
 
 	/**
-	 * Assemble64 file (itemId, categoryId, filePath) or local file (filePath).
+	 * Local file (filePath) or an Assemble64 file (filePath, itemId, categoryId).
 	 * 
 	 * @author ken
 	 *
@@ -89,6 +98,27 @@ public abstract class RequestPathServletParameters {
 
 		public void setResource(InputStream resource) {
 			this.resource = resource;
+		}
+
+	}
+
+	/**
+	 * URL.
+	 * 
+	 * @author ken
+	 *
+	 */
+	public static class URLRequestPathServletParameters extends RequestPathServletParameters {
+
+		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class, required = true)
+		private URL url;
+
+		public URL getUrl() {
+			return url;
+		}
+
+		public void setUrl(URL url) {
+			this.url = url;
 		}
 
 	}
