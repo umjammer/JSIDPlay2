@@ -74,7 +74,7 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 			PLAYER_MAP.entrySet().forEach(this::printPlayer);
 		}
 		if (timerCounter % CLEANUP_DIRECTORY_PERIOD == 0) {
-			deleteOutdatedOutdatedTempDirectories();
+			deleteOutdatedTempDirectories();
 		}
 		timerCounter++;
 	}
@@ -89,7 +89,7 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 				entry.getValue().getValidUntil()));
 	}
 
-	private void deleteOutdatedOutdatedTempDirectories() {
+	private void deleteOutdatedTempDirectories() {
 		Arrays.asList(Optional.ofNullable(sidplay2Section.getTmpDir().listFiles(UUID_FILE_FILTER)).orElse(new File[0]))
 				.stream().filter(File::isDirectory).forEach(dir -> {
 					try {
