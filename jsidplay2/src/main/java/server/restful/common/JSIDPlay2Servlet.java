@@ -471,35 +471,22 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	private List<String> getCollectionFiles(File rootFile, String path, DirectoryServletParameters servletParameters,
 			String virtualCollectionRoot, boolean adminRole) {
-		if (rootFile != null) {
-			if (path.endsWith("/")) {
-				path = path.substring(0, path.length() - 1);
-			}
-			File file = ZipFileUtils.newFile(rootFile, path.substring(virtualCollectionRoot.length()));
-
-			final ArrayList<String> result = new ArrayList<>();
-			Arrays.stream(Optional.ofNullable(file.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
-					.orElse(new File[0])).sorted(new FileComparator()).forEach(childFile -> {
-						if (result.isEmpty()) {
-							addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, childFile),
-									childFile);
-						} else {
-							File parentFile = new File(result.get(0)).getParentFile();
-							addPath(result, new File(parentFile, childFile.getName()).getAbsolutePath(), childFile);
-						}
-					});
-			addPath(0, result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/..", file);
-			return result;
+		if (rootFile == null) {
+			return Collections.emptyList();
 		}
-		return Collections.emptyList();
-	}
+		File parentFile = ZipFileUtils.newFile(rootFile,
+				path.substring(virtualCollectionRoot.length(), path.endsWith("/") ? path.length() - 1 : path.length()));
 
-	private void addPath(int index, ArrayList<String> result, String pathToAdd, File childFile) {
-		result.add(index, pathToAdd + (childFile.isDirectory() ? "/" : ""));
-	}
+		String virtualParentFile = virtualCollectionRoot + PathUtils.getCollectionName(rootFile, parentFile);
 
-	private void addPath(ArrayList<String> result, String pathToAdd, File childFile) {
-		result.add(pathToAdd + (childFile.isDirectory() ? "/" : ""));
+		return Stream
+				.concat(Stream.of(virtualParentFile + "/../"),
+						Arrays.stream(Optional
+								.ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
+								.orElse(new File[0])).sorted(new FileComparator())
+								.map(file -> new File(virtualParentFile, file.getName())
+										+ (file.isDirectory() ? "/" : "")))
+				.collect(Collectors.toList());
 	}
 
 }
