@@ -5,7 +5,7 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
+import java.util.Optional;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
@@ -15,6 +15,7 @@ import libsidutils.PathUtils;
 import libsidutils.stil.STIL.STILEntry;
 import sidplay.Player;
 import ui.JSidPlay2Main;
+import ui.common.comparator.FileComparator;
 import ui.common.filefilter.TuneFileFilter;
 import ui.entities.config.SidPlay2Section;
 
@@ -24,7 +25,7 @@ public class MusicCollectionTreeItem extends TreeItem<File> {
 
 	private static final Image noStilIcon = new Image(JSidPlay2Main.class.getResource("icons/stil_no.png").toString());
 
-	private final FileFilter fFileFilter = new TuneFileFilter();
+	private final FileFilter fileFilter = new TuneFileFilter();
 	private boolean hasLoadedChildren;
 	private boolean isLeaf;
 	private boolean hasSTIL;
@@ -68,25 +69,16 @@ public class MusicCollectionTreeItem extends TreeItem<File> {
 	private void loadChildren() {
 		hasLoadedChildren = true;
 		Collection<MusicCollectionTreeItem> children = new ArrayList<>();
-		File[] listFiles = getValue().listFiles(fFileFilter);
-		if (listFiles != null) {
-			Arrays.stream(listFiles).sorted((a, b) -> {
-				Integer aw = a.isFile() ? 1 : 0;
-				Integer bw = b.isFile() ? 1 : 0;
-				if (aw.equals(bw)) {
-					return a.getName().toLowerCase(Locale.ENGLISH).compareTo(b.getName().toLowerCase(Locale.ENGLISH));
-				}
-				return aw.compareTo(bw);
-			}).forEach(file -> {
-				MusicCollectionTreeItem childItem = new MusicCollectionTreeItem(player, file);
-				children.add(childItem);
-				if (childItem.hasSTIL()) {
-					childItem.setGraphic(new ImageView(stilIcon));
-				} else {
-					childItem.setGraphic(new ImageView(noStilIcon));
-				}
-			});
-		}
+		Arrays.stream(Optional.ofNullable(getValue().listFiles(fileFilter)).orElse(new File[0]))
+				.sorted(new FileComparator()).forEach(file -> {
+					MusicCollectionTreeItem childItem = new MusicCollectionTreeItem(player, file);
+					children.add(childItem);
+					if (childItem.hasSTIL()) {
+						childItem.setGraphic(new ImageView(stilIcon));
+					} else {
+						childItem.setGraphic(new ImageView(noStilIcon));
+					}
+				});
 		super.getChildren().setAll(children);
 	}
 

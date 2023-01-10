@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -65,8 +64,10 @@ import sidplay.filefilter.AudioTuneFileFilter;
 import sidplay.filefilter.VideoTuneFileFilter;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
+import ui.common.comparator.FileComparator;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
+import ui.common.filefilter.FilteredFileFilter;
 import ui.common.filefilter.MP3TuneFileFilter;
 import ui.common.filefilter.TapeFileFilter;
 import ui.common.util.InternetUtil;
@@ -470,45 +471,31 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	private List<String> getCollectionFiles(File rootFile, String path, DirectoryServletParameters servletParameters,
 			String virtualCollectionRoot, boolean adminRole) {
-		ArrayList<String> result = null;
 		if (rootFile != null) {
 			if (path.endsWith("/")) {
 				path = path.substring(0, path.length() - 1);
 			}
 			File file = ZipFileUtils.newFile(rootFile, path.substring(virtualCollectionRoot.length()));
-			File[] listFiles = file.listFiles(pathname -> {
-				if (pathname.isDirectory() && pathname.getName().endsWith(".tmp")) {
-					return false;
-				}
-				return pathname.isDirectory() || servletParameters.getFilter() == null
-						|| pathname.getName().toLowerCase(Locale.US).matches(servletParameters.getFilter());
-			});
-			if (listFiles != null) {
-				result = new ArrayList<>();
-				List<File> asList = Arrays.asList(listFiles);
-				Collections.sort(asList, (file1, file2) -> {
-					if (file1.isDirectory() && !file2.isDirectory()) {
-						return -1;
-					} else if (!file1.isDirectory() && file2.isDirectory()) {
-						return 1;
-					} else {
-						return file1.getName().compareToIgnoreCase(file2.getName());
-					}
-				});
-				String currentPath = null;
-				addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/..", file);
-				for (File childFile : asList) {
-					if (currentPath == null) {
-						currentPath = PathUtils.getCollectionName(rootFile, childFile);
-					} else {
-						currentPath = new File(new File(currentPath).getParentFile(), childFile.getName())
-								.getAbsolutePath();
-					}
-					addPath(result, virtualCollectionRoot + currentPath, childFile);
-				}
-			}
+
+			final ArrayList<String> result = new ArrayList<>();
+			Arrays.stream(Optional.ofNullable(file.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
+					.orElse(new File[0])).sorted(new FileComparator()).forEach(childFile -> {
+						if (result.isEmpty()) {
+							addPath(result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, childFile),
+									childFile);
+						} else {
+							File parentFile = new File(result.get(0)).getParentFile();
+							addPath(result, new File(parentFile, childFile.getName()).getAbsolutePath(), childFile);
+						}
+					});
+			addPath(0, result, virtualCollectionRoot + PathUtils.getCollectionName(rootFile, file) + "/..", file);
+			return result;
 		}
-		return result;
+		return Collections.emptyList();
+	}
+
+	private void addPath(int index, ArrayList<String> result, String pathToAdd, File childFile) {
+		result.add(index, pathToAdd + (childFile.isDirectory() ? "/" : ""));
 	}
 
 	private void addPath(ArrayList<String> result, String pathToAdd, File childFile) {
