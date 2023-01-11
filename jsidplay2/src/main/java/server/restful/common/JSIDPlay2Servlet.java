@@ -291,12 +291,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
-			List<String> files = getCollectionFiles(hvscRoot, path, servletParameters, C64_MUSIC, adminRole);
+			List<String> files = getCollectionFiles(hvscRoot, C64_MUSIC, path, servletParameters);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
-			List<String> files = getCollectionFiles(cgscRoot, path, servletParameters, CGSC, adminRole);
+			List<String> files = getCollectionFiles(cgscRoot, CGSC, path, servletParameters);
 			if (files != null) {
 				return files;
 			}
@@ -307,8 +307,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
 					File root = new TFile(directoryValue);
-					List<String> files = getCollectionFiles(root, path, servletParameters, directoryLogicalName,
-							adminRole);
+					List<String> files = getCollectionFiles(root, directoryLogicalName, path, servletParameters);
 					if (files != null) {
 						return files;
 					}
@@ -469,13 +468,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return result;
 	}
 
-	private List<String> getCollectionFiles(File rootFile, String path, DirectoryServletParameters servletParameters,
-			String virtualCollectionRoot, boolean adminRole) {
+	private List<String> getCollectionFiles(File rootFile, String virtualCollectionRoot, String path,
+			DirectoryServletParameters servletParameters) {
 		if (rootFile == null) {
-			return Collections.emptyList();
+			return null;
 		}
-		File parentFile = ZipFileUtils.newFile(rootFile,
-				path.substring(virtualCollectionRoot.length(), path.endsWith("/") ? path.length() - 1 : path.length()));
+		File parentFile = ZipFileUtils.newFile(rootFile, path.substring(virtualCollectionRoot.length()));
 
 		String virtualParentFile = virtualCollectionRoot + PathUtils.getCollectionName(rootFile, parentFile);
 
