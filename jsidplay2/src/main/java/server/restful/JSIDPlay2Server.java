@@ -163,7 +163,7 @@ public class JSIDPlay2Server {
 	/**
 	 * Realm name
 	 */
-	public static final String REALM_NAME = "jsidlay2-realm";
+	public static final String REALM_NAME = "jsidplay2-realm";
 
 	/**
 	 * Filename of the configuration containing username, password and role. For an
