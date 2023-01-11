@@ -170,8 +170,8 @@ public class GameBasePage extends C64VBox implements UIPart {
 		if (filterText.trim().length() == 0) {
 			filteredGames.addAll(allGames);
 		} else {
-			allGames.stream()
-					.filter(game -> game.getName().toLowerCase(Locale.US).contains(filterText.toLowerCase(Locale.US)))
+			allGames.stream().filter(
+					game -> game.getName().toLowerCase(Locale.ENGLISH).contains(filterText.toLowerCase(Locale.ENGLISH)))
 					.forEach(filteredGames::add);
 		}
 	}

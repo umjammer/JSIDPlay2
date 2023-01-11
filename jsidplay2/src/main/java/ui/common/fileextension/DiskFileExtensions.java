@@ -14,7 +14,7 @@ public interface DiskFileExtensions {
 	String DESCRIPTION = "C64 Disks";
 
 	static List<String> STD_EXTENSIONS() {
-		return EXTENSIONS.stream().filter(ext -> ext.toLowerCase(Locale.US).startsWith("*.d"))
+		return EXTENSIONS.stream().filter(ext -> ext.toLowerCase(Locale.ENGLISH).startsWith("*.d"))
 				.collect(Collectors.toList());
 	}
 }

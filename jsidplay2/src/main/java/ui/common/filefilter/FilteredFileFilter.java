@@ -17,7 +17,7 @@ public class FilteredFileFilter implements FileFilter {
 		if (file.isDirectory() && file.getName().endsWith(".tmp")) {
 			return false;
 		}
-		return file.isDirectory() || filter == null || file.getName().toLowerCase(Locale.US).matches(filter);
+		return file.isDirectory() || filter == null || file.getName().toLowerCase(Locale.ENGLISH).matches(filter);
 	}
 
 }

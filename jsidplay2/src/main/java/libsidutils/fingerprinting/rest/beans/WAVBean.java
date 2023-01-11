@@ -1,6 +1,8 @@
 package libsidutils.fingerprinting.rest.beans;
 
+import static libsidplay.common.SamplingRate.VERY_LOW;
 import static libsidplay.config.IWhatsSidSystemProperties.FRAME_MAX_LENGTH;
+import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_MAXIMUM_DURATION;
 
 import java.util.Arrays;
 
@@ -12,18 +14,23 @@ public class WAVBean {
 
 	private byte[] wav;
 
-	private long frameMaxLength = FRAME_MAX_LENGTH;
+	private long frameMaxLength;
 
 	public WAVBean() {
+		this(null, false);
 	}
 
 	public WAVBean(byte[] wav) {
-		this.wav = wav;
+		this(wav, false);
 	}
 
-	public WAVBean(byte[] wav, long frameMaxLength) {
+	public WAVBean(byte[] wav, boolean fileUpload) {
 		this.wav = wav;
-		this.frameMaxLength = frameMaxLength;
+		if (fileUpload) {
+			frameMaxLength = (long) UPLOAD_MAXIMUM_DURATION * VERY_LOW.getFrequency();
+		} else {
+			frameMaxLength = FRAME_MAX_LENGTH;
+		}
 	}
 
 	public byte[] getWav() {

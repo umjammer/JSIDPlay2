@@ -4,10 +4,8 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
-import static libsidplay.common.SamplingRate.VERY_LOW;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
-import static server.restful.common.IServletSystemProperties.UPLOAD_MAXIMUM_DURATION;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -247,12 +245,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			if (file != null && file.exists()) {
 				return file;
 			}
-		} else if (hvscRoot != null && hvscRoot.exists() && path.startsWith(C64_MUSIC)) {
+		} else if (hvscRoot != null && path.startsWith(C64_MUSIC)) {
 			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), hvscRoot, null);
 			if (file.exists() && file.getAbsolutePath().startsWith(hvscRoot.getAbsolutePath())) {
 				return file;
 			}
-		} else if (cgscRoot != null && cgscRoot.exists() && path.startsWith(CGSC)) {
+		} else if (cgscRoot != null && path.startsWith(CGSC)) {
 			File file = PathUtils.getFile(path.substring(CGSC.length()), null, cgscRoot);
 			if (file.exists() && file.getAbsolutePath().startsWith(cgscRoot.getAbsolutePath())) {
 				return file;
@@ -286,7 +284,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		File hvscRoot = configuration.getSidplay2Section().getHvsc();
 		File cgscRoot = configuration.getSidplay2Section().getCgsc();
 		if (path.equals("/")) {
-			List<String> files = getRoot(adminRole, hvscRoot, cgscRoot, usageFormatter);
+			List<String> files = getRoot(adminRole, hvscRoot, cgscRoot);
 			if (files != null) {
 				return files;
 			}
@@ -337,9 +335,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					// just the first file
 					break;
 				}
-				Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class, long.class });
-				return constructor.newInstance(result.toByteArray(),
-						((long) UPLOAD_MAXIMUM_DURATION * VERY_LOW.getFrequency()));
+				Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class, boolean.class });
+				return constructor.newInstance(result.toByteArray(), true);
 			} else {
 				throw new IOException("Unsupported content type: " + contentType);
 			}
@@ -449,13 +446,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	private List<String> getRoot(boolean adminRole, File hvscRoot, File cgscRoot,
-			ServletUsageFormatter usageFormatter) {
+	private List<String> getRoot(boolean adminRole, File hvscRoot, File cgscRoot) {
 		List<String> result = new ArrayList<>();
-		if (hvscRoot != null && hvscRoot.exists()) {
+		if (hvscRoot != null) {
 			result.add(C64_MUSIC + "/");
 		}
-		if (cgscRoot != null && cgscRoot.exists()) {
+		if (cgscRoot != null) {
 			result.add(CGSC + "/");
 		}
 		directoryProperties.stringPropertyNames().stream().sorted().forEach(directoryLogicalName -> {

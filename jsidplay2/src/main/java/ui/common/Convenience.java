@@ -129,7 +129,7 @@ public class Convenience {
 				// search media file to attach
 				toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, true, fileIsModule);
 				TFile.rm_r(zip);
-			} else if (file.getName().toLowerCase(Locale.US).endsWith(".gz")) {
+			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
 				File dst = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()));
 				try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 					TFile.cp(is, dst);
@@ -137,7 +137,7 @@ public class Convenience {
 				toAttach = getToAttach(file.getParentFile(), file.getParentFile(), isMediaToAttach, null, true,
 						fileIsModule);
 				TFile.rm_r(zip);
-			} else if (file.getName().toLowerCase(Locale.US).endsWith("7z")) {
+			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("7z")) {
 				Extract7ZipUtil extract7Zip = new Extract7ZipUtil(zip, tmpDir);
 				extract7Zip.extract();
 				toAttach = getToAttach(tmpDir, extract7Zip.getZipFile(), isMediaToAttach, null, true, fileIsModule);

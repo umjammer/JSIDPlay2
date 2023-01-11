@@ -240,12 +240,6 @@ public interface IServletSystemProperties {
 	int MAX_WHATSIDS_IN_PARALLEL = valueOf(getProperty("jsidplay2.whatssid.max.parallel", "7"));
 
 	/**
-	 * WhatsSID? Maximum duration in seconds used to recognize a tune for file
-	 * upload.
-	 */
-	int UPLOAD_MAXIMUM_DURATION = valueOf(getProperty("jsidplay2.whatssid.upload.max.duration", "120"));
-
-	/**
 	 * WhatsSID? Cache size. Recognized audio is cached for repeated requests for
 	 * performance reasons.
 	 */

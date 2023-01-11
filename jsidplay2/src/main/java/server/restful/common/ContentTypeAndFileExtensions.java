@@ -107,8 +107,9 @@ public enum ContentTypeAndFileExtensions {
 	}
 
 	public static ContentTypeAndFileExtensions getMimeType(String extension) {
-		return Arrays.asList(values()).stream().filter(
-				ct -> extension != null && Arrays.asList(ct.getExtensions()).contains(extension.toLowerCase(Locale.US)))
+		return Arrays.asList(values()).stream()
+				.filter(ct -> extension != null
+						&& Arrays.asList(ct.getExtensions()).contains(extension.toLowerCase(Locale.ENGLISH)))
 				.findFirst().orElse(MIME_TYPE_OCTET_STREAM);
 	}
 
