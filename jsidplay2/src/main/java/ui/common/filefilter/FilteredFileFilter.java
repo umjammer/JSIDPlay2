@@ -14,7 +14,7 @@ public class FilteredFileFilter implements FileFilter {
 
 	@Override
 	public boolean accept(File file) {
-		if (file.isDirectory() && file.getName().endsWith(".tmp")) {
+		if (file.isHidden()) {
 			return false;
 		}
 		return file.isDirectory() || filter == null || file.getName().toLowerCase(Locale.ENGLISH).matches(filter);
