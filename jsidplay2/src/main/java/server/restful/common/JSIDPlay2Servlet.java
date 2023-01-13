@@ -275,26 +275,28 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected List<String> getDirectory(JCommander commander, DirectoryServletParameters servletParameters,
 			boolean adminRole) {
+		File hvscRoot = configuration.getSidplay2Section().getHvsc();
+		File cgscRoot = configuration.getSidplay2Section().getCgsc();
+
 		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 
 		String path = servletParameters.getDirectory();
 		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
-		File hvscRoot = configuration.getSidplay2Section().getHvsc();
-		File cgscRoot = configuration.getSidplay2Section().getCgsc();
+		File filePath = new File(path);
 		if (path.equals("/")) {
 			List<String> files = getRoot(adminRole, hvscRoot, cgscRoot);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
-			List<String> files = getCollectionFiles(hvscRoot, C64_MUSIC, path, servletParameters);
+			List<String> files = getCollectionFiles(hvscRoot, C64_MUSIC, filePath, servletParameters);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
-			List<String> files = getCollectionFiles(cgscRoot, CGSC, path, servletParameters);
+			List<String> files = getCollectionFiles(cgscRoot, CGSC, filePath, servletParameters);
 			if (files != null) {
 				return files;
 			}
@@ -305,7 +307,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
 					File root = new TFile(directoryValue);
-					List<String> files = getCollectionFiles(root, directoryLogicalName, path, servletParameters);
+					List<String> files = getCollectionFiles(root, directoryLogicalName, filePath, servletParameters);
 					if (files != null) {
 						return files;
 					}
@@ -464,15 +466,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return result;
 	}
 
-	private List<String> getCollectionFiles(File rootFile, String virtualCollectionRoot, String path,
+	private List<String> getCollectionFiles(File rootFile, String virtualCollectionRoot, File filePath,
 			DirectoryServletParameters servletParameters) {
 		if (rootFile == null) {
 			return null;
 		}
-		if (path.endsWith("/")) {
-			path = path.substring(0, path.length() - 1);
-		}
-		File parentFile = ZipFileUtils.newFile(rootFile, path.substring(virtualCollectionRoot.length()));
+		File parentFile = ZipFileUtils.newFile(rootFile, filePath.toString().substring(virtualCollectionRoot.length()));
 
 		String virtualParentFile = virtualCollectionRoot + PathUtils.getCollectionName(rootFile, parentFile);
 
