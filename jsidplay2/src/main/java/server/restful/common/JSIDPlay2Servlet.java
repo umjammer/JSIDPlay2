@@ -469,6 +469,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		if (rootFile == null) {
 			return null;
 		}
+		if (path.endsWith("/")) {
+			path = path.substring(0, path.length()-1);
+		}
 		File parentFile = ZipFileUtils.newFile(rootFile, path.substring(virtualCollectionRoot.length()));
 
 		String virtualParentFile = virtualCollectionRoot + PathUtils.getCollectionName(rootFile, parentFile);
@@ -478,9 +481,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 						Arrays.stream(Optional
 								.ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
 								.orElse(new File[0])).sorted(new FileComparator())
-								.map(file -> new File(virtualParentFile, file.getName())
+								.map(file -> extracted(virtualParentFile, file)
 										+ (file.isDirectory() ? "/" : "")))
 				.collect(Collectors.toList());
+	}
+
+	private File extracted(String virtualParentFile, File file) {
+		return new File(virtualParentFile, file.getName());
 	}
 
 }
