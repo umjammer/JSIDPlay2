@@ -32,11 +32,11 @@ public class C64Font {
 		return buf.toString();
 	}
 
-	public static final String petsciiToFont(final char c, int fontSet) {
+	public static final char petsciiToFont(final char c, int fontSet) {
 		if ((c & 0x60) == 0) {
-			return String.valueOf((char) (c | 0x40 | fontSet ^ 0x0200));
+			return (char) (c | 0x40 | fontSet ^ 0x0200);
 		} else {
-			return String.valueOf((char) (c | fontSet));
+			return (char) (c | fontSet);
 		}
 	}
 
