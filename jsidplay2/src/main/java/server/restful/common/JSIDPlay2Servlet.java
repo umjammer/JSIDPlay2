@@ -70,6 +70,7 @@ import ui.common.filefilter.MP3TuneFileFilter;
 import ui.common.filefilter.TapeFileFilter;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
+import ui.entities.config.SidPlay2Section;
 
 @SuppressWarnings("serial")
 public abstract class JSIDPlay2Servlet extends HttpServlet {
@@ -230,14 +231,14 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected File getFile(JCommander commander, FileRequestPathServletParameters fileRequestPathServletParameters,
 			boolean adminRole) {
+		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
+
 		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 
 		String path = fileRequestPathServletParameters.getFilePath();
 		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
-		File hvscRoot = configuration.getSidplay2Section().getHvsc();
-		File cgscRoot = configuration.getSidplay2Section().getCgsc();
 		if (fileRequestPathServletParameters.getItemId() != null
 				&& fileRequestPathServletParameters.getCategoryId() != null) {
 			File file = fetchAssembly64Files(fileRequestPathServletParameters.getItemId(),
@@ -245,14 +246,14 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			if (file != null && file.exists()) {
 				return file;
 			}
-		} else if (hvscRoot != null && path.startsWith(C64_MUSIC)) {
-			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), hvscRoot, null);
-			if (file.exists() && file.getAbsolutePath().startsWith(hvscRoot.getAbsolutePath())) {
+		} else if (sidplay2Section.getHvsc() != null && path.startsWith(C64_MUSIC)) {
+			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), sidplay2Section.getHvsc(), null);
+			if (file.exists() && file.getAbsolutePath().startsWith(sidplay2Section.getHvsc().getAbsolutePath())) {
 				return file;
 			}
-		} else if (cgscRoot != null && path.startsWith(CGSC)) {
-			File file = PathUtils.getFile(path.substring(CGSC.length()), null, cgscRoot);
-			if (file.exists() && file.getAbsolutePath().startsWith(cgscRoot.getAbsolutePath())) {
+		} else if (sidplay2Section.getCgsc() != null && path.startsWith(CGSC)) {
+			File file = PathUtils.getFile(path.substring(CGSC.length()), null, sidplay2Section.getCgsc());
+			if (file.exists() && file.getAbsolutePath().startsWith(sidplay2Section.getCgsc().getAbsolutePath())) {
 				return file;
 			}
 		} else {
@@ -275,8 +276,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected List<String> getDirectory(JCommander commander, DirectoryServletParameters servletParameters,
 			boolean adminRole) {
-		File hvscRoot = configuration.getSidplay2Section().getHvsc();
-		File cgscRoot = configuration.getSidplay2Section().getCgsc();
+		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
 
 		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 
@@ -286,17 +286,17 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 		File filePath = new File(path);
 		if (path.equals("/")) {
-			List<String> files = getRoot(adminRole, hvscRoot, cgscRoot);
+			List<String> files = getRoot(adminRole, sidplay2Section.getHvsc(), sidplay2Section.getCgsc());
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
-			List<String> files = getCollectionFiles(hvscRoot, C64_MUSIC, filePath, servletParameters);
+			List<String> files = getCollectionFiles(sidplay2Section.getHvsc(), C64_MUSIC, filePath, servletParameters);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
-			List<String> files = getCollectionFiles(cgscRoot, CGSC, filePath, servletParameters);
+			List<String> files = getCollectionFiles(sidplay2Section.getCgsc(), CGSC, filePath, servletParameters);
 			if (files != null) {
 				return files;
 			}
