@@ -219,10 +219,6 @@ public class JSIDPlay2Server {
 
 	private static JSIDPlay2Server instance;
 
-	public static synchronized JSIDPlay2Server getInstance() {
-		return getInstance(null);
-	}
-
 	public static synchronized JSIDPlay2Server getInstance(Configuration configuration) {
 		if (instance == null) {
 			instance = new JSIDPlay2Server(configuration);
@@ -231,9 +227,9 @@ public class JSIDPlay2Server {
 	}
 
 	private JSIDPlay2Server(Configuration configuration) {
-		this.configuration = configuration != null ? configuration : new ConfigService(CONFIGURATION_TYPE).load();
+		this.configuration = configuration;
 		this.servletUtilProperties = getServletUtilProperties();
-		Player.initializeTmpDir(this.configuration);
+		Player.initializeTmpDir(configuration);
 	}
 
 	public synchronized void start()
@@ -463,7 +459,7 @@ public class JSIDPlay2Server {
 
 	public static void main(String[] args) {
 		try {
-			JSIDPlay2Server jsidplay2Server = getInstance();
+			JSIDPlay2Server jsidplay2Server = getInstance(new ConfigService(CONFIGURATION_TYPE).load());
 			JCommander commander = JCommander.newBuilder().addObject(jsidplay2Server)
 					.programName(jsidplay2Server.getClass().getName()).build();
 			commander.parse(args);
