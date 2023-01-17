@@ -480,12 +480,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 						Arrays.stream(Optional
 								.ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
 								.orElse(new File[0])).sorted(new FileComparator())
-								.map(file -> extracted(virtualParentFile, file) + (file.isDirectory() ? "/" : "")))
+								.map(file -> new File(virtualParentFile, file.getName())
+										+ (file.isDirectory() ? "/" : "")))
 				.collect(Collectors.toList());
-	}
-
-	private File extracted(String virtualParentFile, File file) {
-		return new File(virtualParentFile, file.getName());
 	}
 
 }

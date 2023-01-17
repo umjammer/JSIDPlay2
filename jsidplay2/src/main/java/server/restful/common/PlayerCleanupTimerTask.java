@@ -23,9 +23,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.apache.catalina.Context;
 import org.apache.juli.logging.Log;
 
-import libsidplay.config.ISidPlay2Section;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import sidplay.Player;
 import ui.common.filefilter.UUIDFileFilter;
@@ -38,13 +38,13 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 
 	private final Log logger;
 
-	private final ISidPlay2Section sidplay2Section;
+	private final File catalinaBaseFile;
 
 	private int timerCounter;
 
-	public PlayerCleanupTimerTask(Log logger, ISidPlay2Section sidplay2Section) {
-		this.logger = logger;
-		this.sidplay2Section = sidplay2Section;
+	public PlayerCleanupTimerTask(Context context) {
+		this.logger = context.getParent().getLogger();
+		this.catalinaBaseFile = context.getCatalinaBase();
 	}
 
 	public static final void create(UUID uuid, Player player, File diskImage,
@@ -90,8 +90,8 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 	}
 
 	private void deleteOutdatedTempDirectories() {
-		Arrays.asList(Optional.ofNullable(sidplay2Section.getTmpDir().listFiles(UUID_FILE_FILTER)).orElse(new File[0]))
-				.stream().filter(File::isDirectory).forEach(dir -> {
+		Arrays.asList(Optional.ofNullable(catalinaBaseFile.listFiles(UUID_FILE_FILTER)).orElse(new File[0])).stream()
+				.filter(File::isDirectory).forEach(dir -> {
 					try {
 						LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(dir.lastModified()),
 								ZoneId.systemDefault());

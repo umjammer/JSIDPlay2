@@ -40,8 +40,6 @@ import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11Nio2Protocol;
 import org.apache.coyote.http2.Http2Protocol;
-import org.apache.tomcat.JarScanFilter;
-import org.apache.tomcat.JarScanType;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
 import org.apache.tomcat.util.descriptor.web.FilterMap;
 import org.apache.tomcat.util.descriptor.web.LoginConfig;
@@ -96,7 +94,6 @@ import sidplay.player.DebugUtil;
 import ui.entities.PersistenceProperties;
 import ui.entities.config.Configuration;
 import ui.entities.config.EmulationSection;
-import ui.entities.config.SidPlay2Section;
 import ui.entities.config.service.ConfigService;
 import ui.entities.config.service.ConfigService.ConfigurationType;
 
@@ -284,23 +281,20 @@ public class JSIDPlay2Server {
 
 	private Tomcat createTomcat() throws MalformedURLException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
-
 		Tomcat tomcat = new Tomcat();
-		tomcat.setAddDefaultWebXmlToWebapp(false);
-		tomcat.setBaseDir(sidplay2Section.getTmpDir().getAbsolutePath());
+		tomcat.setBaseDir(configuration.getSidplay2Section().getTmpDir().getAbsolutePath());
 
 		setRealm(tomcat);
 		setConnectors(tomcat);
 
-		Context context = addWebApp(tomcat);
+		Context context = addContext(tomcat);
 
 		List<JSIDPlay2Servlet> servlets = addServlets(context);
 
 		addServletFilters(context, servlets);
 		addSecurityConstraint(context, servlets);
 
-		new Timer().schedule(new PlayerCleanupTimerTask(context.getParent().getLogger(), sidplay2Section), 0, 1000L);
+		new Timer().schedule(new PlayerCleanupTimerTask(context), 0, 1000L);
 
 		return tomcat;
 	}
@@ -401,27 +395,9 @@ public class JSIDPlay2Server {
 		return httpsConnector;
 	}
 
-	/**
-	 * <b>Note:</b> Base directory of the context root is .jsidplay2
-	 */
-	private Context addWebApp(Tomcat tomcat) {
-		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
-
-		Context context = tomcat.addWebapp(tomcat.getHost(), CONTEXT_ROOT,
-				sidplay2Section.getTmpDir().getAbsolutePath());
-		context.getJarScanner().setJarScanFilter(new JarScanFilter() {
-
-			@Override
-			public boolean check(JarScanType jarScanType, String jarName) {
-				return false;
-			}
-
-			@Override
-			public boolean isSkipAll() {
-				return true;
-			}
-		});
-		return context;
+	private Context addContext(Tomcat tomcat) {
+		return tomcat.addContext(tomcat.getHost(), CONTEXT_ROOT,
+				tomcat.getServer().getCatalinaBase().getAbsolutePath());
 	}
 
 	private List<JSIDPlay2Servlet> addServlets(Context context) throws InstantiationException, IllegalAccessException,
