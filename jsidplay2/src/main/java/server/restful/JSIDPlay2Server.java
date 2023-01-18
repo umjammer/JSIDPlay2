@@ -461,7 +461,7 @@ public class JSIDPlay2Server {
 		try {
 			JSIDPlay2Server jsidplay2Server = getInstance(new ConfigService(CONFIGURATION_TYPE).load());
 			JCommander commander = JCommander.newBuilder().addObject(jsidplay2Server)
-					.programName(jsidplay2Server.getClass().getName()).build();
+					.programName(JSIDPlay2Server.class.getName()).build();
 			commander.parse(args);
 			if (jsidplay2Server.help) {
 				commander.usage();
