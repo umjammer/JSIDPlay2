@@ -66,7 +66,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			int hashCode = wavBean.hashCode();
 
 			MusicInfoWithConfidenceBean musicInfoWithConfidence;
-			if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode) == null && isWhatsSidEnabled()) {
+			if (!MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode) && isWhatsSidEnabled()) {
 				WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
 				FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
 				musicInfoWithConfidence = fingerPrinting.match(wavBean);
@@ -74,7 +74,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 				info(valueOf(musicInfoWithConfidence));
 			} else {
 				musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
-				info(valueOf(musicInfoWithConfidence));
+				info(valueOf(musicInfoWithConfidence) + " (cached)");
 			}
 			setOutput(request, response, musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
 

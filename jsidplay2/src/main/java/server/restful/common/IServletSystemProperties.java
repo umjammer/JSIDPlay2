@@ -232,7 +232,7 @@ public interface IServletSystemProperties {
 	/**
 	 * WhatsSID? First serve RTMP requests, disable WhatsSID requests meanwhile.
 	 */
-	boolean WHATSID_LOW_PRIO = Boolean.valueOf(getProperty("jsidplay2.whatssid.low_prio", "false"));
+	boolean WHATSID_LOW_PRIO = Boolean.valueOf(getProperty("jsidplay2.whatssid.low_prio", "true"));
 
 	/**
 	 * WhatsSID? Maximum number of requests in parallel.
