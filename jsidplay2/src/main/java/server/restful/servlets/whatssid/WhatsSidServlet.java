@@ -65,19 +65,16 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			WAVBean wavBean = getInput(request, WAVBean.class);
 			int hashCode = wavBean.hashCode();
 
-			MusicInfoWithConfidenceBean musicInfoWithConfidence = null;
-			// prioritize live stream instead of WhatsSid?
-			if (!WHATSID_LOW_PRIO || count() == 0) {
-				if (!MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
-					WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
-					FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
-					musicInfoWithConfidence = fingerPrinting.match(wavBean);
-					MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-					info(valueOf(musicInfoWithConfidence));
-				} else {
-					musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
-					info(valueOf(musicInfoWithConfidence) + " (cached)");
-				}
+			MusicInfoWithConfidenceBean musicInfoWithConfidence;
+			if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode) == null && isWhatsSidEnabled()) {
+				WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
+				FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
+				musicInfoWithConfidence = fingerPrinting.match(wavBean);
+				MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
+				info(valueOf(musicInfoWithConfidence));
+			} else {
+				musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
+				info(valueOf(musicInfoWithConfidence));
 			}
 			setOutput(request, response, musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
 
@@ -88,6 +85,13 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 		} finally {
 			freeEntityManager();
 		}
+	}
+
+	/**
+	 * @return if live streams are not prioritized over WhatsSid
+	 */
+	private boolean isWhatsSidEnabled() {
+		return !WHATSID_LOW_PRIO || count() == 0;
 	}
 
 }
