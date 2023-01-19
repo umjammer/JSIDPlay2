@@ -57,10 +57,10 @@ public class WhatsSidService implements FingerPrintingDataSource {
 				return new IdBean(musicInfo.getIdMusicInfo());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
+			throw e;
 		}
 		return null;
 	}
@@ -86,10 +86,10 @@ public class WhatsSidService implements FingerPrintingDataSource {
 				em.getTransaction().commit();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
+			throw e;
 		}
 
 	}
@@ -114,10 +114,10 @@ public class WhatsSidService implements FingerPrintingDataSource {
 				return result;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
+			throw e;
 		}
 		return null;
 	}
@@ -150,10 +150,10 @@ public class WhatsSidService implements FingerPrintingDataSource {
 				return result;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
+			throw e;
 		}
 		return null;
 	}
@@ -191,10 +191,10 @@ public class WhatsSidService implements FingerPrintingDataSource {
 				return result;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
+			throw e;
 		}
 		return false;
 	}
@@ -217,10 +217,10 @@ public class WhatsSidService implements FingerPrintingDataSource {
 				em.getTransaction().commit();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
+			throw e;
 		}
 	}
 
