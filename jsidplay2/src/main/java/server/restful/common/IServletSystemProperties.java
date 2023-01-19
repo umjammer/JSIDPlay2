@@ -165,7 +165,7 @@ public interface IServletSystemProperties {
 	/**
 	 * Time span to wait until HLS is available after requesting it in milliseconds.
 	 */
-	int WAIT_FOR_HLS = valueOf(getProperty("jsidplay2.hls.wait.for", "4000"));
+	int WAIT_FOR_HLS = valueOf(getProperty("jsidplay2.hls.wait.for", "5000"));
 
 	/**
 	 * Time span to wait between HLS keep alive notifications in milliseconds.
