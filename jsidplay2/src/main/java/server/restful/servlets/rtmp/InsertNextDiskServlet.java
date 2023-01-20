@@ -16,6 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
@@ -64,9 +65,10 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			}
 			UUID uuid = servletParameters.getUuid();
 
-			info(String.format("insertNextDisk: RTMP stream of: %s", uuid));
 			StringBuilder diskImageName = new StringBuilder();
-			update(uuid, rtmpPlayerWithStatus -> diskImageName.append(rtmpPlayerWithStatus.insertNextDisk().getName()));
+
+			info(String.format("insertNextDisk: RTMP stream of: %s", uuid));
+			update(uuid, rtmpPlayerWithStatus -> insertNextDisk(rtmpPlayerWithStatus, diskImageName));
 
 			setOutput(request, response, diskImageName.toString(), String.class);
 
@@ -74,6 +76,14 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
+		}
+	}
+
+	private void insertNextDisk(PlayerWithStatus rtmpPlayerWithStatus, StringBuilder diskImageName) {
+		try {
+			diskImageName.append(rtmpPlayerWithStatus.insertNextDisk().getName());
+		} catch (IOException e) {
+			error(e);
 		}
 	}
 

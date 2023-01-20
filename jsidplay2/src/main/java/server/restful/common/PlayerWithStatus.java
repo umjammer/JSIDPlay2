@@ -85,13 +85,9 @@ public final class PlayerWithStatus {
 		player.quit();
 	}
 
-	public File insertNextDisk() {
-		try {
-			setNextDiskImage();
-			player.insertDisk(extract());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public File insertNextDisk() throws IOException {
+		diskImage = dertermineNextDiskImage(diskImage);
+		player.insertDisk(extract(diskImage));
 		return diskImage;
 	}
 
@@ -166,7 +162,7 @@ public final class PlayerWithStatus {
 		});
 	}
 
-	private void setNextDiskImage() {
+	private File dertermineNextDiskImage(File diskImage) {
 		if (diskImage != null) {
 			File[] files = diskImage.getParentFile().listFiles(DISK_FILE_FILTER);
 			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0])).stream()
@@ -175,15 +171,15 @@ public final class PlayerWithStatus {
 			while (fileIterator.hasNext()) {
 				File siblingFile = fileIterator.next();
 				if (siblingFile.equals(diskImage) && fileIterator.hasNext()) {
-					diskImage = fileIterator.next();
-					return;
+					return fileIterator.next();
 				}
 			}
-			diskImage = filesList.stream().sorted().findFirst().orElse(diskImage);
+			return filesList.stream().sorted().findFirst().orElse(diskImage);
 		}
+		return diskImage;
 	}
 
-	private File extract() throws IOException {
+	private File extract(File diskImage) throws IOException {
 		if (diskImage != null) {
 			TFile file = new TFile(diskImage);
 			if (file.isEntry()) {
