@@ -182,7 +182,7 @@ public interface IServletSystemProperties {
 	 * Video streaming: HLS Live stream created but not yet received keep-alive
 	 * notification will be quit after timeout in s.
 	 */
-	int HLS_NOT_YET_PLAYED_TIMEOUT = valueOf(getProperty("jsidplay2.rtmp.not_yet_played.timeout", "10"));
+	int HLS_NOT_YET_PLAYED_TIMEOUT = valueOf(getProperty("jsidplay2.hls.not_yet_played.timeout", "10"));
 
 	/**
 	 * Video streaming: Live stream played and exceeds maximum duration will be quit
