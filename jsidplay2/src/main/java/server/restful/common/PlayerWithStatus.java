@@ -30,25 +30,23 @@ public final class PlayerWithStatus {
 
 	private final Player player;
 
-	private final boolean showStatus;
+	private File diskImage;
 
 	private final int pressSpaceInterval;
 
-	private File diskImage;
+	private final StatusText statusText;
 
 	private final LocalDateTime created;
 
 	private LocalDateTime validUntil;
-
-	private StatusText statusText;
 
 	private int playCounter;
 
 	public PlayerWithStatus(Player player, File diskImage, boolean showStatus, int pressSpaceInterval) {
 		this.player = player;
 		this.diskImage = diskImage;
-		this.showStatus = showStatus;
 		this.pressSpaceInterval = pressSpaceInterval;
+		statusText = new StatusText(player, showStatus);
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
 		addPressSpaceListener();
@@ -231,8 +229,6 @@ public final class PlayerWithStatus {
 	private void addStatusTextListener() {
 		player.stateProperty().addListener(event -> {
 			if (event.getNewValue() == State.START) {
-
-				statusText = new StatusText(player, showStatus);
 
 				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override
