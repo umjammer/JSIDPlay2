@@ -86,7 +86,7 @@ public final class PlayerWithStatus {
 	}
 
 	public File insertNextDisk() throws IOException {
-		diskImage = dertermineNextDiskImage(diskImage);
+		diskImage = determineNextDiskImage(diskImage);
 		player.insertDisk(extract(diskImage));
 		return diskImage;
 	}
@@ -162,7 +162,7 @@ public final class PlayerWithStatus {
 		});
 	}
 
-	private File dertermineNextDiskImage(File diskImage) {
+	private File determineNextDiskImage(File diskImage) {
 		if (diskImage != null) {
 			File[] files = diskImage.getParentFile().listFiles(DISK_FILE_FILTER);
 			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0])).stream()
