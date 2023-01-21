@@ -143,7 +143,7 @@ public interface IServletSystemProperties {
 	/**
 	 * Minimum time in ms between requests of StartPageServlet.
 	 */
-	int MIN_TIME_BETWEEN_REQUESTS = valueOf(getProperty("jsidplay2.start_page.min.time.between.requests", "200"));
+	int MIN_TIME_BETWEEN_REQUESTS = valueOf(getProperty("jsidplay2.start_page.min.time.between.requests", "500"));
 
 	/**
 	 * Maximum number of ConvertServlet requests in parallel.
