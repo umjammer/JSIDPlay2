@@ -111,15 +111,15 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request) {
-		log(thread() + request(request) + queryString(request) + remoteAddr(request) + localAddr(request) + memory());
+		log(thread() + remoteAddr(request) + localAddr(request) + request(request) + queryString(request) + memory());
 	}
 
 	protected void doPost(HttpServletRequest request) {
-		log(thread() + request(request) + remoteAddr(request) + localAddr(request) + memory());
+		log(thread() + remoteAddr(request) + localAddr(request) + request(request) + memory());
 	}
 
 	protected void doPut(HttpServletRequest request) {
-		log(thread() + request(request) + remoteAddr(request) + localAddr(request) + memory());
+		log(thread() + remoteAddr(request) + localAddr(request) + request(request) + memory());
 	}
 
 	protected void info(String msg) {
@@ -155,6 +155,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		result.append(request.getMethod());
 		result.append(" ");
 		result.append(request.getRequestURI());
+		if (request.getQueryString() == null) {
+			result.append(", ");
+		}
 		return result.toString();
 	}
 
@@ -164,33 +167,34 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			result.append("?");
 			result.append(request.getQueryString());
 		}
+		result.append(", ");
 		return result.toString();
 	}
 
 	private String remoteAddr(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
-		result.append(", from ");
+		result.append("from ");
 		result.append(request.getRemoteAddr());
 		result.append(" (");
 		result.append(request.getRemotePort());
-		result.append(")");
+		result.append(") ");
 		return result.toString();
 	}
 
 	private String localAddr(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
-		result.append(", to ");
+		result.append("to ");
 		result.append(request.getLocalAddr());
 		result.append(" (");
 		result.append(request.getLocalPort());
-		result.append(")");
+		result.append("), ");
 		return result.toString();
 	}
 
 	private String memory() {
 		StringBuilder result = new StringBuilder();
 		Runtime runtime = Runtime.getRuntime();
-		result.append(String.format(", %,dMb/%,dMb", runtime.totalMemory() - runtime.freeMemory() >> 20,
+		result.append(String.format("%,dMb/%,dMb", runtime.totalMemory() - runtime.freeMemory() >> 20,
 				runtime.maxMemory() >> 20));
 		return result.toString();
 	}
