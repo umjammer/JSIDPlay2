@@ -150,6 +150,26 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return result.toString();
 	}
 
+	private String remoteAddr(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		result.append("from ");
+		result.append(request.getRemoteAddr());
+		result.append(" (");
+		result.append(request.getRemotePort());
+		result.append(") ");
+		return result.toString();
+	}
+
+	private String localAddr(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		result.append("to ");
+		result.append(request.getLocalAddr());
+		result.append(" (");
+		result.append(request.getLocalPort());
+		result.append("), ");
+		return result.toString();
+	}
+
 	private String request(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
 		result.append(request.getMethod());
@@ -168,26 +188,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			result.append(request.getQueryString());
 		}
 		result.append(", ");
-		return result.toString();
-	}
-
-	private String remoteAddr(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append("from ");
-		result.append(request.getRemoteAddr());
-		result.append(" (");
-		result.append(request.getRemotePort());
-		result.append(") ");
-		return result.toString();
-	}
-
-	private String localAddr(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append("to ");
-		result.append(request.getLocalAddr());
-		result.append(" (");
-		result.append(request.getLocalPort());
-		result.append("), ");
 		return result.toString();
 	}
 
