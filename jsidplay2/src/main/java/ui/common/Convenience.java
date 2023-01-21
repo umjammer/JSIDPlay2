@@ -1,5 +1,6 @@
 package ui.common;
 
+import static libsidutils.PathUtils.deleteDirectory;
 import static libsidutils.directory.DirEntry.toFilename;
 
 import java.io.ByteArrayInputStream;
@@ -12,7 +13,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiPredicate;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import libsidplay.components.cart.CartridgeType;
@@ -23,6 +27,7 @@ import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
+import sidplay.filefilter.UUIDFileFilter;
 import ui.JSidPlay2Main;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
@@ -72,11 +77,14 @@ public class Convenience {
 		}
 	}
 
+	private static final Logger LOGGER = Logger.getLogger(Convenience.class.getName());
+
 	/**
 	 * Useless Apple directory.
 	 */
 	private static final String MACOSX = "__MACOSX";
 
+	private static final UUIDFileFilter UUID_FILE_FILTER = new UUIDFileFilter();
 	private static final TuneFileFilter tuneFileFilter = new TuneFileFilter();
 	private static final DiskFileFilter diskFileFilter = new DiskFileFilter();
 	private static final TapeFileFilter tapeFileFilter = new TapeFileFilter();
@@ -97,8 +105,18 @@ public class Convenience {
 
 	private Player player;
 
+	private static Thread deleteOutdatedTempDirectoriesHook;
+
 	public Convenience(Player player) {
 		this.player = player;
+		try {
+			if (deleteOutdatedTempDirectoriesHook == null) {
+				deleteOutdatedTempDirectoriesHook = new Thread(this::deleteOutdatedTempDirectories);
+				Runtime.getRuntime().addShutdownHook(deleteOutdatedTempDirectoriesHook);
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -118,7 +136,9 @@ public class Convenience {
 	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
 			throws IOException, SidTuneError {
 		player.getC64().ejectCartridge();
-		File tmpDir = player.getConfig().getSidplay2Section().getTmpDir();
+
+		File tmpDir = new File(player.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
+		tmpDir.mkdirs();
 		boolean fileIsModule = cartFileFilter.accept(file);
 		TFile zip = new TFile(file);
 		File toAttach = null;
@@ -127,31 +147,29 @@ public class Convenience {
 				// uncompress zip
 				TFile.cp_rp(zip, tmpDir, TArchiveDetector.ALL);
 				// search media file to attach
-				toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, true, fileIsModule);
+				toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, fileIsModule);
 				TFile.rm_r(zip);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
 				File dst = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()));
 				try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 					TFile.cp(is, dst);
 				}
-				toAttach = getToAttach(file.getParentFile(), file.getParentFile(), isMediaToAttach, null, true,
-						fileIsModule);
+				toAttach = getToAttach(file.getParentFile(), file.getParentFile(), isMediaToAttach, null, fileIsModule);
 				TFile.rm_r(zip);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("7z")) {
 				Extract7ZipUtil extract7Zip = new Extract7ZipUtil(zip, tmpDir);
 				extract7Zip.extract();
-				toAttach = getToAttach(tmpDir, extract7Zip.getZipFile(), isMediaToAttach, null, true, fileIsModule);
+				toAttach = getToAttach(tmpDir, extract7Zip.getZipFile(), isMediaToAttach, null, fileIsModule);
 				TFile.rm_r(zip);
 			} else if (zip.isEntry()) {
 				// uncompress zip entry
 				File zipEntry = new File(tmpDir, zip.getName());
-				zipEntry.deleteOnExit();
 				TFile.cp_rp(zip, zipEntry, TArchiveDetector.ALL);
 				// search media file to attach
-				getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
+				getToAttach(tmpDir, zipEntry.getParentFile(), (f1, f2) -> false, null, fileIsModule);
 				toAttach = zipEntry;
 			} else if (isSupportedMedia(file)) {
-				getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> false, null, false, fileIsModule);
+				getToAttach(file.getParentFile(), file.getParentFile(), (f1, f2) -> false, null, fileIsModule);
 				toAttach = file;
 			}
 		}
@@ -194,7 +212,7 @@ public class Convenience {
 	 * @return media to attach
 	 */
 	private File getToAttach(File dir, File file, BiPredicate<File, File> mediaTester, File toAttach,
-			boolean deleteOnExit, boolean fileIsModule) {
+			boolean fileIsModule) {
 		final File[] listFiles = file.listFiles();
 		if (listFiles == null) {
 			return toAttach;
@@ -203,9 +221,6 @@ public class Convenience {
 		asList.sort(TOP_LEVEL_FIRST_COMPARATOR);
 		for (File member : asList) {
 			File memberFile = new File(dir, member.getName());
-			if (deleteOnExit) {
-				memberFile.deleteOnExit();
-			}
 			if (memberFile.isFile() && isSupportedMedia(memberFile)) {
 				if (!fileIsModule && memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
 					try {
@@ -224,7 +239,7 @@ public class Convenience {
 					toAttach = memberFile;
 				}
 			} else if (memberFile.isDirectory() && !memberFile.getName().equals(MACOSX)) {
-				File toAttachChild = getToAttach(memberFile, new TFile(memberFile), mediaTester, toAttach, deleteOnExit,
+				File toAttachChild = getToAttach(memberFile, new TFile(memberFile), mediaTester, toAttach,
 						fileIsModule);
 				if (toAttachChild != null) {
 					toAttach = toAttachChild;
@@ -245,4 +260,17 @@ public class Convenience {
 				|| tapeFileFilter.accept(file);
 	}
 
+	private void deleteOutdatedTempDirectories() {
+		Arrays.asList(
+				Optional.ofNullable(player.getConfig().getSidplay2Section().getTmpDir().listFiles(UUID_FILE_FILTER))
+						.orElse(new File[0]))
+				.stream().filter(File::isDirectory).forEach(dir -> {
+					try {
+						LOGGER.fine(String.format("Convenience: Delete temp. directory: %s", dir));
+						deleteDirectory(dir);
+					} catch (IOException e) {
+						System.err.println(e.getMessage());
+					}
+				});
+	}
 }

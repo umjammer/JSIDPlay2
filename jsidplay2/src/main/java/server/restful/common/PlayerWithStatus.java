@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import libsidplay.common.ChipModel;
@@ -183,9 +184,10 @@ public final class PlayerWithStatus {
 		if (diskImage != null) {
 			TFile file = new TFile(diskImage);
 			if (file.isEntry()) {
-				File tmpDir = player.getConfig().getSidplay2Section().getTmpDir();
+				File tmpDir = new File(player.getConfig().getSidplay2Section().getTmpDir(),
+						UUID.randomUUID().toString());
 				File tmpFile = new File(tmpDir, file.getName());
-				tmpFile.deleteOnExit();
+				tmpDir.mkdirs();
 				TFile.cp_rp(file, tmpFile, TArchiveDetector.ALL);
 				return tmpFile;
 			}

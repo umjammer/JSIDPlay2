@@ -28,7 +28,7 @@ import org.apache.juli.logging.Log;
 
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import sidplay.Player;
-import ui.common.filefilter.UUIDFileFilter;
+import sidplay.filefilter.UUIDFileFilter;
 
 public final class PlayerCleanupTimerTask extends TimerTask {
 

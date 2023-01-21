@@ -1,4 +1,4 @@
-package ui.common.filefilter;
+package sidplay.filefilter;
 
 import java.io.File;
 import java.io.FileFilter;
