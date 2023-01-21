@@ -141,7 +141,12 @@ public interface IServletSystemProperties {
 	//
 
 	/**
-	 * Maximum number of requests in parallel.
+	 * Maximum number of StartPageServlet requests in parallel.
+	 */
+	int MAX_START_PAGE_IN_PARALLEL = valueOf(getProperty("jsidplay2.start_page.max.parallel", "7"));
+
+	/**
+	 * Maximum number of ConvertServlet requests in parallel.
 	 */
 	int MAX_CONVERT_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.max.parallel", "7"));
 
