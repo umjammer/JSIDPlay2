@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
 import javafx.application.Platform;
@@ -263,25 +264,17 @@ public class DiskCollection extends C64VBox implements UIPart {
 	}
 
 	protected void attachAndRunDemo(File file, final String dirEntry) {
-		if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".pdf")) {
-			File tmpDir = util.getConfig().getSidplay2Section().getTmpDir();
-			File dst = new File(tmpDir, file.getName());
-			try {
-				TFile.cp(file, dst);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			dst.deleteOnExit();
-			DesktopUtil.open(dst);
-		} else {
-			try {
-				File extractedFile = extract(file);
+		try {
+			File extractedFile = extract(file);
+			if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".pdf")) {
+				DesktopUtil.open(extractedFile);
+			} else {
 				if (convenience.autostart(extractedFile, Convenience.LEXICALLY_FIRST_MEDIA, dirEntry)) {
 					util.setPlayingTab(this);
 				}
-			} catch (IOException | SidTuneError e) {
-				System.err.println(String.format("Cannot insert media file '%s'.", file.getAbsolutePath()));
 			}
+		} catch (IOException | SidTuneError e) {
+			System.err.println(String.format("Cannot insert media file '%s'.", file.getAbsolutePath()));
 		}
 	}
 
@@ -329,7 +322,8 @@ public class DiskCollection extends C64VBox implements UIPart {
 	}
 
 	private File extract(File file) throws IOException {
-		File tmpDir = util.getConfig().getSidplay2Section().getTmpDir();
+		File tmpDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
+		tmpDir.mkdirs();
 		File dst;
 		if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
 			dst = new File(tmpDir, PathUtils.getFilenameWithoutSuffix(file.getName()));
@@ -340,7 +334,6 @@ public class DiskCollection extends C64VBox implements UIPart {
 			dst = new File(tmpDir, file.getName());
 			TFile.cp(file, dst);
 		}
-		dst.deleteOnExit();
 		return dst;
 	}
 
