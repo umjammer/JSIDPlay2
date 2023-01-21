@@ -399,8 +399,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					ContentEntrySearchResult.class);
 
 			File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
-			targetDir.deleteOnExit();
-			targetDir.mkdirs();
+			targetDir.mkdir();
 
 			File file = new File(fileId);
 			boolean mustFetchAttachments = VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
@@ -422,7 +421,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				contentEntryFile.delete();
 
 				fetchAssembly64File(itemId, categoryId, contentEntry.getId(), contentEntryFile);
-				contentEntryFile.deleteOnExit();
 
 				if (Objects.equals(contentEntry.getId(), fileId)) {
 					result = contentEntryFile;

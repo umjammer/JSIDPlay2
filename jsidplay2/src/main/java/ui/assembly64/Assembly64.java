@@ -799,8 +799,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 			File targetFile = new File(targetDir, requestContentEntry.getName());
-			targetDir.deleteOnExit();
-			targetFile.deleteOnExit();
 			targetDir.mkdirs();
 			Files.move(Paths.get(requestContentEntry.getAbsolutePath()), Paths.get(targetFile.getAbsolutePath()),
 					REPLACE_EXISTING);
@@ -817,22 +815,21 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	private File requestContentEntry(ContentEntry contentEntry) throws FileNotFoundException, IOException {
 		// name without embedded sub-folder (sid/name.sid -> name.sid):
+
+		File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
+		targetDir.mkdir();
+
 		String name = new File(contentEntry.getId()).getName();
-		File contentEntryFile = new File(util.getConfig().getSidplay2Section().getTmpDir(), name);
-		File contentEntryChecksumFile = new File(util.getConfig().getSidplay2Section().getTmpDir(),
-				PathUtils.getFilenameWithoutSuffix(name) + ".md5");
-		try {
-			// file already downloaded and checksum ok?
-			if (contentEntryFile.exists() && contentEntryChecksumFile.exists()) {
-				String checksum = getMD5Digest(getContents(contentEntryFile));
-				String checksumToverify = new String(getContents(contentEntryChecksumFile), US_ASCII);
-				if (checksum.equals(checksumToverify)) {
-					return contentEntryFile;
-				}
+		File contentEntryFile = new File(targetDir, name);
+		File contentEntryChecksumFile = new File(targetDir, PathUtils.getFilenameWithoutSuffix(name) + ".md5");
+
+		// file already downloaded and checksum ok?
+		if (contentEntryFile.exists() && contentEntryChecksumFile.exists()) {
+			String checksum = getMD5Digest(getContents(contentEntryFile));
+			String checksumToverify = new String(getContents(contentEntryChecksumFile), US_ASCII);
+			if (checksum.equals(checksumToverify)) {
+				return contentEntryFile;
 			}
-		} finally {
-			contentEntryFile.deleteOnExit();
-			contentEntryChecksumFile.deleteOnExit();
 		}
 		// request file, create checksum
 		String assembly64Url = util.getConfig().getOnlineSection().getAssembly64Url();
