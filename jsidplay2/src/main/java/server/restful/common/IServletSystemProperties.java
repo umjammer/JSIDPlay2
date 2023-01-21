@@ -141,9 +141,9 @@ public interface IServletSystemProperties {
 	//
 
 	/**
-	 * Maximum number of StartPageServlet requests in parallel.
+	 * Minimum time in ms between requests of StartPageServlet.
 	 */
-	int MAX_START_PAGE_IN_PARALLEL = valueOf(getProperty("jsidplay2.start_page.max.parallel", "7"));
+	int MIN_TIME_BETWEEN_REQUESTS = valueOf(getProperty("jsidplay2.start_page.min.time.between.requests", "200"));
 
 	/**
 	 * Maximum number of ConvertServlet requests in parallel.

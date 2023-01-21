@@ -6,7 +6,7 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_START_PAGE;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
-import static server.restful.common.IServletSystemProperties.MAX_START_PAGE_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.MIN_TIME_BETWEEN_REQUESTS;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.LimitRequestServletFilter;
+import server.restful.common.filters.DDOSProtectionServletFilter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -37,7 +37,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public Optional<Filter> getServletFilter() {
-		return Optional.of(new LimitRequestServletFilter(MAX_START_PAGE_IN_PARALLEL));
+		return Optional.of(new DDOSProtectionServletFilter(MIN_TIME_BETWEEN_REQUESTS));
 	}
 
 	@Override
