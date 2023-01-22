@@ -102,8 +102,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return getServletPath() + "/*";
 	}
 
-	public Optional<Filter> getServletFilter() {
-		return Optional.empty();
+	public List<Filter> getServletFilters() {
+		return Collections.emptyList();
 	}
 
 	public boolean isSecured() {

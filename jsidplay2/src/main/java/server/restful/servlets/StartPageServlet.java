@@ -10,9 +10,10 @@ import static server.restful.common.IServletSystemProperties.MIN_TIME_BETWEEN_RE
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 
 import jakarta.servlet.Filter;
@@ -36,8 +37,8 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public Optional<Filter> getServletFilter() {
-		return Optional.of(new DDOSProtectionServletFilter(MIN_TIME_BETWEEN_REQUESTS));
+	public List<Filter> getServletFilters() {
+		return Arrays.asList(new DDOSProtectionServletFilter(MIN_TIME_BETWEEN_REQUESTS));
 	}
 
 	@Override

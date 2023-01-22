@@ -411,14 +411,16 @@ public class JSIDPlay2Server {
 	}
 
 	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets) {
-		servlets.forEach(servlet -> servlet.getServletFilter().ifPresent(servletFilter -> {
+		servlets.forEach(servlet -> servlet.getServletFilters().forEach(servletFilter -> {
+			String filterName = servlet.getClass().getSimpleName() + "_" + servletFilter.getClass().getSimpleName();
+
 			FilterDef filterDefinition = new FilterDef();
-			filterDefinition.setFilterName(servletFilter.getClass().getSimpleName());
+			filterDefinition.setFilterName(filterName);
 			filterDefinition.setFilter(servletFilter);
 			context.addFilterDef(filterDefinition);
 
 			FilterMap filterMapping = new FilterMap();
-			filterMapping.setFilterName(servletFilter.getClass().getSimpleName());
+			filterMapping.setFilterName(filterName);
 			filterMapping.addURLPattern(servlet.getURLPattern());
 			context.addFilterMap(filterMapping);
 		}));

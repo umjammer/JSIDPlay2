@@ -11,9 +11,10 @@ import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
 import static server.restful.common.PlayerCleanupTimerTask.count;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 
 import jakarta.servlet.Filter;
@@ -48,8 +49,8 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public Optional<Filter> getServletFilter() {
-		return Optional.of(new LimitRequestServletFilter(MAX_WHATSIDS_IN_PARALLEL));
+	public List<Filter> getServletFilters() {
+		return Arrays.asList(new LimitRequestServletFilter(MAX_WHATSIDS_IN_PARALLEL));
 	}
 
 	/**

@@ -54,6 +54,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,8 +240,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public Optional<Filter> getServletFilter() {
-		return Optional.of(new LimitRequestServletFilter(MAX_CONVERT_IN_PARALLEL));
+	public List<Filter> getServletFilters() {
+		return Arrays.asList(new LimitRequestServletFilter(MAX_CONVERT_IN_PARALLEL));
 	}
 
 	@Override
