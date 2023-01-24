@@ -21,7 +21,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.DDOSProtectionServletFilter;
+import server.restful.common.filters.RequestTimeRateLimiter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -38,7 +38,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new DDOSProtectionServletFilter(MIN_TIME_BETWEEN_REQUESTS));
+		return Arrays.asList(new RequestTimeRateLimiter(MIN_TIME_BETWEEN_REQUESTS));
 	}
 
 	@Override

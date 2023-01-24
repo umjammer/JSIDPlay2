@@ -14,13 +14,19 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
-public final class DDOSProtectionServletFilter implements Filter {
+/**
+ * Ensure a minimum time between requests (kind of DDOS protection).
+ * 
+ * @author ken
+ *
+ */
+public final class RequestTimeRateLimiter implements Filter {
 
 	private final Map<String, Long> remoteAddrMap = new ConcurrentHashMap<>();
 
 	private final int minTimeBetweenRequests;
 
-	public DDOSProtectionServletFilter(int minTimeBetweenRequests) {
+	public RequestTimeRateLimiter(int minTimeBetweenRequests) {
 		this.minTimeBetweenRequests = minTimeBetweenRequests;
 	}
 

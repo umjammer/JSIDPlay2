@@ -12,19 +12,25 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
-public final class LimitRequestServletFilter implements Filter {
+/**
+ * Ensure a maximum number of requests in parallel (server overload protection).
+ * 
+ * @author ken
+ *
+ */
+public final class RequestCounterRateLimiter implements Filter {
 
 	private final AtomicInteger atomicServletRequestCounter = new AtomicInteger();
 
 	private final int maxRequestServletCount;
 
-	public LimitRequestServletFilter(int maxRequestServletCount) {
+	public RequestCounterRateLimiter(int maxRequestServletCount) {
 		this.maxRequestServletCount = maxRequestServletCount;
 	}
 
 	@Override
 	public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-		final FilterChain chain) throws IOException, ServletException {
+			final FilterChain chain) throws IOException, ServletException {
 		try {
 			if (atomicServletRequestCounter.getAndIncrement() < maxRequestServletCount) {
 				// let the request through and process as usual
