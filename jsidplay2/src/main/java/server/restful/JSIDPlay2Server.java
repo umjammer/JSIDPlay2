@@ -35,9 +35,9 @@ import javax.persistence.Persistence;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
+import org.apache.catalina.authenticator.BasicAuthenticator;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.realm.MemoryRealm;
-import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11Nio2Protocol;
 import org.apache.coyote.http2.Http2Protocol;
@@ -392,10 +392,11 @@ public class JSIDPlay2Server {
 	}
 
 	private Context addContext(Tomcat tomcat) {
-		Context ctx = tomcat.addContext(tomcat.getHost(), CONTEXT_ROOT,
+		Context context = tomcat.addContext(tomcat.getHost(), CONTEXT_ROOT,
 				tomcat.getServer().getCatalinaBase().getAbsolutePath());
-		ctx.addLifecycleListener(new ContextConfig());
-		return ctx;
+
+		context.getPipeline().addValve(new BasicAuthenticator());
+		return context;
 	}
 
 	private List<JSIDPlay2Servlet> addServlets(Context context) throws InstantiationException, IllegalAccessException,
