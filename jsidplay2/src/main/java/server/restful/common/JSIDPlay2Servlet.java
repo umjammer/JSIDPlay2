@@ -186,8 +186,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		if (request.getQueryString() != null) {
 			result.append("?");
 			result.append(request.getQueryString());
+			result.append(", ");
 		}
-		result.append(", ");
 		return result.toString();
 	}
 
