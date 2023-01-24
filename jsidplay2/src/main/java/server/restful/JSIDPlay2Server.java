@@ -288,7 +288,7 @@ public class JSIDPlay2Server {
 		List<JSIDPlay2Servlet> servlets = addServlets(context);
 
 		addServletFilters(context, servlets);
-		addSecurityConstraint(context, servlets);
+		addSecurity(context, servlets);
 
 		new Timer().schedule(new PlayerCleanupTimerTask(context), 0, 1000L);
 
@@ -392,11 +392,8 @@ public class JSIDPlay2Server {
 	}
 
 	private Context addContext(Tomcat tomcat) {
-		Context context = tomcat.addContext(tomcat.getHost(), CONTEXT_ROOT,
+		return tomcat.addContext(tomcat.getHost(), CONTEXT_ROOT,
 				tomcat.getServer().getCatalinaBase().getAbsolutePath());
-
-		context.getPipeline().addValve(new BasicAuthenticator());
-		return context;
 	}
 
 	private List<JSIDPlay2Servlet> addServlets(Context context) throws InstantiationException, IllegalAccessException,
@@ -430,7 +427,7 @@ public class JSIDPlay2Server {
 		}));
 	}
 
-	private void addSecurityConstraint(Context context, List<JSIDPlay2Servlet> servlets) {
+	private void addSecurity(Context context, List<JSIDPlay2Servlet> servlets) {
 		// roles must be defined before being used in a security constraint, therefore:
 		context.addSecurityRole(ROLE_ADMIN);
 		context.addSecurityRole(ROLE_USER);
@@ -446,6 +443,7 @@ public class JSIDPlay2Server {
 		securityConstraint.addCollection(securityCollection);
 		context.addConstraint(securityConstraint);
 
+		context.getPipeline().addValve(new BasicAuthenticator());
 		context.setLoginConfig(new LoginConfig(BASIC_AUTH, REALM_NAME, null, null));
 	}
 
