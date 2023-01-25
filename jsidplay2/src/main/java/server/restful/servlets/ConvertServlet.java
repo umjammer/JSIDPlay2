@@ -36,6 +36,7 @@ import static server.restful.common.IServletSystemProperties.WAIT_FOR_RTMP;
 import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
+import static server.restful.common.filters.RequestCounterRateLimiterFilter.FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT;
 import static server.restful.common.parameter.ServletParameterHelper.check;
 import static sidplay.audio.Audio.AAC;
 import static sidplay.audio.Audio.AVI;
@@ -86,7 +87,7 @@ import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.RequestCounterRateLimiter;
+import server.restful.common.filters.RequestCounterRateLimiterFilter;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -225,7 +226,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 
 		private volatile boolean started;
-
 	}
 
 	public static final String CONVERT_PATH = "/convert";
@@ -241,7 +241,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestCounterRateLimiter(MAX_CONVERT_IN_PARALLEL));
+		return Arrays.asList(new RequestCounterRateLimiterFilter());
+	}
+
+	@Override
+	public Map<String, String> getServletFiltersParameterMap() {
+		Map<String, String> result = new HashMap<>();
+		result.put(FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT, String.valueOf(MAX_CONVERT_IN_PARALLEL));
+		return result;
 	}
 
 	@Override

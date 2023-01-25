@@ -6,7 +6,10 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_START_PAGE;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
+import static server.restful.common.IServletSystemProperties.MAX_REQUESTS_PER_MINUTE;
 import static server.restful.common.IServletSystemProperties.MIN_TIME_BETWEEN_REQUESTS;
+import static server.restful.common.filters.RequestTimeRateLimiterFilter.FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS;
+import static server.restful.common.filters.TimeBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +24,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.RequestTimeRateLimiter;
+import server.restful.common.filters.RequestTimeRateLimiterFilter;
+import server.restful.common.filters.TimeBasedRateLimiterFilter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -38,7 +42,15 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestTimeRateLimiter(MIN_TIME_BETWEEN_REQUESTS));
+		return Arrays.asList(new RequestTimeRateLimiterFilter(), new TimeBasedRateLimiterFilter());
+	}
+
+	@Override
+	public Map<String, String> getServletFiltersParameterMap() {
+		Map<String, String> result = new HashMap<>();
+		result.put(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS, String.valueOf(MIN_TIME_BETWEEN_REQUESTS));
+		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE, String.valueOf(MAX_REQUESTS_PER_MINUTE));
+		return result;
 	}
 
 	@Override

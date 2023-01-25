@@ -9,10 +9,12 @@ import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
 import static server.restful.common.PlayerCleanupTimerTask.count;
+import static server.restful.common.filters.RequestCounterRateLimiterFilter.FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -27,7 +29,7 @@ import libsidutils.fingerprinting.rest.beans.MusicInfoWithConfidenceBean;
 import libsidutils.fingerprinting.rest.beans.WAVBean;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
-import server.restful.common.filters.RequestCounterRateLimiter;
+import server.restful.common.filters.RequestCounterRateLimiterFilter;
 import ui.entities.config.Configuration;
 import ui.entities.whatssid.service.WhatsSidService;
 
@@ -50,7 +52,14 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestCounterRateLimiter(MAX_WHATSIDS_IN_PARALLEL));
+		return Arrays.asList(new RequestCounterRateLimiterFilter());
+	}
+
+	@Override
+	public Map<String, String> getServletFiltersParameterMap() {
+		Map<String, String> result = new HashMap<>();
+		result.put(FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT, String.valueOf(MAX_WHATSIDS_IN_PARALLEL));
+		return result;
 	}
 
 	/**

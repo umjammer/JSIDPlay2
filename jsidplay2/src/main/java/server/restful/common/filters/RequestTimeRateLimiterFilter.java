@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -20,14 +21,18 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author ken
  *
  */
-public final class RequestTimeRateLimiter implements Filter {
+public final class RequestTimeRateLimiterFilter implements Filter {
+
+	public static final String FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS = "minTimeBetweenRequests";
 
 	private final Map<String, Long> remoteAddrMap = new ConcurrentHashMap<>();
 
-	private final int minTimeBetweenRequests;
+	private int minTimeBetweenRequests;
 
-	public RequestTimeRateLimiter(int minTimeBetweenRequests) {
-		this.minTimeBetweenRequests = minTimeBetweenRequests;
+	@Override
+	public void init(FilterConfig filterConfig) {
+		minTimeBetweenRequests = Integer
+				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS));
 	}
 
 	@Override

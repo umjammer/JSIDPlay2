@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -104,6 +105,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	public List<Filter> getServletFilters() {
 		return Collections.emptyList();
+	}
+
+	public Map<String, String> getServletFiltersParameterMap() {
+		return Collections.emptyMap();
 	}
 
 	public boolean isSecured() {

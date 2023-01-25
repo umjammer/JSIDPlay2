@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -18,14 +19,18 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author ken
  *
  */
-public final class RequestCounterRateLimiter implements Filter {
+public final class RequestCounterRateLimiterFilter implements Filter {
+
+	public static final String FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT = "maxRequestServletCount";
 
 	private final AtomicInteger atomicServletRequestCounter = new AtomicInteger();
 
-	private final int maxRequestServletCount;
+	private int maxRequestServletCount;
 
-	public RequestCounterRateLimiter(int maxRequestServletCount) {
-		this.maxRequestServletCount = maxRequestServletCount;
+	@Override
+	public void init(FilterConfig filterConfig) {
+		maxRequestServletCount = Integer
+				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT));
 	}
 
 	@Override
