@@ -21,12 +21,11 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author ken
  *
  */
-public final class RequestTimeRateLimiterFilter implements Filter {
+public final class TimeDistanceBasedRateLimiterFilter implements Filter {
 
 	public static final String FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS = "minTimeBetweenRequests";
 
 	private final Map<String, Long> remoteAddrMap = new ConcurrentHashMap<>();
-
 	private int minTimeBetweenRequests;
 
 	@Override

@@ -14,18 +14,23 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Ensure a maximum number of requests per minute (server overload protection).
+ * 
+ * @author ken
+ *
+ */
 public class TimeBasedRateLimiterFilter implements Filter {
 
 	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE = "maxRequestsPerMinute";
 
-	private ConcurrentHashMap<String, Timer> timers;
+	private ConcurrentHashMap<String, Timer> timers = new ConcurrentHashMap<>();
 	private int maxRequestsPerMinute;
 
 	@Override
 	public void init(FilterConfig filterConfig) {
 		maxRequestsPerMinute = Integer
 				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE));
-		timers = new ConcurrentHashMap<>();
 	}
 
 	@Override

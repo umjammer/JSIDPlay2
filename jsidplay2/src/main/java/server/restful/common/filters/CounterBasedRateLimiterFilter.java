@@ -19,18 +19,17 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author ken
  *
  */
-public final class RequestCounterRateLimiterFilter implements Filter {
+public final class CounterBasedRateLimiterFilter implements Filter {
 
-	public static final String FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT = "maxRequestServletCount";
+	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET = "maxRequestsPerServlet";
 
 	private final AtomicInteger atomicServletRequestCounter = new AtomicInteger();
-
 	private int maxRequestServletCount;
 
 	@Override
 	public void init(FilterConfig filterConfig) {
 		maxRequestServletCount = Integer
-				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_REQUEST_SERVLET_COUNT));
+				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET));
 	}
 
 	@Override
