@@ -24,11 +24,11 @@ public final class CounterBasedRateLimiterFilter implements Filter {
 	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET = "maxRequestsPerServlet";
 
 	private final AtomicInteger atomicServletRequestCounter = new AtomicInteger();
-	private int maxRequestServletCount;
+	private int maxRequestsPerServlet;
 
 	@Override
 	public void init(FilterConfig filterConfig) {
-		maxRequestServletCount = Integer
+		maxRequestsPerServlet = Integer
 				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET));
 	}
 
@@ -36,7 +36,7 @@ public final class CounterBasedRateLimiterFilter implements Filter {
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
 			throws IOException, ServletException {
 		try {
-			if (atomicServletRequestCounter.getAndIncrement() < maxRequestServletCount) {
+			if (atomicServletRequestCounter.getAndIncrement() < maxRequestsPerServlet) {
 				// let the request through and process as usual
 				chain.doFilter(servletRequest, servletResponse);
 			} else {
