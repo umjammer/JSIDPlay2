@@ -3,6 +3,8 @@ package server.restful.common.filters;
 import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +26,7 @@ public class TimeBasedRateLimiterFilter implements Filter {
 
 	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE = "maxRequestsPerMinute";
 
-	private ConcurrentHashMap<String, Timer> timers = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, RequestTimer> requestTimers = new ConcurrentHashMap<>();
 	private int maxRequestsPerMinute;
 
 	@Override
@@ -34,39 +36,34 @@ public class TimeBasedRateLimiterFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
 			throws IOException, ServletException {
-		String clientIp = request.getRemoteAddr();
-		Timer timer = timers.get(clientIp);
-		if (timer == null) {
-			timer = new Timer();
-			timers.put(clientIp, timer);
-		}
-		if (timer.getCount() >= maxRequestsPerMinute) {
+		String clientIp = servletRequest.getRemoteAddr();
+		requestTimers.putIfAbsent(clientIp, new RequestTimer());
+		RequestTimer timer = requestTimers.get(clientIp);
+
+		if (timer.getCount() < maxRequestsPerMinute) {
+			timer.increment();
+			chain.doFilter(servletRequest, servletResponse);
+		} else {
 			// handle limit case, e.g. return status code 429 (Too Many Requests)
-			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-			httpServletResponse.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
-			return;
+			HttpServletResponse response = (HttpServletResponse) servletResponse;
+			response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
 		}
-		timer.increment();
-		chain.doFilter(request, response);
 	}
 
 	@Override
 	public void destroy() {
-		for (Timer timer : timers.values()) {
-			timer.cancel();
-		}
+		requestTimers.values().forEach(RequestTimer::cancel);
 	}
 
-	private class Timer {
+	private static class RequestTimer {
 		private int count;
-		private java.util.Timer timer;
+		private Timer timer = new Timer();
 
-		public Timer() {
-			count = 0;
-			timer = new java.util.Timer();
-			timer.scheduleAtFixedRate(new TimerTask(), TimeUnit.MINUTES.toMillis(1), TimeUnit.MINUTES.toMillis(1));
+		public RequestTimer() {
+			timer.scheduleAtFixedRate(new RequestTimerTask(), TimeUnit.MINUTES.toMillis(1),
+					TimeUnit.MINUTES.toMillis(1));
 		}
 
 		public int getCount() {
@@ -81,7 +78,7 @@ public class TimeBasedRateLimiterFilter implements Filter {
 			timer.cancel();
 		}
 
-		private class TimerTask extends java.util.TimerTask {
+		private class RequestTimerTask extends TimerTask {
 			@Override
 			public void run() {
 				count = 0;

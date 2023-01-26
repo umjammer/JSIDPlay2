@@ -33,8 +33,8 @@ public final class CounterBasedRateLimiterFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-			final FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+			throws IOException, ServletException {
 		try {
 			if (atomicServletRequestCounter.getAndIncrement() < maxRequestServletCount) {
 				// let the request through and process as usual

@@ -35,10 +35,11 @@ public final class TimeDistanceBasedRateLimiterFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-			final FilterChain chain) throws IOException, ServletException {
-		Long lastTime = Optional
-				.ofNullable(remoteAddrMap.put(servletRequest.getRemoteAddr(), System.currentTimeMillis())).orElse(0L);
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+			throws IOException, ServletException {
+		String clientIp = servletRequest.getRemoteAddr();
+		Long lastTime = Optional.ofNullable(remoteAddrMap.put(clientIp, System.currentTimeMillis())).orElse(0L);
+
 		if (System.currentTimeMillis() - lastTime > minTimeBetweenRequests) {
 			// let the request through and process as usual
 			chain.doFilter(servletRequest, servletResponse);
