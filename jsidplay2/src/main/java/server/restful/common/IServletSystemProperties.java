@@ -167,15 +167,9 @@ public interface IServletSystemProperties {
 	int PRESS_SPACE_INTERVALL = valueOf(getProperty("jsidplay2.rtmp.press_space_intervall", "90"));
 
 	/**
-	 * Time span to wait until RTMP is available after requesting it in
-	 * milliseconds.
+	 * Retry count to wait for the video generation being started.
 	 */
-	int WAIT_FOR_RTMP = valueOf(getProperty("jsidplay2.rtmp.wait.for", "1000"));
-
-	/**
-	 * Time span to wait until HLS is available after requesting it in milliseconds.
-	 */
-	int WAIT_FOR_HLS = valueOf(getProperty("jsidplay2.hls.wait.for", "5000"));
+	int WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT = valueOf(getProperty("jsidplay2.video.wait.for.retry.count", "20"));
 
 	/**
 	 * Time span to wait between HLS keep alive notifications in milliseconds.

@@ -31,8 +31,7 @@ import static server.restful.common.IServletSystemProperties.RTMP_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
-import static server.restful.common.IServletSystemProperties.WAIT_FOR_HLS;
-import static server.restful.common.IServletSystemProperties.WAIT_FOR_RTMP;
+import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT;
 import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
@@ -53,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -107,6 +107,7 @@ import sidplay.audio.SleepDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
 import ui.common.Convenience;
+import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -225,7 +226,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return config;
 		}
 
-		private volatile boolean started;
 	}
 
 	public static final String CONVERT_PATH = "/convert";
@@ -316,13 +316,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								info("END RTMP stream of: " + uuid);
 							} catch (IOException | SidTuneError e) {
 								log("ERROR RTMP stream of: " + uuid, e);
-							} finally {
-								servletParameters.started = true;
 							}
 						}, "RTMP").start();
-						while (!servletParameters.started) {
-							Thread.yield();
-						}
+						waitUntilVideoAvailable(getVideoUrl(true, uuid));
+
 						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
 						response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
 
@@ -487,7 +484,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 		if (uuid != null) {
 			create(uuid, player, file, servletParameters);
-			servletParameters.started = true;
 		}
 		player.stopC64(false);
 		return videoFile;
@@ -504,7 +500,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
 			HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
-		String videoUrl = getVideoUrl(servletParameters, request.getRemoteAddr(), uuid);
+		String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
 		String qrCodeImgTag = createQrCodeImgTag(videoUrl, "UTF-8", "png", 320, 320);
 
 		Map<String, String> result = new HashMap<>();
@@ -514,7 +510,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
 		result.put("$hlsType", servletParameters.getHlsType().name());
 		result.put("$hlsScript", servletParameters.getHlsType().getScript());
-		result.put("$waitForVideo", String.valueOf(getWaitForVideo(servletParameters)));
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
 		result.put("$filename", file.getName());
@@ -528,8 +523,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
 	}
 
-	private String getVideoUrl(ConvertServletParameters servletParameters, String remoteAddress, UUID uuid) {
-		if (Boolean.TRUE.equals(servletParameters.useHls)) {
+	private String getVideoUrl(boolean useHls, UUID uuid) {
+		if (useHls) {
 			// HLS protocol
 			return HLS_DOWNLOAD_URL + "/" + uuid + ".m3u8";
 		} else {
@@ -538,8 +533,21 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private int getWaitForVideo(ConvertServletParameters servletParameters) {
-		return Boolean.TRUE.equals(servletParameters.useHls) ? WAIT_FOR_HLS : WAIT_FOR_RTMP;
+	private void waitUntilVideoAvailable(String url) throws InterruptedException {
+		int retryCount = 0;
+		while (retryCount++ < WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT) {
+			try {
+				InternetUtil.openConnection(new URL(url), configuration.getSidplay2Section());
+				// Give video production a jump start
+				Thread.sleep(1000);
+				return;
+			} catch (InterruptedException e) {
+				throw e;
+			} catch (IOException e) {
+				// connection not yet established, retry!
+				Thread.sleep(500);
+			}
+		}
 	}
 
 }
