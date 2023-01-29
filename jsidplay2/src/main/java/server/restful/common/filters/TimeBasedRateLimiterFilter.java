@@ -38,11 +38,10 @@ public class TimeBasedRateLimiterFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
 			throws IOException, ServletException {
-		RequestTimer timer = requestTimers.compute(servletRequest.getRemoteAddr(), (clientIp, requestTimer) -> {
+		final RequestTimer timer = requestTimers.compute(servletRequest.getRemoteAddr(), (clientIp, requestTimer) -> {
 			if (requestTimer == null) {
 				requestTimer = new RequestTimer(clientIp);
 			}
-			requestTimer.increment();
 			return requestTimer;
 		});
 		if (timer.increment() < maxRequestsPerMinute) {
@@ -71,7 +70,7 @@ public class TimeBasedRateLimiterFilter implements Filter {
 		}
 
 		public int increment() {
-			return ++count;
+			return count++;
 		}
 
 		public void cancel() {
