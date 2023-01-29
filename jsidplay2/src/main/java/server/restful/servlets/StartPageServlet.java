@@ -8,8 +8,8 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.MAX_REQUESTS_PER_MINUTE;
 import static server.restful.common.IServletSystemProperties.MIN_TIME_BETWEEN_REQUESTS;
-import static server.restful.common.filters.TimeDistanceBasedRateLimiterFilter.FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS;
 import static server.restful.common.filters.TimeBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE;
+import static server.restful.common.filters.TimeDistanceBasedRateLimiterFilter.FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +24,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 import server.restful.common.filters.TimeBasedRateLimiterFilter;
+import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")

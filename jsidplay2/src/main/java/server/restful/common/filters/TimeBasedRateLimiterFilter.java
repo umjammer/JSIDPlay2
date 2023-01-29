@@ -38,12 +38,14 @@ public class TimeBasedRateLimiterFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
 			throws IOException, ServletException {
-		String clientIp = servletRequest.getRemoteAddr();
-		requestTimers.putIfAbsent(clientIp, new RequestTimer());
-		RequestTimer timer = requestTimers.get(clientIp);
-
-		if (timer.getCount() < maxRequestsPerMinute) {
-			timer.increment();
+		RequestTimer timer = requestTimers.compute(servletRequest.getRemoteAddr(), (clientIp, requestTimer) -> {
+			if (requestTimer == null) {
+				requestTimer = new RequestTimer(clientIp);
+			}
+			requestTimer.increment();
+			return requestTimer;
+		});
+		if (timer.increment() < maxRequestsPerMinute) {
 			chain.doFilter(servletRequest, servletResponse);
 		} else {
 			// handle limit case, e.g. return status code 429 (Too Many Requests)
@@ -57,21 +59,19 @@ public class TimeBasedRateLimiterFilter implements Filter {
 		requestTimers.values().forEach(RequestTimer::cancel);
 	}
 
-	private static class RequestTimer {
+	private class RequestTimer {
+		private final String clientIp;
+		private final Timer timer;
 		private int count;
-		private Timer timer = new Timer();
 
-		public RequestTimer() {
-			timer.scheduleAtFixedRate(new RequestTimerTask(), TimeUnit.MINUTES.toMillis(1),
-					TimeUnit.MINUTES.toMillis(1));
+		public RequestTimer(String clientIp) {
+			this.clientIp = clientIp;
+			this.timer = new Timer(TimeBasedRateLimiterFilter.class.getSimpleName() + "-Timer-" + clientIp, false);
+			timer.schedule(new RequestTimerTask(), TimeUnit.MINUTES.toMillis(1));
 		}
 
-		public int getCount() {
-			return count;
-		}
-
-		public void increment() {
-			count++;
+		public int increment() {
+			return ++count;
 		}
 
 		public void cancel() {
@@ -79,9 +79,10 @@ public class TimeBasedRateLimiterFilter implements Filter {
 		}
 
 		private class RequestTimerTask extends TimerTask {
+
 			@Override
 			public void run() {
-				count = 0;
+				requestTimers.remove(clientIp);
 			}
 		}
 	}
