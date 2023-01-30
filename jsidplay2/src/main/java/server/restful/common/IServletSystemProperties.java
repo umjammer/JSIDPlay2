@@ -249,4 +249,9 @@ public interface IServletSystemProperties {
 	 */
 	int CACHE_SIZE = valueOf(getProperty("jsidplay2.whatssid.cache.size", "60000"));
 
+	/**
+	 * Show uncaught exception handlers with full exceptions
+	 */
+	boolean UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS = Boolean
+			.valueOf(getProperty("jsidplay2.uncaught.exceptionhandler.exceptions", "false"));
 }

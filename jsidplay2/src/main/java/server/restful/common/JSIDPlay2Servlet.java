@@ -6,6 +6,7 @@ import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
+import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -127,20 +128,20 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		log(thread() + remoteAddr(request) + localAddr(request) + request(request) + memory());
 	}
 
-	protected void info(String msg) {
-		log(thread() + msg);
+	protected void info(String msg, Thread... parentThreads) {
+		log(threads(parentThreads) + thread() + msg);
 	}
 
-	protected void error(Throwable t) {
-		log(thread() + t.getMessage(), t);
+	protected void error(Throwable t, Thread... parentThreads) {
+		log(threads(parentThreads) + thread() + t.getMessage(), t);
 	}
 
-	protected void uncaughtExceptionHandler(Throwable t, List<Thread> parentThreads, Thread thread) {
-		log(threads(parentThreads) + thread(thread) + t.getMessage());
+	protected void uncaughtExceptionHandler(Throwable t, Thread thread, Thread... parentThreads) {
+		log(threads(parentThreads) + thread(thread) + t.getMessage(), UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS ? t : null);
 	}
 
-	private String threads(List<Thread> threads) {
-		return threads.stream().map(this::thread)
+	private String threads(Thread... threads) {
+		return asList(threads).stream().map(this::thread)
 				.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
 	}
 

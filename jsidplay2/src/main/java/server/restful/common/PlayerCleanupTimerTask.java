@@ -80,13 +80,13 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 	}
 
 	private void quitPlayer(Map.Entry<UUID, PlayerWithStatus> entry) {
-		logger.info("CleanupPlayerTimerTask: AUTO-QUIT RTMP stream of: " + entry.getKey());
+		logger.info(String.format("CleanupPlayerTimerTask: AUTO-QUIT RTMP uuid=%s", entry.getKey()));
 		entry.getValue().quitPlayer();
 	}
 
 	private void printPlayer(Entry<UUID, PlayerWithStatus> entry) {
-		logger.info(String.format("CleanupPlayerTimerTask: RTMP stream left: %s (valid until %s)", entry.getKey(),
-				entry.getValue().getValidUntil()));
+		logger.info(String.format("CleanupPlayerTimerTask: RTMP is still running uuid=%s (valid until %s)",
+				entry.getKey(), entry.getValue().getValidUntil()));
 	}
 
 	private void deleteOutdatedTempDirectories() {

@@ -4,8 +4,6 @@ import static java.lang.Math.min;
 import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
@@ -311,11 +309,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						Thread parentThread = currentThread();
 						new Thread(() -> {
 							try {
-								info("START RTMP stream of: " + uuid);
+								info(String.format("START uuid=%s", uuid), parentThread);
 								convert2video(file, driver, servletParameters, uuid, parentThread);
-								info("END RTMP stream of: " + uuid);
+								info(String.format("END uuid=%s", uuid), parentThread);
 							} catch (IOException | SidTuneError e) {
-								log("ERROR RTMP stream of: " + uuid, e);
+								error(e, parentThread);
 							}
 						}, "RTMP").start();
 						waitUntilVideoAvailable(getVideoUrl(true, uuid));
@@ -409,11 +407,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (root != null) {
 			player.setSidDatabase(new SidDatabase(root));
 		}
-		List<Thread> parentThreads = of(currentThread()).collect(toList());
+		Thread[] parentThreads = of(currentThread()).toArray(Thread[]::new);
 
 		player.setAudioDriver(driver);
 		player.setUncaughtExceptionHandler(
-				(thread, throwable) -> uncaughtExceptionHandler(throwable, parentThreads, thread));
+				(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
 		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
@@ -465,11 +463,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		} else {
 			sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
 		}
-		List<Thread> parentThreads = concat(asList(parentThread).stream(), of(currentThread())).collect(toList());
+		Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
 
 		player.setAudioDriver(driver);
 		player.setUncaughtExceptionHandler(
-				(thread, throwable) -> uncaughtExceptionHandler(throwable, parentThreads, thread));
+				(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
 		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
