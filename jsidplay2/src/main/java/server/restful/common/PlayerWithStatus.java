@@ -170,8 +170,8 @@ public final class PlayerWithStatus {
 					.filter(File::isFile).collect(Collectors.toList());
 			Iterator<File> fileIterator = filesList.stream().sorted().iterator();
 			while (fileIterator.hasNext()) {
-				File siblingFile = fileIterator.next();
-				if (siblingFile.equals(diskImage) && fileIterator.hasNext()) {
+				File file = fileIterator.next();
+				if (file.equals(diskImage) && fileIterator.hasNext()) {
 					return fileIterator.next();
 				}
 			}
