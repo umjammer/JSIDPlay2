@@ -1,6 +1,8 @@
 package server.restful.common;
 
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
@@ -22,7 +24,6 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -212,7 +213,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 								.filter(v -> !"null".equals(v) && !"undefined".equals(v))
 								.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
 						.flatMap(Function.identity()),
-				Optional.ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
+				ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
 	}
 
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
@@ -362,7 +363,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			if (result == null) {
 				return;
 			}
-			Optional<String> optionalContentType = Optional.ofNullable(request.getHeader(HttpHeaders.ACCEPT))
+			Optional<String> optionalContentType = ofNullable(request.getHeader(HttpHeaders.ACCEPT))
 					.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
 			if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
 				response.setContentType(MIME_TYPE_JSON.toString());
@@ -380,7 +381,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			throws IOException {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
-				Optional.ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
+				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
@@ -389,7 +390,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			throws JsonProcessingException, IOException {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
-				Optional.ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
+				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			out.print(string);
 		}
 	}
@@ -483,13 +484,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 		String virtualParentFile = virtualCollectionRoot + PathUtils.getCollectionName(rootFile, parentFile);
 
-		return Stream
-				.concat(Stream.of(virtualParentFile + "/../"),
-						Arrays.stream(Optional
-								.ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
-								.orElse(new File[0])).sorted(new FileComparator())
-								.map(file -> new File(virtualParentFile, file.getName())
-										+ (file.isDirectory() ? "/" : "")))
+		return concat(of(virtualParentFile + "/../"),
+				stream(ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
+						.orElse(new File[0])).sorted(new FileComparator())
+						.map(file -> new File(virtualParentFile, file.getName()) + (file.isDirectory() ? "/" : "")))
 				.collect(Collectors.toList());
 	}
 

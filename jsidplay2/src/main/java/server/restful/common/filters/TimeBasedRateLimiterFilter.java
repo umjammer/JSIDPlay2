@@ -56,6 +56,7 @@ public class TimeBasedRateLimiterFilter implements Filter {
 	@Override
 	public void destroy() {
 		requestTimers.values().forEach(RequestTimer::cancel);
+		requestTimers.clear();
 	}
 
 	private class RequestTimer {

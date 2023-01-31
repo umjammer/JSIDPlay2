@@ -49,4 +49,10 @@ public final class TimeDistanceBasedRateLimiterFilter implements Filter {
 			response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
 		}
 	}
+
+	@Override
+	public void destroy() {
+		remoteAddrMap.clear();
+	}
+
 }
