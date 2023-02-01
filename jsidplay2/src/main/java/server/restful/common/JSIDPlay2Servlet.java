@@ -141,9 +141,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		log(threads(parentThreads) + thread(thread) + t.getMessage(), UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS ? t : null);
 	}
 
-	private String threads(Thread... threads) {
-		return asList(threads).stream().map(this::thread)
-				.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
+	private StringBuilder threads(Thread... threads) {
+		return of(threads).map(this::thread).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
 	}
 
 	private String thread() {

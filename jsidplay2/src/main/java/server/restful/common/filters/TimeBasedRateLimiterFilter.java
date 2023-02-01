@@ -56,18 +56,28 @@ public class TimeBasedRateLimiterFilter implements Filter {
 	@Override
 	public void destroy() {
 		requestTimers.values().forEach(RequestTimer::cancel);
-		requestTimers.clear();
 	}
 
 	private class RequestTimer {
-		private final String clientIp;
 		private final Timer timer;
 		private int count;
 
-		public RequestTimer(String clientIp) {
-			this.clientIp = clientIp;
+		private RequestTimer(String clientIp) {
 			this.timer = new Timer(TimeBasedRateLimiterFilter.class.getSimpleName() + "-Timer-" + clientIp, false);
-			timer.schedule(new RequestTimerTask(), TimeUnit.MINUTES.toMillis(1));
+			timer.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					cancel();
+				}
+
+				@Override
+				public boolean cancel() {
+					requestTimers.remove(clientIp);
+					return super.cancel();
+				}
+
+			}, TimeUnit.MINUTES.toMillis(1));
 		}
 
 		public int increment() {
@@ -76,14 +86,6 @@ public class TimeBasedRateLimiterFilter implements Filter {
 
 		public void cancel() {
 			timer.cancel();
-		}
-
-		private class RequestTimerTask extends TimerTask {
-
-			@Override
-			public void run() {
-				requestTimers.remove(clientIp);
-			}
 		}
 	}
 }
