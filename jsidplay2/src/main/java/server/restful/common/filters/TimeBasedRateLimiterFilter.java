@@ -81,7 +81,7 @@ public class TimeBasedRateLimiterFilter implements Filter {
 		}
 
 		public int increment() {
-			return count++;
+			return ++count;
 		}
 
 		public void cancel() {
