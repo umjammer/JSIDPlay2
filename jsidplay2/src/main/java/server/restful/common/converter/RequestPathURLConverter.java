@@ -28,9 +28,6 @@ public final class RequestPathURLConverter extends URLConverter {
 
 	@Override
 	public URL convert(String value) {
-		if (value.startsWith("/")) {
-			value = value.substring(1);
-		}
-		return super.convert(value.replaceFirst("/", "//"));
+		return super.convert(value.replaceFirst("/(https?):/", "$1://"));
 	}
 }
