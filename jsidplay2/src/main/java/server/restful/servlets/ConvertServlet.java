@@ -50,6 +50,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -316,7 +317,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								error(e, parentThread);
 							}
 						}, "RTMP").start();
-						waitUntilVideoAvailable(getVideoUrl(true, uuid));
+						waitUntilVideoIsAvailable(uuid);
 
 						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
 						response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
@@ -531,14 +532,15 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private void waitUntilVideoAvailable(String url) throws InterruptedException {
+	private void waitUntilVideoIsAvailable(UUID uuid) throws InterruptedException, MalformedURLException {
+		URL url = new URL(getVideoUrl(true, uuid));
 		int retryCount = 0;
 		while (retryCount++ < WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT) {
 			try {
-				InternetUtil.openConnection(new URL(url), configuration.getSidplay2Section());
+				InternetUtil.openConnection(url, configuration.getSidplay2Section());
 				// Give video production a jump start
 				Thread.sleep(1000);
-				return;
+				break;
 			} catch (InterruptedException e) {
 				throw e;
 			} catch (IOException e) {
