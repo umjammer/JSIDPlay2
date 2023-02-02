@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
@@ -211,7 +212,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 								.filter(v -> !"null".equals(v) && !"undefined".equals(v))
 								.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
 						.flatMap(Function.identity()),
-				Stream.ofNullable(request.getPathInfo())).toArray(String[]::new);
+				ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
 	}
 
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
