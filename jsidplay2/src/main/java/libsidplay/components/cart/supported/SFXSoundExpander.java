@@ -1,7 +1,6 @@
 package libsidplay.components.cart.supported;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.IntConsumer;
 
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
@@ -47,57 +46,22 @@ public class SFXSoundExpander {
 
 	private EventScheduler context;
 
-	public SFXSoundExpander(EventScheduler context) {
+	public SFXSoundExpander(EventScheduler context, CPUClock clock) {
 		this.context = context;
+		sfx_soundexpander_sound_machine_init((int) clock.getScreenRefresh());
 	}
-
-	private int sound_audio_mix(int ch1, int ch2) {
-		if (ch1 == 0) {
-			return ch2;
-		}
-
-		if (ch2 == 0) {
-			return ch1;
-		}
-
-		if ((ch1 > 0 && ch2 < 0) || (ch1 < 0 && ch2 > 0)) {
-			return ch1 + ch2;
-		}
-
-		if (ch1 > 0) {
-			return ((ch1 + ch2) - (ch1 * ch2 / 32768));
-		}
-
-		return -((-(ch1) + -(ch2)) - (-(ch1) * -(ch2) / 32768));
-	}
-
-	///
-	////
-	/////
 
 	/* ------------------------------------------------------------------------- */
 
-	public int sfx_soundexpander_sound_machine_calculate_samples(int[] pbuf, int samples, int sound_output_channels) {
-		List<Integer> bufferPointer = new ArrayList<>(samples);
-
+	public void sfx_soundexpander_sound_machine_calculate_samples(IntConsumer sampleBuffer, int samples) {
 		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
-			fmOpl.ym3812_update_one(YM3812_chip, bufferPointer::add, samples);
+			fmOpl.ym3812_update_one(YM3812_chip, sampleBuffer, samples);
 		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
-			fmOpl.ym3526_update_one(YM3526_chip, bufferPointer::add, samples);
+			fmOpl.ym3526_update_one(YM3526_chip, sampleBuffer, samples);
 		}
-
-		for (int i = 0; i < samples; i++) {
-			pbuf[i * sound_output_channels] = sound_audio_mix(pbuf[i * sound_output_channels], bufferPointer.get(i));
-			if (sound_output_channels > 1) {
-				pbuf[(i * sound_output_channels) + 1] = sound_audio_mix(pbuf[(i * sound_output_channels) + 1],
-						bufferPointer.get(i));
-			}
-		}
-
-		return samples;
 	}
 
-	public int sfx_soundexpander_sound_machine_init(int speed, int cycles_per_sec) {
+	private int sfx_soundexpander_sound_machine_init(int speed) {
 		if (sfx_soundexpander_chip == 3812) {
 			if (YM3812_chip != null) {
 				fmOpl.ym3812_shutdown(YM3812_chip);
@@ -126,8 +90,6 @@ public class SFXSoundExpander {
 	}
 
 	public void sfx_soundexpander_sound_machine_store(int addr, int val) {
-//	    snd.command = val;
-
 		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
 			fmOpl.ym3812_write(YM3812_chip, 1, val);
 		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
