@@ -77,23 +77,24 @@ public class SFXSoundExpander {
 
 	/* ------------------------------------------------------------------------- */
 
-	public int sfx_soundexpander_sound_machine_calculate_samples(int[] pbuf, int nr, int soc, int scc, int[] delta_t) {
-		List<Integer> bufferPointer = new ArrayList<>(nr);
+	public int sfx_soundexpander_sound_machine_calculate_samples(int[] pbuf, int samples, int sound_output_channels) {
+		List<Integer> bufferPointer = new ArrayList<>(samples);
 
 		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
-			fmOpl.ym3812_update_one(YM3812_chip, bufferPointer::add, nr);
+			fmOpl.ym3812_update_one(YM3812_chip, bufferPointer::add, samples);
 		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
-			fmOpl.ym3526_update_one(YM3526_chip, bufferPointer::add, nr);
+			fmOpl.ym3526_update_one(YM3526_chip, bufferPointer::add, samples);
 		}
 
-		for (int i = 0; i < nr; i++) {
-			pbuf[i * soc] = sound_audio_mix(pbuf[i * soc], bufferPointer.get(i));
-			if (soc > 1) {
-				pbuf[(i * soc) + 1] = sound_audio_mix(pbuf[(i * soc) + 1], bufferPointer.get(i));
+		for (int i = 0; i < samples; i++) {
+			pbuf[i * sound_output_channels] = sound_audio_mix(pbuf[i * sound_output_channels], bufferPointer.get(i));
+			if (sound_output_channels > 1) {
+				pbuf[(i * sound_output_channels) + 1] = sound_audio_mix(pbuf[(i * sound_output_channels) + 1],
+						bufferPointer.get(i));
 			}
 		}
 
-		return nr;
+		return samples;
 	}
 
 	public int sfx_soundexpander_sound_machine_init(int speed, int cycles_per_sec) {

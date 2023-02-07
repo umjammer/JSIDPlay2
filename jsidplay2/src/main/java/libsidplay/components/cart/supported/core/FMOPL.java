@@ -1696,21 +1696,6 @@ public abstract class FMOPL {
 		return YM3812;
 	}
 
-	public int connect1_is_output0(int connect) {
-		if (connect == output[0]) {
-			return 1;
-		}
-		return 0;
-	}
-
-	public void set_connect1(FmOPL chip, int x, int y, int output0) {
-		if (output0 != 0) {
-			chip.pCh[x].slot[y].connect1 = output[0];
-		} else {
-			chip.pCh[x].slot[y].connect1 = phase_modulation;
-		}
-	}
-
 	public void ym3812_shutdown(FmOPL chip) {
 		OPLDestroy(chip);
 	}
@@ -1731,10 +1716,6 @@ public abstract class FMOPL {
 	public byte ym3812_peek(FmOPL chip, int a) {
 		/* YM3812 always returns bit2 and bit1 in HIGH state */
 		return (byte) (OPLRead(chip, a) | 0x06);
-	}
-
-	public int ym3812_timer_over(FmOPL chip, int c) {
-		return OPLTimerOver(chip, c);
 	}
 
 	/*
@@ -1822,10 +1803,6 @@ public abstract class FMOPL {
 	public byte ym3526_peek(FmOPL chip, int a) {
 		/* YM3526 always returns bit2 and bit1 in HIGH state */
 		return (byte) (OPLRead(chip, a) | 0x06);
-	}
-
-	public int ym3526_timer_over(FmOPL chip, int c) {
-		return OPLTimerOver(chip, c);
 	}
 
 	/*
