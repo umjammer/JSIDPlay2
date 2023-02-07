@@ -8,13 +8,12 @@ import libsidplay.common.EventScheduler;
 import libsidplay.components.cart.supported.core.FMOPL;
 import libsidplay.components.cart.supported.core.FMOPL.FmOPL;
 
-@SuppressWarnings("unused")
 public class SFXSoundExpander {
 
 	/* Flag: What type of ym chip is used? */
 	private int sfx_soundexpander_chip = 3526;
 
-	private int sfx_soundexpander_sound_chip_offset = 0;
+//	private int sfx_soundexpander_sound_chip_offset = 0;
 
 	private FMOPL fmOpl = new FMOPL() {
 
@@ -48,20 +47,7 @@ public class SFXSoundExpander {
 
 	public SFXSoundExpander(EventScheduler context, CPUClock clock) {
 		this.context = context;
-		sfx_soundexpander_sound_machine_init((int) clock.getScreenRefresh());
-	}
-
-	/* ------------------------------------------------------------------------- */
-
-	public void sfx_soundexpander_sound_machine_calculate_samples(IntConsumer sampleBuffer, int samples) {
-		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
-			fmOpl.ym3812_update_one(YM3812_chip, sampleBuffer, samples);
-		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
-			fmOpl.ym3526_update_one(YM3526_chip, sampleBuffer, samples);
-		}
-	}
-
-	private int sfx_soundexpander_sound_machine_init(int speed) {
+		int speed = (int) clock.getScreenRefresh();
 		if (sfx_soundexpander_chip == 3812) {
 			if (YM3812_chip != null) {
 				fmOpl.ym3812_shutdown(YM3812_chip);
@@ -73,9 +59,24 @@ public class SFXSoundExpander {
 			}
 			YM3526_chip = fmOpl.ym3526_init(3579545, speed);
 		}
-//		snd.command = 0;
+	}
 
-		return 1;
+	/* ------------------------------------------------------------------------- */
+
+	public void sfx_soundexpander_sound_reset(CPUClock cpu_clk) {
+		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
+			fmOpl.ym3812_reset_chip(YM3812_chip);
+		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
+			fmOpl.ym3526_reset_chip(YM3526_chip);
+		}
+	}
+
+	public void sfx_soundexpander_sound_machine_calculate_samples(IntConsumer sampleBuffer, int samples) {
+		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
+			fmOpl.ym3812_update_one(YM3812_chip, sampleBuffer, samples);
+		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
+			fmOpl.ym3526_update_one(YM3526_chip, sampleBuffer, samples);
+		}
 	}
 
 	public void sfx_soundexpander_sound_machine_close() {
@@ -88,6 +89,8 @@ public class SFXSoundExpander {
 			YM3812_chip = null;
 		}
 	}
+
+	/* --------------------------------------------------------------------- */
 
 	public void sfx_soundexpander_sound_machine_store(int addr, int val) {
 		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
@@ -107,17 +110,9 @@ public class SFXSoundExpander {
 		return 0;
 	}
 
-	public void sfx_soundexpander_sound_reset(CPUClock cpu_clk) {
-		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
-			fmOpl.ym3812_reset_chip(YM3812_chip);
-		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
-			fmOpl.ym3526_reset_chip(YM3526_chip);
-		}
-	}
-
 	/* --------------------------------------------------------------------- */
 
-	private void sfx_soundexpander_sound_store(int addr, int value) {
+	public void sfx_soundexpander_sound_store(int addr, int value) {
 		if (addr == 0x40) {
 			if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
 				fmOpl.ym3812_write(YM3812_chip, 0, value);
@@ -130,7 +125,7 @@ public class SFXSoundExpander {
 		}
 	}
 
-	private int sfx_soundexpander_sound_read(int addr) {
+	public int sfx_soundexpander_sound_read(int addr) {
 		int value = 0;
 
 //		sfx_soundexpander_sound_device.io_source_valid = 0;
@@ -145,7 +140,7 @@ public class SFXSoundExpander {
 		return value;
 	}
 
-	private int sfx_soundexpander_sound_peek(int addr) {
+	public int sfx_soundexpander_sound_peek(int addr) {
 		int value = 0;
 
 		if (addr == 0x40) {
@@ -158,12 +153,10 @@ public class SFXSoundExpander {
 		return value;
 	}
 
+	/* --------------------------------------------------------------------- */
+
 	/* No piano keyboard is emulated currently, so we return 0xff */
-	private byte sfx_soundexpander_piano_read(int addr) {
-//		sfx_soundexpander_piano_device.io_source_valid = 0;
-		if ((addr & 16) == 0 && (addr & 8) == 8) {
-//			sfx_soundexpander_piano_device.io_source_valid = 1;
-		}
+	public byte sfx_soundexpander_piano_read(int addr) {
 		return (byte) 0xff;
 	}
 
