@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.persistence.QueryTimeoutException;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -87,7 +89,9 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 				info(valueOf(musicInfoWithConfidence) + " (cached)");
 			}
 			setOutput(request, response, musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
-
+		} catch (QueryTimeoutException qte) {
+			warn(qte);
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, qte.getMessage());
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
