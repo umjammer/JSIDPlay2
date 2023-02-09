@@ -624,7 +624,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	public final double time() {
 		final EventScheduler c = c64.getEventScheduler();
-		return c.getTime(Phase.PHI2) / c.getCyclesPerSecond();
+		long initDelay = SidTune.getInitDelay(tune);
+		return (c.getTime(Phase.PHI2) - initDelay) / c.getCyclesPerSecond();
 	}
 
 	/**
