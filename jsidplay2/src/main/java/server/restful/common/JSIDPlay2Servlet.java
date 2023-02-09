@@ -133,8 +133,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		log(threads(parentThreads) + thread() + msg);
 	}
 
-	protected void warn(Throwable t, Thread... parentThreads) {
-		log(threads(parentThreads) + thread() + t.getMessage(), null);
+	protected void warn(String msg, Thread... parentThreads) {
+		log(threads(parentThreads) + thread() + msg, null);
 	}
 
 	protected void error(Throwable t, Thread... parentThreads) {
