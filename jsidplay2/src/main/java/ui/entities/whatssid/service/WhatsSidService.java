@@ -3,7 +3,7 @@ package ui.entities.whatssid.service;
 import static libsidplay.config.IWhatsSidSystemProperties.QUERY_TIMEOUT;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -139,7 +139,7 @@ public class WhatsSidService implements FingerPrintingDataSource {
 				Root<HashTable> root = query.from(HashTable.class);
 
 				@SuppressWarnings("rawtypes")
-				ParameterExpression<List> parameter = cb.parameter(List.class);
+				ParameterExpression<Collection> parameter = cb.parameter(Collection.class);
 				query.select(root).where(root.get(HashTable_.hash).in(parameter));
 
 				em.createQuery(query).setParameter(parameter, Arrays.asList(intArrayBean.getHash()))
