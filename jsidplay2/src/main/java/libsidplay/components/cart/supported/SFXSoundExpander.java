@@ -1,15 +1,26 @@
 package libsidplay.components.cart.supported;
 
+import java.io.DataInputStream;
+import java.nio.Buffer;
 import java.util.function.IntConsumer;
+
+import javax.sound.sampled.LineUnavailableException;
 
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
+import libsidplay.common.Event.Phase;
 import libsidplay.common.EventScheduler;
+import libsidplay.components.cart.Cartridge;
 import libsidplay.components.cart.supported.core.FMOPL;
 import libsidplay.components.cart.supported.core.FMOPL.FmOPL;
+import libsidplay.components.pla.Bank;
+import libsidplay.components.pla.PLA;
+import sidplay.audio.AudioConfig;
+import sidplay.audio.JavaSound;
 
-public class SFXSoundExpander {
+public class SFXSoundExpander extends Cartridge {
 
+	private static final int BUFFER_SIZE = 8;
 	/* Flag: What type of ym chip is used? */
 	private int sfx_soundexpander_chip = 3526;
 
@@ -38,6 +49,51 @@ public class SFXSoundExpander {
 		}
 	};
 
+	private final class SFXSoundExpanderMixerEvent extends Event {
+
+		private SFXSoundExpanderMixerEvent(String name) {
+			super(name);
+		}
+
+		@Override
+		public void event() throws InterruptedException {
+			clock();
+			context.schedule(this, BUFFER_SIZE);
+		}
+	}
+
+	public void clock() {
+		int cycles = clocksSinceLastAccess();
+		if (cycles == 0) {
+			return;
+		}
+		sfx_soundexpander_sound_machine_calculate_samples(sample -> {
+			// SOUND OUTPUT
+			if (!javaSound.buffer().putShort((short) sample).hasRemaining()) {
+				try {
+					javaSound.write();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				((Buffer) javaSound.buffer()).clear();
+			}
+
+		}, cycles);
+	}
+
+	/**
+	 * Last time chip was accessed.
+	 */
+	protected long lastTime;
+
+	protected int clocksSinceLastAccess() {
+		final long now = context.getTime(Event.Phase.PHI2);
+		int diff = (int) (now - lastTime);
+		lastTime = now;
+		return diff;
+	}
+
 	private FmOPL YM3526_chip = null;
 	private FmOPL YM3812_chip = null;
 
@@ -45,8 +101,64 @@ public class SFXSoundExpander {
 
 	private EventScheduler context;
 
-	public SFXSoundExpander(EventScheduler context, CPUClock clock) {
-		this.context = context;
+	private CPUClock clock;
+
+	private JavaSound javaSound = new JavaSound();
+
+	/**
+	 * Mixer clocking SID chips and producing audio output.
+	 */
+	private final SFXSoundExpanderMixerEvent mixerAudio = new SFXSoundExpanderMixerEvent("SFXExpanderAudio");
+
+	public SFXSoundExpander(DataInputStream dis, PLA pla, int sizeKB) {
+		super(pla);
+		this.context = pla.getCPU().getEventScheduler();
+		this.clock = pla.getCPUClock();
+
+		init();
+
+		try {
+			javaSound.close();
+			AudioConfig audioConfig = new AudioConfig(44100, 2, BUFFER_SIZE);
+			javaSound.open(audioConfig, null);
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		lastTime = context.getTime(Phase.PHI2);
+		clocksSinceLastAccess();
+		context.schedule(mixerAudio, 0, Event.Phase.PHI2);
+	}
+
+	@Override
+	public Bank getIO2() {
+		return io2Bank;
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		pla.setGameExrom(false, false);
+	}
+
+	private final Bank io2Bank = new Bank() {
+
+		@Override
+		public byte read(int address) {
+			clock();
+			return pla.getDisconnectedBusBank().read(address);
+		}
+
+		@Override
+		public void write(int address, byte value) {
+			clock();
+			sfx_soundexpander_sound_store(address, value);
+		}
+	};
+
+	/* ------------------------------------------------------------------------- */
+
+	private void init() {
 		int speed = (int) clock.getScreenRefresh();
 		if (sfx_soundexpander_chip == 3812) {
 			if (YM3812_chip != null) {
@@ -60,8 +172,6 @@ public class SFXSoundExpander {
 			YM3526_chip = fmOpl.ym3526_init(3579545, speed);
 		}
 	}
-
-	/* ------------------------------------------------------------------------- */
 
 	public void sfx_soundexpander_sound_reset(CPUClock cpu_clk) {
 		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
@@ -121,6 +231,8 @@ public class SFXSoundExpander {
 			}
 		}
 		if (addr == 0x50) {
+			sfx_soundexpander_sound_machine_store(addr, value);
+			// TODO really?
 //			sound_store(sfx_soundexpander_sound_chip_offset, value, 0);
 		}
 	}
