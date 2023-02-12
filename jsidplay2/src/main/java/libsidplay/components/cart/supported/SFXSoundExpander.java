@@ -113,7 +113,8 @@ public class SFXSoundExpander extends Cartridge {
 	public SFXSoundExpander(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
 		this.context = pla.getCPU().getEventScheduler();
-		this.clock = pla.getCPUClock();
+		// TODO
+//		this.clock = pla.getCPUClock();
 
 		init();
 
