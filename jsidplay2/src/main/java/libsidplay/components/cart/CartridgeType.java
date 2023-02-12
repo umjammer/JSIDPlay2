@@ -7,7 +7,7 @@ package libsidplay.components.cart;
  *
  */
 public enum CartridgeType {
-	GEORAM, REU,
+	GEORAM, REU, SOUNDEXPANDER,
 	/**
 	 * CRT cartridge header auto detection for various cartridge types.
 	 */
