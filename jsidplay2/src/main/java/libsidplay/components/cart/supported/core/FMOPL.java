@@ -240,7 +240,7 @@ public abstract class FMOPL {
 		off += 16;
 
 		/* rates 00-12 */
-		for (int i = 12; i >= 0; i++) {
+		for (int i = 12; i >= 0; i--) {
 			for (int j = 0; j < 4; j++) {
 				eg_rate_shift[off + i * 4 + j] = P(i);
 			}
@@ -445,7 +445,7 @@ public abstract class FMOPL {
 			OPL.lfo_am_cnt -= ((long) LFO_AM_TAB_ELEMENTS << LFO_SH);
 		}
 
-		tmp = lfo_am_table[OPL.lfo_am_cnt >> LFO_SH];
+		tmp = lfo_am_table[(int) (OPL.lfo_am_cnt >> LFO_SH)];
 
 		if ((OPL.lfo_am_depth) != 0) {
 			LFO_AM = tmp;
@@ -454,7 +454,7 @@ public abstract class FMOPL {
 		}
 
 		OPL.lfo_pm_cnt += OPL.lfo_pm_inc;
-		LFO_PM = ((OPL.lfo_pm_cnt >> LFO_SH) & 7) | OPL.lfo_pm_depth_range;
+		LFO_PM = ((int) (OPL.lfo_pm_cnt >> LFO_SH) & 7) | OPL.lfo_pm_depth_range;
 	}
 
 	/* advance to next sample */
@@ -769,6 +769,12 @@ public abstract class FMOPL {
 		private int ksl_base;
 		/* key code (for key scaling) **/
 		private int kcode;
+
+		public OPLCh() {
+			for (int i = 0; i < slot.length; i++) {
+				slot[i] = new OPLSlot();
+			}
+		}
 	}
 
 	/* OPL state */
@@ -798,9 +804,9 @@ public abstract class FMOPL {
 		/* LFO */
 		private int lfo_am_depth;
 		private int lfo_pm_depth_range;
-		private int lfo_am_cnt;
+		private long lfo_am_cnt;
 		private int lfo_am_inc;
-		private int lfo_pm_cnt;
+		private long lfo_pm_cnt;
 		private int lfo_pm_inc;
 
 		/* 23 bit noise shift register **/
@@ -839,6 +845,12 @@ public abstract class FMOPL {
 		private long rate;
 		/* frequency base **/
 		private double freqbase;
+
+		public FmOPL() {
+			for (int i = 0; i < pCh.length; i++) {
+				pCh[i] = new OPLCh();
+			}
+		}
 	};
 
 	/* calculate rhythm */
