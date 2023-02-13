@@ -9,8 +9,8 @@ import server.restful.common.converter.RequestPathURLConverter;
 import server.restful.common.converter.WebResourceConverter;
 
 /**
- * <B>Note:</B> Main parameters have been annotated on field level to support a
- * better usage message.
+ * <B>Note:</B> Main parameters have been annotated on field level on purpose to
+ * support a better usage message.
  * 
  * @author ken
  *

@@ -146,7 +146,7 @@ public interface IServletSystemProperties {
 	int MIN_TIME_BETWEEN_REQUESTS = valueOf(getProperty("jsidplay2.start_page.min.time.between.requests", "500"));
 
 	/**
-	 * Mimum requests per minute of StartPageServlet
+	 * Maximum requests per minute of StartPageServlet
 	 */
 	int MAX_REQUESTS_PER_MINUTE = valueOf(getProperty("jsidplay2.start_page.max.requests.per.minute", "30"));
 

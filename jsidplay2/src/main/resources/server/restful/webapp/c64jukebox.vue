@@ -1633,7 +1633,6 @@
 										<b-form-group :label="$t('convertMessages.reuSize')">
 											<b-form-radio-group v-model="convertOptions.reuSize">
 												<b-form-radio value="null">Auto</b-form-radio>
-												<b-form-radio value="64">64kb</b-form-radio>
 												<b-form-radio value="128">128kb</b-form-radio>
 												<b-form-radio value="256">256kb</b-form-radio>
 												<b-form-radio value="512">512kb</b-form-radio>
