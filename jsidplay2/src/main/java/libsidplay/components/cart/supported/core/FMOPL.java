@@ -26,8 +26,6 @@ import libsidplay.common.Event;
  *
  */
 public abstract class FMOPL {
-	/* select output bits size of output : 8 or 16 */
-//	private static final int OPL_SAMPLE_BITS = 16;
 
 	private static final int FINAL_SH = 0;
 
@@ -37,8 +35,6 @@ public abstract class FMOPL {
 	private static final int EG_SH = 16;
 	/* 8.24 fixed point (LFO calculations) */
 	private static final int LFO_SH = 24;
-	/* 16.16 fixed point (timers calculations) */
-//	private static final int TIMER_SH = 16;
 
 	private static final int FREQ_MASK = ((1 << FREQ_SH) - 1);
 
@@ -136,14 +132,13 @@ public abstract class FMOPL {
 	}
 
 	private static double sl_tab[];
-
 	{
 		sl_tab = new double[16];
 		for (int i = 0; i < 15; i++) {
 			sl_tab[i] = SC(i);
 		}
 		sl_tab[15] = SC(31);
-	};
+	}
 
 	private static final int RATE_STEPS = (8);
 
@@ -176,7 +171,6 @@ public abstract class FMOPL {
 
 	/* note that there is no O(13) in this table - it's directly in the code */
 	public static int eg_rate_select[];
-
 	{
 		/* Envelope Generator rates (16 + 64 rates + 16 RKS) */
 		eg_rate_select = new int[16 + 64 + 16];
@@ -352,30 +346,29 @@ public abstract class FMOPL {
 	};
 
 	/* lock level of common table */
-	private static int num_lock = 0;
+	private int num_lock = 0;
 
-	private static FmOPL cur_chip = null; /* current chip pointer */
-	private static OPLSlot SLOT7_1, SLOT7_2, SLOT8_1, SLOT8_2;
+	private FmOPL cur_chip = null; /* current chip pointer */
+	private OPLSlot SLOT7_1, SLOT7_2, SLOT8_1, SLOT8_2;
 
-	private static int phase_modulation; /* phase modulation input (SLOT 2) */
-	private static int output[] = new int[1];
+	private int phase_modulation; /* phase modulation input (SLOT 2) */
+	private int output[] = new int[1];
 
-	private static int LFO_AM;
-	private static int LFO_PM;
+	private int LFO_AM;
+	private int LFO_PM;
 
 	/* --------------------------------------------------------------------- */
 	/* timer support functions */
 
-	private static long fmopl_timer_80 = 0;
-	private static long fmopl_timer_320 = 0;
+	private long fmopl_timer_80 = 0;
+	private long fmopl_timer_320 = 0;
 
-//	private void fmopl_set_machine_parameter(long clock_rate) {
-//		fmopl_timer_80 = (long) (clock_rate * 80 / 1000000);
-//		fmopl_timer_320 = (long) (clock_rate * 320 / 1000000);
-//	}
+	public void fmopl_set_machine_parameter(long clock_rate) {
+		fmopl_timer_80 = clock_rate * 80 / 1000000;
+		fmopl_timer_320 = clock_rate * 320 / 1000000;
+	}
 
-	private void fmopl_alarm_A(long offset, FmOPL data) {
-		FmOPL OPL = data;
+	private void fmopl_alarm_A(long offset, FmOPL OPL) {
 		long new_start = maincpu_clk() - offset + ((256 - OPL.T[0]) * fmopl_timer_80);
 
 		alarm_unset(OPL.fmopl_alarm[0]);
@@ -383,8 +376,7 @@ public abstract class FMOPL {
 		OPLTimerOver(OPL, 0);
 	}
 
-	private void fmopl_alarm_B(long offset, FmOPL data) {
-		FmOPL OPL = data;
+	private void fmopl_alarm_B(long offset, FmOPL OPL) {
 		long new_start = maincpu_clk() - offset + ((256 - OPL.T[1]) * fmopl_timer_320);
 
 		alarm_unset(OPL.fmopl_alarm[1]);
@@ -394,18 +386,8 @@ public abstract class FMOPL {
 
 	/* --------------------------------------------------------------------- */
 
-	private static int limit(int val, int max, int min) {
-		if (val > max) {
-			val = max;
-		} else if (val < min) {
-			val = min;
-		}
-
-		return val;
-	}
-
 	/* status set and IRQ handling */
-	private static void OPL_STATUS_SET(FmOPL OPL, int flag) {
+	private void OPL_STATUS_SET(FmOPL OPL, int flag) {
 		/* set status flag */
 		OPL.status |= flag;
 		if ((OPL.status & 0x80) == 0) {
@@ -416,7 +398,7 @@ public abstract class FMOPL {
 	}
 
 	/* status reset and IRQ handling */
-	private static void OPL_STATUS_RESET(FmOPL OPL, int flag) {
+	private void OPL_STATUS_RESET(FmOPL OPL, int flag) {
 		/* reset status flag */
 		OPL.status &= ~flag;
 		if ((OPL.status & 0x80) != 0) {
@@ -427,7 +409,7 @@ public abstract class FMOPL {
 	}
 
 	/* IRQ mask set */
-	private static void OPL_STATUSMASK_SET(FmOPL OPL, int flag) {
+	private void OPL_STATUSMASK_SET(FmOPL OPL, int flag) {
 		OPL.statusmask = flag;
 
 		/* IRQ handling check */
@@ -436,16 +418,14 @@ public abstract class FMOPL {
 	}
 
 	/* advance LFO to next sample */
-	private static void advance_lfo(FmOPL OPL) {
-		int tmp;
-
+	private void advance_lfo(FmOPL OPL) {
 		/* LFO */
 		OPL.lfo_am_cnt += OPL.lfo_am_inc;
 		if (OPL.lfo_am_cnt >= ((long) LFO_AM_TAB_ELEMENTS << LFO_SH)) { /* lfo_am_table is 210 elements long */
 			OPL.lfo_am_cnt -= ((long) LFO_AM_TAB_ELEMENTS << LFO_SH);
 		}
 
-		tmp = lfo_am_table[(int) (OPL.lfo_am_cnt >> LFO_SH)];
+		int tmp = lfo_am_table[(int) (OPL.lfo_am_cnt >> LFO_SH)];
 
 		if ((OPL.lfo_am_depth) != 0) {
 			LFO_AM = tmp;
@@ -458,11 +438,7 @@ public abstract class FMOPL {
 	}
 
 	/* advance to next sample */
-	private static void advance(FmOPL OPL) {
-		OPLCh CH;
-		OPLSlot op;
-		int i;
-
+	private void advance(FmOPL OPL) {
 		OPL.eg_timer += OPL.eg_timer_add;
 
 		while (OPL.eg_timer >= OPL.eg_timer_overflow) {
@@ -470,9 +446,9 @@ public abstract class FMOPL {
 
 			OPL.eg_cnt++;
 
-			for (i = 0; i < 9 * 2; i++) {
-				CH = OPL.pCh[i / 2];
-				op = CH.slot[i & 1];
+			for (int i = 0; i < 9 * 2; i++) {
+				OPLCh CH = OPL.pCh[i / 2];
+				OPLSlot op = CH.slot[i & 1];
 
 				/* Envelope Generator */
 				switch (op.state) {
@@ -532,9 +508,9 @@ public abstract class FMOPL {
 			}
 		}
 
-		for (i = 0; i < 9 * 2; i++) {
-			CH = OPL.pCh[i / 2];
-			op = CH.slot[i & 1];
+		for (int i = 0; i < 9 * 2; i++) {
+			OPLCh CH = OPL.pCh[i / 2];
+			OPLSlot op = CH.slot[i & 1];
 
 			/* Phase Generator */
 			if (op.vib != 0) {
@@ -567,7 +543,7 @@ public abstract class FMOPL {
 		 */
 
 		OPL.noise_p += OPL.noise_f;
-		i = OPL.noise_p >> FREQ_SH; /* number of events (shifts of the shift register) */
+		int i = OPL.noise_p >> FREQ_SH; /* number of events (shifts of the shift register) */
 		OPL.noise_p &= FREQ_MASK;
 		while (i != 0) {
 			/*
@@ -586,10 +562,8 @@ public abstract class FMOPL {
 		}
 	}
 
-	private static int op_calc(int phase, int env, int pm, int wave_tab) {
-		int p;
-
-		p = (env << 4) + sin_tab[wave_tab + (((((phase & ~FREQ_MASK) + (pm << 16))) >> FREQ_SH) & SIN_MASK)];
+	private int op_calc(int phase, int env, int pm, int wave_tab) {
+		int p = (env << 4) + sin_tab[wave_tab + (((((phase & ~FREQ_MASK) + (pm << 16))) >> FREQ_SH) & SIN_MASK)];
 
 		if (p >= TL_TAB_LEN) {
 			return 0;
@@ -597,10 +571,8 @@ public abstract class FMOPL {
 		return tl_tab[p];
 	}
 
-	private static int op_calc1(int phase, int env, int pm, int wave_tab) {
-		int p;
-
-		p = (env << 4) + sin_tab[wave_tab + (((((phase & ~FREQ_MASK) + pm)) >> FREQ_SH) & SIN_MASK)];
+	private int op_calc1(int phase, int env, int pm, int wave_tab) {
+		int p = (env << 4) + sin_tab[wave_tab + (((((phase & ~FREQ_MASK) + pm)) >> FREQ_SH) & SIN_MASK)];
 
 		if (p >= TL_TAB_LEN) {
 			return 0;
@@ -608,22 +580,18 @@ public abstract class FMOPL {
 		return tl_tab[p];
 	}
 
-	private static int volume_calc(OPLSlot OP) {
-		return ((OP).TLL + ((OP).volume) + (LFO_AM & (OP).AMmask));
+	private int volume_calc(OPLSlot OP) {
+		return OP.TLL + OP.volume + (LFO_AM & OP.AMmask);
 	}
 
 	/* calculate output */
-	private static void OPL_CALC_CH(OPLCh CH) {
-		OPLSlot SLOT;
-		int env;
-		int out;
-
+	private void OPL_CALC_CH(OPLCh CH) {
 		phase_modulation = 0;
 
 		/* SLOT 1 */
-		SLOT = CH.slot[SLOT1];
-		env = volume_calc(SLOT);
-		out = SLOT.op1_out[0] + SLOT.op1_out[1];
+		OPLSlot SLOT = CH.slot[SLOT1];
+		int env = volume_calc(SLOT);
+		int out = SLOT.op1_out[0] + SLOT.op1_out[1];
 		SLOT.op1_out[0] = SLOT.op1_out[1];
 		SLOT.connect1 += SLOT.op1_out[0];
 		SLOT.op1_out[1] = 0;
@@ -856,10 +824,6 @@ public abstract class FMOPL {
 	/* calculate rhythm */
 
 	private void OPL_CALC_RH(OPLCh[] CH, int noise) {
-		OPLSlot SLOT;
-		int out;
-		int env;
-
 		/*
 		 * Bass Drum (verified on real YM3812): - depends on the channel 6 'connect'
 		 * register: when connect = 0 it works the same as in normal (non-rhythm) mode
@@ -870,10 +834,10 @@ public abstract class FMOPL {
 		phase_modulation = 0;
 
 		/* SLOT 1 */
-		SLOT = CH[6].slot[SLOT1];
-		env = volume_calc(SLOT);
+		OPLSlot SLOT = CH[6].slot[SLOT1];
+		int env = volume_calc(SLOT);
 
-		out = SLOT.op1_out[0] + SLOT.op1_out[1];
+		int out = SLOT.op1_out[0] + SLOT.op1_out[1];
 		SLOT.op1_out[0] = SLOT.op1_out[1];
 
 		if (SLOT.CON == 0) {
@@ -1029,18 +993,14 @@ public abstract class FMOPL {
 
 	/* generic table initialize */
 	private int init_tables() {
-		int i, x;
-		int n;
-		double o, m;
-
-		for (x = 0; x < TL_RES_LEN; x++) {
-			m = (1 << 16) / Math.pow(2, (x + 1) * (ENV_STEP / 4.0) / 8.0);
+		for (int x = 0; x < TL_RES_LEN; x++) {
+			double m = (1 << 16) / Math.pow(2, (x + 1) * (ENV_STEP / 4.0) / 8.0);
 			m = Math.floor(m);
 
 			/* we never reach (1<<16) here due to the (x+1) */
 			/* result fits within 16 bits at maximum */
 
-			n = (int) m; /* 16 bits here */
+			int n = (int) m; /* 16 bits here */
 			n >>= 4; /* 12 bits here */
 			if ((n & 1) != 0) { /* round to nearest */
 				n = (n >> 1) + 1;
@@ -1052,18 +1012,19 @@ public abstract class FMOPL {
 			tl_tab[x * 2 + 0] = n;
 			tl_tab[x * 2 + 1] = -tl_tab[x * 2 + 0];
 
-			for (i = 1; i < 12; i++) {
+			for (int i = 1; i < 12; i++) {
 				tl_tab[x * 2 + 0 + i * 2 * TL_RES_LEN] = tl_tab[x * 2 + 0] >> i;
 				tl_tab[x * 2 + 1 + i * 2 * TL_RES_LEN] = -tl_tab[x * 2 + 0 + i * 2 * TL_RES_LEN];
 			}
 		}
 
-		for (i = 0; i < SIN_LEN; i++) {
+		for (int i = 0; i < SIN_LEN; i++) {
 			/* non-standard sinus */
-			m = Math.sin(((i * 2) + 1) * Math.PI / SIN_LEN); /* checked against the real chip */
+			double m = Math.sin(((i * 2) + 1) * Math.PI / SIN_LEN); /* checked against the real chip */
 
 			/* we never reach zero here due to ((i * 2) + 1) */
 
+			double o;
 			if (m > 0.0) {
 				o = 8 * Math.log(1.0 / m) / Math.log(2.0); /* convert to 'decibels' */
 			} else {
@@ -1072,7 +1033,7 @@ public abstract class FMOPL {
 
 			o = o / (ENV_STEP / 4);
 
-			n = (int) (2.0 * o);
+			int n = (int) (2.0 * o);
 			if ((n & 1) != 0) { /* round to nearest */
 				n = (n >> 1) + 1;
 			} else {
@@ -1081,7 +1042,7 @@ public abstract class FMOPL {
 			sin_tab[i] = n * 2 + (m >= 0.0 ? 0 : 1);
 		}
 
-		for (i = 0; i < SIN_LEN; i++) {
+		for (int i = 0; i < SIN_LEN; i++) {
 			/* waveform 1: __ __ */
 			/* / \____/ \____ */
 			/* output only first half of the sinus waveform (positive one) */
@@ -1112,17 +1073,12 @@ public abstract class FMOPL {
 		return 1;
 	}
 
-	void OPLCloseTable() {
-	}
-
-	void OPL_initalize(FmOPL OPL) {
-		int i;
-
+	private void OPL_initalize(FmOPL OPL) {
 		/* frequency base */
 		OPL.freqbase = (OPL.rate != 0) ? (OPL.clock / 72.0) / OPL.rate : 0;
 
 		/* make fnumber . increment counter table */
-		for (i = 0; i < 1024; i++) {
+		for (int i = 0; i < 1024; i++) {
 			/* opn phase increment counter = 20bit */
 			OPL.fn_tab[i] = (int) ((double) i * 64 * OPL.freqbase
 					* (1 << (FREQ_SH - 10))); /* -10 because chip works with 10.10 fixed point, while we use 16.16 */
@@ -1174,11 +1130,9 @@ public abstract class FMOPL {
 	 * necessary)
 	 */
 	private void CALC_FCSLOT(OPLCh CH, OPLSlot SLOT) {
-		int ksr;
-
 		/* (frequency) phase increment counter */
 		SLOT.Incr = CH.fc * SLOT.mul;
-		ksr = CH.kcode >> SLOT.KSR;
+		int ksr = CH.kcode >> SLOT.KSR;
 
 		if (SLOT.ksr != ksr) {
 			SLOT.ksr = ksr;
@@ -1257,10 +1211,6 @@ public abstract class FMOPL {
 
 	/* write a value v to register r on OPL chip */
 	private void OPLWriteReg(FmOPL OPL, int r, int v) {
-		OPLCh CH;
-		int slot;
-		int block_fnum;
-
 		/* adjust bus to 8 bits */
 		r &= 0xff;
 		v &= 0xff;
@@ -1352,34 +1302,38 @@ public abstract class FMOPL {
 				break;
 			}
 			break;
-		case 0x20: /* am ON, vib ON, ksr, eg_type, mul */
-			slot = slot_array[r & 0x1f];
+		case 0x20: {/* am ON, vib ON, ksr, eg_type, mul */
+			int slot = slot_array[r & 0x1f];
 			if (slot < 0) {
 				return;
 			}
 			set_mul(OPL, slot, v);
 			break;
-		case 0x40:
-			slot = slot_array[r & 0x1f];
+		}
+		case 0x40: {
+			int slot = slot_array[r & 0x1f];
 			if (slot < 0) {
 				return;
 			}
 			set_ksl_tl(OPL, slot, v);
 			break;
-		case 0x60:
-			slot = slot_array[r & 0x1f];
+		}
+		case 0x60: {
+			int slot = slot_array[r & 0x1f];
 			if (slot < 0) {
 				return;
 			}
 			set_ar_dr(OPL, slot, v);
 			break;
-		case 0x80:
-			slot = slot_array[r & 0x1f];
+		}
+		case 0x80: {
+			int slot = slot_array[r & 0x1f];
 			if (slot < 0) {
 				return;
 			}
 			set_sl_rr(OPL, slot, v);
 			break;
+		}
 		case 0xa0:
 			if (r == 0xbd) { /* am depth, vibrato depth, r,bd,sd,tom,tc,hh */
 				OPL.lfo_am_depth = v & 0x80;
@@ -1446,7 +1400,8 @@ public abstract class FMOPL {
 			if ((r & 0x0f) > 8) {
 				return;
 			}
-			CH = OPL.pCh[r & 0x0f];
+			OPLCh CH = OPL.pCh[r & 0x0f];
+			int block_fnum;
 			if ((r & 0x10) == 0) { /* a0-a8 */
 				block_fnum = (CH.block_fnum & 0x1f00) | v;
 			} else { /* b0-b8 */
@@ -1503,13 +1458,13 @@ public abstract class FMOPL {
 			CH.slot[SLOT1].CON = v & 1;
 			CH.slot[SLOT1].connect1 = CH.slot[SLOT1].CON != 0 ? output[0] : phase_modulation;
 			break;
-		case 0xe0: /* waveform select */
+		case 0xe0: {/* waveform select */
 			/*
 			 * simply ignore write to the waveform select register if selecting not enabled
 			 * in test register
 			 */
 			if ((OPL.wavesel) != 0) {
-				slot = slot_array[r & 0x1f];
+				int slot = slot_array[r & 0x1f];
 				if (slot < 0) {
 					return;
 				}
@@ -1518,6 +1473,7 @@ public abstract class FMOPL {
 				CH.slot[slot & 1].wavetable = (v & 0x03) * SIN_LEN;
 			}
 			break;
+		}
 		}
 	}
 
@@ -1551,13 +1507,9 @@ public abstract class FMOPL {
 		/* last time */
 
 		cur_chip = null;
-		OPLCloseTable();
 	}
 
 	private void OPLResetChip(FmOPL OPL) {
-		int c, s;
-		int i;
-
 		OPL.eg_timer = 0;
 		OPL.eg_cnt = 0;
 
@@ -1570,14 +1522,14 @@ public abstract class FMOPL {
 		OPLWriteReg(OPL, 0x02, 0); /* Timer1 */
 		OPLWriteReg(OPL, 0x03, 0); /* Timer2 */
 		OPLWriteReg(OPL, 0x04, 0); /* IRQ mask clear */
-		for (i = 0xff; i >= 0x20; i--) {
+		for (int i = 0xff; i >= 0x20; i--) {
 			OPLWriteReg(OPL, i, 0);
 		}
 
 		/* reset operator parameters */
-		for (c = 0; c < 9; c++) {
+		for (int c = 0; c < 9; c++) {
 			OPLCh CH = OPL.pCh[c];
-			for (s = 0; s < 2; s++) {
+			for (int s = 0; s < 2; s++) {
 				/* wave table */
 				CH.slot[s].wavetable = 0;
 				CH.slot[s].state = EG_OFF;
@@ -1599,8 +1551,6 @@ public abstract class FMOPL {
 	/* 'clock' is chip clock in Hz */
 	/* 'rate' is sampling rate */
 	private FmOPL OPLCreate(long clock, int rate, int type) {
-//		int state_size;
-
 		if (OPL_LockTable() == -1) {
 			return null;
 		}
@@ -1697,8 +1647,6 @@ public abstract class FMOPL {
 		return OPL.status >> 7;
 	}
 
-	public static final int MAX_OPL_CHIPS = 2;
-
 	public FmOPL ym3812_init(long clock, int rate) {
 		/* emulator create */
 		FmOPL YM3812 = OPLCreate(clock, rate, OPL_TYPE_YM3812);
@@ -1730,16 +1678,13 @@ public abstract class FMOPL {
 		return (byte) (OPLRead(chip, a) | 0x06);
 	}
 
-	/*
-	 ** Generate samples for one of the YM3812's
-	 **
-	 ** 'which' is the virtual YM3812 number '*buffer' is the output buffer pointer
-	 ** 'length' is the number of samples that should be generated
+	/**
+	 * @param OPL    virtual YM3812
+	 * @param buffer output buffer pointer
+	 * @param length number of samples that should be generated
 	 */
-	public void ym3812_update_one(FmOPL chip, IntConsumer buffer, int length) {
-		FmOPL OPL = chip;
+	public void ym3812_update_one(FmOPL OPL, IntConsumer buffer, int length) {
 		int rhythm = OPL.rhythm & 0x20;
-		int i;
 
 		if (OPL != cur_chip) {
 			cur_chip = OPL;
@@ -1749,9 +1694,7 @@ public abstract class FMOPL {
 			SLOT8_1 = OPL.pCh[8].slot[SLOT1];
 			SLOT8_2 = OPL.pCh[8].slot[SLOT2];
 		}
-		for (i = 0; i < length; i++) {
-			int lt;
-
+		for (int i = 0; i < length; i++) {
 			output[0] = 0;
 
 			advance_lfo(OPL);
@@ -1772,12 +1715,12 @@ public abstract class FMOPL {
 				OPL_CALC_RH(OPL.pCh, (OPL.noise_rng >> 0) & 1);
 			}
 
-			lt = output[0];
+			int lt = output[0];
 
 			lt >>= FINAL_SH;
 
 			/* limit check */
-			lt = limit(lt, Short.MAX_VALUE, Short.MIN_VALUE);
+			lt = Math.max(Math.min(lt, Integer.MAX_VALUE), Integer.MIN_VALUE);
 
 			/* store to sound buffer */
 			buffer.accept(lt);
@@ -1817,16 +1760,13 @@ public abstract class FMOPL {
 		return (byte) (OPLRead(chip, a) | 0x06);
 	}
 
-	/*
-	 ** Generate samples for one of the YM3526's
-	 **
-	 ** 'which' is the virtual YM3526 number '*buffer' is the output buffer pointer
-	 ** 'length' is the number of samples that should be generated
+	/**
+	 * @param OPL    the virtual YM3526
+	 * @param buffer output buffer pointer
+	 * @param length is the number of samples that should be generated
 	 */
-	public void ym3526_update_one(FmOPL chip, IntConsumer buffer, int length) {
-		FmOPL OPL = chip;
+	public void ym3526_update_one(FmOPL OPL, IntConsumer buffer, int length) {
 		int rhythm = OPL.rhythm & 0x20;
-		int i;
 
 		if (OPL != cur_chip) {
 			cur_chip = OPL;
@@ -1836,9 +1776,7 @@ public abstract class FMOPL {
 			SLOT8_1 = OPL.pCh[8].slot[SLOT1];
 			SLOT8_2 = OPL.pCh[8].slot[SLOT2];
 		}
-		for (i = 0; i < length; i++) {
-			int lt;
-
+		for (int i = 0; i < length; i++) {
 			output[0] = 0;
 
 			advance_lfo(OPL);
@@ -1859,12 +1797,12 @@ public abstract class FMOPL {
 				OPL_CALC_RH(OPL.pCh, (OPL.noise_rng >> 0) & 1);
 			}
 
-			lt = output[0];
+			int lt = output[0];
 
 			lt >>= FINAL_SH;
 
 			/* limit check */
-			lt = limit(lt, Short.MAX_VALUE, Short.MIN_VALUE);
+			lt = Math.max(Math.min(lt, Integer.MAX_VALUE), Integer.MIN_VALUE);
 
 			/* store to sound buffer */
 			buffer.accept(lt);
