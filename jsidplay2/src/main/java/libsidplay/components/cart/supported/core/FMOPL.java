@@ -60,7 +60,6 @@ public abstract class FMOPL {
 	private static final int SLOT2 = 1;
 
 	/* Envelope Generator phases */
-
 	private static final int EG_ATT = 4;
 	private static final int EG_DEC = 3;
 	private static final int EG_SUS = 2;
@@ -298,7 +297,6 @@ public abstract class FMOPL {
 	 * When AM = 1 data is used directly When AM = 0 data is divided by 4 before
 	 * being used (loosing precision is important)
 	 */
-
 	private static final int LFO_AM_TAB_ELEMENTS = 210;
 
 	private static final int lfo_am_table[] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5,
@@ -514,14 +512,13 @@ public abstract class FMOPL {
 
 			/* Phase Generator */
 			if (op.vib != 0) {
-				int block;
 				int block_fnum = CH.block_fnum;
 				int fnum_lfo = (block_fnum & 0x0380) >> 7;
 				int lfo_fn_table_index_offset = lfo_pm_table[LFO_PM + 16 * fnum_lfo];
 
 				if (lfo_fn_table_index_offset != 0) { /* LFO phase modulation active */
 					block_fnum += lfo_fn_table_index_offset;
-					block = (block_fnum & 0x1c00) >> 10;
+					int block = (block_fnum & 0x1c00) >> 10;
 					op.Cnt += (OPL.fn_tab[block_fnum & 0x03ff] >> (7 - block)) * op.mul;
 				} else { /* LFO phase modulation = zero */
 					op.Cnt += op.Incr;
@@ -1588,12 +1585,10 @@ public abstract class FMOPL {
 		if (OPL.fmopl_alarm_pending[0] != 0) {
 			alarm_unset(OPL.fmopl_alarm[0]);
 		}
-		alarm_destroy(OPL.fmopl_alarm[0]);
 
 		if (OPL.fmopl_alarm_pending[1] != 0) {
 			alarm_unset(OPL.fmopl_alarm[1]);
 		}
-		alarm_destroy(OPL.fmopl_alarm[1]);
 
 		OPL_UnLockTable();
 	}
@@ -1816,7 +1811,5 @@ public abstract class FMOPL {
 	public abstract void alarm_set(Event event, long start);
 
 	public abstract void alarm_unset(Event event);
-
-	public abstract void alarm_destroy(Event event);
 
 }

@@ -44,9 +44,6 @@ public class SFXSoundExpander extends Cartridge {
 			context.schedule(event, start);
 		}
 
-		@Override
-		public void alarm_destroy(Event event) {
-		}
 	};
 
 	private final class SFXSoundExpanderMixerEvent extends Event {
@@ -234,8 +231,8 @@ public class SFXSoundExpander extends Cartridge {
 			}
 		}
 		if (addr == 0x50) {
+			// TODO correct?
 			sfx_soundexpander_sound_machine_store(addr, value);
-			// TODO really?
 //			sound_store(sfx_soundexpander_sound_chip_offset, value, 0);
 		}
 	}
