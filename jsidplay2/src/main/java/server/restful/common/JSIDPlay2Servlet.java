@@ -118,15 +118,15 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request) {
-		log(thread() + remoteAddr(request) + localAddr(request) + request(request) + queryString(request) + memory());
+		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
 	}
 
 	protected void doPost(HttpServletRequest request) {
-		log(thread() + remoteAddr(request) + localAddr(request) + request(request) + memory());
+		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
 	}
 
 	protected void doPut(HttpServletRequest request) {
-		log(thread() + remoteAddr(request) + localAddr(request) + request(request) + memory());
+		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
 	}
 
 	protected void info(String msg, Thread... parentThreads) {
@@ -180,24 +180,24 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return result.toString();
 	}
 
+	private String user(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		result.append("user ");
+		result.append(request.getRemoteUser() != null ? request.getRemoteUser() : "<anonymous>");
+		result.append(", ");
+		return result.toString();
+	}
+
 	private String request(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
 		result.append(request.getMethod());
 		result.append(" ");
 		result.append(request.getRequestURI());
-		if (request.getQueryString() == null) {
-			result.append(", ");
-		}
-		return result.toString();
-	}
-
-	private String queryString(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
 		if (request.getQueryString() != null) {
 			result.append("?");
 			result.append(request.getQueryString());
-			result.append(", ");
 		}
+		result.append(", ");
 		return result.toString();
 	}
 
