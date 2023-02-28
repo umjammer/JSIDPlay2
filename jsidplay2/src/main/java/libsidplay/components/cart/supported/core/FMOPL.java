@@ -3,6 +3,7 @@ package libsidplay.components.cart.supported.core;
 import java.util.function.IntConsumer;
 
 import libsidplay.common.Event;
+import libsidplay.common.EventScheduler;
 
 /**
  *
@@ -126,13 +127,13 @@ public abstract class FMOPL {
 
 	/* sustain level table (3dB per step) */
 	/* 0 - 15: 0, 3, 6, 9,12,15,18,21,24,27,30,33,36,39,42,93 (dB) */
-	private static double SC(double db) {
-		return db * (2.0 / ENV_STEP);
+	private static long SC(double db) {
+		return (long) (db * (2.0 / ENV_STEP));
 	}
 
-	private static double sl_tab[];
+	private static long sl_tab[];
 	{
-		sl_tab = new double[16];
+		sl_tab = new long[16];
 		for (int i = 0; i < 15; i++) {
 			sl_tab[i] = SC(i);
 		}
@@ -358,13 +359,13 @@ public abstract class FMOPL {
 	/* --------------------------------------------------------------------- */
 	/* timer support functions */
 
-	private int fmopl_timer_80 = 0;
-	private int fmopl_timer_320 = 0;
+	private long fmopl_timer_80 = 0;
+	private long fmopl_timer_320 = 0;
 
 //VERIFIED
 	public void fmopl_set_machine_parameter(long clock_rate) {
-		fmopl_timer_80 = (int) (clock_rate * 80 / 1000000);
-		fmopl_timer_320 = (int) (clock_rate * 320 / 1000000);
+		fmopl_timer_80 = (clock_rate * 80 / 1000000);
+		fmopl_timer_320 = (clock_rate * 320 / 1000000);
 	}
 
 	private void fmopl_alarm_A(long offset, FmOPL OPL) {
@@ -453,7 +454,8 @@ public abstract class FMOPL {
 				switch (op.state) {
 				case EG_ATT: /* attack phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_ar) - 1)) == 0) {
-						op.volume += (~op.volume * (eg_inc[op.eg_sel_ar + ((OPL.eg_cnt >> op.eg_sh_ar) & 7)])) >> 3;
+						op.volume += (~op.volume
+								* (eg_inc[(int) (op.eg_sel_ar + ((OPL.eg_cnt >> op.eg_sh_ar) & 7))])) >> 3;
 
 						if (op.volume <= MIN_ATT_INDEX) {
 							op.volume = MIN_ATT_INDEX;
@@ -463,7 +465,7 @@ public abstract class FMOPL {
 					break;
 				case EG_DEC: /* decay phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_dr) - 1)) == 0) {
-						op.volume += eg_inc[op.eg_sel_dr + ((OPL.eg_cnt >> op.eg_sh_dr) & 7)];
+						op.volume += eg_inc[(int) (op.eg_sel_dr + ((OPL.eg_cnt >> op.eg_sh_dr) & 7))];
 
 						if ((op.volume) >= op.sl) {
 							op.state = EG_SUS;
@@ -482,7 +484,7 @@ public abstract class FMOPL {
 					} else { /* percussive mode */
 						/* during sustain phase chip adds Release Rate (in percussive mode) */
 						if ((OPL.eg_cnt & ((1 << op.eg_sh_rr) - 1)) == 0) {
-							op.volume += eg_inc[op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7)];
+							op.volume += eg_inc[(int) (op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7))];
 
 							if (op.volume >= MAX_ATT_INDEX) {
 								op.volume = MAX_ATT_INDEX;
@@ -493,7 +495,7 @@ public abstract class FMOPL {
 					break;
 				case EG_REL: /* release phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_rr) - 1)) == 0) {
-						op.volume += eg_inc[op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7)];
+						op.volume += eg_inc[(int) (op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7))];
 
 						if (op.volume >= MAX_ATT_INDEX) {
 							op.volume = MAX_ATT_INDEX;
@@ -513,14 +515,14 @@ public abstract class FMOPL {
 
 			/* Phase Generator */
 			if (op.vib != 0) {
-				int block_fnum = CH.block_fnum;
-				int fnum_lfo = (block_fnum & 0x0380) >> 7;
+				long block_fnum = CH.block_fnum;
+				long fnum_lfo = (block_fnum & 0x0380) >> 7;
 				byte lfo_fn_table_index_offset = lfo_pm_table[(int) (LFO_PM + 16 * fnum_lfo)];
 
 				if (lfo_fn_table_index_offset != 0) { /* LFO phase modulation active */
 					block_fnum += lfo_fn_table_index_offset;
-					int block = (block_fnum & 0x1c00) >> 10;
-					op.Cnt += (OPL.fn_tab[block_fnum & 0x03ff] >> (7 - block)) * op.mul;
+					long block = (block_fnum & 0x1c00) >> 10;
+					op.Cnt += (OPL.fn_tab[(int) (block_fnum & 0x03ff)] >> (7 - block)) * op.mul;
 				} else { /* LFO phase modulation = zero */
 					op.Cnt += op.Incr;
 				}
@@ -541,7 +543,7 @@ public abstract class FMOPL {
 		 */
 
 		OPL.noise_p += OPL.noise_f;
-		int i = OPL.noise_p >> FREQ_SH; /* number of events (shifts of the shift register) */
+		long i = OPL.noise_p >> FREQ_SH; /* number of events (shifts of the shift register) */
 		OPL.noise_p &= FREQ_MASK;
 		while (i != 0) {
 			/*
@@ -560,26 +562,26 @@ public abstract class FMOPL {
 		}
 	}
 
-	private int op_calc(long phase, int env, int pm, int wave_tab) {
-		int p = (env << 4)
+	private int op_calc(long phase, long env, int pm, int wave_tab) {
+		long p = (env << 4)
 				+ sin_tab[(int) (wave_tab + (((((phase & ~FREQ_MASK) + (pm << 16))) >> FREQ_SH) & SIN_MASK))];
 
 		if (p >= TL_TAB_LEN) {
 			return 0;
 		}
-		return tl_tab[p];
+		return tl_tab[(int) p];
 	}
 
-	private int op_calc1(long phase, int env, int pm, int wave_tab) {
-		int p = (env << 4) + sin_tab[(int) (wave_tab + (((((phase & ~FREQ_MASK) + pm)) >> FREQ_SH) & SIN_MASK))];
+	private int op_calc1(long phase, long env, int pm, int wave_tab) {
+		long p = (env << 4) + sin_tab[(int) (wave_tab + (((((phase & ~FREQ_MASK) + pm)) >> FREQ_SH) & SIN_MASK))];
 
 		if (p >= TL_TAB_LEN) {
 			return 0;
 		}
-		return tl_tab[p];
+		return tl_tab[(int) p];
 	}
 
-	private int volume_calc(OPLSlot OP) {
+	private long volume_calc(OPLSlot OP) {
 		return OP.TLL + OP.volume + (LFO_AM & OP.AMmask);
 	}
 
@@ -589,7 +591,7 @@ public abstract class FMOPL {
 
 		/* SLOT 1 */
 		OPLSlot SLOT = CH.slot[SLOT1];
-		int env = volume_calc(SLOT);
+		long env = volume_calc(SLOT);
 		int out = SLOT.op1_out[0] + SLOT.op1_out[1];
 		SLOT.op1_out[0] = SLOT.op1_out[1];
 		SLOT.connect1 += SLOT.op1_out[0];
@@ -647,11 +649,11 @@ public abstract class FMOPL {
 
 	public static final class OPLSlot {
 		/* attack rate: AR<<2 **/
-		private int ar;
+		private long ar;
 		/* decay rate: DR<<2 **/
-		private int dr;
+		private long dr;
 		/* release rate:RR<<2 **/
-		private int rr;
+		private long rr;
 		/* key scale rate **/
 		private int KSR;
 		/* keyscale level **/
@@ -686,13 +688,13 @@ public abstract class FMOPL {
 		/* phase type **/
 		private int state;
 		/* total level: TL << 2 **/
-		private int TL;
+		private long TL;
 		/* adjusted now TL **/
 		private int TLL;
 		/* envelope counter **/
 		private int volume;
 		/* sustain level: sl_tab[SL] **/
-		private int sl;
+		private long sl;
 		/* (attack state) **/
 		private int eg_sh_ar;
 		/* (attack state) **/
@@ -713,7 +715,7 @@ public abstract class FMOPL {
 		//
 
 		/* LFO Amplitude Modulation enable mask **/
-		private int AMmask;
+		private long AMmask;
 		/* LFO Phase Modulation enable flag (active high) **/
 		private int vib;
 
@@ -729,11 +731,11 @@ public abstract class FMOPL {
 		//
 
 		/* block+fnum **/
-		private int block_fnum;
+		private long block_fnum;
 		/* Freq. Increment base **/
 		private long fc;
 		/* KeyScaleLevel Base step **/
-		private int ksl_base;
+		private long ksl_base;
 		/* key code (for key scaling) **/
 		private int kcode;
 
@@ -754,13 +756,13 @@ public abstract class FMOPL {
 		private OPLCh pCh[] = new OPLCh[9];
 
 		/* global envelope generator counter **/
-		private int eg_cnt;
+		private long eg_cnt;
 		/* global envelope generator counter works at frequency = chipclock/72 **/
-		private int eg_timer;
+		private long eg_timer;
 		/* step of eg_timer **/
-		private int eg_timer_add;
+		private long eg_timer_add;
 		/* envelope generator timer overlfows every 1 sample (on real chip) **/
-		private int eg_timer_overflow;
+		private long eg_timer_overflow;
 
 		/* Rhythm mode **/
 		private int rhythm;
@@ -769,25 +771,25 @@ public abstract class FMOPL {
 		private long fn_tab[] = new long[1024];
 
 		/* LFO */
-		private int lfo_am_depth;
-		private int lfo_pm_depth_range;
+		private long lfo_am_depth;
+		private long lfo_pm_depth_range;
 		private long lfo_am_cnt;
 		private long lfo_am_inc;
 		private long lfo_pm_cnt;
 		private long lfo_pm_inc;
 
 		/* 23 bit noise shift register **/
-		private int noise_rng;
+		private long noise_rng;
 		/* current noise 'phase' **/
-		private int noise_p;
+		private long noise_p;
 		/* current noise period **/
-		private int noise_f;
+		private long noise_f;
 
 		/* waveform select enable flag **/
 		private int wavesel;
 
 		/* timer counters **/
-		private int T[] = new int[2];
+		private long T[] = new long[2];
 		/* timer enable **/
 		private int st[] = new int[2];
 		/* timer alarms **/
@@ -822,7 +824,7 @@ public abstract class FMOPL {
 
 	/* calculate rhythm */
 
-	private void OPL_CALC_RH(OPLCh[] CH, int noise) {
+	private void OPL_CALC_RH(OPLCh[] CH, long noise) {
 		/*
 		 * Bass Drum (verified on real YM3812): - depends on the channel 6 'connect'
 		 * register: when connect = 0 it works the same as in normal (non-rhythm) mode
@@ -834,7 +836,7 @@ public abstract class FMOPL {
 
 		/* SLOT 1 */
 		OPLSlot SLOT = CH[6].slot[SLOT1];
-		int env = volume_calc(SLOT);
+		long env = volume_calc(SLOT);
 
 		int out = SLOT.op1_out[0] + SLOT.op1_out[1];
 		SLOT.op1_out[0] = SLOT.op1_out[1];
@@ -899,7 +901,7 @@ public abstract class FMOPL {
 
 			/* when res1 = 0 phase = 0x000 | 0xd0; */
 			/* when res1 = 1 phase = 0x200 | (0xd0>>2); */
-			int phase = res1 != 0 ? (0x200 | (0xd0 >> 2)) : 0xd0;
+			long phase = res1 != 0 ? (0x200 | (0xd0 >> 2)) : 0xd0;
 
 			/* enable gate based on frequency of operator 2 in channel 8 */
 			byte bit5e = (byte) (((SLOT8_2.Cnt >> FREQ_SH) >> 5) & 1);
@@ -1081,7 +1083,7 @@ public abstract class FMOPL {
 		/* make fnumber . increment counter table */
 		for (int i = 0; i < 1024; i++) {
 			/* opn phase increment counter = 20bit */
-			OPL.fn_tab[i] = (int) ((double) i * 64 * OPL.freqbase
+			OPL.fn_tab[i] = (long) ((double) i * 64 * OPL.freqbase
 					* (1 << (FREQ_SH - 10))); /* -10 because chip works with 10.10 fixed point, while we use 16.16 */
 		}
 
@@ -1096,13 +1098,13 @@ public abstract class FMOPL {
 		OPL.lfo_pm_inc = (long) ((1.0 / 1024.0) * (1 << LFO_SH) * OPL.freqbase);
 
 		/* Noise generator: a step takes 1 sample */
-		OPL.noise_f = (int) ((1.0 / 1.0) * (1 << FREQ_SH) * OPL.freqbase);
+		OPL.noise_f = (long) ((1.0 / 1.0) * (1 << FREQ_SH) * OPL.freqbase);
 
-		OPL.eg_timer_add = (int) ((1 << EG_SH) * OPL.freqbase);
+		OPL.eg_timer_add = (long) ((1 << EG_SH) * OPL.freqbase);
 		OPL.eg_timer_overflow = (1) * (1 << EG_SH);
 	}
 
-	private void FM_KEYON(OPLSlot SLOT, int key_set) {
+	private void FM_KEYON(OPLSlot SLOT, long key_set) {
 		if (SLOT.key != 0) {
 			/* restart Phase Generator */
 			SLOT.Cnt = 0;
@@ -1113,7 +1115,7 @@ public abstract class FMOPL {
 		SLOT.key |= key_set;
 	}
 
-	private void FM_KEYOFF(OPLSlot SLOT, int key_clr) {
+	private void FM_KEYOFF(OPLSlot SLOT, long key_clr) {
 		if (SLOT.key != 0) {
 			SLOT.key &= key_clr;
 
@@ -1140,16 +1142,16 @@ public abstract class FMOPL {
 
 			/* calculate envelope generator rates */
 			if ((SLOT.ar + SLOT.ksr) < 16 + 62) {
-				SLOT.eg_sh_ar = eg_rate_shift[SLOT.ar + SLOT.ksr];
-				SLOT.eg_sel_ar = eg_rate_select[SLOT.ar + SLOT.ksr];
+				SLOT.eg_sh_ar = eg_rate_shift[(int) (SLOT.ar + SLOT.ksr)];
+				SLOT.eg_sel_ar = eg_rate_select[(int) (SLOT.ar + SLOT.ksr)];
 			} else {
 				SLOT.eg_sh_ar = 0;
 				SLOT.eg_sel_ar = 13 * RATE_STEPS;
 			}
-			SLOT.eg_sh_dr = eg_rate_shift[SLOT.dr + SLOT.ksr];
-			SLOT.eg_sel_dr = eg_rate_select[SLOT.dr + SLOT.ksr];
-			SLOT.eg_sh_rr = eg_rate_shift[SLOT.rr + SLOT.ksr];
-			SLOT.eg_sel_rr = eg_rate_select[SLOT.rr + SLOT.ksr];
+			SLOT.eg_sh_dr = eg_rate_shift[(int) (SLOT.dr + SLOT.ksr)];
+			SLOT.eg_sel_dr = eg_rate_select[(int) (SLOT.dr + SLOT.ksr)];
+			SLOT.eg_sh_rr = eg_rate_shift[(int) (SLOT.rr + SLOT.ksr)];
+			SLOT.eg_sel_rr = eg_rate_select[(int) (SLOT.rr + SLOT.ksr)];
 		}
 	}
 
@@ -1158,7 +1160,7 @@ public abstract class FMOPL {
 		OPLCh CH = OPL.pCh[slot / 2];
 		OPLSlot SLOT = CH.slot[slot & 1];
 
-		SLOT.mul = (int) (mul_tab[v & 0x0f]);
+		SLOT.mul = (int) (mul_tab[v & 0x0f]) & 0xff;
 		SLOT.KSR = (v & 0x10) != 0 ? 0 : 2;
 		SLOT.eg_type = (v & 0x20);
 		SLOT.vib = (v & 0x40);
@@ -1175,7 +1177,7 @@ public abstract class FMOPL {
 		SLOT.ksl = ksl != 0 ? 3 - ksl : 31;
 		SLOT.TL = (v & 0x3f) << (ENV_BITS - 1 - 7); /* 7 bits TL (bit 6 = always 0) */
 
-		SLOT.TLL = SLOT.TL + (CH.ksl_base >> SLOT.ksl);
+		SLOT.TLL = (int) (SLOT.TL + (CH.ksl_base >> SLOT.ksl));
 	}
 
 	/* set attack rate & decay rate */
@@ -1186,16 +1188,16 @@ public abstract class FMOPL {
 		SLOT.ar = (v >> 4) != 0 ? 16 + ((v >> 4) << 2) : 0;
 
 		if ((SLOT.ar + SLOT.ksr) < 16 + 62) {
-			SLOT.eg_sh_ar = eg_rate_shift[SLOT.ar + SLOT.ksr];
-			SLOT.eg_sel_ar = eg_rate_select[SLOT.ar + SLOT.ksr];
+			SLOT.eg_sh_ar = eg_rate_shift[(int) (SLOT.ar + SLOT.ksr)];
+			SLOT.eg_sel_ar = eg_rate_select[(int) (SLOT.ar + SLOT.ksr)];
 		} else {
 			SLOT.eg_sh_ar = 0;
 			SLOT.eg_sel_ar = 13 * RATE_STEPS;
 		}
 
 		SLOT.dr = (v & 0x0f) != 0 ? 16 + ((v & 0x0f) << 2) : 0;
-		SLOT.eg_sh_dr = eg_rate_shift[SLOT.dr + SLOT.ksr];
-		SLOT.eg_sel_dr = eg_rate_select[SLOT.dr + SLOT.ksr];
+		SLOT.eg_sh_dr = eg_rate_shift[(int) (SLOT.dr + SLOT.ksr)];
+		SLOT.eg_sel_dr = eg_rate_select[(int) (SLOT.dr + SLOT.ksr)];
 	}
 
 	/* set sustain level & release rate */
@@ -1206,8 +1208,8 @@ public abstract class FMOPL {
 		SLOT.sl = (int) sl_tab[v >> 4];
 
 		SLOT.rr = (v & 0x0f) != 0 ? 16 + ((v & 0x0f) << 2) : 0;
-		SLOT.eg_sh_rr = eg_rate_shift[SLOT.rr + SLOT.ksr];
-		SLOT.eg_sel_rr = eg_rate_select[SLOT.rr + SLOT.ksr];
+		SLOT.eg_sh_rr = eg_rate_shift[(int) (SLOT.rr + SLOT.ksr)];
+		SLOT.eg_sel_rr = eg_rate_select[(int) (SLOT.rr + SLOT.ksr)];
 	}
 
 	/* write a value v to register r on OPL chip */
@@ -1402,7 +1404,7 @@ public abstract class FMOPL {
 				return;
 			}
 			OPLCh CH = OPL.pCh[r & 0x0f];
-			int block_fnum;
+			long block_fnum;
 			if ((r & 0x10) == 0) { /* a0-a8 */
 				block_fnum = (CH.block_fnum & 0x1f00) | v;
 			} else { /* b0-b8 */
@@ -1418,15 +1420,15 @@ public abstract class FMOPL {
 			}
 			/* update */
 			if (CH.block_fnum != block_fnum) {
-				int block = block_fnum >> 10;
+				long block = block_fnum >> 10;
 
 				CH.block_fnum = block_fnum;
 
-				CH.ksl_base = (int) (ksl_tab[block_fnum >> 6]);
-				CH.fc = OPL.fn_tab[block_fnum & 0x03ff] >> (7 - block);
+				CH.ksl_base = (long) (ksl_tab[(int) (block_fnum >> 6)]) & 0xffffffff;
+				CH.fc = OPL.fn_tab[(int) (block_fnum & 0x03ff)] >> (7 - block);
 
 				/* BLK 2,1,0 bits . bits 3,2,1 of kcode */
-				CH.kcode = (CH.block_fnum & 0x1c00) >> 9;
+				CH.kcode = (int) ((CH.block_fnum & 0x1c00) >> 9);
 
 				/*
 				 * the info below is actually opposite to what is stated in the Manuals (verifed
@@ -1441,8 +1443,8 @@ public abstract class FMOPL {
 				}
 
 				/* refresh Total Level in both SLOTs of this channel */
-				CH.slot[SLOT1].TLL = CH.slot[SLOT1].TL + (CH.ksl_base >> CH.slot[SLOT1].ksl);
-				CH.slot[SLOT2].TLL = CH.slot[SLOT2].TL + (CH.ksl_base >> CH.slot[SLOT2].ksl);
+				CH.slot[SLOT1].TLL = (int) (CH.slot[SLOT1].TL + (CH.ksl_base >> CH.slot[SLOT1].ksl));
+				CH.slot[SLOT2].TLL = (int) (CH.slot[SLOT2].TL + (CH.ksl_base >> CH.slot[SLOT2].ksl));
 
 				/* refresh frequency counter in both SLOTs of this channel */
 				CALC_FCSLOT(CH, CH.slot[SLOT1]);
@@ -1551,7 +1553,7 @@ public abstract class FMOPL {
 	/* Create one of virtual YM3812/YM3526 */
 	/* 'clock' is chip clock in Hz */
 	/* 'rate' is sampling rate */
-	private FmOPL OPLCreate(long clock, int rate, int type) {
+	private FmOPL OPLCreate(long clock, long rate, int type) {
 		if (OPL_LockTable() == -1) {
 			return null;
 		}
@@ -1646,7 +1648,7 @@ public abstract class FMOPL {
 		return OPL.status >> 7;
 	}
 
-	public FmOPL ym3812_init(long clock, int rate) {
+	public FmOPL ym3812_init(long clock, long rate) {
 		/* emulator create */
 		FmOPL YM3812 = OPLCreate(clock, rate, OPL_TYPE_YM3812);
 		if (YM3812 != null) {
@@ -1728,11 +1730,11 @@ public abstract class FMOPL {
 		}
 	}
 
-	public FmOPL ym3526_init(long clock, int rate) {
+	public FmOPL ym3526_init(long clock, long rate, EventScheduler context) {
 		/* emulator create */
 		FmOPL YM3526 = OPLCreate(clock, rate, OPL_TYPE_YM3526);
 		if (YM3526 != null) {
-			ym3526_reset_chip(YM3526);
+			ym3526_reset_chip(YM3526, context);
 		}
 		return YM3526;
 	}
@@ -1741,11 +1743,27 @@ public abstract class FMOPL {
 		OPLDestroy(chip);
 	}
 
-	public void ym3526_reset_chip(FmOPL chip) {
+//	static int cnt;
+//	static long start;
+//	static PrintStream fout;
+
+	public void ym3526_reset_chip(FmOPL chip, EventScheduler context) {
 		OPLResetChip(chip);
+//		cnt = -1;
+//		try {
+//			fout = new PrintStream(new BufferedOutputStream(new FileOutputStream("/home/ken/java.txt")));
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
-	public int ym3526_write(FmOPL chip, int a, int v) {
+	public int ym3526_write(FmOPL chip, int a, int v, EventScheduler context) {
+//		if (cnt == -1) {
+//			start = context.getTime(Phase.PHI1);
+//		}
+//		cnt = 0;
+//		fout.printf("\nw%08X: %02X,%02X\n", context.getTime(Phase.PHI1) - start, a, v);
 		return OPLWrite(chip, a, v);
 	}
 
@@ -1760,11 +1778,12 @@ public abstract class FMOPL {
 	}
 
 	/**
-	 * @param OPL    the virtual YM3526
-	 * @param buffer output buffer pointer
-	 * @param length is the number of samples that should be generated
+	 * @param OPL     the virtual YM3526
+	 * @param buffer  output buffer pointer
+	 * @param length  is the number of samples that should be generated
+	 * @param context
 	 */
-	public void ym3526_update_one(FmOPL OPL, IntConsumer buffer, int length) {
+	public void ym3526_update_one(FmOPL OPL, IntConsumer buffer, int length, EventScheduler context) {
 		int rhythm = OPL.rhythm & 0x20;
 
 		if (OPL != cur_chip) {
@@ -1801,10 +1820,21 @@ public abstract class FMOPL {
 			lt >>= FINAL_SH;
 
 			/* limit check */
-			lt = Math.max(Math.min(lt, Short.MAX_VALUE), Short.MIN_VALUE);
-
-			/* store to sound buffer */
-			buffer.accept(lt);
+			if (lt < -32768) {
+				lt = -32768;
+			}
+			if (lt > 32767) {
+				lt = 32767;
+			}
+			short sh = (short) (lt & 0xffff);
+//			if (cnt > -1) {
+//				/* store to sound buffer */
+//				fout.printf("c%04X, ", sh);
+//				if (++cnt % 64 == 0) {
+//					fout.println();
+//				}
+//			}
+			buffer.accept(sh);
 
 			advance(OPL);
 		}
