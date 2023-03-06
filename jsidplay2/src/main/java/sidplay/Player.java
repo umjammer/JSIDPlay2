@@ -63,7 +63,6 @@ import libsidplay.common.SIDEmu;
 import libsidplay.common.SIDListener;
 import libsidplay.common.Ultimate64Mode;
 import libsidplay.components.c1530.Datasette.Control;
-import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos6510.IMOS6510Extension;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos6526.MOS6526;
@@ -344,7 +343,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			 */
 			@Override
 			public void start() {
-				c64.getCartridge().reset();
+//				c64.getCartridge().reset();
 				c64.insertSIDChips(requiredSIDs, sidLocator);
 				c64.configureVICs(vic -> vic.setVideoDriver(Player.this));
 				c64.setSIDListener(Player.this);
@@ -763,8 +762,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		// Run until the player gets stopped
 		do {
 			try {
-				c64.setCartridge(CartridgeType.SOUNDEXPANDER, 0);
-
+//				c64.setCartridge(CartridgeType.SOUNDEXPANDER, 0);
 				stateProperty.set(OPEN);
 				open();
 				stateProperty.set(START);
