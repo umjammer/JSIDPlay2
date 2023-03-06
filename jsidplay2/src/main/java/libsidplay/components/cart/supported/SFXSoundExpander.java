@@ -100,7 +100,7 @@ public class SFXSoundExpander extends Cartridge {
 
 		@Override
 		public void write(int address, byte value) {
-			sfx_soundexpander_sound_store(address, value & 0xff);
+			sfx_soundexpander_sound_store(address, value);
 		}
 	};
 
@@ -173,7 +173,7 @@ public class SFXSoundExpander extends Cartridge {
 
 	/* --------------------------------------------------------------------- */
 
-	public void sfx_soundexpander_sound_machine_store(int addr, int val) {
+	public void sfx_soundexpander_sound_machine_store(int addr, byte val) {
 		if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {
 			fmOpl.ym3812_write(YM3812_chip, 1, val);
 		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
@@ -193,7 +193,7 @@ public class SFXSoundExpander extends Cartridge {
 
 	/* --------------------------------------------------------------------- */
 
-	public void sfx_soundexpander_sound_store(int addr, int value) {
+	public void sfx_soundexpander_sound_store(int addr, byte value) {
 		addr = (addr & 0xff);
 		if (addr == 0x40) {
 			if (sfx_soundexpander_chip == 3812 && YM3812_chip != null) {

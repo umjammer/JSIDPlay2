@@ -387,7 +387,7 @@ public abstract class FMOPL {
 	/* --------------------------------------------------------------------- */
 
 	/* status set and IRQ handling */
-	private void OPL_STATUS_SET(FmOPL OPL, int flag) {
+	private void OPL_STATUS_SET(FmOPL OPL, byte flag) {
 		/* set status flag */
 		OPL.status |= flag;
 		if ((OPL.status & 0x80) == 0) {
@@ -398,7 +398,7 @@ public abstract class FMOPL {
 	}
 
 	/* status reset and IRQ handling */
-	private void OPL_STATUS_RESET(FmOPL OPL, int flag) {
+	private void OPL_STATUS_RESET(FmOPL OPL, byte flag) {
 		/* reset status flag */
 		OPL.status &= ~flag;
 		if ((OPL.status & 0x80) != 0) {
@@ -409,12 +409,12 @@ public abstract class FMOPL {
 	}
 
 	/* IRQ mask set */
-	private void OPL_STATUSMASK_SET(FmOPL OPL, int flag) {
+	private void OPL_STATUSMASK_SET(FmOPL OPL, byte flag) {
 		OPL.statusmask = flag;
 
 		/* IRQ handling check */
-		OPL_STATUS_SET(OPL, 0);
-		OPL_STATUS_RESET(OPL, 0);
+		OPL_STATUS_SET(OPL, (byte) 0);
+		OPL_STATUS_RESET(OPL, (byte) 0);
 	}
 
 	/* advance LFO to next sample */
@@ -708,7 +708,7 @@ public abstract class FMOPL {
 		/* (release state) **/
 		private int eg_sel_rr;
 		/* 0 = KEY OFF, >0 = KEY ON **/
-		private long key;
+		private byte key;
 
 		//
 		// LFO
@@ -802,11 +802,11 @@ public abstract class FMOPL {
 		/* address register **/
 		private int address;
 		/* status flag **/
-		private int status;
+		private byte status;
 		/* status mask **/
-		private int statusmask;
+		private byte statusmask;
 		/* Reg.08 : CSM,notesel,etc. **/
-		private int mode;
+		private byte mode;
 
 		/* master clock (Hz) **/
 		private long clock;
@@ -1104,7 +1104,7 @@ public abstract class FMOPL {
 		OPL.eg_timer_overflow = (1) * (1 << EG_SH);
 	}
 
-	private void FM_KEYON(OPLSlot SLOT, long key_set) {
+	private void FM_KEYON(OPLSlot SLOT, byte key_set) {
 		if (SLOT.key != 0) {
 			/* restart Phase Generator */
 			SLOT.Cnt = 0;
@@ -1115,7 +1115,7 @@ public abstract class FMOPL {
 		SLOT.key |= key_set;
 	}
 
-	private void FM_KEYOFF(OPLSlot SLOT, long key_clr) {
+	private void FM_KEYOFF(OPLSlot SLOT, byte key_clr) {
 		if (SLOT.key != 0) {
 			SLOT.key &= key_clr;
 
@@ -1213,10 +1213,9 @@ public abstract class FMOPL {
 	}
 
 	/* write a value v to register r on OPL chip */
-	private void OPLWriteReg(FmOPL OPL, int r, int v) {
+	private void OPLWriteReg(FmOPL OPL, int r, byte v) {
 		/* adjust bus to 8 bits */
 		r &= 0xff;
-		v &= 0xff;
 
 		switch (r & 0xe0) {
 		case 0x00: /* 00-1f:control */
@@ -1243,8 +1242,8 @@ public abstract class FMOPL {
 				break;
 			case 0x04: /* IRQ clear / mask and Timer enable */
 				if ((v & 0x80) != 0) { /* IRQ flag clear */
-					OPL_STATUS_RESET(OPL, 0x7f
-							- 0x08); /*
+					OPL_STATUS_RESET(OPL, (byte) (0x7f
+							- 0x08)); /*
 										 * don't reset BFRDY flag or we will have to call deltat module to set the flag
 										 */
 				} else { /* set IRQ mask ,timer enable */
@@ -1252,8 +1251,8 @@ public abstract class FMOPL {
 					int st2 = (v >> 1) & 1;
 
 					/* IRQRST,T1MSK,t2MSK,EOSMSK,BRMSK,x,ST2,ST1 */
-					OPL_STATUS_RESET(OPL, v & (0x78 - 0x08));
-					OPL_STATUSMASK_SET(OPL, (~v) & 0x78);
+					OPL_STATUS_RESET(OPL, (byte) (v & (0x78 - 0x08)));
+					OPL_STATUSMASK_SET(OPL, (byte) ((~v) & 0x78));
 
 					/* timer 2 */
 					if (OPL.st[1] != st2) {
@@ -1310,7 +1309,7 @@ public abstract class FMOPL {
 			if (slot < 0) {
 				return;
 			}
-			set_mul(OPL, slot, v);
+			set_mul(OPL, slot, v & 0xff);
 			break;
 		}
 		case 0x40: {
@@ -1318,7 +1317,7 @@ public abstract class FMOPL {
 			if (slot < 0) {
 				return;
 			}
-			set_ksl_tl(OPL, slot, v);
+			set_ksl_tl(OPL, slot, v & 0xff);
 			break;
 		}
 		case 0x60: {
@@ -1326,7 +1325,7 @@ public abstract class FMOPL {
 			if (slot < 0) {
 				return;
 			}
-			set_ar_dr(OPL, slot, v);
+			set_ar_dr(OPL, slot, v & 0xff);
 			break;
 		}
 		case 0x80: {
@@ -1334,7 +1333,7 @@ public abstract class FMOPL {
 			if (slot < 0) {
 				return;
 			}
-			set_sl_rr(OPL, slot, v);
+			set_sl_rr(OPL, slot, v & 0xff);
 			break;
 		}
 		case 0xa0:
@@ -1347,55 +1346,55 @@ public abstract class FMOPL {
 				if ((OPL.rhythm & 0x20) != 0) {
 					/* BD key on/off */
 					if ((v & 0x10) != 0) {
-						FM_KEYON(OPL.pCh[6].slot[SLOT1], 2);
-						FM_KEYON(OPL.pCh[6].slot[SLOT2], 2);
+						FM_KEYON(OPL.pCh[6].slot[SLOT1], (byte) 2);
+						FM_KEYON(OPL.pCh[6].slot[SLOT2], (byte) 2);
 					} else {
-						FM_KEYOFF(OPL.pCh[6].slot[SLOT1], ~2);
-						FM_KEYOFF(OPL.pCh[6].slot[SLOT2], ~2);
+						FM_KEYOFF(OPL.pCh[6].slot[SLOT1], (byte) ~2);
+						FM_KEYOFF(OPL.pCh[6].slot[SLOT2], (byte) ~2);
 					}
 					/* HH key on/off */
 					if ((v & 0x01) != 0) {
-						FM_KEYON(OPL.pCh[7].slot[SLOT1], 2);
+						FM_KEYON(OPL.pCh[7].slot[SLOT1], (byte) 2);
 					} else {
-						FM_KEYOFF(OPL.pCh[7].slot[SLOT1], ~2);
+						FM_KEYOFF(OPL.pCh[7].slot[SLOT1], (byte) ~2);
 					}
 
 					/* SD key on/off */
 					if ((v & 0x08) != 0) {
-						FM_KEYON(OPL.pCh[7].slot[SLOT2], 2);
+						FM_KEYON(OPL.pCh[7].slot[SLOT2], (byte) 2);
 					} else {
-						FM_KEYOFF(OPL.pCh[7].slot[SLOT2], ~2);
+						FM_KEYOFF(OPL.pCh[7].slot[SLOT2], (byte) ~2);
 					}
 
 					/* TOM key on/off */
 					if ((v & 0x04) != 0) {
-						FM_KEYON(OPL.pCh[8].slot[SLOT1], 2);
+						FM_KEYON(OPL.pCh[8].slot[SLOT1], (byte) 2);
 					} else {
-						FM_KEYOFF(OPL.pCh[8].slot[SLOT1], ~2);
+						FM_KEYOFF(OPL.pCh[8].slot[SLOT1], (byte) ~2);
 					}
 
 					/* TOP-CY key on/off */
 					if ((v & 0x02) != 0) {
-						FM_KEYON(OPL.pCh[8].slot[SLOT2], 2);
+						FM_KEYON(OPL.pCh[8].slot[SLOT2], (byte) 2);
 					} else {
-						FM_KEYOFF(OPL.pCh[8].slot[SLOT2], ~2);
+						FM_KEYOFF(OPL.pCh[8].slot[SLOT2], (byte) ~2);
 					}
 				} else {
 					/* BD key off */
-					FM_KEYOFF(OPL.pCh[6].slot[SLOT1], ~2);
-					FM_KEYOFF(OPL.pCh[6].slot[SLOT2], ~2);
+					FM_KEYOFF(OPL.pCh[6].slot[SLOT1], (byte) ~2);
+					FM_KEYOFF(OPL.pCh[6].slot[SLOT2], (byte) ~2);
 
 					/* HH key off */
-					FM_KEYOFF(OPL.pCh[7].slot[SLOT1], ~2);
+					FM_KEYOFF(OPL.pCh[7].slot[SLOT1], (byte) ~2);
 
 					/* SD key off */
-					FM_KEYOFF(OPL.pCh[7].slot[SLOT2], ~2);
+					FM_KEYOFF(OPL.pCh[7].slot[SLOT2], (byte) ~2);
 
 					/* TOM key off */
-					FM_KEYOFF(OPL.pCh[8].slot[SLOT1], ~2);
+					FM_KEYOFF(OPL.pCh[8].slot[SLOT1], (byte) ~2);
 
 					/* TOP-CY off */
-					FM_KEYOFF(OPL.pCh[8].slot[SLOT2], ~2);
+					FM_KEYOFF(OPL.pCh[8].slot[SLOT2], (byte) ~2);
 				}
 				return;
 			}
@@ -1406,16 +1405,16 @@ public abstract class FMOPL {
 			OPLCh CH = OPL.pCh[r & 0x0f];
 			long block_fnum;
 			if ((r & 0x10) == 0) { /* a0-a8 */
-				block_fnum = (CH.block_fnum & 0x1f00) | v;
+				block_fnum = (CH.block_fnum & 0x1f00) | (v & 0xff);
 			} else { /* b0-b8 */
 				block_fnum = ((v & 0x1f) << 8) | (CH.block_fnum & 0xff);
 
 				if ((v & 0x20) != 0) {
-					FM_KEYON(CH.slot[SLOT1], 1);
-					FM_KEYON(CH.slot[SLOT2], 1);
+					FM_KEYON(CH.slot[SLOT1], (byte) 1);
+					FM_KEYON(CH.slot[SLOT2], (byte) 1);
 				} else {
-					FM_KEYOFF(CH.slot[SLOT1], ~1);
-					FM_KEYOFF(CH.slot[SLOT2], ~1);
+					FM_KEYOFF(CH.slot[SLOT1], (byte) ~1);
+					FM_KEYOFF(CH.slot[SLOT2], (byte) ~1);
 				}
 			}
 			/* update */
@@ -1518,15 +1517,15 @@ public abstract class FMOPL {
 
 		OPL.noise_rng = 1; /* noise shift register */
 		OPL.mode = 0; /* normal mode */
-		OPL_STATUS_RESET(OPL, 0x7f);
+		OPL_STATUS_RESET(OPL, (byte) 0x7f);
 
 		/* reset with register write */
-		OPLWriteReg(OPL, 0x01, 0); /* wavesel disable */
-		OPLWriteReg(OPL, 0x02, 0); /* Timer1 */
-		OPLWriteReg(OPL, 0x03, 0); /* Timer2 */
-		OPLWriteReg(OPL, 0x04, 0); /* IRQ mask clear */
+		OPLWriteReg(OPL, 0x01, (byte) 0); /* wavesel disable */
+		OPLWriteReg(OPL, 0x02, (byte) 0); /* Timer1 */
+		OPLWriteReg(OPL, 0x03, (byte) 0); /* Timer2 */
+		OPLWriteReg(OPL, 0x04, (byte) 0); /* IRQ mask clear */
 		for (int i = 0xff; i >= 0x20; i--) {
-			OPLWriteReg(OPL, i, 0);
+			OPLWriteReg(OPL, i, (byte) 0);
 		}
 
 		/* reset operator parameters */
@@ -1599,7 +1598,7 @@ public abstract class FMOPL {
 		OPL_UnLockTable();
 	}
 
-	private int OPLWrite(FmOPL OPL, int a, int v) {
+	private int OPLWrite(FmOPL OPL, int a, byte v) {
 		if ((a & 1) == 0) { /* address port */
 			OPL.address = v & 0xff;
 		} else { /* data port */
@@ -1619,22 +1618,22 @@ public abstract class FMOPL {
 
 	/* CSM Key Controll */
 	private void CSMKeyControll(OPLCh CH) {
-		FM_KEYON(CH.slot[SLOT1], 4);
-		FM_KEYON(CH.slot[SLOT2], 4);
+		FM_KEYON(CH.slot[SLOT1], (byte) 4);
+		FM_KEYON(CH.slot[SLOT2], (byte) 4);
 
 		/*
 		 * The key off should happen exactly one sample later - not implemented
 		 * correctly yet
 		 */
-		FM_KEYOFF(CH.slot[SLOT1], ~4);
-		FM_KEYOFF(CH.slot[SLOT2], ~4);
+		FM_KEYOFF(CH.slot[SLOT1], (byte) ~4);
+		FM_KEYOFF(CH.slot[SLOT2], (byte) ~4);
 	}
 
 	private int OPLTimerOver(FmOPL OPL, int c) {
 		if (c != 0) { /* Timer B */
-			OPL_STATUS_SET(OPL, 0x20);
+			OPL_STATUS_SET(OPL, (byte) 0x20);
 		} else { /* Timer A */
-			OPL_STATUS_SET(OPL, 0x40);
+			OPL_STATUS_SET(OPL, (byte) 0x40);
 			/* CSM mode key,TL controll */
 			if ((OPL.mode & 0x80) != 0) { /* CSM mode total level latch and auto key on */
 				int ch;
@@ -1665,7 +1664,7 @@ public abstract class FMOPL {
 		OPLResetChip(chip);
 	}
 
-	public int ym3812_write(FmOPL chip, int a, int v) {
+	public int ym3812_write(FmOPL chip, int a, byte v) {
 		return OPLWrite(chip, a, v);
 	}
 
@@ -1758,7 +1757,7 @@ public abstract class FMOPL {
 //		}
 	}
 
-	public int ym3526_write(FmOPL chip, int a, int v, EventScheduler context) {
+	public int ym3526_write(FmOPL chip, int a, byte v, EventScheduler context) {
 //		if (cnt == -1) {
 //			start = context.getTime(Phase.PHI1);
 //		}
