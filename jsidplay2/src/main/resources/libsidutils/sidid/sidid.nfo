@@ -285,7 +285,7 @@ REFERENCE: https://csdb.dk/release/?id=118363
 DefleMask_v12
    AUTHOR: Leonardo Demartino (Delek)
  RELEASED: 2016
-REFERENCE: http://www.deflemask.com/
+REFERENCE: https://www.deflemask.com/
 
 DefMon
    AUTHOR: Mats (Frantic of Hack'n'Trade)
@@ -369,7 +369,7 @@ Ed_Bogas/Accolade
 Ed_Bogas/Hakansson
    AUTHOR: Ed Bogas
 
-Electro_Sound
+Electrosound
  RELEASED: 1985 Orpheus
 REFERENCE: https://csdb.dk/release/?id=27433
 
@@ -576,7 +576,7 @@ GRG_tiny_4
 Gregor_Larson
    AUTHOR: Gregor Larson
 
-Griff/Chromance
+Griff
    AUTHOR: Péter Varga (Griff)
 
 (LightVoices)
@@ -588,9 +588,10 @@ Groo/Psygon
    AUTHOR: Claus Leth Gregersen (Groo)
 
 Groovy_Bits
+     NAME: Groovy Music
    AUTHOR: Lars Patrik Wallström (Karl XII)
  RELEASED: 1989 Groovy Bits
-REFERENCE: https://csdb.dk/release/?id=121370
+REFERENCE: https://csdb.dk/release/?id=121513
 
 Hansford/Interceptor
    AUTHOR: Graham Hansford
@@ -785,7 +786,6 @@ Kawasaki_Synthesizer
      NAME: Kawasaki Synthesizer
    AUTHOR: Ryo Kawasaki
  RELEASED: 1983 Sight & Sound Music Software
-  COMMENT: More info: http://www.ryokawasaki.com/c64/
 
 KB/SDS
    AUTHOR: Tammo Hinrichs (kb) of Smash Designs (SDS)
@@ -828,7 +828,7 @@ Longhair
 LordsOfSonics/MS
    AUTHOR: Markus Schneider
 
-(Comptech_V2.x)
+(Compotech_V2.x)
      NAME: Compotech
    AUTHOR: Markus Schneider & Helge Kozielek
  RELEASED: 1990 X-Ample Architectures
@@ -1001,7 +1001,7 @@ MoN/Deenen
 MoN/FutureComposer
    AUTHOR: Charles Deenen made the player & Juha Granberg (FCS) made the editor
 REFERENCE: https://csdb.dk/release/?id=10604
-  COMMENT: Editor made for the player of /MUSICIANS/T/Tel_Jeroen/Noisy_Pillars.sid
+  COMMENT: Editor made for the player of /MUSICIANS/T/Tel_Jeroen/Noisy_Pillars_tune_1.sid
 
 Montecchio/Coolsound
    AUTHOR: Andreas Montecchio
@@ -1187,9 +1187,9 @@ Paradroid/HubbardEd
 REFERENCE: https://csdb.dk/release/?id=101594
 
 PASS
-     NAME: P.A.S.S. (Parabola Advanced Synthesis Software)
+     NAME: P.A.S.S. (Parabola Advanced Synthesis Software) / Allegro
    AUTHOR: Bob Landwehr
- RELEASED: 1983 Parabola
+ RELEASED: 1983 Parabola / 1984 Artworx Software
 REFERENCE: https://csdb.dk/release/?id=128704
 
 PlayStar
@@ -1321,17 +1321,26 @@ Sequencer
  RELEASED: 1985 64'er/Markt & Technik
 REFERENCE: https://csdb.dk/release/?id=129802
 
-Sidbang64/Warp8
+Sidbang64_1/Warp8
    AUTHOR: Sebastian Abel (Warp8)
  RELEASED: 2021
 REFERENCE: https://csdb.dk/release/?id=199203
+
+Sidbang64_2/Warp8
+   AUTHOR: Sebastian Abel (Warp8)
+  COMMENT: Probably an internal/unpublished version
 
 SidFactory/Laxity
    AUTHOR: Thomas Egeskov Petersen (Laxity)
  RELEASED: 2006
 REFERENCE: https://csdb.dk/release/?id=39519
 
-Sidplayer64
+SidFactory_II/Laxity
+   AUTHOR: Thomas Egeskov Petersen (Laxity)
+ RELEASED: 2020
+REFERENCE: https://csdb.dk/release/?id=210571
+
+Sidplayer
    AUTHOR: Craig Chamberlain
  RELEASED: 1985
 REFERENCE: https://csdb.dk/release/?id=33248
@@ -1342,7 +1351,6 @@ REFERENCE: https://csdb.dk/release/?id=33248
 SidTracker64
    AUTHOR: Daniel Larsson (Pernod)
  RELEASED: 2015
-REFERENCE: http://www.sidtracker64.com
 
 SidWinder
    AUTHOR: Balázs Takács (Taki)
@@ -1441,7 +1449,7 @@ REFERENCE: https://csdb.dk/release/?id=7536
 SounDemon
    AUTHOR: Otto Järvinen (SounDemoN)
 
-SoundMonitor
+Soundmonitor
    AUTHOR: Chris Hülsbeck
  RELEASED: 1986 64'er/Markt & Technik
 REFERENCE: https://csdb.dk/release/?id=59929
@@ -1458,32 +1466,32 @@ REFERENCE: https://csdb.dk/release/?id=16309
 (DUSAT/RockMon2)
      NAME: Rock Monitor V2
    AUTHOR: Oscar Giesen (OPM)
- RELEASED: 1987 Dutch USA-Team
+ RELEASED: 1987 The Dutch USA-Team
 REFERENCE: https://csdb.dk/release/?id=20664
 
 (DUSAT/RockMon3)
      NAME: Rock Monitor V3
    AUTHOR: Oscar Giesen (OPM)
- RELEASED: 1987 Dutch USA-Team
+ RELEASED: 1987 The Dutch USA-Team
 REFERENCE: https://csdb.dk/release/?id=33038
 
 (DUSAT/RockMon4)
      NAME: Rock Monitor V4
    AUTHOR: Oscar Giesen (OPM)
- RELEASED: 1987 Dutch USA-Team
+ RELEASED: 1987 The Dutch USA-Team
 REFERENCE: https://csdb.dk/release/?id=20676
 
 (DUSAT/RockMon5.0)
      NAME: Rock Monitor V5
    AUTHOR: Oscar Giesen (OPM)
- RELEASED: 1988 Dutch USA-Team
+ RELEASED: 1988 The Dutch USA-Team
 REFERENCE: https://csdb.dk/release/?id=10632
   COMMENT: Later a 100% version of the editor/player was released.
 
 (DUSAT/RockMon5.1)
      NAME: Rock Monitor V5 100%
    AUTHOR: Oscar Giesen (OPM)
- RELEASED: 1988 Dutch USA-Team
+ RELEASED: 1988 The Dutch USA-Team
 REFERENCE: https://csdb.dk/release/?id=122393
   COMMENT: This is the 100% working version of Rock Monitor 5
 
