@@ -22,7 +22,9 @@ import sidplay.audio.JavaSound;
 
 public class SFXSoundExpander extends Cartridge {
 
-	private static final int BUFFER_SIZE = 1024;
+	private static final int BUFFER_SIZE = 16384;
+
+	private static final int REGULAR_DELAY = 16384;
 
 	private Resampler resamplerL;
 
@@ -57,7 +59,7 @@ public class SFXSoundExpander extends Cartridge {
 
 	private EventScheduler context;
 
-	private long clock;
+	private int clock;
 	private int rate;
 
 	private JavaSound javaSound = new JavaSound();
@@ -76,15 +78,18 @@ public class SFXSoundExpander extends Cartridge {
 	public void reset() {
 		super.reset();
 		pla.setGameExrom(true, true);
+		clocksSinceLastAccess();
+		context.cancel(event);
+		context.schedule(event, 0, Event.Phase.PHI2);
 		/* master clock (Hz) **/
-		this.clock = (long) CPUClock.PAL.getCpuFrequency();
+		this.clock = (int) CPUClock.PAL.getCpuFrequency();
 		/* sampling rate (Hz) **/
 		this.rate = SamplingRate.MEDIUM.getFrequency();
 		init();
 		resamplerL = Resampler.createResampler(clock, SamplingMethod.DECIMATE, SamplingRate.MEDIUM.getFrequency(),
 				SamplingRate.MEDIUM.getMiddleFrequency());
 		try {
-			javaSound.open(new AudioConfig(SamplingRate.MEDIUM.getFrequency(), 1, BUFFER_SIZE), null);
+			javaSound.open(new AudioConfig(SamplingRate.MEDIUM.getFrequency(), 2, BUFFER_SIZE), null);
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		}
@@ -100,28 +105,33 @@ public class SFXSoundExpander extends Cartridge {
 
 		@Override
 		public void write(int address, byte value) {
+			clock();
 			sfx_soundexpander_sound_store(address, value);
 		}
 	};
 
-	private Event event = new Event("SFX clock") {
+	private final Event event = new Event("Delay") {
 		@Override
-		public void event() throws InterruptedException {
-			sfx_soundexpander_sound_machine_calculate_samples(sample -> {
-				if (resamplerL.input(sample)) {
-					if (!javaSound.buffer().putShort((short) resamplerL.output()).hasRemaining()) {
-						try {
-							javaSound.write();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						((Buffer) javaSound.buffer()).clear();
-					}
-				}
-			}, 1);
-			context.schedule(this, 1);
+		public void event() {
+			context.schedule(event, eventuallyDelay(), Event.Phase.PHI2);
 		}
 	};
+
+	public void clock() {
+		int cycles = clocksSinceLastAccess();
+		sfx_soundexpander_sound_machine_calculate_samples(sample -> {
+			if (resamplerL.input(sample)) {
+				if (!javaSound.buffer().putShort((short) resamplerL.output()).hasRemaining()) {
+					try {
+						javaSound.write();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					((Buffer) javaSound.buffer()).clear();
+				}
+			}
+		}, cycles);
+	}
 
 	/* ------------------------------------------------------------------------- */
 // VERIFIED
@@ -148,8 +158,6 @@ public class SFXSoundExpander extends Cartridge {
 		} else if (sfx_soundexpander_chip == 3526 && YM3526_chip != null) {
 			fmOpl.ym3526_reset_chip(YM3526_chip, context);
 		}
-		context.cancel(event);
-		context.schedule(event, 1);
 	}
 
 	public void sfx_soundexpander_sound_machine_calculate_samples(IntConsumer sampleBuffer, int samples) {
@@ -240,6 +248,26 @@ public class SFXSoundExpander extends Cartridge {
 	/* No piano keyboard is emulated currently, so we return 0xff */
 	public byte sfx_soundexpander_piano_read(int addr) {
 		return (byte) 0xff;
+	}
+
+	private long lastTime;
+
+	protected int clocksSinceLastAccess() {
+		final long now = context.getTime(Event.Phase.PHI2);
+		int diff = (int) (now - lastTime);
+		lastTime = now;
+		return diff;
+	}
+
+	long eventuallyDelay() {
+		final long now = context.getTime(Event.Phase.PHI2);
+		int diff = (int) (now - lastTime);
+		if (diff > REGULAR_DELAY) {
+			lastTime += REGULAR_DELAY;
+
+			clock();
+		}
+		return REGULAR_DELAY;
 	}
 
 }

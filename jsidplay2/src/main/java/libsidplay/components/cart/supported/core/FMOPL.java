@@ -127,13 +127,13 @@ public abstract class FMOPL {
 
 	/* sustain level table (3dB per step) */
 	/* 0 - 15: 0, 3, 6, 9,12,15,18,21,24,27,30,33,36,39,42,93 (dB) */
-	private static long SC(double db) {
-		return (long) (db * (2.0 / ENV_STEP));
+	private static int SC(double db) {
+		return (int) (db * (2.0 / ENV_STEP));
 	}
 
-	private static long sl_tab[];
+	private static int sl_tab[];
 	{
-		sl_tab = new long[16];
+		sl_tab = new int[16];
 		for (int i = 0; i < 15; i++) {
 			sl_tab[i] = SC(i);
 		}
@@ -170,6 +170,7 @@ public abstract class FMOPL {
 	};
 
 	/* note that there is no O(13) in this table - it's directly in the code */
+	// VERIFIED
 	public static int eg_rate_select[];
 	{
 		/* Envelope Generator rates (16 + 64 rates + 16 RKS) */
@@ -221,6 +222,7 @@ public abstract class FMOPL {
 		return (a * 1);
 	}
 
+	// VERIFIED
 	private static int eg_rate_shift[];
 	{
 		/* Envelope Generator counter shifts (16 + 64 rates + 16 RKS) */
@@ -278,12 +280,14 @@ public abstract class FMOPL {
 	 * sign bit (Y axis) TL_RES_LEN - sinus resolution (X axis)
 	 */
 	private static final int TL_TAB_LEN = (12 * 2 * TL_RES_LEN);
+	// VERIFIED
 	private static final int tl_tab[] = new int[TL_TAB_LEN];
 
 	private static final int ENV_QUIET = (TL_TAB_LEN >> 4);
 
 	/* sin waveform table in 'decibel' scale */
 	/* four waveforms on OPL2 type chips */
+	// VERIFIED
 	private static final int sin_tab[] = new int[SIN_LEN * 4];
 
 	/*
@@ -298,7 +302,7 @@ public abstract class FMOPL {
 	 * When AM = 1 data is used directly When AM = 0 data is divided by 4 before
 	 * being used (loosing precision is important)
 	 */
-	private static final long LFO_AM_TAB_ELEMENTS = 210;
+	private static final int LFO_AM_TAB_ELEMENTS = 210;
 
 	private static final int lfo_am_table[] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5,
 			5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12, 13,
@@ -354,30 +358,30 @@ public abstract class FMOPL {
 	private int output[] = new int[1];
 
 	private int LFO_AM;
-	private long LFO_PM;
+	private int LFO_PM;
 
 	/* --------------------------------------------------------------------- */
 	/* timer support functions */
 
-	private long fmopl_timer_80 = 0;
-	private long fmopl_timer_320 = 0;
+	private int fmopl_timer_80 = 0;
+	private int fmopl_timer_320 = 0;
 
 //VERIFIED
-	public void fmopl_set_machine_parameter(long clock_rate) {
+	public void fmopl_set_machine_parameter(int clock_rate) {
 		fmopl_timer_80 = (clock_rate * 80 / 1000000);
 		fmopl_timer_320 = (clock_rate * 320 / 1000000);
 	}
 
-	private void fmopl_alarm_A(long offset, FmOPL OPL) {
-		long new_start = /* maincpu_clk() - offset + */ ((256 - OPL.T[0]) * fmopl_timer_80);
+	private void fmopl_alarm_A(int offset, FmOPL OPL) {
+		int new_start = /* maincpu_clk() - offset + */ ((256 - OPL.T[0]) * fmopl_timer_80);
 
 		alarm_unset(OPL.fmopl_alarm[0]);
 		alarm_set(OPL.fmopl_alarm[0], new_start);
 		OPLTimerOver(OPL, 0);
 	}
 
-	private void fmopl_alarm_B(long offset, FmOPL OPL) {
-		long new_start = /* maincpu_clk() - offset + */((256 - OPL.T[1]) * fmopl_timer_320);
+	private void fmopl_alarm_B(int offset, FmOPL OPL) {
+		int new_start = /* maincpu_clk() - offset + */((256 - OPL.T[1]) * fmopl_timer_320);
 
 		alarm_unset(OPL.fmopl_alarm[1]);
 		alarm_set(OPL.fmopl_alarm[1], new_start);
@@ -386,6 +390,7 @@ public abstract class FMOPL {
 
 	/* --------------------------------------------------------------------- */
 
+	// VERIFIED
 	/* status set and IRQ handling */
 	private void OPL_STATUS_SET(FmOPL OPL, byte flag) {
 		/* set status flag */
@@ -397,6 +402,7 @@ public abstract class FMOPL {
 		}
 	}
 
+	// VERIFIED
 	/* status reset and IRQ handling */
 	private void OPL_STATUS_RESET(FmOPL OPL, byte flag) {
 		/* reset status flag */
@@ -408,6 +414,7 @@ public abstract class FMOPL {
 		}
 	}
 
+	// VERIFIED
 	/* IRQ mask set */
 	private void OPL_STATUSMASK_SET(FmOPL OPL, byte flag) {
 		OPL.statusmask = flag;
@@ -418,11 +425,12 @@ public abstract class FMOPL {
 	}
 
 	/* advance LFO to next sample */
+	// VERIFIED
 	private void advance_lfo(FmOPL OPL) {
 		/* LFO */
 		OPL.lfo_am_cnt += OPL.lfo_am_inc;
-		if (OPL.lfo_am_cnt >= LFO_AM_TAB_ELEMENTS << LFO_SH) { /* lfo_am_table is 210 elements long */
-			OPL.lfo_am_cnt -= LFO_AM_TAB_ELEMENTS << LFO_SH;
+		if (OPL.lfo_am_cnt >= ((long) LFO_AM_TAB_ELEMENTS << LFO_SH)) { /* lfo_am_table is 210 elements long */
+			OPL.lfo_am_cnt -= ((long) LFO_AM_TAB_ELEMENTS << LFO_SH);
 		}
 
 		int tmp = lfo_am_table[(int) (OPL.lfo_am_cnt >> LFO_SH)];
@@ -438,6 +446,7 @@ public abstract class FMOPL {
 	}
 
 	/* advance to next sample */
+	// XXX TODO
 	private void advance(FmOPL OPL) {
 		OPL.eg_timer += OPL.eg_timer_add;
 
@@ -454,8 +463,8 @@ public abstract class FMOPL {
 				switch (op.state) {
 				case EG_ATT: /* attack phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_ar) - 1)) == 0) {
-						op.volume += (~op.volume
-								* (eg_inc[(int) (op.eg_sel_ar + ((OPL.eg_cnt >> op.eg_sh_ar) & 7))])) >> 3;
+						op.volume += ((((~op.volume) & 0xffffffff)
+								* (eg_inc[(int) (op.eg_sel_ar + ((OPL.eg_cnt >> op.eg_sh_ar) & 7))])) >> 3);
 
 						if (op.volume <= MIN_ATT_INDEX) {
 							op.volume = MIN_ATT_INDEX;
@@ -581,6 +590,7 @@ public abstract class FMOPL {
 		return tl_tab[(int) p];
 	}
 
+	// VERIFIED
 	private long volume_calc(OPLSlot OP) {
 		return OP.TLL + OP.volume + (LFO_AM & OP.AMmask);
 	}
@@ -690,9 +700,9 @@ public abstract class FMOPL {
 		/* total level: TL << 2 **/
 		private long TL;
 		/* adjusted now TL **/
-		private int TLL;
+		private long TLL;
 		/* envelope counter **/
-		private int volume;
+		private long volume;
 		/* sustain level: sl_tab[SL] **/
 		private long sl;
 		/* (attack state) **/
@@ -768,15 +778,20 @@ public abstract class FMOPL {
 		private int rhythm;
 
 		/* fnumber.increment counter **/
-		private long fn_tab[] = new long[1024];
+		/**
+		 * VERIFIED
+		 */
+		private int fn_tab[] = new int[1024];
 
 		/* LFO */
-		private long lfo_am_depth;
-		private long lfo_pm_depth_range;
+		private int lfo_am_depth;
+		private int lfo_pm_depth_range;
+		// VERIFIED
 		private long lfo_am_cnt;
-		private long lfo_am_inc;
+		private int lfo_am_inc;
+		// VERIFIED
 		private long lfo_pm_cnt;
-		private long lfo_pm_inc;
+		private int lfo_pm_inc;
 
 		/* 23 bit noise shift register **/
 		private long noise_rng;
@@ -789,7 +804,7 @@ public abstract class FMOPL {
 		private int wavesel;
 
 		/* timer counters **/
-		private long T[] = new long[2];
+		private int T[] = new int[2];
 		/* timer enable **/
 		private int st[] = new int[2];
 		/* timer alarms **/
@@ -1083,7 +1098,7 @@ public abstract class FMOPL {
 		/* make fnumber . increment counter table */
 		for (int i = 0; i < 1024; i++) {
 			/* opn phase increment counter = 20bit */
-			OPL.fn_tab[i] = (long) ((double) i * 64 * OPL.freqbase
+			OPL.fn_tab[i] = (int) ((double) i * 64 * OPL.freqbase
 					* (1 << (FREQ_SH - 10))); /* -10 because chip works with 10.10 fixed point, while we use 16.16 */
 		}
 
@@ -1092,15 +1107,15 @@ public abstract class FMOPL {
 		 * of: 192, 256 or 448 samples
 		 */
 		/* One entry from LFO_AM_TABLE lasts for 64 samples */
-		OPL.lfo_am_inc = (long) ((1.0 / 64.0) * (1 << LFO_SH) * OPL.freqbase);
+		OPL.lfo_am_inc = (int) ((1.0 / 64.0) * (1 << LFO_SH) * OPL.freqbase);
 
 		/* Vibrato: 8 output levels (triangle waveform); 1 level takes 1024 samples */
-		OPL.lfo_pm_inc = (long) ((1.0 / 1024.0) * (1 << LFO_SH) * OPL.freqbase);
+		OPL.lfo_pm_inc = (int) ((1.0 / 1024.0) * (1 << LFO_SH) * OPL.freqbase);
 
 		/* Noise generator: a step takes 1 sample */
-		OPL.noise_f = (long) ((1.0 / 1.0) * (1 << FREQ_SH) * OPL.freqbase);
+		OPL.noise_f = (int) ((1.0 / 1.0) * (1 << FREQ_SH) * OPL.freqbase);
 
-		OPL.eg_timer_add = (long) ((1 << EG_SH) * OPL.freqbase);
+		OPL.eg_timer_add = (int) ((1 << EG_SH) * OPL.freqbase);
 		OPL.eg_timer_overflow = (1) * (1 << EG_SH);
 	}
 
@@ -1177,7 +1192,7 @@ public abstract class FMOPL {
 		SLOT.ksl = ksl != 0 ? 3 - ksl : 31;
 		SLOT.TL = (v & 0x3f) << (ENV_BITS - 1 - 7); /* 7 bits TL (bit 6 = always 0) */
 
-		SLOT.TLL = (int) (SLOT.TL + (CH.ksl_base >> SLOT.ksl));
+		SLOT.TLL = (SLOT.TL + (CH.ksl_base >> SLOT.ksl));
 	}
 
 	/* set attack rate & decay rate */
@@ -1205,7 +1220,7 @@ public abstract class FMOPL {
 		OPLCh CH = OPL.pCh[slot / 2];
 		OPLSlot SLOT = CH.slot[slot & 1];
 
-		SLOT.sl = (int) sl_tab[v >> 4];
+		SLOT.sl = sl_tab[v >> 4];
 
 		SLOT.rr = (v & 0x0f) != 0 ? 16 + ((v & 0x0f) << 2) : 0;
 		SLOT.eg_sh_rr = eg_rate_shift[(int) (SLOT.rr + SLOT.ksr)];
@@ -1423,7 +1438,7 @@ public abstract class FMOPL {
 
 				CH.block_fnum = block_fnum;
 
-				CH.ksl_base = (long) (ksl_tab[(int) (block_fnum >> 6)]) & 0xffffffff;
+				CH.ksl_base = (long) (ksl_tab[(int) (block_fnum >> 6)]);
 				CH.fc = OPL.fn_tab[(int) (block_fnum & 0x03ff)] >> (7 - block);
 
 				/* BLK 2,1,0 bits . bits 3,2,1 of kcode */
@@ -1442,8 +1457,8 @@ public abstract class FMOPL {
 				}
 
 				/* refresh Total Level in both SLOTs of this channel */
-				CH.slot[SLOT1].TLL = (int) (CH.slot[SLOT1].TL + (CH.ksl_base >> CH.slot[SLOT1].ksl));
-				CH.slot[SLOT2].TLL = (int) (CH.slot[SLOT2].TL + (CH.ksl_base >> CH.slot[SLOT2].ksl));
+				CH.slot[SLOT1].TLL = CH.slot[SLOT1].TL + (CH.ksl_base >> CH.slot[SLOT1].ksl);
+				CH.slot[SLOT2].TLL = CH.slot[SLOT2].TL + (CH.ksl_base >> CH.slot[SLOT2].ksl);
 
 				/* refresh frequency counter in both SLOTs of this channel */
 				CALC_FCSLOT(CH, CH.slot[SLOT1]);
@@ -1724,6 +1739,7 @@ public abstract class FMOPL {
 
 			/* store to sound buffer */
 			buffer.accept(lt);
+			buffer.accept(lt);
 
 			advance(OPL);
 		}
@@ -1762,7 +1778,10 @@ public abstract class FMOPL {
 //			start = context.getTime(Phase.PHI1);
 //		}
 //		cnt = 0;
-//		fout.printf("\nw%08X: %02X,%02X\n", context.getTime(Phase.PHI1) - start, a, v);
+//		if (a == 0 && v == 7) {
+//			System.out.println();
+//		}
+//		fout.printf("\nw %08X: %02X,%02X\n", context.getTime(Phase.PHI1) - start, a, v);
 		return OPLWrite(chip, a, v);
 	}
 
@@ -1825,15 +1844,15 @@ public abstract class FMOPL {
 			if (lt > 32767) {
 				lt = 32767;
 			}
-			short sh = (short) (lt & 0xffff);
 //			if (cnt > -1) {
 //				/* store to sound buffer */
-//				fout.printf("c%04X, ", sh);
+//				fout.printf("c %04X, ", sh);
 //				if (++cnt % 64 == 0) {
 //					fout.println();
 //				}
 //			}
-			buffer.accept(sh);
+			buffer.accept(lt);
+			buffer.accept(lt);
 
 			advance(OPL);
 		}
