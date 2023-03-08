@@ -131,6 +131,7 @@ public abstract class FMOPL {
 		return (int) (db * (2.0 / ENV_STEP));
 	}
 
+	// VERIFIED
 	private static int sl_tab[];
 	{
 		sl_tab = new int[16];
@@ -463,9 +464,9 @@ public abstract class FMOPL {
 				switch (op.state) {
 				case EG_ATT: /* attack phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_ar) - 1)) == 0) {
-						op.volume += ((((~op.volume) & 0xffffffff)
-								* (eg_inc[(int) (op.eg_sel_ar + ((OPL.eg_cnt >> op.eg_sh_ar) & 7))])) >> 3);
-
+						op.volume += (~op.volume
+								* (eg_inc[(int) (op.eg_sel_ar + ((OPL.eg_cnt >> op.eg_sh_ar) & 7))])) >> 3;
+						op.volume &= 0xffffffff;
 						if (op.volume <= MIN_ATT_INDEX) {
 							op.volume = MIN_ATT_INDEX;
 							op.state = EG_DEC;
@@ -475,6 +476,7 @@ public abstract class FMOPL {
 				case EG_DEC: /* decay phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_dr) - 1)) == 0) {
 						op.volume += eg_inc[(int) (op.eg_sel_dr + ((OPL.eg_cnt >> op.eg_sh_dr) & 7))];
+						op.volume &= 0xffffffff;
 
 						if ((op.volume) >= op.sl) {
 							op.state = EG_SUS;
@@ -494,6 +496,7 @@ public abstract class FMOPL {
 						/* during sustain phase chip adds Release Rate (in percussive mode) */
 						if ((OPL.eg_cnt & ((1 << op.eg_sh_rr) - 1)) == 0) {
 							op.volume += eg_inc[(int) (op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7))];
+							op.volume &= 0xffffffff;
 
 							if (op.volume >= MAX_ATT_INDEX) {
 								op.volume = MAX_ATT_INDEX;
@@ -505,6 +508,7 @@ public abstract class FMOPL {
 				case EG_REL: /* release phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_rr) - 1)) == 0) {
 						op.volume += eg_inc[(int) (op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7))];
+						op.volume &= 0xffffffff;
 
 						if (op.volume >= MAX_ATT_INDEX) {
 							op.volume = MAX_ATT_INDEX;
@@ -530,6 +534,7 @@ public abstract class FMOPL {
 
 				if (lfo_fn_table_index_offset != 0) { /* LFO phase modulation active */
 					block_fnum += lfo_fn_table_index_offset;
+					block_fnum &= 0xffffffff;
 					long block = (block_fnum & 0x1c00) >> 10;
 					op.Cnt += (OPL.fn_tab[(int) (block_fnum & 0x03ff)] >> (7 - block)) * op.mul;
 				} else { /* LFO phase modulation = zero */
@@ -604,7 +609,6 @@ public abstract class FMOPL {
 		long env = volume_calc(SLOT);
 		int out = SLOT.op1_out[0] + SLOT.op1_out[1];
 		SLOT.op1_out[0] = SLOT.op1_out[1];
-		SLOT.connect1 += SLOT.op1_out[0];
 		SLOT.op1_out[1] = 0;
 		if (env < ENV_QUIET) {
 			if (SLOT.FB == 0) {
@@ -683,9 +687,6 @@ public abstract class FMOPL {
 		private long Incr;
 		/* feedback shift value **/
 		private int FB;
-		/* slot1 output pointer **/
-		@SuppressWarnings("unused")
-		private int connect1;
 		/* slot1 output for feedback **/
 		private int op1_out[] = new int[2];
 		/* connection (algorithm) type **/
@@ -1107,10 +1108,10 @@ public abstract class FMOPL {
 		 * of: 192, 256 or 448 samples
 		 */
 		/* One entry from LFO_AM_TABLE lasts for 64 samples */
-		OPL.lfo_am_inc = (int) ((1.0 / 64.0) * (1 << LFO_SH) * OPL.freqbase);
+		OPL.lfo_am_inc = (int) ((1.0 / 64.0) * (1L << LFO_SH) * OPL.freqbase);
 
 		/* Vibrato: 8 output levels (triangle waveform); 1 level takes 1024 samples */
-		OPL.lfo_pm_inc = (int) ((1.0 / 1024.0) * (1 << LFO_SH) * OPL.freqbase);
+		OPL.lfo_pm_inc = (int) ((1.0 / 1024.0) * (1L << LFO_SH) * OPL.freqbase);
 
 		/* Noise generator: a step takes 1 sample */
 		OPL.noise_f = (int) ((1.0 / 1.0) * (1 << FREQ_SH) * OPL.freqbase);
@@ -1175,7 +1176,7 @@ public abstract class FMOPL {
 		OPLCh CH = OPL.pCh[slot / 2];
 		OPLSlot SLOT = CH.slot[slot & 1];
 
-		SLOT.mul = (int) (mul_tab[v & 0x0f]) & 0xff;
+		SLOT.mul = ((int) mul_tab[v & 0x0f]) & 0xff;
 		SLOT.KSR = (v & 0x10) != 0 ? 0 : 2;
 		SLOT.eg_type = (v & 0x20);
 		SLOT.vib = (v & 0x40);
@@ -1242,14 +1243,14 @@ public abstract class FMOPL {
 				}
 				break;
 			case 0x02: /* Timer 1 */
-				OPL.T[0] = v;
+				OPL.T[0] = v & 0xff;
 				if (OPL.fmopl_alarm_pending[0] != 0) {
 					alarm_unset(OPL.fmopl_alarm[0]);
 					alarm_set(OPL.fmopl_alarm[0], /* maincpu_clk() + */ ((256 - v) * fmopl_timer_80));
 				}
 				break;
 			case 0x03: /* Timer 2 */
-				OPL.T[1] = v;
+				OPL.T[1] = v & 0xff;
 				if (OPL.fmopl_alarm_pending[1] != 0) {
 					alarm_unset(OPL.fmopl_alarm[1]);
 					alarm_set(OPL.fmopl_alarm[1], /* maincpu_clk() + */ ((256 - v) * fmopl_timer_320));
@@ -1471,9 +1472,8 @@ public abstract class FMOPL {
 				return;
 			}
 			CH = OPL.pCh[r & 0x0f];
-			CH.slot[SLOT1].FB = ((v >> 1) & 7) != 0 ? ((v >> 1) & 7) + 7 : 0;
+			CH.slot[SLOT1].FB = (((v & 0xff) >> 1) & 7) != 0 ? (((v & 0xff) >> 1) & 7) + 7 : 0;
 			CH.slot[SLOT1].CON = v & 1;
-			CH.slot[SLOT1].connect1 = CH.slot[SLOT1].CON != 0 ? output[0] : phase_modulation;
 			break;
 		case 0xe0: {/* waveform select */
 			/*
@@ -1551,7 +1551,6 @@ public abstract class FMOPL {
 				CH.slot[s].wavetable = 0;
 				CH.slot[s].state = EG_OFF;
 				CH.slot[s].volume = MAX_ATT_INDEX;
-				CH.slot[s].connect1 = output[0];
 			}
 		}
 
