@@ -95,6 +95,8 @@ public class NetworkSIDDevice {
 				SwingUtilities.invokeLater(() -> printErrorAndExit(e));
 			}
 		}).start();
+		
+		new DetectionThread(config).start();
 	}
 
 	protected void printErrorAndExit(Exception e) {
