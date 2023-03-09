@@ -67,13 +67,13 @@ public class DetectionThread extends Thread {
         socket.close();
     }
 
-	private boolean isLocalIp(DatagramPacket incomingPacket) {
+	private boolean isLocalIp(final DatagramPacket incomingPacket) {
 		return incomingPacket.getAddress().getHostAddress().equals(localIp);
 	}
     
 	private static boolean is64Bit() {
-	    String arch = System.getProperty("os.arch");
-	    String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+	    final String arch = System.getProperty("os.arch");
+	    final String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
 	    return arch != null && arch.contains("64") || wow64Arch != null && wow64Arch.contains("64");
 	}
 }
