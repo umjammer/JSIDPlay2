@@ -528,15 +528,15 @@ public abstract class FMOPL {
 
 			/* Phase Generator */
 			if (op.vib != 0) {
-				long block_fnum = CH.block_fnum;
+				int block_fnum = CH.block_fnum;
 				long fnum_lfo = (block_fnum & 0x0380) >> 7;
 				byte lfo_fn_table_index_offset = lfo_pm_table[(int) (LFO_PM + 16 * fnum_lfo)];
 
 				if (lfo_fn_table_index_offset != 0) { /* LFO phase modulation active */
 					block_fnum += lfo_fn_table_index_offset;
 					block_fnum &= 0xffffffff;
-					long block = (block_fnum & 0x1c00) >> 10;
-					op.Cnt += (OPL.fn_tab[(int) (block_fnum & 0x03ff)] >> (7 - block)) * op.mul;
+					int block = (block_fnum & 0x1c00) >> 10;
+					op.Cnt += (OPL.fn_tab[block_fnum & 0x03ff] >> (7 - block)) * op.mul;
 				} else { /* LFO phase modulation = zero */
 					op.Cnt += op.Incr;
 				}
@@ -557,7 +557,7 @@ public abstract class FMOPL {
 		 */
 
 		OPL.noise_p += OPL.noise_f;
-		long i = OPL.noise_p >> FREQ_SH; /* number of events (shifts of the shift register) */
+		int i = OPL.noise_p >> FREQ_SH; /* number of events (shifts of the shift register) */
 		OPL.noise_p &= FREQ_MASK;
 		while (i != 0) {
 			/*
@@ -571,7 +571,6 @@ public abstract class FMOPL {
 				OPL.noise_rng ^= 0x800302;
 			}
 			OPL.noise_rng >>= 1;
-
 			i--;
 		}
 	}
@@ -690,7 +689,7 @@ public abstract class FMOPL {
 		/* slot1 output for feedback **/
 		private int op1_out[] = new int[2];
 		/* connection (algorithm) type **/
-		private int CON;
+		private byte CON;
 
 		// Envelope Generator
 
@@ -699,9 +698,9 @@ public abstract class FMOPL {
 		/* phase type **/
 		private int state;
 		/* total level: TL << 2 **/
-		private long TL;
+		private int TL;
 		/* adjusted now TL **/
-		private long TLL;
+		private int TLL;
 		/* envelope counter **/
 		private long volume;
 		/* sustain level: sl_tab[SL] **/
@@ -742,11 +741,11 @@ public abstract class FMOPL {
 		//
 
 		/* block+fnum **/
-		private long block_fnum;
+		private int block_fnum;
 		/* Freq. Increment base **/
-		private long fc;
+		private int fc;
 		/* KeyScaleLevel Base step **/
-		private long ksl_base;
+		private int ksl_base;
 		/* key code (for key scaling) **/
 		private int kcode;
 
@@ -795,11 +794,11 @@ public abstract class FMOPL {
 		private int lfo_pm_inc;
 
 		/* 23 bit noise shift register **/
-		private long noise_rng;
+		private int noise_rng;
 		/* current noise 'phase' **/
-		private long noise_p;
+		private int noise_p;
 		/* current noise period **/
-		private long noise_f;
+		private int noise_f;
 
 		/* waveform select enable flag **/
 		private byte wavesel;
@@ -1108,10 +1107,10 @@ public abstract class FMOPL {
 		 * of: 192, 256 or 448 samples
 		 */
 		/* One entry from LFO_AM_TABLE lasts for 64 samples */
-		OPL.lfo_am_inc = (int) ((1.0 / 64.0) * (1L << LFO_SH) * OPL.freqbase);
+		OPL.lfo_am_inc = (int) ((1.0 / 64.0) * (1 << LFO_SH) * OPL.freqbase);
 
 		/* Vibrato: 8 output levels (triangle waveform); 1 level takes 1024 samples */
-		OPL.lfo_pm_inc = (int) ((1.0 / 1024.0) * (1L << LFO_SH) * OPL.freqbase);
+		OPL.lfo_pm_inc = (int) ((1.0 / 1024.0) * (1 << LFO_SH) * OPL.freqbase);
 
 		/* Noise generator: a step takes 1 sample */
 		OPL.noise_f = (int) ((1.0 / 1.0) * (1 << FREQ_SH) * OPL.freqbase);
@@ -1150,8 +1149,7 @@ public abstract class FMOPL {
 	 */
 	private void CALC_FCSLOT(OPLCh CH, OPLSlot SLOT) {
 		/* (frequency) phase increment counter */
-		SLOT.Incr = CH.fc * SLOT.mul;
-		SLOT.Incr &= 0xffffffff;
+		SLOT.Incr = (long) CH.fc * SLOT.mul;
 		int ksr = CH.kcode >> SLOT.KSR;
 
 		if (SLOT.ksr != ksr) {
@@ -1196,7 +1194,6 @@ public abstract class FMOPL {
 		SLOT.TL = (v & 0x3f) << (ENV_BITS - 1 - 7); /* 7 bits TL (bit 6 = always 0) */
 
 		SLOT.TLL = (SLOT.TL + (CH.ksl_base >> SLOT.ksl));
-		SLOT.TLL &= 0xffffffff;
 	}
 
 	/* set attack rate & decay rate */
@@ -1422,7 +1419,7 @@ public abstract class FMOPL {
 				return;
 			}
 			OPLCh CH = OPL.pCh[r & 0x0f];
-			long block_fnum;
+			int block_fnum;
 			if ((r & 0x10) == 0) { /* a0-a8 */
 				block_fnum = (CH.block_fnum & 0x1f00) | (v & 0xff);
 			} else { /* b0-b8 */
@@ -1438,16 +1435,15 @@ public abstract class FMOPL {
 			}
 			/* update */
 			if (CH.block_fnum != block_fnum) {
-				long block = block_fnum >> 10;
+				int block = block_fnum >> 10;
 
 				CH.block_fnum = block_fnum;
 
-				CH.ksl_base = (long) (ksl_tab[(int) (block_fnum >> 6)]);
-				CH.fc = OPL.fn_tab[(int) (block_fnum & 0x03ff)] >> (7 - block);
-				CH.fc &= 0xffffffff;
+				CH.ksl_base = (int) (ksl_tab[block_fnum >> 6]);
+				CH.fc = OPL.fn_tab[block_fnum & 0x03ff] >> (7 - block);
 
 				/* BLK 2,1,0 bits . bits 3,2,1 of kcode */
-				CH.kcode = (int) ((CH.block_fnum & 0x1c00) >> 9);
+				CH.kcode = (CH.block_fnum & 0x1c00) >> 9;
 				CH.kcode &= 0xff;
 
 				/*
@@ -1464,10 +1460,7 @@ public abstract class FMOPL {
 
 				/* refresh Total Level in both SLOTs of this channel */
 				CH.slot[SLOT1].TLL = CH.slot[SLOT1].TL + (CH.ksl_base >> CH.slot[SLOT1].ksl);
-				CH.slot[SLOT1].TLL &= 0xffffffff;
-
 				CH.slot[SLOT2].TLL = CH.slot[SLOT2].TL + (CH.ksl_base >> CH.slot[SLOT2].ksl);
-				CH.slot[SLOT2].TLL &= 0xffffffff;
 
 				/* refresh frequency counter in both SLOTs of this channel */
 				CALC_FCSLOT(CH, CH.slot[SLOT1]);
@@ -1480,8 +1473,8 @@ public abstract class FMOPL {
 				return;
 			}
 			CH = OPL.pCh[r & 0x0f];
-			CH.slot[SLOT1].FB = (((v & 0xff) >> 1) & 7) != 0 ? (((v & 0xff) >> 1) & 7) + 7 : 0;
-			CH.slot[SLOT1].CON = v & 1;
+			CH.slot[SLOT1].FB = ((v >> 1) & 7) != 0 ? ((v >> 1) & 7) + 7 : 0;
+			CH.slot[SLOT1].CON = (byte) (v & 1);
 			break;
 		case 0xe0: {/* waveform select */
 			/*
@@ -1626,7 +1619,7 @@ public abstract class FMOPL {
 		} else { /* data port */
 			OPLWriteReg(OPL, OPL.address, v);
 		}
-		return OPL.status >> 7;
+		return (OPL.status & 0xff) >> 7;
 	}
 
 	private byte OPLRead(FmOPL OPL, int a) {
@@ -1666,7 +1659,7 @@ public abstract class FMOPL {
 			}
 		}
 		/* reload timer */
-		return OPL.status >> 7;
+		return (OPL.status & 0xff) >> 7;
 	}
 
 	public FmOPL ym3812_init(long clock, long rate) {
