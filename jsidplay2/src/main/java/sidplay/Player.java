@@ -343,7 +343,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			 */
 			@Override
 			public void start() {
-//				c64.getCartridge().reset();
 				c64.insertSIDChips(requiredSIDs, sidLocator);
 				c64.configureVICs(vic -> vic.setVideoDriver(Player.this));
 				c64.setSIDListener(Player.this);
@@ -762,7 +761,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		// Run until the player gets stopped
 		do {
 			try {
-//				c64.setCartridge(CartridgeType.SOUNDEXPANDER, 0);
 				stateProperty.set(OPEN);
 				open();
 				stateProperty.set(START);

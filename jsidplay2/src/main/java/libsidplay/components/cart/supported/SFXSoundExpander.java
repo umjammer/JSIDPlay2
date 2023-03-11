@@ -60,7 +60,6 @@ public class SFXSoundExpander extends Cartridge {
 	private EventScheduler context;
 
 	private int clock;
-	private int rate;
 
 	private JavaSound javaSound = new JavaSound();
 
@@ -83,8 +82,6 @@ public class SFXSoundExpander extends Cartridge {
 		context.schedule(event, 0, Event.Phase.PHI2);
 		/* master clock (Hz) **/
 		this.clock = (int) CPUClock.PAL.getCpuFrequency();
-		/* sampling rate (Hz) **/
-		this.rate = SamplingRate.MEDIUM.getFrequency();
 		init();
 		resamplerL = Resampler.createResampler(clock, SamplingMethod.DECIMATE, SamplingRate.MEDIUM.getFrequency(),
 				SamplingRate.MEDIUM.getMiddleFrequency());
@@ -138,17 +135,16 @@ public class SFXSoundExpander extends Cartridge {
 	private void init() {
 		fmOpl.fmopl_set_machine_parameter(clock);
 
-		int speed = rate;
 		if (sfx_soundexpander_chip == 3812) {
 			if (YM3812_chip != null) {
 				fmOpl.ym3812_shutdown(YM3812_chip);
 			}
-			YM3812_chip = fmOpl.ym3812_init(3579545, speed);
+			YM3812_chip = fmOpl.ym3812_init(3579545, clock);
 		} else {
 			if (YM3526_chip != null) {
 				fmOpl.ym3526_shutdown(YM3526_chip);
 			}
-			YM3526_chip = fmOpl.ym3526_init(3579545, speed, context);
+			YM3526_chip = fmOpl.ym3526_init(3579545, clock, context);
 		}
 	}
 
