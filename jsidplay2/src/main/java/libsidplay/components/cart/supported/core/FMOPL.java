@@ -466,7 +466,6 @@ public abstract class FMOPL {
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_ar) - 1)) == 0) {
 						op.volume += (~op.volume
 								* (eg_inc[(int) (op.eg_sel_ar + ((OPL.eg_cnt >> op.eg_sh_ar) & 7))])) >> 3;
-						op.volume &= 0xffffffff;
 						if (op.volume <= MIN_ATT_INDEX) {
 							op.volume = MIN_ATT_INDEX;
 							op.state = EG_DEC;
@@ -476,7 +475,6 @@ public abstract class FMOPL {
 				case EG_DEC: /* decay phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_dr) - 1)) == 0) {
 						op.volume += eg_inc[(int) (op.eg_sel_dr + ((OPL.eg_cnt >> op.eg_sh_dr) & 7))];
-						op.volume &= 0xffffffff;
 
 						if ((op.volume) >= op.sl) {
 							op.state = EG_SUS;
@@ -496,7 +494,6 @@ public abstract class FMOPL {
 						/* during sustain phase chip adds Release Rate (in percussive mode) */
 						if ((OPL.eg_cnt & ((1 << op.eg_sh_rr) - 1)) == 0) {
 							op.volume += eg_inc[(int) (op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7))];
-							op.volume &= 0xffffffff;
 
 							if (op.volume >= MAX_ATT_INDEX) {
 								op.volume = MAX_ATT_INDEX;
@@ -508,7 +505,6 @@ public abstract class FMOPL {
 				case EG_REL: /* release phase */
 					if ((OPL.eg_cnt & ((1 << op.eg_sh_rr) - 1)) == 0) {
 						op.volume += eg_inc[(int) (op.eg_sel_rr + ((OPL.eg_cnt >> op.eg_sh_rr) & 7))];
-						op.volume &= 0xffffffff;
 
 						if (op.volume >= MAX_ATT_INDEX) {
 							op.volume = MAX_ATT_INDEX;
@@ -541,6 +537,7 @@ public abstract class FMOPL {
 					op.Cnt += op.Incr;
 				}
 			} else { /* LFO phase modulation disabled for this operator */
+				// XXX larger tan 32 bit!?
 				op.Cnt += op.Incr;
 			}
 		}
@@ -575,27 +572,27 @@ public abstract class FMOPL {
 		}
 	}
 
-	private int op_calc(long phase, long env, int pm, int wave_tab) {
-		long p = (env << 4)
+	private int op_calc(long phase, int env, int pm, int wave_tab) {
+		int p = (env << 4)
 				+ sin_tab[(int) (wave_tab + (((((phase & ~FREQ_MASK) + (pm << 16))) >> FREQ_SH) & SIN_MASK))];
 
 		if (p >= TL_TAB_LEN) {
 			return 0;
 		}
-		return tl_tab[(int) p];
+		return tl_tab[p];
 	}
 
-	private int op_calc1(long phase, long env, int pm, int wave_tab) {
-		long p = (env << 4) + sin_tab[(int) (wave_tab + (((((phase & ~FREQ_MASK) + pm)) >> FREQ_SH) & SIN_MASK))];
+	private int op_calc1(long phase, int env, int pm, int wave_tab) {
+		int p = (env << 4) + sin_tab[(int) (wave_tab + (((((phase & ~FREQ_MASK) + pm)) >> FREQ_SH) & SIN_MASK))];
 
 		if (p >= TL_TAB_LEN) {
 			return 0;
 		}
-		return tl_tab[(int) p];
+		return tl_tab[p];
 	}
 
 	// VERIFIED
-	private long volume_calc(OPLSlot OP) {
+	private int volume_calc(OPLSlot OP) {
 		return OP.TLL + OP.volume + (LFO_AM & OP.AMmask);
 	}
 
@@ -605,7 +602,7 @@ public abstract class FMOPL {
 
 		/* SLOT 1 */
 		OPLSlot SLOT = CH.slot[SLOT1];
-		long env = volume_calc(SLOT);
+		int env = volume_calc(SLOT);
 		int out = SLOT.op1_out[0] + SLOT.op1_out[1];
 		SLOT.op1_out[0] = SLOT.op1_out[1];
 		SLOT.op1_out[1] = 0;
@@ -702,7 +699,7 @@ public abstract class FMOPL {
 		/* adjusted now TL **/
 		private int TLL;
 		/* envelope counter **/
-		private long volume;
+		private int volume;
 		/* sustain level: sl_tab[SL] **/
 		private int sl;
 		/* (attack state) **/
@@ -725,7 +722,7 @@ public abstract class FMOPL {
 		//
 
 		/* LFO Amplitude Modulation enable mask **/
-		private long AMmask;
+		private int AMmask;
 		/* LFO Phase Modulation enable flag (active high) **/
 		private int vib;
 
@@ -839,7 +836,7 @@ public abstract class FMOPL {
 
 	/* calculate rhythm */
 
-	private void OPL_CALC_RH(OPLCh[] CH, long noise) {
+	private void OPL_CALC_RH(OPLCh[] CH, int noise) {
 		/*
 		 * Bass Drum (verified on real YM3812): - depends on the channel 6 'connect'
 		 * register: when connect = 0 it works the same as in normal (non-rhythm) mode
@@ -851,7 +848,7 @@ public abstract class FMOPL {
 
 		/* SLOT 1 */
 		OPLSlot SLOT = CH[6].slot[SLOT1];
-		long env = volume_calc(SLOT);
+		int env = volume_calc(SLOT);
 
 		int out = SLOT.op1_out[0] + SLOT.op1_out[1];
 		SLOT.op1_out[0] = SLOT.op1_out[1];
@@ -916,7 +913,7 @@ public abstract class FMOPL {
 
 			/* when res1 = 0 phase = 0x000 | 0xd0; */
 			/* when res1 = 1 phase = 0x200 | (0xd0>>2); */
-			long phase = res1 != 0 ? (0x200 | (0xd0 >> 2)) : 0xd0;
+			int phase = res1 != 0 ? (0x200 | (0xd0 >> 2)) : 0xd0;
 
 			/* enable gate based on frequency of operator 2 in channel 8 */
 			byte bit5e = (byte) (((SLOT8_2.Cnt >> FREQ_SH) >> 5) & 1);
@@ -1180,7 +1177,7 @@ public abstract class FMOPL {
 
 		SLOT.eg_type = (v & 0x20);
 		SLOT.vib = (v & 0x40);
-		SLOT.AMmask = (v & 0x80) != 0 ? ((~0) & 0xffffffff) : 0;
+		SLOT.AMmask = (v & 0x80) != 0 ? (~0) : 0;
 		CALC_FCSLOT(CH, SLOT);
 	}
 
