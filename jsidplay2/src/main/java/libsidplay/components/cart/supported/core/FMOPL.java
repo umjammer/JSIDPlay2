@@ -1127,12 +1127,12 @@ public abstract class FMOPL {
 			/* phase . Attack */
 			SLOT.state = EG_ATT;
 		}
-		SLOT.key |= key_set;
+		SLOT.key |= key_set & 0xff;
 	}
 
 	private void FM_KEYOFF(OPLSlot SLOT, byte key_clr) {
 		if (SLOT.key != 0) {
-			SLOT.key &= key_clr;
+			SLOT.key &= key_clr & 0xff;
 
 			if (SLOT.key == 0) {
 				/* phase . Release */
