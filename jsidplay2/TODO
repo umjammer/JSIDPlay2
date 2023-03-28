@@ -18,3 +18,6 @@ HTML Client app:
 - Search collections
 - show current number of videos in parallel
 - support of several playlists
+- Add UDB broadcast to JSIDPlay2 to detect responding JSIDDevices
+- Add Info for MacOSX Downloads for Liberica JDK with already included JavaFX in case of problems
+- Test Wilfred's "HardSID USB write buffer" according to email of 25.2. 15:15
