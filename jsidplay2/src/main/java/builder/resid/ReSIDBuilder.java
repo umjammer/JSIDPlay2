@@ -25,6 +25,7 @@ import libsidplay.common.Emulation;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.SIDBuilder;
 import libsidplay.common.SIDEmu;
+import libsidplay.components.cart.Cartridge;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
@@ -38,8 +39,8 @@ import libsidplay.sidtune.SidTune;
  */
 public class ReSIDBuilder extends SIDMixer implements SIDBuilder {
 
-	public ReSIDBuilder(EventScheduler context, IConfig config, CPUClock cpuClock) {
-		super(context, config, cpuClock);
+	public ReSIDBuilder(EventScheduler context, IConfig config, CPUClock cpuClock, Cartridge cart) {
+		super(context, config, cpuClock, cart);
 	}
 
 	/**

@@ -137,7 +137,9 @@ public class Convenience {
 	 */
 	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
 			throws IOException, SidTuneError {
-		player.getC64().ejectCartridge();
+		if (player.getC64().getCartridge().isMultiPurpose()) {
+			player.getC64().ejectCartridge();
+		}
 
 		File tmpDir = new File(player.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 		tmpDir.mkdirs();

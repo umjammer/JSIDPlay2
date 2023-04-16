@@ -328,4 +328,8 @@ public class Cartridge {
 		return getClass().getSimpleName();
 	}
 
+	public boolean isMultiPurpose() {
+		return true;
+	}
+
 }

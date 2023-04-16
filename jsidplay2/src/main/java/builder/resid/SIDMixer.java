@@ -19,6 +19,7 @@ import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.Mixer;
 import libsidplay.common.SamplingMethod;
+import libsidplay.components.cart.Cartridge;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
@@ -230,7 +231,7 @@ public class SIDMixer implements Mixer {
 	 */
 	private ByteBuffer buffer;
 
-	public SIDMixer(EventScheduler context, IConfig config, CPUClock cpuClock) {
+	public SIDMixer(EventScheduler context, IConfig config, CPUClock cpuClock, Cartridge cart) {
 		ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		IAudioSection audioSection = config.getAudioSection();
 		IWhatsSidSection whatsSidSection = config.getWhatsSidSection();
@@ -246,6 +247,9 @@ public class SIDMixer implements Mixer {
 		this.resamplerL = Resampler.createResampler(cpuFrequency, samplingMethod, samplingFrequency, middleFrequency);
 		this.resamplerR = Resampler.createResampler(cpuFrequency, samplingMethod, samplingFrequency, middleFrequency);
 		this.fadeInFadeOutEnabled = sidplay2Section.getFadeInTime() != 0 || sidplay2Section.getFadeOutTime() != 0;
+		if (cart instanceof AudioProcessor) {
+			this.audioProcessors.add((AudioProcessor) cart);
+		}
 		this.audioProcessors.add(new DelayProcessor(config));
 		this.audioProcessors.add(new ReverbProcessor(config));
 		this.whatsSidEnabled = whatsSidSection.isEnable();

@@ -845,7 +845,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	private SIDBuilder createSIDBuilder(final CPUClock cpuClock) {
 		switch (Engine.getEngine(config.getEmulationSection(), tune)) {
 		case EMULATION:
-			return new ReSIDBuilder(c64.getEventScheduler(), config, cpuClock);
+			return new ReSIDBuilder(c64.getEventScheduler(), config, cpuClock, c64.getCartridge());
 		case NETSID:
 			return new NetSIDDevBuilder(c64.getEventScheduler(), config, cpuClock);
 		case HARDSID:
