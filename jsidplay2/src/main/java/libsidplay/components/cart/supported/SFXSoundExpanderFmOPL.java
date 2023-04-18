@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
-import libsidplay.common.CPUClock;
 import libsidplay.components.cart.Cartridge;
 import libsidplay.components.cart.supported.core.FMOPL_072;
 import libsidplay.components.pla.Bank;
@@ -22,8 +21,7 @@ public class SFXSoundExpanderFmOPL extends Cartridge implements AudioProcessor {
 
 	public SFXSoundExpanderFmOPL(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
-		int clock = (int) CPUClock.PAL.getCpuFrequency();
-		opl3 = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3812, clock, 48000);
+		opl3 = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3812, 3579545, 48000);
 	}
 
 	@Override
@@ -41,18 +39,13 @@ public class SFXSoundExpanderFmOPL extends Cartridge implements AudioProcessor {
 	private final Bank io2Bank = new Bank() {
 
 		@Override
-		public byte read(int address) {
-			return pla.getDisconnectedBusBank().read(address);
+		public byte read(int addr) {
+			return (byte) ((addr & 0xff) == 0x60 ? FMOPL_072.read(opl3, 0) : 0xff);
 		}
 
 		@Override
 		public void write(int addr, byte val) {
-			addr = (addr & 0xff);
-			if (addr == 0x40) {
-				FMOPL_072.write(opl3, 0, val & 0xff);
-			} else if (addr == 0x50) {
-				FMOPL_072.write(opl3, 1, val & 0xff);
-			}
+			FMOPL_072.write(opl3, (addr & 0xff) == 0x40 ? 0 : 1, val & 0xff);
 		}
 	};
 

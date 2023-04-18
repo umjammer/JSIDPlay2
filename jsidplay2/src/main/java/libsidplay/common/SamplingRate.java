@@ -6,7 +6,7 @@ public enum SamplingRate {
 	/** 44.1 KHz */
 	LOW(44100, 20000),
 	/** 48 KHz */
-	MEDIUM(48000, 20000), SFX(49716, 20000),
+	MEDIUM(48000, 20000),
 	/** 96 KHz */
 	HIGH(96000, 20000);
 
