@@ -20,7 +20,7 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 
 	private EventScheduler context;
 
-	private FMOPL_072.FM_OPL opl3;
+	private FMOPL_072.FM_OPL fmOpl;
 
 	private SampleMixer sampler;
 
@@ -30,7 +30,7 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 		super(pla);
 		context = pla.getCPU().getEventScheduler();
 
-		opl3 = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3812, 3579545, (int) CPUClock.PAL.getCpuFrequency());
+		fmOpl = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3812, 3579545, (int) CPUClock.PAL.getCpuFrequency());
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 		super.reset();
 		pla.setGameExrom(true, true);
 
-		FMOPL_072.reset_chip(opl3);
+		FMOPL_072.reset_chip(fmOpl);
 	}
 
 	@Override
@@ -56,15 +56,22 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 		@Override
 		public byte read(int addr) {
 			clock(clocksSinceLastAccess());
-			return (byte) ((addr & 0xff) == 0x60 ? FMOPL_072.read(opl3, 0) : 0xff);
+			return (byte) ((addr & 0xff) == 0x60 ? FMOPL_072.read(fmOpl, 0) : 0xff);
 		}
 
 		@Override
 		public void write(int addr, byte val) {
 			clock(clocksSinceLastAccess());
-			FMOPL_072.write(opl3, (addr & 0xff) == 0x40 ? 0 : 1, val & 0xff);
+			FMOPL_072.write(fmOpl, (addr & 0xff) == 0x40 ? 0 : 1, val & 0xff);
 		}
 	};
+
+	@Override
+	public void setSampler(SampleMixer sampleMixer) {
+		sampler = sampleMixer;
+		sampler.setVolume(1024, 1024);
+		sampler.setDelay(0);
+	}
 
 	@Override
 	public void clock() {
@@ -73,7 +80,7 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 	}
 
 	public void clock(int cycles) {
-		FMOPL_072.update_one(opl3, sampler, cycles);
+		FMOPL_072.update_one(fmOpl, sampler, cycles);
 	}
 
 	protected int clocksSinceLastAccess() {
@@ -88,10 +95,4 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 		return false;
 	}
 
-	@Override
-	public void setSampler(SampleMixer sampleMixer) {
-		sampler = sampleMixer;
-		sampler.setVolume(1024, 1024);
-		sampler.setDelay(0);
-	}
 }

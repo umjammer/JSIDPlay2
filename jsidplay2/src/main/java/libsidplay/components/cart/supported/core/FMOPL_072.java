@@ -1015,10 +1015,6 @@ public class FMOPL_072 {
 
 		private static int num_lock = 0;
 
-		public FM_OPL() {
-			super();
-		}
-
 		/* FM channel slots */
 		private OPL_CH[] P_CH = new OPL_CH[9]; /* OPL/OPL2 chips have 9 channels */
 
