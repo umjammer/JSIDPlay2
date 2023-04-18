@@ -23,7 +23,7 @@ public class SFXSoundExpanderFmOPL extends Cartridge implements AudioProcessor {
 	public SFXSoundExpanderFmOPL(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
 		int clock = (int) CPUClock.PAL.getCpuFrequency();
-		opl3 = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3526, clock, 48000);
+		opl3 = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3812, clock, 48000);
 	}
 
 	@Override
@@ -62,14 +62,10 @@ public class SFXSoundExpanderFmOPL extends Cartridge implements AudioProcessor {
 		((Buffer) sampleBuffer).flip();
 		ByteBuffer buffer = ByteBuffer.wrap(new byte[len]).order(sampleBuffer.order());
 
-		boolean isLeft = false;
-		int[] shortsLeft = new int[1];
+		int[] shortsLeft = new int[len >> 2];
+		FMOPL_072.update_one(opl3, shortsLeft, len >> 2);
 		for (int i = 0; i < len >> 1; i++) {
-			if (!isLeft) {
-				FMOPL_072.update_one(opl3, shortsLeft, 1);
-			}
-			int outputSample = shortsLeft[0] + sampleBuffer.getShort();
-			isLeft ^= true;
+			int outputSample = shortsLeft[i >> 1] + sampleBuffer.getShort();
 
 			buffer.putShort((short) outputSample);
 		}
