@@ -16,7 +16,7 @@ import libsidplay.components.pla.PLA;
  * @author ken
  *
  */
-public class SFXSoundExpanderFmOPL extends Cartridge {
+public class SFXSoundExpander extends Cartridge {
 
 	private EventScheduler context;
 
@@ -26,7 +26,7 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 
 	private long lastTime;
 
-	public SFXSoundExpanderFmOPL(DataInputStream dis, PLA pla, int sizeKB) {
+	public SFXSoundExpander(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
 		context = pla.getCPU().getEventScheduler();
 

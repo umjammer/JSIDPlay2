@@ -23,7 +23,7 @@ import libsidplay.components.cart.supported.Normal;
 import libsidplay.components.cart.supported.OceanType1;
 import libsidplay.components.cart.supported.REU;
 import libsidplay.components.cart.supported.Rex;
-import libsidplay.components.cart.supported.SFXSoundExpanderFmOPL;
+import libsidplay.components.cart.supported.SFXSoundExpander;
 import libsidplay.components.cart.supported.Zaxxon;
 import libsidplay.components.pla.Bank;
 import libsidplay.components.pla.PLA;
@@ -138,7 +138,7 @@ public class Cartridge {
 		case REU:
 			return new REU(null, pla, sizeKB);
 		case SOUNDEXPANDER:
-			return new SFXSoundExpanderFmOPL(null, pla, 0);
+			return new SFXSoundExpander(null, pla, 0);
 		default:
 			throw new RuntimeException("Cartridge is unsupported");
 		}
