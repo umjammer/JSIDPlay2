@@ -348,6 +348,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 				c64.setSIDListener(Player.this);
 				c64.setPlayRoutineObserver(Player.this);
 				configureMixer(Mixer::start);
+				c64.getCartridge().start();
+
 				if (whatsSidEvent != null) {
 					whatsSidEvent.start();
 				}

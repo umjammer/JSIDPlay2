@@ -91,6 +91,7 @@ public class SIDMixer implements Mixer {
 				// clock SID to the present moment
 				sid.clock();
 				sampler.clear();
+				cart.clock();
 			}
 			// Read from audio buffers
 			int valL = 0, valR = 0;
@@ -163,6 +164,8 @@ public class SIDMixer implements Mixer {
 	 * SIDs to mix their sound output.
 	 */
 	protected final List<ReSIDBase> sids = new ArrayList<>(MAX_SIDS);
+
+	private Cartridge cart;
 
 	/**
 	 * Mixer clocking SID chips and producing audio output.
@@ -247,14 +250,12 @@ public class SIDMixer implements Mixer {
 		this.resamplerL = Resampler.createResampler(cpuFrequency, samplingMethod, samplingFrequency, middleFrequency);
 		this.resamplerR = Resampler.createResampler(cpuFrequency, samplingMethod, samplingFrequency, middleFrequency);
 		this.fadeInFadeOutEnabled = sidplay2Section.getFadeInTime() != 0 || sidplay2Section.getFadeOutTime() != 0;
-		if (cart instanceof AudioProcessor) {
-			this.audioProcessors.add((AudioProcessor) cart);
-		}
 		this.audioProcessors.add(new DelayProcessor(config));
 		this.audioProcessors.add(new ReverbProcessor(config));
 		this.whatsSidEnabled = whatsSidSection.isEnable();
 		this.whatsSidSupport = new WhatsSidSupport(cpuFrequency, whatsSidSection.getCaptureTime(),
 				whatsSidSection.getMinimumRelativeConfidence());
+		this.cart = cart;
 
 		normalSpeed();
 	}
@@ -270,6 +271,9 @@ public class SIDMixer implements Mixer {
 		this.buffer = audioDriver.buffer();
 		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
 		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
+		if (!cart.isMultiPurpose()) {
+			this.cart.setSampler(new SampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
+		}
 	}
 
 	/**

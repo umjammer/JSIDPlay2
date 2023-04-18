@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import builder.resid.SampleMixer;
 import libsidplay.common.Event;
 import libsidplay.components.cart.supported.ActionReplay;
 import libsidplay.components.cart.supported.AtomicPower;
@@ -330,6 +331,15 @@ public class Cartridge {
 
 	public boolean isMultiPurpose() {
 		return true;
+	}
+
+	public void start() {
+	}
+
+	public void clock() {
+	}
+
+	public void setSampler(SampleMixer sampleMixer) {
 	}
 
 }

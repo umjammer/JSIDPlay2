@@ -38,6 +38,8 @@
  */
 package libsidplay.components.cart.supported.core;
 
+import java.util.function.IntConsumer;
+
 /**
  * @author Daniel Becker
  * @since 11.08.2020
@@ -2219,7 +2221,7 @@ public class FMOPL_072 {
 	 ** 'which' is the virtual YM3812 number '*buffer' is the output buffer pointer
 	 ** 'length' is the number of samples that should be generated
 	 */
-	public static void update_one(FM_OPL chip, int[] buffer, int length) {
+	public static void update_one(FM_OPL chip, IntConsumer sampler, int length) {
 		final boolean rhythm = (chip.rhythm & 0x20) != 0;
 
 		for (int i = 0; i < length; i++) {
@@ -2246,7 +2248,8 @@ public class FMOPL_072 {
 
 			/* limit check */
 			/* store to sound buffer */
-			buffer[i] = limit(chip.output[0] >> FINAL_SH, MAXOUT, MINOUT);
+			/* store to sound buffer */
+			sampler.accept(limit(chip.output[0] >> FINAL_SH, MAXOUT, MINOUT));
 
 			chip.advance();
 		}

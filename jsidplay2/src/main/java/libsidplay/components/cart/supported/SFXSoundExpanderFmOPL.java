@@ -1,22 +1,15 @@
 package libsidplay.components.cart.supported;
 
 import java.io.DataInputStream;
-import java.nio.Buffer;
 
-import javax.sound.sampled.LineUnavailableException;
-
-import builder.resid.resample.Resampler;
+import builder.resid.SampleMixer;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
-import libsidplay.common.SamplingMethod;
-import libsidplay.common.SamplingRate;
 import libsidplay.components.cart.Cartridge;
 import libsidplay.components.cart.supported.core.FMOPL_072;
 import libsidplay.components.pla.Bank;
 import libsidplay.components.pla.PLA;
-import sidplay.audio.AudioConfig;
-import sidplay.audio.JavaSound;
 
 /**
  * 
@@ -25,32 +18,19 @@ import sidplay.audio.JavaSound;
  */
 public class SFXSoundExpanderFmOPL extends Cartridge {
 
-	private static final int BUFFER_SIZE = 8192;
-
-	private static final int REGULAR_DELAY = BUFFER_SIZE << 1;
-
 	private EventScheduler context;
 
-	private Resampler resamplerL;
+	private FMOPL_072.FM_OPL opl3;
 
-	private JavaSound javaSound = new JavaSound();
+	private SampleMixer sampler;
 
 	private long lastTime;
-
-	private FMOPL_072.FM_OPL opl3;
 
 	public SFXSoundExpanderFmOPL(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
 		context = pla.getCPU().getEventScheduler();
 
 		opl3 = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3812, 3579545, (int) CPUClock.PAL.getCpuFrequency());
-		resamplerL = Resampler.createResampler(CPUClock.PAL.getCpuFrequency(), SamplingMethod.RESAMPLE,
-				SamplingRate.MEDIUM.getFrequency(), SamplingRate.MEDIUM.getMiddleFrequency());
-		try {
-			javaSound.open(new AudioConfig(SamplingRate.MEDIUM.getFrequency(), 2, BUFFER_SIZE), null);
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -64,10 +44,11 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 		pla.setGameExrom(true, true);
 
 		FMOPL_072.reset_chip(opl3);
+	}
 
+	@Override
+	public void start() {
 		clocksSinceLastAccess();
-		context.cancel(event);
-		context.schedule(event, 0, Event.Phase.PHI2);
 	}
 
 	private final Bank io2Bank = new Bank() {
@@ -85,22 +66,14 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 		}
 	};
 
+	@Override
+	public void clock() {
+		clock(clocksSinceLastAccess());
+		sampler.clear();
+	}
+
 	public void clock(int cycles) {
-		int[] shortsLeft = new int[cycles];
-		FMOPL_072.update_one(opl3, shortsLeft, cycles);
-		for (int i = 0; i < shortsLeft.length; i++) {
-			if (resamplerL.input(shortsLeft[i])) {
-				javaSound.buffer().putShort((short) resamplerL.output());
-				if (!javaSound.buffer().putShort((short) resamplerL.output()).hasRemaining()) {
-					try {
-						javaSound.write();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					((Buffer) javaSound.buffer()).clear();
-				}
-			}
-		}
+		FMOPL_072.update_one(opl3, sampler, cycles);
 	}
 
 	protected int clocksSinceLastAccess() {
@@ -110,26 +83,15 @@ public class SFXSoundExpanderFmOPL extends Cartridge {
 		return diff;
 	}
 
-	private final Event event = new Event("SFX Regular Delay") {
-		@Override
-		public void event() {
-			context.schedule(event, eventuallyDelay(), Event.Phase.PHI2);
-		}
-	};
-
-	private long eventuallyDelay() {
-		final long now = context.getTime(Event.Phase.PHI2);
-		int diff = (int) (now - lastTime);
-		if (diff > REGULAR_DELAY) {
-			lastTime += REGULAR_DELAY;
-
-			clock(REGULAR_DELAY);
-		}
-		return REGULAR_DELAY;
-	}
-
 	@Override
 	public boolean isMultiPurpose() {
 		return false;
+	}
+
+	@Override
+	public void setSampler(SampleMixer sampleMixer) {
+		sampler = sampleMixer;
+		sampler.setVolume(1024, 1024);
+		sampler.setDelay(0);
 	}
 }
