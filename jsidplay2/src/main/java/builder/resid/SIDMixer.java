@@ -91,8 +91,11 @@ public class SIDMixer implements Mixer {
 				// clock SID to the present moment
 				sid.clock();
 				sampler.clear();
-				cart.clock();
 			}
+			// Clock cartridge to fill the audio buffer to the present moment
+			cart.clock();
+			cartSampler.clear();
+
 			// Read from audio buffers
 			int valL = 0, valR = 0;
 			for (int i = 0; i < bufferSize; i++) {
@@ -165,7 +168,15 @@ public class SIDMixer implements Mixer {
 	 */
 	protected final List<ReSIDBase> sids = new ArrayList<>(MAX_SIDS);
 
+	/**
+	 * Cartridge that could possibly add sound to the mix
+	 */
 	private Cartridge cart;
+
+	/**
+	 * Sample mixer for cartridge
+	 */
+	private SampleMixer cartSampler;
 
 	/**
 	 * Mixer clocking SID chips and producing audio output.
@@ -271,9 +282,8 @@ public class SIDMixer implements Mixer {
 		this.buffer = audioDriver.buffer();
 		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
 		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
-		if (!cart.isMultiPurpose()) {
-			this.cart.setSampler(new SampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
-		}
+		this.cartSampler = new SampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate());
+		this.cart.setSampler(cartSampler);
 	}
 
 	/**
@@ -282,6 +292,7 @@ public class SIDMixer implements Mixer {
 	@Override
 	public void start() {
 		context.schedule(mixerAudio, 0, Event.Phase.PHI2);
+		cart.mixerStart();
 	}
 
 	/**
@@ -433,6 +444,9 @@ public class SIDMixer implements Mixer {
 			if (mono) {
 				sampler.setVolume(volume[sidNum], volume[sidNum]);
 				sampler.setDelay(0);
+				// XXX configuration
+				cartSampler.setVolume(1024, 1024);
+				cartSampler.setDelay(0);
 			} else {
 				double leftFraction = positionL[sidNum];
 				double rightFraction = positionR[sidNum];
@@ -444,6 +458,9 @@ public class SIDMixer implements Mixer {
 				int volumeR = (int) (volume[sidNum] * rightFraction);
 				sampler.setVolume(volumeL, volumeR);
 				sampler.setDelay(delayInSamples[sidNum]);
+				// XXX configuration
+				cartSampler.setVolume(1024, 1024);
+				cartSampler.setDelay(0);
 			}
 			sidNum++;
 		}

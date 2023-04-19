@@ -137,7 +137,7 @@ public class Convenience {
 	 */
 	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
 			throws IOException, SidTuneError {
-		if (player.getC64().getCartridge().isMultiPurpose()) {
+		if (!player.getC64().getCartridge().isCreatingSamples()) {
 			player.getC64().ejectCartridge();
 		}
 

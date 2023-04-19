@@ -17,7 +17,7 @@ import java.util.function.IntConsumer;
  * @author ken
  *
  */
-public class SampleMixer implements IntConsumer {
+class SampleMixer implements IntConsumer {
 	/**
 	 *
 	 * Extends SampleMixer with linear fade-in/fade-out feature to smoothly
@@ -122,7 +122,7 @@ public class SampleMixer implements IntConsumer {
 	 */
 	private IntBuffer delayedSamples;
 
-	public SampleMixer(IntBuffer audioBufferL, IntBuffer audioBufferR) {
+	SampleMixer(IntBuffer audioBufferL, IntBuffer audioBufferR) {
 		this.bufferL = audioBufferL;
 		this.bufferR = audioBufferR;
 	}

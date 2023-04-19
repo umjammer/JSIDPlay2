@@ -1,8 +1,8 @@
 package libsidplay.components.cart.supported;
 
 import java.io.DataInputStream;
+import java.util.function.IntConsumer;
 
-import builder.resid.SampleMixer;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
@@ -22,7 +22,7 @@ public class SFXSoundExpander extends Cartridge {
 
 	private FMOPL_072.FM_OPL fmOpl;
 
-	private SampleMixer sampler;
+	private IntConsumer sampler;
 
 	private long lastTime;
 
@@ -46,11 +46,6 @@ public class SFXSoundExpander extends Cartridge {
 		FMOPL_072.reset_chip(fmOpl);
 	}
 
-	@Override
-	public void start() {
-		clocksSinceLastAccess();
-	}
-
 	private final Bank io2Bank = new Bank() {
 
 		@Override
@@ -67,32 +62,34 @@ public class SFXSoundExpander extends Cartridge {
 	};
 
 	@Override
-	public void setSampler(SampleMixer sampleMixer) {
-		sampler = sampleMixer;
-		sampler.setVolume(1024, 1024);
-		sampler.setDelay(0);
+	public boolean isCreatingSamples() {
+		return true;
+	}
+
+	@Override
+	public void setSampler(IntConsumer sampler) {
+		this.sampler = sampler;
+	}
+
+	@Override
+	public void mixerStart() {
+		clocksSinceLastAccess();
 	}
 
 	@Override
 	public void clock() {
 		clock(clocksSinceLastAccess());
-		sampler.clear();
 	}
 
 	public void clock(int cycles) {
 		FMOPL_072.update_one(fmOpl, sampler, cycles);
 	}
 
-	protected int clocksSinceLastAccess() {
+	private int clocksSinceLastAccess() {
 		final long now = context.getTime(Event.Phase.PHI2);
 		int diff = (int) (now - lastTime);
 		lastTime = now;
 		return diff;
-	}
-
-	@Override
-	public boolean isMultiPurpose() {
-		return false;
 	}
 
 }

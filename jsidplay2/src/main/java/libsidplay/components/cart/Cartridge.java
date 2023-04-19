@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.function.IntConsumer;
 
-import builder.resid.SampleMixer;
 import libsidplay.common.Event;
 import libsidplay.components.cart.supported.ActionReplay;
 import libsidplay.components.cart.supported.AtomicPower;
@@ -324,22 +324,22 @@ public class Cartridge {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
+	public boolean isCreatingSamples() {
+		return false;
 	}
 
-	public boolean isMultiPurpose() {
-		return true;
+	public void setSampler(IntConsumer sampler) {
 	}
 
-	public void start() {
+	public void mixerStart() {
 	}
 
 	public void clock() {
 	}
 
-	public void setSampler(SampleMixer sampleMixer) {
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 
 }
