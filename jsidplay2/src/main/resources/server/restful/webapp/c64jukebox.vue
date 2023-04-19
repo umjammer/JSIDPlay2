@@ -1642,6 +1642,19 @@
 											</b-form-radio-group>
 										</b-form-group>
 									</div>
+									<div class="settings-box">
+										<b-form-checkbox v-model="convertOptions.sfxSoundExpander">
+											{{ $t("convertMessages.sfxSoundExpander") }}
+										</b-form-checkbox>
+									</div>
+									<div class="settings-box">
+										<b-form-group :label="$t('convertMessages.sfxSoundExpanderType')">
+											<b-form-radio-group v-model="convertOptions.sfxSoundExpanderType">
+												<b-form-radio value="0">YM3526</b-form-radio>
+												<b-form-radio value="1">YM3812</b-form-radio>
+											</b-form-radio-group>
+										</b-form-group>
+									</div>
 
 									<h2>{{ $t("playbackCfgHeader") }}</h2>
 
@@ -3957,6 +3970,9 @@
 						}
 						if (typeof this.convertOptions.hlsType === "undefined") {
 							this.convertOptions.hlsType = "HLS_JS";
+						}
+						if (typeof this.convertOptions.sfxSoundExpanderType === "undefined") {
+							this.convertOptions.sfxSoundExpanderType = 0;
 						}
 					} else {
 						// initialize configuration (if they differ from the default settings)

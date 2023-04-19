@@ -22,15 +22,19 @@ public class SFXSoundExpander extends Cartridge {
 
 	private FMOPL_072.FM_OPL fmOpl;
 
+	private int type;
+
 	private IntConsumer sampler;
 
 	private long lastTime;
 
 	public SFXSoundExpander(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
+		type = sizeKB;
 		context = pla.getCPU().getEventScheduler();
 
-		fmOpl = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3526, 3579545, (int) CPUClock.PAL.getCpuFrequency());
+		fmOpl = FMOPL_072.init(type == 0 ? FMOPL_072.OPL_TYPE_YM3526 : FMOPL_072.OPL_TYPE_YM3812, 3579545,
+				(int) CPUClock.PAL.getCpuFrequency());
 	}
 
 	@Override
@@ -92,4 +96,8 @@ public class SFXSoundExpander extends Cartridge {
 		return diff;
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " " + (type == 0 ? "YM3526" : "YM3812");
+	}
 }

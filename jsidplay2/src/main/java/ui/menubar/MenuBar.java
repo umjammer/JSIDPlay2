@@ -770,8 +770,14 @@ public class MenuBar extends C64VBox implements UIPart {
 	}
 
 	@FXML
-	private void insertSoundExpander() {
+	private void insertSoundExpander3526() {
 		insertCartridge(CartridgeType.SOUNDEXPANDER, 0);
+		reset();
+	}
+
+	@FXML
+	private void insertSoundExpander3812() {
+		insertCartridge(CartridgeType.SOUNDEXPANDER, 1);
 		reset();
 	}
 

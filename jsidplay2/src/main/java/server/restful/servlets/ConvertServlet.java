@@ -125,7 +125,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -10)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -12)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
@@ -136,7 +136,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return download;
 		}
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -9)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -11)
 		public void setDownload(Boolean download) {
 			this.download = download;
 		}
@@ -147,9 +147,31 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return reuSize;
 		}
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -8)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -10)
 		public void setReuSize(Integer reuSize) {
 			this.reuSize = reuSize;
+		}
+
+		private Boolean sfxSoundExpander = Boolean.FALSE;
+
+		public Boolean getSfxSoundExpander() {
+			return sfxSoundExpander;
+		}
+
+		@Parameter(names = "--sfxSoundExpander", arity = 1, descriptionKey = "SFX_SOUND_EXPANDER", order = -9)
+		public void setSfxSoundExpander(Boolean sfxSoundExpander) {
+			this.sfxSoundExpander = sfxSoundExpander;
+		}
+
+		private Integer sfxSoundExpanderType = 0;
+
+		public Integer getSfxSoundExpanderType() {
+			return sfxSoundExpanderType;
+		}
+
+		@Parameter(names = { "--sfxSoundExpanderType" }, descriptionKey = "SFX_SOUND_EXPANDER_TYPE", order = -8)
+		public void setSfxSoundExpanderType(Integer sfxSoundExpanderType) {
+			this.sfxSoundExpanderType = sfxSoundExpanderType;
 		}
 
 		private Integer pressSpaceInterval = PRESS_SPACE_INTERVALL;
@@ -475,6 +497,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart);
 
+		if (servletParameters.sfxSoundExpander && !player.getC64().isCartridge()) {
+			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
+		}
 		if (servletParameters.reuSize != null && !player.getC64().isCartridge()) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
 		}

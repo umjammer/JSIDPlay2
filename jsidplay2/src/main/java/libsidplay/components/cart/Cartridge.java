@@ -138,7 +138,7 @@ public class Cartridge {
 		case REU:
 			return new REU(null, pla, sizeKB);
 		case SOUNDEXPANDER:
-			return new SFXSoundExpander(null, pla, 0);
+			return new SFXSoundExpander(null, pla, sizeKB);
 		default:
 			throw new RuntimeException("Cartridge is unsupported");
 		}
