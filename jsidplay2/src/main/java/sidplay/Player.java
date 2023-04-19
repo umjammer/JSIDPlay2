@@ -1409,6 +1409,11 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		credits.append("\tCopyright (©) 2007 Lasse Öörni\n");
 		credits.append("HVMEC (High Voltage Music Engine Collection v1.0):\n");
 		credits.append("\tCopyright (©) 2011 by Stefano Tognon and Stephan Parth\n");
+		credits.append("FMOPL (FM sound generator types OPL and OPL2 v0.72):\n");
+		credits.append("\tJava version by Daniel Becker Copyright (©) 2020\n");
+		credits.append("Based on MAME (multi-purpose emulation framework)\n");
+		credits.append("\tCopyright (©) 2020 by Jarek Burczynski and Tatsuyuki Satoh\n");
+		credits.append("\thttps://www.mamedev.org/\n");
 		credits.append("C1541 Floppy Disk Drive Emulation:\n");
 		credits.append("\tCopyright (©) 2010 VICE (the Versatile Commodore Emulator)\n");
 		credits.append("\thttp://www.viceteam.org/\n");
