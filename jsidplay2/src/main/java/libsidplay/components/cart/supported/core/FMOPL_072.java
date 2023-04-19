@@ -78,8 +78,6 @@ public class FMOPL_072 {
 
 	/* output final shift */
 	private static final int FINAL_SH = 0;
-	private static final int MAXOUT = 0x00007FFF;
-	private static final int MINOUT = 0xFFFF8000;
 
 	private static final int FREQ_SH = 16; // 16.16 fixed point (frequency calculations)
 	private static final int EG_SH = 16; // 16.16 fixed point (EG timing)
@@ -2172,15 +2170,6 @@ public class FMOPL_072 {
 		super();
 	}
 
-	private static int limit(final int val, final int max, final int min) {
-		if (val > max)
-			return max;
-		else if (val < min)
-			return min;
-
-		return val;
-	}
-
 	/*******************************************************************************/
 	/* YM3812 local section */
 	/*******************************************************************************/
@@ -2245,7 +2234,7 @@ public class FMOPL_072 {
 			/* limit check */
 			/* store to sound buffer */
 			/* store to sound buffer */
-			sampler.accept(limit(chip.output[0] >> FINAL_SH, MAXOUT, MINOUT));
+			sampler.accept(chip.output[0] >> FINAL_SH);
 
 			chip.advance();
 		}

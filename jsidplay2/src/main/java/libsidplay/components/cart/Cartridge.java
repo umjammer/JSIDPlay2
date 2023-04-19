@@ -324,16 +324,30 @@ public class Cartridge {
 		}
 	}
 
+	/**
+	 * @return is catridge producing sound?
+	 */
 	public boolean isCreatingSamples() {
 		return false;
 	}
 
+	/**
+	 * Set ampler to mix cartridge sound samples into the audio buffer
+	 * 
+	 * @param sampler
+	 */
 	public void setSampler(IntConsumer sampler) {
 	}
 
+	/**
+	 * Mixer starts mixing
+	 */
 	public void mixerStart() {
 	}
 
+	/**
+	 * Clock cartridge chips
+	 */
 	public void clock() {
 	}
 

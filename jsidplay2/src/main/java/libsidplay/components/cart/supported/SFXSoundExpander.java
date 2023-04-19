@@ -18,11 +18,11 @@ import libsidplay.components.pla.PLA;
  */
 public class SFXSoundExpander extends Cartridge {
 
-	private EventScheduler context;
+	private final int type;
 
-	private FMOPL_072.FM_OPL fmOpl;
+	private final EventScheduler context;
 
-	private int type;
+	private final FMOPL_072.FM_OPL fmOpl;
 
 	private IntConsumer sampler;
 
@@ -33,8 +33,7 @@ public class SFXSoundExpander extends Cartridge {
 		type = sizeKB;
 		context = pla.getCPU().getEventScheduler();
 
-		fmOpl = FMOPL_072.init(type == 0 ? FMOPL_072.OPL_TYPE_YM3526 : FMOPL_072.OPL_TYPE_YM3812, 3579545,
-				(int) CPUClock.PAL.getCpuFrequency());
+		fmOpl = FMOPL_072.init(type, 3579545, (int) CPUClock.PAL.getCpuFrequency());
 	}
 
 	@Override
@@ -54,13 +53,13 @@ public class SFXSoundExpander extends Cartridge {
 
 		@Override
 		public byte read(int addr) {
-			clock(clocksSinceLastAccess());
+			clock();
 			return (byte) ((addr & 0xff) == 0x60 ? FMOPL_072.read(fmOpl, 0) : 0xff);
 		}
 
 		@Override
 		public void write(int addr, byte val) {
-			clock(clocksSinceLastAccess());
+			clock();
 			FMOPL_072.write(fmOpl, (addr & 0xff) == 0x40 ? 0 : 1, val & 0xff);
 		}
 	};
@@ -82,11 +81,7 @@ public class SFXSoundExpander extends Cartridge {
 
 	@Override
 	public void clock() {
-		clock(clocksSinceLastAccess());
-	}
-
-	public void clock(int cycles) {
-		FMOPL_072.update_one(fmOpl, sampler, cycles);
+		FMOPL_072.update_one(fmOpl, sampler, clocksSinceLastAccess());
 	}
 
 	private int clocksSinceLastAccess() {

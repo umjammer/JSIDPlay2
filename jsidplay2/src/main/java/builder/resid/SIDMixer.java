@@ -71,7 +71,7 @@ public class SIDMixer implements Mixer {
 		/**
 		 * The mixer mixes the generated sound samples into the drivers audio buffer.
 		 * <OL>
-		 * <LI>Clock SIDs to fill audio buffer.
+		 * <LI>Clock SIDs/Carts to fill audio buffer.
 		 * <LI>Accumulate samples to implement fast forwarding.
 		 * <LI>Resample the SID output, because the sample frequency is different to the
 		 * clock frequency.
@@ -258,6 +258,7 @@ public class SIDMixer implements Mixer {
 		this.context = context;
 		this.config = config;
 		this.cpuClock = cpuClock;
+		this.cart = cart;
 		this.resamplerL = Resampler.createResampler(cpuFrequency, samplingMethod, samplingFrequency, middleFrequency);
 		this.resamplerR = Resampler.createResampler(cpuFrequency, samplingMethod, samplingFrequency, middleFrequency);
 		this.fadeInFadeOutEnabled = sidplay2Section.getFadeInTime() != 0 || sidplay2Section.getFadeOutTime() != 0;
@@ -266,7 +267,6 @@ public class SIDMixer implements Mixer {
 		this.whatsSidEnabled = whatsSidSection.isEnable();
 		this.whatsSidSupport = new WhatsSidSupport(cpuFrequency, whatsSidSection.getCaptureTime(),
 				whatsSidSection.getMinimumRelativeConfidence());
-		this.cart = cart;
 
 		normalSpeed();
 	}
@@ -444,9 +444,6 @@ public class SIDMixer implements Mixer {
 			if (mono) {
 				sampler.setVolume(volume[sidNum], volume[sidNum]);
 				sampler.setDelay(0);
-				// XXX configuration
-				cartSampler.setVolume(1024, 1024);
-				cartSampler.setDelay(0);
 			} else {
 				double leftFraction = positionL[sidNum];
 				double rightFraction = positionR[sidNum];
@@ -458,12 +455,12 @@ public class SIDMixer implements Mixer {
 				int volumeR = (int) (volume[sidNum] * rightFraction);
 				sampler.setVolume(volumeL, volumeR);
 				sampler.setDelay(delayInSamples[sidNum]);
-				// XXX configuration
-				cartSampler.setVolume(1024, 1024);
-				cartSampler.setDelay(0);
 			}
 			sidNum++;
 		}
+		// XXX configuration
+		cartSampler.setVolume(1024, 1024);
+		cartSampler.setDelay(0);
 	}
 
 	/**
