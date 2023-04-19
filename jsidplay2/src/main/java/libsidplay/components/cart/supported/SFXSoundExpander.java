@@ -30,7 +30,7 @@ public class SFXSoundExpander extends Cartridge {
 		super(pla);
 		context = pla.getCPU().getEventScheduler();
 
-		fmOpl = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3812, 3579545, (int) CPUClock.PAL.getCpuFrequency());
+		fmOpl = FMOPL_072.init(FMOPL_072.OPL_TYPE_YM3526, 3579545, (int) CPUClock.PAL.getCpuFrequency());
 	}
 
 	@Override
