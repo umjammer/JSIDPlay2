@@ -2891,6 +2891,12 @@
 					reuParameters: function () {
 						return this.convertOptions.reuSize !== null ? "&reuSize=" + this.convertOptions.reuSize : "";
 					},
+					sfxSoundExpanderParameters: function () {
+					    return(
+					    	"&sfxSoundExpander=" + this.convertOptions.sfxSoundExpander +
+							(this.convertOptions.sfxSoundExpanderType !== null ? "&sfxSoundExpanderType=" + this.convertOptions.sfxSoundExpanderType : "")
+							);
+					},
 					stereoParameters: function () {
 						if (this.stereoMode === "FORCE_2SID") {
 							return (
@@ -3482,6 +3488,7 @@
 							this.convertOptions.showStatus +
 							"&jiffydos=" +
 							this.convertOptions.config.c1541Section.jiffyDosInstalled +
+							this.sfxSoundExpanderParameters +
 							this.reuParameters +
 							this.stereoParameters +
 							(typeof itemId === "undefined" && typeof categoryId === "undefined"
