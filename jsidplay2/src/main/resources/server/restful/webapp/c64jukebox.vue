@@ -2041,16 +2041,36 @@
 										</b-form-group>
 									</div>
 									<div class="settings-box">
-										<label for="bufferSize">{{
-											$t("convertMessages.config.audioSection.bufferSize")
-										}}</label>
-										<input
-											type="number"
-											min="0"
-											oninput="validity.valid||(value='');"
-											id="bufferSize"
-											v-model.number="convertOptions.config.audioSection.bufferSize"
-										/>
+										<div>
+											<label for="bufferSize">{{
+												$t("convertMessages.config.audioSection.bufferSize")
+											}}</label>
+											<input
+												type="number"
+												min="0"
+												oninput="validity.valid||(value='');"
+												id="bufferSize"
+												v-model.number="convertOptions.config.audioSection.bufferSize"
+											/>
+										</div>
+										<div>
+											<label for="audioBufferSize">{{
+												$t("convertMessages.config.audioSection.audioBufferSize")
+											}}</label>
+											<b-form-select
+												id="audioBufferSize"
+												v-model="convertOptions.config.audioSection.audioBufferSize"
+												size="sm"
+												class="mt-3"
+												:select-size="1"
+											>
+												<option :value="1024">1024</option>
+												<option :value="2048">2048</option>
+												<option :value="4096">4096</option>
+												<option :value="8192">8192</option>
+												<option :value="16384">16384</option>
+											</b-form-select>
+										</div>
 									</div>
 
 									<h2>{{ $t("filterCfgHeader") }}</h2>
@@ -3283,6 +3303,8 @@
 							this.convertOptions.useHls = true;
 							this.convertOptions.config.sidplay2Section.single = true;
 							this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
+							this.convertOptions.config.audioSection.audioBufferSize = 1024;
+							this.convertOptions.config.audioSection.bufferSize = 65536;
 							this.convertOptions.config.audioSection.reverbBypass = false;
 							this.convertOptions.config.audioSection.mainBalance = 0.3;
 							this.convertOptions.config.audioSection.secondBalance = 0.7;
@@ -3400,6 +3422,8 @@
 							this.convertOptions.config.audioSection.thirdDelay +
 							"&bufferSize=" +
 							this.convertOptions.config.audioSection.bufferSize +
+							"&audioBufferSize=" +
+							this.convertOptions.config.audioSection.audioBufferSize +
 							"&cbr=" +
 							this.convertOptions.config.audioSection.cbr +
 							"&vbrQuality=" +
@@ -3986,6 +4010,8 @@
 						this.convertOptions.useHls = true;
 						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
+						this.convertOptions.config.audioSection.audioBufferSize = 1024;
+						this.convertOptions.config.audioSection.bufferSize = 65536;
 						this.convertOptions.config.audioSection.reverbBypass = false;
 						this.convertOptions.config.audioSection.mainBalance = 0.3;
 						this.convertOptions.config.audioSection.secondBalance = 0.7;
