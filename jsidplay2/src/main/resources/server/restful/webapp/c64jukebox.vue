@@ -3303,8 +3303,6 @@
 							this.convertOptions.useHls = true;
 							this.convertOptions.config.sidplay2Section.single = true;
 							this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
-							this.convertOptions.config.audioSection.audioBufferSize = 1024;
-							this.convertOptions.config.audioSection.bufferSize = 65536;
 							this.convertOptions.config.audioSection.reverbBypass = false;
 							this.convertOptions.config.audioSection.mainBalance = 0.3;
 							this.convertOptions.config.audioSection.secondBalance = 0.7;
@@ -4010,8 +4008,6 @@
 						this.convertOptions.useHls = true;
 						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
-						this.convertOptions.config.audioSection.audioBufferSize = 1024;
-						this.convertOptions.config.audioSection.bufferSize = 65536;
 						this.convertOptions.config.audioSection.reverbBypass = false;
 						this.convertOptions.config.audioSection.mainBalance = 0.3;
 						this.convertOptions.config.audioSection.secondBalance = 0.7;
