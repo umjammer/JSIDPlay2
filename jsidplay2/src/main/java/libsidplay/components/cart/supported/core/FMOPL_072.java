@@ -1572,9 +1572,9 @@ public class FMOPL_072 {
 		/* Initialize of this chip */
 		private void initialize() {
 			/* frequency base */
-			freqbase = (rate != 0) ? (clock / 72.0) / rate : 0;
+			freqbase = (rate != 0) ? (clock / 72.0d) / rate : 0;
 			/* Timer base time */
-			TimerBase = (clock != 0) ? 1.0 / (clock / 72.0) : 0;
+			TimerBase = (clock != 0) ? 1.0 / (clock / 72.0d) : 0;
 
 			/* make fnumber -> increment counter table */
 			for (int i = 0; i < 1024; i++) {
@@ -2163,13 +2163,6 @@ public class FMOPL_072 {
 		}
 	}
 
-	/**
-	 * Constructor for FMOPL_072
-	 */
-	public FMOPL_072() {
-		super();
-	}
-
 	/*******************************************************************************/
 	/* YM3812 local section */
 	/*******************************************************************************/
@@ -2232,7 +2225,6 @@ public class FMOPL_072 {
 			}
 
 			/* limit check */
-			/* store to sound buffer */
 			/* store to sound buffer */
 			sampler.accept(chip.output[0] >> FINAL_SH);
 
