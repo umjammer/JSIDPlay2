@@ -93,6 +93,6 @@ public class SFXSoundExpander extends Cartridge {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " " + (type == 0 ? "YM3526" : "YM3812");
+		return getClass().getSimpleName() + " " + (type == 0 ? "OPL1" : "OPL2");
 	}
 }
