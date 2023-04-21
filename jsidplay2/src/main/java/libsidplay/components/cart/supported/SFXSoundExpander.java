@@ -54,7 +54,7 @@ public class SFXSoundExpander extends Cartridge {
 		@Override
 		public byte read(int addr) {
 			clock();
-			return (byte) ((addr & 0xff) == 0x60 ? FMOPL_072.read(fmOpl, 0) : 0xff);
+			return (byte) ((addr & 0xff) == 0x60 ? FMOPL_072.read(fmOpl, 0) : pla.getDisconnectedBusBank().read(addr));
 		}
 
 		@Override

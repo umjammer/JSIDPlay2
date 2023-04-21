@@ -253,8 +253,8 @@
 							<Menu text="%REU">
 								<MenuItem text="%INSERT_REU" onAction="#insertREU" />
 								<MenuItem text="%INSERT_REU_(128KB)" onAction="#insertREU128" />
-								<MenuItem text="%INSERT_REU_(256KB)" onAction="#insertREU256" />
 								<MenuItem text="%INSERT_REU_(512KB)" onAction="#insertREU512" />
+								<MenuItem text="%INSERT_REU_(256KB)" onAction="#insertREU256" />
 								<MenuItem text="%INSERT_REU_(2MB)" onAction="#insertREU2048" />
 								<MenuItem text="%INSERT_REU_(16MB)" onAction="#insertREU16384" />
 							</Menu>

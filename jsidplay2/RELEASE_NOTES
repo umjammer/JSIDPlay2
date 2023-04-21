@@ -1,3 +1,3 @@
 Release Notes:
 ==============
-Support of SFX Sound Expander [FM-YAM like] has been added (YM3526 and YM3812), digis not working though
+Support of SFX Sound Expander [FM-YAM alike] has been added (YM3526=OPL1 and YM3812=OPL2), digi sample playback not working though
