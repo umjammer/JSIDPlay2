@@ -22,7 +22,6 @@ import jsidplay2.Photos;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
-import libsidutils.PathUtils;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
@@ -75,7 +74,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 				commander.usage();
 				return;
 			}
-			byte[] photo = getPhoto(configuration.getSidplay2Section().getHvsc(), file);
+			byte[] photo = getPhoto(file);
 
 			response.setContentLength(photo.length);
 			response.setContentType(MIME_TYPE_JPG.toString());
@@ -88,21 +87,23 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private byte[] getPhoto(File hvscRoot, File tuneFile) throws IOException, SidTuneError {
-		String collectionName = null;
-		if (hvscRoot != null && tuneFile != null && tuneFile.getParentFile() != null) {
-			collectionName = PathUtils.getCollectionName(hvscRoot, tuneFile.getParentFile());
+	private byte[] getPhoto(File file) throws IOException, SidTuneError {
+		String authorDirectory = getCollectionName(file);
+
+		if (!authorDirectory.isEmpty()) {
+			authorDirectory = new File(authorDirectory).getParent();
 		}
+
 		String author = null;
-		if (tuneFile != null) {
-			SidTuneInfo info = SidTune.load(tuneFile).getInfo();
+		if (file != null) {
+			SidTuneInfo info = SidTune.load(file).getInfo();
 			if (info.getInfoString().size() > 1) {
 				Iterator<String> iterator = info.getInfoString().iterator();
 				/* title = */iterator.next();
 				author = iterator.next();
 			}
 		}
-		return Optional.ofNullable(Photos.getPhoto(collectionName, author)).orElse(new byte[0]);
+		return Optional.ofNullable(Photos.getPhoto(authorDirectory, author)).orElse(new byte[0]);
 	}
 
 }

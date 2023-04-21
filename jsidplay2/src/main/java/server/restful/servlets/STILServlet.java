@@ -17,10 +17,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
-import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import libsidutils.stil.STIL.STILEntry;
 import net.java.truevfs.access.TFile;
@@ -92,19 +89,13 @@ public class STILServlet extends JSIDPlay2Servlet {
 			throws IOException, SidTuneError, NoSuchFieldException, IllegalAccessException {
 		File hvscRoot = configuration.getSidplay2Section().getHvsc();
 
-		String collectionName = PathUtils.getCollectionName(hvscRoot, file);
-
-		if (collectionName.isEmpty()) {
-			SidTune tune = SidTune.load(file);
-			if (hvscRoot != null) {
-				collectionName = new SidDatabase(hvscRoot).getPath(tune);
+		STIL stil = null;
+		if (hvscRoot != null) {
+			try (InputStream input = new TFileInputStream(new TFile(hvscRoot, STIL.STIL_FILE))) {
+				stil = new STIL(input);
 			}
 		}
-		STIL stil = null;
-		try (InputStream input = new TFileInputStream(new TFile(hvscRoot, STIL.STIL_FILE))) {
-			stil = new STIL(input);
-		}
-		return stil != null && collectionName != null ? stil.getSTILEntry(collectionName) : null;
+		return stil != null ? stil.getSTILEntry(getCollectionName(file)) : null;
 	}
 
 }

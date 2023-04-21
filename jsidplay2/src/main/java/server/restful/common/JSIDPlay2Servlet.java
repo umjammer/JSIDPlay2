@@ -55,8 +55,11 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidplay.sidtune.SidTune;
+import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
+import libsidutils.siddatabase.SidDatabase;
 import net.java.truevfs.access.TFile;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import server.restful.common.parameter.ServletUsageFormatter;
@@ -332,6 +335,21 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return null;
 	}
 
+	protected String getCollectionName(File file) throws IOException, SidTuneError {
+		String result = "";
+
+		File hvscRoot = configuration.getSidplay2Section().getHvsc();
+		if (hvscRoot != null) {
+			// 1st Try from full path name...
+			result = PathUtils.getCollectionName(hvscRoot, file);
+			if (result.isEmpty()) {
+				// ... then try from MD5
+				result = new SidDatabase(hvscRoot).getPath(SidTune.load(file));
+			}
+		}
+		return result;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected <T> T getInput(HttpServletRequest request, Class<T> tClass) throws IOException {
 		try (ServletInputStream inputStream = request.getInputStream()) {
@@ -493,5 +511,4 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 						.map(file -> new File(virtualParentFile, file.getName()) + (file.isDirectory() ? "/" : "")))
 				.collect(Collectors.toList());
 	}
-
 }
