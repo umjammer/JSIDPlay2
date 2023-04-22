@@ -291,13 +291,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return null;
 	}
 
-	protected List<String> getDirectory(JCommander commander, DirectoryRequestPathServletParameters servletParameters,
-			boolean adminRole) {
+	protected List<String> getDirectory(JCommander commander,
+			DirectoryRequestPathServletParameters directoryRequestPathServletParameters, boolean adminRole) {
 		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
 
 		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 
-		String path = servletParameters.getDirectory();
+		String path = directoryRequestPathServletParameters.getDirectory();
 		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
@@ -308,12 +308,14 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
-			List<String> files = getCollectionFiles(sidplay2Section.getHvsc(), C64_MUSIC, filePath, servletParameters);
+			List<String> files = getCollectionFiles(sidplay2Section.getHvsc(), C64_MUSIC, filePath,
+					directoryRequestPathServletParameters);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
-			List<String> files = getCollectionFiles(sidplay2Section.getCgsc(), CGSC, filePath, servletParameters);
+			List<String> files = getCollectionFiles(sidplay2Section.getCgsc(), CGSC, filePath,
+					directoryRequestPathServletParameters);
 			if (files != null) {
 				return files;
 			}
@@ -324,7 +326,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
 					File root = new TFile(directoryValue);
-					List<String> files = getCollectionFiles(root, directoryLogicalName, filePath, servletParameters);
+					List<String> files = getCollectionFiles(root, directoryLogicalName, filePath,
+							directoryRequestPathServletParameters);
 					if (files != null) {
 						return files;
 					}
