@@ -61,9 +61,9 @@ import libsidutils.PathUtils;
 import libsidutils.ZipFileUtils;
 import libsidutils.siddatabase.SidDatabase;
 import net.java.truevfs.access.TFile;
+import server.restful.common.parameter.RequestPathServletParameters.DirectoryRequestPathServletParameters;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import server.restful.common.parameter.ServletUsageFormatter;
-import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
 import sidplay.filefilter.AudioTuneFileFilter;
 import sidplay.filefilter.VideoTuneFileFilter;
 import ui.assembly64.ContentEntry;
@@ -291,7 +291,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return null;
 	}
 
-	protected List<String> getDirectory(JCommander commander, DirectoryServletParameters servletParameters,
+	protected List<String> getDirectory(JCommander commander, DirectoryRequestPathServletParameters servletParameters,
 			boolean adminRole) {
 		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
 
@@ -497,7 +497,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	private List<String> getCollectionFiles(File rootFile, String virtualCollectionRoot, File filePath,
-			DirectoryServletParameters servletParameters) {
+			DirectoryRequestPathServletParameters servletParameters) {
 		if (rootFile == null) {
 			return null;
 		}

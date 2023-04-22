@@ -79,6 +79,16 @@ public abstract class RequestPathServletParameters {
 			this.directory = directory;
 		}
 
+		private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";
+
+		public String getFilter() {
+			return filter;
+		}
+
+		@Parameter(names = { "--filter" }, descriptionKey = "FILTER", order = -2)
+		public void setFilter(String filter) {
+			this.filter = filter;
+		}
 	}
 
 	/**

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Properties;
 
 import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -31,16 +30,6 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.DirectoryServletParameters")
 	public static class DirectoryServletParameters extends DirectoryRequestPathServletParameters {
 
-		private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";
-
-		public String getFilter() {
-			return filter;
-		}
-
-		@Parameter(names = { "--filter" }, descriptionKey = "FILTER", order = -2)
-		public void setFilter(String filter) {
-			this.filter = filter;
-		}
 	}
 
 	public static final String DIRECTORY_PATH = "/directory";
