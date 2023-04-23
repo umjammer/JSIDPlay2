@@ -7,6 +7,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.SIDEmu;
@@ -279,6 +280,9 @@ public final class PLA {
 
 	/** Main CPU instance */
 	private MOS6510 cpu;
+
+	/** CPU frequency **/
+	private CPUClock cpuClock;
 
 	/** RAM */
 	private final Bank ramBank;
@@ -699,6 +703,14 @@ public final class PLA {
 
 	public MOS6510 getCPU() {
 		return cpu;
+	}
+
+	public void setCpuClock(CPUClock clock) {
+		this.cpuClock = clock;
+	}
+
+	public CPUClock getCpuClock() {
+		return cpuClock;
 	}
 
 	public Cartridge getCartridge() {

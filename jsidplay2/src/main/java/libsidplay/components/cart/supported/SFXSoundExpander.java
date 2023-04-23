@@ -3,7 +3,6 @@ package libsidplay.components.cart.supported;
 import java.io.DataInputStream;
 import java.util.function.IntConsumer;
 
-import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.components.cart.Cartridge;
@@ -22,18 +21,19 @@ public class SFXSoundExpander extends Cartridge {
 
 	private final EventScheduler context;
 
-	private final FMOPL_072.FM_OPL fmOpl;
+	private FMOPL_072.FM_OPL fmOpl;
 
 	private IntConsumer sampler;
 
 	private long lastTime;
 
+	/**
+	 * <B>sizeKB misused as type 0: OPL1 (YM3526), 1: OPL2 (YM3812)</B>
+	 */
 	public SFXSoundExpander(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
 		type = sizeKB;
 		context = pla.getCPU().getEventScheduler();
-
-		fmOpl = FMOPL_072.init(type, 3579545, (int) CPUClock.PAL.getCpuFrequency());
 	}
 
 	@Override
@@ -46,6 +46,7 @@ public class SFXSoundExpander extends Cartridge {
 		super.reset();
 		pla.setGameExrom(true, true);
 
+		fmOpl = FMOPL_072.init(type, 3579545, (int) pla.getCpuClock().getCpuFrequency());
 		FMOPL_072.reset_chip(fmOpl);
 	}
 
