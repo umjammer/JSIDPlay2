@@ -75,6 +75,7 @@ public class Cartridge {
 	/** Current state of cartridge-asserted IRQ */
 	private boolean irqState;
 
+	/** Consumes samples of the cartridge while clocking. */
 	protected IntConsumer sampler;
 
 	/**
@@ -144,7 +145,6 @@ public class Cartridge {
 		default:
 			throw new RuntimeException("Cartridge is unsupported");
 		}
-
 	}
 
 	/**
@@ -168,7 +168,6 @@ public class Cartridge {
 				throw new RuntimeException("Cartridge unsupported");
 			}
 		}
-
 	}
 
 	/**
