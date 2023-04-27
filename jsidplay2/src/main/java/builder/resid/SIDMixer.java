@@ -281,7 +281,7 @@ public class SIDMixer implements Mixer {
 		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
 		createSampleMixer(sampleMixer -> {
 			this.cart.setSampler(sampleMixer);
-			sampleMixer.setVolume(1024, 1024);
+			sampleMixer.setVolume(1 << VOLUME_SCALER, 1 << VOLUME_SCALER);
 			sampleMixer.setDelay(0);
 		});
 	}
