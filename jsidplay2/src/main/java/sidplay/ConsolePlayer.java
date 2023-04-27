@@ -20,6 +20,7 @@ import builder.jexsid.JExSIDBuilder;
 import builder.jhardsid.JHardSIDBuilder;
 import builder.jsidblaster.JSIDBlasterBuilder;
 import builder.jsidblaster.SIDType;
+import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
@@ -65,11 +66,17 @@ final public class ConsolePlayer {
 	@Parameter(names = { "--startSong", "-o" }, descriptionKey = "START_SONG", order = 10002)
 	private Integer song = null;
 
+	@Parameter(names = "--sfxSoundExpander", arity = 1, descriptionKey = "SFX_SOUND_EXPANDER", order = 10003)
+	private Boolean sfxSoundExpander = Boolean.FALSE;
+
+	@Parameter(names = { "--sfxSoundExpanderType" }, descriptionKey = "SFX_SOUND_EXPANDER_TYPE", order = 10004)
+	private Integer sfxSoundExpanderType = 0;
+
 	@Parameter(names = { "--verbose",
-			"-v" }, descriptionKey = "VERBOSE", validateWith = VerboseValidator.class, order = 10003)
+			"-v" }, descriptionKey = "VERBOSE", validateWith = VerboseValidator.class, order = 10005)
 	private Integer verbose = 0;
 
-	@Parameter(names = { "--quiet", "-q" }, descriptionKey = "QUIET", order = 10004)
+	@Parameter(names = { "--quiet", "-q" }, descriptionKey = "QUIET", order = 10006)
 	private Boolean quiet = Boolean.FALSE;
 
 	@Parameter(descriptionKey = "FILES_AND_FOLDERS", converter = FileToStringConverter.class, validateWith = FilesAndFoldersValidator.class)
@@ -133,6 +140,9 @@ final public class ConsolePlayer {
 		player.setInteractivityHook(obj -> consoleIO.decodeKeys(obj, System.in));
 		player.setWhatsSidHook(obj -> consoleIO.whatsSid(obj, quiet, System.out));
 		player.setFingerPrintMatcher(new FingerprintJsonClient(url, username, password, connectionTimeout));
+		if (sfxSoundExpander) {
+			player.insertCartridge(CartridgeType.SOUNDEXPANDER, sfxSoundExpanderType);
+		}
 
 		if (config.getSidplay2Section().isEnableDatabase()) {
 			setSIDDatabase(player);
