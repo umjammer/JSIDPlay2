@@ -538,7 +538,9 @@ public class FavoritesTab extends C64VBox implements UIPart {
 		favorites.setCurrentlyPlayedFavorites(this);
 		util.setPlayingTab(this, currentlyPlayedHVSCEntryProperty);
 		try {
-			util.getPlayer().getC64().ejectCartridge();
+			if (!util.getPlayer().getC64().getCartridge().isCreatingSamples()) {
+				util.getPlayer().getC64().ejectCartridge();
+			}
 			util.getPlayer().play(SidTune.load(getHVSCFile(hvscEntry)));
 			currentlyPlayedHVSCEntryProperty.set(hvscEntry);
 			favoritesTable.scrollTo(hvscEntry);

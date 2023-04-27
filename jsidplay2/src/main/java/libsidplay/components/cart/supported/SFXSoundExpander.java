@@ -1,7 +1,6 @@
 package libsidplay.components.cart.supported;
 
 import java.io.DataInputStream;
-import java.util.function.IntConsumer;
 
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
@@ -22,8 +21,6 @@ public class SFXSoundExpander extends Cartridge {
 	private final EventScheduler context;
 
 	private FMOPL_072.FM_OPL fmOpl;
-
-	private IntConsumer sampler;
 
 	private long lastTime;
 
@@ -68,11 +65,6 @@ public class SFXSoundExpander extends Cartridge {
 	@Override
 	public boolean isCreatingSamples() {
 		return true;
-	}
-
-	@Override
-	public void setSampler(IntConsumer sampler) {
-		this.sampler = sampler;
 	}
 
 	@Override

@@ -75,6 +75,8 @@ public class Cartridge {
 	/** Current state of cartridge-asserted IRQ */
 	private boolean irqState;
 
+	protected IntConsumer sampler;
+
 	/**
 	 * Get currently active ROML bank.
 	 *
@@ -337,6 +339,11 @@ public class Cartridge {
 	 * @param sampler
 	 */
 	public void setSampler(IntConsumer sampler) {
+		this.sampler = sampler;
+	}
+
+	public IntConsumer getSampler() {
+		return sampler;
 	}
 
 	/**

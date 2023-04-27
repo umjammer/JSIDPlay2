@@ -11,6 +11,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import builder.resid.SampleMixer.LinearFadingSampleMixer;
 import builder.resid.resample.Resampler;
@@ -93,8 +94,9 @@ public class SIDMixer implements Mixer {
 				sampler.clear();
 			}
 			// Clock cartridge to fill the audio buffer to the present moment
+			SampleMixer sampler = (SampleMixer) cart.getSampler();
 			cart.clock();
-			cartSampler.clear();
+			sampler.clear();
 
 			// Read from audio buffers
 			int valL = 0, valR = 0;
@@ -172,11 +174,6 @@ public class SIDMixer implements Mixer {
 	 * Cartridge that could possibly add sound to the mix
 	 */
 	private Cartridge cart;
-
-	/**
-	 * Sample mixer for cartridge
-	 */
-	private SampleMixer cartSampler;
 
 	/**
 	 * Mixer clocking SID chips and producing audio output.
@@ -282,8 +279,11 @@ public class SIDMixer implements Mixer {
 		this.buffer = audioDriver.buffer();
 		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
 		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
-		this.cartSampler = new SampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate());
-		this.cart.setSampler(cartSampler);
+		createSampleMixer(sampleMixer -> {
+			this.cart.setSampler(sampleMixer);
+			sampleMixer.setVolume(1024, 1024);
+			sampleMixer.setDelay(0);
+		});
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class SIDMixer implements Mixer {
 		} else {
 			sids.add(sid);
 		}
-		createSampleMixer(sid, sidNum);
+		createSampleMixer(sampleMixer -> sid.setSampler(sampleMixer));
 		setVolume(sidNum, config.getAudioSection().getVolume(sidNum));
 		setBalance(sidNum, config.getAudioSection().getBalance(sidNum));
 		setDelay(sidNum, config.getAudioSection().getDelay(sidNum));
@@ -418,15 +418,15 @@ public class SIDMixer implements Mixer {
 	/**
 	 * Create a new sample value mixer and assign to SID chip.
 	 *
-	 * @param sid SID chip that requires a sample mixer.
+	 * @param action SID chip that requires a sample mixer.
 	 */
-	private void createSampleMixer(ReSIDBase sid, int sidNum) {
+	private void createSampleMixer(Consumer<SampleMixer> action) {
 		IntBuffer intBufferL = audioBufferL.duplicate();
 		IntBuffer intBufferR = audioBufferR.duplicate();
 		if (fadeInFadeOutEnabled) {
-			sid.setSampler(new LinearFadingSampleMixer(intBufferL, intBufferR));
+			action.accept(new LinearFadingSampleMixer(intBufferL, intBufferR));
 		} else {
-			sid.setSampler(new SampleMixer(intBufferL, intBufferR));
+			action.accept(new SampleMixer(intBufferL, intBufferR));
 		}
 	}
 
@@ -458,9 +458,6 @@ public class SIDMixer implements Mixer {
 			}
 			sidNum++;
 		}
-		// XXX configuration
-		cartSampler.setVolume(1024, 1024);
-		cartSampler.setDelay(0);
 	}
 
 	/**
