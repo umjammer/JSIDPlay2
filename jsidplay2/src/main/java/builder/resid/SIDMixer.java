@@ -306,6 +306,8 @@ public class SIDMixer implements Mixer {
 			LinearFadingSampleMixer sampler = (LinearFadingSampleMixer) sid.getSampler();
 			sampler.setFadeIn((long) (fadeIn * cpuClock.getCpuFrequency()));
 		}
+		LinearFadingSampleMixer sampler = (LinearFadingSampleMixer) cart.getSampler();
+		sampler.setFadeIn((long) (fadeIn * cpuClock.getCpuFrequency()));
 	}
 
 	/**
@@ -319,6 +321,8 @@ public class SIDMixer implements Mixer {
 			LinearFadingSampleMixer sampler = (LinearFadingSampleMixer) sid.getSampler();
 			sampler.setFadeOut((long) (fadeOut * cpuClock.getCpuFrequency()));
 		}
+		LinearFadingSampleMixer sampler = (LinearFadingSampleMixer) cart.getSampler();
+		sampler.setFadeOut((long) (fadeOut * cpuClock.getCpuFrequency()));
 	}
 
 	/**
