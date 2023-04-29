@@ -125,6 +125,8 @@ class SampleMixer implements IntConsumer {
 	SampleMixer(IntBuffer audioBufferL, IntBuffer audioBufferR) {
 		this.bufferL = audioBufferL;
 		this.bufferR = audioBufferR;
+		setVolume(1 << SIDMixer.VOLUME_SCALER, 1 << SIDMixer.VOLUME_SCALER);
+		setDelay(0);
 	}
 
 	public void setVolume(int volumeL, int volumeR) {

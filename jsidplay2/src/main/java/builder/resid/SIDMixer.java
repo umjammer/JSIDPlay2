@@ -41,7 +41,7 @@ public class SIDMixer implements Mixer {
 	/**
 	 * Scaler to use fast int multiplication while setting volume.
 	 */
-	private static final int VOLUME_SCALER = 10;
+	static final int VOLUME_SCALER = 10;
 
 	/**
 	 * The mixer mixes the generated sound samples into the drivers audio buffer.
@@ -279,11 +279,7 @@ public class SIDMixer implements Mixer {
 		this.buffer = audioDriver.buffer();
 		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
 		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
-		createSampleMixer(sampleMixer -> {
-			this.cart.setSampler(sampleMixer);
-			sampleMixer.setVolume(1 << VOLUME_SCALER, 1 << VOLUME_SCALER);
-			sampleMixer.setDelay(0);
-		});
+		createSampleMixer(this.cart::setSampler);
 	}
 
 	/**
@@ -422,7 +418,7 @@ public class SIDMixer implements Mixer {
 	/**
 	 * Create a new sample value mixer and assign to SID chip.
 	 *
-	 * @param action SID chip that requires a sample mixer.
+	 * @param action action to set a sample mixer.
 	 */
 	private void createSampleMixer(Consumer<SampleMixer> action) {
 		IntBuffer intBufferL = audioBufferL.duplicate();
