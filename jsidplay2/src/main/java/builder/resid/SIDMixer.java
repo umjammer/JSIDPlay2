@@ -11,7 +11,6 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 
 import builder.resid.SampleMixer.LinearFadingSampleMixer;
 import builder.resid.resample.Resampler;
@@ -279,7 +278,7 @@ public class SIDMixer implements Mixer {
 		this.buffer = audioDriver.buffer();
 		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
 		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
-		createSampleMixer(this.cart::setSampler);
+		this.cart.setSampler(createSampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
 	}
 
 	/**
@@ -333,7 +332,7 @@ public class SIDMixer implements Mixer {
 		} else {
 			sids.add(sid);
 		}
-		createSampleMixer(sid::setSampler);
+		sid.setSampler(createSampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
 		setVolume(sidNum, config.getAudioSection().getVolume(sidNum));
 		setBalance(sidNum, config.getAudioSection().getBalance(sidNum));
 		setDelay(sidNum, config.getAudioSection().getDelay(sidNum));
@@ -416,17 +415,16 @@ public class SIDMixer implements Mixer {
 	}
 
 	/**
-	 * Create a new sample value mixer and assign to SID chip.
-	 *
-	 * @param action action to set a sample mixer.
+	 * Create a new sample value mixer.
+	 * 
+	 * @param intBufferL buffer of left speaker
+	 * @param intBufferR buffer of right speaker
 	 */
-	private void createSampleMixer(Consumer<SampleMixer> action) {
-		IntBuffer intBufferL = audioBufferL.duplicate();
-		IntBuffer intBufferR = audioBufferR.duplicate();
+	private SampleMixer createSampleMixer(IntBuffer intBufferL, IntBuffer intBufferR) {
 		if (fadeInFadeOutEnabled) {
-			action.accept(new LinearFadingSampleMixer(intBufferL, intBufferR));
+			return new LinearFadingSampleMixer(intBufferL, intBufferR);
 		} else {
-			action.accept(new SampleMixer(intBufferL, intBufferR));
+			return new SampleMixer(intBufferL, intBufferR);
 		}
 	}
 

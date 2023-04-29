@@ -1,5 +1,7 @@
 package builder.resid;
 
+import static builder.resid.SIDMixer.VOLUME_SCALER;
+
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -125,7 +127,7 @@ class SampleMixer implements IntConsumer {
 	SampleMixer(IntBuffer audioBufferL, IntBuffer audioBufferR) {
 		this.bufferL = audioBufferL;
 		this.bufferR = audioBufferR;
-		setVolume(1 << SIDMixer.VOLUME_SCALER, 1 << SIDMixer.VOLUME_SCALER);
+		setVolume(1 << VOLUME_SCALER, 1 << VOLUME_SCALER);
 		setDelay(0);
 	}
 
