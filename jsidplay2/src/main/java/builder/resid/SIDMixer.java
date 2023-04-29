@@ -337,7 +337,7 @@ public class SIDMixer implements Mixer {
 		} else {
 			sids.add(sid);
 		}
-		createSampleMixer(sampleMixer -> sid.setSampler(sampleMixer));
+		createSampleMixer(sid::setSampler);
 		setVolume(sidNum, config.getAudioSection().getVolume(sidNum));
 		setBalance(sidNum, config.getAudioSection().getBalance(sidNum));
 		setDelay(sidNum, config.getAudioSection().getDelay(sidNum));
