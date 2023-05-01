@@ -43,7 +43,7 @@ public class SFXSoundExpander extends Cartridge {
 		super.reset();
 		pla.setGameExrom(true, true);
 
-		fmOpl = FMOPL_072.init(type, 3579545, (int) pla.getCpuClock().getCpuFrequency());
+		fmOpl = FMOPL_072.init(type, 3579545, (int) context.getCyclesPerSecond());
 	}
 
 	private final Bank io2Bank = new Bank() {

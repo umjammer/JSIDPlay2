@@ -544,7 +544,6 @@ public abstract class C64 implements DatasetteEnvironment, C1541Environment, Use
 		cia1.setDayOfTimeRate(clock.getCpuFrequency() / clock.getScreenRefresh());
 		cia2.setDayOfTimeRate(clock.getCpuFrequency() / clock.getScreenRefresh());
 		pla.setVic(getVIC());
-		pla.setCpuClock(clock);
 	}
 
 	/**
