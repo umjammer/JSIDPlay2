@@ -56,6 +56,7 @@ public class Rex extends Cartridge {
 
 	@Override
 	public void reset() {
+		super.reset();
 		io2Bank.read(0xdeff);
 	}
 }
