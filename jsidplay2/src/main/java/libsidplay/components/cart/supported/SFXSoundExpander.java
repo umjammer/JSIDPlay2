@@ -57,7 +57,9 @@ public class SFXSoundExpander extends Cartridge {
 		@Override
 		public void write(int addr, byte val) {
 			clock();
-			FMOPL_072.write(fmOpl, (addr & 0xff) == 0x40 ? 0 : 1, val & 0xff);
+			if ((addr & 0xff) == 0x40 || (addr & 0xff) == 0x50) {
+				FMOPL_072.write(fmOpl, (addr & 0xff) == 0x40 ? 0 : 1, val & 0xff);
+			}
 		}
 	};
 
