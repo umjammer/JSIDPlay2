@@ -109,6 +109,22 @@ public class ServletParameterHelper {
 					throw new Exception("Ambigous order attribute of parameter: " + parameter.order());
 				}
 				orders.add(parameter.order());
+				// check parameter name length
+				for (String name : parameter.names()) {
+					if (name.startsWith("--")) {
+						if (name.length() <= 3) {
+							throw new Exception(
+									"parameter name prefixed by -- must be at least two characters long: " + name);
+						}
+					} else if (name.startsWith("-")) {
+						if (name.length() > 2) {
+							throw new Exception(
+									"parameter name prefixed by - must not be more than one character long: " + name);
+						}
+					} else {
+						throw new Exception("Unexpected parameter syntax: " + name);
+					}
+				}
 				// check arity of boolean parameter
 				if ((Boolean.class.equals(writer.getType().getRawClass())
 						|| writer.getType().getRawClass().equals(boolean.class)) && parameter.arity() != 1) {

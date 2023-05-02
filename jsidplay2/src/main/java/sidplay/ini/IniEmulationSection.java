@@ -601,7 +601,7 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 	}
 
 	@Override
-	@Parameter(names = { "--muteThirdSidVoice2", "-10" }, descriptionKey = "MUTE_VOICE_10", arity = 1, order = 1036)
+	@Parameter(names = { "--muteThirdSidVoice2" }, descriptionKey = "MUTE_VOICE_10", arity = 1, order = 1036)
 	public final void setMuteThirdSIDVoice2(boolean mute) {
 		iniReader.setProperty(SECTION_ID, "muteThirdSIDVoice2", mute);
 	}
@@ -612,7 +612,7 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 	}
 
 	@Override
-	@Parameter(names = { "--muteThirdSidVoice3", "-11" }, descriptionKey = "MUTE_VOICE_11", arity = 1, order = 1037)
+	@Parameter(names = { "--muteThirdSidVoice3" }, descriptionKey = "MUTE_VOICE_11", arity = 1, order = 1037)
 	public final void setMuteThirdSIDVoice3(boolean mute) {
 		iniReader.setProperty(SECTION_ID, "muteThirdSIDVoice3", mute);
 	}
@@ -623,7 +623,7 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 	}
 
 	@Override
-	@Parameter(names = { "--muteThirdSidVoice4", "-12" }, descriptionKey = "MUTE_VOICE_12", arity = 1, order = 1038)
+	@Parameter(names = { "--muteThirdSidVoice4" }, descriptionKey = "MUTE_VOICE_12", arity = 1, order = 1038)
 	public final void setMuteThirdSIDVoice4(boolean mute) {
 		iniReader.setProperty(SECTION_ID, "muteThirdSIDVoice4", mute);
 	}
