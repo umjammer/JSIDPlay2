@@ -96,6 +96,8 @@ public class ServletParameterHelper {
 
 		private static final Locale[] OTHER_LOCALES = new Locale[] { Locale.GERMAN };
 
+		private final Set<String> names = new HashSet<>();
+
 		private final Set<Integer> orders = new HashSet<>();
 
 		@Override
@@ -104,13 +106,13 @@ public class ServletParameterHelper {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
-				// check parameter order
-				if (orders.contains(parameter.order())) {
-					throw new Exception("Ambigous order attribute of parameter: " + parameter.order());
-				}
-				orders.add(parameter.order());
-				// check parameter name length
 				for (String name : parameter.names()) {
+					// check parameter name
+					if (names.contains(name)) {
+						throw new Exception("Ambigous parameter name: " + name);
+					}
+					names.add(name);
+					// check parameter name length
 					if (name.startsWith("--")) {
 						if (name.length() <= 3) {
 							throw new Exception(
@@ -125,6 +127,11 @@ public class ServletParameterHelper {
 						throw new Exception("Unexpected parameter syntax: " + name);
 					}
 				}
+				// check parameter order
+				if (orders.contains(parameter.order())) {
+					throw new Exception("Ambigous order attribute of parameter: " + parameter.order());
+				}
+				orders.add(parameter.order());
 				// check arity of boolean parameter
 				if ((Boolean.class.equals(writer.getType().getRawClass())
 						|| writer.getType().getRawClass().equals(boolean.class)) && parameter.arity() != 1) {
