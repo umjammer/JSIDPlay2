@@ -14,6 +14,7 @@ import static server.restful.common.IServletSystemProperties.HTTP2_READ_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_USE_SENDFILE;
 import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.USE_HTTP2;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -118,6 +119,7 @@ public class JSIDPlay2Server {
 
 	static {
 		DebugUtil.init();
+		check(JSIDPlay2Server.class);
 	}
 
 	/**
@@ -225,6 +227,9 @@ public class JSIDPlay2Server {
 			instance = new JSIDPlay2Server(configuration);
 		}
 		return instance;
+	}
+
+	public JSIDPlay2Server() {
 	}
 
 	private JSIDPlay2Server(Configuration configuration) {

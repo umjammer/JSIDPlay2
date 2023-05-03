@@ -2,6 +2,7 @@ package build;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static libsidutils.PathUtils.deleteDirectory;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 import static ui.entities.PersistenceProperties.CGSC_DS;
 import static ui.entities.PersistenceProperties.HVSC_DS;
 import static ui.musiccollection.MusicCollectionType.CGSC;
@@ -67,6 +68,7 @@ public class OnlineContent {
 
 	static {
 		DebugUtil.init();
+		check(OnlineContent.class);
 	}
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true)

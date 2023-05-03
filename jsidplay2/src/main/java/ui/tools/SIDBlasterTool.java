@@ -5,6 +5,7 @@ import static builder.jsidblaster.JSIDBlasterBuilder.getSidType;
 import static builder.jsidblaster.JSIDBlasterBuilder.setSerial;
 import static builder.jsidblaster.JSIDBlasterBuilder.setSidType;
 import static builder.jsidblaster.JSIDBlasterBuilder.uninitialize;
+import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -24,6 +25,7 @@ public class SIDBlasterTool {
 
 	static {
 		DebugUtil.init();
+		check(SIDBlasterTool.class);
 	}
 
 	private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("ui.tools.SIDBlasterTool");

@@ -1,5 +1,6 @@
 package ui;
 
+import static server.restful.common.parameter.ServletParameterHelper.check;
 import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 
 import java.io.File;
@@ -49,6 +50,7 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 
 	static {
 		DebugUtil.init();
+		check(JSidPlay2Main.class);
 	}
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true)

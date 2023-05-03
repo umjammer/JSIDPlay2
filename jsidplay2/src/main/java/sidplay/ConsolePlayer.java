@@ -1,5 +1,6 @@
 package sidplay;
 
+import static server.restful.common.parameter.ServletParameterHelper.check;
 import static sidplay.ini.IniConfig.getINIPath;
 
 import java.io.File;
@@ -52,6 +53,7 @@ final public class ConsolePlayer {
 
 	static {
 		DebugUtil.init();
+		check(ConsolePlayer.class);
 	}
 
 	private static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
@@ -84,6 +86,9 @@ final public class ConsolePlayer {
 
 	@ParametersDelegate
 	private IniConfig config = new IniConfig(true);
+
+	public ConsolePlayer() {
+	}
 
 	private ConsolePlayer(final String[] args) {
 		try {
