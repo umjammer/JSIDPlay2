@@ -109,7 +109,6 @@ public class ServletParameterHelper {
 		private boolean serverParameter;
 
 		public BeanParameterChecker(boolean serverParameter) {
-			super();
 			this.serverParameter = serverParameter;
 		}
 
