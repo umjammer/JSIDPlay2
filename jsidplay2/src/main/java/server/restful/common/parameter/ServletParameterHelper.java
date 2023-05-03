@@ -123,12 +123,12 @@ public class ServletParameterHelper {
 					if (name.startsWith("--")) {
 						if (name.length() <= 3) {
 							throw JsonMappingException.from(prov,
-									"name prefixed by -- must be at least two characters long");
+									"name prefixed by '--' must be at least two characters long");
 						}
 					} else if (name.startsWith("-")) {
 						if (name.length() > 2) {
 							throw JsonMappingException.from(prov,
-									"name prefixed by - must not be more than one character long");
+									"name prefixed by '-' must not be more than one character long");
 						}
 					} else {
 						throw JsonMappingException.from(prov, "name must be prefixed by '-' or '--'");
