@@ -52,12 +52,12 @@ public class FingerPrintingCreator {
 
 	static {
 		DebugUtil.init();
-		check(FingerPrintingCreator.class);
+		check(FingerPrintingCreator.class, false);
 	}
 
 	private static final TuneFileFilter TUNE_FILE_FILTER = new TuneFileFilter();
 
-	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true)
+	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
 	private Boolean help = Boolean.FALSE;
 
 	@Parameter(names = {

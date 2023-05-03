@@ -9,15 +9,19 @@ import java.util.Set;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
+import build.OnlineContent;
+import server.restful.JSIDPlay2Server;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
@@ -40,6 +44,7 @@ import server.restful.servlets.rtmp.SetSidModel8580Servlet.SetSidModel8580Servle
 import server.restful.servlets.sidmapping.ExSIDMappingServlet.ExSIDMappingServletParameters;
 import server.restful.servlets.sidmapping.HardSIDMappingServlet.HardSIDMappingServletParameters;
 import server.restful.servlets.sidmapping.SIDBlasterMappingServlet.SIDBlasterMappingServletParameters;
+import sidplay.ConsolePlayer;
 import sidplay.ini.IniAudioSection;
 import sidplay.ini.IniC1541Section;
 import sidplay.ini.IniConfig;
@@ -49,6 +54,9 @@ import sidplay.ini.IniFilterSection;
 import sidplay.ini.IniPrinterSection;
 import sidplay.ini.IniSidplay2Section;
 import sidplay.ini.IniWhatsSidSection;
+import ui.JSidPlay2Main.JSIDPlay2MainParameters;
+import ui.tools.FingerPrintingCreator;
+import ui.tools.SIDBlasterTool;
 
 public class ServletParameterHelper {
 
@@ -96,9 +104,14 @@ public class ServletParameterHelper {
 
 		private static final Locale[] OTHER_LOCALES = new Locale[] { Locale.GERMAN };
 
-		private final Set<String> names = new HashSet<>();
-
 		private final Set<Integer> orders = new HashSet<>();
+
+		private boolean serverParameter;
+
+		public BeanParameterChecker(boolean serverParameter) {
+			super();
+			this.serverParameter = serverParameter;
+		}
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
@@ -107,64 +120,98 @@ public class ServletParameterHelper {
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
 				for (String name : parameter.names()) {
-					// check parameter name
-					if (names.contains(name)) {
-						throw new Exception("Ambigous parameter name: " + name);
-					}
-					names.add(name);
 					// check parameter name length
 					if (name.startsWith("--")) {
 						if (name.length() <= 3) {
-							throw new Exception(
-									"parameter name prefixed by -- must be at least two characters long: " + name);
+							throw JsonMappingException.from(prov,
+									"name prefixed by -- must be at least two characters long");
 						}
 					} else if (name.startsWith("-")) {
 						if (name.length() > 2) {
-							throw new Exception(
-									"parameter name prefixed by - must not be more than one character long: " + name);
+							throw JsonMappingException.from(prov,
+									"name prefixed by - must not be more than one character long");
 						}
 					} else {
-						throw new Exception("Unexpected parameter syntax: " + name);
+						throw JsonMappingException.from(prov, "name must be prefixed by '-' or '--'");
 					}
 				}
 				// check parameter order
 				if (orders.contains(parameter.order())) {
-					throw new Exception("Ambigous order attribute of parameter: " + parameter.order());
+					throw JsonMappingException.from(prov, "Ambigous order " + parameter.order());
 				}
 				orders.add(parameter.order());
 				// check arity of boolean parameter
-				if ((Boolean.class.equals(writer.getType().getRawClass())
+				if (serverParameter && (Boolean.class.equals(writer.getType().getRawClass())
 						|| writer.getType().getRawClass().equals(boolean.class)) && parameter.arity() != 1) {
-					throw new Exception("Arity of parameter must be 1: " + parameter.descriptionKey());
+					throw JsonMappingException.from(prov, "Arity must be 1, but is " + parameter.arity());
 				}
 				// check missing localization
 				ResourceBundle rootResBundle = ResourceBundle.getBundle(parameters.resourceBundle(), Locale.ROOT);
-				if (!rootResBundle.containsKey(parameter.descriptionKey())) {
-					throw new Exception("Localization missing of parameter: " + parameter.descriptionKey());
+				if (!parameter.descriptionKey().isEmpty() && !rootResBundle.containsKey(parameter.descriptionKey())) {
+					throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
+							+ ".properties (key=" + parameter.descriptionKey() + ")");
 				}
 				for (Locale locale : OTHER_LOCALES) {
 					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
 					// Since ResourceBundle evaluates parent bundles as well, but we must know if
 					// localization is only contained in that bundle, therefore ==
-					if (resBundle.getString(parameter.descriptionKey()) == rootResBundle
-							.getString(parameter.descriptionKey())) {
-						throw new Exception("Localization missing of parameter: " + parameter.descriptionKey());
+					if (!parameter.descriptionKey().isEmpty()
+							&& resBundle.getString(parameter.descriptionKey()) == rootResBundle
+									.getString(parameter.descriptionKey())) {
+						throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
+								+ "_" + locale + ".properties (key=" + parameter.descriptionKey() + ")");
 					}
 				}
 			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
 				super.serializeAsField(pojo, jgen, prov, writer);
 			}
 		}
+
 	}
 
 	public static void check(Class<?> servletParameterClass) {
+		check(servletParameterClass, true);
+	}
+
+	public static void check(Class<?> servletParameterClass, boolean serverParameter) {
 		try {
-			createObjectMapper(new BeanParameterChecker()).writerWithDefaultPrettyPrinter()
+			ObjectMapper objectMapper = createObjectMapper(new BeanParameterChecker(serverParameter));
+			objectMapper
+					.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
+							.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+							.withGetterVisibility(JsonAutoDetect.Visibility.ANY)
+							.withSetterVisibility(JsonAutoDetect.Visibility.ANY)
+							.withCreatorVisibility(JsonAutoDetect.Visibility.NONE))
+					.writerWithDefaultPrettyPrinter()
 					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
 		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			throw new ExceptionInInitializerError(e);
 		}
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class OnlineContentMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class JSIDPlay2ServerMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class ConsolePlayerMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class FingerPrintingCreatorMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class SIDBlasterToolMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	private class JSIDPlay2MainParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
@@ -288,7 +335,13 @@ public class ServletParameterHelper {
 	}
 
 	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
-		return new ObjectMapper().addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
+		return new ObjectMapper().addMixIn(OnlineContent.class, OnlineContentMixIn.class)
+				.addMixIn(JSIDPlay2Server.class, JSIDPlay2ServerMixIn.class)
+				.addMixIn(ConsolePlayer.class, ConsolePlayerMixIn.class)
+				.addMixIn(FingerPrintingCreator.class, FingerPrintingCreatorMixIn.class)
+				.addMixIn(SIDBlasterTool.class, SIDBlasterToolMixIn.class)
+				.addMixIn(JSIDPlay2MainParameters.class, JSIDPlay2MainParametersMixIn.class)
+				.addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
 				.addMixIn(DiskDirectoryServlet.class, DiskDirectoryServletParametersMixIn.class)
 				.addMixIn(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class)
 				.addMixIn(PhotoServletParameters.class, PhotoServletParametersMixIn.class)

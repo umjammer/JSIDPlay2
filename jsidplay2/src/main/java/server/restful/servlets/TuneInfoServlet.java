@@ -44,7 +44,7 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.TuneInfoServletParameters")
 	public static class TuneInfoServletParameters extends FileRequestPathServletParameters {
 
-		@Parameter(names = "--list", arity = 1, descriptionKey = "LIST")
+		@Parameter(names = "--list", arity = 1, descriptionKey = "LIST", order = -2)
 		private Boolean list = Boolean.FALSE;
 
 	}

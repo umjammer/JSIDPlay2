@@ -68,34 +68,34 @@ public class OnlineContent {
 
 	static {
 		DebugUtil.init();
-		check(OnlineContent.class);
+		check(OnlineContent.class, false);
 	}
 
-	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true)
+	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 0)
 	private Boolean help = Boolean.FALSE;
 
-	@Parameter(names = { "--deployDir" }, descriptionKey = "DEPLOY_DIR")
+	@Parameter(names = { "--deployDir" }, descriptionKey = "DEPLOY_DIR", order = 1)
 	private String deployDir;
 
-	@Parameter(names = { "--projectVersion" }, descriptionKey = "PROJECT_VERSION")
+	@Parameter(names = { "--projectVersion" }, descriptionKey = "PROJECT_VERSION", order = 2)
 	private String projectVersion;
 
-	@Parameter(names = { "--upxExe" }, descriptionKey = "UPX_EXE")
+	@Parameter(names = { "--upxExe" }, descriptionKey = "UPX_EXE", order = 3)
 	private String upxExe;
 
-	@Parameter(names = { "--baseDir" }, descriptionKey = "BASE_DIR")
+	@Parameter(names = { "--baseDir" }, descriptionKey = "BASE_DIR", order = 4)
 	private String baseDir;
 
-	@Parameter(names = { "--gb64" }, descriptionKey = "GB64")
+	@Parameter(names = { "--gb64" }, descriptionKey = "GB64", order = 5)
 	private String gb64;
 
-	@Parameter(names = { "--hvmec" }, descriptionKey = "HVMEC")
+	@Parameter(names = { "--hvmec" }, descriptionKey = "HVMEC", order = 6)
 	private String hvmec;
 
-	@Parameter(names = { "--cgsc" }, descriptionKey = "CGSC")
+	@Parameter(names = { "--cgsc" }, descriptionKey = "CGSC", order = 7)
 	private String cgsc;
 
-	@Parameter(names = { "--hvsc" }, descriptionKey = "HVSC")
+	@Parameter(names = { "--hvsc" }, descriptionKey = "HVSC", order = 8)
 	private String hvsc;
 
 	private volatile boolean ready;

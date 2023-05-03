@@ -15,7 +15,6 @@ import java.util.function.Function;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import com.beust.jcommander.Parameters;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -45,22 +44,31 @@ import ui.entities.config.service.ConfigService.ConfigurationType;
  *
  *         SID Player main class
  */
-@Parameters(resourceBundle = "ui.JSidPlay2Main")
 public class JSidPlay2Main extends Application implements Function<SidTune, String> {
 
 	static {
 		DebugUtil.init();
-		check(JSidPlay2Main.class);
+		check(JSIDPlay2MainParameters.class, false);
 	}
 
-	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true)
-	private Boolean help = Boolean.FALSE;
+	@com.beust.jcommander.Parameters(resourceBundle = "ui.JSidPlay2MainParameters")
+	public static class JSIDPlay2MainParameters {
 
-	@Parameter(names = { "--configurationType", "-c" }, descriptionKey = "CONFIGURATION_TYPE")
-	private ConfigurationType configurationType = ConfigurationType.XML;
+		@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 0)
+		private Boolean help = Boolean.FALSE;
 
-	@Parameter(description = "filename")
-	private List<String> filenames = new ArrayList<>();
+		@Parameter(names = { "--configurationType", "-c" }, descriptionKey = "CONFIGURATION_TYPE", order = 1)
+		private ConfigurationType configurationType = ConfigurationType.XML;
+
+		@Parameter(description = "filename")
+		private List<String> filenames = new ArrayList<>();
+
+	}
+
+	/**
+	 * Command line arguments
+	 */
+	private JSIDPlay2MainParameters parameters = new JSIDPlay2MainParameters();
 
 	/**
 	 * Main Window
@@ -201,13 +209,13 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 	 */
 	private Configuration getConfigurationFromCommandLineArgs() {
 		try {
-			Parameters parameters = getParameters();
-			if (parameters != null) {
-				String[] args = parameters.getRaw().toArray(new String[0]);
-				JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName())
+			Parameters javafxParameters = getParameters();
+			if (javafxParameters != null) {
+				String[] args = javafxParameters.getRaw().toArray(new String[0]);
+				JCommander commander = JCommander.newBuilder().addObject(parameters).programName(getClass().getName())
 						.build();
 				commander.parse(args);
-				if (help) {
+				if (parameters.help) {
 					commander.usage();
 					System.out.println("Press <enter> to exit!");
 					System.in.read();
@@ -226,12 +234,12 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 	 * @return the players configuration to be used
 	 */
 	private Configuration getConfiguration() {
-		configService = new ConfigService(configurationType);
+		configService = new ConfigService(parameters.configurationType);
 		return configService.load();
 	}
 
 	private void autostartFilenames() {
-		Optional<String> filename = filenames.stream().findFirst();
+		Optional<String> filename = parameters.filenames.stream().findFirst();
 		if (filename.isPresent()) {
 			try {
 				new Convenience(player).autostart(new File(filename.get()), LEXICALLY_FIRST_MEDIA, null);

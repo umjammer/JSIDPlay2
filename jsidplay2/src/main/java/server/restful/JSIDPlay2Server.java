@@ -119,7 +119,7 @@ public class JSIDPlay2Server {
 
 	static {
 		DebugUtil.init();
-		check(JSIDPlay2Server.class);
+		check(JSIDPlay2Server.class, false);
 	}
 
 	/**
