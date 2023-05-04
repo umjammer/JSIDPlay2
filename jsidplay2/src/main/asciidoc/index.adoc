@@ -59,6 +59,10 @@ Please read manual here:
 | MacOSX  | link:https://adoptium.net[https://adoptium.net^]
 |===
 
+*Note:* If you have a modern Apple computer and get trouble launching JSIDPlay2 on your machine,
+please try a Java Runtime, where JavaFX is already bundled with.
+For example link:https://bell-sw.com/pages/downloads/[https://bell-sw.com/pages/downloads/^]
+
 == Official Releases
 
 Click link:https://sourceforge.net/projects/jsidplay2/files/[here^] to download
