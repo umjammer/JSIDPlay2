@@ -169,12 +169,9 @@ public class ServletParameterHelper {
 	}
 
 	public static void check(Class<?> servletParameterClass) {
-		check(servletParameterClass, true);
-	}
-
-	public static void check(Class<?> servletParameterClass, boolean serverParameter) {
 		try {
-			ObjectMapper objectMapper = createObjectMapper(new BeanParameterChecker(serverParameter));
+			ObjectMapper objectMapper = createObjectMapper(new BeanParameterChecker(
+					servletParameterClass.getPackageName().startsWith("server.restful.servlets")));
 			objectMapper
 					.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
 							.withFieldVisibility(JsonAutoDetect.Visibility.ANY)

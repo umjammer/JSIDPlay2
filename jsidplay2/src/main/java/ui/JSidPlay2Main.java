@@ -48,7 +48,7 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 
 	static {
 		DebugUtil.init();
-		check(JSIDPlay2MainParameters.class, false);
+		check(JSIDPlay2MainParameters.class);
 	}
 
 	@com.beust.jcommander.Parameters(resourceBundle = "ui.JSidPlay2MainParameters")

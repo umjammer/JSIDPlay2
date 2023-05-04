@@ -52,7 +52,7 @@ public class FingerPrintingCreator {
 
 	static {
 		DebugUtil.init();
-		check(FingerPrintingCreator.class, false);
+		check(FingerPrintingCreator.class);
 	}
 
 	private static final TuneFileFilter TUNE_FILE_FILTER = new TuneFileFilter();

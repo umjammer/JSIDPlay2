@@ -25,7 +25,7 @@ public class SIDBlasterTool {
 
 	static {
 		DebugUtil.init();
-		check(SIDBlasterTool.class, false);
+		check(SIDBlasterTool.class);
 	}
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("ui.tools.SIDBlasterTool");

@@ -68,7 +68,7 @@ public class OnlineContent {
 
 	static {
 		DebugUtil.init();
-		check(OnlineContent.class, false);
+		check(OnlineContent.class);
 	}
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 0)

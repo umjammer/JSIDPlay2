@@ -53,7 +53,7 @@ final public class ConsolePlayer {
 
 	static {
 		DebugUtil.init();
-		check(ConsolePlayer.class, false);
+		check(ConsolePlayer.class);
 	}
 
 	private static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
