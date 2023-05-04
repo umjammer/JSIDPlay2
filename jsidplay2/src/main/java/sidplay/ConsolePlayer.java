@@ -87,10 +87,7 @@ final public class ConsolePlayer {
 	@ParametersDelegate
 	private IniConfig config = new IniConfig(true);
 
-	public ConsolePlayer() {
-	}
-
-	private ConsolePlayer(final String[] args) {
+	private void execute(final String[] args) {
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
@@ -240,7 +237,7 @@ final public class ConsolePlayer {
 	}
 
 	public static void main(final String[] args) {
-		new ConsolePlayer(args);
+		new ConsolePlayer().execute(args);
 	}
 
 }

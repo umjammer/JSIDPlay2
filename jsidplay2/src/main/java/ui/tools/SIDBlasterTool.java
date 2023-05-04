@@ -28,7 +28,7 @@ public class SIDBlasterTool {
 		check(SIDBlasterTool.class, false);
 	}
 
-	private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("ui.tools.SIDBlasterTool");
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("ui.tools.SIDBlasterTool");
 
 	private static final String PATTERN_SERIAL_NO = "[A-Z0-9]{8}";
 
@@ -51,7 +51,7 @@ public class SIDBlasterTool {
 
 	private String[] serialNumbers;
 
-	private void create(String[] args) throws Exception {
+	private void execute(String[] args) throws Exception {
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
@@ -166,7 +166,7 @@ public class SIDBlasterTool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new SIDBlasterTool().create(args);
+		new SIDBlasterTool().execute(args);
 	}
 
 }

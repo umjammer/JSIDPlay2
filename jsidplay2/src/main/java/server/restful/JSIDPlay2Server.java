@@ -224,18 +224,17 @@ public class JSIDPlay2Server {
 
 	public static synchronized JSIDPlay2Server getInstance(Configuration configuration) {
 		if (instance == null) {
-			instance = new JSIDPlay2Server(configuration);
+			instance = create(configuration);
 		}
 		return instance;
 	}
 
-	public JSIDPlay2Server() {
-	}
-
-	private JSIDPlay2Server(Configuration configuration) {
-		this.configuration = configuration;
-		this.servletUtilProperties = getServletUtilProperties();
+	private static JSIDPlay2Server create(Configuration configuration) {
+		JSIDPlay2Server result = new JSIDPlay2Server();
+		result.configuration = configuration;
+		result.servletUtilProperties = result.getServletUtilProperties();
 		Player.initializeTmpDir(configuration);
+		return result;
 	}
 
 	public synchronized void start()
