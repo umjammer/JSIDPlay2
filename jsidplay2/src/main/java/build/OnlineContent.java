@@ -100,7 +100,7 @@ public class OnlineContent {
 
 	private volatile boolean ready;
 
-	private void create(String[] args) throws Exception {
+	private void execute(String[] args) throws Exception {
 		JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 		commander.parse(Arrays.asList(args).stream().map(arg -> arg == null ? "" : arg).toArray(String[]::new));
 		if (help) {
@@ -347,7 +347,7 @@ public class OnlineContent {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new OnlineContent().create(args);
+		new OnlineContent().execute(args);
 	}
 
 }
