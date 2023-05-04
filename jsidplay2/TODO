@@ -11,7 +11,6 @@ TODO:
 - freely configurable filter definitions
 - Support of executable .command files on MACOSX
 - Maximize oscilloscope view on demand
-- Soundexpander module support (to support fmyam songs)
 - HardSID support for VICE project
 
 HTML Client app:
