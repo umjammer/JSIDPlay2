@@ -114,12 +114,39 @@ import ui.entities.config.service.ConfigService.ConfigurationType;
  * @author ken
  *
  */
-@Parameters(resourceBundle = "server.restful.JSIDPlay2Server")
 public class JSIDPlay2Server {
 
 	static {
 		DebugUtil.init();
-		check(JSIDPlay2Server.class);
+		check(JSIDPlay2ServerParameters.class);
+	}
+
+	@Parameters(resourceBundle = "server.restful.JSIDPlay2ServerParameters")
+	public static class JSIDPlay2ServerParameters {
+
+		@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
+		private Boolean help = Boolean.FALSE;
+
+		@Parameter(names = { "--whatsSIDDatabaseDriver" }, descriptionKey = "WHATSSID_DATABASE_DRIVER", order = 10001)
+		private String whatsSidDatabaseDriver;
+
+		@Parameter(names = { "--whatsSIDDatabaseUrl" }, descriptionKey = "WHATSSID_DATABASE_URL", order = 10002)
+		private String whatsSidDatabaseUrl;
+
+		@Parameter(names = {
+				"--whatsSIDDatabaseUsername" }, descriptionKey = "WHATSSID_DATABASE_USERNAME", order = 10003)
+		private String whatsSidDatabaseUsername;
+
+		@Parameter(names = {
+				"--whatsSIDDatabasePassword" }, descriptionKey = "WHATSSID_DATABASE_PASSWORD", order = 10004)
+		private String whatsSidDatabasePassword;
+
+		@Parameter(names = { "--whatsSIDDatabaseDialect" }, descriptionKey = "WHATSSID_DATABASE_DIALECT", order = 10005)
+		private String whatsSidDatabaseDialect;
+
+		@ParametersDelegate
+		private Configuration configuration;
+
 	}
 
 	/**
@@ -195,32 +222,16 @@ public class JSIDPlay2Server {
 
 	private static final ConfigurationType CONFIGURATION_TYPE = ConfigurationType.XML;
 
-	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
-	private Boolean help = Boolean.FALSE;
-
-	@Parameter(names = { "--whatsSIDDatabaseDriver" }, descriptionKey = "WHATSSID_DATABASE_DRIVER", order = 10001)
-	private String whatsSidDatabaseDriver;
-
-	@Parameter(names = { "--whatsSIDDatabaseUrl" }, descriptionKey = "WHATSSID_DATABASE_URL", order = 10002)
-	private String whatsSidDatabaseUrl;
-
-	@Parameter(names = { "--whatsSIDDatabaseUsername" }, descriptionKey = "WHATSSID_DATABASE_USERNAME", order = 10003)
-	private String whatsSidDatabaseUsername;
-
-	@Parameter(names = { "--whatsSIDDatabasePassword" }, descriptionKey = "WHATSSID_DATABASE_PASSWORD", order = 10004)
-	private String whatsSidDatabasePassword;
-
-	@Parameter(names = { "--whatsSIDDatabaseDialect" }, descriptionKey = "WHATSSID_DATABASE_DIALECT", order = 10005)
-	private String whatsSidDatabaseDialect;
-
-	@ParametersDelegate
-	private Configuration configuration;
+	private JSIDPlay2ServerParameters parameters = new JSIDPlay2ServerParameters();
 
 	private Tomcat tomcat;
 
 	private Properties servletUtilProperties;
 
 	private static JSIDPlay2Server instance;
+
+	private JSIDPlay2Server() {
+	}
 
 	public static synchronized JSIDPlay2Server getInstance(Configuration configuration) {
 		if (instance == null) {
@@ -231,7 +242,7 @@ public class JSIDPlay2Server {
 
 	private static JSIDPlay2Server create(Configuration configuration) {
 		JSIDPlay2Server result = new JSIDPlay2Server();
-		result.configuration = configuration;
+		result.parameters.configuration = configuration;
 		result.servletUtilProperties = result.getServletUtilProperties();
 		Player.initializeTmpDir(configuration);
 		return result;
@@ -282,7 +293,7 @@ public class JSIDPlay2Server {
 	private Tomcat createTomcat() throws MalformedURLException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Tomcat tomcat = new Tomcat();
-		tomcat.setBaseDir(configuration.getSidplay2Section().getTmpDir().getAbsolutePath());
+		tomcat.setBaseDir(parameters.configuration.getSidplay2Section().getTmpDir().getAbsolutePath());
 
 		setRealm(tomcat);
 		setConnectors(tomcat);
@@ -325,7 +336,7 @@ public class JSIDPlay2Server {
 	}
 
 	private void setConnectors(Tomcat tomcat) {
-		EmulationSection emulationSection = configuration.getEmulationSection();
+		EmulationSection emulationSection = parameters.configuration.getEmulationSection();
 
 		switch (emulationSection.getAppServerConnectors()) {
 		case HTTP_HTTPS: {
@@ -406,7 +417,7 @@ public class JSIDPlay2Server {
 
 		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
 			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor(Configuration.class, Properties.class)
-					.newInstance(configuration, servletUtilProperties);
+					.newInstance(parameters.configuration, servletUtilProperties);
 
 			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getURLPattern());
 
@@ -469,18 +480,20 @@ public class JSIDPlay2Server {
 	public static void main(String[] args) {
 		try {
 			JSIDPlay2Server jsidplay2Server = getInstance(new ConfigService(CONFIGURATION_TYPE).load());
-			JCommander commander = JCommander.newBuilder().addObject(jsidplay2Server)
+			JCommander commander = JCommander.newBuilder().addObject(jsidplay2Server.parameters)
 					.programName(JSIDPlay2Server.class.getName()).build();
 			commander.parse(args);
-			if (jsidplay2Server.help) {
+			if (jsidplay2Server.parameters.help) {
 				commander.usage();
 				exit(0);
 			}
-			if (jsidplay2Server.whatsSidDatabaseDriver != null) {
+			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null) {
 				entityManagerFactory = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
-						new PersistenceProperties(jsidplay2Server.whatsSidDatabaseDriver,
-								jsidplay2Server.whatsSidDatabaseUrl, jsidplay2Server.whatsSidDatabaseUsername,
-								jsidplay2Server.whatsSidDatabasePassword, jsidplay2Server.whatsSidDatabaseDialect));
+						new PersistenceProperties(jsidplay2Server.parameters.whatsSidDatabaseDriver,
+								jsidplay2Server.parameters.whatsSidDatabaseUrl,
+								jsidplay2Server.parameters.whatsSidDatabaseUsername,
+								jsidplay2Server.parameters.whatsSidDatabasePassword,
+								jsidplay2Server.parameters.whatsSidDatabaseDialect));
 			}
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException

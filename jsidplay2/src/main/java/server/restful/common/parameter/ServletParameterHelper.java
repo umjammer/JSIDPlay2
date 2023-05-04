@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import build.OnlineContent;
-import server.restful.JSIDPlay2Server;
+import server.restful.JSIDPlay2Server.JSIDPlay2ServerParameters;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
@@ -191,7 +191,7 @@ public class ServletParameterHelper {
 	}
 
 	@JsonFilter(FILTER_NAME)
-	private class JSIDPlay2ServerMixIn {
+	private class JSIDPlay2ServerParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
@@ -332,7 +332,7 @@ public class ServletParameterHelper {
 
 	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
 		return new ObjectMapper().addMixIn(OnlineContent.class, OnlineContentMixIn.class)
-				.addMixIn(JSIDPlay2Server.class, JSIDPlay2ServerMixIn.class)
+				.addMixIn(JSIDPlay2ServerParameters.class, JSIDPlay2ServerParametersMixIn.class)
 				.addMixIn(ConsolePlayer.class, ConsolePlayerMixIn.class)
 				.addMixIn(FingerPrintingCreator.class, FingerPrintingCreatorMixIn.class)
 				.addMixIn(SIDBlasterTool.class, SIDBlasterToolMixIn.class)
