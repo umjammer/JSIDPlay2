@@ -62,14 +62,14 @@ import ui.musiccollection.search.SearchIndexerThread;
 @Parameters(resourceBundle = "build.OnlineContent")
 public class OnlineContent {
 
-	private static final int MAX_ZIP_FILESIZE = 37748736;
-
-	private static final int CHUNK_SIZE = 1 << 20;
-
 	static {
 		DebugUtil.init();
 		check(OnlineContent.class);
 	}
+
+	private static final int MAX_ZIP_FILESIZE = 37748736;
+
+	private static final int CHUNK_SIZE = 1 << 20;
 
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 0)
 	private Boolean help = Boolean.FALSE;
