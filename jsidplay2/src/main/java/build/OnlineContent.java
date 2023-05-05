@@ -91,12 +91,12 @@ public class OnlineContent {
 
 	static {
 		DebugUtil.init();
+		// Parameter classes are being checked for development errors
 		check(OnlineContent.class);
-		check(JSIDPlay2ServerParameters.class);
 		check(ConvertServletParameters.class);
 		check(DirectoryServletParameters.class);
-		check(DownloadServletParameters.class);
 		check(DiskDirectoryServletParameters.class);
+		check(DownloadServletParameters.class);
 		check(PhotoServletParameters.class);
 		check(StaticServletParameters.class);
 		check(STILServletParameters.class);
@@ -115,6 +115,7 @@ public class OnlineContent {
 		check(ExSIDMappingServletParameters.class);
 		check(HardSIDMappingServletParameters.class);
 		check(SIDBlasterMappingServletParameters.class);
+		check(JSIDPlay2ServerParameters.class);
 		check(ConsolePlayer.class);
 		check(JSIDPlay2MainParameters.class);
 		check(FingerPrintingCreator.class);
