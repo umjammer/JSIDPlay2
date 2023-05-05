@@ -3,6 +3,7 @@ package server.restful.common.parameter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -78,11 +79,73 @@ public class ServletParameterHelper {
 		}
 	}
 
+	public static void check(Class<?> servletParameterClass) {
+		try {
+			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
+					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
+			ObjectMapper objectMapper = createObjectMapper(new BeanParameterChecker(
+					servletParameterClass.getPackageName().startsWith("server.restful.servlets")));
+			objectMapper
+					.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
+							.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+							.withGetterVisibility(JsonAutoDetect.Visibility.ANY)
+							.withSetterVisibility(JsonAutoDetect.Visibility.ANY)
+							.withCreatorVisibility(JsonAutoDetect.Visibility.NONE))
+					.writerWithDefaultPrettyPrinter()
+					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
+		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+
+	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
+		return new ObjectMapper().addMixIn(OnlineContent.class, OnlineContentMixIn.class)
+				.addMixIn(JSIDPlay2ServerParameters.class, JSIDPlay2ServerParametersMixIn.class)
+				.addMixIn(ConsolePlayer.class, ConsolePlayerMixIn.class)
+				.addMixIn(FingerPrintingCreator.class, FingerPrintingCreatorMixIn.class)
+				.addMixIn(SIDBlasterTool.class, SIDBlasterToolMixIn.class)
+				.addMixIn(JSIDPlay2MainParameters.class, JSIDPlay2MainParametersMixIn.class)
+				.addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
+				.addMixIn(DiskDirectoryServlet.class, DiskDirectoryServletParametersMixIn.class)
+				.addMixIn(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class)
+				.addMixIn(PhotoServletParameters.class, PhotoServletParametersMixIn.class)
+				.addMixIn(ConvertServletParameters.class, ConvertServletParametersMixIn.class)
+				.addMixIn(DownloadServletParameters.class, DownloadServletParametersMixIn.class)
+				.addMixIn(OnKeepAliveServletParameters.class, OnKeepAliveServletParametersMixIn.class)
+				.addMixIn(OnPlayDoneServletParameters.class, OnPlayDoneServletParametersMixIn.class)
+				.addMixIn(OnPlayServletParameters.class, OnPlayServletParametersMixIn.class)
+				.addMixIn(InsertNextDiskServletParameters.class, InsertNextDiskServletParametersMixIn.class)
+				.addMixIn(SetSidModel6581ServletParameters.class, SetSidModel6581ServletParametersMixIn.class)
+				.addMixIn(SetSidModel8580ServletParameters.class, SetSidModel8580ServletParametersMixIn.class)
+				.addMixIn(SetDefaultEmulationReSidServletParameters.class,
+						SetDefaultEmulationReSidServletParametersMixIn.class)
+				.addMixIn(SetDefaultEmulationReSidFpServletParameters.class,
+						SetDefaultEmulationReSidFpServletParametersMixIn.class)
+				.addMixIn(PressKeyServletParameters.class, PressKeyServletParametersMixIn.class)
+				.addMixIn(JoystickServletParameters.class, JoystickServletParametersMixIn.class)
+				.addMixIn(ProxyServletParameters.class, ProxyServletParametersMixIn.class)
+				.addMixIn(STILServletParameters.class, STILServletParametersMixIn.class)
+				.addMixIn(HardSIDMappingServletParameters.class, HardSIDMappingServletParametersMixIn.class)
+				.addMixIn(ExSIDMappingServletParameters.class, ExSIDMappingServletParametersMixIn.class)
+				.addMixIn(SIDBlasterMappingServletParameters.class, SIDBlasterMappingServletParametersMixIn.class)
+				.addMixIn(IniConfig.class, IniConfigMixIn.class)
+				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
+				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)
+				.addMixIn(IniEmulationSection.class, IniEmulationSectionMixIn.class)
+				.addMixIn(IniC1541Section.class, IniC1541SectionMixIn.class)
+				.addMixIn(IniPrinterSection.class, IniPrinterSectionMixIn.class)
+				.addMixIn(IniConsoleSection.class, IniConsoleSectionMixIn.class)
+				.addMixIn(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class)
+				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class)
+				.setFilterProvider(new SimpleFilterProvider().addFilter(FILTER_NAME, filter));
+	}
+
 	private static final class BeanParameterLocalizer extends SimpleBeanPropertyFilter {
 
 		private final Locale locale;
 
-		public BeanParameterLocalizer(Locale locale) {
+		private BeanParameterLocalizer(Locale locale) {
 			this.locale = locale;
 		}
 
@@ -108,7 +171,7 @@ public class ServletParameterHelper {
 
 		private boolean serverParameter;
 
-		public BeanParameterChecker(boolean serverParameter) {
+		private BeanParameterChecker(boolean serverParameter) {
 			this.serverParameter = serverParameter;
 		}
 
@@ -166,24 +229,6 @@ public class ServletParameterHelper {
 			}
 		}
 
-	}
-
-	public static void check(Class<?> servletParameterClass) {
-		try {
-			ObjectMapper objectMapper = createObjectMapper(new BeanParameterChecker(
-					servletParameterClass.getPackageName().startsWith("server.restful.servlets")));
-			objectMapper
-					.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
-							.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-							.withGetterVisibility(JsonAutoDetect.Visibility.ANY)
-							.withSetterVisibility(JsonAutoDetect.Visibility.ANY)
-							.withCreatorVisibility(JsonAutoDetect.Visibility.NONE))
-					.writerWithDefaultPrettyPrinter()
-					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
-		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			throw new ExceptionInInitializerError(e);
-		}
 	}
 
 	@JsonFilter(FILTER_NAME)
@@ -328,48 +373,6 @@ public class ServletParameterHelper {
 
 	@JsonFilter(FILTER_NAME)
 	private class IniFilterSectionMixIn {
-	}
-
-	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
-		return new ObjectMapper().addMixIn(OnlineContent.class, OnlineContentMixIn.class)
-				.addMixIn(JSIDPlay2ServerParameters.class, JSIDPlay2ServerParametersMixIn.class)
-				.addMixIn(ConsolePlayer.class, ConsolePlayerMixIn.class)
-				.addMixIn(FingerPrintingCreator.class, FingerPrintingCreatorMixIn.class)
-				.addMixIn(SIDBlasterTool.class, SIDBlasterToolMixIn.class)
-				.addMixIn(JSIDPlay2MainParameters.class, JSIDPlay2MainParametersMixIn.class)
-				.addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
-				.addMixIn(DiskDirectoryServlet.class, DiskDirectoryServletParametersMixIn.class)
-				.addMixIn(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class)
-				.addMixIn(PhotoServletParameters.class, PhotoServletParametersMixIn.class)
-				.addMixIn(ConvertServletParameters.class, ConvertServletParametersMixIn.class)
-				.addMixIn(DownloadServletParameters.class, DownloadServletParametersMixIn.class)
-				.addMixIn(OnKeepAliveServletParameters.class, OnKeepAliveServletParametersMixIn.class)
-				.addMixIn(OnPlayDoneServletParameters.class, OnPlayDoneServletParametersMixIn.class)
-				.addMixIn(OnPlayServletParameters.class, OnPlayServletParametersMixIn.class)
-				.addMixIn(InsertNextDiskServletParameters.class, InsertNextDiskServletParametersMixIn.class)
-				.addMixIn(SetSidModel6581ServletParameters.class, SetSidModel6581ServletParametersMixIn.class)
-				.addMixIn(SetSidModel8580ServletParameters.class, SetSidModel8580ServletParametersMixIn.class)
-				.addMixIn(SetDefaultEmulationReSidServletParameters.class,
-						SetDefaultEmulationReSidServletParametersMixIn.class)
-				.addMixIn(SetDefaultEmulationReSidFpServletParameters.class,
-						SetDefaultEmulationReSidFpServletParametersMixIn.class)
-				.addMixIn(PressKeyServletParameters.class, PressKeyServletParametersMixIn.class)
-				.addMixIn(JoystickServletParameters.class, JoystickServletParametersMixIn.class)
-				.addMixIn(ProxyServletParameters.class, ProxyServletParametersMixIn.class)
-				.addMixIn(STILServletParameters.class, STILServletParametersMixIn.class)
-				.addMixIn(HardSIDMappingServletParameters.class, HardSIDMappingServletParametersMixIn.class)
-				.addMixIn(ExSIDMappingServletParameters.class, ExSIDMappingServletParametersMixIn.class)
-				.addMixIn(SIDBlasterMappingServletParameters.class, SIDBlasterMappingServletParametersMixIn.class)
-				.addMixIn(IniConfig.class, IniConfigMixIn.class)
-				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
-				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)
-				.addMixIn(IniEmulationSection.class, IniEmulationSectionMixIn.class)
-				.addMixIn(IniC1541Section.class, IniC1541SectionMixIn.class)
-				.addMixIn(IniPrinterSection.class, IniPrinterSectionMixIn.class)
-				.addMixIn(IniConsoleSection.class, IniConsoleSectionMixIn.class)
-				.addMixIn(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class)
-				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class)
-				.setFilterProvider(new SimpleFilterProvider().addFilter(FILTER_NAME, filter));
 	}
 
 }
