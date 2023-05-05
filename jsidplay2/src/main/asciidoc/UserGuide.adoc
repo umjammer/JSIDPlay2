@@ -58,6 +58,7 @@ link:https://www.6581-8580.com[https://www.6581-8580.com^]
 | Zaxxon
 | GeoRAM (64kb, 128kb, 256kb, 512kb, 1024kb, 2048kb and 2048kb)
 | REU (1700: 128 kB, 1750: 512 kB, 1764: 256 kB, 1750 XL: 2 MB and 16 MB which was never produced)
+| SFX Sound Expander [FM-YAM alike] (OPL1: YM3526 and OPL2: YM3812)
 
 |===
 
@@ -85,6 +86,8 @@ Sound output can be recorded optionally as:
 * AVI video (lossless)
 * MP4 video (lossy)
 * FLV video (lossy)
+* SID dump format (note sheet as CSV)
+* SID registers (register writes and timing as CSV )
 
 == Supported Devices
 
@@ -415,18 +418,20 @@ The devices cartridge menu is the interface to the various multi-purpose cartrid
 
 | Devices/Cartridge/Insert Cartridge... | Insert a multi-purpose cartridge. The cartridge type will be auto-detected by reading the cartridge header.
 | Devices/Cartridge/GeoRAM/Insert GeoRAM... | Insert a RAM expansion cartridge GeoRAM. The RAM size is determined by the cartridge contents.
-| Devices/Cartridge/GeoRAM/Insert GeoRAM (64KB) | Insert a RAM expansion cartridge GeoRAM of 64Kb size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert GeoRAM (128KB) | Insert a RAM expansion cartridge GeoRAM of 128KB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert GeoRAM (256KB) | Insert a RAM expansion cartridge GeoRAM of 256KB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert GeoRAM (512KB) | Insert a RAM expansion cartridge GeoRAM of 512KB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert GeoRAM (1024KB) | Insert a RAM expansion cartridge GeoRAM of 1024KB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert GeoRAM (2048KB) | Insert a RAM expansion cartridge GeoRAM of 2048KB size with empty contents.
+| Devices/Cartridge/GeoRAM/GeoRAM (64KB) | Insert a RAM expansion cartridge GeoRAM of 64Kb size with empty contents.
+| Devices/Cartridge/GeoRAM/GeoRAM (128KB) | Insert a RAM expansion cartridge GeoRAM of 128KB size with empty contents.
+| Devices/Cartridge/GeoRAM/GeoRAM (256KB) | Insert a RAM expansion cartridge GeoRAM of 256KB size with empty contents.
+| Devices/Cartridge/GeoRAM/GeoRAM (512KB) | Insert a RAM expansion cartridge GeoRAM of 512KB size with empty contents.
+| Devices/Cartridge/GeoRAM/GeoRAM (1024KB) | Insert a RAM expansion cartridge GeoRAM of 1024KB size with empty contents.
+| Devices/Cartridge/GeoRAM/GeoRAM (2048KB) | Insert a RAM expansion cartridge GeoRAM of 2048KB size with empty contents.
 | Devices/Cartridge/GeoRAM/Insert REU... | Insert a RAM expansion cartridge REU. The RAM size is determined by the cartridge contents.
-| Devices/Cartridge/GeoRAM/Insert REU (128KB) | Insert a RAM expansion cartridge REU of 128KB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert REU (256KB) | Insert a RAM expansion cartridge REU of 256KB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert REU (512KB) | Insert a RAM expansion cartridge REU of 512KB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert REU (2MB) | Insert a RAM expansion cartridge REU of 2MB size with empty contents.
-| Devices/Cartridge/GeoRAM/Insert REU (16MB) | Insert a RAM expansion cartridge REU of 16MB size with empty contents. This REU size has never been manufactured, but is very popular in the scene.
+| Devices/Cartridge/GeoRAM/REU 1700 (128KB) | Insert a RAM expansion cartridge REU of 128KB size with empty contents.
+| Devices/Cartridge/GeoRAM/REU 1750 (512KB) | Insert a RAM expansion cartridge REU of 512KB size with empty contents.
+| Devices/Cartridge/GeoRAM/REU 1764 (256KB) | Insert a RAM expansion cartridge REU of 256KB size with empty contents.
+| Devices/Cartridge/GeoRAM/REU 1750 XL (2MB) | Insert a RAM expansion cartridge REU of 2MB size with empty contents.
+| Devices/Cartridge/GeoRAM/REU (16MB) | Insert a RAM expansion cartridge REU of 16MB size with empty contents. This REU size has never been manufactured, but is very popular in the scene.
+| Devices/Cartridge/SFX Sound Expander [FM-YAM alike]/SFX Sound Expander (OPL1: YM3526) | Insert Sound Expander Module with OPL1
+| Devices/Cartridge/SFX Sound Expander [FM-YAM alike]/SFX Sound Expander (OPL2: YM3812) | Insert Sound Expander Module with OPL2
 | Devices/Cartridge/Action Replay V6.0 | Insert multi-purpose cartridge Action Replay V6.0
 | Devices/Cartridge/Eject Cartridge | Disconnect multi-purpose cartridge from C64
 | Devices/Cartridge/Freeze | Press the freeze button on the multi-purpose cartridge
