@@ -41,9 +41,34 @@ import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import net.java.truevfs.access.TFileInputStream;
 import net.java.truevfs.access.TVFS;
+import server.restful.JSIDPlay2Server.JSIDPlay2ServerParameters;
+import server.restful.servlets.ConvertServlet.ConvertServletParameters;
+import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
+import server.restful.servlets.DiskDirectoryServlet.DiskDirectoryServletParameters;
+import server.restful.servlets.DownloadServlet.DownloadServletParameters;
+import server.restful.servlets.PhotoServlet.PhotoServletParameters;
+import server.restful.servlets.STILServlet.STILServletParameters;
+import server.restful.servlets.StaticServlet.StaticServletParameters;
+import server.restful.servlets.TuneInfoServlet.TuneInfoServletParameters;
+import server.restful.servlets.hls.OnKeepAliveServlet.OnKeepAliveServletParameters;
+import server.restful.servlets.hls.ProxyServlet.ProxyServletParameters;
+import server.restful.servlets.rtmp.InsertNextDiskServlet.InsertNextDiskServletParameters;
+import server.restful.servlets.rtmp.JoystickServlet.JoystickServletParameters;
+import server.restful.servlets.rtmp.OnPlayDoneServlet.OnPlayDoneServletParameters;
+import server.restful.servlets.rtmp.OnPlayServlet.OnPlayServletParameters;
+import server.restful.servlets.rtmp.PressKeyServlet.PressKeyServletParameters;
+import server.restful.servlets.rtmp.SetDefaultEmulationReSidFpServlet.SetDefaultEmulationReSidFpServletParameters;
+import server.restful.servlets.rtmp.SetDefaultEmulationReSidServlet.SetDefaultEmulationReSidServletParameters;
+import server.restful.servlets.rtmp.SetSidModel6581Servlet.SetSidModel6581ServletParameters;
+import server.restful.servlets.rtmp.SetSidModel8580Servlet.SetSidModel8580ServletParameters;
+import server.restful.servlets.sidmapping.ExSIDMappingServlet.ExSIDMappingServletParameters;
+import server.restful.servlets.sidmapping.HardSIDMappingServlet.HardSIDMappingServletParameters;
+import server.restful.servlets.sidmapping.SIDBlasterMappingServlet.SIDBlasterMappingServletParameters;
+import sidplay.ConsolePlayer;
 import sidplay.Player;
 import sidplay.ini.IniDefaults;
 import sidplay.player.DebugUtil;
+import ui.JSidPlay2Main.JSIDPlay2MainParameters;
 import ui.common.download.DownloadThread;
 import ui.common.util.Extract7ZipUtil;
 import ui.entities.DatabaseType;
@@ -51,6 +76,8 @@ import ui.entities.PersistenceProperties;
 import ui.musiccollection.MusicCollectionType;
 import ui.musiccollection.search.SearchIndexCreator;
 import ui.musiccollection.search.SearchIndexerThread;
+import ui.tools.FingerPrintingCreator;
+import ui.tools.SIDBlasterTool;
 
 /**
  * Helper class to create all the optional downloadable content of our
@@ -65,6 +92,33 @@ public class OnlineContent {
 	static {
 		DebugUtil.init();
 		check(OnlineContent.class);
+		check(JSIDPlay2ServerParameters.class);
+		check(ConvertServletParameters.class);
+		check(DirectoryServletParameters.class);
+		check(DownloadServletParameters.class);
+		check(DiskDirectoryServletParameters.class);
+		check(PhotoServletParameters.class);
+		check(StaticServletParameters.class);
+		check(STILServletParameters.class);
+		check(TuneInfoServletParameters.class);
+		check(OnKeepAliveServletParameters.class);
+		check(ProxyServletParameters.class);
+		check(InsertNextDiskServletParameters.class);
+		check(JoystickServletParameters.class);
+		check(OnPlayDoneServletParameters.class);
+		check(OnPlayServletParameters.class);
+		check(PressKeyServletParameters.class);
+		check(SetDefaultEmulationReSidFpServletParameters.class);
+		check(SetDefaultEmulationReSidServletParameters.class);
+		check(SetSidModel6581ServletParameters.class);
+		check(SetSidModel8580ServletParameters.class);
+		check(ExSIDMappingServletParameters.class);
+		check(HardSIDMappingServletParameters.class);
+		check(SIDBlasterMappingServletParameters.class);
+		check(ConsolePlayer.class);
+		check(JSIDPlay2MainParameters.class);
+		check(FingerPrintingCreator.class);
+		check(SIDBlasterTool.class);
 	}
 
 	private static final int MAX_ZIP_FILESIZE = 37748736;

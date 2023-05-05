@@ -4,7 +4,6 @@ import static libsidplay.components.pla.PLA.MAX_SIDS;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +31,6 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class ExSIDMappingServlet extends JSIDPlay2Servlet {
-
-	static {
-		check(ExSIDMappingServletParameters.class);
-	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.sidmapping.ExSIDMappingServletParameters")
 	public static class ExSIDMappingServletParameters extends FileRequestPathServletParameters {

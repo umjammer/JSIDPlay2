@@ -7,7 +7,6 @@ import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISP
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
-import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +26,6 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DownloadServlet extends JSIDPlay2Servlet {
-
-	static {
-		check(DownloadServletParameters.class);
-	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.DownloadServletParameters")
 	public static class DownloadServletParameters extends FileRequestPathServletParameters {

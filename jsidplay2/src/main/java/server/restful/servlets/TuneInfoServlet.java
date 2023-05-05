@@ -4,7 +4,6 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static server.restful.common.parameter.ServletParameterHelper.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,10 +35,6 @@ import ui.musiccollection.SearchCriteria;
 
 @SuppressWarnings("serial")
 public class TuneInfoServlet extends JSIDPlay2Servlet {
-
-	static {
-		check(TuneInfoServletParameters.class);
-	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.TuneInfoServletParameters")
 	public static class TuneInfoServletParameters extends FileRequestPathServletParameters {

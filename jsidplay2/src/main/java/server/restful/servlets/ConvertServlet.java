@@ -34,7 +34,6 @@ import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
-import static server.restful.common.parameter.ServletParameterHelper.check;
 import static sidplay.audio.Audio.AAC;
 import static sidplay.audio.Audio.AVI;
 import static sidplay.audio.Audio.FLAC;
@@ -111,10 +110,6 @@ import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class ConvertServlet extends JSIDPlay2Servlet {
-
-	static {
-		check(ConvertServletParameters.class);
-	}
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ConvertServletParameters extends FileRequestPathServletParameters {

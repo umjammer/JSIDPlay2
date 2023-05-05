@@ -1,7 +1,5 @@
 package ui.tools;
 
-import static server.restful.common.parameter.ServletParameterHelper.check;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -52,7 +50,6 @@ public class FingerPrintingCreator {
 
 	static {
 		DebugUtil.init();
-		check(FingerPrintingCreator.class);
 	}
 
 	private static final TuneFileFilter TUNE_FILE_FILTER = new TuneFileFilter();
