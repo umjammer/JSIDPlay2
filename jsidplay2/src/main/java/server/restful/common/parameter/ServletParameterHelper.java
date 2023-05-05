@@ -84,7 +84,7 @@ public class ServletParameterHelper {
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
 			ObjectMapper objectMapper = createObjectMapper(new BeanParameterChecker(
-					servletParameterClass.getPackageName().startsWith("server.restful.servlets")));
+					servletParameterClass.getPackage().getName().startsWith("server.restful.servlets")));
 			objectMapper
 					.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
 							.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
@@ -151,7 +151,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-				throws Exception {
+			throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
@@ -177,7 +177,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-				throws Exception {
+			throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
