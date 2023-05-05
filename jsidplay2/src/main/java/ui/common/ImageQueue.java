@@ -37,7 +37,7 @@ public final class ImageQueue<T> {
 		if (disposed) {
 			return;
 		}
-		// prevent overflow, replace first frame
+		// prevent overflow, remove first frame
 		if (size == MAX_QUEUE_SIZE) {
 			head = head.next;
 			size--;

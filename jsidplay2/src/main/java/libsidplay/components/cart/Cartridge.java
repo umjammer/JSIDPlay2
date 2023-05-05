@@ -333,7 +333,7 @@ public class Cartridge {
 	}
 
 	/**
-	 * Set ampler to mix cartridge sound samples into the audio buffer
+	 * Set sampler to put cartridge sound samples into the mix
 	 * 
 	 * @param sampler
 	 */
