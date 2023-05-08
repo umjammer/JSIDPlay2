@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -83,14 +84,8 @@ public class ServletParameterHelper {
 		try {
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
-			ObjectMapper objectMapper = createObjectMapper(new BeanParameterChecker(
-					servletParameterClass.getPackage().getName().startsWith("server.restful.servlets")));
-			objectMapper
-					.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
-							.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-							.withGetterVisibility(JsonAutoDetect.Visibility.ANY)
-							.withSetterVisibility(JsonAutoDetect.Visibility.ANY)
-							.withCreatorVisibility(JsonAutoDetect.Visibility.NONE))
+			createObjectMapper(new BeanParameterChecker(
+					servletParameterClass.getPackage().getName().startsWith("server.restful.servlets")))
 					.writerWithDefaultPrettyPrinter()
 					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
 		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -151,7 +146,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-			throws Exception {
+				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
@@ -177,7 +172,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-			throws Exception {
+				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
@@ -232,146 +227,182 @@ public class ServletParameterHelper {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class OnlineContentMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class JSIDPlay2ServerParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class ConsolePlayerMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class FingerPrintingCreatorMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class SIDBlasterToolMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class JSIDPlay2MainParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class DirectoryServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class DiskDirectoryServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class TuneInfoServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class PhotoServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class ConvertServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class DownloadServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class OnKeepAliveServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class OnPlayDoneServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class OnPlayServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class InsertNextDiskServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class SetSidModel6581ServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class SetSidModel8580ServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class SetDefaultEmulationReSidServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class SetDefaultEmulationReSidFpServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class PressKeyServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class JoystickServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class ProxyServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class STILServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class HardSIDMappingServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class ExSIDMappingServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class SIDBlasterMappingServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniConfigMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniSidplay2SectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniAudioSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniEmulationSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniC1541SectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniPrinterSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniConsoleSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniWhatsSidSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 	private class IniFilterSectionMixIn {
 	}
 
