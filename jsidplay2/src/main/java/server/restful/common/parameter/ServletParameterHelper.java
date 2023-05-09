@@ -27,7 +27,7 @@ import server.restful.JSIDPlay2Server.JSIDPlay2ServerParameters;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
-import server.restful.servlets.DiskDirectoryServlet;
+import server.restful.servlets.DiskDirectoryServlet.DiskDirectoryServletParameters;
 import server.restful.servlets.DownloadServlet.DownloadServletParameters;
 import server.restful.servlets.PhotoServlet.PhotoServletParameters;
 import server.restful.servlets.STILServlet.STILServletParameters;
@@ -102,7 +102,7 @@ public class ServletParameterHelper {
 				.addMixIn(SIDBlasterTool.class, SIDBlasterToolMixIn.class)
 				.addMixIn(JSIDPlay2MainParameters.class, JSIDPlay2MainParametersMixIn.class)
 				.addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
-				.addMixIn(DiskDirectoryServlet.class, DiskDirectoryServletParametersMixIn.class)
+				.addMixIn(DiskDirectoryServletParameters.class, DiskDirectoryServletParametersMixIn.class)
 				.addMixIn(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class)
 				.addMixIn(PhotoServletParameters.class, PhotoServletParametersMixIn.class)
 				.addMixIn(ConvertServletParameters.class, ConvertServletParametersMixIn.class)
@@ -149,7 +149,7 @@ public class ServletParameterHelper {
 				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
-			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
+			if (parameters != null && parameter != null) {
 				ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
 				jgen.writeStringField(writer.getName(), resBundle.getString(parameter.descriptionKey()));
 			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
@@ -175,7 +175,7 @@ public class ServletParameterHelper {
 				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
-			if (parameters != null && parameter != null && parameter.descriptionKey() != null) {
+			if (parameters != null && parameter != null) {
 				for (String name : parameter.names()) {
 					// check parameter name length
 					if (name.startsWith("--")) {
