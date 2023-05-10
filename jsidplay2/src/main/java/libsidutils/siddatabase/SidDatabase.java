@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 import libsidplay.sidtune.MD5Method;
@@ -62,7 +64,9 @@ public class SidDatabase {
 		for (int songNum = 1; songNum <= tune.getInfo().getSongs(); songNum++) {
 			length += getLength(md5, songNum);
 		}
-		return length;
+		BigDecimal bd = BigDecimal.valueOf(length);
+		bd = bd.setScale(3, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 
 	/**

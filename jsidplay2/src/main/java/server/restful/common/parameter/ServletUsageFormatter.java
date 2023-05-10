@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
@@ -86,7 +87,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			}
 
 			List<ParameterDescription> arguments = commander.getFields().values().stream()
-					.filter(pd -> !pd.getParameter().hidden() && (pd.getParameterized().getType() != boolean.class
+					.filter(pd -> !pd.getParameter().hidden() && (Stream.of(Boolean.class, boolean.class)
+							.noneMatch(pd.getParameterized().getType()::equals)
 							|| pd.getParameterized().getParameter().arity() == 1))
 					.sorted(commander.getParameterDescriptionComparator()).collect(Collectors.toList());
 

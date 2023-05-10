@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toList;
 import static libsidplay.sidtune.SidTune.RESET;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -275,7 +277,9 @@ public class HVSCEntry {
 	}
 
 	public void setTuneLength(Double tuneLength) {
-		this.tuneLength = tuneLength;
+		BigDecimal bd = BigDecimal.valueOf(tuneLength);
+		bd = bd.setScale(3, RoundingMode.HALF_UP);
+		this.tuneLength = bd.doubleValue();
 	}
 
 	private String audio;
