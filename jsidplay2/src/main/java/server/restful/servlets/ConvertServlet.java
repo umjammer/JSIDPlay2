@@ -7,6 +7,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
+import static libsidplay.config.IAudioSystemProperties.MAX_TIME_GAP;
 import static libsidutils.PathUtils.getFilenameSuffix;
 import static libsidutils.PathUtils.getFilenameWithoutSuffix;
 import static libsidutils.ZipFileUtils.convertStreamToString;
@@ -531,6 +532,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put("$hlsScript", servletParameters.getHlsType().getScript());
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
+		result.put("$maxTimeGap", String.valueOf(MAX_TIME_GAP));
 		result.put("$filename", file.getName());
 		return result;
 	}

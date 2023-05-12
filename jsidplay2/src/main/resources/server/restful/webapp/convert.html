@@ -338,6 +338,15 @@
 							this.msg = "";
 						}, 500);
 					},
+					fastForward: function () {
+						if ("$hlsType" === "VIDEO_JS") {
+							var video = videojs("video-container");
+							video.currentTime(video.currentTime() + $maxTimeGap);
+						} else if ("$hlsType" === "HLS_JS") {
+							var video = document.getElementById("video-container");
+							video.currentTime += $maxTimeGap;
+						}
+					},
 					toggleKey: function (element, key) {
 						this.shiftPressed ^= true;
 						if (this.shiftPressed) {
@@ -355,6 +364,7 @@
 								password: this.password,
 							},
 						}).then((response) => {});
+						this.fastForward();
 					},
 					pressKey: function (key) {
 						axios({
@@ -365,6 +375,7 @@
 								password: this.password,
 							},
 						}).then((response) => {});
+						this.fastForward();
 					},
 					releaseKey: function (key) {
 						axios({
@@ -375,6 +386,7 @@
 								password: this.password,
 							},
 						}).then((response) => {});
+						this.fastForward();
 					},
 					insertDisk: function () {
 						axios({
@@ -389,6 +401,7 @@
 							//document.getElementsByClassName("my-filename")[0].innerHTML = result;
 							this.printMsg(this.$i18n.t("nextDiskDone"));
 						});
+						this.fastForward();
 					},
 					setDefaultSidModel6581: function () {
 						axios({
@@ -402,6 +415,7 @@
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultSidModel6581Done"));
 						});
+						this.fastForward();
 					},
 					setDefaultSidModel8580: function () {
 						axios({
@@ -415,6 +429,7 @@
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultSidModel8580Done"));
 						});
+						this.fastForward();
 					},
 					setDefaultEmulationReSid: function () {
 						axios({
@@ -428,6 +443,7 @@
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultEmulationResidDone"));
 						});
+						this.fastForward();
 					},
 					setDefaultEmulationReSidFp: function () {
 						axios({
@@ -441,6 +457,7 @@
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultEmulationResidFpDone"));
 						});
+						this.fastForward();
 					},
 					setJoyBtn: function (number, value) {
 						axios({
@@ -454,6 +471,7 @@
 							let result = response.data;
 							this.printMsg(this.$i18n.t("joyBtnDone"));
 						});
+						this.fastForward();
 					},
 				},
 				created: function () {
