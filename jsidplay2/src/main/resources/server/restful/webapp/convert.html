@@ -344,7 +344,7 @@
 							video.currentTime(video.currentTime() + $maxTimeGap);
 						} else if ("$hlsType" === "HLS_JS") {
 							var video = document.getElementById("video-container");
-							video.currentTime += $maxTimeGap;
+							video.currentTime = video.duration;
 						}
 					},
 					toggleKey: function (element, key) {
