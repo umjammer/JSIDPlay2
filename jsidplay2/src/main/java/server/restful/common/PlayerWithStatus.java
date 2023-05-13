@@ -223,7 +223,7 @@ public final class PlayerWithStatus {
 								public void event() throws InterruptedException {
 									player.getC64().getKeyboard().keyReleased(SPACE);
 								}
-							}, (long) (player.getC64().getClock().getCpuFrequency()));
+							}, player.getC64().getClock().getCyclesPerFrame() << 2);
 
 							player.getC64().getEventScheduler().schedule(this,
 									pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
