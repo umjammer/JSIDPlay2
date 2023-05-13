@@ -268,7 +268,7 @@
 				</b-card>
 			</b-collapse>
 
-			<h3>{{ $t("regardingTimeoutsHeader") }}</h3>
+			<h3>{{ $t("infosHeader") }}</h3>
 			<ul>
 				<li v-if="!hls">{{ $t("regardingTimeoutsTip1") }}</li>
 				<li v-if="!hls">{{ $t("regardingTimeoutsTip2") }}</li>
@@ -304,7 +304,7 @@
 					keyboard: "Keyboard",
 					insertNextDisk: "Next Disk",
 					mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
-					regardingTimeoutsHeader: "Timeouts",
+					infosHeader: "Infos",
 					regardingTimeoutsTip1:
 						"Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.",
 					regardingTimeoutsTip2:
@@ -323,9 +323,9 @@
 					keyboard: "Tastatur",
 					insertNextDisk: "N\u00e4chste Disk",
 					mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
-					regardingTimeoutsHeader: "Timeouts",
+					infosHeader: "Informationen",
 					regardingTimeoutsTip1:
-						"Starte das Video innerhalb von $notYetPlayedTimeout Sekunden oder das Video wird beendet, ist das der Fall, m\u00fcssen sie f\u00fcr einen neuen Versuch neu laden.",
+						"Starte das Video innerhalb von $notYetPlayedTimeout Sekunden oder das Video wird beendet, ist das der Fall, m\u00fcssen sie f\u00fcr einen neuen Versuch die Seite neu laden.",
 					regardingTimeoutsTip2:
 						"Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
 					regardingTimeoutsTip3: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
@@ -465,9 +465,9 @@
 						}).then((response) => {
 						    playClick();
 							let result = response.data;
-							//document.getElementsByClassName("my-filename")[0].innerHTML = result;
 							this.printMsg(this.$i18n.t("nextDiskDone"));
-							//this.fastForward();
+							// commented out in favor of fluid playback:
+							// this.fastForward();
 						});
 					},
 					setDefaultSidModel6581: function () {
