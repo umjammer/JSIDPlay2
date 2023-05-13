@@ -411,7 +411,7 @@
 								username: this.username,
 								password: this.password,
 							},
-						}).then((response) => { this.fastForward(); });
+						}).then((response) => { playClick(); this.fastForward(); });
 					},
 					pressKey: function (key) {
 						axios({
@@ -442,6 +442,7 @@
 								password: this.password,
 							},
 						}).then((response) => {
+						    playClick();
 							let result = response.data;
 							//document.getElementsByClassName("my-filename")[0].innerHTML = result;
 							this.printMsg(this.$i18n.t("nextDiskDone"));
@@ -457,6 +458,7 @@
 								password: this.password,
 							},
 						}).then((response) => {
+						    playClick();
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultSidModel6581Done"));
 							this.fastForward();
@@ -471,6 +473,7 @@
 								password: this.password,
 							},
 						}).then((response) => {
+						    playClick();
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultSidModel8580Done"));
 							this.fastForward();
@@ -485,6 +488,7 @@
 								password: this.password,
 							},
 						}).then((response) => {
+						    playClick();
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultEmulationResidDone"));
 							this.fastForward();
@@ -499,6 +503,7 @@
 								password: this.password,
 							},
 						}).then((response) => {
+						    playClick();
 							let result = response.data;
 							this.printMsg(this.$i18n.t("defaultEmulationResidFpDone"));
 							this.fastForward();
@@ -513,6 +518,7 @@
 								password: this.password,
 							},
 						}).then((response) => {
+						    playClick();
 							let result = response.data;
 							this.printMsg(this.$i18n.t("joyBtnDone"));
 							this.fastForward();
@@ -610,6 +616,11 @@
 					}
 				},
 			});
+			function playClick() {
+			    const audio = new Audio();
+				audio.src = "/static/audio/click.mp3";
+				audio.play();
+			}
 		</script>
 	</body>
 </html>
