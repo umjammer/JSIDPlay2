@@ -32,6 +32,13 @@
 	</head>
 	<body>
 		<div id="app">
+
+			<div
+				style="margin-top: 20px;"
+				v-if="!hls"
+			>
+			</div>
+
 			<div class="left-button-container">
 				<div class="button-container">
 					<b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm"
@@ -96,6 +103,13 @@
 					I'm sorry. Your browser doesn't support HTML5 video
 				</video>
 			</div>
+			
+			<div
+				style="width: 320px; height: 200px"
+				v-if="!hls"
+			>
+			</div>
+			
 			<div class="video-bar">
 				<b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right">{{
 					$t("barcode")
