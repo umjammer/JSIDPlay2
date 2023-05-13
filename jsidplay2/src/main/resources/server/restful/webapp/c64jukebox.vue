@@ -3301,6 +3301,7 @@
 						if (confirm(this.$i18n.t("setDefaultReally"))) {
 							this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
 							this.convertOptions.useHls = true;
+							this.convertOptions.sfxSoundExpander = true;
 							this.convertOptions.config.sidplay2Section.single = true;
 							this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
 							this.convertOptions.config.audioSection.reverbBypass = false;
@@ -3310,6 +3311,7 @@
 							this.convertOptions.config.audioSection.secondDelay = 10;
 							this.convertOptions.config.audioSection.sampling = "RESAMPLE";
 							this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
+							this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
 							this.mobileProfile();
 						}
 					},
@@ -4006,6 +4008,7 @@
 					} else {
 						// initialize configuration (if they differ from the default settings)
 						this.convertOptions.useHls = true;
+						this.convertOptions.sfxSoundExpander = true;
 						this.convertOptions.config.sidplay2Section.single = true;
 						this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
 						this.convertOptions.config.audioSection.reverbBypass = false;
@@ -4015,6 +4018,7 @@
 						this.convertOptions.config.audioSection.secondDelay = 10;
 						this.convertOptions.config.audioSection.sampling = "RESAMPLE";
 						this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
+						this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
 						this.mobileProfile();
 					}
 					if (localStorage.random) {
