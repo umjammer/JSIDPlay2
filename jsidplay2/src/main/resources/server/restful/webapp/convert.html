@@ -277,6 +277,27 @@
 			</ul>
 		</div>
 		<script>
+			var clickUrl;
+	
+			axios({
+				method: "get",
+				url: "/static/audio/click.mp3",
+				responseType: "blob",
+			}).then(response => {
+				var reader = new window.FileReader();
+				reader.onload = function () {
+				    clickUrl = reader.result;
+				};
+				reader.readAsDataURL(response.data);
+				
+			});
+			
+			function playClick() {
+				const audio = new Audio();
+				audio.src = clickUrl;
+				audio.play();
+			}
+
 			const messages = {
 				en: {
 					barcode: "Barcode",
@@ -616,11 +637,6 @@
 					}
 				},
 			});
-			function playClick() {
-			    const audio = new Audio();
-				audio.src = "/static/audio/click.mp3";
-				audio.play();
-			}
 		</script>
 	</body>
 </html>
