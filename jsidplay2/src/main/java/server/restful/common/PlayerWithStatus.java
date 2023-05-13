@@ -116,20 +116,24 @@ public final class PlayerWithStatus {
 		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed") {
 			@Override
 			public void event() throws InterruptedException {
-				player.getC64().getKeyboard().keyPressed(key);
+				if (key == KeyTableEntry.RESTORE) {
+					player.getC64().getKeyboard().restore();
+				} else {
+					player.getC64().getKeyboard().keyPressed(key);
 
-				player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Released") {
-					@Override
-					public void event() throws InterruptedException {
-						player.getC64().getEventScheduler()
-								.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
-									@Override
-									public void event() throws InterruptedException {
-										player.getC64().getKeyboard().keyReleased(key);
-									}
-								});
-					}
-				}, player.getC64().getClock().getCyclesPerFrame() << 2);
+					player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Released") {
+						@Override
+						public void event() throws InterruptedException {
+							player.getC64().getEventScheduler()
+									.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
+										@Override
+										public void event() throws InterruptedException {
+											player.getC64().getKeyboard().keyReleased(key);
+										}
+									});
+						}
+					}, player.getC64().getClock().getCyclesPerFrame() << 2);
+				}
 			}
 		});
 	}

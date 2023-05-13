@@ -151,7 +151,10 @@
 									<!--END NUMBER KEYS -->
 								</div>
 								<div>
-									<div class="key tab" v-on:click="typeKey('CTRL')">Ctrl</div>
+									<div class="key tab"
+									v-on:click="toggleCtrl()"
+									:class="(ctrlPressed ? 'uppercase' : '')"
+									>Ctrl</div>
 
 									<div class="key letter" v-on:click="typeKey('Q')">Q</div>
 									<div class="key letter" v-on:click="typeKey('W')">W</div>
@@ -166,11 +169,17 @@
 									<div class="key letter" v-on:click="typeKey('AT')">@</div>
 									<div class="key letter" v-on:click="typeKey('STAR')">*</div>
 									<div class="key letter" v-on:click="typeKey('ARROW_UP')">&#8593;</div>
-									<div class="key restore">Restore</div>
+									<div class="key restore" v-on:click="typeKey('RESTORE')">Restore</div>
 								</div>
 								<div>
-									<div class="key num dual" v-on:click="typeKey('RUN_STOP')">Run<br />Stop</div>
-									<div class="key num dual">Shft<br />Lck</div>
+									<div class="key num dual"
+									v-on:click="toggleRunStop()"
+									:class="(runStopPressed ? 'uppercase' : '')"
+									>Rn/St</div>
+									<div class="key num dual"
+									v-on:click="toggleShiftLeft(this)"
+									:class="(shiftLeftPressed ? 'uppercase' : '')"
+									>Sh/Lk</div>
 									<div class="key letter" v-on:click="typeKey('A')">A</div>
 									<div class="key letter" v-on:click="typeKey('S')">S</div>
 									<div class="key letter" v-on:click="typeKey('D')">D</div>
@@ -194,10 +203,13 @@
 									</div>
 								</div>
 								<div>
-									<div class="key letter" v-on:click="typeKey('COMMODORE')">C=</div>
+									<div class="key letter"
+									:class="(commodorePressed ? 'uppercase' : '')"
+									v-on:click="toggleCommodore(this)"
+									>c=</div>
 									<div
-										:class="'key shift left' + (shiftPressed ? ' uppercase' : '')"
-										v-on:click="toggleKey(this, 'SHIFT_LEFT')"
+										:class="'key shift left' + (shiftLeftPressed ? ' uppercase' : '')"
+										v-on:click="toggleShiftLeft(this)"
 									>
 										Shift
 									</div>
@@ -212,8 +224,8 @@
 									<div class="key dual" v-on:click="typeKey('PERIOD')">&gt;<br />.</div>
 									<div class="key dual" v-on:click="typeKey('SLASH')">?<br />/</div>
 									<div
-										:class="'key shift right' + (shiftPressed ? ' uppercase' : '')"
-										v-on:click="toggleKey(this, 'SHIFT_RIGHT')"
+										:class="'key shift right' + (shiftRightPressed ? ' uppercase' : '')"
+										v-on:click="toggleShiftRight(this)"
 									>
 										Shift
 									</div>
@@ -317,7 +329,11 @@
 					langs: ["de", "en"],
 					hls: $hls,
 					notifyForHLS: $notifyForHLS,
-					shiftPressed: false,
+					shiftLeftPressed: false,
+					shiftRightPressed: false,
+					ctrlPressed: false,
+					commodorePressed: false,
+					runStopPressed: false,
 					msg: "",
 				},
 				methods: {
@@ -347,12 +363,44 @@
 							video.currentTime = video.duration;
 						}
 					},
-					toggleKey: function (element, key) {
-						this.shiftPressed ^= true;
-						if (this.shiftPressed) {
-							this.pressKey(key);
+					toggleShiftLeft: function (element) {
+						this.shiftLeftPressed ^= true;
+						if (this.shiftLeftPressed) {
+							this.pressKey('SHIFT_LEFT');
 						} else {
-							this.releaseKey(key);
+							this.releaseKey('SHIFT_LEFT');
+						}
+					},
+					toggleShiftRight: function (element) {
+						this.shiftRightPressed ^= true;
+						if (this.shiftRightPressed) {
+							this.pressKey('SHIFT_RIGHT');
+						} else {
+							this.releaseKey('SHIFT_RIGHT');
+						}
+					},
+					toggleCtrl: function (element) {
+						this.ctrlPressed ^= true;
+						if (this.ctrlPressed) {
+							this.pressKey('CTRL');
+						} else {
+							this.releaseKey('CTRL');
+						}
+					},
+					toggleCommodore: function (element) {
+						this.commodorePressed ^= true;
+						if (this.commodorePressed) {
+							this.pressKey('COMMODORE');
+						} else {
+							this.releaseKey('COMMODORE');
+						}
+					},
+					toggleRunStop: function (element) {
+						this.runStopPressed ^= true;
+						if (this.runStopPressed) {
+							this.pressKey('RUN_STOP');
+						} else {
+							this.releaseKey('RUN_STOP');
 						}
 					},
 					typeKey: function (key) {
