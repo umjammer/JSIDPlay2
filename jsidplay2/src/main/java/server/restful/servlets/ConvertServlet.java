@@ -521,7 +521,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
 			HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
 		String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
-		String qrCodeImgTag = createQrCodeImgTag(videoUrl, "UTF-8", "png", 320, 320);
+		String qrCodeImgTag = createQrCodeImgTag(getRequestURL(request), "UTF-8", "png", 320, 320);
 
 		Map<String, String> result = new HashMap<>();
 		result.put("$uuid", uuid.toString());
@@ -552,6 +552,16 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			// RTMP protocol
 			return RTMP_DOWNLOAD_URL + "/" + uuid;
 		}
+	}
+
+	private String getRequestURL(HttpServletRequest request) {
+		StringBuilder result = new StringBuilder();
+		result.append(request.getRequestURL());
+		if (request.getQueryString() != null) {
+			result.append("?");
+			result.append(request.getQueryString());
+		}
+		return result.toString();
 	}
 
 	private void waitUntilVideoIsAvailable(UUID uuid) throws InterruptedException, MalformedURLException {
