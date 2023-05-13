@@ -206,15 +206,7 @@
 									<div class="key dual" v-on:click="typeKey('COLON')">:<br />[</div>
 									<div class="key dual" v-on:click="typeKey('SEMICOLON')">;<br />]</div>
 									<div class="key letter" v-on:click="typeKey('EQUALS')">=</div>
-									<div
-										class="key enter"
-										v-on:click="
-											typeKey('RETURN');
-											startVideo();
-										"
-									>
-										Return
-									</div>
+									<div class="key enter" v-on:click="typeKey('RETURN')">Return</div>
 								</div>
 								<div>
 									<div class="key letter"
@@ -251,13 +243,7 @@
 									</div>
 								</div>
 								<div>
-									<div
-										class="key space"
-										v-on:click="
-											typeKey('SPACE');
-											startVideo();
-										"
-									></div>
+									<div class="key space" v-on:click="typeKey('SPACE')"></div>
 								</div>
 							</div>
 							<!-- end section-a-->
