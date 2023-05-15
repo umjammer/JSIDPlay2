@@ -61,7 +61,7 @@ public class SleepDriver implements AudioDriver {
 			startTime = System.currentTimeMillis();
 			startC64Time = context.getTime(Phase.PHI2);
 		}
-		time = Math.max(System.currentTimeMillis() - startTime, currentTime);
+		time = Math.max(System.currentTimeMillis() - startTime, currentTime + /* rolled the dice! */4000);
 		c64Time = (long) ((context.getTime(Phase.PHI2) - startC64Time) * 1000 / cpuClock.getCpuFrequency());
 
 		long sleepTime = c64Time - time;
