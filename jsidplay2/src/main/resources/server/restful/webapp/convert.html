@@ -270,10 +270,9 @@
 
 			<h3>{{ $t("infosHeader") }}</h3>
 			<ul>
-				<li v-if="!hls">{{ $t("regardingTimeoutsTip1") }}</li>
-				<li v-if="!hls">{{ $t("regardingTimeoutsTip2") }}</li>
-				<li>{{ $t("regardingTimeoutsTip3") }}</li>
-				<li>{{ $t("regardingTimeoutsTip4") }}</li>
+				<li>{{ $t("regardingTimeoutsTip1") }}</li>
+				<li>{{ $t("regardingTimeoutsTip2") }}</li>
+				<li v-if="!hls">{{ $t("regardingTimeoutsTip3") }}</li>
 			</ul>
 		</div>
 		<script>
@@ -305,12 +304,10 @@
 					insertNextDisk: "Next Disk",
 					mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
 					infosHeader: "Infos",
-					regardingTimeoutsTip1:
-						"Start video within $notYetPlayedTimeout seconds or it will be terminated, if so please reload page for a new try.",
-					regardingTimeoutsTip2:
+					regardingTimeoutsTip1: "Actions and key presses are delayed a few seconds.",
+					regardingTimeoutsTip2: "Maximum play time is 1 hour.",
+					regardingTimeoutsTip3:
 						"If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
-					regardingTimeoutsTip3: "Actions and key presses are delayed a few seconds.",
-					regardingTimeoutsTip4: "Maximum play time is 1 hour.",
 					nextDiskDone: "Next Disk has been inserted!",
 					defaultSidModel6581Done: "Default SID model has been set to 6581!",
 					defaultSidModel8580Done: "Default SID model has been set to 8580!",
@@ -324,12 +321,10 @@
 					insertNextDisk: "N\u00e4chste Disk",
 					mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
 					infosHeader: "Informationen",
-					regardingTimeoutsTip1:
-						"Starte das Video innerhalb von $notYetPlayedTimeout Sekunden oder das Video wird beendet, ist das der Fall, m\u00fcssen sie f\u00fcr einen neuen Versuch die Seite neu laden.",
-					regardingTimeoutsTip2:
+					regardingTimeoutsTip1: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
+					regardingTimeoutsTip2: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
+					regardingTimeoutsTip3:
 						"Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
-					regardingTimeoutsTip3: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
-					regardingTimeoutsTip4: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
 					nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
 					defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
 					defaultSidModel8580Done: "Default SID Chip ist jetzt 8580!",
@@ -376,13 +371,25 @@
 						}, 500);
 					},
 					fastForward: function () {
+					    if ($hls == true) {
+							if ("$hlsType" === "VIDEO_JS") {
+								var video = videojs("video-container");
+								video.currentTime(video.currentTime() + $maxTimeGap);
+							} else if ("$hlsType" === "HLS_JS") {
+								var video = document.getElementById("video-container");
+								video.currentTime = video.currentTime + $maxTimeGap;
+							}
+					    }
+					},
+					currentTime: function () {
 						if ("$hlsType" === "VIDEO_JS") {
 							var video = videojs("video-container");
-							video.currentTime(video.currentTime() + $maxTimeGap);
+							return video.currentTime();
 						} else if ("$hlsType" === "HLS_JS") {
 							var video = document.getElementById("video-container");
-							video.currentTime = video.duration;
+							return video.currentTime;
 						}
+						return null;
 					},
 					toggleShiftLeft: function (element) {
 						this.shiftLeftPressed ^= true;
@@ -466,8 +473,7 @@
 						    playClick();
 							let result = response.data;
 							this.printMsg(this.$i18n.t("nextDiskDone"));
-							// commented out in favor of fluid playback:
-							// this.fastForward();
+							this.fastForward();
 						});
 					},
 					setDefaultSidModel6581: function () {
@@ -551,6 +557,7 @@
 						this.$i18n.locale = localStorage.locale;
 					}
 					if (this.hls) {
+						const outerThis = this;
 						setInterval(function () {
 							var xhttp = new XMLHttpRequest();
 							xhttp.onreadystatechange = function () {
@@ -558,7 +565,7 @@
 									// console.log("HLS keep alive: $uuid");
 								}
 							};
-							xhttp.open("GET", "/static/on_keep_alive?name=$uuid", true);
+							xhttp.open("GET", "/static/on_keep_alive?name=$uuid&currentTime=" + outerThis.currentTime(), true);
 							xhttp.send();
 						}, this.notifyForHLS);
 

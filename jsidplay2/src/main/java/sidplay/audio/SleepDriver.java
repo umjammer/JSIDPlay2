@@ -15,7 +15,7 @@ import libsidplay.common.EventScheduler;
 import libsidplay.config.IAudioSection;
 
 /**
- * No sound output at all, but sleeps to make C64 time equal system time.
+ * No sound output at all, but sleeps to slow down video production.
  * 
  * @author ken
  *
@@ -25,7 +25,18 @@ public class SleepDriver implements AudioDriver {
 	private CPUClock cpuClock;
 	private EventScheduler context;
 
-	private long startTime, time, startC64Time, c64Time;
+	/**
+	 * Real-time since recording started
+	 */
+	private long startTime, time;
+	/**
+	 * C64 emulation time (emulation runs much faster than real-time)
+	 */
+	private long startC64Time, c64Time;
+	/**
+	 * Current time of a video player client
+	 */
+	private long currentTime;
 
 	private ByteBuffer sampleBuffer;
 
@@ -40,6 +51,7 @@ public class SleepDriver implements AudioDriver {
 		time = 0;
 		startC64Time = 0;
 		c64Time = 0;
+		currentTime = 0;
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
 	}
 
@@ -49,18 +61,28 @@ public class SleepDriver implements AudioDriver {
 			startTime = System.currentTimeMillis();
 			startC64Time = context.getTime(Phase.PHI2);
 		}
-		time = System.currentTimeMillis() - startTime;
+		time = Math.max(System.currentTimeMillis() - startTime, currentTime);
 		c64Time = (long) ((context.getTime(Phase.PHI2) - startC64Time) * 1000 / cpuClock.getCpuFrequency());
 
 		long sleepTime = c64Time - time;
 		if (sleepTime > MAX_TIME_GAP) {
 			try {
-				// slow down video production to stay in sync with a possible viewer
-				Thread.sleep((sleepTime - MAX_TIME_GAP) * 1 / 3);
+				long sleep = 1000;
+//				System.err.println("c64Time: " + (c64Time / 60000) + ":" + (c64Time % 60000));
+//				System.err.println("time: " + (time / 60000) + ":" + (time % 60000));
+//				System.err.println("Sleep: " + sleep);
+
+				// slow down video production, that a client-side fastForward after a key press
+				// jumps not too far
+				Thread.sleep(sleep);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void setCurrentTime(Long currentTime) {
+		this.currentTime = currentTime;
 	}
 
 	@Override

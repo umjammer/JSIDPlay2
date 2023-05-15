@@ -9,6 +9,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
+import server.restful.common.converter.FractionSecondsToMsConverter;
 import server.restful.common.parameter.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
@@ -25,6 +27,17 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.hls.OnKeepAliveServletParameters")
 	public static class OnKeepAliveServletParameters extends VideoRequestParamServletParameters {
 
+		private Long currentTime;
+
+		public Long getCurrentTime() {
+			return currentTime;
+		}
+
+		@Parameter(names = {
+				"--currentTime" }, converter = FractionSecondsToMsConverter.class, descriptionKey = "CURRENT_TIME", order = -2)
+		public void setCurrentTime(Long currentTime) {
+			this.currentTime = currentTime;
+		}
 	}
 
 	public static final String ON_KEEP_ALIVE_PATH = "/on_keep_alive";
@@ -65,9 +78,13 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 				return;
 			}
 			UUID uuid = servletParameters.getUuid();
+			Long currentTime = servletParameters.getCurrentTime();
 
 //			info(String.format("onKeepAlive: HLS stream of: %s", uuid));   // Calls are very frequent, therefore we are silent here
 			update(uuid, PlayerWithStatus::onKeepAlive);
+
+			update(uuid, playerWithStatus -> playerWithStatus.getSleepDriver()
+					.ifPresent(sleepDriver -> sleepDriver.setCurrentTime(currentTime)));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -75,4 +92,5 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}
+
 }

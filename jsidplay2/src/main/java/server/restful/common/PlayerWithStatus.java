@@ -22,6 +22,9 @@ import libsidplay.components.keyboard.KeyTableEntry;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
+import sidplay.audio.AudioDriver;
+import sidplay.audio.ProxyDriver;
+import sidplay.audio.SleepDriver;
 import sidplay.player.State;
 import ui.common.filefilter.DiskFileFilter;
 
@@ -254,6 +257,17 @@ public final class PlayerWithStatus {
 				}, 0);
 			}
 		});
+	}
+
+	public Optional<SleepDriver> getSleepDriver() {
+		AudioDriver audioDriver = player.getAudioDriver();
+		if (audioDriver instanceof ProxyDriver) {
+			ProxyDriver proxyDriver = (ProxyDriver) audioDriver;
+			if (proxyDriver.getDriverOne() instanceof SleepDriver) {
+				return Optional.of((SleepDriver) proxyDriver.getDriverOne());
+			}
+		}
+		return Optional.empty();
 	}
 
 }
