@@ -4021,6 +4021,13 @@
 						this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
 						this.mobileProfile();
 					}
+					if (this.convertOptions.config.emulationSection.thirdSIDBase) {
+					    this.stereoMode = "FORCE_3SID";
+					} else if (this.convertOptions.config.emulationSection.dualSidBase) {
+					    this.stereoMode = "FORCE_2SID";
+					} else {
+					    this.stereoMode = "AUTO";
+					}
 					if (localStorage.random) {
 						this.random = JSON.parse(localStorage.random);
 					}
@@ -4131,6 +4138,19 @@
 							localStorage.convertOptions = JSON.stringify(this.convertOptions);
 						},
 						deep: true,
+					},
+					stereoMode(newValue, oldValue) {
+						if (this.stereoMode === "FORCE_3SID") {
+						    this.convertOptions.config.emulationSection.dualSidBase = true;
+						    this.convertOptions.config.emulationSection.thirdSIDBase = true;
+						} else if (this.stereoMode === "FORCE_2SID") {
+						    this.convertOptions.config.emulationSection.dualSidBase = true;
+						    this.convertOptions.config.emulationSection.thirdSIDBase = false;
+						} else {
+						    this.convertOptions.config.emulationSection.dualSidBase = false;
+						    this.convertOptions.config.emulationSection.thirdSIDBase = false;
+						}
+						localStorage.convertOptions = JSON.stringify(this.convertOptions);
 					},
 				},
 			});
