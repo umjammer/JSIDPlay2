@@ -4021,9 +4021,9 @@
 						this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
 						this.mobileProfile();
 					}
-					if (this.convertOptions.config.emulationSection.thirdSIDBase) {
+					if (this.convertOptions.config.emulationSection.dualSID) {
 					    this.stereoMode = "FORCE_3SID";
-					} else if (this.convertOptions.config.emulationSection.dualSidBase) {
+					} else if (this.convertOptions.config.emulationSection.thirdSID) {
 					    this.stereoMode = "FORCE_2SID";
 					} else {
 					    this.stereoMode = "AUTO";
@@ -4141,14 +4141,14 @@
 					},
 					stereoMode(newValue, oldValue) {
 						if (this.stereoMode === "FORCE_3SID") {
-						    this.convertOptions.config.emulationSection.dualSidBase = true;
-						    this.convertOptions.config.emulationSection.thirdSIDBase = true;
+						    this.convertOptions.config.emulationSection.dualSID = true;
+						    this.convertOptions.config.emulationSection.thirdSID = true;
 						} else if (this.stereoMode === "FORCE_2SID") {
-						    this.convertOptions.config.emulationSection.dualSidBase = true;
-						    this.convertOptions.config.emulationSection.thirdSIDBase = false;
+						    this.convertOptions.config.emulationSection.dualSID = true;
+						    this.convertOptions.config.emulationSection.thirdSID = false;
 						} else {
-						    this.convertOptions.config.emulationSection.dualSidBase = false;
-						    this.convertOptions.config.emulationSection.thirdSIDBase = false;
+						    this.convertOptions.config.emulationSection.dualSID = false;
+						    this.convertOptions.config.emulationSection.thirdSID = false;
 						}
 						localStorage.convertOptions = JSON.stringify(this.convertOptions);
 					},
