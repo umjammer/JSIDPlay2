@@ -67,14 +67,9 @@ public class SleepDriver implements AudioDriver {
 		long sleepTime = c64Time - time;
 		if (sleepTime > MAX_TIME_GAP) {
 			try {
-				long sleep = 1000;
-//				System.err.println("c64Time: " + (c64Time / 60000) + ":" + (c64Time % 60000));
-//				System.err.println("time: " + (time / 60000) + ":" + (time % 60000));
-//				System.err.println("Sleep: " + sleep);
-
 				// slow down video production, that a client-side fastForward after a key press
 				// jumps not too far
-				Thread.sleep(sleep);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

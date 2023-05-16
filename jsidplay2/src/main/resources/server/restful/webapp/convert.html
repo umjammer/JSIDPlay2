@@ -374,10 +374,10 @@
 					    if ($hls == true) {
 							if ("$hlsType" === "VIDEO_JS") {
 								var video = videojs("video-container");
-								video.currentTime(video.currentTime() + $maxTimeGap);
+								video.currentTime(video.currentTime() + video.bufferedEnd());
 							} else if ("$hlsType" === "HLS_JS") {
 								var video = document.getElementById("video-container");
-								video.currentTime = video.currentTime + $maxTimeGap;
+								video.currentTime = video.currentTime + video.duration;
 							}
 					    }
 					},
