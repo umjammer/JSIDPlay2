@@ -17,7 +17,7 @@ public final class FractionSecondsToMsConverter extends BaseConverter<Long> {
 			return Optional.ofNullable(value).map(Float::parseFloat).map(seconds -> (long) (seconds * 1000))
 					.orElse(null);
 		} catch (NumberFormatException e) {
-			throw new ParameterException(getErrorString(value, "a float as seconds"));
+			throw new ParameterException(getErrorString(value, "a time in seconds (pattern: ss.SSS)"));
 		}
 	}
 }
