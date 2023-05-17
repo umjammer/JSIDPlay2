@@ -176,6 +176,34 @@ public interface IEmulationSection {
 	void setUserSidModel(ChipModel model);
 
 	/**
+	 * Getter of the the stereo SID model.
+	 *
+	 * @return the stereo SID model
+	 */
+	ChipModel getStereoSidModel();
+
+	/**
+	 * Setter of the the stereo SID model.
+	 *
+	 * @param model the the stereo SID model
+	 */
+	void setStereoSidModel(ChipModel model);
+
+	/**
+	 * Getter of the the 3-SID model.
+	 *
+	 * @return the 3-SID model
+	 */
+	ChipModel getThirdSIDModel();
+
+	/**
+	 * Setter of the the 3-SID model.
+	 *
+	 * @param model the the 3-SID model
+	 */
+	void setThirdSIDModel(ChipModel model);
+
+	/**
 	 * Getter of the chip to be used for MOS6581.
 	 *
 	 * @return the chip to be used for MOS6581
@@ -920,34 +948,6 @@ public interface IEmulationSection {
 	 * @param mute 3-SID mute voice 4
 	 */
 	void setMuteThirdSIDVoice4(boolean mute);
-
-	/**
-	 * Getter of the the stereo SID model.
-	 *
-	 * @return the stereo SID model
-	 */
-	ChipModel getStereoSidModel();
-
-	/**
-	 * Setter of the the stereo SID model.
-	 *
-	 * @param model the the stereo SID model
-	 */
-	void setStereoSidModel(ChipModel model);
-
-	/**
-	 * Getter of the the 3-SID model.
-	 *
-	 * @return the 3-SID model
-	 */
-	ChipModel getThirdSIDModel();
-
-	/**
-	 * Setter of the the 3-SID model.
-	 *
-	 * @param model the the 3-SID model
-	 */
-	void setThirdSIDModel(ChipModel model);
 
 	/**
 	 * Getter of the overridden settings.

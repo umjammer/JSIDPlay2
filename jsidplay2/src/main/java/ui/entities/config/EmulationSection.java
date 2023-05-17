@@ -302,23 +302,6 @@ public class EmulationSection implements IEmulationSection {
 		return defaultSidModel.property();
 	}
 
-	private ShadowField<BooleanProperty, Boolean> detectPSID64ChipModel = new ShadowField<>(SimpleBooleanProperty::new,
-			DEFAULT_DETECT_PSID64_CHIP_MODEL);
-
-	@Override
-	public boolean isDetectPSID64ChipModel() {
-		return detectPSID64ChipModel.get();
-	}
-
-	@Override
-	public void setDetectPSID64ChipModel(boolean detectPSID64ChipModel) {
-		this.detectPSID64ChipModel.set(detectPSID64ChipModel);
-	}
-
-	public final BooleanProperty detectPSID64ChipModelProperty() {
-		return detectPSID64ChipModel.property();
-	}
-
 	private ShadowField<ObjectProperty<ChipModel>, ChipModel> userSidModel = new ShadowField<>(
 			SimpleObjectProperty::new, DEFAULT_USER_MODEL);
 
@@ -371,6 +354,23 @@ public class EmulationSection implements IEmulationSection {
 
 	public final ObjectProperty<ChipModel> thirdSIDModelProperty() {
 		return thirdSIDModel.property();
+	}
+
+	private ShadowField<BooleanProperty, Boolean> detectPSID64ChipModel = new ShadowField<>(SimpleBooleanProperty::new,
+			DEFAULT_DETECT_PSID64_CHIP_MODEL);
+
+	@Override
+	public boolean isDetectPSID64ChipModel() {
+		return detectPSID64ChipModel.get();
+	}
+
+	@Override
+	public void setDetectPSID64ChipModel(boolean detectPSID64ChipModel) {
+		this.detectPSID64ChipModel.set(detectPSID64ChipModel);
+	}
+
+	public final BooleanProperty detectPSID64ChipModelProperty() {
+		return detectPSID64ChipModel.property();
 	}
 
 	private ShadowField<ObjectProperty<Integer>, Integer> hardsid6581 = new ShadowField<>(SimpleObjectProperty::new,

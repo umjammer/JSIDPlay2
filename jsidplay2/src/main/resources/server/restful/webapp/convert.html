@@ -371,7 +371,7 @@
 						}, 500);
 					},
 					fastForward: function () {
-					    if ($hls == true) {
+					    if (this.hls) {
 							if ("$hlsType" === "VIDEO_JS") {
 								var video = videojs("video-container");
 								video.currentTime(video.currentTime() + video.bufferedEnd());
