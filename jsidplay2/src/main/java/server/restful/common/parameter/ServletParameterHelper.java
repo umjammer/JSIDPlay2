@@ -211,6 +211,12 @@ public class ServletParameterHelper {
 					throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
 							+ ".properties (key=" + parameter.descriptionKey() + ")");
 				}
+				if (parameter.names().length == 0) {
+					if (serverParameter && !rootResBundle.containsKey("EXAMPLE_REQUEST_PATH")) {
+						throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
+								+ ".properties (key=EXAMPLE_REQUEST_PATH)");
+					}
+				}
 				for (Locale locale : OTHER_LOCALES) {
 					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
 					// Since ResourceBundle evaluates parent bundles as well, but we must know if
@@ -220,6 +226,16 @@ public class ServletParameterHelper {
 									.getString(parameter.descriptionKey())) {
 						throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
 								+ "_" + locale + ".properties (key=" + parameter.descriptionKey() + ")");
+					}
+					if (parameter.names().length == 0) {
+						// Since ResourceBundle evaluates parent bundles as well, but we must know if
+						// localization is only contained in that bundle, therefore ==
+						if (serverParameter && resBundle.getString("EXAMPLE_REQUEST_PATH") == rootResBundle
+								.getString("EXAMPLE_REQUEST_PATH")) {
+							throw JsonMappingException.from(prov,
+									"Localization missing in " + parameters.resourceBundle() + "_" + locale
+											+ ".properties (key=EXAMPLE_REQUEST_PATH)");
+						}
 					}
 				}
 			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {

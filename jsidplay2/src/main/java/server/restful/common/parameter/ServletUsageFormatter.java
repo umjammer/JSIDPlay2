@@ -8,12 +8,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
+import com.beust.jcommander.Parameters;
 import com.beust.jcommander.Strings;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +29,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private HttpServletResponse response;
 	private Exception exception;
 	private String[] requestParameters;
+	private ResourceBundle bundle;
 
 	public ServletUsageFormatter(JCommander commander, HttpServletRequest request, HttpServletResponse response,
 			String[] requestParameters) {
@@ -34,6 +38,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		this.request = request;
 		this.response = response;
 		this.requestParameters = requestParameters;
+		this.bundle = getBundle();
 	}
 
 	public void setException(Exception exception) {
@@ -82,8 +87,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			urlAsString.append(BASE_URL).append(commander.getProgramDisplayName());
 
 			// Request path
-			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				urlAsString.append("/").append(commander.getMainParameterValue().getParameterized().getName());
+			if (commander.getMainParameter() != null) {
+				urlAsString.append(bundle.getString("EXAMPLE_REQUEST_PATH"));
 			}
 
 			List<ParameterDescription> arguments = commander.getFields().values().stream()
@@ -96,7 +101,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			if (arguments.size() > 0) {
 				urlAsString.append("?");
 				arguments.forEach(parameterDescription -> {
-					String displayedDef = String.valueOf(parameterDescription.getDefault());
+					String displayedDef = getExampleValue(parameterDescription);
 
 					urlAsString.append(getName(parameterDescription.getNames()));
 					urlAsString.append("=");
@@ -113,11 +118,6 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 			String asciiString = uri.toASCIIString();
 
-			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				String requestPath = commander.getMainParameterValue().getParameterized().getName();
-				asciiString = (asciiString.replaceFirst("(.*)/" + requestPath + "($|[?])",
-						"$1/{" + requestPath + "}$2"));
-			}
 			mainLine.append(asciiString);
 			wrapDescription(out, indentCount, mainLine.toString());
 			out.append("\n");
@@ -125,11 +125,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 			// Request path description
 			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				out.append(indent).append("Servlet-Path:");
-				out.append("\n");
-				out.append("      {");
-				out.append(commander.getMainParameterValue().getParameterized().getName());
-				out.append("}");
+				out.append(indent).append("Servlet Path:");
 				out.append("\n");
 				out.append("      ");
 				out.append(commander.getMainParameterValue().getDescription());
@@ -137,12 +133,31 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 				out.append("\n");
 			}
 			if (arguments.size() > 0) {
-				out.append(indent).append("Servlet-Parameter");
+				out.append(indent).append("Servlet Parameter");
 			}
 
 		} catch (URISyntaxException | MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private String getExampleValue(ParameterDescription parameterDescription) {
+		if (parameterDescription.getDefault() != null || !parameterDescription.getParameterAnnotation().required()) {
+			return String.valueOf(parameterDescription.getDefault());
+		} else {
+			if (Stream.of(Boolean.class, boolean.class)
+					.anyMatch(parameterDescription.getParameterized().getType()::equals)) {
+				return String.valueOf(false);
+			} else {
+				return String.valueOf(0);
+			}
+		}
+	}
+
+	private ResourceBundle getBundle() {
+		Object firstParameterObject = commander.getObjects().get(0);
+		Parameters parameters = firstParameterObject.getClass().getAnnotation(Parameters.class);
+		return ResourceBundle.getBundle(parameters.resourceBundle(), Locale.getDefault());
 	}
 
 	private String getName(String names) {
