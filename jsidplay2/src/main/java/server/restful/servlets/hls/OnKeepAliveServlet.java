@@ -16,7 +16,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.PlayerWithStatus;
 import server.restful.common.converter.FractionSecondsToMsConverter;
 import server.restful.common.parameter.RequestParamServletParameters.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
@@ -81,10 +80,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			Long currentTime = servletParameters.getCurrentTime();
 
 //			info(String.format("onKeepAlive: HLS stream of: %s", uuid));   // Calls are very frequent, therefore we are silent here
-			update(uuid, PlayerWithStatus::onKeepAlive);
-
-			update(uuid, playerWithStatus -> playerWithStatus.getSleepDriver()
-					.ifPresent(sleepDriver -> sleepDriver.setCurrentTime(currentTime)));
+			update(uuid, playerWithStatus -> playerWithStatus.onKeepAlive(currentTime));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

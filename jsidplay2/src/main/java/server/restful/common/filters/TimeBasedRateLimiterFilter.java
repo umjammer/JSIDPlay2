@@ -58,7 +58,7 @@ public class TimeBasedRateLimiterFilter implements Filter {
 		requestTimers.values().forEach(RequestTimer::cancel);
 	}
 
-	private class RequestTimer {
+	private final class RequestTimer {
 		private final Timer timer;
 		private int count;
 

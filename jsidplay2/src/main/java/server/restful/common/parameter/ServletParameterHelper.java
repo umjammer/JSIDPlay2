@@ -231,182 +231,182 @@ public class ServletParameterHelper {
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class OnlineContentMixIn {
+	private final class OnlineContentMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class JSIDPlay2ServerParametersMixIn {
+	private final class JSIDPlay2ServerParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class ConsolePlayerMixIn {
+	private final class ConsolePlayerMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class FingerPrintingCreatorMixIn {
+	private final class FingerPrintingCreatorMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class SIDBlasterToolMixIn {
+	private final class SIDBlasterToolMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class JSIDPlay2MainParametersMixIn {
+	private final class JSIDPlay2MainParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class DirectoryServletParametersMixIn {
+	private final class DirectoryServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class DiskDirectoryServletParametersMixIn {
+	private final class DiskDirectoryServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class TuneInfoServletParametersMixIn {
+	private final class TuneInfoServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class PhotoServletParametersMixIn {
+	private final class PhotoServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class ConvertServletParametersMixIn {
+	private final class ConvertServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class DownloadServletParametersMixIn {
+	private final class DownloadServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class OnKeepAliveServletParametersMixIn {
+	private final class OnKeepAliveServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class OnPlayDoneServletParametersMixIn {
+	private final class OnPlayDoneServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class OnPlayServletParametersMixIn {
+	private final class OnPlayServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class InsertNextDiskServletParametersMixIn {
+	private final class InsertNextDiskServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class SetSidModel6581ServletParametersMixIn {
+	private final class SetSidModel6581ServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class SetSidModel8580ServletParametersMixIn {
+	private final class SetSidModel8580ServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class SetDefaultEmulationReSidServletParametersMixIn {
+	private final class SetDefaultEmulationReSidServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class SetDefaultEmulationReSidFpServletParametersMixIn {
+	private final class SetDefaultEmulationReSidFpServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class PressKeyServletParametersMixIn {
+	private final class PressKeyServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class JoystickServletParametersMixIn {
+	private final class JoystickServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class ProxyServletParametersMixIn {
+	private final class ProxyServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class STILServletParametersMixIn {
+	private final class STILServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class HardSIDMappingServletParametersMixIn {
+	private final class HardSIDMappingServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class ExSIDMappingServletParametersMixIn {
+	private final class ExSIDMappingServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class SIDBlasterMappingServletParametersMixIn {
+	private final class SIDBlasterMappingServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniConfigMixIn {
+	private final class IniConfigMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniSidplay2SectionMixIn {
+	private final class IniSidplay2SectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniAudioSectionMixIn {
+	private final class IniAudioSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniEmulationSectionMixIn {
+	private final class IniEmulationSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniC1541SectionMixIn {
+	private final class IniC1541SectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniPrinterSectionMixIn {
+	private final class IniPrinterSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniConsoleSectionMixIn {
+	private final class IniConsoleSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniWhatsSidSectionMixIn {
+	private final class IniWhatsSidSectionMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private class IniFilterSectionMixIn {
+	private final class IniFilterSectionMixIn {
 	}
 
 }

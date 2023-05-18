@@ -113,7 +113,7 @@ import ui.entities.config.service.ConfigService.ConfigurationType;
  * @author ken
  *
  */
-public class JSIDPlay2Server {
+public final class JSIDPlay2Server {
 
 	static {
 		DebugUtil.init();
@@ -216,7 +216,7 @@ public class JSIDPlay2Server {
 
 	private static EntityManagerFactory entityManagerFactory;
 
-	private static final ThreadLocal<EntityManager> threadLocalEntityManager = new ThreadLocal<>();
+	private static final ThreadLocal<EntityManager> THREAD_LOCAL_ENTITY_MANAGER = new ThreadLocal<>();
 
 	private static final ConfigurationType CONFIGURATION_TYPE = ConfigurationType.XML;
 
@@ -506,17 +506,17 @@ public class JSIDPlay2Server {
 		if (entityManagerFactory == null) {
 			throw new IOException("Database required, please specify command line parameters!");
 		}
-		EntityManager em = threadLocalEntityManager.get();
+		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
 
 		if (em == null) {
 			em = entityManagerFactory.createEntityManager();
-			threadLocalEntityManager.set(em);
+			THREAD_LOCAL_ENTITY_MANAGER.set(em);
 		}
 		return em;
 	}
 
 	public static void freeEntityManager() {
-		EntityManager em = threadLocalEntityManager.get();
+		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
 
 		if (em != null) {
 			em.clear();

@@ -36,9 +36,9 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		this.requestParameters = requestParameters;
 	}
 
-	public void setException(Exception Exception) {
+	public void setException(Exception exception) {
 		if (this.exception == null) {
-			this.exception = Exception;
+			this.exception = exception;
 		}
 	}
 

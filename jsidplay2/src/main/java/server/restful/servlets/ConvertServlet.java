@@ -7,7 +7,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
-import static libsidplay.config.IAudioSystemProperties.MAX_TIME_GAP;
 import static libsidutils.PathUtils.getFilenameSuffix;
 import static libsidutils.PathUtils.getFilenameWithoutSuffix;
 import static libsidutils.ZipFileUtils.convertStreamToString;
@@ -53,7 +52,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +80,6 @@ import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
@@ -310,7 +307,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				if (Boolean.TRUE.equals(servletParameters.download)) {
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-							+ URLEncoder.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
+							+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 				}
 				response.setContentType(getMimeType(driver.getExtension()).toString());
 				convert2audio(file, driver, servletParameters);
@@ -351,8 +348,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				} else {
 
 					if (Boolean.TRUE.equals(servletParameters.download)) {
-						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename=" + URLEncoder
-								.encode(getAttachmentFilename(file, driver), StandardCharsets.UTF_8.name()));
+						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
+								+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 					}
 					response.setContentType(getMimeType(driver.getExtension()).toString());
 					File videoFile = convert2video(file, driver, servletParameters, null);
@@ -362,7 +359,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			} else {
 				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
 				response.addHeader(CONTENT_DISPOSITION,
-						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.name()));
+						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
 				copy(file, response.getOutputStream());
 			}
 		} catch (Throwable t) {
@@ -514,7 +511,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), sidplay2Section.getTmpDir());
 		videoFile.deleteOnExit();
-		player.setRecordingFilenameProvider(tune -> PathUtils.getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
+		player.setRecordingFilenameProvider(tune -> getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
 		return videoFile;
 	}
 
@@ -532,7 +529,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put("$hlsScript", servletParameters.getHlsType().getScript());
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
-		result.put("$maxTimeGap", String.valueOf(MAX_TIME_GAP / 1000));
 		result.put("$filename", file.getName());
 		return result;
 	}

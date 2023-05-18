@@ -68,13 +68,14 @@ public final class PlayerWithStatus {
 		}
 	}
 
-	public void onKeepAlive() {
+	public void onKeepAlive(long currentTime) {
 		LocalDateTime maxDuration = created.plusSeconds(RTMP_EXCEEDS_MAXIMUM_DURATION);
 		if (LocalDateTime.now().isBefore(maxDuration)) {
 			validUntil = LocalDateTime.now().plusSeconds(HLS_NOT_YET_PLAYED_TIMEOUT);
 		} else {
 			validUntil = maxDuration;
 		}
+		getSleepDriver().ifPresent(sleepDriver -> sleepDriver.setCurrentTime(currentTime));
 	}
 
 	public boolean isInvalid() {
@@ -259,7 +260,7 @@ public final class PlayerWithStatus {
 		});
 	}
 
-	public Optional<SleepDriver> getSleepDriver() {
+	private Optional<SleepDriver> getSleepDriver() {
 		AudioDriver audioDriver = player.getAudioDriver();
 		if (audioDriver instanceof ProxyDriver) {
 			ProxyDriver proxyDriver = (ProxyDriver) audioDriver;
