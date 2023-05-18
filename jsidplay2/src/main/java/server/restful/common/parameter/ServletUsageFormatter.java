@@ -101,11 +101,10 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			if (arguments.size() > 0) {
 				urlAsString.append("?");
 				arguments.forEach(parameterDescription -> {
-					String displayedDef = getExampleValue(parameterDescription);
 
 					urlAsString.append(getName(parameterDescription.getNames()));
 					urlAsString.append("=");
-					urlAsString.append(parameterDescription.getParameter().password() ? "********" : displayedDef);
+					urlAsString.append(getExampleValue(parameterDescription));
 
 					if (!arguments.get(arguments.size() - 1).equals(parameterDescription)) {
 						urlAsString.append("&");
@@ -142,15 +141,16 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	}
 
 	private String getExampleValue(ParameterDescription parameterDescription) {
-		if (parameterDescription.getDefault() != null || !parameterDescription.getParameterAnnotation().required()) {
+		if (parameterDescription.getParameter().password()) {
+			return "********";
+		} else if (parameterDescription.getDefault() != null
+				|| !parameterDescription.getParameterAnnotation().required()) {
 			return String.valueOf(parameterDescription.getDefault());
+		} else if (Stream.of(Boolean.class, boolean.class)
+				.anyMatch(parameterDescription.getParameterized().getType()::equals)) {
+			return String.valueOf(false);
 		} else {
-			if (Stream.of(Boolean.class, boolean.class)
-					.anyMatch(parameterDescription.getParameterized().getType()::equals)) {
-				return String.valueOf(false);
-			} else {
-				return String.valueOf(0);
-			}
+			return String.valueOf(0);
 		}
 	}
 
