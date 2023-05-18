@@ -529,7 +529,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put("$hlsScript", servletParameters.getHlsType().getScript());
 		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
-		result.put("$filename", file.getName());
 		return result;
 	}
 
