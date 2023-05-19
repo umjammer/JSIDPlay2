@@ -84,14 +84,14 @@ public final class PSid64Detection {
 	private static int getDigit(byte[] ram, int videoScreenAddress, int row, int column) {
 		final int offset = (row - 1) * 40 + column - 1;
 		int ch = ram[videoScreenAddress + offset] & 0xff;
-		if (ch >= 48) {
+		if (ch >= 0x30 && ch < 0x40) {
 			// digit
-			ch -= 48;
-		} else {
-			// lower case letter
-			ch += 9;
+			return ch - 0x30;
+		} else if (ch >= 0x41 && ch < 0x5b) {
+			// letter
+			return 10 + (ch - 0x41);
 		}
-		return ch;
+		return 0;
 	}
 
 	private static boolean checkScreenMessage(byte[] ram, int videoScreenAddress, String expected, int row,

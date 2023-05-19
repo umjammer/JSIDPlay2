@@ -55,7 +55,7 @@ public class Status {
 		ChipModel chipModel = ChipModel.getChipModel(emulationSection, player.getTune(), sidNum);
 		int sidBase = SidTune.getSIDAddress(emulationSection, player.getTune(), sidNum);
 		if (sidBase != SIDChip.DEF_BASE_ADDRESS) {
-			result.append(String.format("%s(at 0x%4x)", chipModel, sidBase));
+			result.append(String.format("%s(at 0x%04x)", chipModel, sidBase));
 		} else {
 			result.append(chipModel);
 		}
