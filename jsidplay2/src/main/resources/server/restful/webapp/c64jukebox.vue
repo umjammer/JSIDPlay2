@@ -2066,196 +2066,261 @@
 											<template #title>{{ $t("filterCfgHeader") }}</template>
 			
 											<b-card-text>
-												<!-- RESID-fp -->
-												<div class="settings-box">
-													<div>
-														<div>
-															<label for="reSIDfpFilter6581">{{
-																$t("convertMessages.config.emulationSection.reSIDfpFilter6581")
-															}}</label>
-															<b-form-select
-																id="reSIDfpFilter6581"
-																v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
-																:options="reSIDfpFilters6581"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-														<div>
-															<label for="reSIDfpFilter8580">{{
-																$t("convertMessages.config.emulationSection.reSIDfpFilter8580")
-															}}</label>
-															<b-form-select
-																id="reSIDfpFilter8580"
-																v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
-																:options="reSIDfpFilters8580"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-													</div>
-													<div>
-														<div>
-															<label for="reSIDfpStereoFilter6581">{{
-																$t(
-																	"convertMessages.config.emulationSection.reSIDfpStereoFilter6581"
-																)
-															}}</label>
-															<b-form-select
-																id="reSIDfpStereoFilter6581"
-																v-model="
-																	convertOptions.config.emulationSection.reSIDfpStereoFilter6581
-																"
-																:options="reSIDfpFilters6581"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-														<div>
-															<label for="reSIDfpStereoFilter8580">{{
-																$t(
-																	"convertMessages.config.emulationSection.reSIDfpStereoFilter8580"
-																)
-															}}</label>
-															<b-form-select
-																id="reSIDfpStereoFilter8580"
-																v-model="
-																	convertOptions.config.emulationSection.reSIDfpStereoFilter8580
-																"
-																:options="reSIDfpFilters8580"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-													</div>
-													<div>
-														<div>
-															<label for="reSIDfpThirdSIDFilter6581">{{
-																$t(
-																	"convertMessages.config.emulationSection.reSIDfpThirdSIDFilter6581"
-																)
-															}}</label>
-															<b-form-select
-																id="reSIDfpThirdSIDFilter6581"
-																v-model="
-																	convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581
-																"
-																:options="reSIDfpFilters6581"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-														<div>
-															<label for="reSIDfpThirdSIDFilter8580">{{
-																$t(
-																	"convertMessages.config.emulationSection.reSIDfpThirdSIDFilter8580"
-																)
-															}}</label>
-															<b-form-select
-																id="reSIDfpThirdSIDFilte8580"
-																v-model="
-																	convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580
-																"
-																:options="reSIDfpFilters8580"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-													</div>
-												</div>
-												<!-- RESID -->
-												<div class="settings-box">
-													<div>
-														<div>
-															<label for="filter6581">{{
-																$t("convertMessages.config.emulationSection.filter6581")
-															}}</label>
-															<b-form-select
-																id="filter6581"
-																v-model="convertOptions.config.emulationSection.filter6581"
-																:options="reSIDfilters6581"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-														<div>
-															<label for="filter8580">{{
-																$t("convertMessages.config.emulationSection.filter8580")
-															}}</label>
-															<b-form-select
-																id="filter8580"
-																v-model="convertOptions.config.emulationSection.filter8580"
-																:options="reSIDfilters8580"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-													</div>
-													<div>
-														<div>
-															<label for="stereoFilter6581">{{
-																$t("convertMessages.config.emulationSection.stereoFilter6581")
-															}}</label>
-															<b-form-select
-																id="stereoFilter6581"
-																v-model="convertOptions.config.emulationSection.stereoFilter6581"
-																:options="reSIDfilters6581"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-														<div>
-															<label for="stereoFilter8580">{{
-																$t("convertMessages.config.emulationSection.stereoFilter8580")
-															}}</label>
-															<b-form-select
-																id="stereoFilter8580"
-																v-model="convertOptions.config.emulationSection.stereoFilter8580"
-																:options="reSIDfilters8580"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-													</div>
-													<div>
-														<div>
-															<label for="thirdSIDFilter6581">{{
-																$t("convertMessages.config.emulationSection.thirdSIDFilter6581")
-															}}</label>
-															<b-form-select
-																id="thirdSIDFilter6581"
-																v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
-																:options="reSIDfilters6581"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-														<div>
-															<label for="thirdSIDFilter8580">{{
-																$t("convertMessages.config.emulationSection.thirdSIDFilter8580")
-															}}</label>
-															<b-form-select
-																id="thirdSIDFilter8580"
-																v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
-																:options="reSIDfilters8580"
-																size="sm"
-																class="mt-3"
-																:select-size="3"
-															></b-form-select>
-														</div>
-													</div>
-												</div>
+
+												<b-tabs v-model="filterTabConfigIndex" card>
+			
+													<b-tab>
+														<template #title>{{ $t("residFpFilterCfgHeader") }}</template>
+						
+														<b-card-text>
+
+															<b-tabs v-model="filterModelTabConfigIndex" card>
+						
+																<b-tab>
+																	<template #title>{{ $t("residFpFilter6581CfgHeader") }}</template>
+									
+																	<b-card-text>
+
+																		<div class="settings-box">
+																			<div>
+																				<div>
+																					<label for="reSIDfpFilter6581">{{
+																						$t("convertMessages.config.emulationSection.reSIDfpFilter6581")
+																					}}</label>
+																					<b-form-select
+																						id="reSIDfpFilter6581"
+																						v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
+																						:options="reSIDfpFilters6581"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																				<div>
+																					<label for="reSIDfpStereoFilter6581">{{
+																						$t(
+																							"convertMessages.config.emulationSection.reSIDfpStereoFilter6581"
+																						)
+																					}}</label>
+																					<b-form-select
+																						id="reSIDfpStereoFilter6581"
+																						v-model="
+																							convertOptions.config.emulationSection.reSIDfpStereoFilter6581
+																						"
+																						:options="reSIDfpFilters6581"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																				<div>
+																					<label for="reSIDfpThirdSIDFilter6581">{{
+																						$t(
+																							"convertMessages.config.emulationSection.reSIDfpThirdSIDFilter6581"
+																						)
+																					}}</label>
+																					<b-form-select
+																						id="reSIDfpThirdSIDFilter6581"
+																						v-model="
+																							convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581
+																						"
+																						:options="reSIDfpFilters6581"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																		</div>
+																	</b-card-text>
+																</b-tab>
+						
+																<b-tab>
+																	<template #title>{{ $t("residFpFilter8580CfgHeader") }}</template>
+									
+																	<b-card-text>
+
+																		<div class="settings-box">
+																			<div>
+																				<div>
+																					<label for="reSIDfpFilter8580">{{
+																						$t("convertMessages.config.emulationSection.reSIDfpFilter8580")
+																					}}</label>
+																					<b-form-select
+																						id="reSIDfpFilter8580"
+																						v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
+																						:options="reSIDfpFilters8580"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																			<div>
+																				<div>
+																					<label for="reSIDfpStereoFilter8580">{{
+																						$t(
+																							"convertMessages.config.emulationSection.reSIDfpStereoFilter8580"
+																						)
+																					}}</label>
+																					<b-form-select
+																						id="reSIDfpStereoFilter8580"
+																						v-model="
+																							convertOptions.config.emulationSection.reSIDfpStereoFilter8580
+																						"
+																						:options="reSIDfpFilters8580"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																			<div>
+																				<div>
+																					<label for="reSIDfpThirdSIDFilter8580">{{
+																						$t(
+																							"convertMessages.config.emulationSection.reSIDfpThirdSIDFilter8580"
+																						)
+																					}}</label>
+																					<b-form-select
+																						id="reSIDfpThirdSIDFilte8580"
+																						v-model="
+																							convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580
+																						"
+																						:options="reSIDfpFilters8580"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																		</div>
+																	</b-card-text>
+																</b-tab>
+															</b-tabs>
+			
+														</b-card-text>
+													</b-tab>
+
+													<b-tab>
+														<template #title>{{ $t("residFilterCfgHeader") }}</template>
+						
+														<b-card-text>
+
+															<b-tabs v-model="filterModelTabConfigIndex" card>
+						
+																<b-tab>
+																	<template #title>{{ $t("residFilter6581CfgHeader") }}</template>
+									
+																	<b-card-text>
+
+																		<div class="settings-box">
+																			<div>
+																				<div>
+																					<label for="filter6581">{{
+																						$t("convertMessages.config.emulationSection.filter6581")
+																					}}</label>
+																					<b-form-select
+																						id="filter6581"
+																						v-model="convertOptions.config.emulationSection.filter6581"
+																						:options="reSIDfilters6581"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																				<div>
+																					<label for="stereoFilter6581">{{
+																						$t("convertMessages.config.emulationSection.stereoFilter6581")
+																					}}</label>
+																					<b-form-select
+																						id="stereoFilter6581"
+																						v-model="convertOptions.config.emulationSection.stereoFilter6581"
+																						:options="reSIDfilters6581"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																				<div>
+																					<label for="thirdSIDFilter6581">{{
+																						$t("convertMessages.config.emulationSection.thirdSIDFilter6581")
+																					}}</label>
+																					<b-form-select
+																						id="thirdSIDFilter6581"
+																						v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
+																						:options="reSIDfilters6581"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																		</div>
+
+																	</b-card-text>
+																</b-tab>
+						
+																<b-tab>
+																	<template #title>{{ $t("residFilter8580CfgHeader") }}</template>
+									
+																	<b-card-text>
+
+																		<div class="settings-box">
+																			<div>
+																				<div>
+																					<label for="filter8580">{{
+																						$t("convertMessages.config.emulationSection.filter8580")
+																					}}</label>
+																					<b-form-select
+																						id="filter8580"
+																						v-model="convertOptions.config.emulationSection.filter8580"
+																						:options="reSIDfilters8580"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																			<div>
+																				<div>
+																					<label for="stereoFilter8580">{{
+																						$t("convertMessages.config.emulationSection.stereoFilter8580")
+																					}}</label>
+																					<b-form-select
+																						id="stereoFilter8580"
+																						v-model="convertOptions.config.emulationSection.stereoFilter8580"
+																						:options="reSIDfilters8580"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																			<div>
+																				<div>
+																					<label for="thirdSIDFilter8580">{{
+																						$t("convertMessages.config.emulationSection.thirdSIDFilter8580")
+																					}}</label>
+																					<b-form-select
+																						id="thirdSIDFilter8580"
+																						v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
+																						:options="reSIDfilters8580"
+																						size="sm"
+																						class="mt-3"
+																						:select-size="3"
+																					></b-form-select>
+																				</div>
+																			</div>
+																		</div>
+																	</b-card-text>
+																</b-tab>
+															</b-tabs>
+
+														</b-card-text>
+													</b-tab>
+												</b-tabs>
+
 											</b-card-text>
 										</b-tab>
 										<b-tab>
@@ -2683,6 +2748,12 @@
 					emulationCfgHeader: "Emulation",
 					audioCfgHeader: "Audio",
 					filterCfgHeader: "Filter",
+					residFpFilterCfgHeader:"RESIDFP",
+					residFilterCfgHeader:"RESID",
+					residFpFilter6581CfgHeader:"MOS6581",
+					residFpFilter8580CfgHeader:"MOS8580",
+					residFilter6581CfgHeader:"MOS6581",
+					residFilter8580CfgHeader:"MOS8580",
 					mutingCfgHeader: "Muting",
 					floppyCartCfgHeader: "Floppy/Cart",
 					showDirectory: "DIR",
@@ -2793,6 +2864,12 @@
 					emulationCfgHeader: "Emulation",
 					audioCfgHeader: "Audio",
 					filterCfgHeader: "Filter",
+					residFpFilterCfgHeader:"RESIDFP",
+					residFilterCfgHeader:"RESID",
+					residFpFilter6581CfgHeader:"MOS6581",
+					residFpFilter8580CfgHeader:"MOS8580",
+					residFilter6581CfgHeader:"MOS6581",
+					residFilter8580CfgHeader:"MOS8580",
 					mutingCfgHeader: "Stummschalten",
 					floppyCartCfgHeader: "Floppy/Cart",
 					showDirectory: "DIR",
@@ -2925,6 +3002,9 @@
 					// Misc.
 					tabIndex: 0,
 					tabConfigIndex: 0,
+					filterTabConfigIndex: 0,
+					residFilterModelTabConfigIndex: 0,
+					filterModelTabConfigIndex: 0,
 					loadingSid: false,
 					loadingStil: false,
 					loadingAssembly64: false,
