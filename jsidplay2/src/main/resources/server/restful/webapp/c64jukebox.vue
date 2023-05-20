@@ -1633,12 +1633,11 @@
 										<b-form-group :label="$t('convertMessages.reuSize')">
 											<b-form-radio-group v-model="convertOptions.reuSize">
 												<b-form-radio value="null">Auto</b-form-radio>
-												<b-form-radio value="128">128kb</b-form-radio>
-												<b-form-radio value="256">256kb</b-form-radio>
-												<b-form-radio value="512">512kb</b-form-radio>
-												<b-form-radio value="1024">1024kb</b-form-radio>
-												<b-form-radio value="2048">2048kb</b-form-radio>
-												<b-form-radio value="16384">16mb</b-form-radio>
+												<b-form-radio value="128">REU 1700 (128KB)</b-form-radio>
+												<b-form-radio value="512">REU 1750 (512KB)</b-form-radio>
+												<b-form-radio value="256">REU 1764 (256KB)</b-form-radio>
+												<b-form-radio value="2048">REU 1750 XL (2MB)</b-form-radio>
+												<b-form-radio value="16384">REU (16MB)</b-form-radio>
 											</b-form-radio-group>
 										</b-form-group>
 									</div>
@@ -1650,8 +1649,8 @@
 									<div class="settings-box">
 										<b-form-group :label="$t('convertMessages.sfxSoundExpanderType')">
 											<b-form-radio-group v-model="convertOptions.sfxSoundExpanderType">
-												<b-form-radio value="0">YM3526</b-form-radio>
-												<b-form-radio value="1">YM3812</b-form-radio>
+												<b-form-radio value="0">OPL1 (YM3526)</b-form-radio>
+												<b-form-radio value="1">OPL2 (YM3812)</b-form-radio>
 											</b-form-radio-group>
 										</b-form-group>
 									</div>

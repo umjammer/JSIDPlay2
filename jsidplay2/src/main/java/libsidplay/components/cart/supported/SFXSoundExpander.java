@@ -25,7 +25,7 @@ public class SFXSoundExpander extends Cartridge {
 	private long lastTime;
 
 	/**
-	 * <B>sizeKB misused as type 0: OPL1 (YM3526), 1: OPL2 (YM3812)</B>
+	 * <B>sizeKB is misused as type here: 0=OPL1 (YM3526), 1=OPL2 (YM3812)</B>
 	 */
 	public SFXSoundExpander(DataInputStream dis, PLA pla, int sizeKB) {
 		super(pla);
