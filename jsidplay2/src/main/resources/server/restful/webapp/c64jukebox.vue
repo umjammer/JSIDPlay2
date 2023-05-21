@@ -1530,101 +1530,119 @@
 													</div>
 												</div>
 			
-												<div class="settings-box">
-													<b-form-checkbox v-model="convertOptions.config.audioSection.vbr">
-														{{ $t("convertMessages.config.audioSection.vbr") }}
-													</b-form-checkbox>
-												</div>
-												<div class="settings-box">
-													<div>
-														<label for="cbr">{{ $t("convertMessages.config.audioSection.cbr") }}</label>
-														<select id="cbr" v-model="convertOptions.config.audioSection.cbr">
-															<option v-for="cbr in cbrs">{{ cbr }}</option>
-														</select>
-													</div>
-													<div>
-														<label for="vbrQuality">{{
-															$t("convertMessages.config.audioSection.vbrQuality")
-														}}</label>
-														<select
-															id="vbrQuality"
-															v-model="convertOptions.config.audioSection.vbrQuality"
-														>
-															<option v-for="vbrQuality in vbrQualities">
-																{{ vbrQuality }}
-															</option>
-														</select>
-													</div>
-												</div>
-												<div class="settings-box">
-													<b-form-checkbox v-model="convertOptions.useHls">
-														{{ $t("convertMessages.useHls") }}
-													</b-form-checkbox>
-												</div>
-												<div class="settings-box">
-													<label for="hlsType">{{ $t("convertMessages.hlsType") }}</label>
-													<b-form-group>
-														<b-form-radio-group
-															id="hlsType"
-															v-model="convertOptions.hlsType"
-															style="display: flex"
-														>
-															<b-form-radio value="VIDEO_JS">video-js</b-form-radio>
-															<b-form-radio value="HLS_JS">hls-js</b-form-radio>
-														</b-form-radio-group>
-													</b-form-group>
-												</div>
-												<div class="settings-box">
-													<label for="videoCoderAudioDelay">{{
-														$t("convertMessages.config.audioSection.videoCoderAudioDelay")
-													}}</label>
-													<input
-														id="videoCoderAudioDelay"
-														v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay"
-														type="number"
-													/>
-												</div>
-												<div class="settings-box">
-													<div>
-														<label for="audioCoderBitRate">{{
-															$t("convertMessages.config.audioSection.audioCoderBitRate")
-														}}</label>
-														<input
-															id="audioCoderBitRate"
-															type="number"
-															min="0"
-															oninput="validity.valid||(value='');"
-															v-model.number="convertOptions.config.audioSection.audioCoderBitRate"
-														/>
-													</div>
-													<div>
-														<label for="videoCoderBitRate">{{
-															$t("convertMessages.config.audioSection.videoCoderBitRate")
-														}}</label>
-														<input
-															id="videoCoderBitRate"
-															type="number"
-															min="0"
-															oninput="validity.valid||(value='');"
-															v-model.number="convertOptions.config.audioSection.videoCoderBitRate"
-														/>
-													</div>
-												</div>
-												<div class="settings-box">
-													<b-form-checkbox v-model="convertOptions.showStatus">
-														{{ $t("convertMessages.showStatus") }}
-													</b-form-checkbox>
-												</div>
-												<div class="settings-box">
-													<label for="pressSpaceInterval">{{
-														$t("convertMessages.pressSpaceInterval")
-													}}</label>
-													<input
-														id="pressSpaceInterval"
-														v-model.number="convertOptions.pressSpaceInterval"
-														type="number"
-													/>
-												</div>
+												<b-tabs v-model="streamingTabConfigIndex" card>
+			
+													<b-tab>
+														<template #title>{{ $t("audioStreamingCfgHeader") }}</template>
+						
+														<b-card-text>
+
+															<div class="settings-box">
+																<div>
+																	<label for="cbr">{{ $t("convertMessages.config.audioSection.cbr") }}</label>
+																	<select id="cbr" v-model="convertOptions.config.audioSection.cbr">
+																		<option v-for="cbr in cbrs">{{ cbr }}</option>
+																	</select>
+																</div>
+															</div>
+															<div class="settings-box">
+																<b-form-checkbox v-model="convertOptions.config.audioSection.vbr">
+																	{{ $t("convertMessages.config.audioSection.vbr") }}
+																</b-form-checkbox>
+																<div>
+																	<label for="vbrQuality">{{
+																		$t("convertMessages.config.audioSection.vbrQuality")
+																	}}</label>
+																	<select
+																		id="vbrQuality"
+																		v-model="convertOptions.config.audioSection.vbrQuality"
+																	>
+																		<option v-for="vbrQuality in vbrQualities">
+																			{{ vbrQuality }}
+																		</option>
+																	</select>
+																</div>
+															</div>
+														</b-card-text>
+													</b-tab>
+
+													<b-tab>
+														<template #title>{{ $t("videoStreamingCfgHeader") }}</template>
+						
+														<b-card-text>
+
+															<div class="settings-box">
+																<b-form-checkbox v-model="convertOptions.useHls">
+																	{{ $t("convertMessages.useHls") }}
+																</b-form-checkbox>
+															</div>
+															<div class="settings-box">
+																<label for="hlsType">{{ $t("convertMessages.hlsType") }}</label>
+																<b-form-group>
+																	<b-form-radio-group
+																		id="hlsType"
+																		v-model="convertOptions.hlsType"
+																		style="display: flex"
+																	>
+																		<b-form-radio value="VIDEO_JS">video-js</b-form-radio>
+																		<b-form-radio value="HLS_JS">hls-js</b-form-radio>
+																	</b-form-radio-group>
+																</b-form-group>
+															</div>
+															<div class="settings-box">
+																<label for="videoCoderAudioDelay">{{
+																	$t("convertMessages.config.audioSection.videoCoderAudioDelay")
+																}}</label>
+																<input
+																	id="videoCoderAudioDelay"
+																	v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay"
+																	type="number"
+																/>
+															</div>
+															<div class="settings-box">
+																<div>
+																	<label for="audioCoderBitRate">{{
+																		$t("convertMessages.config.audioSection.audioCoderBitRate")
+																	}}</label>
+																	<input
+																		id="audioCoderBitRate"
+																		type="number"
+																		min="0"
+																		oninput="validity.valid||(value='');"
+																		v-model.number="convertOptions.config.audioSection.audioCoderBitRate"
+																	/>
+																</div>
+																<div>
+																	<label for="videoCoderBitRate">{{
+																		$t("convertMessages.config.audioSection.videoCoderBitRate")
+																	}}</label>
+																	<input
+																		id="videoCoderBitRate"
+																		type="number"
+																		min="0"
+																		oninput="validity.valid||(value='');"
+																		v-model.number="convertOptions.config.audioSection.videoCoderBitRate"
+																	/>
+																</div>
+															</div>
+															<div class="settings-box">
+																<b-form-checkbox v-model="convertOptions.showStatus">
+																	{{ $t("convertMessages.showStatus") }}
+																</b-form-checkbox>
+															</div>
+															<div class="settings-box">
+																<label for="pressSpaceInterval">{{
+																	$t("convertMessages.pressSpaceInterval")
+																}}</label>
+																<input
+																	id="pressSpaceInterval"
+																	v-model.number="convertOptions.pressSpaceInterval"
+																	type="number"
+																/>
+															</div>
+														</b-card-text>
+													</b-tab>
+												</b-tabs>
 											
 											</b-card-text>
 										</b-tab>
@@ -2744,6 +2762,8 @@
 					wifiProfile: "WiFi profile",
 					stereoMode: "Stereo Mode",
 					streamingCfgHeader: "Streaming",
+					audioStreamingCfgHeader: "Audio",
+					videoStreamingCfgHeader: "Video",
 					playbackCfgHeader: "Playback",
 					emulationCfgHeader: "Emulation",
 					audioCfgHeader: "Audio",
@@ -2860,6 +2880,8 @@
 					wifiProfile: "WiFi Profil",
 					stereoMode: "Stereo Mode",
 					streamingCfgHeader: "Streaming",
+					audioStreamingCfgHeader: "Audio",
+					videoStreamingCfgHeader: "Video",
 					playbackCfgHeader: "Wiedergabe",
 					emulationCfgHeader: "Emulation",
 					audioCfgHeader: "Audio",
@@ -3002,6 +3024,7 @@
 					// Misc.
 					tabIndex: 0,
 					tabConfigIndex: 0,
+					streamingTabConfigIndex: 0,
 					filterTabConfigIndex: 0,
 					residFilterModelTabConfigIndex: 0,
 					filterModelTabConfigIndex: 0,
