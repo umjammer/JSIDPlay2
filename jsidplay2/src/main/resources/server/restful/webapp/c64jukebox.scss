@@ -104,6 +104,17 @@ div i {
 	padding: 2px;
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: end;
+}
+
+.right {
+	float: right;
+	text-align: end;
+	width: auto !important;
+}
+
+.setting {
+	border-bottom: 1px dashed lightgray;
 }
 
 label {
