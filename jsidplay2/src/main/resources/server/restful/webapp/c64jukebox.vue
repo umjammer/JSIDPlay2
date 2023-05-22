@@ -85,36 +85,40 @@
                 <b-card-text>
                   <div class="settings-box">
                     <div class="button-box">
-                      <b-button size="sm" variant="outline-primary" v-on:click="setDefaultUser">
+                      <b-button size="sm" variant="success" v-on:click="setDefaultUser">
                         <span>{{ $t("setDefaultUser") }}</span></b-button
                       >
                     </div>
                   </div>
                   <div class="settings-box">
-                    <div>
-                      <label for="username">{{ $t("username") }}</label>
-                      <input
-                        type="text"
-                        id="username"
-                        v-model="username"
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                      />
+                    <div class="setting">
+                      <label for="username"
+                        >{{ $t("username") }}
+                        <input
+                          type="text"
+                          id="username"
+                          class="right"
+                          v-model="username"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                      /></label>
                     </div>
-                    <div>
-                      <label for="password">{{ $t("password") }}</label>
-                      <input
-                        type="password"
-                        id="password"
-                        v-model="password"
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                        v-on:blur="fetchDirectory(rootDir)"
-                      />
+                    <div class="setting">
+                      <label for="password"
+                        >{{ $t("password") }}
+                        <input
+                          type="password"
+                          id="password"
+                          class="right"
+                          v-model="password"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                          v-on:blur="fetchDirectory(rootDir)"
+                      /></label>
                     </div>
                   </div>
                   <p style="text-align: center; font-size: smaller; padding: 16px">
@@ -1204,7 +1208,7 @@
                       <span class="setting">
                         <b-button
                           size="sm"
-                          variant="secondary"
+                          variant="success"
                           v-on:click="
                             HardwareFunctions.init = init_hardsid;
                             HardwareFunctions.reset = reset_hardsid;
@@ -1228,7 +1232,7 @@
                       <span class="setting">
                         <b-button
                           size="sm"
-                          variant="secondary"
+                          variant="success"
                           v-on:click="
                             HardwareFunctions.init = init_exsid;
                             HardwareFunctions.reset = reset_exsid;
@@ -1259,7 +1263,7 @@
                     	<span class="setting">
 							<b-button
 								size="sm"
-								variant="secondary"
+								variant="success"
 								v-on:click="
 									HardwareFunctions.init = init_sidblaster;
 									HardwareFunctions.reset = reset_sidblaster;
