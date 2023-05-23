@@ -1996,7 +1996,7 @@
                             <template #title>{{ $t("residFpFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="filterModelTabConfigIndex" card>
+                              <b-tabs v-model="residFpFilterModelTabConfigIndex" card>
                                 <b-tab>
                                   <template #title>{{ $t("residFpFilter6581CfgHeader") }}</template>
 
@@ -2112,7 +2112,7 @@
                             <template #title>{{ $t("residFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="filterModelTabConfigIndex" card>
+                              <b-tabs v-model="residFilterModelTabConfigIndex" card>
                                 <b-tab>
                                   <template #title>{{ $t("residFilter6581CfgHeader") }}</template>
 
@@ -3018,8 +3018,8 @@
           tabConfigIndex: 0,
           streamingTabConfigIndex: 0,
           filterTabConfigIndex: 0,
+          residFpFilterModelTabConfigIndex: 0,
           residFilterModelTabConfigIndex: 0,
-          filterModelTabConfigIndex: 0,
           loadingSid: false,
           loadingStil: false,
           loadingAssembly64: false,
