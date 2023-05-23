@@ -1705,16 +1705,15 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting"
-                            ><label for="detectPSID64ChipModel"
-                              ><b-form-checkbox
+                            ><label for="detectPSID64ChipModel">
+                              {{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
+                              <b-form-checkbox
                                 id="detectPSID64ChipModel"
                                 class="right"
                                 v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
                               >
-                                {{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
                               </b-form-checkbox></label
-                            ></span
-                          >
+                          ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting"
