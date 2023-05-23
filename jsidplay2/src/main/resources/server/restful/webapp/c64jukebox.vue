@@ -1785,45 +1785,47 @@
                           <span class="setting">
                             <label for="startTime">
                               {{ $t("convertMessages.config.sidplay2Section.startTime") }}
-                              <b-form-timepicker
-                                id="startTime"
-                                class="right"
-                                v-model="convertOptions.config.sidplay2Section.startTime"
-                              /> </label
-                          ></span>
+                            </label>
+                            <b-form-timepicker
+                              id="startTime"
+                              class="right"
+                              v-model="convertOptions.config.sidplay2Section.startTime"
+                            />
+                          </span>
                         </div>
                         <div class="settings-box">
                           <span class="setting"
                             ><label for="defaultPlayLength"
                               >{{ $t("convertMessages.config.sidplay2Section.defaultPlayLength") }}
-                              <b-form-timepicker
-                                id="defaultPlayLength"
-                                class="right"
-                                v-model="convertOptions.config.sidplay2Section.defaultPlayLength"
-                              /> </label
-                          ></span>
+                            </label>
+                            <b-form-timepicker
+                              id="defaultPlayLength"
+                              class="right"
+                              v-model="convertOptions.config.sidplay2Section.defaultPlayLength"
+                            />
+                          </span>
                         </div>
                         <div class="settings-box">
                           <span class="setting">
                             <label for="fadeInTime"
                               >{{ $t("convertMessages.config.sidplay2Section.fadeInTime") }}
-                              <b-form-timepicker
-                                id="fadeInTime"
-                                class="right"
-                                v-model="convertOptions.config.sidplay2Section.fadeInTime"
-                              /> </label
-                          ></span>
+                            </label>
+                            <b-form-timepicker
+                              id="fadeInTime"
+                              class="right"
+                              v-model="convertOptions.config.sidplay2Section.fadeInTime"
+                          /></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting"
                             ><label for="fadeOutTime"
                               >{{ $t("convertMessages.config.sidplay2Section.fadeOutTime") }}
-                              <b-form-timepicker
-                                id="fadeOutTime"
-                                class="right"
-                                v-model="convertOptions.config.sidplay2Section.fadeOutTime"
-                              /> </label
-                          ></span>
+                            </label>
+                            <b-form-timepicker
+                              id="fadeOutTime"
+                              class="right"
+                              v-model="convertOptions.config.sidplay2Section.fadeOutTime"
+                          /></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting"
