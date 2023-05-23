@@ -91,7 +91,7 @@
                     </div>
                   </div>
                   <div class="settings-box">
-                    <div class="setting">
+                    <span class="setting">
                       <label for="username"
                         >{{ $t("username") }}
                         <input
@@ -104,10 +104,10 @@
                           autocapitalize="off"
                           spellcheck="false"
                       /></label>
-                    </div>
+                    </span>
                   </div>
                   <div class="settings-box">
-                    <div class="setting">
+                    <span class="setting">
                       <label for="password"
                         >{{ $t("password") }}
                         <input
@@ -121,7 +121,7 @@
                           spellcheck="false"
                           v-on:blur="fetchDirectory(rootDir)"
                       /></label>
-                    </div>
+                    </span>
                   </div>
                   <p style="text-align: center; font-size: smaller; padding: 16px">
                     C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
