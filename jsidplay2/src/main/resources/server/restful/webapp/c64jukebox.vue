@@ -969,7 +969,7 @@
                     <b-table striped bordered :items="translatedInfos" :fields="translatedFields">
                       <template #cell(Value)="row">
                         <span
-                          :style="row.item.opacity ? 'opacity: 0.5; line-break: anywhere;' : 'line-break: anywhere;'"
+                          :style="row.item.opacity ? 'opacity: 0.75; line-break: anywhere;' : 'line-break: anywhere;'"
                           >{{ row.item.Value }}</span
                         >
                       </template>
