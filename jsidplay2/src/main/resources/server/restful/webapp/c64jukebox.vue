@@ -105,6 +105,8 @@
                           spellcheck="false"
                       /></label>
                     </div>
+                  </div>
+                  <div class="settings-box">
                     <div class="setting">
                       <label for="password"
                         >{{ $t("password") }}
@@ -1422,6 +1424,8 @@
                                       oninput="validity.valid||(value='');"
                                       v-model.number="convertOptions.config.audioSection.audioCoderBitRate" /></label
                                 ></span>
+                              </div>
+                              <div class="settings-box">
                                 <span class="setting"
                                   ><label for="videoCoderBitRate"
                                     >{{ $t("convertMessages.config.audioSection.videoCoderBitRate") }}
