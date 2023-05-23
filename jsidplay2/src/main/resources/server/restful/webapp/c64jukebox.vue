@@ -969,13 +969,13 @@
                     <b-table striped bordered :items="translatedInfos" :fields="translatedFields">
                       <template #cell(Value)="row">
                         <span
-                          :style="row.item.opacity ? 'opacity: 0.75; line-break: anywhere;' : 'line-break: anywhere;'"
+                          :style="row.item.opacity ? 'opacity: 0.25; line-break: anywhere;' : 'line-break: anywhere;'"
                           >{{ row.item.Value }}</span
                         >
                       </template>
                     </b-table>
                     <div class="picture-container">
-                      <b-img :src="picture" id="img" class="picture" fluid> </b-img>
+                      <b-img :src="picture" id="img" class="picture" rounded="circle" fluid> </b-img>
                     </div>
                   </div>
                 </b-card-text>
