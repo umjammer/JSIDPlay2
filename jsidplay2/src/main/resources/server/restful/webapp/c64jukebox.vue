@@ -1162,6 +1162,17 @@
                   <p>
                     <b> {{ $t("STREAMING_NOTES") }} </b>
                   </p>
+                  <p>
+                    <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
+
+                    <a
+                      href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
+                      target="_blank"
+                    >
+                      <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
+                    >.
+                    <b-img-lazy src="/static/images/usbc.jpg" alt="HardSID4U" block center fluid />
+                  </p>
                   <div style="padding-top: 48px">
                     <div>
                       <b-img-lazy src="/static/images/hardsid4u.jpeg" alt="HardSID4U" block center fluid />
@@ -1228,7 +1239,7 @@
                   </div>
                   <div style="padding-top: 48px">
                     <div>
-                      <b-img-lazy src="/static/images/exsid.jpg" alt="ExSID" block center fluid />
+                      <b-img-lazy src="/static/images/exsid.jpg" width="300px" height="200px" alt="ExSID" block center fluid />
                     </div>
                     <div class="settings-box">
                       <span class="setting">
@@ -1280,17 +1291,6 @@
 							</b-button></span>
 						</div>
 					</div-->
-                  <p style="padding-top: 48px">
-                    <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
-
-                    <a
-                      href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
-                      target="_blank"
-                    >
-                      <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
-                    >.
-                    <b-img-lazy src="/static/images/usbc.jpg" alt="HardSID4U" block center fluid />
-                  </p>
                 </b-card-text>
               </b-tab>
               <b-tab>
@@ -1308,7 +1308,7 @@
                     </div>
                   </div>
 
-                  <b-tabs v-model="tabConfigIndex" card>
+                  <b-tabs v-model="tabConfigIndex" card align="right">
                     <b-tab>
                       <template #title>{{ $t("streamingCfgHeader") }}</template>
 
@@ -1326,7 +1326,7 @@
                           </div>
                         </div>
 
-                        <b-tabs v-model="streamingTabConfigIndex" card>
+                        <b-tabs v-model="streamingTabConfigIndex" card align="right">
                           <b-tab>
                             <template #title>{{ $t("audioStreamingCfgHeader") }}</template>
 
@@ -1991,12 +1991,12 @@
                       <template #title>{{ $t("filterCfgHeader") }}</template>
 
                       <b-card-text>
-                        <b-tabs v-model="filterTabConfigIndex" card>
+                        <b-tabs v-model="filterTabConfigIndex" card align="right">
                           <b-tab>
                             <template #title>{{ $t("residFpFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="residFpFilterModelTabConfigIndex" card>
+                              <b-tabs v-model="residFpFilterModelTabConfigIndex" card align="right">
                                 <b-tab>
                                   <template #title>{{ $t("residFpFilter6581CfgHeader") }}</template>
 
@@ -2112,7 +2112,7 @@
                             <template #title>{{ $t("residFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="residFilterModelTabConfigIndex" card>
+                              <b-tabs v-model="residFilterModelTabConfigIndex" card align="right">
                                 <b-tab>
                                   <template #title>{{ $t("residFilter6581CfgHeader") }}</template>
 
@@ -3288,7 +3288,7 @@
               filename.endsWith(".pjp") ||
               filename.endsWith(".png") ||
               filename.endsWith(".svg")
-            );
+            ) && !filename.endsWith("small.jpg");
           },
           isValidStil: function (entry) {
             return entry.name || entry.author || entry.title || entry.artist || entry.comment;
