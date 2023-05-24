@@ -661,7 +661,13 @@
                       </div>
                     </template>
                     <template #head(actions)="row">
-                      <span></span>
+		                <b-button
+		                  size="sm"
+		                  variant="secondary"
+		                  @click="(event) => {resetSearchResults(event); requestSearchResults(event);}"
+		                >
+		                  <i class="fas fa-eraser"></i>
+		                </b-button>
                     </template>
                     <template #cell(actions)="row">
                       <b-button
@@ -4014,6 +4020,14 @@
                 console.log(error);
               })
               .finally(() => (this.loadingAssembly64 = false));
+          },
+          resetSearchResults: function (event) {
+              this.name = "";
+              this.category = "";
+              this.event = "";
+              this.released = "";
+              this.rating = "";
+              this.handle = "";
           },
           requestSearchResults: function (event, token) {
             var url = this.assembly64SearchUrl(token);
