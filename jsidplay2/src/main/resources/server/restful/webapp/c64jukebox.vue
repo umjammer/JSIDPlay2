@@ -171,11 +171,7 @@
                   ></b-spinner>
                 </template>
 
-                <b-button
-                  size="sm"
-                  variant="success"
-                  v-on:click="fetchDirectory(rootDir)"
-                >
+                <b-button size="sm" variant="success" v-on:click="fetchDirectory(rootDir)">
                   <i class="fas fa-home"></i>
                 </b-button>
 
@@ -661,22 +657,22 @@
                       </div>
                     </template>
                     <template #head(actions)="row">
-		                <b-button
-		                  size="xsm"
-		                  style="padding: 0px"
-		                  variant="secondary"
-		                  @click="(event) => {resetSearchResults(event); requestSearchResults(event);}"
-		                >
-		                  <i class="fas fa-eraser"></i>
-		                </b-button>
+                      <b-button
+                        size="xsm"
+                        style="padding: 0px"
+                        variant="secondary"
+                        @click="
+                          (event) => {
+                            resetSearchResults(event);
+                            requestSearchResults(event);
+                          }
+                        "
+                      >
+                        <i class="fas fa-eraser"></i>
+                      </b-button>
                     </template>
                     <template #cell(actions)="row">
-                      <b-button
-                        size="sm"
-                        @click="requestContentEntries(row.item)"
-                        class="mr-1"
-                        style="padding: 0"
-                      >
+                      <b-button size="sm" @click="requestContentEntries(row.item)" class="mr-1" style="padding: 0">
                         <i :class="row.detailsShowing ? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
                       </b-button>
                     </template>
@@ -1254,7 +1250,15 @@
                   </div>
                   <div style="padding-top: 48px">
                     <div>
-                      <b-img-lazy src="/static/images/exsid.jpg" width="300px" height="200px" alt="ExSID" block center fluid />
+                      <b-img-lazy
+                        src="/static/images/exsid.jpg"
+                        width="300px"
+                        height="200px"
+                        alt="ExSID"
+                        block
+                        center
+                        fluid
+                      />
                     </div>
                     <div class="settings-box">
                       <span class="setting">
@@ -1323,7 +1327,13 @@
                     </div>
                   </div>
 
-                  <b-tabs v-model="tabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
+                  <b-tabs
+                    v-model="tabConfigIndex"
+                    active-nav-item-class="font-weight-bold text-italic"
+                    pills
+                    card
+                    align="right"
+                  >
                     <b-tab>
                       <template #title>{{ $t("streamingCfgHeader") }}</template>
 
@@ -1341,7 +1351,13 @@
                           </div>
                         </div>
 
-                        <b-tabs v-model="streamingTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
+                        <b-tabs
+                          v-model="streamingTabConfigIndex"
+                          active-nav-item-class="font-weight-bold text-italic"
+                          pills
+                          card
+                          align="right"
+                        >
                           <b-tab>
                             <template #title>{{ $t("audioStreamingCfgHeader") }}</template>
 
@@ -2006,12 +2022,24 @@
                       <template #title>{{ $t("filterCfgHeader") }}</template>
 
                       <b-card-text>
-                        <b-tabs v-model="filterTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
+                        <b-tabs
+                          v-model="filterTabConfigIndex"
+                          active-nav-item-class="font-weight-bold text-italic"
+                          pills
+                          card
+                          align="right"
+                        >
                           <b-tab>
                             <template #title>{{ $t("residFpFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="residFpFilterModelTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
+                              <b-tabs
+                                v-model="residFpFilterModelTabConfigIndex"
+                                active-nav-item-class="font-weight-bold text-italic"
+                                pills
+                                card
+                                align="right"
+                              >
                                 <b-tab>
                                   <template #title>{{ $t("residFpFilter6581CfgHeader") }}</template>
 
@@ -2127,7 +2155,13 @@
                             <template #title>{{ $t("residFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="residFilterModelTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
+                              <b-tabs
+                                v-model="residFilterModelTabConfigIndex"
+                                active-nav-item-class="font-weight-bold text-italic"
+                                pills
+                                card
+                                align="right"
+                              >
                                 <b-tab>
                                   <template #title>{{ $t("residFilter6581CfgHeader") }}</template>
 
@@ -3292,18 +3326,19 @@
           isPicture: function (entry) {
             let filename = entry.filename.toLowerCase();
             return (
-              filename.endsWith(".apng") ||
-              filename.endsWith(".gif") ||
-              filename.endsWith(".ico") ||
-              filename.endsWith(".cur") ||
-              filename.endsWith(".jpg") ||
-              filename.endsWith(".jpeg") ||
-              filename.endsWith(".jfif") ||
-              filename.endsWith(".pjpeg") ||
-              filename.endsWith(".pjp") ||
-              filename.endsWith(".png") ||
-              filename.endsWith(".svg")
-            ) && !filename.endsWith("small.jpg");
+              (filename.endsWith(".apng") ||
+                filename.endsWith(".gif") ||
+                filename.endsWith(".ico") ||
+                filename.endsWith(".cur") ||
+                filename.endsWith(".jpg") ||
+                filename.endsWith(".jpeg") ||
+                filename.endsWith(".jfif") ||
+                filename.endsWith(".pjpeg") ||
+                filename.endsWith(".pjp") ||
+                filename.endsWith(".png") ||
+                filename.endsWith(".svg")) &&
+              !filename.endsWith("small.jpg")
+            );
           },
           isValidStil: function (entry) {
             return entry.name || entry.author || entry.title || entry.artist || entry.comment;
@@ -4023,12 +4058,12 @@
               .finally(() => (this.loadingAssembly64 = false));
           },
           resetSearchResults: function (event) {
-              this.name = "";
-              this.category = "";
-              this.event = "";
-              this.released = "";
-              this.rating = "";
-              this.handle = "";
+            this.name = "";
+            this.category = "";
+            this.event = "";
+            this.released = "";
+            this.rating = "";
+            this.handle = "";
           },
           requestSearchResults: function (event, token) {
             var url = this.assembly64SearchUrl(token);
