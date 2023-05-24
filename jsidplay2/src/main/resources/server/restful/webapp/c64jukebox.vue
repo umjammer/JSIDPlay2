@@ -662,7 +662,8 @@
                     </template>
                     <template #head(actions)="row">
 		                <b-button
-		                  size="sm"
+		                  size="xsm"
+		                  style="padding: 0px"
 		                  variant="secondary"
 		                  @click="(event) => {resetSearchResults(event); requestSearchResults(event);}"
 		                >
