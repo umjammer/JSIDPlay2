@@ -374,14 +374,11 @@
 					    if (this.hls) {
 							if ("$hlsType" === "VIDEO_JS") {
 								var video = videojs("video-container");
-								video.currentTime(video.currentTime() + video.bufferedEnd());
+								video.currentTime(video.bufferedEnd());
 							} else if ("$hlsType" === "HLS_JS") {
 								var video = document.getElementById("video-container");
-								video.currentTime = video.currentTime + video.duration;
+								video.currentTime = video.duration;
 							}
-							// https://css-tricks.com/lets-create-a-custom-audio-player/
-							// const bufferedAmount = audio.buffered.end(audio.buffered.length - 1);
-							// const seekableAmount = audio.seekable.end(audio.seekable.length - 1);
 					    }
 					},
 					currentTime: function () {

@@ -78,7 +78,7 @@
         </div>
         <div>
           <b-card no-body>
-            <b-tabs v-model="tabIndex" card>
+            <b-tabs v-model="tabIndex" active-nav-item-class="font-weight-bold text-italic" pills card>
               <b-tab>
                 <template #title>{{ $t("CON") }}</template>
 
@@ -170,6 +170,14 @@
                     "
                   ></b-spinner>
                 </template>
+
+                <b-button
+                  size="sm"
+                  variant="success"
+                  v-on:click="fetchDirectory(rootDir)"
+                >
+                  <i class="fas fa-home"></i>
+                </b-button>
 
                 <span
                   style="
@@ -660,7 +668,7 @@
                         size="sm"
                         @click="requestContentEntries(row.item)"
                         class="mr-1"
-                        style="padding: 0.1rem 0.1rem"
+                        style="padding: 0"
                       >
                         <i :class="row.detailsShowing ? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
                       </b-button>
@@ -1308,25 +1316,25 @@
                     </div>
                   </div>
 
-                  <b-tabs v-model="tabConfigIndex" card align="right">
+                  <b-tabs v-model="tabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
                     <b-tab>
                       <template #title>{{ $t("streamingCfgHeader") }}</template>
 
                       <b-card-text>
                         <div class="settings-box">
                           <div class="button-box">
-                            <b-button variant="success" v-on:click="mobileProfile">
+                            <b-button size="sm" variant="success" v-on:click="mobileProfile">
                               <i class="fas fa-mobile"></i>
                               <span>{{ $t("mobileProfile") }}</span></b-button
                             >
-                            <b-button variant="success" v-on:click="wifiProfile">
+                            <b-button size="sm" variant="success" v-on:click="wifiProfile">
                               <i class="fas fa-wifi"></i>
                               <span>{{ $t("wifiProfile") }}</span></b-button
                             >
                           </div>
                         </div>
 
-                        <b-tabs v-model="streamingTabConfigIndex" card align="right">
+                        <b-tabs v-model="streamingTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
                           <b-tab>
                             <template #title>{{ $t("audioStreamingCfgHeader") }}</template>
 
@@ -1575,25 +1583,6 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting"
-                            ><label for="sidToRead"
-                              >{{ $t("convertMessages.config.emulationSection.sidToRead") }}
-
-                              <b-form-group class="right">
-                                <b-form-radio-group
-                                  id="sidToRead"
-                                  v-model="convertOptions.config.emulationSection.sidToRead"
-                                  style="display: flex"
-                                >
-                                  <b-form-radio value="FIRST_SID">{{ $t("firstSid") }}</b-form-radio>
-                                  <b-form-radio value="SECOND_SID">{{ $t("secondSid") }}</b-form-radio>
-                                  <b-form-radio value="THIRD_SID">{{ $t("thirdSid") }}</b-form-radio>
-                                </b-form-radio-group>
-                              </b-form-group>
-                            </label></span
-                          >
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting"
                             ><label for="defaultClockSpeed"
                               >{{ $t("convertMessages.config.emulationSection.defaultClockSpeed") }}
                               <b-form-group>
@@ -1697,6 +1686,18 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting"
+                            ><label for="detectPSID64ChipModel">
+                              {{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
+                              <b-form-checkbox
+                                id="detectPSID64ChipModel"
+                                class="right"
+                                v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
+                              >
+                              </b-form-checkbox></label
+                          ></span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting"
                             ><label for="fakeStereo">
                               {{ $t("convertMessages.config.emulationSection.fakeStereo") }}
                               <b-form-checkbox
@@ -1709,15 +1710,22 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting"
-                            ><label for="detectPSID64ChipModel">
-                              {{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
-                              <b-form-checkbox
-                                id="detectPSID64ChipModel"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
+                            ><label for="sidToRead"
+                              >{{ $t("convertMessages.config.emulationSection.sidToRead") }}
+
+                              <b-form-group class="right">
+                                <b-form-radio-group
+                                  id="sidToRead"
+                                  v-model="convertOptions.config.emulationSection.sidToRead"
+                                  style="display: flex"
+                                >
+                                  <b-form-radio value="FIRST_SID">{{ $t("firstSid") }}</b-form-radio>
+                                  <b-form-radio value="SECOND_SID">{{ $t("secondSid") }}</b-form-radio>
+                                  <b-form-radio value="THIRD_SID">{{ $t("thirdSid") }}</b-form-radio>
+                                </b-form-radio-group>
+                              </b-form-group>
+                            </label></span
+                          >
                         </div>
                         <div class="settings-box">
                           <span class="setting"
@@ -1991,12 +1999,12 @@
                       <template #title>{{ $t("filterCfgHeader") }}</template>
 
                       <b-card-text>
-                        <b-tabs v-model="filterTabConfigIndex" card align="right">
+                        <b-tabs v-model="filterTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
                           <b-tab>
                             <template #title>{{ $t("residFpFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="residFpFilterModelTabConfigIndex" card align="right">
+                              <b-tabs v-model="residFpFilterModelTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
                                 <b-tab>
                                   <template #title>{{ $t("residFpFilter6581CfgHeader") }}</template>
 
@@ -2112,7 +2120,7 @@
                             <template #title>{{ $t("residFilterCfgHeader") }}</template>
 
                             <b-card-text>
-                              <b-tabs v-model="residFilterModelTabConfigIndex" card align="right">
+                              <b-tabs v-model="residFilterModelTabConfigIndex" active-nav-item-class="font-weight-bold text-italic" pills card align="right">
                                 <b-tab>
                                   <template #title>{{ $t("residFilter6581CfgHeader") }}</template>
 
