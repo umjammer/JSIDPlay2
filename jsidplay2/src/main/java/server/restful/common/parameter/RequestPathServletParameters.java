@@ -9,8 +9,6 @@ import server.restful.common.converter.RequestPathURLConverter;
 import server.restful.common.converter.WebResourceConverter;
 
 /**
- * <B>Note:</B> Main parameters have been annotated on field level on purpose to
- * support a better usage message.
  * 
  * @author ken
  *
@@ -47,13 +45,13 @@ public abstract class RequestPathServletParameters {
 			this.categoryId = categoryId;
 		}
 
-		@Parameter(descriptionKey = "FILE_PATH")
 		private String filePath;
 
 		public String getFilePath() {
 			return filePath;
 		}
 
+		@Parameter(descriptionKey = "FILE_PATH")
 		public void setFilePath(String filePath) {
 			this.filePath = filePath;
 		}
@@ -68,13 +66,13 @@ public abstract class RequestPathServletParameters {
 	 */
 	public static class DirectoryRequestPathServletParameters extends RequestPathServletParameters {
 
-		@Parameter(descriptionKey = "DIRECTORY")
 		private String directory;
 
 		public String getDirectory() {
 			return directory;
 		}
 
+		@Parameter(descriptionKey = "DIRECTORY")
 		public void setDirectory(String directory) {
 			this.directory = directory;
 		}
@@ -99,13 +97,13 @@ public abstract class RequestPathServletParameters {
 	 */
 	public static class WebResourceRequestPathServletParameters extends RequestPathServletParameters {
 
-		@Parameter(descriptionKey = "RESOURCE", converter = WebResourceConverter.class)
 		private InputStream resource;
 
 		public InputStream getResource() {
 			return resource;
 		}
 
+		@Parameter(descriptionKey = "RESOURCE", converter = WebResourceConverter.class)
 		public void setResource(InputStream resource) {
 			this.resource = resource;
 		}
@@ -120,13 +118,13 @@ public abstract class RequestPathServletParameters {
 	 */
 	public static class URLRequestPathServletParameters extends RequestPathServletParameters {
 
-		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class, required = true)
 		private URL url;
 
 		public URL getUrl() {
 			return url;
 		}
 
+		@Parameter(descriptionKey = "URL", converter = RequestPathURLConverter.class, required = true)
 		public void setUrl(URL url) {
 			this.url = url;
 		}

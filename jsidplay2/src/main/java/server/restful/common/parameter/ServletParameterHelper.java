@@ -33,6 +33,7 @@ import server.restful.servlets.DiskDirectoryServlet.DiskDirectoryServletParamete
 import server.restful.servlets.DownloadServlet.DownloadServletParameters;
 import server.restful.servlets.PhotoServlet.PhotoServletParameters;
 import server.restful.servlets.STILServlet.STILServletParameters;
+import server.restful.servlets.StaticServlet.StaticServletParameters;
 import server.restful.servlets.TuneInfoServlet.TuneInfoServletParameters;
 import server.restful.servlets.hls.OnKeepAliveServlet.OnKeepAliveServletParameters;
 import server.restful.servlets.hls.ProxyServlet.ProxyServletParameters;
@@ -99,33 +100,36 @@ public class ServletParameterHelper {
 	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
 		return new ObjectMapper().addMixIn(OnlineContent.class, OnlineContentMixIn.class)
 				.addMixIn(JSIDPlay2ServerParameters.class, JSIDPlay2ServerParametersMixIn.class)
+				.addMixIn(JSIDPlay2MainParameters.class, JSIDPlay2MainParametersMixIn.class)
 				.addMixIn(ConsolePlayer.class, ConsolePlayerMixIn.class)
 				.addMixIn(FingerPrintingCreator.class, FingerPrintingCreatorMixIn.class)
 				.addMixIn(SIDBlasterTool.class, SIDBlasterToolMixIn.class)
-				.addMixIn(JSIDPlay2MainParameters.class, JSIDPlay2MainParametersMixIn.class)
-				.addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
-				.addMixIn(DiskDirectoryServletParameters.class, DiskDirectoryServletParametersMixIn.class)
-				.addMixIn(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class)
-				.addMixIn(PhotoServletParameters.class, PhotoServletParametersMixIn.class)
-				.addMixIn(ConvertServletParameters.class, ConvertServletParametersMixIn.class)
-				.addMixIn(DownloadServletParameters.class, DownloadServletParametersMixIn.class)
+				//
 				.addMixIn(OnKeepAliveServletParameters.class, OnKeepAliveServletParametersMixIn.class)
+				.addMixIn(ProxyServletParameters.class, ProxyServletParametersMixIn.class)
+				.addMixIn(InsertNextDiskServletParameters.class, InsertNextDiskServletParametersMixIn.class)
+				.addMixIn(JoystickServletParameters.class, JoystickServletParametersMixIn.class)
 				.addMixIn(OnPlayDoneServletParameters.class, OnPlayDoneServletParametersMixIn.class)
 				.addMixIn(OnPlayServletParameters.class, OnPlayServletParametersMixIn.class)
-				.addMixIn(InsertNextDiskServletParameters.class, InsertNextDiskServletParametersMixIn.class)
-				.addMixIn(SetSidModel6581ServletParameters.class, SetSidModel6581ServletParametersMixIn.class)
-				.addMixIn(SetSidModel8580ServletParameters.class, SetSidModel8580ServletParametersMixIn.class)
-				.addMixIn(SetDefaultEmulationReSidServletParameters.class,
-						SetDefaultEmulationReSidServletParametersMixIn.class)
+				.addMixIn(PressKeyServletParameters.class, PressKeyServletParametersMixIn.class)
 				.addMixIn(SetDefaultEmulationReSidFpServletParameters.class,
 						SetDefaultEmulationReSidFpServletParametersMixIn.class)
-				.addMixIn(PressKeyServletParameters.class, PressKeyServletParametersMixIn.class)
-				.addMixIn(JoystickServletParameters.class, JoystickServletParametersMixIn.class)
-				.addMixIn(ProxyServletParameters.class, ProxyServletParametersMixIn.class)
-				.addMixIn(STILServletParameters.class, STILServletParametersMixIn.class)
-				.addMixIn(HardSIDMappingServletParameters.class, HardSIDMappingServletParametersMixIn.class)
+				.addMixIn(SetDefaultEmulationReSidServletParameters.class,
+						SetDefaultEmulationReSidServletParametersMixIn.class)
+				.addMixIn(SetSidModel6581ServletParameters.class, SetSidModel6581ServletParametersMixIn.class)
+				.addMixIn(SetSidModel8580ServletParameters.class, SetSidModel8580ServletParametersMixIn.class)
 				.addMixIn(ExSIDMappingServletParameters.class, ExSIDMappingServletParametersMixIn.class)
+				.addMixIn(HardSIDMappingServletParameters.class, HardSIDMappingServletParametersMixIn.class)
 				.addMixIn(SIDBlasterMappingServletParameters.class, SIDBlasterMappingServletParametersMixIn.class)
+				.addMixIn(ConvertServletParameters.class, ConvertServletParametersMixIn.class)
+				.addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
+				.addMixIn(DiskDirectoryServletParameters.class, DiskDirectoryServletParametersMixIn.class)
+				.addMixIn(DownloadServletParameters.class, DownloadServletParametersMixIn.class)
+				.addMixIn(PhotoServletParameters.class, PhotoServletParametersMixIn.class)
+				.addMixIn(StaticServletParameters.class, StaticServletParametersMixIn.class)
+				.addMixIn(STILServletParameters.class, STILServletParametersMixIn.class)
+				.addMixIn(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class)
+				//
 				.addMixIn(IniConfig.class, IniConfigMixIn.class)
 				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
 				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)
@@ -135,6 +139,7 @@ public class ServletParameterHelper {
 				.addMixIn(IniConsoleSection.class, IniConsoleSectionMixIn.class)
 				.addMixIn(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class)
 				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class)
+				//
 				.setFilterProvider(new SimpleFilterProvider().addFilter(FILTER_NAME, filter));
 	}
 
@@ -293,6 +298,11 @@ public class ServletParameterHelper {
 	@JsonFilter(FILTER_NAME)
 	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
 	private final class PhotoServletParametersMixIn {
+	}
+
+	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
+	private final class StaticServletParametersMixIn {
 	}
 
 	@JsonFilter(FILTER_NAME)
