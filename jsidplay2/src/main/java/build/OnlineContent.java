@@ -93,16 +93,15 @@ public class OnlineContent {
 		DebugUtil.init();
 		// Parameter classes are being checked for development errors
 		check(OnlineContent.class);
-		check(ConvertServletParameters.class);
-		check(DirectoryServletParameters.class);
-		check(DiskDirectoryServletParameters.class);
-		check(DownloadServletParameters.class);
-		check(PhotoServletParameters.class);
-		check(StaticServletParameters.class);
-		check(STILServletParameters.class);
-		check(TuneInfoServletParameters.class);
+		check(JSIDPlay2ServerParameters.class);
+		check(JSIDPlay2MainParameters.class);
+		check(ConsolePlayer.class);
+		check(FingerPrintingCreator.class);
+		check(SIDBlasterTool.class);
+		//
 		check(OnKeepAliveServletParameters.class);
 		check(ProxyServletParameters.class);
+		//
 		check(InsertNextDiskServletParameters.class);
 		check(JoystickServletParameters.class);
 		check(OnPlayDoneServletParameters.class);
@@ -112,14 +111,19 @@ public class OnlineContent {
 		check(SetDefaultEmulationReSidServletParameters.class);
 		check(SetSidModel6581ServletParameters.class);
 		check(SetSidModel8580ServletParameters.class);
+		//
 		check(ExSIDMappingServletParameters.class);
 		check(HardSIDMappingServletParameters.class);
 		check(SIDBlasterMappingServletParameters.class);
-		check(JSIDPlay2ServerParameters.class);
-		check(ConsolePlayer.class);
-		check(JSIDPlay2MainParameters.class);
-		check(FingerPrintingCreator.class);
-		check(SIDBlasterTool.class);
+		//
+		check(ConvertServletParameters.class);
+		check(DirectoryServletParameters.class);
+		check(DiskDirectoryServletParameters.class);
+		check(DownloadServletParameters.class);
+		check(PhotoServletParameters.class);
+		check(StaticServletParameters.class);
+		check(STILServletParameters.class);
+		check(TuneInfoServletParameters.class);
 	}
 
 	private static final int MAX_ZIP_FILESIZE = 37748736;
