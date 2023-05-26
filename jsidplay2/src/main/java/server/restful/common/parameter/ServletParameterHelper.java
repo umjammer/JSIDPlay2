@@ -107,6 +107,7 @@ public class ServletParameterHelper {
 				//
 				.addMixIn(OnKeepAliveServletParameters.class, OnKeepAliveServletParametersMixIn.class)
 				.addMixIn(ProxyServletParameters.class, ProxyServletParametersMixIn.class)
+				//
 				.addMixIn(InsertNextDiskServletParameters.class, InsertNextDiskServletParametersMixIn.class)
 				.addMixIn(JoystickServletParameters.class, JoystickServletParametersMixIn.class)
 				.addMixIn(OnPlayDoneServletParameters.class, OnPlayDoneServletParametersMixIn.class)
@@ -118,9 +119,11 @@ public class ServletParameterHelper {
 						SetDefaultEmulationReSidServletParametersMixIn.class)
 				.addMixIn(SetSidModel6581ServletParameters.class, SetSidModel6581ServletParametersMixIn.class)
 				.addMixIn(SetSidModel8580ServletParameters.class, SetSidModel8580ServletParametersMixIn.class)
+				//
 				.addMixIn(ExSIDMappingServletParameters.class, ExSIDMappingServletParametersMixIn.class)
 				.addMixIn(HardSIDMappingServletParameters.class, HardSIDMappingServletParametersMixIn.class)
 				.addMixIn(SIDBlasterMappingServletParameters.class, SIDBlasterMappingServletParametersMixIn.class)
+				//
 				.addMixIn(ConvertServletParameters.class, ConvertServletParametersMixIn.class)
 				.addMixIn(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class)
 				.addMixIn(DiskDirectoryServletParameters.class, DiskDirectoryServletParametersMixIn.class)
@@ -132,11 +135,11 @@ public class ServletParameterHelper {
 				//
 				.addMixIn(IniConfig.class, IniConfigMixIn.class)
 				.addMixIn(IniSidplay2Section.class, IniSidplay2SectionMixIn.class)
-				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)
-				.addMixIn(IniEmulationSection.class, IniEmulationSectionMixIn.class)
 				.addMixIn(IniC1541Section.class, IniC1541SectionMixIn.class)
 				.addMixIn(IniPrinterSection.class, IniPrinterSectionMixIn.class)
 				.addMixIn(IniConsoleSection.class, IniConsoleSectionMixIn.class)
+				.addMixIn(IniAudioSection.class, IniAudioSectionMixIn.class)
+				.addMixIn(IniEmulationSection.class, IniEmulationSectionMixIn.class)
 				.addMixIn(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class)
 				.addMixIn(IniFilterSection.class, IniFilterSectionMixIn.class)
 				//

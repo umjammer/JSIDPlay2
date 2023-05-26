@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -92,24 +93,24 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			}
 
 			List<ParameterDescription> arguments = commander.getFields().values().stream()
-					.filter(pd -> !pd.getParameter().hidden() && (Stream.of(Boolean.class, boolean.class)
-							.noneMatch(pd.getParameterized().getType()::equals)
-							|| pd.getParameterized().getParameter().arity() == 1))
-					.sorted(commander.getParameterDescriptionComparator()).collect(Collectors.toList());
+					.filter(pd -> !pd.getParameter().hidden()).sorted(commander.getParameterDescriptionComparator())
+					.collect(Collectors.toList());
 
 			// Query parameters
-			if (arguments.size() > 0) {
+			Iterator<ParameterDescription> it = arguments.iterator();
+			if (it.hasNext()) {
 				urlAsString.append("?");
-				arguments.forEach(parameterDescription -> {
+				while (it.hasNext()) {
+					ParameterDescription parameterDescription = it.next();
 
 					urlAsString.append(getName(parameterDescription.getNames()));
 					urlAsString.append("=");
 					urlAsString.append(getExampleValue(parameterDescription));
 
-					if (!arguments.get(arguments.size() - 1).equals(parameterDescription)) {
+					if (it.hasNext()) {
 						urlAsString.append("&");
 					}
-				});
+				}
 			}
 			URL url = new URL(urlAsString.toString());
 			URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
