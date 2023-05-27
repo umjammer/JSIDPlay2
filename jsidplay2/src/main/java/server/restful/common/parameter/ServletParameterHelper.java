@@ -1,12 +1,12 @@
 package server.restful.common.parameter;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static java.util.Arrays.asList;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -69,67 +69,38 @@ public class ServletParameterHelper {
 
 	private static final String FILTER_NAME = "localizer";
 
+	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
+	private final class FilteredMixIn {
+	}
+
+	private static final List<Class<?>> PARAMETER_CLASSES = asList(OnlineContent.class, JSIDPlay2ServerParameters.class,
+			JSIDPlay2MainParameters.class, ConsolePlayer.class, FingerPrintingCreator.class, SIDBlasterTool.class,
+			//
+
+			OnKeepAliveServletParameters.class, ProxyServletParameters.class,
+			//
+			InsertNextDiskServletParameters.class, JoystickServletParameters.class, OnPlayDoneServletParameters.class,
+			OnPlayServletParameters.class, PressKeyServletParameters.class,
+			SetDefaultEmulationReSidFpServletParameters.class, SetDefaultEmulationReSidServletParameters.class,
+			SetSidModel6581ServletParameters.class, SetSidModel8580ServletParameters.class,
+			//
+			ExSIDMappingServletParameters.class, HardSIDMappingServletParameters.class,
+			SIDBlasterMappingServletParameters.class,
+			//
+			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
+			DownloadServletParameters.class, PhotoServletParameters.class, StaticServletParameters.class,
+			STILServletParameters.class, TuneInfoServletParameters.class);
+
+	private static final List<Class<?>> DELEGATED_PARAMETER_CLASSES = asList(IniConfig.class, IniSidplay2Section.class,
+			IniC1541Section.class, IniPrinterSection.class, IniConsoleSection.class, IniAudioSection.class,
+			IniEmulationSection.class, IniWhatsSidSection.class, IniFilterSection.class);
+
 	public static final String CONVERT_MESSAGES_EN;
 	public static final String CONVERT_MESSAGES_DE;
 	public static final String CONVERT_OPTIONS;
-	private static final Map<Class<?>, Class<?>> SERVLET_PARAMETERS_MIXINS_MAP = new HashMap<>();
-	private static final Map<Class<?>, Class<?>> DELEGATED_CONFIG_MIXINS_MAP = new HashMap<>();
 	static {
 		try {
-			SERVLET_PARAMETERS_MIXINS_MAP.put(OnlineContent.class, OnlineContentMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(JSIDPlay2ServerParameters.class, JSIDPlay2ServerParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(JSIDPlay2MainParameters.class, JSIDPlay2MainParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(ConsolePlayer.class, ConsolePlayerMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(FingerPrintingCreator.class, FingerPrintingCreatorMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(SIDBlasterTool.class, SIDBlasterToolMixIn.class);
-			//
-			SERVLET_PARAMETERS_MIXINS_MAP.put(OnKeepAliveServletParameters.class,
-					OnKeepAliveServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(ProxyServletParameters.class, ProxyServletParametersMixIn.class);
-			//
-			SERVLET_PARAMETERS_MIXINS_MAP.put(InsertNextDiskServletParameters.class,
-					InsertNextDiskServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(JoystickServletParameters.class, JoystickServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(OnPlayDoneServletParameters.class,
-					OnPlayDoneServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(OnPlayServletParameters.class, OnPlayServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(PressKeyServletParameters.class, PressKeyServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(SetDefaultEmulationReSidFpServletParameters.class,
-					SetDefaultEmulationReSidFpServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(SetDefaultEmulationReSidServletParameters.class,
-					SetDefaultEmulationReSidServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(SetSidModel6581ServletParameters.class,
-					SetSidModel6581ServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(SetSidModel8580ServletParameters.class,
-					SetSidModel8580ServletParametersMixIn.class);
-			//
-			SERVLET_PARAMETERS_MIXINS_MAP.put(ExSIDMappingServletParameters.class,
-					ExSIDMappingServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(HardSIDMappingServletParameters.class,
-					HardSIDMappingServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(SIDBlasterMappingServletParameters.class,
-					SIDBlasterMappingServletParametersMixIn.class);
-			//
-			SERVLET_PARAMETERS_MIXINS_MAP.put(ConvertServletParameters.class, ConvertServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(DirectoryServletParameters.class, DirectoryServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(DiskDirectoryServletParameters.class,
-					DiskDirectoryServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(DownloadServletParameters.class, DownloadServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(PhotoServletParameters.class, PhotoServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(StaticServletParameters.class, StaticServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(STILServletParameters.class, STILServletParametersMixIn.class);
-			SERVLET_PARAMETERS_MIXINS_MAP.put(TuneInfoServletParameters.class, TuneInfoServletParametersMixIn.class);
-			// referenced per ParametersDelegate
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniConfig.class, IniConfigMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniSidplay2Section.class, IniSidplay2SectionMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniC1541Section.class, IniC1541SectionMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniPrinterSection.class, IniPrinterSectionMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniConsoleSection.class, IniConsoleSectionMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniAudioSection.class, IniAudioSectionMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniEmulationSection.class, IniEmulationSectionMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniWhatsSidSection.class, IniWhatsSidSectionMixIn.class);
-			DELEGATED_CONFIG_MIXINS_MAP.put(IniFilterSection.class, IniFilterSectionMixIn.class);
-
 			CONVERT_OPTIONS = new ObjectMapper().writerWithDefaultPrettyPrinter()
 					.writeValueAsString(new ConvertServlet.ConvertServletParameters());
 			CONVERT_MESSAGES_EN = createObjectMapper(new BeanParameterLocalizer(Locale.ROOT))
@@ -142,33 +113,28 @@ public class ServletParameterHelper {
 		}
 	}
 
-	public static void check() {
-		for (Class<?> classToCheck : ServletParameterHelper.SERVLET_PARAMETERS_MIXINS_MAP.keySet()) {
-			check(classToCheck);
-		}
-	}
-
-	private static void check(Class<?> servletParameterClass) {
-		try {
-			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
-					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
-			createObjectMapper(new BeanParameterChecker(
-					servletParameterClass.getPackage().getName().startsWith("server.restful.servlets")))
-							.writerWithDefaultPrettyPrinter()
-							.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
-		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
-
 	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		SERVLET_PARAMETERS_MIXINS_MAP.entrySet().stream()
-				.forEach(entry -> objectMapper.addMixIn(entry.getKey(), entry.getValue()));
-		DELEGATED_CONFIG_MIXINS_MAP.entrySet().stream()
-				.forEach(entry -> objectMapper.addMixIn(entry.getKey(), entry.getValue()));
+		PARAMETER_CLASSES.stream().forEach(clz -> objectMapper.addMixIn(clz, FilteredMixIn.class));
+		DELEGATED_PARAMETER_CLASSES.stream().forEach(clz -> objectMapper.addMixIn(clz, FilteredMixIn.class));
 		return objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter(FILTER_NAME, filter));
+	}
+
+	public static void check() {
+		PARAMETER_CLASSES.forEach(servletParameterClass -> {
+			try {
+				Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class)).orElseThrow(
+						() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
+				createObjectMapper(new BeanParameterChecker(
+						servletParameterClass.getPackage().getName().startsWith("server.restful.servlets")))
+						.writerWithDefaultPrettyPrinter()
+						.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
+			} catch (JsonProcessingException | InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+					| SecurityException e) {
+				throw new ExceptionInInitializerError(e);
+			}
+		});
 	}
 
 	private static final class BeanParameterLocalizer extends SimpleBeanPropertyFilter {
@@ -181,7 +147,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-			throws Exception {
+				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null) {
@@ -207,7 +173,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-			throws Exception {
+				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null) {
@@ -276,191 +242,6 @@ public class ServletParameterHelper {
 			}
 		}
 
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class OnlineContentMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class JSIDPlay2ServerParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class ConsolePlayerMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class FingerPrintingCreatorMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class SIDBlasterToolMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class JSIDPlay2MainParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class DirectoryServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class DiskDirectoryServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class TuneInfoServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class PhotoServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class StaticServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class ConvertServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class DownloadServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class OnKeepAliveServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class OnPlayDoneServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class OnPlayServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class InsertNextDiskServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class SetSidModel6581ServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class SetSidModel8580ServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class SetDefaultEmulationReSidServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class SetDefaultEmulationReSidFpServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class PressKeyServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class JoystickServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class ProxyServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class STILServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class HardSIDMappingServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class ExSIDMappingServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class SIDBlasterMappingServletParametersMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniConfigMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniSidplay2SectionMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniAudioSectionMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniEmulationSectionMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniC1541SectionMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniPrinterSectionMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniConsoleSectionMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniWhatsSidSectionMixIn {
-	}
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class IniFilterSectionMixIn {
 	}
 
 }
