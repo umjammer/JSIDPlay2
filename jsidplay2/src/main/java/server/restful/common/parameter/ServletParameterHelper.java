@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.introspect.ClassIntrospector.MixInResolver;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -52,49 +53,11 @@ import server.restful.servlets.sidmapping.ExSIDMappingServlet.ExSIDMappingServle
 import server.restful.servlets.sidmapping.HardSIDMappingServlet.HardSIDMappingServletParameters;
 import server.restful.servlets.sidmapping.SIDBlasterMappingServlet.SIDBlasterMappingServletParameters;
 import sidplay.ConsolePlayer;
-import sidplay.ini.IniAudioSection;
-import sidplay.ini.IniC1541Section;
-import sidplay.ini.IniConfig;
-import sidplay.ini.IniConsoleSection;
-import sidplay.ini.IniEmulationSection;
-import sidplay.ini.IniFilterSection;
-import sidplay.ini.IniPrinterSection;
-import sidplay.ini.IniSidplay2Section;
-import sidplay.ini.IniWhatsSidSection;
 import ui.JSidPlay2Main.JSIDPlay2MainParameters;
 import ui.tools.FingerPrintingCreator;
 import ui.tools.SIDBlasterTool;
 
 public class ServletParameterHelper {
-
-	private static final String FILTER_NAME = "localizer";
-
-	@JsonFilter(FILTER_NAME)
-	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
-	private final class FilteredMixIn {
-	}
-
-	private static final List<Class<?>> PARAMETER_CLASSES = asList(OnlineContent.class, JSIDPlay2ServerParameters.class,
-			JSIDPlay2MainParameters.class, ConsolePlayer.class, FingerPrintingCreator.class, SIDBlasterTool.class,
-			//
-
-			OnKeepAliveServletParameters.class, ProxyServletParameters.class,
-			//
-			InsertNextDiskServletParameters.class, JoystickServletParameters.class, OnPlayDoneServletParameters.class,
-			OnPlayServletParameters.class, PressKeyServletParameters.class,
-			SetDefaultEmulationReSidFpServletParameters.class, SetDefaultEmulationReSidServletParameters.class,
-			SetSidModel6581ServletParameters.class, SetSidModel8580ServletParameters.class,
-			//
-			ExSIDMappingServletParameters.class, HardSIDMappingServletParameters.class,
-			SIDBlasterMappingServletParameters.class,
-			//
-			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
-			DownloadServletParameters.class, PhotoServletParameters.class, StaticServletParameters.class,
-			STILServletParameters.class, TuneInfoServletParameters.class);
-
-	private static final List<Class<?>> DELEGATED_PARAMETER_CLASSES = asList(IniConfig.class, IniSidplay2Section.class,
-			IniC1541Section.class, IniPrinterSection.class, IniConsoleSection.class, IniAudioSection.class,
-			IniEmulationSection.class, IniWhatsSidSection.class, IniFilterSection.class);
 
 	public static final String CONVERT_MESSAGES_EN;
 	public static final String CONVERT_MESSAGES_DE;
@@ -113,12 +76,22 @@ public class ServletParameterHelper {
 		}
 	}
 
-	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		PARAMETER_CLASSES.stream().forEach(clz -> objectMapper.addMixIn(clz, FilteredMixIn.class));
-		DELEGATED_PARAMETER_CLASSES.stream().forEach(clz -> objectMapper.addMixIn(clz, FilteredMixIn.class));
-		return objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter(FILTER_NAME, filter));
-	}
+	private static final List<Class<?>> PARAMETER_CLASSES = asList(OnlineContent.class, JSIDPlay2ServerParameters.class,
+			JSIDPlay2MainParameters.class, ConsolePlayer.class, FingerPrintingCreator.class, SIDBlasterTool.class,
+			//
+			OnKeepAliveServletParameters.class, ProxyServletParameters.class,
+			//
+			InsertNextDiskServletParameters.class, JoystickServletParameters.class, OnPlayDoneServletParameters.class,
+			OnPlayServletParameters.class, PressKeyServletParameters.class,
+			SetDefaultEmulationReSidFpServletParameters.class, SetDefaultEmulationReSidServletParameters.class,
+			SetSidModel6581ServletParameters.class, SetSidModel8580ServletParameters.class,
+			//
+			ExSIDMappingServletParameters.class, HardSIDMappingServletParameters.class,
+			SIDBlasterMappingServletParameters.class,
+			//
+			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
+			DownloadServletParameters.class, PhotoServletParameters.class, StaticServletParameters.class,
+			STILServletParameters.class, TuneInfoServletParameters.class);
 
 	public static void check() {
 		PARAMETER_CLASSES.forEach(servletParameterClass -> {
@@ -135,6 +108,27 @@ public class ServletParameterHelper {
 				throw new ExceptionInInitializerError(e);
 			}
 		});
+	}
+
+	private static final String FILTER_NAME = "localizer";
+
+	@JsonFilter(FILTER_NAME)
+	@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = ANY, setterVisibility = ANY)
+	private final class FilteredMixIn {
+	}
+
+	private static ObjectMapper createObjectMapper(SimpleBeanPropertyFilter filter) {
+		return new ObjectMapper().setMixInResolver(new MixInResolver() {
+			@Override
+			public Class<?> findMixInClassFor(Class<?> cls) {
+				return FilteredMixIn.class;
+			}
+
+			@Override
+			public MixInResolver copy() {
+				return this;
+			}
+		}).setFilterProvider(new SimpleFilterProvider().addFilter(FILTER_NAME, filter));
 	}
 
 	private static final class BeanParameterLocalizer extends SimpleBeanPropertyFilter {
