@@ -57,6 +57,13 @@ import ui.JSidPlay2Main.JSIDPlay2MainParameters;
 import ui.tools.FingerPrintingCreator;
 import ui.tools.SIDBlasterTool;
 
+/**
+ * Provides parameter default values and localization of ConvertServlet as well
+ * as parameter checks to spot development errors.
+ * 
+ * @author ken
+ *
+ */
 public class ServletParameterHelper {
 
 	public static final String CONVERT_MESSAGES_EN;
@@ -76,10 +83,12 @@ public class ServletParameterHelper {
 		}
 	}
 
-	private static final List<Class<?>> PARAMETER_CLASSES = asList(OnlineContent.class, JSIDPlay2ServerParameters.class,
-			JSIDPlay2MainParameters.class, ConsolePlayer.class, FingerPrintingCreator.class, SIDBlasterTool.class,
-			//
-			OnKeepAliveServletParameters.class, ProxyServletParameters.class,
+	private static final List<Class<?>> MAIN_PARAMETER_CLASSES = asList(OnlineContent.class,
+			JSIDPlay2ServerParameters.class, JSIDPlay2MainParameters.class, ConsolePlayer.class,
+			FingerPrintingCreator.class, SIDBlasterTool.class);
+
+	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(OnKeepAliveServletParameters.class,
+			ProxyServletParameters.class,
 			//
 			InsertNextDiskServletParameters.class, JoystickServletParameters.class, OnPlayDoneServletParameters.class,
 			OnPlayServletParameters.class, PressKeyServletParameters.class,
@@ -94,20 +103,21 @@ public class ServletParameterHelper {
 			STILServletParameters.class, TuneInfoServletParameters.class);
 
 	public static void check() {
-		PARAMETER_CLASSES.forEach(servletParameterClass -> {
-			try {
-				Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class)).orElseThrow(
-						() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
-				createObjectMapper(new BeanParameterChecker(
-						servletParameterClass.getPackage().getName().startsWith("server.restful.servlets")))
-						.writerWithDefaultPrettyPrinter()
-						.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
-			} catch (JsonProcessingException | InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-					| SecurityException e) {
-				throw new ExceptionInInitializerError(e);
-			}
-		});
+		MAIN_PARAMETER_CLASSES.forEach(clz -> check(clz, new BeanParameterChecker(false)));
+		SERVLET_PARAMETER_CLASSES.forEach(clz -> check(clz, new BeanParameterChecker(true)));
+	}
+
+	private static void check(Class<?> servletParameterClass, SimpleBeanPropertyFilter filter)
+			throws ExceptionInInitializerError {
+		try {
+			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
+					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
+			createObjectMapper(filter).writerWithDefaultPrettyPrinter()
+					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
+		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			throw new ExceptionInInitializerError(e);
+		}
 	}
 
 	private static final String FILTER_NAME = "localizer";
