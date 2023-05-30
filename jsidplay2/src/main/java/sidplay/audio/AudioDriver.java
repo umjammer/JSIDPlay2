@@ -85,6 +85,9 @@ public interface AudioDriver {
 		return null;
 	}
 
+	/**
+	 * @return concrete audio driver, if proxied
+	 */
 	default <T extends AudioDriver> Optional<T> lookup(Class<T> clz) {
 		if (clz.isInstance(this)) {
 			return Optional.of(clz.cast(this));
