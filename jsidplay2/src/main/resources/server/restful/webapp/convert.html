@@ -1,649 +1,634 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<style lang="scss" scoped>
-			@import "/static/convert.scss";
-		</style>
-		<link href="/static/video.js@7.19.2/dist/video-js.min.css" rel="stylesheet" />
-		<!-- favicon.ico -->
-		<link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
-		<link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
-		<link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
+  <head>
+    <style lang="scss" scoped>
+      @import "/static/convert.scss";
+    </style>
+    <link href="/static/video.js@7.19.2/dist/video-js.min.css" rel="stylesheet" />
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
-		<!-- Load required Bootstrap and BootstrapVue CSS -->
-		<link type="text/css" rel="stylesheet" href="/static/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
-		<link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.css" />
-		<link type="text/css" rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.min.css" />
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.css" />
+    <link type="text/css" rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.min.css" />
 
-		<!-- Load Vue followed by BootstrapVue -->
-		<script src="/static/vue@2.6.14/dist/vue.min.js"></script>
-		<script src="/static/vue-router@3.5.4/dist/vue-router.min.js"></script>
-		<script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.js"></script>
+    <!-- Load Vue followed by BootstrapVue -->
+    <script src="/static/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="/static/vue-router@3.5.4/dist/vue-router.min.js"></script>
+    <script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.js"></script>
 
-		<!-- helpers -->
-		<script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>
-		<script src="/static/axios@0.27.2/dist/axios.min.js"></script>
-		<script src="$hlsScript"></script>
+    <!-- helpers -->
+    <script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>
+    <script src="/static/axios@0.27.2/dist/axios.min.js"></script>
+    <script src="$hlsScript"></script>
 
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-		<title>C64 Jukebox</title>
-	</head>
-	<body>
-		<div id="app">
+    <title>C64 Jukebox</title>
+  </head>
+  <body>
+    <div id="app">
+      <div style="margin-top: 20px" v-if="!hls"></div>
 
-			<div
-				style="margin-top: 20px;"
-				v-if="!hls"
-			>
-			</div>
+      <div class="left-button-container">
+        <div class="button-container">
+          <b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm">6581</b-button>
+        </div>
+        <div class="button-container">
+          <b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm">8580</b-button>
+        </div>
+        <div class="button-container">
+          <b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm">RESID</b-button>
+        </div>
+        <div class="button-container">
+          <b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-secondary" size="sm"
+            >RESIDFP</b-button
+          >
+        </div>
+      </div>
 
-			<div class="left-button-container">
-				<div class="button-container">
-					<b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm"
-						>6581</b-button
-					>
-				</div>
-				<div class="button-container">
-					<b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm"
-						>8580</b-button
-					>
-				</div>
-				<div class="button-container">
-					<b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm"
-						>RESID</b-button
-					>
-				</div>
-				<div class="button-container">
-					<b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-secondary" size="sm"
-						>RESIDFP</b-button
-					>
-				</div>
-			</div>
+      <div class="right-button-container">
+        <div>
+          <select v-model="$i18n.locale">
+            <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
+              {{ lang }}
+            </option>
+          </select>
+        </div>
+        <div class="button-container">
+          <b-button v-on:click="insertDisk()" pill variant="outline-secondary" size="sm">{{
+            $t("insertNextDisk")
+          }}</b-button>
+        </div>
+        <div class="button-container">
+          <b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm">Joy1 Btn</b-button>
+        </div>
+        <div class="button-container">
+          <b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm">Joy2 Btn</b-button>
+        </div>
+      </div>
 
-			<div class="right-button-container">
-				<div>
-					<select v-model="$i18n.locale">
-						<option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
-							{{ lang }}
-						</option>
-					</select>
-				</div>
-				<div class="button-container">
-					<b-button v-on:click="insertDisk()" pill variant="outline-secondary" size="sm">{{
-						$t("insertNextDisk")
-					}}</b-button>
-				</div>
-				<div class="button-container">
-					<b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm"
-						>Joy1 Btn</b-button
-					>
-				</div>
-				<div class="button-container">
-					<b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm"
-						>Joy2 Btn</b-button
-					>
-				</div>
-			</div>
+      <div id="playerContainer" class="outer video-wrapper">
+        <video
+          v-if="hls"
+          id="video-container"
+          class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
+          poster="/static/poster.png"
+          controls
+          preload="none"
+        >
+          <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank"> supports HTML5 video </a>
+          </p>
+          I'm sorry. Your browser doesn't support HTML5 video
+        </video>
+      </div>
 
-			<div id="playerContainer" class="outer video-wrapper">
-				<video
-					v-if="hls"
-					id="video-container"
-					class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
-					poster="/static/poster.png"
-					controls
-					preload="none"
-				>
-					<p class="vjs-no-js">
-						To view this video please enable JavaScript, and consider upgrading to a web browser that
-						<a href="https://videojs.com/html5-video-support/" target="_blank"> supports HTML5 video </a>
-					</p>
-					I'm sorry. Your browser doesn't support HTML5 video
-				</video>
-			</div>
-			
-			<div
-				style="width: 320px; height: 200px"
-				v-if="!hls"
-			>
-			</div>
-			
-			<div class="video-bar">
-				<b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right">{{
-					$t("barcode")
-				}}</b-button>
-				<b-button v-b-toggle.collapse-keyboard variant="primary" size="sm">{{ $t("keyboard") }}</b-button>
-			</div>
+      <div style="width: 320px; height: 200px" v-if="!hls"></div>
 
-			<p>
-				{{ msg }}
-			</p>
+      <div class="video-bar">
+        <b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right">{{
+          $t("barcode")
+        }}</b-button>
+        <b-button v-b-toggle.collapse-keyboard variant="primary" size="sm">{{ $t("keyboard") }}</b-button>
+      </div>
 
-			<b-collapse id="collapse-barcode" class="mt-2">
-				<b-card>
-					<b-card-text>
-						<div class="barcode-container">
-							<b-alert v-if="!hls" variant="success" show>{{ $t("mobilePlaybackTip1") }}</b-alert>
-							$qrCodeImgTag
-						</div>
-					</b-card-text>
-				</b-card>
-			</b-collapse>
+      <p>
+        {{ msg }}
+      </p>
 
-			<b-collapse id="collapse-keyboard" class="mt-2">
-				<b-card>
-					<b-card-text>
-						<div class="keyboard">
-							<div class="logo">C= Commodore &nbsp;&nbsp;&nbsp;&nbsp; 64</div>
+      <b-collapse id="collapse-barcode" class="mt-2">
+        <b-card>
+          <b-card-text>
+            <div class="barcode-container">
+              <b-alert v-if="!hls" variant="success" show>{{ $t("mobilePlaybackTip1") }}</b-alert>
+              $qrCodeImgTag
+            </div>
+          </b-card-text>
+        </b-card>
+      </b-collapse>
 
-							<div class="lights">
-								<span>&nbsp;</span>
-							</div>
+      <b-collapse id="collapse-keyboard" class="mt-2">
+        <b-card>
+          <b-card-text>
+            <div class="keyboard">
+              <div class="logo">C= Commodore &nbsp;&nbsp;&nbsp;&nbsp; 64</div>
 
-							<div class="section-a">
-								<div>
-									<div class="key num dual" v-on:click="typeKey('ARROW_LEFT')">&#8592;<br /></div>
+              <div class="lights">
+                <span>&nbsp;</span>
+              </div>
 
-									<div class="key num dual" v-on:click="typeKey('ONE')">!<br />1</div>
-									<div class="key num dual" v-on:click="typeKey('TWO')">&quot;<br />2</div>
-									<div class="key num dual" v-on:click="typeKey('THREE')">#<br />3</div>
-									<div class="key num dual" v-on:click="typeKey('FOUR')">$<br />4</div>
-									<div class="key num dual" v-on:click="typeKey('FIVE')">%<br />5</div>
-									<div class="key num dual" v-on:click="typeKey('SIX')">&amp;<br />6</div>
-									<div class="key num dual" v-on:click="typeKey('SEVEN')">'<br />7</div>
-									<div class="key num dual" v-on:click="typeKey('EIGHT')">(<br />8</div>
-									<div class="key num dual" v-on:click="typeKey('NINE')">)<br />9</div>
-									<div class="key letter" v-on:click="typeKey('ZERO')">0</div>
-									<div class="key letter" v-on:click="typeKey('PLUS')">+</div>
-									<div class="key letter" v-on:click="typeKey('MINUS')">-</div>
-									<div class="key letter" v-on:click="typeKey('POUND')">&#163;</div>
-									<div class="key clr-home" v-on:click="typeKey('CLEAR_HOME')">Clr<br />Home</div>
-									<div class="key ins-del" v-on:click="typeKey('INS_DEL')">Ins<br />Del</div>
+              <div class="section-a">
+                <div>
+                  <div class="key num dual" v-on:click="typeKey('ARROW_LEFT')">&#8592;<br /></div>
 
-									<!--END NUMBER KEYS -->
-								</div>
-								<div>
-									<div class="key tab"
-									v-on:click="toggleCtrl()"
-									:class="(ctrlPressed ? 'uppercase' : '')"
-									>Ctrl</div>
+                  <div class="key num dual" v-on:click="typeKey('ONE')">!<br />1</div>
+                  <div class="key num dual" v-on:click="typeKey('TWO')">&quot;<br />2</div>
+                  <div class="key num dual" v-on:click="typeKey('THREE')">#<br />3</div>
+                  <div class="key num dual" v-on:click="typeKey('FOUR')">$<br />4</div>
+                  <div class="key num dual" v-on:click="typeKey('FIVE')">%<br />5</div>
+                  <div class="key num dual" v-on:click="typeKey('SIX')">&amp;<br />6</div>
+                  <div class="key num dual" v-on:click="typeKey('SEVEN')">'<br />7</div>
+                  <div class="key num dual" v-on:click="typeKey('EIGHT')">(<br />8</div>
+                  <div class="key num dual" v-on:click="typeKey('NINE')">)<br />9</div>
+                  <div class="key letter" v-on:click="typeKey('ZERO')">0</div>
+                  <div class="key letter" v-on:click="typeKey('PLUS')">+</div>
+                  <div class="key letter" v-on:click="typeKey('MINUS')">-</div>
+                  <div class="key letter" v-on:click="typeKey('POUND')">&#163;</div>
+                  <div class="key clr-home" v-on:click="typeKey('CLEAR_HOME')">Clr<br />Home</div>
+                  <div class="key ins-del" v-on:click="typeKey('INS_DEL')">Ins<br />Del</div>
 
-									<div class="key letter" v-on:click="typeKey('Q')">Q</div>
-									<div class="key letter" v-on:click="typeKey('W')">W</div>
-									<div class="key letter" v-on:click="typeKey('E')">E</div>
-									<div class="key letter" v-on:click="typeKey('R')">R</div>
-									<div class="key letter" v-on:click="typeKey('T')">T</div>
-									<div class="key letter" v-on:click="typeKey('Y')">Y</div>
-									<div class="key letter" v-on:click="typeKey('U')">U</div>
-									<div class="key letter" v-on:click="typeKey('I')">I</div>
-									<div class="key letter" v-on:click="typeKey('O')">O</div>
-									<div class="key letter" v-on:click="typeKey('P')">P</div>
-									<div class="key letter" v-on:click="typeKey('AT')">@</div>
-									<div class="key letter" v-on:click="typeKey('STAR')">*</div>
-									<div class="key letter" v-on:click="typeKey('ARROW_UP')">&#8593;</div>
-									<div class="key restore" v-on:click="typeKey('RESTORE')">Restore</div>
-								</div>
-								<div>
-									<div class="key num dual"
-									v-on:click="toggleRunStop()"
-									:class="(runStopPressed ? 'uppercase' : '')"
-									>Rn/St</div>
-									<div class="key num dual"
-									v-on:click="toggleShiftLeft(this)"
-									:class="(shiftLeftPressed ? 'uppercase' : '')"
-									>Sh/Lk</div>
-									<div class="key letter" v-on:click="typeKey('A')">A</div>
-									<div class="key letter" v-on:click="typeKey('S')">S</div>
-									<div class="key letter" v-on:click="typeKey('D')">D</div>
-									<div class="key letter" v-on:click="typeKey('F')">F</div>
-									<div class="key letter" v-on:click="typeKey('G')">G</div>
-									<div class="key letter" v-on:click="typeKey('H')">H</div>
-									<div class="key letter" v-on:click="typeKey('J')">J</div>
-									<div class="key letter" v-on:click="typeKey('K')">K</div>
-									<div class="key letter" v-on:click="typeKey('L')">L</div>
-									<div class="key dual" v-on:click="typeKey('COLON')">:<br />[</div>
-									<div class="key dual" v-on:click="typeKey('SEMICOLON')">;<br />]</div>
-									<div class="key letter" v-on:click="typeKey('EQUALS')">=</div>
-									<div class="key enter" v-on:click="typeKey('RETURN')">Return</div>
-								</div>
-								<div>
-									<div class="key letter"
-									:class="(commodorePressed ? 'uppercase' : '')"
-									v-on:click="toggleCommodore(this)"
-									>c=</div>
-									<div
-										:class="'key shift left' + (shiftLeftPressed ? ' uppercase' : '')"
-										v-on:click="toggleShiftLeft(this)"
-									>
-										Shift
-									</div>
-									<div class="key letter" v-on:click="typeKey('Z')">Z</div>
-									<div class="key letter" v-on:click="typeKey('X')">X</div>
-									<div class="key letter" v-on:click="typeKey('C')">C</div>
-									<div class="key letter" v-on:click="typeKey('V')">V</div>
-									<div class="key letter" v-on:click="typeKey('B')">B</div>
-									<div class="key letter" v-on:click="typeKey('N')">N</div>
-									<div class="key letter" v-on:click="typeKey('M')">M</div>
-									<div class="key dual" v-on:click="typeKey('COMMA')">&lt; <br />,</div>
-									<div class="key dual" v-on:click="typeKey('PERIOD')">&gt;<br />.</div>
-									<div class="key dual" v-on:click="typeKey('SLASH')">?<br />/</div>
-									<div
-										:class="'key shift right' + (shiftRightPressed ? ' uppercase' : '')"
-										v-on:click="toggleShiftRight(this)"
-									>
-										Shift
-									</div>
-									<div class="key dual" v-on:click="typeKey('CURSOR_UP_DOWN')">
-										&#8593;<br />&#8595;
-									</div>
-									<div class="key dual" v-on:click="typeKey('CURSOR_LEFT_RIGHT')">
-										&#8592;<br />&#8594;
-									</div>
-								</div>
-								<div>
-									<div class="key space" v-on:click="typeKey('SPACE')"></div>
-								</div>
-							</div>
-							<!-- end section-a-->
+                  <!--END NUMBER KEYS -->
+                </div>
+                <div>
+                  <div class="key tab" v-on:click="toggleCtrl()" :class="ctrlPressed ? 'uppercase' : ''">Ctrl</div>
 
-							<div class="section-b">
-								<div class="fn-key">
-									<div class="key function" v-on:click="typeKey('F1')">F1</div>
-								</div>
-								<div class="fn-key">
-									<div class="key function" v-on:click="typeKey('F3')">F3</div>
-								</div>
-								<div class="fn-key">
-									<div class="key function" v-on:click="typeKey('F5')">F5</div>
-								</div>
-								<div class="fn-key">
-									<div class="key function" v-on:click="typeKey('F7')">F7</div>
-								</div>
-							</div>
-							<!-- end section-b-->
-						</div>
-					</b-card-text>
-				</b-card>
-			</b-collapse>
+                  <div class="key letter" v-on:click="typeKey('Q')">Q</div>
+                  <div class="key letter" v-on:click="typeKey('W')">W</div>
+                  <div class="key letter" v-on:click="typeKey('E')">E</div>
+                  <div class="key letter" v-on:click="typeKey('R')">R</div>
+                  <div class="key letter" v-on:click="typeKey('T')">T</div>
+                  <div class="key letter" v-on:click="typeKey('Y')">Y</div>
+                  <div class="key letter" v-on:click="typeKey('U')">U</div>
+                  <div class="key letter" v-on:click="typeKey('I')">I</div>
+                  <div class="key letter" v-on:click="typeKey('O')">O</div>
+                  <div class="key letter" v-on:click="typeKey('P')">P</div>
+                  <div class="key letter" v-on:click="typeKey('AT')">@</div>
+                  <div class="key letter" v-on:click="typeKey('STAR')">*</div>
+                  <div class="key letter" v-on:click="typeKey('ARROW_UP')">&#8593;</div>
+                  <div class="key restore" v-on:click="typeKey('RESTORE')">Restore</div>
+                </div>
+                <div>
+                  <div class="key num dual" v-on:click="toggleRunStop()" :class="runStopPressed ? 'uppercase' : ''">
+                    Rn/St
+                  </div>
+                  <div
+                    class="key num dual"
+                    v-on:click="toggleShiftLeft(this)"
+                    :class="shiftLeftPressed ? 'uppercase' : ''"
+                  >
+                    Sh/Lk
+                  </div>
+                  <div class="key letter" v-on:click="typeKey('A')">A</div>
+                  <div class="key letter" v-on:click="typeKey('S')">S</div>
+                  <div class="key letter" v-on:click="typeKey('D')">D</div>
+                  <div class="key letter" v-on:click="typeKey('F')">F</div>
+                  <div class="key letter" v-on:click="typeKey('G')">G</div>
+                  <div class="key letter" v-on:click="typeKey('H')">H</div>
+                  <div class="key letter" v-on:click="typeKey('J')">J</div>
+                  <div class="key letter" v-on:click="typeKey('K')">K</div>
+                  <div class="key letter" v-on:click="typeKey('L')">L</div>
+                  <div class="key dual" v-on:click="typeKey('COLON')">:<br />[</div>
+                  <div class="key dual" v-on:click="typeKey('SEMICOLON')">;<br />]</div>
+                  <div class="key letter" v-on:click="typeKey('EQUALS')">=</div>
+                  <div class="key enter" v-on:click="typeKey('RETURN')">Return</div>
+                </div>
+                <div>
+                  <div
+                    class="key letter"
+                    :class="commodorePressed ? 'uppercase' : ''"
+                    v-on:click="toggleCommodore(this)"
+                  >
+                    c=
+                  </div>
+                  <div
+                    :class="'key shift left' + (shiftLeftPressed ? ' uppercase' : '')"
+                    v-on:click="toggleShiftLeft(this)"
+                  >
+                    Shift
+                  </div>
+                  <div class="key letter" v-on:click="typeKey('Z')">Z</div>
+                  <div class="key letter" v-on:click="typeKey('X')">X</div>
+                  <div class="key letter" v-on:click="typeKey('C')">C</div>
+                  <div class="key letter" v-on:click="typeKey('V')">V</div>
+                  <div class="key letter" v-on:click="typeKey('B')">B</div>
+                  <div class="key letter" v-on:click="typeKey('N')">N</div>
+                  <div class="key letter" v-on:click="typeKey('M')">M</div>
+                  <div class="key dual" v-on:click="typeKey('COMMA')">&lt; <br />,</div>
+                  <div class="key dual" v-on:click="typeKey('PERIOD')">&gt;<br />.</div>
+                  <div class="key dual" v-on:click="typeKey('SLASH')">?<br />/</div>
+                  <div
+                    :class="'key shift right' + (shiftRightPressed ? ' uppercase' : '')"
+                    v-on:click="toggleShiftRight(this)"
+                  >
+                    Shift
+                  </div>
+                  <div class="key dual" v-on:click="typeKey('CURSOR_UP_DOWN')">&#8593;<br />&#8595;</div>
+                  <div class="key dual" v-on:click="typeKey('CURSOR_LEFT_RIGHT')">&#8592;<br />&#8594;</div>
+                </div>
+                <div>
+                  <div class="key space" v-on:click="typeKey('SPACE')"></div>
+                </div>
+              </div>
+              <!-- end section-a-->
 
-			<h3>{{ $t("infosHeader") }}</h3>
-			<ul>
-				<li>{{ $t("regardingTimeoutsTip1") }}</li>
-				<li>{{ $t("regardingTimeoutsTip2") }}</li>
-				<li v-if="!hls">{{ $t("regardingTimeoutsTip3") }}</li>
-			</ul>
-		</div>
-		<script>
-			var clickUrl;
-	
-			axios({
-				method: "get",
-				url: "/static/audio/click.mp3",
-				responseType: "blob",
-			}).then(response => {
-				var reader = new window.FileReader();
-				reader.onload = function () {
-				    clickUrl = reader.result;
-				};
-				reader.readAsDataURL(response.data);
-				
-			});
-			
-			function playClick() {
-				const audio = new Audio();
-				audio.src = clickUrl;
-				audio.play();
-			}
+              <div class="section-b">
+                <div class="fn-key">
+                  <div class="key function" v-on:click="typeKey('F1')">F1</div>
+                </div>
+                <div class="fn-key">
+                  <div class="key function" v-on:click="typeKey('F3')">F3</div>
+                </div>
+                <div class="fn-key">
+                  <div class="key function" v-on:click="typeKey('F5')">F5</div>
+                </div>
+                <div class="fn-key">
+                  <div class="key function" v-on:click="typeKey('F7')">F7</div>
+                </div>
+              </div>
+              <!-- end section-b-->
+            </div>
+          </b-card-text>
+        </b-card>
+      </b-collapse>
 
-			const messages = {
-				en: {
-					barcode: "Barcode",
-					keyboard: "Keyboard",
-					insertNextDisk: "Next Disk",
-					mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
-					infosHeader: "Infos",
-					regardingTimeoutsTip1: "Actions and key presses are delayed a few seconds.",
-					regardingTimeoutsTip2: "Maximum play time is 1 hour.",
-					regardingTimeoutsTip3:
-						"If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
-					nextDiskDone: "Next Disk has been inserted!",
-					defaultSidModel6581Done: "Default SID model has been set to 6581!",
-					defaultSidModel8580Done: "Default SID model has been set to 8580!",
-					defaultEmulationResidDone: "Default emulation has been set to RESID!",
-					defaultEmulationResidFpDone: "Default emulation has been set to RESIDFP!",
-					joyBtnDone: "Joystick button has been pressed!",
-				},
-				de: {
-					barcode: "Barcode",
-					keyboard: "Tastatur",
-					insertNextDisk: "N\u00e4chste Disk",
-					mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
-					infosHeader: "Informationen",
-					regardingTimeoutsTip1: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
-					regardingTimeoutsTip2: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
-					regardingTimeoutsTip3:
-						"Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
-					nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
-					defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
-					defaultSidModel8580Done: "Default SID Chip ist jetzt 8580!",
-					defaultEmulationResidDone: "Default Emulation ist jetzt RESID!",
-					defaultEmulationResidFpDone: "Default Emulation ist jetzt RESIDFP!",
-					joyBtnDone: "Joystick Button wurde gedr\u00fcckt!",
-				},
-			};
-			const i18n = new VueI18n({
-				locale: "en", // set locale
-				messages, // set locale messages
-			});
+      <h3>{{ $t("infosHeader") }}</h3>
+      <ul>
+        <li>{{ $t("regardingTimeoutsTip1") }}</li>
+        <li>{{ $t("regardingTimeoutsTip2") }}</li>
+        <li v-if="!hls">{{ $t("regardingTimeoutsTip3") }}</li>
+      </ul>
+    </div>
+    <script>
+      var clickUrl;
 
-			new Vue({
-				el: "#app",
-				i18n, //import mutil-lang
-				data: {
-					langs: ["de", "en"],
-					hls: $hls,
-					notifyForHLS: $notifyForHLS,
-					shiftLeftPressed: false,
-					shiftRightPressed: false,
-					ctrlPressed: false,
-					commodorePressed: false,
-					runStopPressed: false,
-					msg: "",
-				},
-				methods: {
-					startVideo: function () {
-						if (!this.hls) {
-							setTimeout(() => {
-								window.open(
-									"$videoUrl",
-									"c64video",
-									"resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, titlebar=no, location=no, fullscreen=yes"
-								);
-							}, this.waitForVideo);
-						}
-					},
-					printMsg: function (msg) {
-						this.msg = msg;
-						setTimeout(() => {
-							this.msg = "";
-						}, 500);
-					},
-					fastForward: function () {
-					    if (this.hls) {
-							if ("$hlsType" === "VIDEO_JS") {
-								var video = videojs("video-container");
-								video.currentTime(video.bufferedEnd());
-							} else if ("$hlsType" === "HLS_JS") {
-								var video = document.getElementById("video-container");
-								video.currentTime = video.duration;
-							}
-					    }
-					},
-					currentTime: function () {
-						if ("$hlsType" === "VIDEO_JS") {
-							var video = videojs("video-container");
-							return video.currentTime();
-						} else if ("$hlsType" === "HLS_JS") {
-							var video = document.getElementById("video-container");
-							return video.currentTime;
-						}
-						return null;
-					},
-					toggleShiftLeft: function (element) {
-						this.shiftLeftPressed ^= true;
-						if (this.shiftLeftPressed) {
-							this.pressKey('SHIFT_LEFT');
-						} else {
-							this.releaseKey('SHIFT_LEFT');
-						}
-					},
-					toggleShiftRight: function (element) {
-						this.shiftRightPressed ^= true;
-						if (this.shiftRightPressed) {
-							this.pressKey('SHIFT_RIGHT');
-						} else {
-							this.releaseKey('SHIFT_RIGHT');
-						}
-					},
-					toggleCtrl: function (element) {
-						this.ctrlPressed ^= true;
-						if (this.ctrlPressed) {
-							this.pressKey('CTRL');
-						} else {
-							this.releaseKey('CTRL');
-						}
-					},
-					toggleCommodore: function (element) {
-						this.commodorePressed ^= true;
-						if (this.commodorePressed) {
-							this.pressKey('COMMODORE');
-						} else {
-							this.releaseKey('COMMODORE');
-						}
-					},
-					toggleRunStop: function (element) {
-						this.runStopPressed ^= true;
-						if (this.runStopPressed) {
-							this.pressKey('RUN_STOP');
-						} else {
-							this.releaseKey('RUN_STOP');
-						}
-					},
-					typeKey: function (key) {
-						axios({
-							method: "get",
-							url: "/static/press_key?name=$uuid&type=" + key,
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => { playClick(); this.fastForward(); });
-					},
-					pressKey: function (key) {
-						axios({
-							method: "get",
-							url: "/static/press_key?name=$uuid&press=" + key,
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => { this.fastForward(); });
-					},
-					releaseKey: function (key) {
-						axios({
-							method: "get",
-							url: "/static/press_key?name=$uuid&release=" + key,
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => { this.fastForward(); });
-					},
-					insertDisk: function () {
-						axios({
-							method: "get",
-							url: "/static/insert_next_disk?name=$uuid",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => {
-						    playClick();
-							let result = response.data;
-							this.printMsg(this.$i18n.t("nextDiskDone"));
-							this.fastForward();
-						});
-					},
-					setDefaultSidModel6581: function () {
-						axios({
-							method: "get",
-							url: "/static/set_default_sid_model_6581?name=$uuid",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => {
-						    playClick();
-							let result = response.data;
-							this.printMsg(this.$i18n.t("defaultSidModel6581Done"));
-							this.fastForward();
-						});
-					},
-					setDefaultSidModel8580: function () {
-						axios({
-							method: "get",
-							url: "/static/set_default_sid_model_8580?name=$uuid",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => {
-						    playClick();
-							let result = response.data;
-							this.printMsg(this.$i18n.t("defaultSidModel8580Done"));
-							this.fastForward();
-						});
-					},
-					setDefaultEmulationReSid: function () {
-						axios({
-							method: "get",
-							url: "/static/set_default_emulation_resid?name=$uuid",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => {
-						    playClick();
-							let result = response.data;
-							this.printMsg(this.$i18n.t("defaultEmulationResidDone"));
-							this.fastForward();
-						});
-					},
-					setDefaultEmulationReSidFp: function () {
-						axios({
-							method: "get",
-							url: "/static/set_default_emulation_residfp?name=$uuid",
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => {
-						    playClick();
-							let result = response.data;
-							this.printMsg(this.$i18n.t("defaultEmulationResidFpDone"));
-							this.fastForward();
-						});
-					},
-					setJoyBtn: function (number, value) {
-						axios({
-							method: "get",
-							url: "/static/joystick?name=$uuid&number=" + number + "&value=" + value,
-							auth: {
-								username: this.username,
-								password: this.password,
-							},
-						}).then((response) => {
-						    playClick();
-							let result = response.data;
-							this.printMsg(this.$i18n.t("joyBtnDone"));
-							this.fastForward();
-						});
-					},
-				},
-				created: function () {
-					if (localStorage.locale) {
-						this.$i18n.locale = localStorage.locale;
-					}
-					if (this.hls) {
-						const outerThis = this;
-						setInterval(function () {
-							var xhttp = new XMLHttpRequest();
-							xhttp.onreadystatechange = function () {
-								if (this.readyState == 4 && this.status == 200) {
-									// console.log("HLS keep alive: $uuid");
-								}
-							};
-							xhttp.open("GET", "/static/on_keep_alive?name=$uuid&currentTime=" + outerThis.currentTime(), true);
-							xhttp.send();
-						}, this.notifyForHLS);
+      axios({
+        method: "get",
+        url: "/static/audio/click.mp3",
+        responseType: "blob",
+      }).then((response) => {
+        var reader = new window.FileReader();
+        reader.onload = function () {
+          clickUrl = reader.result;
+        };
+        reader.readAsDataURL(response.data);
+      });
 
-						setTimeout(function () {
-							if ("$hlsType" === "VIDEO_JS") {
-								var video = videojs("video-container");
-								video.on("resize", function () {
-									this.fluid(true);
-								});
-								video.src({
-									src: "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl",
-									type: "application/x-mpegURL",
-								});
-								var promise = video.play();
-								if (promise !== undefined) {
-									promise
-										.then(function () {
-											video.muted(false);
-										})
-										.catch(function (error) {
-											video.muted(true);
-											video.play();
+      function playClick() {
+        const audio = new Audio();
+        audio.src = clickUrl;
+        audio.play();
+      }
 
-											var button = document.createElement("button");
-											button.addEventListener("click", function () {
-												video.muted(false);
-												playerContainer.removeChild(button);
-											});
-											button.textContent = "Unmute";
-											button.classList.add("inner");
-											button.setAttribute(
-												"style",
-												"color:black; background-color:red; width:100px; height:50px; opacity: .4;"
-											);
-											playerContainer.appendChild(button);
-										});
-								}
-							} else if ("$hlsType" === "HLS_JS") {
-								var video = document.getElementById("video-container");
+      const messages = {
+        en: {
+          barcode: "Barcode",
+          keyboard: "Keyboard",
+          insertNextDisk: "Next Disk",
+          mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
+          infosHeader: "Infos",
+          regardingTimeoutsTip1: "Actions and key presses are delayed a few seconds.",
+          regardingTimeoutsTip2: "Maximum play time is 1 hour.",
+          regardingTimeoutsTip3:
+            "If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
+          nextDiskDone: "Next Disk has been inserted!",
+          defaultSidModel6581Done: "Default SID model has been set to 6581!",
+          defaultSidModel8580Done: "Default SID model has been set to 8580!",
+          defaultEmulationResidDone: "Default emulation has been set to RESID!",
+          defaultEmulationResidFpDone: "Default emulation has been set to RESIDFP!",
+          joyBtnDone: "Joystick button has been pressed!",
+        },
+        de: {
+          barcode: "Barcode",
+          keyboard: "Tastatur",
+          insertNextDisk: "N\u00e4chste Disk",
+          mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
+          infosHeader: "Informationen",
+          regardingTimeoutsTip1: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
+          regardingTimeoutsTip2: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
+          regardingTimeoutsTip3:
+            "Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
+          nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
+          defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
+          defaultSidModel8580Done: "Default SID Chip ist jetzt 8580!",
+          defaultEmulationResidDone: "Default Emulation ist jetzt RESID!",
+          defaultEmulationResidFpDone: "Default Emulation ist jetzt RESIDFP!",
+          joyBtnDone: "Joystick Button wurde gedr\u00fcckt!",
+        },
+      };
+      const i18n = new VueI18n({
+        locale: "en", // set locale
+        messages, // set locale messages
+      });
 
-								if (Hls.isSupported()) {
-									var hls = new Hls();
-									hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
-									hls.attachMedia(video);
-									var promise = video.play();
-									if (promise !== undefined) {
-										promise
-											.then(function () {
-												video.muted = false;
-											})
-											.catch(function (error) {
-												video.muted = true;
-												video.play();
+      new Vue({
+        el: "#app",
+        i18n, //import mutil-lang
+        data: {
+          langs: ["de", "en"],
+          hls: $hls,
+          notifyForHLS: $notifyForHLS,
+          shiftLeftPressed: false,
+          shiftRightPressed: false,
+          ctrlPressed: false,
+          commodorePressed: false,
+          runStopPressed: false,
+          msg: "",
+        },
+        methods: {
+          startVideo: function () {
+            if (!this.hls) {
+              setTimeout(() => {
+                window.open(
+                  "$videoUrl",
+                  "c64video",
+                  "resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, titlebar=no, location=no, fullscreen=yes"
+                );
+              }, this.waitForVideo);
+            }
+          },
+          printMsg: function (msg) {
+            this.msg = msg;
+            setTimeout(() => {
+              this.msg = "";
+            }, 500);
+          },
+          fastForward: function () {
+            if (this.hls) {
+              if ("$hlsType" === "VIDEO_JS") {
+                var video = videojs("video-container");
+                video.currentTime(video.bufferedEnd());
+              } else if ("$hlsType" === "HLS_JS") {
+                var video = document.getElementById("video-container");
+                video.currentTime = video.duration;
+              }
+            }
+          },
+          currentTime: function () {
+            if ("$hlsType" === "VIDEO_JS") {
+              var video = videojs("video-container");
+              return video.currentTime();
+            } else if ("$hlsType" === "HLS_JS") {
+              var video = document.getElementById("video-container");
+              return video.currentTime;
+            }
+            return null;
+          },
+          toggleShiftLeft: function (element) {
+            this.shiftLeftPressed ^= true;
+            if (this.shiftLeftPressed) {
+              this.pressKey("SHIFT_LEFT");
+            } else {
+              this.releaseKey("SHIFT_LEFT");
+            }
+          },
+          toggleShiftRight: function (element) {
+            this.shiftRightPressed ^= true;
+            if (this.shiftRightPressed) {
+              this.pressKey("SHIFT_RIGHT");
+            } else {
+              this.releaseKey("SHIFT_RIGHT");
+            }
+          },
+          toggleCtrl: function (element) {
+            this.ctrlPressed ^= true;
+            if (this.ctrlPressed) {
+              this.pressKey("CTRL");
+            } else {
+              this.releaseKey("CTRL");
+            }
+          },
+          toggleCommodore: function (element) {
+            this.commodorePressed ^= true;
+            if (this.commodorePressed) {
+              this.pressKey("COMMODORE");
+            } else {
+              this.releaseKey("COMMODORE");
+            }
+          },
+          toggleRunStop: function (element) {
+            this.runStopPressed ^= true;
+            if (this.runStopPressed) {
+              this.pressKey("RUN_STOP");
+            } else {
+              this.releaseKey("RUN_STOP");
+            }
+          },
+          typeKey: function (key) {
+            axios({
+              method: "get",
+              url: "/static/press_key?name=$uuid&type=" + key,
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              playClick();
+              this.fastForward();
+            });
+          },
+          pressKey: function (key) {
+            axios({
+              method: "get",
+              url: "/static/press_key?name=$uuid&press=" + key,
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              this.fastForward();
+            });
+          },
+          releaseKey: function (key) {
+            axios({
+              method: "get",
+              url: "/static/press_key?name=$uuid&release=" + key,
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              this.fastForward();
+            });
+          },
+          insertDisk: function () {
+            axios({
+              method: "get",
+              url: "/static/insert_next_disk?name=$uuid",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              this.printMsg(this.$i18n.t("nextDiskDone"));
+              this.fastForward();
+            });
+          },
+          setDefaultSidModel6581: function () {
+            axios({
+              method: "get",
+              url: "/static/set_default_sid_model_6581?name=$uuid",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              this.printMsg(this.$i18n.t("defaultSidModel6581Done"));
+              this.fastForward();
+            });
+          },
+          setDefaultSidModel8580: function () {
+            axios({
+              method: "get",
+              url: "/static/set_default_sid_model_8580?name=$uuid",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              this.printMsg(this.$i18n.t("defaultSidModel8580Done"));
+              this.fastForward();
+            });
+          },
+          setDefaultEmulationReSid: function () {
+            axios({
+              method: "get",
+              url: "/static/set_default_emulation_resid?name=$uuid",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              this.printMsg(this.$i18n.t("defaultEmulationResidDone"));
+              this.fastForward();
+            });
+          },
+          setDefaultEmulationReSidFp: function () {
+            axios({
+              method: "get",
+              url: "/static/set_default_emulation_residfp?name=$uuid",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              this.printMsg(this.$i18n.t("defaultEmulationResidFpDone"));
+              this.fastForward();
+            });
+          },
+          setJoyBtn: function (number, value) {
+            axios({
+              method: "get",
+              url: "/static/joystick?name=$uuid&number=" + number + "&value=" + value,
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              this.printMsg(this.$i18n.t("joyBtnDone"));
+              this.fastForward();
+            });
+          },
+        },
+        created: function () {
+          if (localStorage.locale) {
+            this.$i18n.locale = localStorage.locale;
+          }
+          if (this.hls) {
+            const outerThis = this;
+            setInterval(function () {
+              var xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                  // console.log("HLS keep alive: $uuid");
+                }
+              };
+              xhttp.open("GET", "/static/on_keep_alive?name=$uuid&currentTime=" + outerThis.currentTime(), true);
+              xhttp.send();
+            }, this.notifyForHLS);
 
-												var button = document.createElement("button");
-												button.addEventListener("click", function () {
-													video.muted = false;
-													playerContainer.removeChild(button);
-												});
-												button.textContent = "Unmute";
-												button.classList.add("inner");
-												button.setAttribute(
-													"style",
-													"color:black; background-color:red; width:100px; height:50px; opacity: .4;"
-												);
-												playerContainer.appendChild(button);
-											});
-									}
-								} else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-									video.src = "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl";
-								}
-							}
-						}, this.waitForVideo);
-					} else {
-						this.startVideo();
-					}
-				},
-			});
-		</script>
-	</body>
+            setTimeout(function () {
+              if ("$hlsType" === "VIDEO_JS") {
+                var video = videojs("video-container");
+                video.on("resize", function () {
+                  this.fluid(true);
+                });
+                video.src({
+                  src: "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl",
+                  type: "application/x-mpegURL",
+                });
+                var promise = video.play();
+                if (promise !== undefined) {
+                  promise
+                    .then(function () {
+                      video.muted(false);
+                    })
+                    .catch(function (error) {
+                      video.muted(true);
+                      video.play();
+
+                      var button = document.createElement("button");
+                      button.addEventListener("click", function () {
+                        video.muted(false);
+                        playerContainer.removeChild(button);
+                      });
+                      button.textContent = "Unmute";
+                      button.classList.add("inner");
+                      button.setAttribute(
+                        "style",
+                        "color:black; background-color:red; width:100px; height:50px; opacity: .4;"
+                      );
+                      playerContainer.appendChild(button);
+                    });
+                }
+              } else if ("$hlsType" === "HLS_JS") {
+                var video = document.getElementById("video-container");
+
+                if (Hls.isSupported()) {
+                  var hls = new Hls();
+                  hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
+                  hls.attachMedia(video);
+                  var promise = video.play();
+                  if (promise !== undefined) {
+                    promise
+                      .then(function () {
+                        video.muted = false;
+                      })
+                      .catch(function (error) {
+                        video.muted = true;
+                        video.play();
+
+                        var button = document.createElement("button");
+                        button.addEventListener("click", function () {
+                          video.muted = false;
+                          playerContainer.removeChild(button);
+                        });
+                        button.textContent = "Unmute";
+                        button.classList.add("inner");
+                        button.setAttribute(
+                          "style",
+                          "color:black; background-color:red; width:100px; height:50px; opacity: .4;"
+                        );
+                        playerContainer.appendChild(button);
+                      });
+                  }
+                } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+                  video.src = "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl";
+                }
+              }
+            }, this.waitForVideo);
+          } else {
+            this.startVideo();
+          }
+        },
+      });
+    </script>
+  </body>
 </html>
