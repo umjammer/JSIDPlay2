@@ -578,7 +578,7 @@
                   @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
                 >
                   <i class="fas fa-filter"></i>
-                  <span>Chris Hülsbeck</span>
+                  <span>Chris H&uuml;lsbeck</span>
                 </b-button>
 
                 <b-button
@@ -2441,6 +2441,11 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting">
+                            <b class="right"> {{ $t("CART_NOTES") }} </b>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
                             <label for="reuSize">
                               {{ $t("convertMessages.reuSize") }}
                               <b-form-group class="right">
@@ -2739,6 +2744,7 @@
           USE_MOBILE_DEVICES_2: "USBC to USB adapter",
           STREAMING_NOTES:
             "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
+          CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
           parentDirectoryHint: "Go up one Level",
           sidInfoKey: "Name",
           sidInfoValue: "Value",
@@ -2856,7 +2862,8 @@
           USE_MOBILE_DEVICES_1: "Um Mobilger\u00e4te zu verwenden, verwenden Sie bitte einen",
           USE_MOBILE_DEVICES_2: "USBC nach USB adapter",
           STREAMING_NOTES:
-            "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming über das Internet entstehen k\u00f6nnten!",
+            "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
+          CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
           parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
           sidInfoKey: "Name",
           sidInfoValue: "Wert",
