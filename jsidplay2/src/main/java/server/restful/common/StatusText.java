@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 import libsidutils.status.Status;
 import sidplay.Player;
-import sidplay.audio.AudioDriver;
 import sidplay.audio.xuggle.XuggleVideoDriver;
 
 public class StatusText {
@@ -38,8 +37,7 @@ public class StatusText {
 
 	public void update(File diskImage) {
 		String newStatusText = createStatusText(diskImage);
-		AudioDriver.getAudioDriverDeep(player.getAudioDriver(), XuggleVideoDriver.class)
-				.ifPresent(xuggleVideoDriver -> {
+		player.getAudioDriver().lookup(XuggleVideoDriver.class).ifPresent(xuggleVideoDriver -> {
 			int statusTextX = xuggleVideoDriver.getStatusTextX();
 			int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
 

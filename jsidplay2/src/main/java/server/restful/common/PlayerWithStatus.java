@@ -22,7 +22,6 @@ import libsidplay.components.keyboard.KeyTableEntry;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
-import sidplay.audio.AudioDriver;
 import sidplay.audio.SleepDriver;
 import sidplay.player.State;
 import ui.common.filefilter.DiskFileFilter;
@@ -74,7 +73,7 @@ public final class PlayerWithStatus {
 		} else {
 			validUntil = maxDuration;
 		}
-		AudioDriver.getAudioDriverDeep(player.getAudioDriver(), SleepDriver.class)
+		player.getAudioDriver().lookup(SleepDriver.class)
 				.ifPresent(sleepDriver -> sleepDriver.setCurrentTime(currentTime));
 	}
 

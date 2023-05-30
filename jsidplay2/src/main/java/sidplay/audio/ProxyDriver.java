@@ -3,6 +3,7 @@ package sidplay.audio;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -124,6 +125,16 @@ public class ProxyDriver implements AudioDriver, VideoDriver, SIDListener, IMOS6
 
 	public AudioDriver getDriverTwo() {
 		return driverTwo;
+	}
+
+	@Override
+	public <T extends AudioDriver> Optional<T> lookup(Class<T> clz) {
+		if (clz.isInstance(driverOne)) {
+			return Optional.of(clz.cast(driverOne));
+		} else if (clz.isInstance(driverTwo)) {
+			return Optional.of(clz.cast(driverTwo));
+		}
+		return Optional.empty();
 	}
 
 }
