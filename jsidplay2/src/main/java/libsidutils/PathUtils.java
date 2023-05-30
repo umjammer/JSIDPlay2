@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -185,4 +186,20 @@ public class PathUtils {
 		fileExtensions.stream().map(fileName -> fileName.toUpperCase(Locale.US)).forEach(result::add);
 		return result;
 	}
+
+	/**
+	 * Get physical size in b, Kb, Mb, Gb or Tb.
+	 * 
+	 * @param size size to calculate physical size for
+	 * @return physical size
+	 */
+	public static String getFileSize(long size) {
+		if (size <= 0) {
+			return "0b";
+		}
+		final String[] units = new String[] { "b", "Kb", "Mb", "Gb", "Tb" };
+		int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+		return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + units[digitGroups];
+	}
+
 }

@@ -1,9 +1,9 @@
 package libsidutils.status;
 
 import static libsidplay.sidtune.SidTune.RESET;
+import static libsidutils.PathUtils.getFileSize;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
@@ -218,15 +218,6 @@ public class Status {
 					player.getRecordingFilename(), getFileSize(new File(player.getRecordingFilename()).length()));
 		}
 		return "";
-	}
-
-	private String getFileSize(long size) {
-		if (size <= 0) {
-			return "0 b";
-		}
-		final String[] units = new String[] { "b", "Kb", "Mb", "Gb", "Tb" };
-		int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-		return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 
 	public String determinePSID64() {

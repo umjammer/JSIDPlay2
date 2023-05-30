@@ -6,6 +6,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
+import static libsidutils.PathUtils.getFileSize;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
@@ -200,6 +201,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			result.append("?");
 			result.append(request.getQueryString());
 		}
+		if (request.getContentLengthLong() != -1L) {
+			result.append(" (");
+			result.append(HttpHeaders.CONTENT_LENGTH);
+			result.append("=");
+			result.append(getFileSize(request.getContentLengthLong()));
+			result.append(")");
+		}
 		result.append(", ");
 		return result.toString();
 	}
@@ -207,8 +215,9 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	private String memory() {
 		StringBuilder result = new StringBuilder();
 		Runtime runtime = Runtime.getRuntime();
-		result.append(String.format("%,dMb/%,dMb", runtime.totalMemory() - runtime.freeMemory() >> 20,
-				runtime.maxMemory() >> 20));
+		result.append(getFileSize(runtime.totalMemory() - runtime.freeMemory()));
+		result.append("/");
+		result.append(getFileSize(runtime.maxMemory()));
 		return result.toString();
 	}
 
