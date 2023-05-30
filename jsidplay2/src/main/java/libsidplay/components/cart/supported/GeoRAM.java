@@ -33,6 +33,8 @@
  */
 package libsidplay.components.cart.supported;
 
+import static libsidutils.PathUtils.getFileSize;
+
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -154,7 +156,7 @@ public class GeoRAM extends Cartridge {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " (" + (ram.length >> 10) + " KB)";
+		return getClass().getSimpleName() + " (" + getFileSize(ram.length) + ")";
 	}
 
 }
