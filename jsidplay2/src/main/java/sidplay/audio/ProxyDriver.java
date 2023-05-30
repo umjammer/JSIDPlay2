@@ -119,14 +119,6 @@ public class ProxyDriver implements AudioDriver, VideoDriver, SIDListener, IMOS6
 		return driverOne.getExtension() != null ? driverOne.getExtension() : driverTwo.getExtension();
 	}
 
-	public AudioDriver getDriverOne() {
-		return driverOne;
-	}
-
-	public AudioDriver getDriverTwo() {
-		return driverTwo;
-	}
-
 	@Override
 	public <T extends AudioDriver> Optional<T> lookup(Class<T> clz) {
 		if (clz.isInstance(driverOne)) {
@@ -135,6 +127,14 @@ public class ProxyDriver implements AudioDriver, VideoDriver, SIDListener, IMOS6
 			return Optional.of(clz.cast(driverTwo));
 		}
 		return Optional.empty();
+	}
+
+	public AudioDriver getDriverOne() {
+		return driverOne;
+	}
+
+	public AudioDriver getDriverTwo() {
+		return driverTwo;
 	}
 
 }
