@@ -661,7 +661,7 @@ public class EmulationSection implements IEmulationSection {
 		return this.appServerConnectors.get();
 	}
 
-	@Parameter(names = { "--appServerConnectors" }, descriptionKey = "APP_SERVER_CONNECTORS", order = 0)
+	@Parameter(names = { "--appServerConnectors" }, descriptionKey = "APP_SERVER_CONNECTORS", order = 1000)
 	public void setAppServerConnectors(Connectors appServerConnectors) {
 		this.appServerConnectors.set(appServerConnectors);
 	}
@@ -677,7 +677,7 @@ public class EmulationSection implements IEmulationSection {
 		return appServerPort.get();
 	}
 
-	@Parameter(names = { "--appServerPort" }, descriptionKey = "APP_SERVER_PORT", order = 1)
+	@Parameter(names = { "--appServerPort" }, descriptionKey = "APP_SERVER_PORT", order = 1001)
 	public void setAppServerPort(int port) {
 		this.appServerPort.set(port);
 	}
@@ -693,7 +693,7 @@ public class EmulationSection implements IEmulationSection {
 		return appServerSecurePort.get();
 	}
 
-	@Parameter(names = { "--appServerSecurePort" }, descriptionKey = "APP_SERVER_SECURE_PORT", order = 2)
+	@Parameter(names = { "--appServerSecurePort" }, descriptionKey = "APP_SERVER_SECURE_PORT", order = 1002)
 	public void setAppServerSecurePort(int securePort) {
 		this.appServerSecurePort.set(securePort);
 	}
@@ -714,7 +714,7 @@ public class EmulationSection implements IEmulationSection {
 	}
 
 	@Parameter(names = {
-			"--appServerKeystore" }, descriptionKey = "APP_SERVER_KEYSTORE", converter = FileToStringConverter.class, order = 3)
+			"--appServerKeystore" }, descriptionKey = "APP_SERVER_KEYSTORE", converter = FileToStringConverter.class, order = 1003)
 	public void setAppServerKeystoreFile(File appServerKeystoreFile) {
 		this.appServerKeystore.set(appServerKeystoreFile);
 	}
@@ -736,7 +736,7 @@ public class EmulationSection implements IEmulationSection {
 		return appServerKeystorePassword.get();
 	}
 
-	@Parameter(names = { "--appServerKeystorePassword" }, descriptionKey = "APP_SERVER_KEYSTORE_PASSWORD", order = 4)
+	@Parameter(names = { "--appServerKeystorePassword" }, descriptionKey = "APP_SERVER_KEYSTORE_PASSWORD", order = 1004)
 	public final void setAppServerKeystorePassword(String appServerKeyStorePassword) {
 		this.appServerKeystorePassword.set(appServerKeyStorePassword);
 	}
@@ -751,7 +751,7 @@ public class EmulationSection implements IEmulationSection {
 		return appServerKeyAlias.get();
 	}
 
-	@Parameter(names = { "--appServerKeyAlias" }, descriptionKey = "APP_SERVER_KEY_ALIAS", order = 5)
+	@Parameter(names = { "--appServerKeyAlias" }, descriptionKey = "APP_SERVER_KEY_ALIAS", order = 1005)
 	public void setAppServerKeyAlias(String appServerKeyAlias) {
 		this.appServerKeyAlias.set(appServerKeyAlias);
 	}
@@ -773,7 +773,7 @@ public class EmulationSection implements IEmulationSection {
 		return appServerKeyPassword.get();
 	}
 
-	@Parameter(names = { "--appServerKeyPassword" }, descriptionKey = "APP_SERVER_KEY_PASSWORD", order = 6)
+	@Parameter(names = { "--appServerKeyPassword" }, descriptionKey = "APP_SERVER_KEY_PASSWORD", order = 1006)
 	public final void setAppServerKeyPassword(String appServerKeyPassword) {
 		this.appServerKeyPassword.set(appServerKeyPassword);
 	}
