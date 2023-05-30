@@ -17,6 +17,8 @@ package sidplay.audio;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -82,6 +84,20 @@ public interface AudioDriver {
 	 */
 	default String getExtension() {
 		return null;
+	}
+
+	public static <T extends AudioDriver> Optional<T> getAudioDriverDeep(AudioDriver audioDriver, Class<T> clz) {
+		if (Objects.equals(audioDriver.getClass(), clz)) {
+			return Optional.of(clz.cast(audioDriver));
+		} else if (audioDriver instanceof ProxyDriver) {
+			ProxyDriver proxyDriver = (ProxyDriver) audioDriver;
+			if (Objects.equals(proxyDriver.getDriverOne().getClass(), clz)) {
+				return Optional.of(clz.cast(proxyDriver.getDriverOne()));
+			} else if (Objects.equals(proxyDriver.getDriverTwo().getClass(), clz)) {
+				return Optional.of(clz.cast(proxyDriver.getDriverTwo()));
+			}
+		}
+		return Optional.empty();
 	}
 
 }

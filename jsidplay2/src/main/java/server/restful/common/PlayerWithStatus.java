@@ -23,7 +23,6 @@ import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
 import sidplay.audio.AudioDriver;
-import sidplay.audio.ProxyDriver;
 import sidplay.audio.SleepDriver;
 import sidplay.player.State;
 import ui.common.filefilter.DiskFileFilter;
@@ -75,7 +74,8 @@ public final class PlayerWithStatus {
 		} else {
 			validUntil = maxDuration;
 		}
-		getSleepDriver().ifPresent(sleepDriver -> sleepDriver.setCurrentTime(currentTime));
+		AudioDriver.getAudioDriverDeep(player.getAudioDriver(), SleepDriver.class)
+				.ifPresent(sleepDriver -> sleepDriver.setCurrentTime(currentTime));
 	}
 
 	public boolean isInvalid() {
@@ -258,17 +258,6 @@ public final class PlayerWithStatus {
 				}, 0);
 			}
 		});
-	}
-
-	private Optional<SleepDriver> getSleepDriver() {
-		AudioDriver audioDriver = player.getAudioDriver();
-		if (audioDriver instanceof ProxyDriver) {
-			ProxyDriver proxyDriver = (ProxyDriver) audioDriver;
-			if (proxyDriver.getDriverOne() instanceof SleepDriver) {
-				return Optional.of((SleepDriver) proxyDriver.getDriverOne());
-			}
-		}
-		return Optional.empty();
 	}
 
 }

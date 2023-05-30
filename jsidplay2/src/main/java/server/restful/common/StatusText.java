@@ -2,13 +2,11 @@ package server.restful.common;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import libsidutils.status.Status;
 import sidplay.Player;
 import sidplay.audio.AudioDriver;
-import sidplay.audio.ProxyDriver;
 import sidplay.audio.xuggle.XuggleVideoDriver;
 
 public class StatusText {
@@ -40,7 +38,8 @@ public class StatusText {
 
 	public void update(File diskImage) {
 		String newStatusText = createStatusText(diskImage);
-		getXuggleVideoDriver().ifPresent(xuggleVideoDriver -> {
+		AudioDriver.getAudioDriverDeep(player.getAudioDriver(), XuggleVideoDriver.class)
+				.ifPresent(xuggleVideoDriver -> {
 			int statusTextX = xuggleVideoDriver.getStatusTextX();
 			int statusTextOverflow = xuggleVideoDriver.getStatusTextOverflow();
 
@@ -81,17 +80,6 @@ public class StatusText {
 				}
 			}
 		});
-	}
-
-	private Optional<XuggleVideoDriver> getXuggleVideoDriver() {
-		AudioDriver audioDriver = player.getAudioDriver();
-		if (audioDriver instanceof ProxyDriver) {
-			ProxyDriver proxyDriver = (ProxyDriver) audioDriver;
-			if (proxyDriver.getDriverTwo() instanceof XuggleVideoDriver) {
-				return Optional.of((XuggleVideoDriver) proxyDriver.getDriverTwo());
-			}
-		}
-		return Optional.empty();
 	}
 
 	private String createStatusText(File diskImage) {
