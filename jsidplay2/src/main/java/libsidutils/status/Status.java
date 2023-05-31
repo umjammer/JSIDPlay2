@@ -181,9 +181,14 @@ public class Status {
 	}
 
 	public String determineHeap() {
+		StringBuilder result = new StringBuilder();
 		Runtime runtime = Runtime.getRuntime();
-		return String.format("%s: %sMb/%sMb", resourceBundle.getString("MEMORY"),
-				runtime.totalMemory() - runtime.freeMemory() >> 20, runtime.maxMemory() >> 20);
+		result.append(resourceBundle.getString("MEMORY"));
+		result.append(": ");
+		result.append(getFileSize(runtime.totalMemory() - runtime.freeMemory()));
+		result.append("/");
+		result.append(getFileSize(runtime.maxMemory()));
+		return result.toString();
 	}
 
 	public String determineTime(boolean showMillis) {
