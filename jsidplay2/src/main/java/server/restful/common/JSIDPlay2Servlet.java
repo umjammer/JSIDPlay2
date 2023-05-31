@@ -187,7 +187,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	private String user(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
 		result.append("user ");
-		result.append(request.getRemoteUser() != null ? request.getRemoteUser() : "<anonymous>");
+		result.append(Optional.ofNullable(request.getRemoteUser()).orElse("<anonymous>"));
 		result.append(", ");
 		return result.toString();
 	}

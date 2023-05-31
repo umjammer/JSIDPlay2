@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -162,11 +163,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	}
 
 	private String getName(String names) {
-		String[] split = names.split(",");
-		for (String name : split) {
-			return getParameterName(name);
-		}
-		return getParameterName(names);
+		return Arrays.asList(names.split(",")).stream().findFirst().map(this::getParameterName)
+				.orElseGet(() -> getParameterName(names));
 	}
 
 	private String getParameterName(String name) {
