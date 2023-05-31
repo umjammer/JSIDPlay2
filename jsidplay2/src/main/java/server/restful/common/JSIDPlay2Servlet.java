@@ -201,12 +201,17 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			result.append("?");
 			result.append(request.getQueryString());
 		}
+		if (request.getContentType() != null) {
+			result.append(" ");
+			result.append(HttpHeaders.CONTENT_TYPE);
+			result.append("=");
+			result.append(request.getContentType());
+		}
 		if (request.getContentLengthLong() != -1L) {
-			result.append(" (");
+			result.append(", ");
 			result.append(HttpHeaders.CONTENT_LENGTH);
 			result.append("=");
 			result.append(getFileSize(request.getContentLengthLong()));
-			result.append(")");
 		}
 		result.append(", ");
 		return result.toString();
