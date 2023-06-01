@@ -157,7 +157,7 @@
                   {{ $t("SIDS") }}
                   <b-spinner
                     type="border"
-                    variant="primary"
+                    :variant="tabIndex == 1 ? 'light' : 'primary'"
                     small
                     v-if="
                       rootDir.loading ||
@@ -534,7 +534,12 @@
               <b-tab style="position: relative">
                 <template #title>
                   {{ $t("ASSEMBLY64") }}
-                  <b-spinner type="border" variant="primary" small v-if="loadingAssembly64"></b-spinner>
+                  <b-spinner
+                    type="border"
+                    :variant="tabIndex == 2 ? 'light' : 'primary'"
+                    small
+                    v-if="loadingAssembly64"
+                  ></b-spinner>
                 </template>
 
                 <b-button
@@ -972,7 +977,12 @@
               <b-tab>
                 <template #title>
                   {{ $t("SID") }}
-                  <b-spinner type="border" variant="primary" small v-if="loadingSid"></b-spinner>
+                  <b-spinner
+                    type="border"
+                    :variant="tabIndex == 3 ? 'light' : 'primary'"
+                    small
+                    v-if="loadingSid"
+                  ></b-spinner>
                 </template>
 
                 <b-card-text>
@@ -994,7 +1004,12 @@
               <b-tab :disabled="!hasStil">
                 <template #title>
                   {{ $t("STIL") }}
-                  <b-spinner type="border" variant="primary" small v-if="loadingStil"></b-spinner>
+                  <b-spinner
+                    type="border"
+                    :variant="tabIndex == 4 ? 'light' : 'primary'"
+                    small
+                    v-if="loadingStil"
+                  ></b-spinner>
                 </template>
 
                 <b-card-text>
@@ -1062,7 +1077,12 @@
               <b-tab>
                 <template #title>
                   {{ $t("PL") }}
-                  <b-spinner type="border" variant="primary" small v-if="loadingPl"></b-spinner>
+                  <b-spinner
+                    type="border"
+                    :variant="tabIndex == 5 ? 'light' : 'primary'"
+                    small
+                    v-if="loadingPl"
+                  ></b-spinner>
                 </template>
 
                 <b-card-text>
@@ -1315,7 +1335,12 @@
               <b-tab>
                 <template #title>
                   {{ $t("CFG") }}
-                  <b-spinner type="border" variant="primary" small v-if="loadingCfg"></b-spinner>
+                  <b-spinner
+                    type="border"
+                    :variant="tabIndex == 6 ? 'light' : 'primary'"
+                    small
+                    v-if="loadingCfg"
+                  ></b-spinner>
                 </template>
 
                 <b-card-text>
@@ -4177,16 +4202,6 @@
           if (localStorage.convertOptions) {
             // restore configuration from last run
             this.convertOptions = JSON.parse(localStorage.convertOptions);
-            // migration:
-            if (typeof this.convertOptions.useHls === "undefined") {
-              this.convertOptions.useHls = true;
-            }
-            if (typeof this.convertOptions.hlsType === "undefined") {
-              this.convertOptions.hlsType = "HLS_JS";
-            }
-            if (typeof this.convertOptions.sfxSoundExpanderType === "undefined") {
-              this.convertOptions.sfxSoundExpanderType = 0;
-            }
           } else {
             // initialize configuration (if they differ from the default settings)
             this.convertOptions.useHls = true;
