@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import libsidplay.C64;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
 import libsidplay.common.Event;
@@ -116,69 +117,31 @@ public final class PlayerWithStatus {
 	}
 
 	public void typeKey(KeyTableEntry key) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed") {
-			@Override
-			public void event() throws InterruptedException {
-				if (key == KeyTableEntry.RESTORE) {
-					player.getC64().getKeyboard().restore();
-				} else {
-					player.getC64().getKeyboard().keyPressed(key);
-
-					player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Released") {
-						@Override
-						public void event() throws InterruptedException {
-							player.getC64().getEventScheduler()
-									.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
-										@Override
-										public void event() throws InterruptedException {
-											player.getC64().getKeyboard().keyReleased(key);
-										}
-									});
-						}
-					}, player.getC64().getClock().getCyclesPerFrame() << 2);
-				}
-			}
-		});
+		if (key == KeyTableEntry.RESTORE) {
+			getC64().getKeyboard().restore();
+		} else {
+			player.scheduleThreadSafeKeyType("Virtual Keyboard Key Pressed: " + key,
+					() -> getC64().getKeyboard().keyPressed(key), "Virtual Keyboard Key Released: " + key,
+					() -> getC64().getKeyboard().keyReleased(key), event -> {
+					});
+		}
 	}
 
 	public void pressKey(KeyTableEntry key) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed") {
-			@Override
-			public void event() throws InterruptedException {
-				player.getC64().getKeyboard().keyPressed(key);
-			}
-		});
+		player.scheduleThreadSafeKeyPress("Virtual Keyboard Key Pressed: " + key.name(),
+				() -> getC64().getKeyboard().keyPressed(key));
 	}
 
 	public void releaseKey(KeyTableEntry key) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
-			@Override
-			public void event() throws InterruptedException {
-				player.getC64().getKeyboard().keyReleased(key);
-			}
-		});
+		player.scheduleThreadSafeKeyRelease("Virtual Keyboard Key Released: " + key.name(),
+				() -> getC64().getKeyboard().keyReleased(key));
 	}
 
 	public void joystick(int number, int value) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Pressed") {
-			@Override
-			public void event() throws InterruptedException {
-				player.getC64().setJoystick(number, () -> (byte) (0xff ^ value));
-
-				player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Released") {
-					@Override
-					public void event() throws InterruptedException {
-						player.getC64().getEventScheduler()
-								.scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Released") {
-									@Override
-									public void event() throws InterruptedException {
-										player.getC64().setJoystick(number, null);
-									}
-								});
-					}
-				}, player.getC64().getClock().getCyclesPerFrame() << 2);
-			}
-		});
+		player.scheduleThreadSafeKeyType("Virtual Joystick Key Pressed: " + number,
+				() -> getC64().setJoystick(number, () -> (byte) (0xff ^ value)),
+				"Virtual Joystick Key Released: " + number, () -> getC64().setJoystick(number, null), event -> {
+				});
 	}
 
 	private File determineNextDiskImage(File diskImage) {
@@ -218,25 +181,10 @@ public final class PlayerWithStatus {
 			player.stateProperty().addListener(event -> {
 				if (event.getNewValue() == State.START) {
 
-					player.getC64().getEventScheduler().schedule(new Event("Key Pressed") {
-						@Override
-						public void event() throws InterruptedException {
-
-							// press space every N seconds
-							player.getC64().getKeyboard().keyPressed(SPACE);
-
-							player.getC64().getEventScheduler().schedule(new Event("Key Released") {
-								@Override
-								public void event() throws InterruptedException {
-									player.getC64().getKeyboard().keyReleased(SPACE);
-								}
-							}, player.getC64().getClock().getCyclesPerFrame() << 2);
-
-							player.getC64().getEventScheduler().schedule(this,
-									pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
-						}
-
-					}, pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
+					player.scheduleThreadSafeKeyType("Key Pressed: " + SPACE,
+							() -> getC64().getKeyboard().keyPressed(SPACE), "Key Released: " + SPACE,
+							() -> getC64().getKeyboard().keyReleased(SPACE), evt -> getC64().getEventScheduler()
+									.schedule(evt, pressSpaceInterval * (long) getC64().getClock().getCpuFrequency()));
 				}
 			});
 		}
@@ -246,17 +194,20 @@ public final class PlayerWithStatus {
 		player.stateProperty().addListener(event -> {
 			if (event.getNewValue() == State.START) {
 
-				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
+				getC64().getEventScheduler().schedule(new Event("Update Status Text") {
 					@Override
 					public void event() throws InterruptedException {
 						statusText.update(diskImage);
 
-						player.getC64().getEventScheduler().schedule(this,
-								player.getC64().getClock().getCyclesPerFrame());
+						getC64().getEventScheduler().schedule(this, getC64().getClock().getCyclesPerFrame());
 					}
 				}, 0);
 			}
 		});
+	}
+
+	protected C64 getC64() {
+		return player.getC64();
 	}
 
 }

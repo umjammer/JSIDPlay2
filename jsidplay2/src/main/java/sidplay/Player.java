@@ -1336,6 +1336,52 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		return psid64Detected;
 	}
 
+	public void scheduleThreadSafeKeyPress(String keyPressEventName, Runnable KeyPressRunnable) {
+		c64.getEventScheduler().scheduleThreadSafe(new Event(keyPressEventName) {
+			@Override
+			public void event() throws InterruptedException {
+
+				KeyPressRunnable.run();
+			}
+		});
+	}
+
+	public void scheduleThreadSafeKeyRelease(String keyReleaseEventName, Runnable KeyReleaseRunnable) {
+		c64.getEventScheduler().scheduleThreadSafe(new Event(keyReleaseEventName) {
+			@Override
+			public void event() throws InterruptedException {
+
+				c64.getEventScheduler().schedule(new Event(keyReleaseEventName) {
+					@Override
+					public void event() throws InterruptedException {
+
+						KeyReleaseRunnable.run();
+					}
+				}, c64.getClock().getCyclesPerFrame() << 2);
+			}
+		});
+	}
+
+	public void scheduleThreadSafeKeyType(String keyPressEventName, Runnable keyPressRunnable,
+			String keyReleaseEventName, Runnable keyReleaseRunnable, Consumer<Event> reScheduleKeyPressConsumer) {
+		c64.getEventScheduler().scheduleThreadSafe(new Event(keyPressEventName) {
+			@Override
+			public void event() throws InterruptedException {
+				keyPressRunnable.run();
+
+				c64.getEventScheduler().schedule(new Event(keyReleaseEventName) {
+					@Override
+					public void event() throws InterruptedException {
+
+						keyReleaseRunnable.run();
+					}
+				}, c64.getClock().getCyclesPerFrame() << 2);
+
+				reScheduleKeyPressConsumer.accept(this);
+			}
+		});
+	}
+
 	/**
 	 * The credits for the authors of many parts of this emulator.
 	 *

@@ -39,9 +39,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.util.Duration;
+import libsidplay.C64;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
-import libsidplay.common.Event;
 import libsidplay.components.c1530.Datasette.DatasetteStatus;
 import libsidplay.components.c1541.C1541;
 import libsidplay.components.c1541.C1541.FloppyStatus;
@@ -372,8 +372,8 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 		pauseTransition.setDuration(Duration.millis(1000. / cpuClock.getScreenRefresh()));
 
 		screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
-		screen.setWidth(util.getPlayer().getC64().getVIC().getBorderWidth());
-		screen.setHeight(util.getPlayer().getC64().getVIC().getBorderHeight());
+		screen.setWidth(getC64().getVIC().getBorderWidth());
+		screen.setHeight(getC64().getVIC().getBorderHeight());
 		updateScaling();
 	}
 
@@ -425,23 +425,13 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 	}
 
 	private void pressC64Key(final KeyTableEntry key) {
-		util.getPlayer().getC64().getEventScheduler()
-				.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed: " + key.name()) {
-					@Override
-					public void event() throws InterruptedException {
-						util.getPlayer().getC64().getKeyboard().keyPressed(key);
-					}
-				});
+		util.getPlayer().scheduleThreadSafeKeyPress("Virtual Keyboard Key Pressed: " + key.name(),
+				() -> getC64().getKeyboard().keyPressed(key));
 	}
 
 	private void releaseC64Key(final KeyTableEntry key) {
-		util.getPlayer().getC64().getEventScheduler()
-				.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released: " + key.name()) {
-					@Override
-					public void event() throws InterruptedException {
-						util.getPlayer().getC64().getKeyboard().keyReleased(key);
-					}
-				});
+		util.getPlayer().scheduleThreadSafeKeyRelease("Virtual Keyboard Key Released: " + key.name(),
+				() -> getC64().getKeyboard().keyReleased(key));
 	}
 
 	private void updatePeripheralImages() {
@@ -501,7 +491,7 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 			default:
 				throw new RuntimeException("Unexpected floppy status: " + floppyStatus);
 			}
-			cartridgeName.setText(util.getPlayer().getC64().getCartridge().toString());
+			cartridgeName.setText(getC64().getCartridge().toString());
 		});
 		timer = new Timeline(oneFrame);
 		timer.setCycleCount(Animation.INDEFINITE);
@@ -563,6 +553,10 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 	 */
 	public static Image getVicImage() {
 		return currentImage;
+	}
+
+	protected C64 getC64() {
+		return util.getPlayer().getC64();
 	}
 
 }
