@@ -1,5 +1,7 @@
 package server.restful.common.parameter;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 
@@ -57,7 +59,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	public void appendMainLine(StringBuilder out, boolean hasOptions, boolean hasCommands, int indentCount,
 			String indent) {
 		try {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.setStatus(exception != null ? SC_INTERNAL_SERVER_ERROR : SC_OK);
 			response.setContentType(MIME_TYPE_TEXT.toString());
 
 			// optional error message
