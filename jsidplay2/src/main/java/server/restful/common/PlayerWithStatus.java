@@ -242,6 +242,7 @@ public final class PlayerWithStatus {
 							player.getC64().getEventScheduler().schedule(new Event("Key Released") {
 								@Override
 								public void event() throws InterruptedException {
+
 									player.getC64().getKeyboard().keyReleased(SPACE);
 								}
 							}, player.getC64().getClock().getCyclesPerFrame() << 2);

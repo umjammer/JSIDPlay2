@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class FilteredFileFilter implements FileFilter {
 
-	private Pattern pattern;
+	private final Pattern pattern;
 
 	public FilteredFileFilter(String filter) {
 		this.pattern = Optional.ofNullable(filter).map(Pattern::compile).orElse(null);

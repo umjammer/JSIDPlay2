@@ -23,6 +23,9 @@ import libsidutils.fingerprinting.rest.beans.WAVBean;
  */
 public class FingerprintJsonClient implements IFingerprintMatcher {
 
+	private static final Pattern JSON_STRING_PATTERN = Pattern.compile("\"[^\"]*\":\"[^\"]*\"");
+	private static final Pattern JSON_NUMERIC_PATTERN = Pattern.compile("\"[^\"]*\":[0-9.]+");
+
 	private String url;
 	private String username;
 	private String password;
@@ -71,7 +74,7 @@ public class FingerprintJsonClient implements IFingerprintMatcher {
 			match.setMusicInfo(new MusicInfoBean());
 			{
 				// match string values
-				Matcher m = Pattern.compile("\"[^\"]*\":\"[^\"]*\"").matcher(response);
+				Matcher m = JSON_STRING_PATTERN.matcher(response);
 				while (m.find()) {
 					String[] keyValue = m.group().split(":");
 					setMatch(keyValue[0], keyValue[1], match);
@@ -79,7 +82,7 @@ public class FingerprintJsonClient implements IFingerprintMatcher {
 			}
 			{
 				// match numeric values
-				Matcher m = Pattern.compile("\"[^\"]*\":[0-9.]+").matcher(response);
+				Matcher m = JSON_NUMERIC_PATTERN.matcher(response);
 				while (m.find()) {
 					String[] keyValue = m.group().split(":");
 					setMatch(keyValue[0], keyValue[1], match);
