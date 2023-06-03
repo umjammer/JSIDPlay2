@@ -169,7 +169,7 @@ public interface IServletSystemProperties {
 	/**
 	 * Retry count to wait for the video generation being started.
 	 */
-	int WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT = valueOf(getProperty("jsidplay2.video.wait.for.retry.count", "20"));
+	int WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT = valueOf(getProperty("jsidplay2.video.wait.for.retry.count", "40"));
 
 	/**
 	 * Time span to wait between HLS keep alive notifications in milliseconds.
