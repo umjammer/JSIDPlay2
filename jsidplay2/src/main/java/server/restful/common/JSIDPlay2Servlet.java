@@ -105,6 +105,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	public abstract String getServletPath();
 
+	public abstract boolean isSecured();
+
 	public String getURLPattern() {
 		return getServletPath() + "/*";
 	}
@@ -115,10 +117,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	public Map<String, String> getServletFiltersParameterMap() {
 		return Collections.emptyMap();
-	}
-
-	public boolean isSecured() {
-		return false;
 	}
 
 	protected void doGet(HttpServletRequest request) {

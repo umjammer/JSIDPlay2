@@ -34,6 +34,11 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + FAVORITES_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * Get contents of the first SID favorites tab.
 	 *

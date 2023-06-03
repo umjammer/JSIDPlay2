@@ -91,7 +91,9 @@ public final class PlayerWithStatus {
 
 	public File insertNextDisk() throws IOException {
 		diskImage = determineNextDiskImage(diskImage);
-		player.insertDisk(extract(diskImage));
+		if (DISK_FILE_FILTER.accept(diskImage)) {
+			player.insertDisk(extract(diskImage));
+		}
 		return diskImage;
 	}
 

@@ -1,6 +1,8 @@
 package server.restful.servlets.whatssid;
 
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
+import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
@@ -31,10 +33,19 @@ public class InsertHashesServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
+	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		super.doPut(request);
 		try {
+			if (!request.isUserInRole(ROLE_ADMIN)) {
+				response.sendError(SC_UNAUTHORIZED, "Only for admin user");
+				return;
+			}
 			HashBeans hashes = getInput(request, HashBeans.class);
 
 			final WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());

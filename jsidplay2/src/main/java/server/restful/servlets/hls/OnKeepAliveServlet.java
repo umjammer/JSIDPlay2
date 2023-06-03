@@ -50,6 +50,11 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + ON_KEEP_ALIVE_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * Keep alive video stream.
 	 * 

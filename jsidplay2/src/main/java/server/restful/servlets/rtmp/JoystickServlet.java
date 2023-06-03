@@ -63,6 +63,11 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + JOYSTICK_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Press joystick 1/2 for Player running as a RTMP live video stream.
 	 *

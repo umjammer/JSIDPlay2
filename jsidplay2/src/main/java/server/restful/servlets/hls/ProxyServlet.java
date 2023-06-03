@@ -42,6 +42,11 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + PROXY_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * This class serves as kind of a proxy to make internal HTTP requests of HLS
 	 * protocol through HTTPS to avoid mixed content in the browser.

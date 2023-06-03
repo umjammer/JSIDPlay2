@@ -4005,6 +4005,10 @@
             axios({
               method: "get",
               url: "/jsidplay2service/JSIDPlay2REST/disk-directory" + url,
+              auth: {
+                  username: this.username,
+                  password: this.password,
+                },
             })
               .then((response) => {
                 entry.diskDirectoryHeader = petsciiToFont(response.data.title, entry.directoryMode | 0x200);

@@ -38,6 +38,11 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + SET_DEFAULT_EMULATION_RESIDFP_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Set default emulation to RESIDFP for Player running as a RTMP live video
 	 * stream.

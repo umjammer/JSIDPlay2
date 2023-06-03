@@ -43,6 +43,11 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + DOWNLOAD_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * Download SID.
 	 *

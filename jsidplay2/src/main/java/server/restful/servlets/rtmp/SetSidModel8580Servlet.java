@@ -38,6 +38,11 @@ public class SetSidModel8580Servlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + SET_DEFAULT_SID_MODEL_8580_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Set default chip model to MOS8580 for Player running as a RTMP live video
 	 * stream.

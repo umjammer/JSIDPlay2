@@ -41,6 +41,11 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
+	@Override
 	public List<Filter> getServletFilters() {
 		return Arrays.asList(new TimeDistanceBasedRateLimiterFilter(), new TimeBasedRateLimiterFilter());
 	}

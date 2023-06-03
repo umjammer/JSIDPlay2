@@ -46,6 +46,11 @@ public class StaticServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * Get VUE web page.
 	 *

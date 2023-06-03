@@ -30,6 +30,11 @@ public class FiltersServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + FILTERS_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * Get SID filter definitions.
 	 *

@@ -38,6 +38,11 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + INSERT_NEXT_DISK_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Insert next disk for Player running as a RTMP live video stream.
 	 *

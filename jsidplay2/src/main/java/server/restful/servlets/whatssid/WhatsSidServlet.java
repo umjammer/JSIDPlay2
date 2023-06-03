@@ -53,6 +53,11 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
+	@Override
 	public List<Filter> getServletFilters() {
 		return Arrays.asList(new CounterBasedRateLimiterFilter());
 	}

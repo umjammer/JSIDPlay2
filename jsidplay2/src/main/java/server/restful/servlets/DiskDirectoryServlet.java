@@ -44,6 +44,11 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_SERVLET + DISK_DIRECTORY_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Get Directory of Disk.
 	 *

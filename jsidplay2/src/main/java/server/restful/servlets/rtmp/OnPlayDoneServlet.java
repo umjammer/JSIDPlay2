@@ -37,6 +37,11 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + ON_PLAY_DONE_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * Stop play video stream.
 	 * 

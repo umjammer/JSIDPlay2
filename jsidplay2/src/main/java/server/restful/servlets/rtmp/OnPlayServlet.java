@@ -37,6 +37,11 @@ public class OnPlayServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + ON_PLAY_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
 	/**
 	 * Play video stream.
 	 * 

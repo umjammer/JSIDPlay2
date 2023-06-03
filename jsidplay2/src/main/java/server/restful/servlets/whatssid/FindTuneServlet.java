@@ -32,6 +32,11 @@ public class FindTuneServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		super.doPost(request);

@@ -38,6 +38,11 @@ public class SetDefaultEmulationReSidServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + SET_DEFAULT_EMULATION_RESID_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Set default emulation to RESID for Player running as a RTMP live video
 	 * stream.

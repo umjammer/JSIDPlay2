@@ -48,6 +48,11 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + PRESS_KEY_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Press key for Player running as a RTMP live video stream.
 	 *

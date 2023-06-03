@@ -63,6 +63,11 @@ public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		super.doGet(request);

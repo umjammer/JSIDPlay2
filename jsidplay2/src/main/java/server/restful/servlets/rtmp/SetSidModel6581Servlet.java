@@ -38,6 +38,11 @@ public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
 		return CONTEXT_ROOT_STATIC + SET_DEFAULT_SID_MODEL_6581_PATH;
 	}
 
+	@Override
+	public boolean isSecured() {
+		return true;
+	}
+
 	/**
 	 * Set default chip model to MOS6581 for Player running as a RTMP live video
 	 * stream.

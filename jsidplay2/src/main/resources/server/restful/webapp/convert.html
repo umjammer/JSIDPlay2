@@ -541,6 +541,12 @@
           if (localStorage.locale) {
             this.$i18n.locale = localStorage.locale;
           }
+          if (localStorage.username) {
+              this.username = JSON.parse(localStorage.username);
+            }
+            if (localStorage.password) {
+              this.password = JSON.parse(localStorage.password);
+            }
           if (this.hls) {
             const outerThis = this;
             setInterval(function () {
