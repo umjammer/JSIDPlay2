@@ -542,11 +542,15 @@
             this.$i18n.locale = localStorage.locale;
           }
           if (localStorage.username) {
-              this.username = JSON.parse(localStorage.username);
-            }
-            if (localStorage.password) {
-              this.password = JSON.parse(localStorage.password);
-            }
+            this.username = JSON.parse(localStorage.username);
+          } else {
+            this.username = "jsidplay2";
+          }
+          if (localStorage.password) {
+            this.password = JSON.parse(localStorage.password);
+          } else {
+            this.password = "jsidplay2!";
+          }
           if (this.hls) {
             const outerThis = this;
             setInterval(function () {
