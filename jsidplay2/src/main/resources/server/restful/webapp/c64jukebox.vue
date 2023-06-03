@@ -3223,6 +3223,10 @@
               axios({
                 method: "get",
                 url: this.createSIDMappingUrl(entry, itemId, categoryId),
+                auth: {
+                    username: this.username,
+                    password: this.password,
+                  },
               }).then((response) => {
                 mapping = response.data;
 
