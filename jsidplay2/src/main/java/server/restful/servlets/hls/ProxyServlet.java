@@ -79,7 +79,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			response.getOutputStream().write(bos.toByteArray());
 
 		} catch (IOException e) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(t);
