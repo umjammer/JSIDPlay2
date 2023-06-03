@@ -140,6 +140,7 @@ public final class PlayerWithStatus {
 		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed") {
 			@Override
 			public void event() throws InterruptedException {
+
 				if (key == KeyTableEntry.RESTORE) {
 					player.getC64().getKeyboard().restore();
 				} else {
@@ -169,6 +170,7 @@ public final class PlayerWithStatus {
 		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Pressed") {
 			@Override
 			public void event() throws InterruptedException {
+
 				player.getC64().setJoystick(number, () -> (byte) (0xff ^ value));
 
 				player.getC64().getEventScheduler()
