@@ -7,6 +7,9 @@ import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 import static libsidutils.PathUtils.getFileSize;
+import static org.apache.http.HttpHeaders.ACCEPT;
+import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
@@ -39,7 +42,6 @@ import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 
-import org.apache.http.HttpHeaders;
 import org.apache.tomcat.util.http.fileupload.FileItemIterator;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
@@ -201,13 +203,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 		if (request.getContentType() != null) {
 			result.append(" ");
-			result.append(HttpHeaders.CONTENT_TYPE);
+			result.append(CONTENT_TYPE);
 			result.append("=");
 			result.append(request.getContentType());
 		}
 		if (request.getContentLengthLong() != -1L) {
 			result.append(", ");
-			result.append(HttpHeaders.CONTENT_LENGTH);
+			result.append(CONTENT_LENGTH);
 			result.append("=");
 			result.append(getFileSize(request.getContentLengthLong()));
 		}
@@ -399,7 +401,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			if (result == null) {
 				return;
 			}
-			Optional<String> optionalContentType = ofNullable(request.getHeader(HttpHeaders.ACCEPT))
+			Optional<String> optionalContentType = ofNullable(request.getHeader(ACCEPT))
 					.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
 			if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
 				response.setContentType(MIME_TYPE_JSON.toString());
