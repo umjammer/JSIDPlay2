@@ -3920,6 +3920,10 @@
               axios({
                 method: "get",
                 url: "/jsidplay2service/JSIDPlay2REST/favorites",
+                auth: {
+                    username: this.username,
+                    password: this.password,
+                  },
               })
                 .then((response) => {
                   this.playlist = response.data.map((file) => {
@@ -3957,6 +3961,10 @@
             axios({
               method: "get",
               url: "/jsidplay2service/JSIDPlay2REST/filters",
+              auth: {
+                  username: this.username,
+                  password: this.password,
+                },
             })
               .then((response) => {
                 const filters = response.data;

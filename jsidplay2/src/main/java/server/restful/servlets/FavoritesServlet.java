@@ -36,7 +36,7 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public boolean isSecured() {
-		return false;
+		return true;
 	}
 
 	/**
