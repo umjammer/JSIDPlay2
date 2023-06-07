@@ -45,7 +45,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public boolean isSecured() {
-		return false;
+		return true;
 	}
 
 	/**

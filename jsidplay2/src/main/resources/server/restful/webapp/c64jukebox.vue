@@ -3781,7 +3781,7 @@
             );
             window.open(
               window.location.protocol +
-                "//" +
+                "//" + this.username + ":" + this.password + "@" +
                 window.location.host +
                 "/jsidplay2service/JSIDPlay2REST/download" +
                 url +
