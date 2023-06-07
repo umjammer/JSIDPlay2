@@ -3408,9 +3408,9 @@
           canFastload: function (entry) {
             let filename = entry.filename.toLowerCase();
             return (
-              filename.toLowerCase().endsWith(".d64") ||
-              filename.toLowerCase().endsWith(".g64") ||
-              filename.toLowerCase().endsWith(".nib")
+              filename.endsWith(".d64") ||
+              filename.endsWith(".g64") ||
+              filename.endsWith(".nib")
             );
           },
           remove: function (index) {
