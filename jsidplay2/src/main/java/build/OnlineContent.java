@@ -64,7 +64,7 @@ public class OnlineContent {
 
 	static {
 		DebugUtil.init();
-		// Parameter classes are being checked for development errors
+		// Parameter classes are being checked for development errors at build time
 		ServletParameterHelper.check();
 	}
 
@@ -138,7 +138,7 @@ public class OnlineContent {
 			return;
 		}
 		Process proc = Runtime.getRuntime().exec(new String[] { upxExe, "--lzma", "--best",
-			/* "--ultra-brute", */deployDir + "/jsiddevice-" + projectVersion + ".exe" });
+				/* "--ultra-brute", */deployDir + "/jsiddevice-" + projectVersion + ".exe" });
 
 		ZipFileUtils.copy(proc.getErrorStream(), System.err);
 		ZipFileUtils.copy(proc.getInputStream(), System.out);
@@ -337,7 +337,7 @@ public class OnlineContent {
 	}
 
 	private void createCRC(File demosZipFile, File crcFile)
-		throws IOException, FileNotFoundException, UnsupportedEncodingException {
+			throws IOException, FileNotFoundException, UnsupportedEncodingException {
 		try (Writer writer = new PrintWriter(crcFile, StandardCharsets.ISO_8859_1.toString())) {
 			Properties properties = new Properties();
 			properties.setProperty("filename", demosZipFile.getName());
