@@ -3224,9 +3224,9 @@
                 method: "get",
                 url: this.createSIDMappingUrl(entry, itemId, categoryId),
                 auth: {
-                    username: this.username,
-                    password: this.password,
-                  },
+                  username: this.username,
+                  password: this.password,
+                },
               }).then((response) => {
                 mapping = response.data;
 
@@ -3407,11 +3407,7 @@
           },
           canFastload: function (entry) {
             let filename = entry.filename.toLowerCase();
-            return (
-              filename.endsWith(".d64") ||
-              filename.endsWith(".g64") ||
-              filename.endsWith(".nib")
-            );
+            return filename.endsWith(".d64") || filename.endsWith(".g64") || filename.endsWith(".nib");
           },
           remove: function (index) {
             if (confirm(this.$i18n.t("removeReally"))) {
@@ -3781,7 +3777,11 @@
             );
             window.open(
               window.location.protocol +
-                "//" + this.username + ":" + this.password + "@" +
+                "//" +
+                this.username +
+                ":" +
+                this.password +
+                "@" +
                 window.location.host +
                 "/jsidplay2service/JSIDPlay2REST/download" +
                 url +
@@ -3921,9 +3921,9 @@
                 method: "get",
                 url: "/jsidplay2service/JSIDPlay2REST/favorites",
                 auth: {
-                    username: this.username,
-                    password: this.password,
-                  },
+                  username: this.username,
+                  password: this.password,
+                },
               })
                 .then((response) => {
                   this.playlist = response.data.map((file) => {
@@ -3962,9 +3962,9 @@
               method: "get",
               url: "/jsidplay2service/JSIDPlay2REST/filters",
               auth: {
-                  username: this.username,
-                  password: this.password,
-                },
+                username: this.username,
+                password: this.password,
+              },
             })
               .then((response) => {
                 const filters = response.data;
