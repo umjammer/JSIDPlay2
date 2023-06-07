@@ -3521,7 +3521,6 @@
             if (confirm(this.$i18n.t("setDefaultReally"))) {
               this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
               this.convertOptions.useHls = true;
-              this.convertOptions.sfxSoundExpander = true;
               this.convertOptions.config.sidplay2Section.single = true;
               this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
               this.convertOptions.config.audioSection.reverbBypass = false;
@@ -4213,7 +4212,6 @@
           } else {
             // initialize configuration (if they differ from the default settings)
             this.convertOptions.useHls = true;
-            this.convertOptions.sfxSoundExpander = true;
             this.convertOptions.config.sidplay2Section.single = true;
             this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
             this.convertOptions.config.audioSection.reverbBypass = false;
