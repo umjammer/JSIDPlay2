@@ -6,6 +6,9 @@ import static libsidplay.config.IAudioSystemProperties.MAX_TIME_GAP;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -22,6 +25,8 @@ import libsidplay.config.IAudioSection;
  */
 public class SleepDriver implements AudioDriver {
 
+	private static final Logger SLEEP_DRIVER = Logger.getLogger(SleepDriver.class.getName());
+
 	private CPUClock cpuClock;
 	private EventScheduler context;
 
@@ -36,7 +41,7 @@ public class SleepDriver implements AudioDriver {
 	/**
 	 * Current time of a video player client
 	 */
-	private volatile long currentTime;
+	private volatile Long clientTime;
 
 	private ByteBuffer sampleBuffer;
 
@@ -51,7 +56,7 @@ public class SleepDriver implements AudioDriver {
 		time = 0;
 		startC64Time = 0;
 		c64Time = 0;
-		currentTime = Long.MAX_VALUE;
+		clientTime = null;
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
 	}
 
@@ -61,23 +66,27 @@ public class SleepDriver implements AudioDriver {
 			startTime = System.currentTimeMillis();
 			startC64Time = context.getTime(Phase.PHI2);
 		}
-		time = Math.min(System.currentTimeMillis() - startTime, currentTime + /* from rolling a dice */4000);
+		time = clientTime != null ? clientTime : System.currentTimeMillis() - startTime;
+		time += /* from rolling a dice */ 4000;
 		c64Time = (long) ((context.getTime(Phase.PHI2) - startC64Time) * 1000 / cpuClock.getCpuFrequency());
 
-		long sleepTime = c64Time - time;
-		if (sleepTime > MAX_TIME_GAP) {
-			try {
-				// slow down video production, that a client-side fastForward after a key press
-				// jumps not too far
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		long gap = c64Time - time;
+		if (gap > MAX_TIME_GAP) {
+			// slow down video production, that a client-side fastForward after a key press
+			// jumps not too far, but not long enough to block a fast forward
+			final long sleepTime = Math.min(gap - MAX_TIME_GAP, 1000);
+
+			if (SLEEP_DRIVER.isLoggable(Level.FINE)) {
+				SLEEP_DRIVER.fine(String.format("recordingTime=%s, clientTime=%s, c64Time=%s, time=%s, sleepTime=%s",
+						millisToDate(System.currentTimeMillis() - startTime), millisToDate(clientTime),
+						millisToDate(c64Time), millisToDate(time), millisToDate(sleepTime)));
 			}
+			Thread.sleep(sleepTime);
 		}
 	}
 
-	public void setCurrentTime(Long currentTime) {
-		this.currentTime = currentTime;
+	public void setClientTime(Long clientTime) {
+		this.clientTime = clientTime;
 	}
 
 	@Override
@@ -92,6 +101,15 @@ public class SleepDriver implements AudioDriver {
 	@Override
 	public boolean isRecording() {
 		return false;
+	}
+
+	private String millisToDate(Long millis) {
+		if (millis == null) {
+			return "00:00:00";
+		}
+		return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+				TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+				TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
 	}
 
 }

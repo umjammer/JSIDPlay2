@@ -482,7 +482,7 @@
                               ></b-button>
                             </div>
                             <div>
-                              <div v-show="entry.directoryMode > 0">
+                              <div v-show="entry.directoryMode > 0" class="disk-directory">
                                 <div>
                                   <span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
                                 </div>
@@ -806,7 +806,7 @@
                                   </div>
                                   <div>
                                     <div v-show="innerRow.item.directoryMode > 0">
-                                      <div class="no-bullets">
+                                      <div class="disk-directory">
                                         <div>
                                           <span class="c64-font">{{ innerRow.item.diskDirectoryHeader }}</span>
                                         </div>
