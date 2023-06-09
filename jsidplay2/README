@@ -1,7 +1,7 @@
 Work with Eclipse:
 ==================
 From the command-line:
-mvn -Djavafx.platform=linux clean install								; # Use "linux", "win" or "mac" for your platforms
+mvn -Djavafx.platform=linux clean install								; # Use "linux", "win" or "mac" for your platform
 mvn eclipse:eclipse
 then in Eclipse: Right-Click on Project Maven/"Update Project"
 
@@ -44,7 +44,7 @@ HardSID in VirtualBox:
 Use HardSID4U, HardSID Uno and HardSID UPlay - USB devices:
 Connect HardSID device to your real computer.
 Allow Windows to use USB hardware with Virtual box Toolbar icon in the bottom right side of the window.
-Your user has to be a member of the group: vboxusers to let virtualbox access USB hardware.
+On Linux host your user has to be a member of the group: vboxusers to let virtualbox access USB hardware.
 Start JSIDPlay2 and switch from Emulation to HardSID4U.
 Check console, that there are no error messages.
 

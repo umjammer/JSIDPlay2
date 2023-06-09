@@ -1,3 +1,11 @@
 Release Notes:
 ==============
-Support of SFX Sound Expander [FM-YAM alike] has been added (YM3526=OPL1 and YM3812=OPL2), digi sample playback not working though
+JSIDPlay2:
+Support of SFX Sound Expander Cartridge [FM-YAM alike] has been added (YM3526=OPL1 and YM3812=OPL2), digi sample playback not working though.
+Bugfix: PSID64 detection of SID base address fixed
+
+C64 Jukebox:
+Keyboard interaction reacts much faster, now
+Configuration completely renewed
+Layout enhancements
+Please Shift+Reload page in your browser: https://haendel.ddns.net:8443/static/c64jukebox.vue

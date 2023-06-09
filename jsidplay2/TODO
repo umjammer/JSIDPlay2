@@ -1,6 +1,9 @@
 TODO:
 =====
 
+- HardSID support for VICE project
+- Test Wilfred's "HardSID USB write buffer" according to email of 25.2. 15:15
+- Add UDB broadcast to JSIDPlay2 to detect responding JSIDDevices
 - What to do to use your own filter, this is totally unclear to the user
 - Test classes seem not always to work with JDK17.
 - Playlists are wanted to be shared online
@@ -11,11 +14,8 @@ TODO:
 - freely configurable filter definitions
 - Support of executable .command files on MACOSX
 - Maximize oscilloscope view on demand
-- HardSID support for VICE project
 
 HTML Client app:
 - Search collections
 - show current number of videos in parallel
 - support of several playlists
-- Add UDB broadcast to JSIDPlay2 to detect responding JSIDDevices
-- Test Wilfred's "HardSID USB write buffer" according to email of 25.2. 15:15
