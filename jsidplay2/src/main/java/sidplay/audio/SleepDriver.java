@@ -6,7 +6,8 @@ import static libsidplay.config.IAudioSystemProperties.MAX_TIME_GAP;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,7 +48,7 @@ public class SleepDriver implements AudioDriver {
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
-			throws IOException, LineUnavailableException, InterruptedException {
+		throws IOException, LineUnavailableException, InterruptedException {
 		this.cpuClock = cpuClock;
 		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
@@ -105,11 +106,9 @@ public class SleepDriver implements AudioDriver {
 
 	private String millisToDate(Long millis) {
 		if (millis == null) {
-			return "00:00:00";
+			return "00:00:00.000";
 		}
-		return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-				TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
-				TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+		return (new SimpleDateFormat("mm:ss:SSS")).format(new Date(millis));
 	}
 
 }
