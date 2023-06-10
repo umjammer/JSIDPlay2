@@ -146,7 +146,7 @@ public final class PlayerWithStatus {
 				} else {
 					player.getC64().getKeyboard().keyPressed(key);
 
-					player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Release") {
+					player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Released") {
 						@Override
 						public void event() throws InterruptedException {
 
@@ -172,7 +172,7 @@ public final class PlayerWithStatus {
 
 				player.getC64().setJoystick(number, () -> (byte) (0xff ^ value));
 
-				player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Joystick Release") {
+				player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Joystick Released") {
 					@Override
 					public void event() throws InterruptedException {
 
@@ -230,14 +230,14 @@ public final class PlayerWithStatus {
 
 					long initDelay = SidTune.getInitDelay(player.getTune());
 
-					player.getC64().getEventScheduler().schedule(new Event("Key Pressed") {
+					player.getC64().getEventScheduler().schedule(new Event("Virtual Keyboard Key Pressed") {
 						@Override
 						public void event() throws InterruptedException {
 
 							// press space every N seconds
 							player.getC64().getKeyboard().keyPressed(SPACE);
 
-							player.getC64().getEventScheduler().schedule(new Event("Key Released") {
+							player.getC64().getEventScheduler().schedule(new Event("Virtual Keyboard Key Released") {
 								@Override
 								public void event() throws InterruptedException {
 
