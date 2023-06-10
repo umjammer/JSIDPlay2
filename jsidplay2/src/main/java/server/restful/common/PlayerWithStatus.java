@@ -146,21 +146,20 @@ public final class PlayerWithStatus {
 				} else {
 					player.getC64().getKeyboard().keyPressed(key);
 
-					player.getC64().getEventScheduler()
-							.scheduleThreadSafeKeyEvent(new Event("Wait Until Virtual Keyboard Key Released") {
-								@Override
-								public void event() throws InterruptedException {
+					player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Release") {
+						@Override
+						public void event() throws InterruptedException {
 
-									player.getC64().getEventScheduler()
-											.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
-												@Override
-												public void event() throws InterruptedException {
+							player.getC64().getEventScheduler()
+									.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
+										@Override
+										public void event() throws InterruptedException {
 
-													player.getC64().getKeyboard().keyReleased(key);
-												}
-											});
-								}
-							});
+											player.getC64().getKeyboard().keyReleased(key);
+										}
+									});
+						}
+					}, player.getC64().getClock().getCyclesPerFrame() << 2);
 				}
 			}
 		});
@@ -173,21 +172,20 @@ public final class PlayerWithStatus {
 
 				player.getC64().setJoystick(number, () -> (byte) (0xff ^ value));
 
-				player.getC64().getEventScheduler()
-						.scheduleThreadSafeKeyEvent(new Event("Wait Until Virtual Joystick Released") {
-							@Override
-							public void event() throws InterruptedException {
+				player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Joystick Release") {
+					@Override
+					public void event() throws InterruptedException {
 
-								player.getC64().getEventScheduler()
-										.scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Released") {
-											@Override
-											public void event() throws InterruptedException {
+						player.getC64().getEventScheduler()
+								.scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Released") {
+									@Override
+									public void event() throws InterruptedException {
 
-												player.getC64().setJoystick(number, null);
-											}
-										});
-							}
-						});
+										player.getC64().setJoystick(number, null);
+									}
+								});
+					}
+				}, player.getC64().getClock().getCyclesPerFrame() << 2);
 			}
 		});
 	}

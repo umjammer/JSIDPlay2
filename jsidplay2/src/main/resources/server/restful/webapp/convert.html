@@ -352,10 +352,10 @@
             if (this.hls) {
               if ("$hlsType" === "VIDEO_JS") {
                 var video = videojs("video-container");
-                video.currentTime(video.bufferedEnd());
+                video.currentTime(video.bufferedEnd() - 0.1);
               } else if ("$hlsType" === "HLS_JS") {
                 var video = document.getElementById("video-container");
-                video.currentTime = video.duration;
+                video.currentTime = video.duration - 0.1;
               }
             }
           },
