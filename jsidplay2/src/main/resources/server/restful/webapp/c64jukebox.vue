@@ -37,7 +37,7 @@
   </head>
   <body>
     <div id="app">
-      <form>
+      <b-form>
         <div class="locale-changer">
           <select @change="updateLanguage" v-model="$i18n.locale" style="float: right">
             <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
@@ -2523,7 +2523,7 @@
             </b-tabs>
           </b-card>
         </div>
-      </form>
+      </b-form>
     </div>
 
     <script>
