@@ -422,16 +422,13 @@
                               <span>{{ $t("downloadMP3") }}</span></b-button
                             >
                           </div>
-                          <div v-show="isSid(entry)">
-                            <b-button
-                              size="sm"
-                              style="font-size: smaller; padding: 2px 4px"
-                              v-on:click="openDownloadSIDUrl(entry.filename)"
-                            >
-                              <i class="fas fa-download"></i>
-                              <span>{{ $t("downloadSID") }}</span></b-button
-                            >
-                          </div>
+                          <b-button
+                            size="sm"
+                            style="font-size: smaller; padding: 2px 4px"
+                            v-on:click="openDownloadSIDUrl(entry.filename)"
+                          >
+                            <i class="fas fa-download"></i>
+                          </b-button>
                           <div>
                             <b-button
                               size="sm"
@@ -730,8 +727,7 @@
                                     "
                                   >
                                     <i class="fas fa-download"></i>
-                                    <span>{{ $t("downloadMP3") }}</span></b-button
-                                  >
+                                  </b-button>
                                 </div>
                                 <div>
                                   <b-button
@@ -742,8 +738,7 @@
                                     "
                                   >
                                     <i class="fas fa-download"></i>
-                                    <span>{{ $t("downloadSID") }}</span></b-button
-                                  >
+                                  </b-button>
                                 </div>
                                 <div>
                                   <b-button
@@ -1523,6 +1518,18 @@
                       <template #title>{{ $t("playbackCfgHeader") }}</template>
 
                       <b-card-text>
+                        <div class="settings-box">
+                          <span class="setting"
+                            ><label for="videoTuneAsAudio">
+                              {{ $t("convertMessages.videoTuneAsAudio") }}
+                              <b-form-checkbox
+                                id="videoTuneAsAudio"
+                                class="right"
+                                v-model="convertOptions.videoTuneAsAudio"
+                              >
+                              </b-form-checkbox></label
+                          ></span>
+                        </div>
                         <div class="settings-box">
                           <span class="setting"
                             ><label for="random">
@@ -2817,7 +2824,6 @@
           graphicsTop200: "Graphics",
           addAllToPlaylist: "All",
           downloadMP3: "MP3",
-          downloadSID: "SID",
           remove: "Remove last tune",
           removeReally: "Do you really want to remove the last playlist tune?",
           next: "Next",
@@ -2936,7 +2942,6 @@
           graphicsTop200: "Graphics",
           addAllToPlaylist: "Alle",
           downloadMP3: "MP3",
-          downloadSID: "SID",
           remove: "Letzten Tune l\u00f6schen",
           removeReally: "Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
           next: "N\u00e4chster",
@@ -3351,13 +3356,26 @@
           },
           isMusic: function (entry) {
             let filename = entry.filename.toLowerCase();
-            return (
-              filename.endsWith(".sid") ||
-              filename.endsWith(".dat") ||
-              filename.endsWith(".mus") ||
-              filename.endsWith(".str") ||
-              filename.endsWith(".mp3")
-            );
+            if (this.convertOptions.videoTuneAsAudio) {
+              return (
+                filename.endsWith(".sid") ||
+                filename.endsWith(".dat") ||
+                filename.endsWith(".mus") ||
+                filename.endsWith(".str") ||
+                filename.endsWith(".c64") ||
+                filename.endsWith(".prg") ||
+                filename.endsWith(".p00") ||
+                filename.endsWith(".mp3")
+              );
+            } else {
+              return (
+                filename.endsWith(".sid") ||
+                filename.endsWith(".dat") ||
+                filename.endsWith(".mus") ||
+                filename.endsWith(".str") ||
+                filename.endsWith(".mp3")
+              );
+            }
           },
           isPicture: function (entry) {
             let filename = entry.filename.toLowerCase();
@@ -3374,18 +3392,6 @@
                 filename.endsWith(".png") ||
                 filename.endsWith(".svg")) &&
               !filename.endsWith("small.jpg")
-            );
-          },
-          isValidStil: function (entry) {
-            return entry.name || entry.author || entry.title || entry.artist || entry.comment;
-          },
-          isSid: function (entry) {
-            let filename = entry.filename.toLowerCase();
-            return (
-              filename.endsWith(".sid") ||
-              filename.endsWith(".dat") ||
-              filename.endsWith(".mus") ||
-              filename.endsWith(".str")
             );
           },
           isVideo: function (entry) {
@@ -3408,6 +3414,9 @@
           canFastload: function (entry) {
             let filename = entry.filename.toLowerCase();
             return filename.endsWith(".d64") || filename.endsWith(".g64") || filename.endsWith(".nib");
+          },
+          isValidStil: function (entry) {
+            return entry.name || entry.author || entry.title || entry.artist || entry.comment;
           },
           remove: function (index) {
             if (confirm(this.$i18n.t("removeReally"))) {
@@ -3713,6 +3722,8 @@
               this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
               "&detectPSID64ChipModel=" +
               this.convertOptions.config.emulationSection.detectPSID64ChipModel +
+              "&videoTuneAsAudio=" +
+              this.convertOptions.videoTuneAsAudio +
               "&hls=" +
               this.convertOptions.useHls +
               "&hlsType=" +
