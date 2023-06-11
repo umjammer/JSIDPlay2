@@ -233,7 +233,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.autostart = autostart;
 		}
 
-		private Boolean videoTuneAsAudio = Boolean.TRUE;
+		private Boolean videoTuneAsAudio = Boolean.FALSE;
 
 		public Boolean getVideoTuneAsAudio() {
 			return videoTuneAsAudio;
