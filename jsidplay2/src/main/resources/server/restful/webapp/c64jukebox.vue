@@ -94,7 +94,7 @@
                     <span class="setting">
                       <label for="username"
                         >{{ $t("username") }}
-                        <input
+                        <b-form-input
                           type="text"
                           id="username"
                           class="right"
@@ -110,7 +110,7 @@
                     <span class="setting">
                       <label for="password"
                         >{{ $t("password") }}
-                        <input
+                        <b-form-input
                           type="password"
                           id="password"
                           class="right"
@@ -889,7 +889,7 @@
                     </template>
                     <template #head(name)="data">
                       <label for="name" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
-                      <input
+                      <b-form-input
                         type="text"
                         id="name"
                         v-model="name"
@@ -903,7 +903,7 @@
                     </template>
                     <template #head(group)="data">
                       <label for="group" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
-                      <input
+                      <b-form-input
                         type="text"
                         id="group"
                         v-model="group"
@@ -917,7 +917,7 @@
                     </template>
                     <template #head(event)="data">
                       <label for="event" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
-                      <input
+                      <b-form-input
                         type="text"
                         id="event"
                         v-model="event"
@@ -931,7 +931,7 @@
                     </template>
                     <template #head(released)="data" style="padding-right: calc(0.3rem + 0.1em)">
                       <label for="released" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
-                      <input
+                      <b-form-input
                         type="text"
                         id="released"
                         v-model="released"
@@ -945,10 +945,10 @@
                     </template>
                     <template #head(handle)="data">
                       <label for="handle" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
-                      <input
+                      <b-form-input
                         type="text"
                         id="handle"
-                        v-model.number="handle"
+                        v-model="handle"
                         @change="requestSearchResults"
                         style="max-width: 100%"
                         autocomplete="off"
@@ -959,10 +959,10 @@
                     </template>
                     <template #head(rating)="data">
                       <label for="rating" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
-                      <input
-                        type="text"
+                      <b-form-input
+                        type="number"
                         id="rating"
-                        v-model="rating"
+                        v-model.number="rating"
                         @change="requestSearchResults"
                         style="max-width: 100%"
                         autocomplete="off"
@@ -1461,7 +1461,7 @@
                                 <span class="setting"
                                   ><label for="videoCoderAudioDelay"
                                     >{{ $t("convertMessages.config.audioSection.videoCoderAudioDelay") }}
-                                    <input
+                                    <b-form-input
                                       id="videoCoderAudioDelay"
                                       class="right"
                                       v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay"
@@ -1472,7 +1472,7 @@
                                 <span class="setting"
                                   ><label for="audioCoderBitRate"
                                     >{{ $t("convertMessages.config.audioSection.audioCoderBitRate") }}
-                                    <input
+                                    <b-form-input
                                       id="audioCoderBitRate"
                                       class="right"
                                       type="number"
@@ -1485,7 +1485,7 @@
                                 <span class="setting"
                                   ><label for="videoCoderBitRate"
                                     >{{ $t("convertMessages.config.audioSection.videoCoderBitRate") }}
-                                    <input
+                                    <b-form-input
                                       id="videoCoderBitRate"
                                       class="right"
                                       type="number"
@@ -1506,7 +1506,7 @@
                                 <span class="setting"
                                   ><label for="pressSpaceInterval"
                                     >{{ $t("convertMessages.pressSpaceInterval") }}
-                                    <input
+                                    <b-form-input
                                       id="pressSpaceInterval"
                                       class="right"
                                       v-model.number="convertOptions.pressSpaceInterval"
@@ -1779,7 +1779,7 @@
                           <span class="setting"
                             ><label for="bufferSize">
                               {{ $t("convertMessages.config.audioSection.bufferSize") }}
-                              <input
+                              <b-form-input
                                 type="number"
                                 min="0"
                                 oninput="validity.valid||(value='');"
