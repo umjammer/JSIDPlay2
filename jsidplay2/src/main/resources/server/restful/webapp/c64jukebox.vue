@@ -412,16 +412,15 @@
                               <span class="sid-file">{{ shortEntry(entry.filename) }}</span>
                             </b-link>
                           </div>
-                          <div>
-                            <b-button
-                              size="sm"
-                              style="font-size: smaller; padding: 2px 4px"
-                              v-on:click="openDownloadMP3Url(entry.filename)"
-                            >
-                              <i class="fas fa-download"></i>
-                              <span>{{ $t("downloadMP3") }}</span></b-button
-                            >
-                          </div>
+                          <b-button
+                            size="sm"
+                            style="font-size: smaller; padding: 2px 4px"
+                            v-on:click="openDownloadMP3Url(entry.filename)"
+                            v-show="!isMP3(entry)"
+                          >
+                            <i class="fas fa-download"></i>
+                            <span>{{ $t("downloadMP3") }}</span></b-button
+                          >
                           <b-button
                             size="sm"
                             style="font-size: smaller; padding: 2px 4px"
@@ -718,28 +717,25 @@
                                   </b-link>
                                 </div>
 
-                                <div>
-                                  <b-button
-                                    size="sm"
-                                    style="font-size: smaller; padding: 2px 4px"
-                                    v-on:click="
-                                      openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)
-                                    "
-                                  >
-                                    <i class="fas fa-download"></i>
-                                  </b-button>
-                                </div>
-                                <div>
-                                  <b-button
-                                    size="sm"
-                                    style="font-size: smaller; padding: 2px 4px"
-                                    v-on:click="
-                                      openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
-                                    "
-                                  >
-                                    <i class="fas fa-download"></i>
-                                  </b-button>
-                                </div>
+                                <b-button
+                                  size="sm"
+                                  style="font-size: smaller; padding: 2px 4px"
+                                  v-on:click="
+                                    openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)
+                                  "
+                                >
+                                  <i class="fas fa-download"></i>
+                                  <span>{{ $t("downloadMP3") }}</span>
+                                </b-button>
+                                <b-button
+                                  size="sm"
+                                  style="font-size: smaller; padding: 2px 4px"
+                                  v-on:click="
+                                    openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
+                                  "
+                                >
+                                  <i class="fas fa-download"></i>
+                                </b-button>
                                 <div>
                                   <b-button
                                     size="sm"
@@ -3410,6 +3406,10 @@
               filename.endsWith(".crt") ||
               filename.endsWith(".img")
             );
+          },
+          isMP3: function (entry) {
+            let filename = entry.filename.toLowerCase();
+            return filename.endsWith(".mp3");
           },
           canFastload: function (entry) {
             let filename = entry.filename.toLowerCase();
