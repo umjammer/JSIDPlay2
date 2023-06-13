@@ -444,6 +444,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
 
+		if (servletParameters.sfxSoundExpander && !player.getC64().isCartridge()) {
+			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
+		}
+		if (servletParameters.reuSize != null && !player.getC64().isCartridge()) {
+			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
+		}
 		SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(servletParameters.startSong);
 		player.play(tune);
