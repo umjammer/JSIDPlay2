@@ -18,12 +18,12 @@ Run launch "clean deploy (plus additional online content)"
 Check in all local changes, please note: Update check will report a new release, immediately
 
 Update JSIDPlay2 server with latest version:
-Copy '/home/ken/workspace/jsidplay2/target/deploy/jsidplay2-4.7-linux.zip' to
+Copy '/home/ken/workspace/jsidplay2/target/deploy/jsidplay2-4.8-linux.zip' to
 sftp://ken-whatssid/home/ken/Downloads
 pkill -f server.restful.JSIDPlay2Server
 cd Downloads/
-rm -rf jsidplay2-*
-unzip jsidplay2-4.7.zip
+rm -rf jsidplay2-4.7-linux
+unzip jsidplay2-4.8.zip
 cd
 Change version in "server.sh" and "fingerprintCreater.sh"
 Change autostart:
@@ -35,13 +35,13 @@ Prüfe ob der Server neu gestartet wurde
 Change version in local desktop files "~/Desktop/JSIDPlay2.desktop"
 
 Upload the following release files to sourceforge and
-mark it with the correct OS (only for jsidplay2-4.7-*.zip and jsidplay2app.apk)
-jsiddevice-4.7.zip
-libsidplay-4.7.jar
+mark it with the correct OS (only for jsidplay2-4.8-*.zip and jsidplay2app.apk)
+jsiddevice-4.8.zip
+libsidplay-4.8.jar
 jsidplay2app.apk
-jsidplay2-4.7-linux.zip
-jsidplay2-4.7-mac.zip
-jsidplay2-4.7-win.zip
+jsidplay2-4.8-linux.zip
+jsidplay2-4.8-mac.zip
+jsidplay2-4.8-win.zip
 RELEASE_NOTES
 README_2nd.txt
 README.txt
@@ -49,13 +49,13 @@ README.txt
 Optional: Exchange screenshots with never versions (use option -Duser.language=en in JSIDPlay2)
 
 Create a new News Entry:
-New Version released: 4.7
+New Version released: 4.8
 **Release Notes:**
 * ...
 Insert RELEASE_NOTES file here.
 
 Add two release entries to CSDB:
-Click Userpage/Add Release "JSIDPlay2 V4.7"
+Click Userpage/Add Release "JSIDPlay2 V4.8"
 Release Type: "Other Platform C64 Tool"
 Website: "https://sourceforge.net/projects/jsidplay2/"
 Release date: ...
@@ -69,10 +69,10 @@ Launch "JSIDPlay2Frame (english)"
 Press Alt+Prt in window
 Click "Upload screenshot from this release"
 Click "Set me as a maintainer"
-Click "Add Download Link": https://sourceforge.net/projects/jsidplay2/files/jsidplay2/4.7/
+Click "Add Download Link": https://sourceforge.net/projects/jsidplay2/files/jsidplay2/4.8/
 Click "Released by": Scener/kenchis
 
-Click Userpage/Add Release "JSIDDevice V4.7"
+Click Userpage/Add Release "JSIDDevice V4.8"
 Release Type: "Other Platform C64 Tool"
 Website: "https://sourceforge.net/projects/jsidplay2/"
 Release date: ...
@@ -85,5 +85,5 @@ Launch "Network SIDDevice"
 Press Alt+Prt in window
 Click "Upload screenshot from this release"
 Click "Set me as a maintainer"
-Click "Upload": jsiddevice-4.7.zip
+Click "Upload": jsiddevice-4.8.zip
 Click "Released by": Scener/kenchis
