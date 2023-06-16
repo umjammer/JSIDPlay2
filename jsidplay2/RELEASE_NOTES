@@ -1,22 +1,4 @@
 Release Notes:
 ==============
 JSIDPlay2:
-Support of SFX Sound Expander Cartridge [FM-YAM alike] has been added (YM3526=OPL1 and YM3812=OPL2), new digi sample playback not working though.
-    (Insert Cartridge to enable support, disabled by default)
-Bugfix: PSID64 detection of SID base address fixed
-
-C64 Jukebox:
-Keyboard interaction reacts much faster
-Configuration completely renewed
-Layout enhancements
-PRG can be configured to play as audio and not as video
-Support of SFX Sound Expander Cartridge can be enabled in the configuration
-
-(If browser asks for authentication information, then abort the dialog and please force a reload in your browser to refresh C64Jukebox
-    Web-Site: https://haendel.ddns.net:8443/static/c64jukebox.vue
-
-    MS-Edge browser: Hold the Ctrl key and click the Refresh button
-    Mac-Safari browser: Command+Alt+R
-    Chrome-Browser: Hold the Shift key and click the Refresh button
-    Firefox-Browser: Hold the Shift key and click the Refresh button
-)
+Bugfix: Prevent JSIDPlay2 to hang and scan whole directory tree, if called with a SID as command line argument
