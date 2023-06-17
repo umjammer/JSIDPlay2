@@ -144,33 +144,32 @@ public class Convenience {
 		File tmpDir = new File(player.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 		tmpDir.mkdirs();
 		boolean isCartridge = cartFileFilter.accept(file);
-		TFile zip = new TFile(file);
+		TFile tFile = new TFile(file);
 		File toAttach = null;
-		if (zip.exists()) {
-			if (zip.isArchive()) {
+		if (tFile.exists()) {
+			if (tFile.isArchive()) {
 				// uncompress zip
-				TFile.cp_rp(zip, tmpDir, TArchiveDetector.ALL);
+				TFile.cp_rp(tFile, tmpDir, TArchiveDetector.ALL);
 				// search media file to attach
-				toAttach = getToAttach(tmpDir, zip, isMediaToAttach, null, !isCartridge, true);
+				toAttach = getToAttach(tmpDir, tFile, isMediaToAttach, null, !isCartridge);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
 				File dst = new File(tmpDir, PathUtils.getFilenameWithoutSuffix(file.getName()));
 				try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 					TFile.cp(is, dst);
 				}
-				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge, true);
+				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("7z")) {
-				Extract7ZipUtil extract7Zip = new Extract7ZipUtil(zip, tmpDir);
+				Extract7ZipUtil extract7Zip = new Extract7ZipUtil(tFile, tmpDir);
 				extract7Zip.extract();
-				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge, true);
-			} else if (zip.isEntry()) {
+				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
+			} else if (tFile.isEntry()) {
 				// uncompress zip entry
-				File zipEntry = new File(tmpDir, zip.getName());
-				TFile.cp_rp(zip, zipEntry, TArchiveDetector.ALL);
+				File zipEntry = new File(tmpDir, tFile.getName());
+				TFile.cp_rp(tFile, zipEntry, TArchiveDetector.ALL);
 				// search media file to attach
-				getToAttach(tmpDir, zipEntry.getParentFile(), NO_MEDIA, null, !isCartridge, true);
+				getToAttach(tmpDir, zipEntry.getParentFile(), NO_MEDIA, null, !isCartridge);
 				toAttach = zipEntry;
 			} else if (isSupportedMedia(file)) {
-				getToAttach(file.getParentFile(), file.getParentFile(), NO_MEDIA, null, !isCartridge, false);
 				toAttach = file;
 			}
 		}
@@ -213,7 +212,7 @@ public class Convenience {
 	 * @return media to attach
 	 */
 	private File getToAttach(File dir, File file, BiPredicate<File, File> mediaTester, File toAttach,
-			boolean canAttachCartridge, boolean deepSearch) {
+			boolean canAttachCartridge) {
 		final File[] listFiles = file.listFiles();
 		if (listFiles == null) {
 			return toAttach;
@@ -239,9 +238,9 @@ public class Convenience {
 				} else if (mediaTester.test(memberFile, toAttach)) {
 					toAttach = memberFile;
 				}
-			} else if (deepSearch && memberFile.isDirectory() && !memberFile.getName().equals(MACOSX)) {
+			} else if (memberFile.isDirectory() && !memberFile.getName().equals(MACOSX)) {
 				File toAttachChild = getToAttach(memberFile, new TFile(memberFile), mediaTester, toAttach,
-						canAttachCartridge, deepSearch);
+						canAttachCartridge);
 				if (toAttachChild != null) {
 					toAttach = toAttachChild;
 				}
