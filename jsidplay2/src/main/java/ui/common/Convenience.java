@@ -121,6 +121,11 @@ public class Convenience {
 		}
 	}
 
+	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
+			throws IOException, SidTuneError {
+		return autostart(file, isMediaToAttach, dirEntry, false);
+	}
+
 	/**
 	 * Auto-start C64 bundle (ZIP containing well-known formats or un-zipped entry).
 	 * Attach specific disk/tape/cartridge and automatically start entry.<BR>
@@ -132,10 +137,12 @@ public class Convenience {
 	 * @param dirEntry        if media to attach is a disk this directory entry is
 	 *                        loaded after attaching the media (null means load
 	 *                        first file on disk).
+	 * @param deepScan        scan sub-directories and attach cartridges, if
+	 *                        required
 	 * @throws IOException  image read error
 	 * @throws SidTuneError invalid tune
 	 */
-	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
+	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry, boolean deepScan)
 			throws IOException, SidTuneError {
 		if (!player.getC64().getCartridge().isCreatingSamples()) {
 			player.getC64().ejectCartridge();
@@ -170,6 +177,9 @@ public class Convenience {
 				getToAttach(tmpDir, zipEntry.getParentFile(), NO_MEDIA, null, !isCartridge);
 				toAttach = zipEntry;
 			} else if (isSupportedMedia(file)) {
+				if (deepScan) {
+					getToAttach(file.getParentFile(), file.getParentFile(), NO_MEDIA, null, !isCartridge);
+				}
 				toAttach = file;
 			}
 		}

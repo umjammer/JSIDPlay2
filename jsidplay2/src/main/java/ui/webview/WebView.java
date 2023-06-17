@@ -121,7 +121,7 @@ public class WebView extends C64VBox implements UIPart {
 										showTuneInfos(util.getPlayer().getTune(), targetFile);
 									}
 
-									convenience.autostart(targetFile, LEXICALLY_FIRST_MEDIA, null);
+									convenience.autostart(targetFile, LEXICALLY_FIRST_MEDIA, null, true);
 									Platform.runLater(() -> util.setPlayingTab(WebView.this));
 								}
 							} catch (IOException | SidTuneError e) {

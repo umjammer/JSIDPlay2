@@ -901,7 +901,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private void autostart(String dirEntry) {
 		if (contentEntry != null && contentEntryFile != null) {
 			try {
-				if (convenience.autostart(contentEntryFile, Convenience.LEXICALLY_FIRST_MEDIA, dirEntry)) {
+				if (convenience.autostart(contentEntryFile, Convenience.LEXICALLY_FIRST_MEDIA, dirEntry, true)) {
 					util.setPlayingTab(this, currentlyPlayedSearchResultRowProperty,
 							currentlyPlayedContentEntryRowProperty);
 					currentlyPlayedSearchResultRowProperty.set(searchResult);
