@@ -137,8 +137,7 @@ public class Convenience {
 	 * @param dirEntry        if media to attach is a disk this directory entry is
 	 *                        loaded after attaching the media (null means load
 	 *                        first file on disk).
-	 * @param deepScan        scan sub-directories and attach cartridges, if
-	 *                        required
+	 * @param deepScan        scan sub-directories and attach cartridges
 	 * @throws IOException  image read error
 	 * @throws SidTuneError invalid tune
 	 */
