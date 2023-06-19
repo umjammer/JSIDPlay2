@@ -56,7 +56,7 @@ link:https://www.6581-8580.com[https://www.6581-8580.com^]
 | Ocean Type1
 | Rexx Datentechnik
 | Zaxxon
-| GeoRAM (64kb, 128kb, 256kb, 512kb, 1024kb, 2048kb and 2048kb)
+| GeoRAM (64kb, 128kb, 256kb, 512kb, 1024kb and 2048kb)
 | REU (1700: 128 kB, 1750: 512 kB, 1764: 256 kB, 1750 XL: 2 MB and 16 MB which was never produced)
 | SFX Sound Expander [FM-YAM alike] (OPL1: YM3526 and OPL2: YM3812)
 
@@ -73,7 +73,7 @@ We emulate up to 3 SID chips at the same time plugged into a C64
 and using configurable base addresses for the second and the third SID chip at:
 
 * 0xd400 (always reserved for the first SID chip)
-* 0xd000-0xdfff (128 places every 32 bytes)
+* 0xd420-0xdfff (every 32 bytes)
 * 0xde00
 * 0xdf00
 
@@ -83,7 +83,7 @@ Sound output can be recorded optionally as:
 * FLAC (lossless)
 * AAC (lossy)
 * MP3 audio (lossy)
-* AVI video (lossless)
+* AVI video (lossy)
 * MP4 video (lossy)
 * FLV video (lossy)
 * SID dump format (note sheet as CSV)
@@ -110,8 +110,8 @@ Information to use that device in software like JSIDPlay2 is available
 link:https://haendel.ddns.net/~ken/sidblaster.html[here^]
 
 4.
-Additionally we support exactly one of ExSID or ExSID+ (USB devices), e.g. link:http://hacks.slashdirt.org/hw/exsid/[exSID USB^]. It contains exactly two chips one MOS6581 and one MOS8580 per device.
-It contains both chips (MOS6581 and MOS8580) per device.
+Additionally we support exactly one of ExSID or ExSID+ (USB devices), e.g. link:http://hacks.slashdirt.org/hw/exsid/[exSID USB^].
+It contains exactly two chips one MOS6581 and one MOS8580 per device.
 
 5.
 If you have created your own hardware device or a software-based implementation of the SID chip, you could choose Network SID Device to use the player with it.
