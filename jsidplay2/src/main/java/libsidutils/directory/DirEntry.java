@@ -82,15 +82,24 @@ public class DirEntry {
 		StringBuffer fn = new StringBuffer();
 		// BEGIN include filename in quotes
 		fn.append("\"");
-		for (byte c : fileName) {
+		int end = -1;
+		for (int i = 0; i < fileName.length; i++) {
+			byte c = fileName[i];
 			if (c == '\r' || c == 0x00) {
 				// newline or zero bytes delimits the filename (e.g. tape)
 				break;
 			}
+			if (c == (byte) 0xa0 && i + 1 < fileName.length && fileName[i + 1] != (byte) 0xa0) {
+				end = i;
+			}
 			// Beware the PETSCII bytes here!
 			fn.append((char) (c & 0xff));
 		}
-		fn.append("\"");
+		if (end != -1) {
+			fn.setCharAt(end + 1, '\"');
+		} else {
+			fn.append("\"");
+		}
 		// END include filename in quotes
 		if (fileType != FILETYPE_NONE) {
 			// append extension if applicable
