@@ -102,8 +102,6 @@ public class SIDBlasterEmu extends ReSIDfp {
 
 		super.setChipModel(model == ChipModel.AUTO ? defaultSidModel : model);
 		super.setClockFrequency(cpuClock.getCpuFrequency());
-		super.setSampler(sample -> {
-		});
 	}
 
 	@Override

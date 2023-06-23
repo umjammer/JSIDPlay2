@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.function.IntConsumer;
 
+import builder.resid.SampleMixer;
 import libsidplay.common.Event;
 import libsidplay.components.cart.supported.ActionReplay;
 import libsidplay.components.cart.supported.AtomicPower;
@@ -76,7 +76,7 @@ public class Cartridge {
 	private boolean irqState;
 
 	/** Consumes samples of the cartridge while clocking. */
-	protected IntConsumer sampler;
+	protected SampleMixer sampler;
 
 	/**
 	 * Get currently active ROML bank.
@@ -337,11 +337,11 @@ public class Cartridge {
 	 * 
 	 * @param sampler
 	 */
-	public void setSampler(IntConsumer sampler) {
+	public void setSampler(SampleMixer sampler) {
 		this.sampler = sampler;
 	}
 
-	public IntConsumer getSampler() {
+	public SampleMixer getSampler() {
 		return sampler;
 	}
 

@@ -1,9 +1,9 @@
 package builder.resid;
 
-import java.util.function.IntConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import builder.resid.SampleMixer.NoOpSampleMixer;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
@@ -21,7 +21,7 @@ public abstract class ReSIDBase extends SIDEmu {
 	/**
 	 * Consumes samples of the SID while clocking.
 	 */
-	private IntConsumer sampler;
+	private SampleMixer sampler = new NoOpSampleMixer();
 
 	/**
 	 * Last time chip was accessed.
@@ -38,11 +38,11 @@ public abstract class ReSIDBase extends SIDEmu {
 		reset((byte) 0xf);
 	}
 
-	protected void setSampler(IntConsumer sampler) {
+	protected void setSampler(SampleMixer sampler) {
 		this.sampler = sampler;
 	}
 
-	IntConsumer getSampler() {
+	SampleMixer getSampler() {
 		return sampler;
 	}
 

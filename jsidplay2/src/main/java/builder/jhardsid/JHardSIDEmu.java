@@ -111,8 +111,6 @@ public class JHardSIDEmu extends ReSIDfp {
 
 		super.setChipModel(model);
 		super.setClockFrequency(cpuClock.getCpuFrequency());
-		super.setSampler(sample -> {
-		});
 	}
 
 	@Override

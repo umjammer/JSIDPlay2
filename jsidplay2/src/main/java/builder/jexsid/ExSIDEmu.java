@@ -102,8 +102,6 @@ public class ExSIDEmu extends ReSIDfp {
 
 		super.setChipModel(model);
 		super.setClockFrequency(cpuClock.getCpuFrequency());
-		super.setSampler(sample -> {
-		});
 
 		if (sidNum == 0) {
 			exSID.exSID_audio_op(AudioOp.XS_AU_MUTE.getAudioOp());

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import builder.resid.SampleMixer.DefaultSampleMixer;
 import builder.resid.SampleMixer.LinearFadingSampleMixer;
 import builder.resid.resample.Resampler;
 import libsidplay.common.CPUClock;
@@ -87,15 +88,13 @@ public class SIDMixer implements Mixer {
 		public void event() throws InterruptedException {
 			// Clock SIDs to fill the audio buffer
 			for (ReSIDBase sid : sids) {
-				SampleMixer sampler = (SampleMixer) sid.getSampler();
 				// clock SID to the present moment
 				sid.clock();
-				sampler.clear();
+				sid.getSampler().clear();
 			}
 			// Clock cartridge to fill the audio buffer to the present moment
-			SampleMixer sampler = (SampleMixer) cart.getSampler();
 			cart.clock();
-			sampler.clear();
+			cart.getSampler().clear();
 
 			// Read from audio buffers
 			int valL = 0, valR = 0;
@@ -424,7 +423,7 @@ public class SIDMixer implements Mixer {
 		if (fadeInFadeOutEnabled) {
 			return new LinearFadingSampleMixer(intBufferL, intBufferR);
 		} else {
-			return new SampleMixer(intBufferL, intBufferR);
+			return new DefaultSampleMixer(intBufferL, intBufferR);
 		}
 	}
 
@@ -438,10 +437,9 @@ public class SIDMixer implements Mixer {
 		boolean fakeStereo = isFakeStereo();
 		int sidNum = 0;
 		for (ReSIDBase sid : sids) {
-			SampleMixer sampler = (SampleMixer) sid.getSampler();
 			if (mono) {
-				sampler.setVolume(volume[sidNum], volume[sidNum]);
-				sampler.setDelay(0);
+				sid.getSampler().setVolume(volume[sidNum], volume[sidNum]);
+				sid.getSampler().setDelay(0);
 			} else {
 				double leftFraction = positionL[sidNum];
 				double rightFraction = positionR[sidNum];
@@ -451,8 +449,8 @@ public class SIDMixer implements Mixer {
 				}
 				int volumeL = (int) (volume[sidNum] * leftFraction);
 				int volumeR = (int) (volume[sidNum] * rightFraction);
-				sampler.setVolume(volumeL, volumeR);
-				sampler.setDelay(delayInSamples[sidNum]);
+				sid.getSampler().setVolume(volumeL, volumeR);
+				sid.getSampler().setDelay(delayInSamples[sidNum]);
 			}
 			sidNum++;
 		}

@@ -19,7 +19,7 @@ import java.util.function.IntConsumer;
  * @author ken
  *
  */
-class SampleMixer implements IntConsumer {
+public interface SampleMixer extends IntConsumer {
 	/**
 	 *
 	 * Extends SampleMixer with linear fade-in/fade-out feature to smoothly
@@ -28,7 +28,7 @@ class SampleMixer implements IntConsumer {
 	 * @author ken
 	 *
 	 */
-	static class LinearFadingSampleMixer extends SampleMixer {
+	static class LinearFadingSampleMixer extends DefaultSampleMixer {
 		/**
 		 * Fade-in/fade-out time in clock ticks.
 		 */
@@ -109,52 +109,83 @@ class SampleMixer implements IntConsumer {
 
 	}
 
-	/**
-	 * Buffers of mixed sample values for left/right speaker.
-	 */
-	private IntBuffer bufferL, bufferR;
+	static class DefaultSampleMixer implements SampleMixer {
 
-	/**
-	 * Audibility of mixed sample values for left/right speaker.
-	 */
-	protected int volumeL, volumeR;
+		/**
+		 * Buffers of mixed sample values for left/right speaker.
+		 */
+		private IntBuffer bufferL, bufferR;
 
-	/**
-	 * Sample buffer for delay effect.
-	 */
-	private IntBuffer delayedSamples;
+		/**
+		 * Audibility of mixed sample values for left/right speaker.
+		 */
+		protected int volumeL, volumeR;
 
-	SampleMixer(IntBuffer audioBufferL, IntBuffer audioBufferR) {
-		this.bufferL = audioBufferL;
-		this.bufferR = audioBufferR;
-		setVolume(1 << VOLUME_SCALER, 1 << VOLUME_SCALER);
-		setDelay(0);
-	}
+		/**
+		 * Sample buffer for delay effect.
+		 */
+		private IntBuffer delayedSamples;
 
-	public void setVolume(int volumeL, int volumeR) {
-		this.volumeL = volumeL;
-		this.volumeR = volumeR;
-	}
+		DefaultSampleMixer(IntBuffer audioBufferL, IntBuffer audioBufferR) {
+			this.bufferL = audioBufferL;
+			this.bufferR = audioBufferR;
+			setVolume(1 << VOLUME_SCALER, 1 << VOLUME_SCALER);
+			setDelay(0);
+		}
 
-	public void setDelay(int delayedSamples) {
-		this.delayedSamples = ByteBuffer.allocateDirect(Integer.BYTES * (delayedSamples + 1))
-				.order(ByteOrder.nativeOrder()).asIntBuffer().put(new int[delayedSamples + 1]);
-		((Buffer) this.delayedSamples).flip();
-	}
+		@Override
+		public void setVolume(int volumeL, int volumeR) {
+			this.volumeL = volumeL;
+			this.volumeR = volumeR;
+		}
 
-	@Override
-	public void accept(int sample) {
-		if (!delayedSamples.put(sample).hasRemaining()) {
+		@Override
+		public void setDelay(int delayedSamples) {
+			this.delayedSamples = ByteBuffer.allocateDirect(Integer.BYTES * (delayedSamples + 1))
+					.order(ByteOrder.nativeOrder()).asIntBuffer().put(new int[delayedSamples + 1]);
 			((Buffer) this.delayedSamples).flip();
 		}
-		sample = delayedSamples.get(delayedSamples.position());
-		bufferL.put(bufferL.get(bufferL.position()) + sample * volumeL);
-		bufferR.put(bufferR.get(bufferR.position()) + sample * volumeR);
+
+		@Override
+		public void accept(int sample) {
+			if (!delayedSamples.put(sample).hasRemaining()) {
+				((Buffer) this.delayedSamples).flip();
+			}
+			sample = delayedSamples.get(delayedSamples.position());
+			bufferL.put(bufferL.get(bufferL.position()) + sample * volumeL);
+			bufferR.put(bufferR.get(bufferR.position()) + sample * volumeR);
+		}
+
+		@Override
+		public void clear() {
+			((Buffer) bufferL).clear();
+			((Buffer) bufferR).clear();
+		}
 	}
 
-	public void clear() {
-		((Buffer) bufferL).clear();
-		((Buffer) bufferR).clear();
+	static class NoOpSampleMixer implements SampleMixer {
+
+		@Override
+		public void setVolume(int volumeL, int volumeR) {
+		}
+
+		@Override
+		public void setDelay(int delayedSamples) {
+		}
+
+		@Override
+		public void accept(int sample) {
+		}
+
+		@Override
+		public void clear() {
+		}
 	}
+
+	void setVolume(int volumeL, int volumeR);
+
+	void setDelay(int delayedSamples);
+
+	void clear();
 
 }
