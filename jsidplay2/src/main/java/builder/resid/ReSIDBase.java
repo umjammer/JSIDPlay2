@@ -19,7 +19,7 @@ public abstract class ReSIDBase extends SIDEmu {
 	private final EventScheduler context;
 
 	/**
-	 * Consumes samples of the SID while clocking.
+	 * Consumes samples of the SID while being clocked.
 	 */
 	private SampleMixer sampler = new NoOpSampleMixer();
 
