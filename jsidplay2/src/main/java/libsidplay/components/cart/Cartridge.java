@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import builder.resid.SampleMixer;
+import builder.resid.SampleMixer.NoOpSampleMixer;
 import libsidplay.common.Event;
 import libsidplay.components.cart.supported.ActionReplay;
 import libsidplay.components.cart.supported.AtomicPower;
@@ -76,7 +77,7 @@ public class Cartridge {
 	private boolean irqState;
 
 	/** Consumes samples of the cartridge while clocking. */
-	protected SampleMixer sampler;
+	protected SampleMixer sampler = new NoOpSampleMixer();
 
 	/**
 	 * Get currently active ROML bank.

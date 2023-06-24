@@ -163,7 +163,7 @@ public interface SampleMixer extends IntConsumer {
 		}
 	}
 
-	static class NoOpSampleMixer implements SampleMixer {
+	public static class NoOpSampleMixer implements SampleMixer {
 
 		@Override
 		public void setVolume(int volumeL, int volumeR) {
