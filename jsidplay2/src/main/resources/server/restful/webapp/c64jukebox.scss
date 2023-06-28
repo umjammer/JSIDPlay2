@@ -2,6 +2,13 @@
 	font-style: italic;
 }
 
+.current-sid {
+	white-space: pre-line;
+	font-style: italic;
+	font-size: small;
+	padding: 4px 16px;
+}
+
 .stil-subtune-header, .stil-name-header, .stil-author-header, .stil-title-header, .stil-artist-header {
 	font-weight: bold;
 	font-size: larger;
@@ -116,4 +123,8 @@ label {
 
 button {
 	margin: 2px !important;
+}
+
+.field-category,.field-name,.field-event,.field-released,.field-handle,.field-rating {
+	padding-right: 0.3em !important;	
 }

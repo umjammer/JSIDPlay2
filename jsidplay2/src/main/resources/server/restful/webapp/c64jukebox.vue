@@ -72,8 +72,8 @@
               <span>Quit Hardware Player</span>
             </b-button>
           </div>
-          <div style="position: absolute; bottom: 1px; left: 0px; line-height: 0.7">
-            <span style="white-space: pre-line; font-style: italic; font-size: small">{{ currentSid }}</span>
+          <div style="position: absolute; bottom: 5px; left: 0px; line-height: 0.7">
+            <span class="current-sid">{{ currentSid }}</span>
           </div>
         </div>
         <div>
@@ -402,6 +402,7 @@
                             <b-link
                               style="white-space: pre-line"
                               v-on:click="
+                                currentSid = entry.filename;
                                 updateSid(entry.filename);
                                 showAudio = true;
                                 Vue.nextTick(function () {
@@ -706,6 +707,7 @@
                                   <b-link
                                     style="white-space: pre-line"
                                     v-on:click="
+                                      currentSid = innerRow.item.filename;
                                       updateSid(innerRow.item.filename, row.item.id, row.item.categoryId);
                                       showAudio = true;
                                       Vue.nextTick(function () {
@@ -870,11 +872,12 @@
                         :options="categories"
                         size="sm"
                         class="mt-1"
+                        style="margin: 4px; padding: 0.175em 0em"
                         :select-size="1"
                         style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
                       >
                         <template #first>
-                          <b-form-select-option value="">-- Select a category --</b-form-select-option>
+                          <b-form-select-option value="">--Select a category--</b-form-select-option>
                         </template>
                       </b-form-select>
                     </template>
@@ -885,7 +888,7 @@
                         id="name"
                         v-model="name"
                         @change="requestSearchResults"
-                        style="max-width: 100%; padding: 0.175em 0.175em"
+                        style="max-width: 100%; padding: 0.175em 0em"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
@@ -899,7 +902,7 @@
                         id="group"
                         v-model="group"
                         @change="requestSearchResults"
-                        style="max-width: 100%; padding: 0.175em 0.175em"
+                        style="max-width: 100%; padding: 0.175em 0em"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
@@ -913,7 +916,7 @@
                         id="event"
                         v-model="event"
                         @change="requestSearchResults"
-                        style="max-width: 100%; padding: 0.175em 0.175em"
+                        style="max-width: 100%; padding: 0.175em 0em"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
@@ -927,7 +930,7 @@
                         id="released"
                         v-model="released"
                         @change="requestSearchResults"
-                        style="max-width: 100%; padding: 0.175em 0.175em"
+                        style="max-width: 100%; padding: 0.175em 0em"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
@@ -941,7 +944,7 @@
                         id="handle"
                         v-model="handle"
                         @change="requestSearchResults"
-                        style="max-width: 100%; padding: 0.175em 0.175em"
+                        style="max-width: 100%; padding: 0.175em 0em"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
@@ -955,7 +958,7 @@
                         id="rating"
                         v-model.number="rating"
                         @change="requestSearchResults"
-                        style="max-width: 100%; padding: 0.175em 0.175em"
+                        style="max-width: 100%; padding: 0.175em 0em"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
@@ -1133,6 +1136,7 @@
                             playlist[playlistIndex].categoryId
                           );
                         });
+                        currentSid = playlistIndex + 1 + ': ' + playlist[playlistIndex].filename;
                         updateSid(
                           playlist[playlistIndex].filename,
                           playlist[playlistIndex].itemId,
@@ -3045,26 +3049,32 @@
             {
               key: "category",
               sortable: true,
+              class: "field-category",
             },
             {
               key: "name",
               sortable: true,
+              class: "field-name",
             },
             {
               key: "event",
               sortable: true,
+              class: "field-event",
             },
             {
               key: "released",
               sortable: true,
+              class: "field-released",
             },
             {
               key: "handle",
               sortable: true,
+              class: "field-handle",
             },
             {
               key: "rating",
               sortable: true,
+              class: "field-rating",
             },
             { key: "actions" },
           ],
@@ -3462,6 +3472,7 @@
                   if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                     return;
                   }
+                  this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
                   this.updateSid(
                     this.playlist[this.playlistIndex].filename,
                     this.playlist[this.playlistIndex].itemId,
@@ -3478,6 +3489,7 @@
                   if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                     return;
                   }
+                  this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
                   this.updateSid(
                     this.playlist[this.playlistIndex].filename,
                     this.playlist[this.playlistIndex].itemId,
@@ -3516,6 +3528,7 @@
               this.playlist[this.playlistIndex].itemId,
               this.playlist[this.playlistIndex].categoryId
             );
+            this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
@@ -3852,7 +3865,6 @@
             })
               .then((response) => {
                 this.infos = response.data;
-                this.currentSid = entry;
               })
               .catch((error) => {
                 this.infos = [];
@@ -3946,6 +3958,7 @@
                   if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                     return;
                   }
+                  this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
                   this.updateSid(
                     this.playlist[this.playlistIndex].filename,
                     this.playlist[this.playlistIndex].itemId,
@@ -4263,6 +4276,7 @@
             }
           }
           if (this.playlist.length !== 0) {
+            this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
