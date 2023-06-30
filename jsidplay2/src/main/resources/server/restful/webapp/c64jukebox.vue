@@ -85,9 +85,12 @@
                 <b-card-text>
                   <div class="settings-box">
                     <div class="button-box">
-                      <b-button size="sm" variant="success" v-on:click="setDefaultUser">
+                      <b-button v-b-modal.modal-set-default-user size="sm" variant="success">
                         <span>{{ $t("setDefaultUser") }}</span></b-button
                       >
+                      <b-modal id="modal-set-default-user" :title="$t('confirmationTitle')" @ok="setDefaultUser">
+                        <p>{{ $t("setDefaultUserReally") }}</p>
+                      </b-modal>
                     </div>
                   </div>
                   <div class="settings-box">
@@ -1097,14 +1100,20 @@
                       <b-button v-if="importFile != null" @click="importFile = null">
                         <i class="fas fa-trash"></i><span>{{ $t("reset") }}</span>
                       </b-button>
-                      <b-button v-if="importFile != null" @click="importPlaylist" class="mr-2">
+                      <b-button v-b-modal.modal-import-playlist v-if="importFile != null" class="mr-2">
                         <i class="fas fa-file-import"></i><span>{{ $t("startImport") }}</span>
                       </b-button>
+                      <b-modal id="modal-import-playlist" :title="$t('confirmationTitle')" @ok="importPlaylist">
+                        <p>{{ $t("removePlaylistReally") }}</p>
+                      </b-modal>
                     </div>
-                    <b-button size="sm" @click="fetchFavorites">
+                    <b-button v-b-modal.modal-fetch-favorites size="sm">
                       <i class="fas fa-download"></i>
                       <span>{{ $t("fetchFavorites") }}</span></b-button
                     >
+                    <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
+                      <p>{{ $t("removePlaylistReally") }}</p>
+                    </b-modal>
                     <b-button size="sm" @click="exportPlaylist" v-if="playlist.length > 0">
                       <i class="fas fa-file-export"></i>
                       <span>{{ $t("exportPlaylist") }}</span></b-button
@@ -1115,10 +1124,13 @@
                     >
                   </div>
                   <div class="button-box" v-if="playlist.length > 0">
-                    <b-button variant="danger" size="sm" @click="removePlaylist">
+                    <b-button v-b-modal.modal-remove-playlist variant="danger" size="sm">
                       <i class="fas fa-trash"></i>
                       <span>{{ $t("removePlaylist") }}</span></b-button
                     >
+                    <b-modal id="modal-remove-playlist" :title="$t('confirmationTitle')" @ok="removePlaylist">
+                      <p>{{ $t("removePlaylistReally") }}</p>
+                    </b-modal>
                   </div>
 
                   <ol>
@@ -1126,26 +1138,27 @@
                       v-for="(entry, index) in playlist"
                       :key="index"
                       :class="index == playlistIndex ? 'highlighted' : ''"
-                      v-on:click="
-                        playlistIndex = index;
-                        Vue.nextTick(function () {
-                          play(
-                            '',
-                            playlist[playlistIndex].filename,
-                            playlist[playlistIndex].itemId,
-                            playlist[playlistIndex].categoryId
-                          );
-                        });
-                        currentSid = playlistIndex + 1 + ': ' + playlist[playlistIndex].filename;
-                        updateSid(
-                          playlist[playlistIndex].filename,
-                          playlist[playlistIndex].itemId,
-                          playlist[playlistIndex].categoryId
-                        );
-                      "
                     >
                       <span style="display: flex; justify-content: space-between">
-                        <div>
+                        <div
+                          v-on:click="
+                            playlistIndex = index;
+                            Vue.nextTick(function () {
+                              play(
+                                '',
+                                playlist[playlistIndex].filename,
+                                playlist[playlistIndex].itemId,
+                                playlist[playlistIndex].categoryId
+                              );
+                            });
+                            currentSid = playlistIndex + 1 + ': ' + playlist[playlistIndex].filename;
+                            updateSid(
+                              playlist[playlistIndex].filename,
+                              playlist[playlistIndex].itemId,
+                              playlist[playlistIndex].categoryId
+                            );
+                          "
+                        >
                           <div class="playlist-item">
                             <span>{{ shortEntry(entry.filename) }}</span>
                           </div>
@@ -1156,7 +1169,7 @@
                           </div>
                         </div>
                         <b-button
-                          @click="remove(index)"
+                          v-b-modal:[`modal-remove-${index}`]
                           pill
                           variant="outline-danger"
                           size="sm"
@@ -1164,6 +1177,9 @@
                         >
                           <i class="fas fa-minus" style="margin: 2px"></i>
                         </b-button>
+                        <b-modal :id="`modal-remove-${index}`" :title="$t('confirmationTitle')" @ok="remove(index)">
+                          <p>{{ $t("removeReally") }}</p>
+                        </b-modal>
                       </span>
                     </li>
                   </ol>
@@ -1341,9 +1357,12 @@
                 <b-card-text>
                   <div class="settings-box">
                     <div class="button-box">
-                      <b-button size="sm" variant="success" v-on:click="setDefault">
+                      <b-button v-b-modal.modal-set-default size="sm" variant="success">
                         <span>{{ $t("setDefault") }}</span></b-button
                       >
+                      <b-modal id="modal-set-default" :title="$t('confirmationTitle')" @ok="setDefault">
+                        <p>{{ $t("setDefaultReally") }}</p>
+                      </b-modal>
                     </div>
                   </div>
 
@@ -2825,12 +2844,13 @@
           addAllToPlaylist: "All",
           downloadMP3: "MP3",
           remove: "Remove last tune",
-          removeReally: "Do you really want to remove the last playlist tune?",
+          removeReally: "Do you really want to remove the playlist tune?",
           next: "Next",
           reset: "Reset",
           startImport: "Import",
           fetchFavorites: "Download",
           removePlaylist: "Remove All",
+          confirmationTitle: "Confirmation Dialogue",
           removePlaylistReally: "Do you really want to remove ALL playlist entries?",
           exportPlaylist: "Export",
           importPlaylistPlaceholder: "Import favorites or drop it here...",
@@ -2943,12 +2963,13 @@
           addAllToPlaylist: "Alle",
           downloadMP3: "MP3",
           remove: "Letzten Tune l\u00f6schen",
-          removeReally: "Wollen sie wirklich den letzten Favoriten l\u00f6schen?",
+          removeReally: "Wollen sie wirklich den Favoriten l\u00f6schen?",
           next: "N\u00e4chster",
           reset: "Zur\u00fccksetzen",
           startImport: "Importieren",
           fetchFavorites: "Laden",
           removePlaylist: "L\u00f6schen",
+          confirmationTitle: "Sicherheitsabfrage",
           removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
           exportPlaylist: "Export",
           importPlaylistPlaceholder: "Importiere Favoriten oder DnD...",
@@ -3429,76 +3450,70 @@
             return entry.name || entry.author || entry.title || entry.artist || entry.comment;
           },
           remove: function (index) {
-            if (confirm(this.$i18n.t("removeReally"))) {
-              this.playlist.splice(index, 1);
-            }
+            this.playlist.splice(index, 1);
           },
           removePlaylist: function () {
-            if (confirm(this.$i18n.t("removePlaylistReally"))) {
-              this.playlist = [];
-            }
+            this.playlist = [];
           },
           importPlaylist: function () {
-            if (confirm(this.$i18n.t("removePlaylistReally"))) {
-              const reader = new FileReader();
-              reader.onerror = (err) => console.log(err);
-              var extension = this.importFile.name.split(".").pop().toLowerCase();
+            const reader = new FileReader();
+            reader.onerror = (err) => console.log(err);
+            var extension = this.importFile.name.split(".").pop().toLowerCase();
 
-              if (extension === "js2") {
-                reader.onload = (res) => {
-                  var content = res.target.result;
-                  var lines = content.split("\n");
+            if (extension === "js2") {
+              reader.onload = (res) => {
+                var content = res.target.result;
+                var lines = content.split("\n");
 
-                  this.playlist = [];
-                  for (var i = 0; i < lines.length; i++) {
-                    if (lines[i].length > 0) {
-                      if (
-                        !(
-                          lines[i].startsWith("/C64Music/") ||
-                          lines[i].startsWith("/CGSC/") ||
-                          lines[i].startsWith("/Assembly64/") ||
-                          lines[i].startsWith("/REU/")
-                        )
-                      ) {
-                        lines[i] = "/C64Music" + lines[i];
-                      }
-                      this.playlist.push({
-                        filename: lines[i],
-                      });
+                this.playlist = [];
+                for (var i = 0; i < lines.length; i++) {
+                  if (lines[i].length > 0) {
+                    if (
+                      !(
+                        lines[i].startsWith("/C64Music/") ||
+                        lines[i].startsWith("/CGSC/") ||
+                        lines[i].startsWith("/Assembly64/") ||
+                        lines[i].startsWith("/REU/")
+                      )
+                    ) {
+                      lines[i] = "/C64Music" + lines[i];
                     }
+                    this.playlist.push({
+                      filename: lines[i],
+                    });
                   }
-                  this.playlistIndex = 0;
-                  this.importFile = null;
-                  if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-                    return;
-                  }
-                  this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
-                  this.updateSid(
-                    this.playlist[this.playlistIndex].filename,
-                    this.playlist[this.playlistIndex].itemId,
-                    this.playlist[this.playlistIndex].categoryId
-                  );
-                  this.showAudio = true;
-                };
-                reader.readAsText(this.importFile);
-              } else if (extension === "json") {
-                reader.onload = (res) => {
-                  this.playlist = JSON.parse(res.target.result);
-                  this.playlistIndex = 0;
-                  this.importFile = null;
-                  if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-                    return;
-                  }
-                  this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
-                  this.updateSid(
-                    this.playlist[this.playlistIndex].filename,
-                    this.playlist[this.playlistIndex].itemId,
-                    this.playlist[this.playlistIndex].categoryId
-                  );
-                  this.showAudio = true;
-                };
-                reader.readAsText(this.importFile);
-              }
+                }
+                this.playlistIndex = 0;
+                this.importFile = null;
+                if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+                  return;
+                }
+                this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+                this.updateSid(
+                  this.playlist[this.playlistIndex].filename,
+                  this.playlist[this.playlistIndex].itemId,
+                  this.playlist[this.playlistIndex].categoryId
+                );
+                this.showAudio = true;
+              };
+              reader.readAsText(this.importFile);
+            } else if (extension === "json") {
+              reader.onload = (res) => {
+                this.playlist = JSON.parse(res.target.result);
+                this.playlistIndex = 0;
+                this.importFile = null;
+                if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+                  return;
+                }
+                this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+                this.updateSid(
+                  this.playlist[this.playlistIndex].filename,
+                  this.playlist[this.playlistIndex].itemId,
+                  this.playlist[this.playlistIndex].categoryId
+                );
+                this.showAudio = true;
+              };
+              reader.readAsText(this.importFile);
             }
           },
           exportPlaylist: function () {
@@ -3536,27 +3551,23 @@
             );
           },
           setDefault: function () {
-            if (confirm(this.$i18n.t("setDefaultReally"))) {
-              this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
-              this.convertOptions.useHls = true;
-              this.convertOptions.config.sidplay2Section.single = true;
-              this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
-              this.convertOptions.config.audioSection.reverbBypass = false;
-              this.convertOptions.config.audioSection.mainBalance = 0.3;
-              this.convertOptions.config.audioSection.secondBalance = 0.7;
-              this.convertOptions.config.audioSection.thirdBalance = 0.5;
-              this.convertOptions.config.audioSection.secondDelay = 10;
-              this.convertOptions.config.audioSection.sampling = "RESAMPLE";
-              this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
-              this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
-              this.mobileProfile();
-            }
+            this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
+            this.convertOptions.useHls = true;
+            this.convertOptions.config.sidplay2Section.single = true;
+            this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
+            this.convertOptions.config.audioSection.reverbBypass = false;
+            this.convertOptions.config.audioSection.mainBalance = 0.3;
+            this.convertOptions.config.audioSection.secondBalance = 0.7;
+            this.convertOptions.config.audioSection.thirdBalance = 0.5;
+            this.convertOptions.config.audioSection.secondDelay = 10;
+            this.convertOptions.config.audioSection.sampling = "RESAMPLE";
+            this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
+            this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
+            this.mobileProfile();
           },
           setDefaultUser: function () {
-            if (confirm(this.$i18n.t("setDefaultUserReally"))) {
-              this.username = "jsidplay2";
-              this.password = "jsidplay2!";
-            }
+            this.username = "jsidplay2";
+            this.password = "jsidplay2!";
           },
           mobileProfile: function () {
             this.convertOptions.config.audioSection.vbr = false;
@@ -3938,47 +3949,45 @@
               .finally(() => (this.loadingSid = false));
           },
           fetchFavorites: function () {
-            if (confirm(this.$i18n.t("removePlaylistReally"))) {
-              this.loadingPl = true; //the loading begin
-              axios({
-                method: "get",
-                url: "/jsidplay2service/JSIDPlay2REST/favorites",
-                auth: {
-                  username: this.username,
-                  password: this.password,
-                },
+            this.loadingPl = true; //the loading begin
+            axios({
+              method: "get",
+              url: "/jsidplay2service/JSIDPlay2REST/favorites",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            })
+              .then((response) => {
+                this.playlist = response.data.map((file) => {
+                  return {
+                    filename: file,
+                  };
+                });
+                this.playlistIndex = 0;
+                if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+                  return;
+                }
+                this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+                this.updateSid(
+                  this.playlist[this.playlistIndex].filename,
+                  this.playlist[this.playlistIndex].itemId,
+                  this.playlist[this.playlistIndex].categoryId
+                );
+                this.$refs.audioElm.src = this.createConvertUrl(
+                  "",
+                  this.playlist[this.playlistIndex].filename,
+                  this.playlist[this.playlistIndex].itemId,
+                  this.playlist[this.playlistIndex].categoryId
+                );
+                this.showAudio = true;
               })
-                .then((response) => {
-                  this.playlist = response.data.map((file) => {
-                    return {
-                      filename: file,
-                    };
-                  });
-                  this.playlistIndex = 0;
-                  if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-                    return;
-                  }
-                  this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
-                  this.updateSid(
-                    this.playlist[this.playlistIndex].filename,
-                    this.playlist[this.playlistIndex].itemId,
-                    this.playlist[this.playlistIndex].categoryId
-                  );
-                  this.$refs.audioElm.src = this.createConvertUrl(
-                    "",
-                    this.playlist[this.playlistIndex].filename,
-                    this.playlist[this.playlistIndex].itemId,
-                    this.playlist[this.playlistIndex].categoryId
-                  );
-                  this.showAudio = true;
-                })
-                .catch((error) => {
-                  this.playlist = [];
-                  this.playlistIndex = 0;
-                  console.log(error);
-                })
-                .finally(() => (this.loadingPl = false));
-            }
+              .catch((error) => {
+                this.playlist = [];
+                this.playlistIndex = 0;
+                console.log(error);
+              })
+              .finally(() => (this.loadingPl = false));
           },
           fetchFilters: function () {
             this.loadingCfg = true; //the loading begin
