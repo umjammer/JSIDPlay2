@@ -1,8 +1,8 @@
 package ui.oscilloscope;
 
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.ImageView;
 import libsidplay.common.SIDEmu;
 import sidplay.Player;
 import ui.common.C64Window;
@@ -12,7 +12,7 @@ public final class ResonanceGauge extends SIDGauge {
 	@FXML
 	private TitledPane border;
 	@FXML
-	private Canvas area;
+	private ImageView area;
 
 	public ResonanceGauge() {
 	}
@@ -22,7 +22,7 @@ public final class ResonanceGauge extends SIDGauge {
 	}
 
 	@Override
-	protected Canvas getArea() {
+	protected ImageView getArea() {
 		return area;
 	}
 

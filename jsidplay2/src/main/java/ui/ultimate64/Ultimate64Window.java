@@ -23,13 +23,13 @@ import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -273,7 +273,7 @@ public class Ultimate64Window extends C64Window implements Ultimate64 {
 	};
 
 	@FXML
-	private Canvas screen;
+	private ImageView screen;
 
 	@FXML
 	private ToggleButton audioStreaming, videoStreaming;
@@ -335,11 +335,7 @@ public class Ultimate64Window extends C64Window implements Ultimate64 {
 		pauseTransition.setOnFinished(evt -> {
 			Image image = imageQueue.pull();
 			if (image != null) {
-				// memory leak prevention!?
-				// https://github.com/kasemir/org.csstudio.display.builder/issues/174
-				screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
-				screen.getGraphicsContext2D().drawImage(image, 0, 0, image.getWidth(), image.getHeight(), 0, 0,
-						screen.getWidth(), screen.getHeight());
+				screen.setImage(image);
 			}
 		});
 		sequentialTransition.setCycleCount(Animation.INDEFINITE);
@@ -395,9 +391,8 @@ public class Ultimate64Window extends C64Window implements Ultimate64 {
 	private void setupVideoScreen(final CPUClock cpuClock) {
 		pauseTransition.setDuration(Duration.millis(1000. / cpuClock.getScreenRefresh()));
 
-		screen.setWidth(SCREEN_WIDTH);
-		screen.setHeight(SCREEN_HEIGHT);
-		screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
+		screen.setFitWidth(SCREEN_WIDTH);
+		screen.setFitHeight(SCREEN_HEIGHT);
 	}
 
 	@Override

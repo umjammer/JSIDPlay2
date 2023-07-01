@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
@@ -43,7 +42,7 @@
 								<Integer fx:constant="MAX_VALUE"/>
 							</prefHeight>
 							<StackPane translateY="-20">
-								<Canvas fx:id="screen" cache="false" cacheHint="QUALITY" />
+								<ImageView fx:id="screen" cache="false" cacheHint="QUALITY" />
 								<ImageView fx:id="monitorBorder">
 									<image>
 										<Image url="@/ui/icons/monitor.png" />

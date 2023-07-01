@@ -2,7 +2,6 @@
 
 <?import java.lang.Integer?>
 <?import javafx.scene.Scene?>
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -44,7 +43,7 @@
 								<Integer fx:constant="MAX_VALUE" />
 							</prefHeight>
 							<StackPane translateY="-20">
-								<Canvas fx:id="screen" cache="false" cacheHint="QUALITY" />
+								<ImageView fx:id="screen" cache="false" cacheHint="QUALITY" />
 							</StackPane>
 						</TitledPane>
 					</children>

@@ -12,7 +12,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.collections.FXCollections?> 
 <?import java.lang.Integer?>
 <?scenebuilder-preview-i18n-resource Ultimate64Window.properties?>
@@ -75,7 +75,7 @@
 						<TitledPane text="%VIDEO_SCREEN" collapsible="false"
 							GridPane.columnIndex="0" GridPane.rowIndex="0" minWidth="1024"
 							minHeight="768">
-							<Canvas fx:id="screen" cache="false" cacheHint="QUALITY" />
+							<ImageView fx:id="screen" cache="false" cacheHint="QUALITY" />
 						</TitledPane>
 
 						<VBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="TOP_CENTER">

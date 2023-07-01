@@ -9,7 +9,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.ComboBox?>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.Scene?>
-<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.geometry.Insets?>
@@ -17,7 +17,7 @@
 			<padding>
 				<Insets left="0" right="0" top="0" bottom="0" />
 			</padding>
-			<Canvas fx:id="area" width="150" height="150" cache="true"
+			<ImageView fx:id="area" fitWidth="150" fitHeight="150" cache="true"
 				cacheHint="SPEED" />
 		</StackPane>
 	</TitledPane>

@@ -18,13 +18,13 @@ import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
 import sidplay.Player;
@@ -67,7 +67,7 @@ public class VideoPlayer extends C64VBox implements UIPart {
 	private TitledPane monitor;
 
 	@FXML
-	private Canvas screen;
+	private ImageView screen;
 
 	private ImageQueue<Image> imageQueue;
 
@@ -98,10 +98,7 @@ public class VideoPlayer extends C64VBox implements UIPart {
 		pauseTransition.setOnFinished(evt -> {
 			Image image = imageQueue.pull();
 			if (image != null) {
-				// memory leak prevention!?
-				// https://github.com/kasemir/org.csstudio.display.builder/issues/174
-				screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
-				screen.getGraphicsContext2D().drawImage(image, 0, 0);
+				screen.setImage(image);
 			}
 		});
 		sequentialTransition.setCycleCount(Animation.INDEFINITE);
@@ -125,9 +122,8 @@ public class VideoPlayer extends C64VBox implements UIPart {
 					VideoInfo videoInfo = super.open(filenameField.getText());
 
 					Platform.runLater(() -> {
-						screen.getGraphicsContext2D().clearRect(0, 0, videoInfo.getWidth(), videoInfo.getHeight());
-						screen.setWidth(videoInfo.getWidth());
-						screen.setHeight(videoInfo.getHeight());
+						screen.setFitWidth(videoInfo.getWidth());
+						screen.setFitHeight(videoInfo.getHeight());
 
 						double scale = sidplay2Section.getVideoScaling();
 						screen.setScaleX(scale);
@@ -147,7 +143,6 @@ public class VideoPlayer extends C64VBox implements UIPart {
 					sequentialTransition.stop();
 					imageQueue.clear();
 					javaSound.close();
-					screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
 					recordingPauseContinue.setSelected(false);
 					thread = null;
 				}

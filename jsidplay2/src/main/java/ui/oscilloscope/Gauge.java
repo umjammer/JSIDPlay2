@@ -1,13 +1,13 @@
 package ui.oscilloscope;
 
 import java.net.URL;
-import java.nio.IntBuffer;
 import java.util.Arrays;
 
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.WritablePixelFormat;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import libsidplay.common.SIDEmu;
 import sidplay.Player;
 import ui.common.C64VBox;
@@ -43,9 +43,8 @@ public class Gauge extends C64VBox implements UIPart {
 	@FXML
 	@Override
 	protected void initialize() {
-		width = (int) getArea().getWidth();
-		height = (int) getArea().getHeight();
-		format = WritablePixelFormat.getIntArgbInstance();
+		width = (int) getArea().getFitWidth();
+		height = (int) getArea().getFitHeight();
 	}
 
 	/** data plots normalized between -1 .. 1 */
@@ -54,8 +53,6 @@ public class Gauge extends C64VBox implements UIPart {
 	private float[] dataMax = new float[256];
 	/** Position within data buffer */
 	private int dataPos = 0;
-
-	private WritablePixelFormat<IntBuffer> format;
 
 	private ImageQueue<GaugeImage> imageQueue = new ImageQueue<>();
 
@@ -115,10 +112,11 @@ public class Gauge extends C64VBox implements UIPart {
 		GaugeImage gaugeImage = imageQueue.pull();
 		if (gaugeImage != null) {
 			getTitledPane().setText(gaugeImage.getText());
-			// https://github.com/kasemir/org.csstudio.display.builder/issues/174
-			getArea().getGraphicsContext2D().clearRect(0, 0, width, height);
-			getArea().getGraphicsContext2D().getPixelWriter().setPixels(0, 0, width, height, format,
+
+			WritableImage image = new WritableImage(width, height);
+			image.getPixelWriter().setPixels(0, 0, width, height, PixelFormat.getIntArgbInstance(),
 					gaugeImage.getPixels(), 0, width);
+			getArea().setImage(image);
 		}
 	}
 
@@ -245,7 +243,7 @@ public class Gauge extends C64VBox implements UIPart {
 		return null;
 	}
 
-	protected Canvas getArea() {
+	protected ImageView getArea() {
 		return null;
 	}
 

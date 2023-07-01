@@ -26,7 +26,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -80,7 +79,7 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 	@FXML
 	private TitledPane monitor;
 	@FXML
-	private Canvas screen;
+	private ImageView screen;
 	@FXML
 	private ImageView monitorBorder, breadbox, pc64;
 	@FXML
@@ -239,10 +238,7 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 			Image image = imageQueue.pull();
 			if (image != null) {
 				currentImage = image;
-				// memory leak prevention!?
-				// https://github.com/kasemir/org.csstudio.display.builder/issues/174
-				screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
-				screen.getGraphicsContext2D().drawImage(image, 0, 0);
+				screen.setImage(image);
 			}
 		});
 		sequentialTransition.setCycleCount(Animation.INDEFINITE);
@@ -371,9 +367,8 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 		scaleY = (cpuClock == CPUClock.PAL) ? PAL_SCALE_Y : NTSC_SCALE_Y;
 		pauseTransition.setDuration(Duration.millis(1000. / cpuClock.getScreenRefresh()));
 
-		screen.getGraphicsContext2D().clearRect(0, 0, screen.getWidth(), screen.getHeight());
-		screen.setWidth(util.getPlayer().getC64().getVIC().getBorderWidth());
-		screen.setHeight(util.getPlayer().getC64().getVIC().getBorderHeight());
+		screen.setFitWidth(util.getPlayer().getC64().getVIC().getBorderWidth());
+		screen.setFitHeight(util.getPlayer().getC64().getVIC().getBorderHeight());
 		updateScaling();
 	}
 
