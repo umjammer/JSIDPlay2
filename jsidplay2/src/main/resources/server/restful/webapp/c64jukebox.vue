@@ -405,7 +405,7 @@
                             <b-link
                               style="white-space: pre-line"
                               v-on:click="
-                                currentSid = entry.filename;
+                                currentSid = shortEntry(entry.filename);
                                 updateSid(entry.filename);
                                 showAudio = true;
                                 Vue.nextTick(function () {
@@ -710,7 +710,7 @@
                                   <b-link
                                     style="white-space: pre-line"
                                     v-on:click="
-                                      currentSid = innerRow.item.filename;
+                                      currentSid = shortEntry(innerRow.item.filename);
                                       updateSid(innerRow.item.filename, row.item.id, row.item.categoryId);
                                       showAudio = true;
                                       Vue.nextTick(function () {
@@ -1151,7 +1151,7 @@
                                 playlist[playlistIndex].categoryId
                               );
                             });
-                            currentSid = playlistIndex + 1 + ': ' + playlist[playlistIndex].filename;
+                            currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
                             updateSid(
                               playlist[playlistIndex].filename,
                               playlist[playlistIndex].itemId,
@@ -3488,7 +3488,7 @@
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
-                this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+                this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
@@ -3505,7 +3505,7 @@
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
-                this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+                this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
@@ -3543,7 +3543,7 @@
               this.playlist[this.playlistIndex].itemId,
               this.playlist[this.playlistIndex].categoryId
             );
-            this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+            this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
@@ -3968,7 +3968,7 @@
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
-                this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+                this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
@@ -4285,7 +4285,7 @@
             }
           }
           if (this.playlist.length !== 0) {
-            this.currentSid = this.playlistIndex + 1 + ". " + this.playlist[this.playlistIndex].filename;
+            this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
