@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
         <listEntry value="/jsidplay2"/>
     </listAttribute>
@@ -13,7 +14,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.hsqldb.util.DatabaseManagerSwing"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="jsidplay2"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--url jdbc:mysql://192.168.1.150:3306/hvsc78?useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC --user newuser --password password --driver com.mysql.cj.jdbc.Driver"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--url jdbc:mysql://192.168.1.150:3306/hvsc79?useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC --user newuser --password password --driver com.mysql.cj.jdbc.Driver"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jsidplay2"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
