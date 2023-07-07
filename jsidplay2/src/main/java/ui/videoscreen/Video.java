@@ -41,6 +41,7 @@ import javafx.util.Duration;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
+import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.DatasetteStatus;
 import libsidplay.components.c1541.C1541;
 import libsidplay.components.c1541.C1541.FloppyStatus;
@@ -420,23 +421,15 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 	}
 
 	private void pressC64Key(final KeyTableEntry key) {
-		util.getPlayer().getC64().getEventScheduler()
-				.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed: " + key.name()) {
-					@Override
-					public void event() throws InterruptedException {
-						util.getPlayer().getC64().getKeyboard().keyPressed(key);
-					}
-				});
+		final EventScheduler ctx = util.getPlayer().getC64().getEventScheduler();
+		ctx.scheduleThreadSafeKeyEvent(Event.of("Virtual Keyboard Key Pressed: " + key.name(),
+				event -> util.getPlayer().getC64().getKeyboard().keyPressed(key)));
 	}
 
 	private void releaseC64Key(final KeyTableEntry key) {
-		util.getPlayer().getC64().getEventScheduler()
-				.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released: " + key.name()) {
-					@Override
-					public void event() throws InterruptedException {
-						util.getPlayer().getC64().getKeyboard().keyReleased(key);
-					}
-				});
+		final EventScheduler ctx = util.getPlayer().getC64().getEventScheduler();
+		ctx.scheduleThreadSafeKeyEvent(Event.of("Virtual Keyboard Key Released: " + key.name(),
+				event -> util.getPlayer().getC64().getKeyboard().keyReleased(key)));
 	}
 
 	private void updatePeripheralImages() {

@@ -192,13 +192,10 @@ public class ActionReplay extends Cartridge {
 		}
 	}
 
-	private final Event newCartRomConfig = new Event("ActionReplay freeze") {
-		@Override
-		public void event() {
-			isActive = true;
-			io1Bank.write(0xde00, (byte) 0x23);
-		}
-	};
+	private final Event newCartRomConfig = Event.of("ActionReplay freeze", event -> {
+		isActive = true;
+		io1Bank.write(0xde00, (byte) 0x23);
+	});
 
 	@Override
 	public void doFreeze() {

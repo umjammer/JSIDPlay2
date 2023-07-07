@@ -161,13 +161,10 @@ public class AtomicPower extends Cartridge {
 		Arrays.fill(ram, (byte) 0);
 	}
 
-	private final Event newCartRomConfig = new Event("AtomicPower freeze") {
-		@Override
-		public void event() {
-			io1Bank.write(0xde00, (byte) 3);
-			freezed = true;
-		}
-	};
+	private final Event newCartRomConfig = Event.of("AtomicPower freeze", event -> {
+		io1Bank.write(0xde00, (byte) 3);
+		freezed = true;
+	});
 
 	@Override
 	public void doFreeze() {

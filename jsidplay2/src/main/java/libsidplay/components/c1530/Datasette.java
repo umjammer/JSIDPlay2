@@ -292,17 +292,7 @@ public abstract class Datasette {
 		this.context = ctx;
 		resetDatasetteWithMainCPU = true;
 		zeroGapDelay = 0x4e20;
-		event = new Event("Datasette") {
-
-			@Override
-			public void event() {
-				try {
-					readBit();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		};
+		event = Event.of("Datasette", event -> readBit());
 	}
 
 	/**
@@ -610,7 +600,7 @@ public abstract class Datasette {
 	 *
 	 * @throws IOException tape image read error
 	 */
-	protected void readBit() throws IOException {
+	protected void readBit() {
 		double speedOfTape = DS_V_PLAY;
 		int direction = 1;
 		long gap;
@@ -802,62 +792,59 @@ public abstract class Datasette {
 			return;
 		}
 
-		context.scheduleThreadSafe(new Event("Datasette command") {
-			@Override
-			public void event() {
-				try {
-					switch (command) {
-					case RESET_COUNTER:
-						resetCounter();
-						break;
-					case RESET:
-						internalReset();
-						// $FALL-THROUGH$
-					case STOP:
-						mode = Control.STOP;
-						lastWriteClk = 0;
-						break;
-					case START:
-						mode = Control.START;
-						lastWriteClk = 0;
-						if (motor) {
-							startMotor();
-						}
-						break;
-					case FORWARD:
-						mode = Control.FORWARD;
-						forward();
-						lastWriteClk = 0;
-						if (motor) {
-							startMotor();
-						}
-						break;
-					case REWIND:
-						mode = Control.REWIND;
-						rewind();
-						lastWriteClk = 0;
-						if (motor) {
-							startMotor();
-						}
-						break;
-					case RECORD:
-						if (!currentImage.isReadOnly()) {
-							mode = Control.RECORD;
-							lastWriteClk = 0;
-						}
-						break;
-					default:
-						System.err.println("Unknown datasette mode.");
-						break;
+		context.scheduleThreadSafe(Event.of("Datasette command", event -> {
+			try {
+				switch (command) {
+				case RESET_COUNTER:
+					resetCounter();
+					break;
+				case RESET:
+					internalReset();
+					// $FALL-THROUGH$
+				case STOP:
+					mode = Control.STOP;
+					lastWriteClk = 0;
+					break;
+				case START:
+					mode = Control.START;
+					lastWriteClk = 0;
+					if (motor) {
+						startMotor();
 					}
-
-					/* clear the tap-buffer */
-					lastTap = nextTap = 0;
-				} catch (IOException e) {
-					e.printStackTrace();
+					break;
+				case FORWARD:
+					mode = Control.FORWARD;
+					forward();
+					lastWriteClk = 0;
+					if (motor) {
+						startMotor();
+					}
+					break;
+				case REWIND:
+					mode = Control.REWIND;
+					rewind();
+					lastWriteClk = 0;
+					if (motor) {
+						startMotor();
+					}
+					break;
+				case RECORD:
+					if (!currentImage.isReadOnly()) {
+						mode = Control.RECORD;
+						lastWriteClk = 0;
+					}
+					break;
+				default:
+					System.err.println("Unknown datasette mode.");
+					break;
 				}
+
+				/* clear the tap-buffer */
+				lastTap = nextTap = 0;
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		});
+		}));
 	}
 
 	/**

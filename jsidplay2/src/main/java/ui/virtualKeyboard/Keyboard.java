@@ -9,6 +9,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import libsidplay.C64;
 import libsidplay.common.Event;
+import libsidplay.common.EventScheduler;
 import libsidplay.components.keyboard.KeyTableEntry;
 import sidplay.Player;
 import ui.common.C64Window;
@@ -82,23 +83,15 @@ public class Keyboard extends C64Window {
 	}
 
 	private void pressC64Key(final KeyTableEntry key) {
-		getC64().getEventScheduler()
-				.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed: " + key.name()) {
-					@Override
-					public void event() throws InterruptedException {
-						getC64().getKeyboard().keyPressed(key);
-					}
-				});
+		final EventScheduler ctx = getC64().getEventScheduler();
+		ctx.scheduleThreadSafeKeyEvent(Event.of("Virtual Keyboard Key Pressed: " + key.name(),
+				event -> getC64().getKeyboard().keyPressed(key)));
 	}
 
 	private void releaseC64Key(final KeyTableEntry key) {
-		getC64().getEventScheduler()
-				.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released: " + key.name()) {
-					@Override
-					public void event() throws InterruptedException {
-						getC64().getKeyboard().keyReleased(key);
-					}
-				});
+		final EventScheduler ctx = getC64().getEventScheduler();
+		ctx.scheduleThreadSafeKeyEvent(Event.of("Virtual Keyboard Key Released: " + key.name(),
+				event -> getC64().getKeyboard().keyReleased(key)));
 	}
 
 	@FXML

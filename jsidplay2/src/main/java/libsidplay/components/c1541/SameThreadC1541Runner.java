@@ -6,12 +6,7 @@ import libsidplay.common.EventScheduler;
 public class SameThreadC1541Runner extends C1541Runner {
 	protected boolean notTerminated;
 
-	private final Event terminationEvent = new Event("Pause C1541") {
-		@Override
-		public void event() {
-			notTerminated = false;
-		}
-	};
+	private final Event terminationEvent = Event.of("Pause C1541", event -> notTerminated = false);
 
 	public SameThreadC1541Runner(final EventScheduler c64Context, final EventScheduler c1541Context) {
 		super(c64Context, c1541Context);

@@ -102,12 +102,9 @@ public class FinalV1 extends Cartridge {
 	@Override
 	protected void doFreeze() {
 		setNMI(true);
-		pla.getCPU().getEventScheduler().schedule(new Event("Freeze") {
-			@Override
-			public void event() {
-				pla.setGameExrom(false, true);
-			}
-		}, 3, Phase.PHI1);
+		pla.getCPU().getEventScheduler().schedule(Event.of("Freeze", event -> {
+			pla.setGameExrom(false, true);
+		}), 3, Phase.PHI1);
 	}
 
 	@Override

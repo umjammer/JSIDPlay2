@@ -69,16 +69,11 @@ public class JHardSIDEmu extends ReSIDfp {
 
 	private static final short SHORTEST_DELAY = 4;
 
-	private final Event event = new Event("HardSID Delay") {
-		@Override
-		public void event() {
-			context.schedule(event, hardSIDBuilder.eventuallyDelay(), Event.Phase.PHI2);
-		}
-	};
-
 	private final EventScheduler context;
 
 	private final JHardSIDBuilder hardSIDBuilder;
+
+	private final Event event;
 
 	private final HardSIDUSB hardSID;
 
@@ -108,7 +103,8 @@ public class JHardSIDEmu extends ReSIDfp {
 		this.chipNum = (byte) chipNum;
 		this.sidNum = sidNum;
 		this.chipModel = model;
-
+		this.event = Event.of("HardSID Delay",
+				event -> context.schedule(event, hardSIDBuilder.eventuallyDelay(), Event.Phase.PHI2));
 		super.setChipModel(model);
 		super.setClockFrequency(cpuClock.getCpuFrequency());
 	}
@@ -178,14 +174,11 @@ public class JHardSIDEmu extends ReSIDfp {
 
 	private void doWriteDelayed(Runnable runnable) {
 		if (hardSIDBuilder.getDelay(sidNum) > 0) {
-			context.schedule(new Event("Delayed SID output") {
-				@Override
-				public void event() throws InterruptedException {
-					if (doReadWriteDelayed) {
-						runnable.run();
-					}
+			context.schedule(Event.of("Delayed SID output", event -> {
+				if (doReadWriteDelayed) {
+					runnable.run();
 				}
-			}, hardSIDBuilder.getDelay(sidNum));
+			}), hardSIDBuilder.getDelay(sidNum));
 		} else {
 			runnable.run();
 		}

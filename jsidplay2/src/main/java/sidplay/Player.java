@@ -507,12 +507,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		if (Thread.currentThread().equals(playerThread)) {
 			runnable.run();
 		} else {
-			c64.getEventScheduler().scheduleThreadSafe(new Event(eventName) {
-				@Override
-				public void event() throws InterruptedException {
-					runnable.run();
-				}
-			});
+			c64.getEventScheduler().scheduleThreadSafe(Event.of(eventName, event -> runnable.run()));
 		}
 	}
 
@@ -530,59 +525,53 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
 			sendReset(config, tune);
 		}
-		c64.getEventScheduler().schedule(new Event("Auto-start") {
-			@Override
-			public void event() throws InterruptedException {
-				if (tune != RESET) {
-					// for tunes: Install player into RAM
-					Integer driverAddress = tune.placeProgramInMemory(c64.getRAM());
-					if (driverAddress != null) {
-						if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF) {
-							sendRamAndSys(config, tune, c64.getRAM(), driverAddress);
-						}
-						if (emulationSection.getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
-							// Set play address to feedback call frames counter.
-							c64.setPlayAddr(playAddrHook.apply(tune.getInfo().getPlayAddr()));
-							// Start SID player driver
-							c64.getCPU().forcedJump(driverAddress);
-						}
-					} else {
-						// No player: Start basic program or assembler code
-						final int loadAddr = tune.getInfo().getLoadAddr();
-						if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF) {
-							if (loadAddr == 0x0801) {
-								sendRamAndRun(config, tune, c64.getRAM());
-							} else {
-								sendRamAndSys(config, tune, c64.getRAM(), loadAddr);
-							}
-						}
-						command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
+		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
+			if (tune != RESET) {
+				// for tunes: Install player into RAM
+				Integer driverAddress = tune.placeProgramInMemory(c64.getRAM());
+				if (driverAddress != null) {
+					if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF) {
+						sendRamAndSys(config, tune, c64.getRAM(), driverAddress);
 					}
-				}
-				if (command != null) {
-					if (command.startsWith(LOAD)) {
-						// Load from tape needs someone to press play
-						datasette.control(Control.START);
-					}
-					// Enter basic command
 					if (emulationSection.getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
-						typeInCommand(command);
+						// Set play address to feedback call frames counter.
+						c64.setPlayAddr(playAddrHook.apply(tune.getInfo().getPlayAddr()));
+						// Start SID player driver
+						c64.getCPU().forcedJump(driverAddress);
 					}
-					if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
-						sendWait(config, 300);
-						sendCommand(config, command);
+				} else {
+					// No player: Start basic program or assembler code
+					final int loadAddr = tune.getInfo().getLoadAddr();
+					if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF) {
+						if (loadAddr == 0x0801) {
+							sendRamAndRun(config, tune, c64.getRAM());
+						} else {
+							sendRamAndSys(config, tune, c64.getRAM(), loadAddr);
+						}
 					}
+					command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
 				}
-				c64.getEventScheduler().schedule(new Event("PSID64 Detection") {
-					@Override
-					public void event() throws InterruptedException {
-						autodetectPSID64();
-
-						c64.getEventScheduler().schedule(this, (long) (c64.getClock().getCpuFrequency()));
-					}
-				}, (long) (c64.getClock().getCpuFrequency()));
 			}
-		}, SidTune.getInitDelay(tune));
+			if (command != null) {
+				if (command.startsWith(LOAD)) {
+					// Load from tape needs someone to press play
+					datasette.control(Control.START);
+				}
+				// Enter basic command
+				if (emulationSection.getUltimate64Mode() != Ultimate64Mode.STANDALONE) {
+					typeInCommand(command);
+				}
+				if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
+					sendWait(config, 300);
+					sendCommand(config, command);
+				}
+			}
+			c64.getEventScheduler().schedule(Event.of("PSID64 Detection", event2 -> {
+				autodetectPSID64();
+
+				c64.getEventScheduler().schedule(event2, (long) (c64.getClock().getCpuFrequency()));
+			}), (long) (c64.getClock().getCpuFrequency()));
+		}), SidTune.getInitDelay(tune));
 	}
 
 	/**

@@ -731,26 +731,20 @@ public abstract class VIACore {
 	}
 
 	protected VIACore(String name) {
-		t1Alarm = new Event(name + "T1") {
-			@Override
-			public void event() {
-				/* handle continuous mode */
-				if (0 != (via[VIA_ACR] & 0x40)) {
-					tai += tal + 2;
-					alarmSet(this, tai);
-				}
-				ifr |= VIA_IM_T1;
-				checkInterrupts();
+		t1Alarm = Event.of(name + "T1", event -> {
+			/* handle continuous mode */
+			if (0 != (via[VIA_ACR] & 0x40)) {
+				tai += tal + 2;
+				alarmSet(event, tai);
 			}
-		};
+			ifr |= VIA_IM_T1;
+			checkInterrupts();
+		});
 
-		t2Alarm = new Event(name + "T2") {
-			@Override
-			public void event() {
-				ifr |= VIA_IM_T2;
-				checkInterrupts();
-			}
-		};
+		t2Alarm = Event.of(name + "T2", event -> {
+			ifr |= VIA_IM_T2;
+			checkInterrupts();
+		});
 	}
 
 	protected abstract void alarmSet(final Event alarm, final long ti);

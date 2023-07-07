@@ -90,6 +90,12 @@ public class REU extends Cartridge {
 	/** Currently active command */
 	protected Command reuOperation;
 
+	protected final DMAEvent dmaEvent;
+
+	protected final Event dmaBeginEvent;
+
+	protected final Event dmaEndEvent;
+
 	/**
 	 * REU interrupt enable/disable
 	 */
@@ -110,6 +116,22 @@ public class REU extends Cartridge {
 			// empty file means maximum size!
 			sizeKB = 16 << 10;
 		}
+		dmaEvent = new DMAEvent();
+		dmaBeginEvent = Event.of("REU DMA Begin", event -> {
+			pla.setDMA(true);
+			dmaActive = true;
+
+			dmaEvent.reset();
+
+			/* Schedule DMA operation to begin on the next PHI2 */
+			if (ba) {
+				pla.getCPU().getEventScheduler().schedule(dmaEvent, 0, Event.Phase.PHI2);
+			}
+		});
+		dmaEndEvent = Event.of("REU DMA End", event -> {
+			dmaActive = false;
+			pla.setDMA(false);
+		});
 		wrapAround = (sizeKB << 10) - 1;
 		ram = new byte[sizeKB << 10];
 		Arrays.fill(ram, (byte) 0);
@@ -340,21 +362,6 @@ public class REU extends Cartridge {
 		pla.getCPU().getEventScheduler().schedule(dmaBeginEvent, 0, Event.Phase.PHI1);
 	}
 
-	private final Event dmaBeginEvent = new Event("REU DMA Begin") {
-		@Override
-		public void event() {
-			pla.setDMA(true);
-			dmaActive = true;
-
-			dmaEvent.reset();
-
-			/* Schedule DMA operation to begin on the next PHI2 */
-			if (ba) {
-				pla.getCPU().getEventScheduler().schedule(dmaEvent, 0, Event.Phase.PHI2);
-			}
-		}
-	};
-
 	protected class DMAEvent extends Event {
 		/** Command.SWAP in "read c64" phase */
 		private boolean swapReadPhase;
@@ -459,16 +466,6 @@ public class REU extends Cartridge {
 			}
 		}
 	}
-
-	protected final DMAEvent dmaEvent = new DMAEvent();
-
-	protected final Event dmaEndEvent = new Event("REU DMA End") {
-		@Override
-		public void event() {
-			dmaActive = false;
-			pla.setDMA(false);
-		}
-	};
 
 	@Override
 	public String toString() {

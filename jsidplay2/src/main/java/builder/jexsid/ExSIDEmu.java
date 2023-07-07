@@ -65,16 +65,11 @@ public class ExSIDEmu extends ReSIDfp {
 		}
 	}
 
-	private final Event event = new Event("ExSID Delay") {
-		@Override
-		public void event() {
-			context.schedule(event, jExSIDBuilder.eventuallyDelay(), Event.Phase.PHI2);
-		}
-	};
-
 	private final EventScheduler context;
 
 	private final JExSIDBuilder jExSIDBuilder;
+
+	private final Event event;
 
 	private final ExSID exSID;
 
@@ -99,6 +94,8 @@ public class ExSIDEmu extends ReSIDfp {
 		this.deviceID = deviceId;
 		this.sidNum = sidNum;
 		this.chipModel = model;
+		this.event = Event.of("ExSID Delay",
+				event -> context.schedule(event, jExSIDBuilder.eventuallyDelay(), Event.Phase.PHI2));
 
 		super.setChipModel(model);
 		super.setClockFrequency(cpuClock.getCpuFrequency());
@@ -172,12 +169,7 @@ public class ExSIDEmu extends ReSIDfp {
 
 	private void doWriteDelayed(Runnable runnable) {
 		if (jExSIDBuilder.getDelay(sidNum) > 0) {
-			context.schedule(new Event("Delayed SID output") {
-				@Override
-				public void event() throws InterruptedException {
-					runnable.run();
-				}
-			}, jExSIDBuilder.getDelay(sidNum));
+			context.schedule(Event.of("Delayed SID output", event -> runnable.run()), jExSIDBuilder.getDelay(sidNum));
 		} else {
 			runnable.run();
 		}

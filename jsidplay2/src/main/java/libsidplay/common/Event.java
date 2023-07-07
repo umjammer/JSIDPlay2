@@ -36,7 +36,7 @@ public abstract class Event {
 	 *
 	 * @param name Descriptive string of the event.
 	 */
-	public Event(final String name) {
+	protected Event(final String name) {
 		this.name = name;
 	}
 
@@ -51,5 +51,20 @@ public abstract class Event {
 	@Override
 	public String toString() {
 		return "[" + name + ",triggerTime=" + triggerTime + "]";
+	}
+
+	public static final Event of(String name, ConsumerThatThrows<Event> eventMethod) {
+		return new Event(name) {
+
+			@Override
+			public void event() throws InterruptedException {
+				eventMethod.accept(this);
+			}
+		};
+	}
+
+	@FunctionalInterface
+	public interface ConsumerThatThrows<T> {
+		void accept(T t) throws InterruptedException;
 	}
 }

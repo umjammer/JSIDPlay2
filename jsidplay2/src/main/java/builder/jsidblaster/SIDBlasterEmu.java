@@ -65,16 +65,11 @@ public class SIDBlasterEmu extends ReSIDfp {
 		}
 	}
 
-	private final Event event = new Event("HardSID Delay") {
-		@Override
-		public void event() {
-			context.schedule(event, hardSIDBuilder.eventuallyDelay(), Event.Phase.PHI2);
-		}
-	};
-
 	private final EventScheduler context;
 
 	private final JSIDBlasterBuilder hardSIDBuilder;
+
+	private final Event event;
 
 	private final HardSID hardSID;
 
@@ -99,7 +94,8 @@ public class SIDBlasterEmu extends ReSIDfp {
 		this.deviceID = deviceId;
 		this.sidNum = sidNum;
 		this.chipModel = model;
-
+		this.event = Event.of("HardSID Delay",
+				event -> context.schedule(event, hardSIDBuilder.eventuallyDelay(), Event.Phase.PHI2));
 		super.setChipModel(model == ChipModel.AUTO ? defaultSidModel : model);
 		super.setClockFrequency(cpuClock.getCpuFrequency());
 	}
@@ -153,12 +149,7 @@ public class SIDBlasterEmu extends ReSIDfp {
 
 	private void doWriteDelayed(Runnable runnable) {
 		if (hardSIDBuilder.getDelay(sidNum) > 0) {
-			context.schedule(new Event("Delayed SID output") {
-				@Override
-				public void event() throws InterruptedException {
-					runnable.run();
-				}
-			}, hardSIDBuilder.getDelay(sidNum));
+			context.schedule(Event.of("Delayed SID output", event -> runnable.run()), hardSIDBuilder.getDelay(sidNum));
 		} else {
 			runnable.run();
 		}

@@ -176,12 +176,8 @@ public class Oscilloscope extends C64VBox implements UIPart {
 
 	@Override
 	public void doClose() {
-		util.getPlayer().getC64().getEventScheduler().scheduleThreadSafe(new Event("Stop Oscilloscope") {
-			@Override
-			public void event() throws InterruptedException {
-				util.getPlayer().getC64().getEventScheduler().cancel(highResolutionEvent);
-			}
-		});
+		util.getPlayer().getC64().getEventScheduler().scheduleThreadSafe(Event.of("Stop Oscilloscope",
+				event -> util.getPlayer().getC64().getEventScheduler().cancel(highResolutionEvent)));
 		stopOscilloscope();
 		util.getPlayer().stateProperty().removeListener(listener);
 	}

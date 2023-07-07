@@ -476,13 +476,7 @@ public abstract class Flash040Core {
 		flash040Context.programByte = 0;
 		flashClearEraseMask(flash040Context);
 		flash040Context.flashDirty = 0;
-		flash040Context.eraseAlarm = new Event("Flash040Alarm") {
-
-			@Override
-			public void event() throws InterruptedException {
-				eraseAlarmHandler(flash040Context);
-			}
-		};
+		flash040Context.eraseAlarm = Event.of("Flash040Alarm", event -> eraseAlarmHandler(flash040Context));
 	}
 
 	public void flash040CoreShutdown(Flash040Context flash040Context) {

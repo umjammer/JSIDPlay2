@@ -455,15 +455,12 @@ public abstract class MOS6526 extends Bank {
 		/**
 		 * Perform scheduled cycle skipping, and resume.
 		 */
-		private final Event cycleSkippingEvent = new Event("Skip CIA clock decrement cycles") {
-			@Override
-			public void event() {
-				final long elapsed = context.getTime(Phase.PHI1) - ciaEventPauseTime;
-				ciaEventPauseTime = 0;
-				timer -= elapsed;
-				Timer.this.event();
-			}
-		};
+		private final Event cycleSkippingEvent = Event.of("Skip CIA clock decrement cycles", event -> {
+			final long elapsed = context.getTime(Phase.PHI1) - ciaEventPauseTime;
+			ciaEventPauseTime = 0;
+			timer -= elapsed;
+			Timer.this.event();
+		});
 
 		/**
 		 * Execute one CIA state transition.
@@ -634,15 +631,12 @@ public abstract class MOS6526 extends Bank {
 		 * <LI>PHI1 b.event()
 		 * </UL>
 		 */
-		private final Event bTick = new Event("CIA B counts A") {
-			@Override
-			public void event() {
-				/* we pretend that we are CPU doing a write to ctrl register */
-				b.syncWithCpu();
-				b.state |= Timer.CIAT_STEP;
-				b.wakeUpAfterSyncWithCpu();
-			}
-		};
+		private final Event bTick = Event.of("CIA B counts A", event -> {
+			/* we pretend that we are CPU doing a write to ctrl register */
+			b.syncWithCpu();
+			b.state |= Timer.CIAT_STEP;
+			b.wakeUpAfterSyncWithCpu();
+		});
 
 		/**
 		 * Signal underflows of Timer A to Timer B.

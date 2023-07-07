@@ -171,12 +171,8 @@ public class JSIDPlay2Test extends ApplicationTest {
 	 * @param eventConsumer event consumer with event behavior
 	 */
 	protected void schedule(java.util.function.Consumer<C64> eventConsumer) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Test Event") {
-			@Override
-			public void event() throws InterruptedException {
-				eventConsumer.accept(player.getC64());
-			}
-		});
+		player.getC64().getEventScheduler()
+				.scheduleThreadSafeKeyEvent(Event.of("Test Event", event -> eventConsumer.accept(player.getC64())));
 	}
 
 	protected void fastForward(int speedFactor) {

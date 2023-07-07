@@ -267,12 +267,7 @@ public final class PLA {
 	protected boolean aecDuringPhi2;
 
 	/** Event to change the BA state */
-	private final Event aecDisableEvent = new Event("BA transitions") {
-		@Override
-		public void event() {
-			aecDuringPhi2 = false;
-		}
-	};
+	private final Event aecDisableEvent = Event.of("BA transitions", event -> aecDuringPhi2 = false);
 
 	/** Event Scheduler for delayed actions */
 	private final EventScheduler context;

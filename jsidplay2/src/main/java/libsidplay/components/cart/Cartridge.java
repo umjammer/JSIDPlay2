@@ -259,12 +259,7 @@ public class Cartridge {
 	 * Subclasses need to override doFreeze().
 	 */
 	public final void freeze() {
-		pla.getCPU().getEventScheduler().scheduleThreadSafe(new Event("Freeze TS") {
-			@Override
-			public void event() {
-				Cartridge.this.doFreeze();
-			}
-		});
+		pla.getCPU().getEventScheduler().scheduleThreadSafe(Event.of("Freeze TS", event -> Cartridge.this.doFreeze()));
 	}
 
 	/**

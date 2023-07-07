@@ -168,34 +168,10 @@ public class MOS6510 {
 	}
 
 	/** When AEC signal is high, no stealing is possible */
-	private final Event eventWithoutSteals = new Event("CPU-nosteal") {
-		/** Run CPU until AEC goes low. */
-		@Override
-		public void event() {
-			instrTable[cycleCount++].run();
-			context.schedule(this, 1);
-		}
-	};
+	private final Event eventWithoutSteals;
 
 	/** When AEC signal is low, steals permitted */
-	private final Event eventWithSteals = new Event("CPU-steal") {
-		/** Stall CPU when no more cycles are executable. */
-		@Override
-		public void event() {
-			if (processorCycleNoSteal[cycleCount]) {
-				instrTable[cycleCount++].run();
-				context.schedule(this, 1);
-			} else {
-				/*
-				 * Even while stalled, the CPU can still process first clock of interrupt delay,
-				 * but only the first one.
-				 */
-				if (interruptCycle == cycleCount) {
-					interruptCycle--;
-				}
-			}
-		}
-	};
+	private final Event eventWithSteals;
 
 	/**
 	 * Initialize CPU Emulation (Registers)
@@ -552,6 +528,26 @@ public class MOS6510 {
 	 */
 	public MOS6510(final EventScheduler context) {
 		this.context = context;
+		eventWithoutSteals = Event.of("CPU-nosteal", event -> {
+			/** Run CPU until AEC goes low. */
+			instrTable[cycleCount++].run();
+			context.schedule(event, 1);
+		});
+		eventWithSteals = Event.of("CPU-steal", event -> {
+			/** Stall CPU when no more cycles are executable. */
+			if (processorCycleNoSteal[cycleCount]) {
+				instrTable[cycleCount++].run();
+				context.schedule(event, 1);
+			} else {
+				/*
+				 * Even while stalled, the CPU can still process first clock of interrupt delay,
+				 * but only the first one.
+				 */
+				if (interruptCycle == cycleCount) {
+					interruptCycle--;
+				}
+			}
+		});
 
 		// Initialize Processor Registers
 		Register_Accumulator = 0;

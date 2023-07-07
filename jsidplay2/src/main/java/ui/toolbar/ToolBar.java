@@ -553,12 +553,7 @@ public class ToolBar extends C64VBox implements UIPart {
 	@FXML
 	private void doEnableSldb() {
 		final EventScheduler ctx = util.getPlayer().getC64().getEventScheduler();
-		ctx.scheduleThreadSafe(new Event("Update Play Timer!") {
-			@Override
-			public void event() {
-				util.getPlayer().getTimer().updateEnd();
-			}
-		});
+		ctx.scheduleThreadSafe(Event.of("Update Play Timer!", event -> util.getPlayer().getTimer().updateEnd()));
 	}
 
 	@FXML

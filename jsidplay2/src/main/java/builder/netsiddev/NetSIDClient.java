@@ -44,17 +44,7 @@ public class NetSIDClient {
 	private long lastSIDWriteTime;
 	private int fastForwardFactor;
 
-	private final Event event = new Event("JSIDDevice Delay") {
-
-		@Override
-		public void event() {
-			// Pure delay is added to the server side queue for all SIDs in use.
-			// Note: Hard-wired SID chip number zero; sid_detection.prg seems
-			// to correctly detect SID chip type even using a fake stereo SID
-			// with a different model!?
-			context.schedule(event, eventuallyDelay((byte) 0), Event.Phase.PHI2);
-		}
-	};
+	private final Event event;
 
 	/**
 	 * Establish a single instance connection to a NetworkSIDDevice.
@@ -65,6 +55,12 @@ public class NetSIDClient {
 	 */
 	public NetSIDClient(EventScheduler context, IEmulationSection emulationSection) {
 		this.context = context;
+		// Pure delay is added to the server side queue for all SIDs in use.
+		// Note: Hard-wired SID chip number zero; sid_detection.prg seems
+		// to correctly detect SID chip type even using a fake stereo SID
+		// with a different model!?
+		this.event = Event.of("JSIDDevice Delay",
+				event -> context.schedule(event, eventuallyDelay((byte) 0), Event.Phase.PHI2));
 		boolean wasNotConnectedYet = connection.isDisconnected();
 		try {
 			connection.open(emulationSection.getNetSIDDevHost(), emulationSection.getNetSIDDevPort());

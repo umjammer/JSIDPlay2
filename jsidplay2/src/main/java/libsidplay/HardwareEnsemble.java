@@ -316,19 +316,16 @@ public class HardwareEnsemble implements Ultimate64 {
 	 * @param on floppy disk drives enable
 	 */
 	public final void enableFloppyDiskDrives(final boolean on) {
-		c64.getEventScheduler().scheduleThreadSafe(new Event("C64-C1541 sync") {
-			@Override
-			public void event() {
-				if (on) {
-					c1541Runner.reset();
-				} else {
-					c1541Runner.cancel();
-				}
-				for (C1541 floppy : floppies) {
-					floppy.setPowerOn(on);
-				}
+		c64.getEventScheduler().scheduleThreadSafe(Event.of("C64-C1541 sync", event -> {
+			if (on) {
+				c1541Runner.reset();
+			} else {
+				c1541Runner.cancel();
 			}
-		});
+			for (C1541 floppy : floppies) {
+				floppy.setPowerOn(on);
+			}
+		}));
 	}
 
 	/**

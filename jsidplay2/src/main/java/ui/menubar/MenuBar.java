@@ -441,16 +441,13 @@ public class MenuBar extends C64VBox implements UIPart {
 	private void nextFavorite() {
 		final C64 c64 = util.getPlayer().getC64();
 		final EventScheduler ctx = c64.getEventScheduler();
-		ctx.scheduleThreadSafe(new Event("Timer End To Play Next Favorite!") {
-			@Override
-			public void event() {
-				if (util.getPlayer().stateProperty().get() == State.PLAY
-						|| util.getPlayer().stateProperty().get() == State.PAUSE) {
-					util.getPlayer().getPlayList().last();
-					util.getPlayer().getTimer().end();
-				}
+		ctx.scheduleThreadSafe(Event.of("Timer End To Play Next Favorite!", event -> {
+			if (util.getPlayer().stateProperty().get() == State.PLAY
+					|| util.getPlayer().stateProperty().get() == State.PAUSE) {
+				util.getPlayer().getPlayList().last();
+				util.getPlayer().getTimer().end();
 			}
-		});
+		}));
 	}
 
 	@FXML

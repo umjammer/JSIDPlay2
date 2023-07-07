@@ -119,75 +119,47 @@ public final class PlayerWithStatus {
 	}
 
 	public void pressKey(KeyTableEntry key) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed") {
-			@Override
-			public void event() throws InterruptedException {
-				player.getC64().getKeyboard().keyPressed(key);
-			}
-		});
+		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(
+				Event.of("Virtual Keyboard Pressed", event -> player.getC64().getKeyboard().keyPressed(key)));
 	}
 
 	public void releaseKey(KeyTableEntry key) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
-			@Override
-			public void event() throws InterruptedException {
-				player.getC64().getKeyboard().keyReleased(key);
-			}
-		});
+		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(
+				Event.of("Virtual Keyboard Released", event -> player.getC64().getKeyboard().keyReleased(key)));
 	}
 
 	public void typeKey(KeyTableEntry key) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Pressed") {
-			@Override
-			public void event() throws InterruptedException {
+		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(Event.of("Virtual Keyboard Pressed", event -> {
 
-				if (key == KeyTableEntry.RESTORE) {
-					player.getC64().getKeyboard().restore();
-				} else {
-					player.getC64().getKeyboard().keyPressed(key);
+			if (key == KeyTableEntry.RESTORE) {
+				player.getC64().getKeyboard().restore();
+			} else {
+				player.getC64().getKeyboard().keyPressed(key);
 
-					player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Keyboard Key Released") {
-						@Override
-						public void event() throws InterruptedException {
+				player.getC64().getEventScheduler()
+						.schedule(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
 
 							player.getC64().getEventScheduler()
-									.scheduleThreadSafeKeyEvent(new Event("Virtual Keyboard Key Released") {
-										@Override
-										public void event() throws InterruptedException {
+									.scheduleThreadSafeKeyEvent(Event.of("Virtual Keyboard Released",
+											event3 -> player.getC64().getKeyboard().keyReleased(key)));
 
-											player.getC64().getKeyboard().keyReleased(key);
-										}
-									});
-						}
-					}, player.getC64().getClock().getCyclesPerFrame() << 2);
-				}
+						}), player.getC64().getClock().getCyclesPerFrame() << 2);
 			}
-		});
+		}));
 	}
 
 	public void joystick(int number, int value) {
-		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Pressed") {
-			@Override
-			public void event() throws InterruptedException {
+		player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(Event.of("Virtual Joystick Pressed", event -> {
 
-				player.getC64().setJoystick(number, () -> (byte) (0xff ^ value));
+			player.getC64().setJoystick(number, () -> (byte) (0xff ^ value));
 
-				player.getC64().getEventScheduler().schedule(new Event("Wait Until Virtual Joystick Released") {
-					@Override
-					public void event() throws InterruptedException {
+			player.getC64().getEventScheduler().schedule(Event.of("Wait Until Virtual Joystick Released", event2 -> {
 
-						player.getC64().getEventScheduler()
-								.scheduleThreadSafeKeyEvent(new Event("Virtual Joystick Released") {
-									@Override
-									public void event() throws InterruptedException {
+				player.getC64().getEventScheduler().scheduleThreadSafeKeyEvent(
+						Event.of("Virtual Joystick Released", event3 -> player.getC64().setJoystick(number, null)));
 
-										player.getC64().setJoystick(number, null);
-									}
-								});
-					}
-				}, player.getC64().getClock().getCyclesPerFrame() << 2);
-			}
-		});
+			}), player.getC64().getClock().getCyclesPerFrame() << 2);
+		}));
 	}
 
 	private File determineNextDiskImage(File diskImage) {
@@ -230,26 +202,21 @@ public final class PlayerWithStatus {
 
 					long initDelay = SidTune.getInitDelay(player.getTune());
 
-					player.getC64().getEventScheduler().schedule(new Event("Virtual Keyboard Key Pressed") {
-						@Override
-						public void event() throws InterruptedException {
+					player.getC64().getEventScheduler().schedule(Event.of("Virtual Keyboard Pressed", event2 -> {
 
-							// press space every N seconds
-							player.getC64().getKeyboard().keyPressed(SPACE);
+						// press space every N seconds
+						player.getC64().getKeyboard().keyPressed(SPACE);
 
-							player.getC64().getEventScheduler().schedule(new Event("Virtual Keyboard Key Released") {
-								@Override
-								public void event() throws InterruptedException {
+						player.getC64().getEventScheduler().schedule(Event.of("Virtual Keyboard Released", event3 -> {
 
-									player.getC64().getKeyboard().keyReleased(SPACE);
-								}
-							}, player.getC64().getClock().getCyclesPerFrame() << 2);
+							player.getC64().getKeyboard().keyReleased(SPACE);
 
-							player.getC64().getEventScheduler().schedule(this,
-									pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
-						}
+						}), player.getC64().getClock().getCyclesPerFrame() << 2);
 
-					}, initDelay + pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
+						player.getC64().getEventScheduler().schedule(event2,
+								pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
+
+					}), initDelay + pressSpaceInterval * (long) player.getC64().getClock().getCpuFrequency());
 				}
 			});
 		}
@@ -259,15 +226,12 @@ public final class PlayerWithStatus {
 		player.stateProperty().addListener(event -> {
 			if (event.getNewValue() == State.START) {
 
-				player.getC64().getEventScheduler().schedule(new Event("Update Status Text") {
-					@Override
-					public void event() throws InterruptedException {
-						statusText.update(diskImage);
+				player.getC64().getEventScheduler().schedule(Event.of("Update Status Text", event2 -> {
+					statusText.update(diskImage);
 
-						player.getC64().getEventScheduler().schedule(this,
-								player.getC64().getClock().getCyclesPerFrame());
-					}
-				}, 0);
+					player.getC64().getEventScheduler().schedule(event2,
+							player.getC64().getClock().getCyclesPerFrame());
+				}), 0);
 			}
 		});
 	}

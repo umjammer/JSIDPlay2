@@ -14,45 +14,6 @@ import sidplay.Player;
  * Additionally the fade-in and fade-out start time notification has been added.
  */
 public abstract class Timer {
-	/**
-	 * Tune start time has been reached
-	 */
-	private Event startTimeEvent = new Event("Timer Start") {
-		@Override
-		public void event() throws InterruptedException {
-			start();
-		}
-	};
-
-	/**
-	 * Tune end time has been reached
-	 */
-	private Event endTimeEvent = new Event("Timer End") {
-		@Override
-		public void event() throws InterruptedException {
-			end();
-		}
-	};
-
-	/**
-	 * Tune fade-in time has been reached
-	 */
-	private Event fadeInStartTimeEvent = new Event("Fade-in Start") {
-		@Override
-		public void event() throws InterruptedException {
-			fadeInStart(fadeIn);
-		}
-	};
-
-	/**
-	 * Tune fade-out time has been reached
-	 */
-	private Event fadeOutStartTimeEvent = new Event("Fade-out Start") {
-		@Override
-		public void event() throws InterruptedException {
-			fadeOutStart(fadeOut);
-		}
-	};
 
 	/**
 	 * Timer start time in seconds.
@@ -73,6 +34,26 @@ public abstract class Timer {
 	 * Fade-out time in seconds (0 means no fade-out).
 	 */
 	private double fadeOut;
+
+	/**
+	 * Tune start time has been reached
+	 */
+	private Event startTimeEvent = Event.of("Timer Start", event -> start());
+
+	/**
+	 * Tune end time has been reached
+	 */
+	private Event endTimeEvent = Event.of("Timer End", event -> end());
+
+	/**
+	 * Tune fade-in time has been reached
+	 */
+	private Event fadeInStartTimeEvent = Event.of("Fade-in Start", event -> fadeInStart(fadeIn));
+
+	/**
+	 * Tune fade-out time has been reached
+	 */
+	private Event fadeOutStartTimeEvent = Event.of("Fade-out Start", event -> fadeOutStart(fadeOut));
 
 	/**
 	 * The player.

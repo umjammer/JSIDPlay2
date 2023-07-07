@@ -733,31 +733,20 @@ public abstract class VIC extends Bank {
 	/**
 	 * Display is enabled because badline condition was on for at least 1 clock
 	 */
-	private final Event makeDisplayActive = new Event("Activate display due to badline") {
-		@Override
-		public void event() {
-			isDisplayActive = true;
-		}
-	};
+	private final Event makeDisplayActive = Event.of("Activate display due to badline",
+			event -> isDisplayActive = true);
+
 	/** AEC state was updated. */
-	private final Event badLineStateChange = new Event("Update AEC signal") {
-		@Override
-		public void event() {
-			setBA(!isBadLine);
-		}
-	};
+	private final Event badLineStateChange = Event.of("Update AEC signal", event -> setBA(!isBadLine));
 
 	/** RasterY IRQ edge detector. */
-	protected final Event rasterYIRQEdgeDetector = new Event("RasterY changed") {
-		@Override
-		public void event() {
-			final boolean oldRasterYIRQCondition = rasterYIRQCondition;
-			rasterYIRQCondition = rasterY == readRasterLineIRQ();
-			if (!oldRasterYIRQCondition && rasterYIRQCondition) {
-				activateIRQFlag(IRQ_RASTER);
-			}
+	protected final Event rasterYIRQEdgeDetector = Event.of("RasterY changed", event -> {
+		final boolean oldRasterYIRQCondition = rasterYIRQCondition;
+		rasterYIRQCondition = rasterY == readRasterLineIRQ();
+		if (!oldRasterYIRQCondition && rasterYIRQCondition) {
+			activateIRQFlag(IRQ_RASTER);
 		}
-	};
+	});
 
 	/** Handle lightpen state change */
 	protected void lightpenEdgeDetector() {
