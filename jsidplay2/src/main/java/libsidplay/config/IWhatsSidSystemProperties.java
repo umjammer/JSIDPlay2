@@ -32,4 +32,17 @@ public interface IWhatsSidSystemProperties {
 	int QUERY_TIMEOUT = Integer
 			.valueOf(System.getProperty("jsidplay2.whatssid.query.timeout", valueOf(30/* s */ * 1000)));
 
+	/**
+	 * FingerprintingCreator maximum number of threads to create fingerprint of
+	 * tunes in parallel.
+	 */
+	int FINGERPRINTING_MAX_THREADS = Integer
+			.valueOf(System.getProperty("jsidplay2.fingerprinting.max.threads", valueOf(8)));
+
+	/**
+	 * FingerprintingCreator maximum number of days to wait for all threads to
+	 * complete fingerprint of tunes in parallel.
+	 */
+	int FINGERPRINTING_AWAIT_TERMINATION = Integer
+			.valueOf(System.getProperty("jsidplay2.fingerprinting.await.termination", valueOf(30)));
 }

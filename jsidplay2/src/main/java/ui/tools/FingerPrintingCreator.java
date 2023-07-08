@@ -1,5 +1,8 @@
 package ui.tools;
 
+import static libsidplay.config.IWhatsSidSystemProperties.FINGERPRINTING_AWAIT_TERMINATION;
+import static libsidplay.config.IWhatsSidSystemProperties.FINGERPRINTING_MAX_THREADS;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,8 +10,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.beust.jcommander.JCommander;
@@ -17,6 +24,7 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
 import libsidplay.common.SamplingRate;
+import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.sidtune.MD5Method;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
@@ -93,62 +101,67 @@ public class FingerPrintingCreator {
 	@ParametersDelegate
 	private IniConfig config = new IniConfig(false);
 
-	private Player player;
+	private static final ThreadLocal<EntityManager> THREAD_LOCAL_ENTITY_MANAGER = new ThreadLocal<>();
 
-	private WhatsSidDriver whatsSidDriver;
+	private static EntityManagerFactory entityManagerFactory;
 
 	private SidDatabase previousSidDatabase;
 
-	private void execute(String[] args) throws IOException, SidTuneError {
-		JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
-		commander.parse(args);
-		if (help) {
-			commander.usage();
-			System.out.println("Press <enter> to exit!");
-			System.in.read();
-			System.exit(0);
-		}
-		if (config.getSidplay2Section().getHvsc() == null) {
-			System.out.println("Parameter --hvsc must be present!");
-			System.exit(1);
-		}
-		config.getAudioSection().setSamplingRate(SamplingRate.VERY_LOW);
-		config.getSidplay2Section().setDefaultPlayLength(180);
-		config.getSidplay2Section().setEnableDatabase(true);
-		config.getSidplay2Section().setSingle(false);
-		config.getSidplay2Section().setLoop(false);
-
-		whatsSidDriver = new WhatsSidDriver();
-
-		player = new Player(config);
-		player.setAudioDriver(whatsSidDriver);
-		player.setSidDatabase(new SidDatabase(config.getSidplay2Section().getHvsc()));
-
-		if (previousDirectory != null) {
-			previousSidDatabase = new SidDatabase(previousDirectory);
-		}
-
-		EntityManager em = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
-				new PersistenceProperties(whatsSidDatabaseDriver, whatsSidDatabaseUrl, whatsSidDatabaseUsername,
-						whatsSidDatabasePassword, whatsSidDatabaseDialect))
-				.createEntityManager();
-		WhatsSidService whatsSidService = new WhatsSidService(em);
-
-		whatsSidDriver.setFingerprintInserter(new FingerPrinting(new IniFingerprintConfig(createIni), whatsSidService));
-
-		if (Boolean.TRUE.equals(deleteAll)) {
-			deleteAllFingerprintings(whatsSidService);
-		}
-
+	private void execute(String[] args) {
+		ExecutorService executor = Executors.newFixedThreadPool(FINGERPRINTING_MAX_THREADS);
 		try {
+			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
+			commander.parse(args);
+			if (help) {
+				commander.usage();
+				System.out.println("Press <enter> to exit!");
+				System.in.read();
+				System.exit(0);
+			}
+			if (config.getSidplay2Section().getHvsc() == null) {
+				System.out.println("Parameter --hvsc must be present!");
+				System.exit(1);
+			}
+			config.getAudioSection().setSamplingRate(SamplingRate.VERY_LOW);
+			config.getSidplay2Section().setDefaultPlayLength(180);
+			config.getSidplay2Section().setEnableDatabase(true);
+			config.getSidplay2Section().setSingle(false);
+			config.getSidplay2Section().setLoop(false);
+
+			if (previousDirectory != null) {
+				previousSidDatabase = new SidDatabase(previousDirectory);
+			}
+
+			entityManagerFactory = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
+					new PersistenceProperties(whatsSidDatabaseDriver, whatsSidDatabaseUrl, whatsSidDatabaseUsername,
+							whatsSidDatabasePassword, whatsSidDatabaseDialect));
+
+			WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
+
+			if (Boolean.TRUE.equals(deleteAll)) {
+				deleteAllFingerprintings(whatsSidService);
+			}
+
 			if (directory != null) {
 				System.out.println(
 						"Create fingerprintings... (press q <return>, to abort after the current tune has been fingerprinted)");
 
-				processDirectory(directory, em);
+				processDirectory(executor, directory);
 			}
+		} catch (Throwable t) {
+			t.printStackTrace();
 		} finally {
-			whatsSidService.close();
+			try {
+				if (!executor.awaitTermination(FINGERPRINTING_AWAIT_TERMINATION, TimeUnit.DAYS)) {
+					executor.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				executor.shutdownNow();
+			}
+
+			if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+				entityManagerFactory.close();
+			}
 			System.exit(0);
 		}
 	}
@@ -175,43 +188,72 @@ public class FingerPrintingCreator {
 		return System.in.read();
 	}
 
-	private void processDirectory(File dir, EntityManager em) throws IOException, SidTuneError {
+	private void processDirectory(ExecutorService executor, File dir) throws IOException, SidTuneError {
 		File[] listFiles = Optional.ofNullable(dir.listFiles()).orElse(new File[0]);
 		Arrays.sort(listFiles);
 		for (File file : listFiles) {
 			if (file.isDirectory()) {
-				processDirectory(file, em);
+				if (!executor.isShutdown()) {
+					processDirectory(executor, file);
+				}
 			} else if (file.isFile()) {
 				if (TUNE_FILE_FILTER.accept(file)) {
-					SidTune tune = SidTune.load(file);
-					String collectionName = PathUtils.getCollectionName(config.getSidplay2Section().getHvsc(), file);
-
-					if (previousDirectory != null) {
-						copyRecordingsOfPreviousDirectory(file, tune, collectionName);
-					}
-
-					whatsSidDriver.setCollectionName(collectionName);
-					whatsSidDriver.setTune(tune);
-
-					player.setRecordingFilenameProvider(
-							theTune -> getRecordingFilename(file, theTune, theTune.getInfo().getCurrentSong()));
-					player.setTune(tune);
-					player.startC64();
-					player.stopC64(false);
-					em.clear();
-				}
-				if (System.in.available() > 0) {
-					final int key = System.in.read();
-					if (key == 'q') {
-						throw new IOException("Termination after pressing q");
-					}
+					executor.execute(() -> {
+						try {
+							if (!executor.isShutdown()) {
+								processFile(executor, file);
+								if (System.in.available() > 0) {
+									final int key = System.in.read();
+									if (key == 'q') {
+										executor.shutdown();
+										System.err.println(
+												"Termination after pressing q, please wait for last recordings to finish");
+									}
+								}
+							}
+						} catch (IOException | SidTuneError e) {
+							e.printStackTrace();
+						}
+					});
 				}
 			}
 		}
 	}
 
-	private void copyRecordingsOfPreviousDirectory(File file, SidTune tune, String collectionName)
-			throws IOException, SidTuneError {
+	private void processFile(ExecutorService executor, File file) throws IOException, SidTuneError {
+		System.out.println(file);
+		try {
+			final WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
+
+			SidTune tune = SidTune.load(file);
+			String collectionName = PathUtils.getCollectionName(config.getSidplay2Section().getHvsc(), file);
+
+			WhatsSidDriver whatsSidDriver = new WhatsSidDriver();
+			whatsSidDriver
+					.setFingerprintInserter(new FingerPrinting(new IniFingerprintConfig(createIni), whatsSidService));
+			whatsSidDriver.setCollectionName(collectionName);
+			whatsSidDriver.setTune(tune);
+
+			Player player = new Player(config);
+			player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
+			player.setAudioDriver(whatsSidDriver);
+			player.setSidDatabase(new SidDatabase(config.getSidplay2Section().getHvsc()));
+
+			if (previousDirectory != null) {
+				copyRecordingsOfPreviousDirectory(player, whatsSidDriver, file, tune, collectionName);
+			}
+			player.setRecordingFilenameProvider(
+					theTune -> getRecordingFilename(file, theTune, theTune.getInfo().getCurrentSong()));
+			player.setTune(tune);
+			player.startC64();
+			player.stopC64(false);
+		} finally {
+			freeEntityManager();
+		}
+	}
+
+	private void copyRecordingsOfPreviousDirectory(Player player, WhatsSidDriver whatsSidDriver, File file,
+			SidTune tune, String collectionName) throws IOException, SidTuneError {
 		File previousFile = new File(previousDirectory, collectionName);
 		if (previousFile.exists()) {
 			SidTune previousTune = SidTune.load(previousFile);
@@ -240,7 +282,28 @@ public class FingerPrintingCreator {
 		return filename;
 	}
 
-	public static void main(String[] args) throws IOException, SidTuneError {
+	public static EntityManager getEntityManager() throws IOException {
+		if (entityManagerFactory == null) {
+			throw new IOException("Database required, please specify command line parameters!");
+		}
+		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
+
+		if (em == null) {
+			em = entityManagerFactory.createEntityManager();
+			THREAD_LOCAL_ENTITY_MANAGER.set(em);
+		}
+		return em;
+	}
+
+	public static void freeEntityManager() {
+		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
+
+		if (em != null) {
+			em.clear();
+		}
+	}
+
+	public static void main(String[] args) {
 		new FingerPrintingCreator().execute(args);
 	}
 
