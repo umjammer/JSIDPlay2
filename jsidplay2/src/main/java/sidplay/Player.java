@@ -333,7 +333,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	public Player(final IConfig config, final Class<? extends MOS6510> cpuClass) {
 		super(config, cpuClass);
-		this.playList = PlayList.getInstance(config, tune, firstPlayListEntryIsOne);
+		this.playList = new PlayList(config, RESET, firstPlayListEntryIsOne);
 		this.timer = new Timer(this) {
 
 			/**
@@ -749,6 +749,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	private Runnable playerRunnable = () -> {
 		// Run until the player gets stopped
+		playList = new PlayList(config, tune, firstPlayListEntryIsOne);
 		do {
 			try {
 				stateProperty.set(OPEN);
@@ -792,7 +793,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		final IAudioSection audioSection = config.getAudioSection();
 
 		fastForwardVICFrames = 0;
-		playList = PlayList.getInstance(config, tune, firstPlayListEntryIsOne);
+		playList.prepare();
 		timer.setStart(sidplay2Section.getStartTime());
 		stateProperty.addListener(pauseListener);
 

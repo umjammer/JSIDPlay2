@@ -1,5 +1,7 @@
 package sidplay.player;
 
+import static libsidplay.sidtune.SidTune.RESET;
+
 import libsidplay.config.IConfig;
 import libsidplay.sidtune.SidTune;
 
@@ -36,36 +38,24 @@ public class PlayList {
 	 */
 	private int current;
 
-	private PlayList() {
-	}
-
-	private PlayList(final IConfig config, final SidTune tune, boolean firstPlayListEntryIsOne) {
+	public PlayList(final IConfig config, final SidTune tune, boolean firstPlayListEntryIsOne) {
 		this.config = config;
 		this.tune = tune;
-		this.current = tune.getInfo().getSelectedSong();
-		this.length = tune.getInfo().getSongs();
+		if (tune != RESET) {
+			this.current = tune.getInfo().getSelectedSong();
+			this.length = tune.getInfo().getSongs();
+		} else {
+			this.current = 1;
+			this.length = 1;
+		}
 		this.first = firstPlayListEntryIsOne ? 1 : current;
 	}
 
-	/**
-	 * Get instance results in a new play-list each time the tune changes.
-	 *
-	 * @param config                  configuration
-	 * @param tune                    SID tune
-	 * @param firstPlayListEntryIsOne First entry of the play-list is first song
-	 *                                (otherwise start song)
-	 * @return play list of the current tune
-	 */
-	public static PlayList getInstance(final IConfig config, final SidTune tune, boolean firstPlayListEntryIsOne) {
-		if (tune == SidTune.RESET) {
-			return NONE;
+	public void prepare() {
+		if (tune != RESET) {
+			tune.getInfo().setSelectedSong(current);
+			tune.prepare();
 		}
-		if (singleton.tune != tune) {
-			singleton = new PlayList(config, tune, firstPlayListEntryIsOne);
-		}
-		singleton.tune.getInfo().setSelectedSong(singleton.current);
-		singleton.tune.prepare();
-		return singleton;
 	}
 
 	/**
@@ -162,66 +152,5 @@ public class PlayList {
 		int next = config.getSidplay2Section().isSingle() ? current : current + 1;
 		return next > length ? 1 : next;
 	}
-
-	/**
-	 * Default play list, if no tune has been loaded.
-	 */
-	private static final PlayList NONE = new PlayList() {
-		@Override
-		public int getCurrent() {
-			return 1;
-		}
-
-		@Override
-		public int getTrackNum() {
-			return 1;
-		}
-
-		@Override
-		public int getNext() {
-			return 1;
-		}
-
-		@Override
-		public int getPrevious() {
-			return 1;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return false;
-		}
-
-		@Override
-		public boolean hasPrevious() {
-			return false;
-		}
-
-		@Override
-		public int getLength() {
-			return 1;
-		}
-
-		@Override
-		public void first() {
-		}
-
-		@Override
-		public void last() {
-		}
-
-		@Override
-		public void next() {
-		}
-
-		@Override
-		public void previous() {
-		}
-
-	};
-	/**
-	 * Single instance play list per tune.
-	 */
-	private static PlayList singleton = NONE;
 
 }
