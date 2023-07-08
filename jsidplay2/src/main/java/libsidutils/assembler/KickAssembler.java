@@ -28,7 +28,7 @@ public class KickAssembler {
 	 * @return assembly bytes of the ASM resource
 	 */
 	public KickAssemblerResult assemble(String resource, InputStream asm, final Map<String, String> globals) {
-		// Kickasssembler is not thread-safe, therefore:
+		// Kickassembler is not thread-safe, therefore:
 		synchronized (getClass()) {
 			ByteArrayOutputStream result = new ByteArrayOutputStream();
 
