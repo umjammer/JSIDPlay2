@@ -333,6 +333,15 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	public Player(final IConfig config, final Class<? extends MOS6510> cpuClass) {
 		super(config, cpuClass);
+		initializeTmpDir(config);
+		stateProperty = new ObjectProperty<>(State.class.getSimpleName(), QUIT);
+		audioAndDriver = new SimpleImmutableEntry<>(DEFAULT_AUDIO, DEFAULT_AUDIO.getAudioDriver());
+		checkDefaultLengthInRecordMode = true;
+		checkLoopOffInRecordMode = true;
+		forceCheckSongLength = false;
+		firstPlayListEntryIsOne = false;
+		recordingFilenameProvider = tune -> new File(config.getSidplay2Section().getTmpDir(), "jsidplay2")
+				.getAbsolutePath();
 		this.playList = new PlayList(config, RESET, firstPlayListEntryIsOne);
 		this.timer = new Timer(this) {
 
@@ -402,15 +411,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			}
 
 		};
-		initializeTmpDir(config);
-		stateProperty = new ObjectProperty<>(State.class.getSimpleName(), QUIT);
-		audioAndDriver = new SimpleImmutableEntry<>(DEFAULT_AUDIO, DEFAULT_AUDIO.getAudioDriver());
-		checkDefaultLengthInRecordMode = true;
-		checkLoopOffInRecordMode = true;
-		forceCheckSongLength = false;
-		firstPlayListEntryIsOne = false;
-		recordingFilenameProvider = tune -> new File(config.getSidplay2Section().getTmpDir(), "jsidplay2")
-				.getAbsolutePath();
 	}
 
 	/**
