@@ -109,6 +109,9 @@ public abstract class WAVDriver implements AudioDriver {
 
 	@Override
 	public void write() throws InterruptedException {
+		if (out == null) {
+			return;
+		}
 		try {
 			out.write(sampleBuffer.array(), 0, sampleBuffer.position());
 			wavHeader.advance(sampleBuffer.position());
