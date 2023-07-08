@@ -28,6 +28,7 @@ public class KickAssembler {
 	 * @return assembly bytes of the ASM resource
 	 */
 	public KickAssemblerResult assemble(String resource, InputStream asm, final Map<String, String> globals) {
+		// Kickasssembler is not thread-safe, therefore:
 		synchronized (getClass()) {
 			ByteArrayOutputStream result = new ByteArrayOutputStream();
 
@@ -35,8 +36,8 @@ public class KickAssembler {
 			try {
 
 				state.outputMgr = (a, b) -> result;
-			state.c64OutputMgr.inputfileWithoutExt = resource;
-			state.parameters.outputfile = resource + ".bin";
+				state.c64OutputMgr.inputfileWithoutExt = resource;
+				state.parameters.outputfile = resource + ".bin";
 
 				HashtableValue globalValues = new HashtableValue().addStringValues(globals);
 				globalValues.lock((SourceRange) null);
