@@ -98,4 +98,17 @@ public class ZipFileUtils {
 		}
 	}
 
+	public static int readNBytes(InputStream is, byte[] b, int off, int len) throws IOException {
+		if (off < 0 || len < 0 || len > b.length - off)
+			throw new IndexOutOfBoundsException();
+		int n = 0;
+		while (n < len) {
+			int count = is.read(b, off + n, len - n);
+			if (count < 0)
+				break;
+			n += count;
+		}
+		return n;
+	}
+
 }

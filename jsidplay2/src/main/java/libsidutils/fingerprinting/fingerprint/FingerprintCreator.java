@@ -1,5 +1,7 @@
 package libsidutils.fingerprinting.fingerprint;
 
+import static libsidutils.ZipFileUtils.readNBytes;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.Buffer;
@@ -44,15 +46,16 @@ public class FingerprintCreator {
 			byte[] bytes = new byte[(int) (Math.min(stream.getFrameLength(), frameMaxLength)
 					* stream.getFormat().getChannels() * Short.BYTES)];
 
-			int read = stream.read(bytes);
+			int read = readNBytes(stream, bytes, 0, bytes.length);
 			if (read == -1 || read < bytes.length) {
 				throw new IOException("Unexpected end of audio stream");
 			}
 
 			// remove wasted audio, not used for recognition
 			if (stream.getFrameLength() > frameMaxLength) {
-				stream.read(new byte[(int) ((stream.getFrameLength() - frameMaxLength)
-						* stream.getFormat().getChannels() * Short.BYTES)]);
+				int length = (int) ((stream.getFrameLength() - frameMaxLength) * stream.getFormat().getChannels()
+						* Short.BYTES);
+				readNBytes(stream, new byte[length], 0, length);
 			}
 
 			// 1. stereo to mono conversion
