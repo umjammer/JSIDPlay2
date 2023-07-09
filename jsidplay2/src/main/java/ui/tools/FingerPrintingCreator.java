@@ -107,6 +107,8 @@ public class FingerPrintingCreator {
 
 	private SidDatabase previousSidDatabase;
 
+	private volatile boolean quit;
+
 	private void execute(String[] args) {
 		ExecutorService executor = Executors.newFixedThreadPool(FINGERPRINTING_MAX_THREADS);
 		try {
@@ -152,13 +154,13 @@ public class FingerPrintingCreator {
 			t.printStackTrace();
 		} finally {
 			try {
+				executor.shutdown();
 				if (!executor.awaitTermination(FINGERPRINTING_AWAIT_TERMINATION, TimeUnit.DAYS)) {
 					executor.shutdownNow();
 				}
 			} catch (InterruptedException e) {
 				executor.shutdownNow();
 			}
-
 			if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
 				entityManagerFactory.close();
 			}
@@ -189,26 +191,28 @@ public class FingerPrintingCreator {
 	}
 
 	private void processDirectory(ExecutorService executor, File dir) throws IOException, SidTuneError {
+		if (quit) {
+			return;
+		}
 		File[] listFiles = Optional.ofNullable(dir.listFiles()).orElse(new File[0]);
 		Arrays.sort(listFiles);
 		for (File file : listFiles) {
 			if (file.isDirectory()) {
-				if (!executor.isShutdown()) {
-					processDirectory(executor, file);
-				}
+				processDirectory(executor, file);
 			} else if (file.isFile()) {
-				if (TUNE_FILE_FILTER.accept(file)) {
+				if (!quit && TUNE_FILE_FILTER.accept(file)) {
 					executor.execute(() -> {
 						try {
-							if (!executor.isShutdown()) {
-								processFile(executor, file);
-								if (System.in.available() > 0) {
-									final int key = System.in.read();
-									if (key == 'q') {
-										executor.shutdown();
-										System.err.println(
-												"Termination after pressing q, please wait for last recordings to finish");
-									}
+							if (quit) {
+								return;
+							}
+							processFile(executor, file);
+							if (System.in.available() > 0) {
+								final int key = System.in.read();
+								if (key == 'q') {
+									quit = true;
+									System.err.println(
+											"Termination after pressing q, please wait for last recordings to finish");
 								}
 							}
 						} catch (IOException | SidTuneError e) {
@@ -221,7 +225,6 @@ public class FingerPrintingCreator {
 	}
 
 	private void processFile(ExecutorService executor, File file) throws IOException, SidTuneError {
-		System.out.println(file);
 		try {
 			final WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
 
