@@ -334,12 +334,13 @@ and if database already contains the song.
 cd /home/ken/Downloads/{artifactId}-{version}
 pkill -f server.restful.JSIDPlay2Server
 java -Dhibernate.dialect.storage_engine=innodb \
-	-classpath {artifactId}-{version}.jar ui.tools.FingerPrintingCreator \
+	-classpath {artifactId}-{version}.jar ui.tools.RecordingTool \
 	--whatsSIDDatabaseDriver com.mysql.cj.jdbc.Driver \
 	--whatsSIDDatabaseUrl "jdbc:mysql://127.0.0.1:3306/{hvsc_version}?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" \
 	--whatsSIDDatabaseUsername <username> \
 	--whatsSIDDatabasePassword <password> \
 	--whatsSIDDatabaseDialect org.hibernate.dialect.MySQL55Dialect \
+	--fingerprinting true \
 	--hvsc <pathToHVSC># <1>
 	<pathToMusicCollection> & # <2>
 ----
@@ -372,12 +373,13 @@ Keep in mind in the end the update requires another 250GB of disk space for the 
 cd /home/ken/Downloads/{artifactId}-{version}
 pkill -f server.restful.JSIDPlay2Server
 java -Dhibernate.dialect.storage_engine=innodb \
-	-classpath {artifactId}-{version}.jar ui.tools.FingerPrintingCreator \
+	-classpath {artifactId}-{version}.jar ui.tools.RecordingTool \
 	--whatsSIDDatabaseDriver com.mysql.cj.jdbc.Driver \
 	--whatsSIDDatabaseUrl "jdbc:mysql://127.0.0.1:3306/{hvsc_version}?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" \
 	--whatsSIDDatabaseUsername <username> \
 	--whatsSIDDatabasePassword <password> \
 	--whatsSIDDatabaseDialect org.hibernate.dialect.MySQL55Dialect \
+	--fingerprinting true \
 	--hvsc <pathToHVSC> # <1>
 	--previousDirectory <previousPathToHVSC> # <2>
 	<pathToMusicCollection> & # <3>

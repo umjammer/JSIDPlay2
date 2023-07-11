@@ -19,14 +19,14 @@ import libsidutils.fingerprinting.rest.beans.MusicInfoBean;
 import libsidutils.fingerprinting.rest.beans.WAVBean;
 import sidplay.audio.WAVDriver.WAVFileDriver;
 import sidplay.audio.exceptions.SongEndException;
-import ui.tools.FingerPrintingCreator;
+import ui.tools.RecordingTool;
 
 /**
  * WhatsSID? is a Shazam like feature. It analyzes tunes to recognize a
  * currently played tune
  *
  * This is the audio driver to create a fingerprint for a tune. Use
- * {@link FingerPrintingCreator} to create the whole database. <BR>
+ * {@link RecordingTool} to create the whole database. <BR>
  * <B>Note:</B> WAV file is created if not exists containing 8KHz sample data.
  * WAV file contents is then fingerprint'ed
  *

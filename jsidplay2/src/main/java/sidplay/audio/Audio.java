@@ -97,18 +97,22 @@ public enum Audio {
 	 * @return audio driver
 	 */
 	public final AudioDriver getAudioDriver() {
+		if (audioDriver == null) {
+			audioDriver = newAudioDriver();
+		}
+		return audioDriver;
+	}
+
+	public final AudioDriver newAudioDriver() {
 		try {
-			if (audioDriver == null) {
-				Class<?> parameterTypes[] = Stream.<Class<?>>generate(() -> AudioDriver.class)
-						.limit(parameterClasses.length).toArray(Class<?>[]::new);
-				Collection<Object> initArgs = new ArrayList<>();
-				for (Class<? extends AudioDriver> parameterClass : parameterClasses) {
-					initArgs.add(Stream.of(values()).map(audio -> audio.audioDriver).filter(parameterClass::isInstance)
-							.findFirst().orElse(parameterClass.getConstructor().newInstance()));
-				}
-				audioDriver = audioDriverClass.getConstructor(parameterTypes).newInstance(initArgs.toArray());
+			Class<?> parameterTypes[] = Stream.<Class<?>>generate(() -> AudioDriver.class)
+					.limit(parameterClasses.length).toArray(Class<?>[]::new);
+			Collection<Object> initArgs = new ArrayList<>();
+			for (Class<? extends AudioDriver> parameterClass : parameterClasses) {
+				initArgs.add(Stream.of(values()).map(audio -> audio.audioDriver).filter(parameterClass::isInstance)
+						.findFirst().orElse(parameterClass.getConstructor().newInstance()));
 			}
-			return audioDriver;
+			return audioDriverClass.getConstructor(parameterTypes).newInstance(initArgs.toArray());
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException("Audiodriver cannot be instanciated: " + audioDriverClass.getName(), e);

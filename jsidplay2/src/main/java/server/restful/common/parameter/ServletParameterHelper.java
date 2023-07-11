@@ -54,7 +54,7 @@ import server.restful.servlets.sidmapping.HardSIDMappingServlet.HardSIDMappingSe
 import server.restful.servlets.sidmapping.SIDBlasterMappingServlet.SIDBlasterMappingServletParameters;
 import sidplay.ConsolePlayer;
 import ui.JSidPlay2Main.JSIDPlay2MainParameters;
-import ui.tools.FingerPrintingCreator;
+import ui.tools.RecordingTool;
 import ui.tools.SIDBlasterTool;
 
 /**
@@ -85,7 +85,7 @@ public class ServletParameterHelper {
 
 	private static final List<Class<?>> MAIN_PARAMETER_CLASSES = asList(OnlineContent.class,
 			JSIDPlay2ServerParameters.class, JSIDPlay2MainParameters.class, ConsolePlayer.class,
-			FingerPrintingCreator.class, SIDBlasterTool.class);
+			RecordingTool.class, SIDBlasterTool.class);
 
 	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(OnKeepAliveServletParameters.class,
 			ProxyServletParameters.class,
