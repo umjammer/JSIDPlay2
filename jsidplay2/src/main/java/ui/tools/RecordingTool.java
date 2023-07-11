@@ -255,6 +255,14 @@ public class RecordingTool {
 				}
 			} else {
 				audioDriver = player.getConfig().getAudioSection().getAudio().newAudioDriver();
+				boolean allRecordingsExist = true;
+				for (int songNo = 1; songNo <= tune.getInfo().getSongs(); songNo++) {
+					allRecordingsExist &= new File(
+							getRecordingFilename(file, tune, songNo) + audioDriver.getExtension()).exists();
+				}
+				if (allRecordingsExist) {
+					return;
+				}
 			}
 			player.setAudioDriver(audioDriver);
 
