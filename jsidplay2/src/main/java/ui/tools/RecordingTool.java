@@ -51,6 +51,9 @@ import ui.tools.audio.WhatsSidDriver;
  * This is the program to create the fingerprintings for all tunes of a
  * collection.
  *
+ * This program has been expanded to be a more general recording tool for HVSC
+ * where several tunes are recorded in parallel.
+ *
  * @author ken
  *
  */
