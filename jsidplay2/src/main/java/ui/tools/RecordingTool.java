@@ -101,6 +101,10 @@ public class RecordingTool {
 			"--previousDirectory" }, descriptionKey = "PREVIOUS_DIRECTORY", converter = FileToStringConverter.class, order = 10010)
 	private File previousDirectory;
 
+	@Parameter(names = {
+			"--destinationDirectory" }, descriptionKey = "DESTINATION_DIRECTORY", converter = FileToStringConverter.class, order = 10011)
+	private File destinationDirectory;
+
 	@Parameter(description = "directory", converter = FileToStringConverter.class)
 	private File directory;
 
@@ -121,7 +125,7 @@ public class RecordingTool {
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
-			if (help) {
+			if (help || directory == null) {
 				commander.usage();
 				System.out.println("Press <enter> to exit!");
 				System.in.read();
@@ -265,7 +269,8 @@ public class RecordingTool {
 				boolean allRecordingsExist = true;
 				for (int songNo = 1; songNo <= tune.getInfo().getSongs(); songNo++) {
 					allRecordingsExist &= new File(
-							getRecordingFilename(file, tune, songNo) + audioDriver.getExtension()).exists();
+							getRecordingFilename(collectionName, file, tune, songNo) + audioDriver.getExtension())
+							.exists();
 				}
 				if (allRecordingsExist) {
 					return;
@@ -274,7 +279,7 @@ public class RecordingTool {
 			player.setAudioDriver(audioDriver);
 
 			player.setRecordingFilenameProvider(
-					theTune -> getRecordingFilename(file, theTune, theTune.getInfo().getCurrentSong()));
+					theTune -> getRecordingFilename(collectionName, file, theTune, theTune.getInfo().getCurrentSong()));
 			player.setTune(tune);
 			player.startC64();
 			player.stopC64(false);
@@ -296,9 +301,10 @@ public class RecordingTool {
 							.getTuneLength(previousTune)) {
 				for (int songNo = 1; songNo <= tune.getInfo().getSongs(); songNo++) {
 					File recordedFile = new File(
-							getRecordingFilename(file, tune, songNo) + whatsSidDriver.getExtension());
+							getRecordingFilename(collectionName, file, tune, songNo) + whatsSidDriver.getExtension());
 					File previousRecordedFile = new File(
-							getRecordingFilename(previousFile, previousTune, songNo) + whatsSidDriver.getExtension());
+							getRecordingFilename(collectionName, previousFile, previousTune, songNo)
+									+ whatsSidDriver.getExtension());
 					if (!recordedFile.exists() && previousRecordedFile.exists()) {
 						System.out.println(
 								String.format("Tune is unchanged, copy %s to %s", previousRecordedFile, recordedFile));
@@ -310,8 +316,16 @@ public class RecordingTool {
 		}
 	}
 
-	private String getRecordingFilename(File file, SidTune tune, int song) {
-		String filename = PathUtils.getFilenameWithoutSuffix(file.getAbsolutePath());
+	private String getRecordingFilename(String collectionName, File file, SidTune tune, int song) {
+		File targetFile;
+		if (destinationDirectory != null) {
+			targetFile = new File(destinationDirectory, collectionName);
+			targetFile.mkdirs();
+			targetFile.delete();
+		} else {
+			targetFile = file;
+		}
+		String filename = PathUtils.getFilenameWithoutSuffix(targetFile.getAbsolutePath());
 		if (tune.getInfo().getSongs() > 1) {
 			filename += String.format("-%02d", song);
 		}

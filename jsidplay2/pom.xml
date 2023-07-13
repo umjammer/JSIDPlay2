@@ -964,6 +964,34 @@
 							</jre>
 						</configuration>
 					</execution>
+					<execution>
+						<id>launch4j-recordingtool</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<dontWrapJar>true</dontWrapJar>
+							<headerType>console</headerType>
+							<jar>${project.artifactId}-${project.version}.jar</jar>
+							<outfile>${project.build.directory}/standalone/recordingtool-${project.version}.exe</outfile>
+							<errTitle>${project.name}</errTitle>
+							<chdir>.</chdir>
+							<priority>high</priority>
+							<downloadUrl>https://java.com/download</downloadUrl>
+							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<stayAlive>false</stayAlive>
+							<icon>src/main/launch4j/jsidplay2.ico</icon>
+							<classPath>
+								<mainClass>ui.tools.RecordingTool</mainClass>
+								<jarLocation>.</jarLocation>
+								<addDependencies>true</addDependencies>
+							</classPath>
+							<jre>
+								<minVersion>1.8.0</minVersion>
+							</jre>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -1011,6 +1039,7 @@
 									<include>${project.artifactId}-java8-${project.version}.exe</include>
 									<include>${project.artifactId}-console-${project.version}.exe</include>
 									<include>sidblastertool-${project.version}.exe</include>
+									<include>recordingtool-${project.version}.exe</include>
 								</includes>
 							</fileset>
 							<name>${project.name}</name>
