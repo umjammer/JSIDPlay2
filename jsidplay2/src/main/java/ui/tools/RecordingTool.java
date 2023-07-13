@@ -95,7 +95,7 @@ public class RecordingTool {
 	private Boolean fingerprinting = Boolean.FALSE;
 
 	@Parameter(names = { "--maxThreads" }, descriptionKey = "MAX_THREADS", order = 10009)
-	private Integer maxThreads = 8;
+	private Integer maxThreads = Runtime.getRuntime().availableProcessors();
 
 	@Parameter(names = {
 			"--previousDirectory" }, descriptionKey = "PREVIOUS_DIRECTORY", converter = FileToStringConverter.class, order = 10010)
@@ -111,12 +111,13 @@ public class RecordingTool {
 
 	private static EntityManagerFactory entityManagerFactory;
 
+	private ExecutorService executor;
+
 	private SidDatabase previousSidDatabase;
 
 	private volatile boolean quit;
 
 	private void execute(String[] args) {
-		ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
 		try {
 			JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 			commander.parse(args);
@@ -153,6 +154,7 @@ public class RecordingTool {
 					deleteAllFingerprintings(whatsSidService);
 				}
 			}
+			executor = Executors.newFixedThreadPool(maxThreads);
 			if (directory != null) {
 				System.out
 						.println("Create Recordings... (press q <return>, please wait for last recordings to finish)");
@@ -162,13 +164,15 @@ public class RecordingTool {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
-			try {
-				executor.shutdown();
-				if (!executor.awaitTermination(AWAIT_TERMINATION, TimeUnit.DAYS)) {
+			if (executor != null) {
+				try {
+					executor.shutdown();
+					if (!executor.awaitTermination(AWAIT_TERMINATION, TimeUnit.DAYS)) {
+						executor.shutdownNow();
+					}
+				} catch (InterruptedException e) {
 					executor.shutdownNow();
 				}
-			} catch (InterruptedException e) {
-				executor.shutdownNow();
 			}
 			if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
 				entityManagerFactory.close();
