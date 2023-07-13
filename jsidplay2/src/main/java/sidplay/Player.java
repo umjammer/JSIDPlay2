@@ -39,6 +39,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -100,6 +102,8 @@ import sidplay.player.WhatsSidEvent;
  *
  */
 public class Player extends HardwareEnsemble implements VideoDriver, SIDListener, IMOS6510Extension {
+
+	private static final Logger LOG = Logger.getLogger(Player.class.getName());
 
 	/** Build date calculated from our own modify time */
 	public static Calendar LAST_MODIFIED;
@@ -1004,9 +1008,9 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 				sidBuilder.destroy();
 			}
 		} catch (Throwable e) {
-			// ignore exceptions near close
-			// e.printStackTrace();
-			// System.err.println(getRecordingFilename());
+			if (LOG.isLoggable(Level.FINEST)) {
+				LOG.log(Level.FINEST, String.format("Exception near close: fn=%s", getRecordingFilename()), e);
+			}
 		} finally {
 			if (whatsSidEvent != null) {
 				whatsSidEvent.setAbort(true);
