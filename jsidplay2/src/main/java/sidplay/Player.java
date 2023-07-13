@@ -1005,6 +1005,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			}
 		} catch (Throwable e) {
 			// ignore exceptions near close
+			// e.printStackTrace();
+			// System.err.println(getRecordingFilename());
 		} finally {
 			if (whatsSidEvent != null) {
 				whatsSidEvent.setAbort(true);
