@@ -320,8 +320,7 @@ public class RecordingTool {
 		File targetFile;
 		if (destinationDirectory != null) {
 			targetFile = new File(destinationDirectory, collectionName);
-			targetFile.mkdirs();
-			targetFile.delete();
+			targetFile.getParentFile().mkdirs();
 		} else {
 			targetFile = file;
 		}
