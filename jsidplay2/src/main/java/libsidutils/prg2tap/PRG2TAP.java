@@ -57,7 +57,6 @@ public class PRG2TAP {
 	private int threshold = 263;
 	private boolean turboTape = true;
 
-	private final KickAssembler assembler = new KickAssembler();
 	private BufferedOutputStream out;
 
 	public final void setTapVersion(byte tapVersion) {
@@ -129,7 +128,7 @@ public class PRG2TAP {
 	private byte[] compile(HashMap<String, String> globals, String resource, String compiledBin) {
 		if (USE_KICKASSEMBLER) {
 			InputStream asm = PRG2TAP.class.getResourceAsStream(resource);
-			KickAssemblerResult kickassemblerResult = assembler.assemble(resource, asm, globals);
+			KickAssemblerResult kickassemblerResult = KickAssembler.assemble(resource, asm, globals);
 			return Arrays.copyOfRange(kickassemblerResult.getData(), 2, kickassemblerResult.getData().length);
 		} else {
 			byte[] DRIVER;

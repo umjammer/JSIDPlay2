@@ -216,8 +216,7 @@ public class PUCrunch {
 			globals.put("rleValue" + i, String.valueOf(rleValues[i]));
 		}
 		InputStream asm = PUCrunch.class.getResourceAsStream(dc.getResourceName());
-		KickAssembler assembler = new KickAssembler();
-		KickAssemblerResult kickAssemblerResult = assembler.assemble(dc.getResourceName(), asm, globals);
+		KickAssemblerResult kickAssemblerResult = KickAssembler.assemble(dc.getResourceName(), asm, globals);
 		byte[] header = kickAssemblerResult.getData();
 		Map<String, Integer> labels = kickAssemblerResult.getResolvedSymbols();
 		int stackUsed = labels.get("ftStackSize");

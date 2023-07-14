@@ -123,8 +123,7 @@ class PSid extends Prg {
 				globals.put("flags", String.valueOf(1 << MOS6510.SR_INTERRUPT));
 			}
 			InputStream asm = PSid.class.getResourceAsStream(PSID_DRIVER_ASM);
-			KickAssembler assembler = new KickAssembler();
-			preparedDriver = assembler.assemble(PSID_DRIVER_ASM, asm, globals);
+			preparedDriver = KickAssembler.assemble(PSID_DRIVER_ASM, asm, globals);
 		}
 	}
 

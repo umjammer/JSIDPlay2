@@ -204,11 +204,9 @@ class Mus extends PSid {
 	@Override
 	public void prepare() {
 		if (USE_KICKASSEMBLER) {
-			KickAssembler assembler = new KickAssembler();
-
 			// Assemble MUS player 1
 			InputStream asm = Mus.class.getResourceAsStream(MUS_DRIVER1_ASM);
-			preparedDriver = assembler.assemble(MUS_DRIVER1_ASM, asm, new HashMap<String, String>());
+			preparedDriver = KickAssembler.assemble(MUS_DRIVER1_ASM, asm, new HashMap<String, String>());
 			// Install MUS player 1
 			checkLabels(MUS_DRIVER1_ASM, preparedDriver.getResolvedSymbols(), "data_low", "data_high", "init", "start");
 			info.initAddr = preparedDriver.getResolvedSymbols().get("init");
@@ -217,7 +215,7 @@ class Mus extends PSid {
 			if (info.getSIDChipBase(1) != 0) {
 				// Assemble MUS player 2
 				InputStream stereoAsm = Mus.class.getResourceAsStream(MUS_DRIVER2_ASM);
-				preparedStereoDriver = assembler.assemble(MUS_DRIVER2_ASM, stereoAsm, new HashMap<String, String>());
+				preparedStereoDriver = KickAssembler.assemble(MUS_DRIVER2_ASM, stereoAsm, new HashMap<String, String>());
 				// Install MUS player 2
 				checkLabels(MUS_DRIVER2_ASM, preparedStereoDriver.getResolvedSymbols(), "data_low", "data_high", "init",
 						"start");

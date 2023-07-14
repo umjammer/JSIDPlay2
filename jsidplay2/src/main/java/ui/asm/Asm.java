@@ -49,7 +49,6 @@ public class Asm extends C64VBox implements UIPart {
 	@FXML
 	private Label status;
 
-	private KickAssembler assembler;
 	private ObservableList<Variable> variables;
 
 	public Asm() {
@@ -64,7 +63,6 @@ public class Asm extends C64VBox implements UIPart {
 	@Override
 	protected void initialize() {
 		status.setPrefHeight(Double.MAX_VALUE);
-		assembler = new KickAssembler();
 		InputStream is = Asm.class.getResourceAsStream(ASM_EXAMPLE);
 		contents.setText(ZipFileUtils.convertStreamToString(is, "ISO-8859-1"));
 		varNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -120,7 +118,7 @@ public class Asm extends C64VBox implements UIPart {
 			HashMap<String, String> globals = new HashMap<>();
 			variables.stream().forEach(var -> globals.put(var.getName(), var.getValue()));
 			InputStream asm = new ByteArrayInputStream(contents.getText().getBytes(UTF_8.name()));
-			byte[] assembly = assembler.assemble(ASM_RESOURCE, asm, globals).getData();
+			byte[] assembly = KickAssembler.assemble(ASM_RESOURCE, asm, globals).getData();
 			InputStream is = new ByteArrayInputStream(assembly);
 			SidTune tune = SidTune.load("assembly.prg", is);
 			status.setText("");
