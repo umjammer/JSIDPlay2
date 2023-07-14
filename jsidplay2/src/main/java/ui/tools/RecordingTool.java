@@ -51,8 +51,8 @@ import ui.tools.audio.WhatsSidDriver;
  * This is the program to create the fingerprintings for all tunes of a
  * collection.
  *
- * This program has been expanded to be a more general recording tool for HVSC
- * where several tunes are recorded in parallel.
+ * This program has been expanded to be a more general recording tool where
+ * several tunes are recorded in parallel.
  *
  * @author ken
  *
@@ -70,40 +70,40 @@ public class RecordingTool {
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
 	private Boolean help = Boolean.FALSE;
 
-	@Parameter(names = { "--whatsSIDDatabaseDriver" }, descriptionKey = "WHATSSID_DATABASE_DRIVER", order = 10001)
-	private String whatsSidDatabaseDriver;
-
-	@Parameter(names = { "--whatsSIDDatabaseUrl" }, descriptionKey = "WHATSSID_DATABASE_URL", order = 10002)
-	private String whatsSidDatabaseUrl;
-
-	@Parameter(names = { "--whatsSIDDatabaseUsername" }, descriptionKey = "WHATSSID_DATABASE_USERNAME", order = 10003)
-	private String whatsSidDatabaseUsername;
-
-	@Parameter(names = { "--whatsSIDDatabasePassword" }, descriptionKey = "WHATSSID_DATABASE_PASSWORD", order = 10004)
-	private String whatsSidDatabasePassword;
-
-	@Parameter(names = { "--whatsSIDDatabaseDialect" }, descriptionKey = "WHATSSID_DATABASE_DIALECT", order = 10005)
-	private String whatsSidDatabaseDialect;
-
-	@Parameter(names = { "--createIni" }, descriptionKey = "CREATE_INI", arity = 1, order = 10006)
-	private Boolean createIni = Boolean.FALSE;
-
-	@Parameter(names = { "--deleteAll" }, descriptionKey = "DELETE_ALL", arity = 1, order = 10007)
-	private Boolean deleteAll = Boolean.FALSE;
-
-	@Parameter(names = { "--fingerprinting" }, descriptionKey = "FINGERPRINTING", arity = 1, order = 10008)
-	private Boolean fingerprinting = Boolean.FALSE;
-
-	@Parameter(names = { "--maxThreads" }, descriptionKey = "MAX_THREADS", order = 10009)
+	@Parameter(names = { "--maxThreads" }, descriptionKey = "MAX_THREADS", order = 10001)
 	private Integer maxThreads = Runtime.getRuntime().availableProcessors();
 
 	@Parameter(names = {
-			"--previousDirectory" }, descriptionKey = "PREVIOUS_DIRECTORY", converter = FileToStringConverter.class, order = 10010)
-	private File previousDirectory;
+			"--destinationDirectory" }, descriptionKey = "DESTINATION_DIRECTORY", converter = FileToStringConverter.class, order = 10002)
+	private File destinationDirectory;
+
+	@Parameter(names = { "--fingerprinting" }, descriptionKey = "FINGERPRINTING", arity = 1, order = 10003)
+	private Boolean fingerprinting = Boolean.FALSE;
+
+	@Parameter(names = { "--whatsSIDDatabaseDriver" }, descriptionKey = "WHATSSID_DATABASE_DRIVER", order = 10004)
+	private String whatsSidDatabaseDriver;
+
+	@Parameter(names = { "--whatsSIDDatabaseUrl" }, descriptionKey = "WHATSSID_DATABASE_URL", order = 10005)
+	private String whatsSidDatabaseUrl;
+
+	@Parameter(names = { "--whatsSIDDatabaseUsername" }, descriptionKey = "WHATSSID_DATABASE_USERNAME", order = 10006)
+	private String whatsSidDatabaseUsername;
+
+	@Parameter(names = { "--whatsSIDDatabasePassword" }, descriptionKey = "WHATSSID_DATABASE_PASSWORD", order = 10007)
+	private String whatsSidDatabasePassword;
+
+	@Parameter(names = { "--whatsSIDDatabaseDialect" }, descriptionKey = "WHATSSID_DATABASE_DIALECT", order = 10008)
+	private String whatsSidDatabaseDialect;
+
+	@Parameter(names = { "--createIni" }, descriptionKey = "CREATE_INI", arity = 1, order = 10009)
+	private Boolean createIni = Boolean.FALSE;
+
+	@Parameter(names = { "--deleteAll" }, descriptionKey = "DELETE_ALL", arity = 1, order = 10010)
+	private Boolean deleteAll = Boolean.FALSE;
 
 	@Parameter(names = {
-			"--destinationDirectory" }, descriptionKey = "DESTINATION_DIRECTORY", converter = FileToStringConverter.class, order = 10011)
-	private File destinationDirectory;
+			"--previousDirectory" }, descriptionKey = "PREVIOUS_DIRECTORY", converter = FileToStringConverter.class, order = 10011)
+	private File previousDirectory;
 
 	@Parameter(description = "directory", converter = FileToStringConverter.class)
 	private File directory;
@@ -132,7 +132,7 @@ public class RecordingTool {
 				System.exit(0);
 			}
 			if (config.getSidplay2Section().getHvsc() == null) {
-				System.out.println("Parameter --hvsc must be present!");
+				System.out.println("Parameter --hvsc is required!");
 				System.exit(1);
 			}
 			if (fingerprinting) {
@@ -147,7 +147,7 @@ public class RecordingTool {
 				previousSidDatabase = new SidDatabase(previousDirectory);
 			}
 
-			if (whatsSidDatabaseDriver != null) {
+			if (fingerprinting) {
 				entityManagerFactory = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
 						new PersistenceProperties(whatsSidDatabaseDriver, whatsSidDatabaseUrl, whatsSidDatabaseUsername,
 								whatsSidDatabasePassword, whatsSidDatabaseDialect));
@@ -159,12 +159,9 @@ public class RecordingTool {
 				}
 			}
 			executor = Executors.newFixedThreadPool(maxThreads);
-			if (directory != null) {
-				System.out
-						.println("Create Recordings... (press q <return>, please wait for last recordings to finish)");
+			System.out.println("Create Recordings... (To abort press q <return> and wait for termination)");
 
-				processDirectory(executor, directory);
-			}
+			processDirectory(executor, directory);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
@@ -177,6 +174,9 @@ public class RecordingTool {
 				} catch (InterruptedException e) {
 					executor.shutdownNow();
 				}
+			}
+			if (fingerprinting) {
+				freeEntityManager();
 			}
 			if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
 				entityManagerFactory.close();
@@ -244,7 +244,7 @@ public class RecordingTool {
 	private void processFile(ExecutorService executor, File file) throws IOException, SidTuneError {
 		try {
 			SidTune tune = SidTune.load(file);
-			String collectionName = PathUtils.getCollectionName(config.getSidplay2Section().getHvsc(), file);
+			String collectionName = PathUtils.getCollectionName(directory, file);
 
 			Player player = new Player(config);
 			player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
