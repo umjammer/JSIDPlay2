@@ -47,7 +47,7 @@ public class FingerprintCreator {
 					* stream.getFormat().getChannels() * Short.BYTES)];
 
 			int read = readNBytes(stream, bytes, 0, bytes.length);
-			if (read == -1 || read < bytes.length) {
+			if (read < bytes.length) {
 				throw new IOException("Unexpected end of audio stream");
 			}
 
