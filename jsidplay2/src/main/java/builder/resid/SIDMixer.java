@@ -460,8 +460,7 @@ public class SIDMixer implements Mixer {
 	 * @return is fake stereo enabled?
 	 */
 	private boolean isFakeStereo() {
-		return sids.stream().anyMatch(sid -> sid instanceof builder.resid.residfp.ReSIDfp.FakeStereo
-				|| sid instanceof builder.resid.resid.ReSID.FakeStereo);
+		return sids.stream().map(ReSIDBase::getClass).map(Class::getSimpleName).anyMatch("FakeStereo"::equals);
 	}
 
 	/**
