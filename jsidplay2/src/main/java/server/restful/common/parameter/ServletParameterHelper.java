@@ -185,7 +185,7 @@ public class ServletParameterHelper {
 
 		private static final int BUFFER_LENGTH = 1024;
 
-		private static final String ILLEGAL_CHARACTERS_IN_RESOURCE_NAME = "Illegal characters in resourceName=%s (Expected US_ASCII or unicode escape sequences)\ncolumn=%d,line=%d";
+		private static final String ILLEGAL_CHARACTERS_IN_RESOURCE_NAME = "Illegal characters in resourceName=%s (Expected US_ASCII or unicode escape sequences)\nlineNo=%d,colNo=%d";
 
 		private static final Locale[] OTHER_LOCALES = new Locale[] { Locale.GERMAN };
 
@@ -287,16 +287,16 @@ public class ServletParameterHelper {
 					byteBuffer = ByteBuffer.wrap(byteArray);
 					US_ASCII_DECODER.decode(byteBuffer);
 				} catch (CharacterCodingException e) {
-					Entry<Integer, Integer> filePosition = getLocation(byteArray, byteBuffer.position());
+					Entry<Integer, Integer> lineColumn = getLineColumn(byteArray, byteBuffer.position());
 					LOG.log(Level.SEVERE, String.format(ILLEGAL_CHARACTERS_IN_RESOURCE_NAME, resourceName,
-							filePosition.getKey(), filePosition.getValue()), e);
+							lineColumn.getKey(), lineColumn.getValue()), e);
 					throw e;
 				}
 			}
 		}
 
 		private byte[] getByteArray(String resourceName) throws IOException {
-			try (InputStream is = OnlineContent.class.getResourceAsStream(resourceName)) {
+			try (InputStream is = getClass().getResourceAsStream(resourceName)) {
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				int nRead;
 				byte[] data = new byte[BUFFER_LENGTH];
@@ -307,20 +307,20 @@ public class ServletParameterHelper {
 			}
 		}
 
-		private Map.Entry<Integer, Integer> getLocation(byte[] byteArray, int bytePosition) {
-			int currentPos = 0, x = 1, y = 1;
+		private Map.Entry<Integer, Integer> getLineColumn(byte[] byteArray, int bytePosition) {
+			int currentPos = 0, colNo = 1, lineNo = 1;
 			for (byte b : byteArray) {
 				if (currentPos == bytePosition) {
 					break;
 				}
 				if (b == '\n') {
-					y++;
-					x = 0;
+					lineNo++;
+					colNo = 0;
 				}
-				x++;
+				colNo++;
 				currentPos++;
 			}
-			return new SimpleEntry<>(x, y);
+			return new SimpleEntry<>(lineNo, colNo);
 		}
 
 	}
