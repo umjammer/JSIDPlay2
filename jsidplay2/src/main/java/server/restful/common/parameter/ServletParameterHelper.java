@@ -99,8 +99,8 @@ public class ServletParameterHelper {
 	}
 
 	private static final List<Class<?>> MAIN_PARAMETER_CLASSES = asList(OnlineContent.class,
-			JSIDPlay2ServerParameters.class, JSIDPlay2MainParameters.class, ConsolePlayer.class,
-			RecordingTool.class, SIDBlasterTool.class);
+			JSIDPlay2ServerParameters.class, JSIDPlay2MainParameters.class, ConsolePlayer.class, RecordingTool.class,
+			SIDBlasterTool.class);
 
 	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(OnKeepAliveServletParameters.class,
 			ProxyServletParameters.class,
@@ -232,9 +232,10 @@ public class ServletParameterHelper {
 						&& parameter.arity() != 1) {
 					throw JsonMappingException.from(prov, "Arity must be 1, but is " + parameter.arity());
 				}
+				// Check encoding
+				checkEncoding(parameters.resourceBundle(), Locale.ROOT);
 				// check missing localization
 				ResourceBundle rootResBundle = ResourceBundle.getBundle(parameters.resourceBundle(), Locale.ROOT);
-				checkEncoding(rootResBundle, parameters.resourceBundle(), Locale.ROOT);
 				if (!parameter.descriptionKey().isEmpty() && !rootResBundle.containsKey(parameter.descriptionKey())) {
 					throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
 							+ ".properties (key=" + parameter.descriptionKey() + ")");
@@ -246,8 +247,10 @@ public class ServletParameterHelper {
 					}
 				}
 				for (Locale locale : OTHER_LOCALES) {
+					// Check encoding
+					checkEncoding(parameters.resourceBundle(), locale);
+					// check missing localization
 					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
-					checkEncoding(resBundle, parameters.resourceBundle(), locale);
 					// Since ResourceBundle evaluates parent bundles as well, but we must know if
 					// localization is only contained in that bundle, therefore ==
 					if (!parameter.descriptionKey().isEmpty()
@@ -272,8 +275,7 @@ public class ServletParameterHelper {
 			}
 		}
 
-		private void checkEncoding(ResourceBundle resourceBundle, String resourceBundleName, Locale locale)
-			throws IOException, Exception {
+		private void checkEncoding(String resourceBundleName, Locale locale) throws IOException, Exception {
 			String resourceName = "/" + resourceBundleName.replace('.', '/')
 					+ (Locale.ROOT.equals(locale) ? "" : "_" + locale) + ".properties";
 			if (checkedResourceBundles.add(resourceName)) {
