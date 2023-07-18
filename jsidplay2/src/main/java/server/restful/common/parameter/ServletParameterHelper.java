@@ -3,13 +3,26 @@ package server.restful.common.parameter;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static java.util.Arrays.asList;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import com.beust.jcommander.Parameter;
@@ -58,13 +71,15 @@ import ui.tools.RecordingTool;
 import ui.tools.SIDBlasterTool;
 
 /**
- * Provides parameter default values and localization of ConvertServlet as well
- * as parameter checks to spot development errors.
+ * Provides parameter default values and localization of ConvertServlet as well as parameter checks to spot development
+ * errors.
  * 
  * @author ken
  *
  */
 public class ServletParameterHelper {
+
+	private static final Logger LOG = Logger.getLogger(ServletParameterHelper.class.getName());
 
 	public static final String CONVERT_MESSAGES_EN;
 	public static final String CONVERT_MESSAGES_DE;
@@ -108,7 +123,7 @@ public class ServletParameterHelper {
 	}
 
 	private static void check(Class<?> servletParameterClass, SimpleBeanPropertyFilter filter)
-			throws ExceptionInInitializerError {
+		throws ExceptionInInitializerError {
 		try {
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
@@ -151,7 +166,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-				throws Exception {
+			throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null) {
@@ -165,11 +180,20 @@ public class ServletParameterHelper {
 
 	private static final class BeanParameterChecker extends SimpleBeanPropertyFilter {
 
+		private static final CharsetDecoder US_ASCII_DECODER = StandardCharsets.US_ASCII.newDecoder()
+				.onMalformedInput(CodingErrorAction.REPORT);
+
+		private static final int BUFFER_LENGTH = 1024;
+
+		private static final String ILLEGAL_CHARACTERS_IN_RESOURCE_NAME = "Illegal characters in resourceName=%s (Expected US_ASCII or unicode escape sequences)\ncolumn=%d,line=%d";
+
 		private static final Locale[] OTHER_LOCALES = new Locale[] { Locale.GERMAN };
 
 		private final Set<Integer> orders = new HashSet<>();
 
-		private boolean serverParameter;
+		private final Set<String> checkedResourceBundles = new HashSet<>();
+
+		private final boolean serverParameter;
 
 		private BeanParameterChecker(boolean serverParameter) {
 			this.serverParameter = serverParameter;
@@ -177,7 +201,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-				throws Exception {
+			throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null) {
@@ -210,6 +234,7 @@ public class ServletParameterHelper {
 				}
 				// check missing localization
 				ResourceBundle rootResBundle = ResourceBundle.getBundle(parameters.resourceBundle(), Locale.ROOT);
+				checkEncoding(rootResBundle, parameters.resourceBundle(), Locale.ROOT);
 				if (!parameter.descriptionKey().isEmpty() && !rootResBundle.containsKey(parameter.descriptionKey())) {
 					throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
 							+ ".properties (key=" + parameter.descriptionKey() + ")");
@@ -222,6 +247,7 @@ public class ServletParameterHelper {
 				}
 				for (Locale locale : OTHER_LOCALES) {
 					ResourceBundle resBundle = ResourceBundle.getBundle(parameters.resourceBundle(), locale);
+					checkEncoding(resBundle, parameters.resourceBundle(), locale);
 					// Since ResourceBundle evaluates parent bundles as well, but we must know if
 					// localization is only contained in that bundle, therefore ==
 					if (!parameter.descriptionKey().isEmpty()
@@ -244,6 +270,55 @@ public class ServletParameterHelper {
 			} else if (writer.getAnnotation(ParametersDelegate.class) != null) {
 				super.serializeAsField(pojo, jgen, prov, writer);
 			}
+		}
+
+		private void checkEncoding(ResourceBundle resourceBundle, String resourceBundleName, Locale locale)
+			throws IOException, Exception {
+			String resourceName = "/" + resourceBundleName.replace('.', '/')
+					+ (Locale.ROOT.equals(locale) ? "" : "_" + locale) + ".properties";
+			if (checkedResourceBundles.add(resourceName)) {
+				LOG.info(String.format("Check encoding of %s", resourceName));
+
+				ByteBuffer byteBuffer = null;
+				byte[] byteArray = getByteArray(resourceName);
+				try {
+					byteBuffer = ByteBuffer.wrap(byteArray);
+					US_ASCII_DECODER.decode(byteBuffer);
+				} catch (CharacterCodingException e) {
+					Entry<Integer, Integer> filePosition = getLocation(byteArray, byteBuffer.position());
+					LOG.log(Level.SEVERE, String.format(ILLEGAL_CHARACTERS_IN_RESOURCE_NAME, resourceName,
+							filePosition.getKey(), filePosition.getValue()), e);
+					throw e;
+				}
+			}
+		}
+
+		private byte[] getByteArray(String resourceName) throws IOException {
+			try (InputStream is = OnlineContent.class.getResourceAsStream(resourceName)) {
+				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+				int nRead;
+				byte[] data = new byte[BUFFER_LENGTH];
+				while ((nRead = is.read(data, 0, data.length)) != -1) {
+					buffer.write(data, 0, nRead);
+				}
+				return buffer.toByteArray();
+			}
+		}
+
+		private Map.Entry<Integer, Integer> getLocation(byte[] byteArray, int bytePosition) {
+			int currentPos = 0, x = 1, y = 1;
+			for (byte b : byteArray) {
+				if (currentPos == bytePosition) {
+					break;
+				}
+				if (b == '\n') {
+					y++;
+					x = 0;
+				}
+				x++;
+				currentPos++;
+			}
+			return new SimpleEntry<>(x, y);
 		}
 
 	}
