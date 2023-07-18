@@ -71,8 +71,8 @@ import ui.tools.RecordingTool;
 import ui.tools.SIDBlasterTool;
 
 /**
- * Provides parameter default values and localization of ConvertServlet as well as parameter checks to spot development
- * errors.
+ * Provides parameter default values and localization of ConvertServlet as well
+ * as parameter checks to spot development errors.
  * 
  * @author ken
  *
@@ -123,7 +123,7 @@ public class ServletParameterHelper {
 	}
 
 	private static void check(Class<?> servletParameterClass, SimpleBeanPropertyFilter filter)
-		throws ExceptionInInitializerError {
+			throws ExceptionInInitializerError {
 		try {
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
@@ -166,7 +166,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-			throws Exception {
+				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null) {
@@ -201,7 +201,7 @@ public class ServletParameterHelper {
 
 		@Override
 		public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
-			throws Exception {
+				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameters != null && parameter != null) {
