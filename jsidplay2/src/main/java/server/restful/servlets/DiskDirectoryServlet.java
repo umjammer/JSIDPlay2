@@ -1,5 +1,6 @@
 package server.restful.servlets;
 
+import static libsidutils.ZipFileUtils.newFileInputStream;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
@@ -18,7 +19,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
-import libsidutils.ZipFileUtils;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
 import server.restful.common.JSIDPlay2Servlet;
@@ -57,7 +57,7 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final DiskDirectoryServletParameters servletParameters = new DiskDirectoryServletParameters();
@@ -92,7 +92,7 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 		File targetFile = new File(targetDir, file.getName());
 		targetDir.mkdirs();
 		try (FileOutputStream out = new FileOutputStream(targetFile)) {
-			ZipFileUtils.copy(file, out);
+			PathUtils.copy(newFileInputStream(file), out);
 		}
 		return targetFile;
 	}

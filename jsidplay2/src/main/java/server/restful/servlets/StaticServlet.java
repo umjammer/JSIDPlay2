@@ -23,7 +23,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.PathUtils;
-import libsidutils.ZipFileUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.RequestPathServletParameters.WebResourceRequestPathServletParameters;
@@ -58,7 +57,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final StaticServletParameters servletParameters = new StaticServletParameters();
@@ -78,11 +77,11 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				ContentTypeAndFileExtensions mimeType = getMimeType(PathUtils.getFilenameSuffix(request.getPathInfo()));
 				if (mimeType.isText()) {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
-					setOutput(response, mimeType, ZipFileUtils.convertStreamToString(source, "UTF-8", replacements));
+					setOutput(response, mimeType, PathUtils.convertStreamToString(source, "UTF-8", replacements));
 				} else {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
 					response.setContentType(mimeType.toString());
-					ZipFileUtils.copy(source, response.getOutputStream());
+					PathUtils.copy(source, response.getOutputStream());
 				}
 			}
 		} catch (Throwable t) {

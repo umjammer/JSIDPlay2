@@ -80,7 +80,6 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.PathUtils;
-import libsidutils.ZipFileUtils;
 import sidplay.Player;
 import ui.common.C64VBox;
 import ui.common.C64Window;
@@ -957,7 +956,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	private byte[] readBytes(InputStream is) throws IOException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		ZipFileUtils.copy(is, os);
+		PathUtils.copy(is, os);
 		return os.toByteArray();
 	}
 

@@ -33,7 +33,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import libsidutils.PathUtils;
-import libsidutils.ZipFileUtils;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import net.java.truevfs.access.TArchiveDetector;
@@ -140,8 +139,8 @@ public class OnlineContent {
 		Process proc = Runtime.getRuntime().exec(new String[] { upxExe, "--lzma", "--best",
 				/* "--ultra-brute", */deployDir + "/jsiddevice-" + projectVersion + ".exe" });
 
-		ZipFileUtils.copy(proc.getErrorStream(), System.err);
-		ZipFileUtils.copy(proc.getInputStream(), System.out);
+		PathUtils.copy(proc.getErrorStream(), System.err);
+		PathUtils.copy(proc.getInputStream(), System.out);
 
 		proc.waitFor();
 	}

@@ -238,12 +238,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
-		final Object parameterObject, String programName) throws IOException {
+			final Object parameterObject, String programName) throws IOException {
 		return parseRequestParameters(request, response, parameterObject, programName, false);
 	}
 
 	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
-		final Object parameterObject, String programName, boolean acceptUnknownOptions) throws IOException {
+			final Object parameterObject, String programName, boolean acceptUnknownOptions) throws IOException {
 		JCommander commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
 				.columnSize(Integer.MAX_VALUE)
 				.console(new PrintStreamConsole(
@@ -262,7 +262,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected File getFile(JCommander commander, FileRequestPathServletParameters fileRequestPathServletParameters,
-		HttpServletRequest request) {
+			HttpServletRequest request) {
 		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
 
 		boolean adminRole = !isSecured() || request.isUserInRole(ROLE_ADMIN);
@@ -308,7 +308,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected List<String> getDirectory(JCommander commander,
-		DirectoryRequestPathServletParameters directoryRequestPathServletParameters, HttpServletRequest request) {
+			DirectoryRequestPathServletParameters directoryRequestPathServletParameters, HttpServletRequest request) {
 		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
 
 		boolean adminRole = !isSecured() || request.isUserInRole(ROLE_ADMIN);
@@ -384,7 +384,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				FileItemIterator itemIterator = new ServletFileUpload().getItemIterator(request);
 				while (itemIterator.hasNext()) {
 					try (InputStream itemInputStream = itemIterator.next().openStream()) {
-						ZipFileUtils.copy(itemInputStream, result);
+						PathUtils.copy(itemInputStream, result);
 					}
 					// just the first file
 					break;
@@ -419,7 +419,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
-		throws IOException {
+			throws IOException {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
 				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
@@ -428,7 +428,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String string)
-		throws JsonProcessingException, IOException {
+			throws JsonProcessingException, IOException {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
 				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
@@ -490,7 +490,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
 			try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {
-				ZipFileUtils.copy(connection.getInputStream(), outputStream);
+				PathUtils.copy(connection.getInputStream(), outputStream);
 			}
 		} catch (IOException e) {
 			error(e);
@@ -516,7 +516,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	private List<String> getCollectionFiles(File rootFile, String virtualCollectionRoot, File filePath,
-		DirectoryRequestPathServletParameters servletParameters) {
+			DirectoryRequestPathServletParameters servletParameters) {
 		if (rootFile == null) {
 			return null;
 		}
@@ -528,6 +528,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				stream(ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
 						.orElse(new File[0])).sorted(new FileComparator())
 						.map(file -> new File(virtualParentFile, file.getName()) + (file.isDirectory() ? "/" : "")))
-										.collect(Collectors.toList());
+				.collect(Collectors.toList());
 	}
 }

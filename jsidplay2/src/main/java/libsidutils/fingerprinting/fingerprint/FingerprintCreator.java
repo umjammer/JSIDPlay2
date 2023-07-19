@@ -1,6 +1,6 @@
 package libsidutils.fingerprinting.fingerprint;
 
-import static libsidutils.ZipFileUtils.readNBytes;
+import static libsidutils.PathUtils.readNBytes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

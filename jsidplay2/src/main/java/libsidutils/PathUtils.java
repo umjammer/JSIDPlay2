@@ -3,6 +3,13 @@ package libsidutils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,10 +19,14 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This class provides general filename utility functions.
@@ -27,6 +38,8 @@ public class PathUtils {
 	 * Linux, OSX and ZIP entries use slash, Windows uses backslash.
 	 */
 	private static final Pattern SEPARATOR = Pattern.compile("[/\\\\]");
+
+	private static final int COPY_BUFFER_CHUNK_SIZE = 16 * 1024;
 
 	/**
 	 * Create a filename of the given path relative to the collection root dir. <BR>
@@ -200,6 +213,54 @@ public class PathUtils {
 		final String[] units = new String[] { "b", "Kb", "Mb", "Gb", "Tb" };
 		int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
 		return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + units[digitGroups];
+	}
+
+	public static void copy(InputStream is, OutputStream os) throws IOException {
+		final ReadableByteChannel inputChannel = Channels.newChannel(is);
+		final WritableByteChannel outputChannel = Channels.newChannel(os);
+		final ByteBuffer buffer = ByteBuffer.allocateDirect(COPY_BUFFER_CHUNK_SIZE);
+
+		while (inputChannel.read(buffer) != -1) {
+			((Buffer) buffer).flip();
+			outputChannel.write(buffer);
+			buffer.compact();
+		}
+		((Buffer) buffer).flip();
+		while (buffer.hasRemaining()) {
+			outputChannel.write(buffer);
+		}
+	}
+
+	public static String convertStreamToString(java.io.InputStream is, String charsetName) {
+		return convertStreamToString(is, charsetName, new HashMap<>());
+	}
+
+	public static String convertStreamToString(java.io.InputStream is, String charsetName,
+			Map<String, String> replacements) {
+		try (java.util.Scanner s = new java.util.Scanner(is, charsetName)) {
+			s.useDelimiter("\\A");
+			String string = s.hasNext() ? s.next() : "";
+			List<Entry<String, String>> sortedEntries = replacements.entrySet().stream()
+					.sorted((e1, e2) -> -Integer.compare(e1.getKey().length(), e2.getKey().length()))
+					.collect(Collectors.toList());
+			for (Entry<String, String> replacement : sortedEntries) {
+				string = string.replace(replacement.getKey(), replacement.getValue());
+			}
+			return string;
+		}
+	}
+
+	public static int readNBytes(InputStream is, byte[] b, int off, int len) throws IOException {
+		if (off < 0 || len < 0 || len > b.length - off)
+			throw new IndexOutOfBoundsException();
+		int n = 0;
+		while (n < len) {
+			int count = is.read(b, off + n, len - n);
+			if (count < 0)
+				break;
+			n += count;
+		}
+		return n;
 	}
 
 }

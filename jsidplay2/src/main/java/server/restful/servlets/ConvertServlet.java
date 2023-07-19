@@ -7,10 +7,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
+import static libsidutils.PathUtils.convertStreamToString;
+import static libsidutils.PathUtils.copy;
 import static libsidutils.PathUtils.getFilenameSuffix;
 import static libsidutils.PathUtils.getFilenameWithoutSuffix;
-import static libsidutils.ZipFileUtils.convertStreamToString;
-import static libsidutils.ZipFileUtils.copy;
+import static libsidutils.ZipFileUtils.newFileInputStream;
 import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.ATTACHMENT;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
@@ -298,7 +299,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final ConvertServletParameters servletParameters = new ConvertServletParameters();
@@ -365,14 +366,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					}
 					response.setContentType(getMimeType(driver.getExtension()).toString());
 					File videoFile = convert2video(file, driver, servletParameters, null);
-					copy(videoFile, response.getOutputStream());
+					copy(newFileInputStream(videoFile), response.getOutputStream());
 					videoFile.delete();
 				}
 			} else {
 				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
 				response.addHeader(CONTENT_DISPOSITION,
 						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
-				copy(file, response.getOutputStream());
+				copy(newFileInputStream(file), response.getOutputStream());
 			}
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -404,7 +405,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private AudioDriver getAudioDriverOfAudioFormat(Audio audio, OutputStream outputstream,
-			ConvertServletParameters servletParameters) {
+		ConvertServletParameters servletParameters) {
 		switch (audio) {
 		case WAV:
 			return new WAVStreamDriver(outputstream);
@@ -423,7 +424,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters)
-			throws IOException, SidTuneError {
+		throws IOException, SidTuneError {
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 
 		Player player = new Player(servletParameters.config);
@@ -469,7 +470,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private AudioDriver getAudioDriverOfVideoFormat(Audio audio, UUID uuid,
-			ConvertServletParameters servletParameters) {
+		ConvertServletParameters servletParameters) {
 		switch (audio) {
 		case FLV:
 		default:
@@ -486,7 +487,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters, UUID uuid,
-			Thread... parentThread) throws IOException, SidTuneError {
+		Thread... parentThread) throws IOException, SidTuneError {
 		File videoFile = null;
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 
@@ -534,7 +535,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
-			HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
+		HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
 		String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
 		String qrCodeImgTag = createQrCodeImgTag(getRequestURL(request), "UTF-8", "png", 320, 320);
 
@@ -551,7 +552,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)
-			throws IOException, WriterException {
+		throws IOException, WriterException {
 		ByteArrayOutputStream qrCodeImgData = new ByteArrayOutputStream();
 		ImageIO.write(createBarCodeImage(data, charset, width, height), imgFormat, qrCodeImgData);
 		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));

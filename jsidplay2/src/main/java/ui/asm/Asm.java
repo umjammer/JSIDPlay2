@@ -23,7 +23,7 @@ import kickass.common.diagnostics.IDiagnostic;
 import kickass.common.exceptions.AsmErrorException;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.ZipFileUtils;
+import libsidutils.PathUtils;
 import libsidutils.assembler.KickAssembler;
 import sidplay.Player;
 import ui.common.C64VBox;
@@ -64,7 +64,7 @@ public class Asm extends C64VBox implements UIPart {
 	protected void initialize() {
 		status.setPrefHeight(Double.MAX_VALUE);
 		InputStream is = Asm.class.getResourceAsStream(ASM_EXAMPLE);
-		contents.setText(ZipFileUtils.convertStreamToString(is, "ISO-8859-1"));
+		contents.setText(PathUtils.convertStreamToString(is, "ISO-8859-1"));
 		varNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		varNameColumn.setOnEditCommit(
 				evt -> evt.getTableView().getItems().get(evt.getTablePosition().getRow()).setName(evt.getNewValue()));
