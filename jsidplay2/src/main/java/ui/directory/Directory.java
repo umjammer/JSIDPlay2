@@ -1,10 +1,10 @@
 package ui.directory;
 
-import static libsidutils.C64Font.TRUE_TYPE_FONT_BIG;
-import static libsidutils.C64Font.TRUE_TYPE_FONT_INVERSE_BIG;
-import static libsidutils.C64Font.TRUE_TYPE_FONT_INVERSE_SMALL;
-import static libsidutils.C64Font.TRUE_TYPE_FONT_SMALL;
-import static libsidutils.C64Font.petsciiToFont;
+import static libsidutils.C64FontUtils.TRUE_TYPE_FONT_BIG;
+import static libsidutils.C64FontUtils.TRUE_TYPE_FONT_INVERSE_BIG;
+import static libsidutils.C64FontUtils.TRUE_TYPE_FONT_INVERSE_SMALL;
+import static libsidutils.C64FontUtils.TRUE_TYPE_FONT_SMALL;
+import static libsidutils.C64FontUtils.petsciiToFont;
 
 import java.io.File;
 import java.io.IOException;

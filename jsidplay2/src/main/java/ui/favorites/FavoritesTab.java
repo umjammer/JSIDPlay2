@@ -46,7 +46,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.DirectoryChooser;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.psid64.Psid64;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
@@ -275,14 +275,14 @@ public class FavoritesTab extends C64VBox implements UIPart {
 	private File getHVSCFile(HVSCEntry hvscEntry) {
 		SidPlay2Section sidPlay2Section = util.getConfig().getSidplay2Section();
 		return hvscEntry != null
-				? PathUtils.getFile(hvscEntry.getPath(), sidPlay2Section.getHvsc(), sidPlay2Section.getCgsc())
+				? IOUtils.getFile(hvscEntry.getPath(), sidPlay2Section.getHvsc(), sidPlay2Section.getCgsc())
 				: null;
 	}
 
 	private void copyToUniqueName(File file, File directory, String name, int number) {
 		String newName = name;
 		if (number > 1) {
-			newName = PathUtils.getFilenameWithoutSuffix(name) + "_" + number + PathUtils.getFilenameSuffix(name);
+			newName = IOUtils.getFilenameWithoutSuffix(name) + "_" + number + IOUtils.getFilenameSuffix(name);
 		}
 		File newFile = new File(directory, newName);
 		if (newFile.exists()) {
@@ -436,7 +436,7 @@ public class FavoritesTab extends C64VBox implements UIPart {
 					// backward compatibility
 					line = line.substring(7);
 				}
-				File file = PathUtils.getFile(line, sidPlay2Section.getHvsc(), sidPlay2Section.getCgsc());
+				File file = IOUtils.getFile(line, sidPlay2Section.getHvsc(), sidPlay2Section.getCgsc());
 				if (file != null) {
 					result = String.join("", result, addFavorite(file));
 				}
@@ -573,7 +573,7 @@ public class FavoritesTab extends C64VBox implements UIPart {
 		SidTune tune;
 		try {
 			tune = SidTune.load(file);
-			String collectionName = PathUtils.getCollectionName(sidPlay2Section.getHvsc(), file);
+			String collectionName = IOUtils.getCollectionName(sidPlay2Section.getHvsc(), file);
 			HVSCEntry entry = new HVSCEntry(() -> util.getPlayer().getSidDatabaseInfo(db -> db.getTuneLength(tune), 0.),
 					collectionName, file, tune);
 			favoritesSection.getFavorites().add(entry);

@@ -54,7 +54,7 @@ import libsidplay.components.cart.CartridgeType;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import sidplay.player.PlayList;
 import sidplay.player.State;
@@ -671,7 +671,7 @@ public class MenuBar extends C64VBox implements UIPart {
 		final File file = fileDialog.showSaveDialog(getScene().getWindow());
 		if (file != null) {
 			util.getConfig().getSidplay2Section().setLastDirectory(file.getParentFile());
-			File target = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()) + ".d64");
+			File target = new File(file.getParentFile(), IOUtils.getFilenameWithoutSuffix(file.getName()) + ".d64");
 			try (DataOutputStream os = new DataOutputStream(new FileOutputStream(target))) {
 				os.write(EMPTY_DISK);
 			} catch (IOException e) {

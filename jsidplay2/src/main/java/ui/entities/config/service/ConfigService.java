@@ -19,7 +19,7 @@ import javax.xml.bind.Unmarshaller;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import ui.entities.DatabaseType;
 import ui.entities.PersistenceProperties;
 import ui.entities.config.Configuration;
@@ -262,7 +262,7 @@ public class ConfigService {
 			}
 		} else {
 			// migration XML to JSON
-			File fileAsXml = new File(PathUtils.getFilenameWithoutSuffix(file.getAbsolutePath()) + ".xml");
+			File fileAsXml = new File(IOUtils.getFilenameWithoutSuffix(file.getAbsolutePath()) + ".xml");
 			if (fileAsXml.exists()) {
 				return importXml(fileAsXml);
 			}

@@ -68,7 +68,7 @@ import libsidplay.common.Ultimate64Mode;
 import libsidplay.sidtune.MP3Tune;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import server.restful.JSIDPlay2Server;
 import server.restful.common.Connectors;
 import sidplay.Player;
@@ -707,7 +707,7 @@ public class ToolBar extends C64VBox implements UIPart {
 	private String getHostname() {
 		try {
 			Process proc = Runtime.getRuntime().exec("hostname");
-			return PathUtils.convertStreamToString(proc.getInputStream(), UTF_8.name());
+			return IOUtils.convertStreamToString(proc.getInputStream(), UTF_8.name());
 		} catch (IOException e) {
 			return "?hostname?";
 		}

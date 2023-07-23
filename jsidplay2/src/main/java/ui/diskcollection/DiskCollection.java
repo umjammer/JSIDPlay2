@@ -26,7 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.DirectoryChooser;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import net.java.truevfs.access.TFileInputStream;
@@ -305,7 +305,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 		String parentPath = getType() == DiskCollectionType.HVMEC
 				? file.getParentFile().getPath().replace(HVMEC_DATA, HVMEC_CONTROL)
 				: file.getParentFile().getPath();
-		List<File> parentFiles = PathUtils.getFiles(parentPath, rootItem.getValue(), null);
+		List<File> parentFiles = IOUtils.getFiles(parentPath, rootItem.getValue(), null);
 		if (parentFiles.size() > 0) {
 			File parentFile = parentFiles.get(parentFiles.size() - 1);
 			final File[] listFiles = parentFile.listFiles();
@@ -326,7 +326,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 		tmpDir.mkdirs();
 		File dst;
 		if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
-			dst = new File(tmpDir, PathUtils.getFilenameWithoutSuffix(file.getName()));
+			dst = new File(tmpDir, IOUtils.getFilenameWithoutSuffix(file.getName()));
 			try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 				TFile.cp(is, dst);
 			}

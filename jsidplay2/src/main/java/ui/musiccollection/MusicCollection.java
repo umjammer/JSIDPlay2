@@ -65,7 +65,7 @@ import jsidplay2.Photos;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.psid64.Psid64;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
@@ -692,7 +692,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 					searchStop) {
 				@Override
 				public List<File> getFiles(String filePath) {
-					return PathUtils.getFiles(filePath, fileBrowser.getRoot().getValue(), tuneFilter);
+					return IOUtils.getFiles(filePath, fileBrowser.getRoot().getValue(), tuneFilter);
 				}
 			};
 			t.setField(searchCriteria.getSelectionModel().getSelectedItem().getAttribute());
@@ -740,7 +740,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 		File rootFile = rootItem.getValue();
 		String filePath = matchFile.getPath();
 		TreeItem<File> curItem = rootItem;
-		for (File file : PathUtils.getFiles(filePath, rootFile, tuneFilter)) {
+		for (File file : IOUtils.getFiles(filePath, rootFile, tuneFilter)) {
 			for (TreeItem<File> childItem : curItem.getChildren()) {
 				if (file.equals(childItem.getValue())) {
 					pathSegs.add(curItem = childItem);
@@ -790,7 +790,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 							audioSection.setMp3(downloadedFile);
 							audioSection.setPlayOriginal(true);
 							audioSection.setAudio(Audio.COMPARE_MP3);
-							playTune(PathUtils.getFile(hvscName + ".sid", sidplay2Section.getHvsc(), null));
+							playTune(IOUtils.getFile(hvscName + ".sid", sidplay2Section.getHvsc(), null));
 						});
 					}
 				}
@@ -806,7 +806,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 		soasc6581R4.setDisable(true);
 		soasc8580R5.setDisable(true);
 		File hvscFile = util.getConfig().getSidplay2Section().getHvsc();
-		hvscName = PathUtils.getCollectionName(hvscFile, tuneFile);
+		hvscName = IOUtils.getCollectionName(hvscFile, tuneFile);
 		if (hvscName != null) {
 			hvscName = hvscName.replace(".sid", "");
 			selectedSong = tuneInfo.getSelectedSong();
@@ -821,7 +821,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 		File hvscRoot = fileBrowser.getRoot().getValue();
 		String collectionName = null;
 		if (tuneFile.getParentFile() != null) {
-			collectionName = PathUtils.getCollectionName(hvscRoot, tuneFile.getParentFile());
+			collectionName = IOUtils.getCollectionName(hvscRoot, tuneFile.getParentFile());
 		}
 		String author = null;
 		if (info.getInfoString().size() > 1) {
@@ -833,7 +833,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 	}
 
 	private void showTuneInfos(File tuneFile, SidTune tune) {
-		String collectionName = PathUtils.getCollectionName(fileBrowser.getRoot().getValue(), tuneFile);
+		String collectionName = IOUtils.getCollectionName(fileBrowser.getRoot().getValue(), tuneFile);
 		HVSCEntry entry = new HVSCEntry(() -> util.getPlayer().getSidDatabaseInfo(db -> db.getTuneLength(tune), 0.),
 				collectionName, tuneFile, tune);
 		tuneInfos.setAll(SearchCriteria
@@ -858,9 +858,9 @@ public class MusicCollection extends C64VBox implements UIPart {
 
 			String collectionName;
 			if (getType() == MusicCollectionType.HVSC) {
-				collectionName = PathUtils.getCollectionName(sidPlay2Section.getHvsc(), file);
+				collectionName = IOUtils.getCollectionName(sidPlay2Section.getHvsc(), file);
 			} else {
-				collectionName = PathUtils.getCollectionName(sidPlay2Section.getCgsc(), file);
+				collectionName = IOUtils.getCollectionName(sidPlay2Section.getCgsc(), file);
 			}
 			HVSCEntry entry = new HVSCEntry(() -> util.getPlayer().getSidDatabaseInfo(db -> db.getTuneLength(tune), 0.),
 					collectionName, file, tune);

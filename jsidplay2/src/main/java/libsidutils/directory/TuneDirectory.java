@@ -1,6 +1,6 @@
 package libsidutils.directory;
 
-import static libsidutils.Petscii.iso88591ToScreenRam;
+import static libsidutils.CBMCodeUtils.iso88591ToScreenRam;
 import static libsidutils.directory.DirEntry.FILETYPE_NONE;
 
 import java.io.File;
@@ -62,9 +62,10 @@ public class TuneDirectory extends Directory {
 		if (playerId != null && playerId.length() > 0) {
 			dirEntries.add(toDirEntry(playerId));
 		}
-		dirEntries.add(toDirEntry("" + tune.getClass().getSimpleName()));
+		dirEntries.add(toDirEntry("" + info.getCompatibility()));
 		dirEntries.add(toDirEntry("" + info.getClockSpeed()));
 		dirEntries.add(toDirEntry("" + tune.getSongSpeed(1)));
+		dirEntries.add(toDirEntry("" + info.getAudioTypeString()));
 		dirEntries.add(toDirEntry("" + info.getSIDModel(0)));
 		if (info.getSIDModel(1) != Model.UNKNOWN) {
 			dirEntries.add(toDirEntry("+" + info.getSIDModel(1)));
@@ -72,9 +73,6 @@ public class TuneDirectory extends Directory {
 		if (info.getSIDModel(2) != Model.UNKNOWN) {
 			dirEntries.add(toDirEntry("+" + info.getSIDModel(2)));
 		}
-		dirEntries.add(toDirEntry("" + info.getCompatibility()));
-		dirEntries.add(toDirEntry(lengthFnct.getAsDouble() + "s"));
-		dirEntries.add(toDirEntry("" + info.getAudioTypeString()));
 		dirEntries.add(toDirEntry("" + info.getSIDChipBase(0)));
 		if (info.getSIDChipBase(1) != 0) {
 			dirEntries.add(toDirEntry("+" + info.getSIDChipBase(1)));
@@ -82,6 +80,7 @@ public class TuneDirectory extends Directory {
 		if (info.getSIDChipBase(2) != 0) {
 			dirEntries.add(toDirEntry("+" + info.getSIDChipBase(2)));
 		}
+		dirEntries.add(toDirEntry(lengthFnct.getAsDouble() + "s"));
 		dirEntries.add(toDirEntry("DRV_ADDR=" + info.getDeterminedDriverAddr()));
 		dirEntries.add(toDirEntry("LOAD_ADDR=" + info.getLoadAddr()));
 		dirEntries.add(toDirEntry("LOAD_LGTH=" + info.getC64dataLen()));

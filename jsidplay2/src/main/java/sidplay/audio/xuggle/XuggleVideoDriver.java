@@ -11,8 +11,8 @@ import static libsidplay.common.CPUClock.PAL;
 import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_HEIGHT;
 import static libsidplay.components.mos656x.VIC.MAX_WIDTH;
-import static libsidutils.C64Font.TRUE_TYPE_FONT_BIG;
-import static libsidutils.C64Font.petsciiToFont;
+import static libsidutils.C64FontUtils.TRUE_TYPE_FONT_BIG;
+import static libsidutils.C64FontUtils.petsciiToFont;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

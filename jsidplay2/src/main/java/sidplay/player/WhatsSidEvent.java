@@ -15,7 +15,7 @@ import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTune.Model;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.fingerprinting.rest.beans.MusicInfoWithConfidenceBean;
 import sidplay.Player;
 import sidplay.fingerprinting.WhatsSidSupport;
@@ -94,7 +94,7 @@ public class WhatsSidEvent extends Event {
 		IEmulationSection emulationSection = player.getConfig().getEmulationSection();
 
 		final String infoDir = result.getMusicInfo().getInfoDir();
-		SidTune detectedTune = SidTune.load(PathUtils.getFile(infoDir, sidPlay2Section.getHvsc(), null));
+		SidTune detectedTune = SidTune.load(IOUtils.getFile(infoDir, sidPlay2Section.getHvsc(), null));
 
 		boolean update = false;
 		for (int sidNum = 0; sidNum < MAX_SIDS; sidNum++) {

@@ -12,7 +12,7 @@ package sidplay;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static libsidplay.common.SIDEmu.NONE;
 import static libsidplay.sidtune.SidTune.RESET;
-import static libsidutils.Petscii.petsciiToScreenRam;
+import static libsidutils.CBMCodeUtils.petsciiToScreenRam;
 import static sidplay.ini.IniDefaults.DEFAULT_AUDIO;
 import static sidplay.ini.IniDefaults.DEFAULT_TMP_DIR;
 import static sidplay.player.State.END;

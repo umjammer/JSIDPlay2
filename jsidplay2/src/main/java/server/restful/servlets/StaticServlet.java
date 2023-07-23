@@ -22,7 +22,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.RequestPathServletParameters.WebResourceRequestPathServletParameters;
@@ -74,14 +74,14 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$convertMessagesEn", CONVERT_MESSAGES_EN);
 				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);
 				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
-				ContentTypeAndFileExtensions mimeType = getMimeType(PathUtils.getFilenameSuffix(request.getPathInfo()));
+				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 				if (mimeType.isText()) {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
-					setOutput(response, mimeType, PathUtils.convertStreamToString(source, "UTF-8", replacements));
+					setOutput(response, mimeType, IOUtils.convertStreamToString(source, "UTF-8", replacements));
 				} else {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
 					response.setContentType(mimeType.toString());
-					PathUtils.copy(source, response.getOutputStream());
+					IOUtils.copy(source, response.getOutputStream());
 				}
 			}
 		} catch (Throwable t) {

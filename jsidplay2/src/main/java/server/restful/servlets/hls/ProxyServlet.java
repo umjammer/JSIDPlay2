@@ -17,7 +17,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.RequestPathServletParameters.URLRequestPathServletParameters;
 import ui.common.util.InternetUtil;
@@ -70,7 +70,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			}
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			PathUtils.copy(connection.getInputStream(), bos);
+			IOUtils.copy(connection.getInputStream(), bos);
 
 			connection.getHeaderFields().entrySet().stream().filter(entry -> Objects.nonNull(entry.getKey())).forEach(
 					entry -> response.setHeader(entry.getKey(), entry.getValue().stream().findFirst().orElse(null)));

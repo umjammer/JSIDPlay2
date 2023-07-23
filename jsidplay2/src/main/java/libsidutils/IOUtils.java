@@ -29,11 +29,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * This class provides general filename utility functions.
+ * This class provides general IO utility functions.
  *
  * @author Ken Händel
  */
-public class PathUtils {
+public class IOUtils {
 	/**
 	 * Linux, OSX and ZIP entries use slash, Windows uses backslash.
 	 */

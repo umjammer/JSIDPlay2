@@ -1,6 +1,6 @@
 package libsidutils;
 
-public class C64Font {
+public class C64FontUtils {
 
 	/**
 	 * Font resource name

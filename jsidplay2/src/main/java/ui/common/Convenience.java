@@ -1,6 +1,6 @@
 package ui.common;
 
-import static libsidutils.PathUtils.deleteDirectory;
+import static libsidutils.IOUtils.deleteDirectory;
 import static libsidutils.directory.DirEntry.toFilename;
 
 import java.io.ByteArrayInputStream;
@@ -22,7 +22,7 @@ import java.util.zip.GZIPInputStream;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
@@ -51,8 +51,8 @@ public class Convenience {
 		if (!f1.isDirectory() && f2.isDirectory()) {
 			return -1;
 		}
-		String ext1 = PathUtils.getFilenameSuffix(f1.getAbsolutePath());
-		String ext2 = PathUtils.getFilenameSuffix(f2.getAbsolutePath());
+		String ext1 = IOUtils.getFilenameSuffix(f1.getAbsolutePath());
+		String ext2 = IOUtils.getFilenameSuffix(f2.getAbsolutePath());
 
 		if (ext1.endsWith(".sid") && !ext2.endsWith(".sid")) {
 			return 1;
@@ -159,7 +159,7 @@ public class Convenience {
 				// search media file to attach
 				toAttach = getToAttach(tmpDir, tFile, isMediaToAttach, null, !isCartridge);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
-				File dst = new File(tmpDir, PathUtils.getFilenameWithoutSuffix(file.getName()));
+				File dst = new File(tmpDir, IOUtils.getFilenameWithoutSuffix(file.getName()));
 				try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 					TFile.cp(is, dst);
 				}

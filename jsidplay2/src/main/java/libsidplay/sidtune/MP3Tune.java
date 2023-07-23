@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.sidid.SidIdInfo.PlayerInfoSection;
 import lowlevel.ID3V2Decoder;
 
@@ -73,7 +73,7 @@ public class MP3Tune extends SidTune {
 			String album = ofNullable(mp3.decoder.getAlbum()).map(MP3Tune::replaceNonPrintable).orElse(null);
 			String year = ofNullable(mp3.decoder.getYear()).map(MP3Tune::replaceNonPrintable).orElse(null);
 
-			mp3.info.infoString.add(title != null ? title : PathUtils.getFilenameWithoutSuffix(file.getName()));
+			mp3.info.infoString.add(title != null ? title : IOUtils.getFilenameWithoutSuffix(file.getName()));
 			if (interpret != null) {
 				mp3.info.infoString.add(interpret);
 			} else if (albumInterpret != null) {

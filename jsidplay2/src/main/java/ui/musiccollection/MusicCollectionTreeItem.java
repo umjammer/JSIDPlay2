@@ -11,7 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.stil.STIL.STILEntry;
 import sidplay.Player;
 import ui.JSidPlay2Main;
@@ -39,7 +39,7 @@ public class MusicCollectionTreeItem extends TreeItem<File> {
 		this.isLeaf = file.isFile();
 		if (isLeaf && player != null) {
 			SidPlay2Section sidPlay2Section = (SidPlay2Section) player.getConfig().getSidplay2Section();
-			String collectionName = PathUtils.getCollectionName(sidPlay2Section.getHvsc(), file);
+			String collectionName = IOUtils.getCollectionName(sidPlay2Section.getHvsc(), file);
 			this.stilEntry = player.getStilEntry(collectionName);
 			this.hasSTIL = stilEntry != null;
 		}

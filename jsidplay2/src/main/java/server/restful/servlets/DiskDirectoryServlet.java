@@ -18,7 +18,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
 import server.restful.common.JSIDPlay2Servlet;
@@ -83,7 +83,7 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 	private Directory createDiskDirectory(final File file) throws IOException, FileNotFoundException {
 		File extractedFile = extract(file);
 		Directory directory = new DiskDirectory(extractedFile);
-		PathUtils.deleteDirectory(extractedFile.getParentFile());
+		IOUtils.deleteDirectory(extractedFile.getParentFile());
 		return directory;
 	}
 
@@ -92,7 +92,7 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 		File targetFile = new File(targetDir, file.getName());
 		targetDir.mkdirs();
 		try (FileOutputStream out = new FileOutputStream(targetFile)) {
-			PathUtils.copy(newFileInputStream(file), out);
+			IOUtils.copy(newFileInputStream(file), out);
 		}
 		return targetFile;
 	}

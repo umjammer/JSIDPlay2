@@ -1,7 +1,7 @@
 package libsidutils.psid64;
 
 import static libsidplay.sidtune.SidTune.Compatibility.RSID_BASIC;
-import static libsidutils.Petscii.iso88591ToScreenRam;
+import static libsidutils.CBMCodeUtils.iso88591ToScreenRam;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +17,7 @@ import java.util.List;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.assembler.KickAssembler;
 import libsidutils.cruncher.PUCrunch;
 import libsidutils.stil.STIL.Info;
@@ -529,10 +529,10 @@ public class Psid64 {
 			throws IOException, SidTuneError {
 		tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(null);
-		String collectionName = PathUtils.getCollectionName(hvscRoot, file);
+		String collectionName = IOUtils.getCollectionName(hvscRoot, file);
 		stilEntry = player.getStilEntry(collectionName);
 
-		File tmpFile = new File(tmpDir, PathUtils.getFilenameWithoutSuffix(file.getName()) + ".prg.tmp");
+		File tmpFile = new File(tmpDir, IOUtils.getFilenameWithoutSuffix(file.getName()) + ".prg.tmp");
 		tmpFile.deleteOnExit();
 		try (OutputStream outfile = new FileOutputStream(tmpFile)) {
 			// convert to PSID64
@@ -542,7 +542,7 @@ public class Psid64 {
 		final PUCrunch puCrunch = new PUCrunch();
 		puCrunch.setVerbose(verbose);
 		puCrunch.crunch(tmpFile.getAbsolutePath(),
-				new File(target, PathUtils.getFilenameWithoutSuffix(file.getName()) + ".prg").getAbsolutePath());
+				new File(target, IOUtils.getFilenameWithoutSuffix(file.getName()) + ".prg").getAbsolutePath());
 	}
 
 }

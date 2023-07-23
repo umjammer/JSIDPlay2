@@ -6,7 +6,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
-import static libsidutils.PathUtils.getFileSize;
+import static libsidutils.IOUtils.getFileSize;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
@@ -61,7 +61,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.ZipFileUtils;
 import libsidutils.siddatabase.SidDatabase;
 import net.java.truevfs.access.TFile;
@@ -280,12 +280,12 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				return file;
 			}
 		} else if (sidplay2Section.getHvsc() != null && path.startsWith(C64_MUSIC)) {
-			File file = PathUtils.getFile(path.substring(C64_MUSIC.length()), sidplay2Section.getHvsc(), null);
+			File file = IOUtils.getFile(path.substring(C64_MUSIC.length()), sidplay2Section.getHvsc(), null);
 			if (file.exists() && file.getAbsolutePath().startsWith(sidplay2Section.getHvsc().getAbsolutePath())) {
 				return file;
 			}
 		} else if (sidplay2Section.getCgsc() != null && path.startsWith(CGSC)) {
-			File file = PathUtils.getFile(path.substring(CGSC.length()), null, sidplay2Section.getCgsc());
+			File file = IOUtils.getFile(path.substring(CGSC.length()), null, sidplay2Section.getCgsc());
 			if (file.exists() && file.getAbsolutePath().startsWith(sidplay2Section.getCgsc().getAbsolutePath())) {
 				return file;
 			}
@@ -296,7 +296,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
 					TFile root = new TFile(directoryValue);
-					File file = PathUtils.getFile(path.substring(directoryLogicalName.length()), root, null);
+					File file = IOUtils.getFile(path.substring(directoryLogicalName.length()), root, null);
 					if (file.exists() && file.getAbsolutePath().startsWith(root.getAbsolutePath())) {
 						return file;
 					}
@@ -361,7 +361,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		File hvscRoot = configuration.getSidplay2Section().getHvsc();
 		if (hvscRoot != null) {
 			// 1st Try from full path name...
-			result = PathUtils.getCollectionName(hvscRoot, file);
+			result = IOUtils.getCollectionName(hvscRoot, file);
 			if (result.isEmpty()) {
 				// ... then try from MD5
 				result = new SidDatabase(hvscRoot).getPath(SidTune.load(file));
@@ -384,7 +384,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				FileItemIterator itemIterator = new ServletFileUpload().getItemIterator(request);
 				while (itemIterator.hasNext()) {
 					try (InputStream itemInputStream = itemIterator.next().openStream()) {
-						PathUtils.copy(itemInputStream, result);
+						IOUtils.copy(itemInputStream, result);
 					}
 					// just the first file
 					break;
@@ -490,7 +490,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
 			try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {
-				PathUtils.copy(connection.getInputStream(), outputStream);
+				IOUtils.copy(connection.getInputStream(), outputStream);
 			}
 		} catch (IOException e) {
 			error(e);
@@ -522,7 +522,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 		File parentFile = ZipFileUtils.newFile(rootFile, filePath.toString().substring(virtualCollectionRoot.length()));
 
-		String virtualParentFile = virtualCollectionRoot + PathUtils.getCollectionName(rootFile, parentFile);
+		String virtualParentFile = virtualCollectionRoot + IOUtils.getCollectionName(rootFile, parentFile);
 
 		return concat(of(virtualParentFile + "/../"),
 				stream(ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))

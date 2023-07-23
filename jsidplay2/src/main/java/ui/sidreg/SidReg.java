@@ -19,7 +19,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.stage.FileChooser;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import sidplay.audio.SIDRegDriver;
 import sidplay.audio.SIDRegDriver.Format;
@@ -231,7 +231,7 @@ public class SidReg extends C64VBox implements UIPart {
 		final File file = fileDialog.showSaveDialog(saveRegs.getScene().getWindow());
 		if (file != null) {
 			util.getConfig().getSidplay2Section().setLastDirectory(file.getParentFile());
-			File target = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()) + ".csv");
+			File target = new File(file.getParentFile(), IOUtils.getFilenameWithoutSuffix(file.getName()) + ".csv");
 			try (OutputStream ps = new FileOutputStream(target)) {
 				SIDRegDriver.writeHeader(ps);
 				filteredSidRegWrites.stream().forEach(sidRegWrite -> {

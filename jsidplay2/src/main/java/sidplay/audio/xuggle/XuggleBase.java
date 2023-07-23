@@ -1,6 +1,6 @@
 package sidplay.audio.xuggle;
 
-import static libsidutils.C64Font.FONT_NAME;
+import static libsidutils.C64FontUtils.FONT_NAME;
 
 import java.awt.Font;
 import java.awt.FontFormatException;

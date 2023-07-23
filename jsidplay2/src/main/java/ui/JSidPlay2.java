@@ -31,7 +31,7 @@ import libsidplay.components.c1541.IExtendImageListener;
 import libsidplay.sidtune.MP3Tune;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import sidplay.audio.Audio;
 import sidplay.player.State;
@@ -318,7 +318,7 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 		SidPlay2Section sidPlay2Section = util.getConfig().getSidplay2Section();
 		String rndPath = util.getPlayer().getSidDatabaseInfo(db -> db.getRandomPath(), null);
 		if (rndPath != null) {
-			File file = PathUtils.getFile(rndPath, sidPlay2Section.getHvsc(), sidPlay2Section.getCgsc());
+			File file = IOUtils.getFile(rndPath, sidPlay2Section.getHvsc(), sidPlay2Section.getCgsc());
 			addView(MusicCollectionType.HVSC.name());
 			util.setPlayingTab(tabbedPane.getTabs().stream()
 					.filter(tab -> tab.getId().equals(MusicCollectionType.HVSC.name())).findFirst().get().getContent());

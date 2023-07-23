@@ -25,7 +25,7 @@ import libsidplay.components.mos6510.MOS6510;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.debug.MOS6510Debug;
 import libsidutils.siddatabase.SidDatabase;
 import sidplay.audio.JavaSound;
@@ -148,7 +148,7 @@ final public class ConsolePlayer {
 			setSIDDatabase(player);
 		}
 		player.setRecordingFilenameProvider(theTune -> {
-			String basename = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()))
+			String basename = new File(file.getParentFile(), IOUtils.getFilenameWithoutSuffix(file.getName()))
 					.getAbsolutePath();
 			if (theTune.getInfo().getSongs() > 1) {
 				basename += String.format("-%02d", theTune.getInfo().getCurrentSong());

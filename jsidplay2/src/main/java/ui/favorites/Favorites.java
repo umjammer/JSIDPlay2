@@ -28,7 +28,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import net.java.truevfs.access.TFile;
@@ -195,7 +195,7 @@ public class Favorites extends C64VBox implements UIPart {
 									file.deleteOnExit();
 									List<FavoritesSection> favorites = util.getConfig().getFavorites();
 									FavoritesSection favoritesSection = new FavoritesSection();
-									String tabName = PathUtils.getFilenameWithoutSuffix(file.getName());
+									String tabName = IOUtils.getFilenameWithoutSuffix(file.getName());
 									favoritesSection.setName(tabName);
 									favorites.add(favoritesSection);
 									try {
@@ -226,7 +226,7 @@ public class Favorites extends C64VBox implements UIPart {
 
 			FavoritesTab selectedTab = getSelectedFavoritesTab();
 			selectedTab.addFavorites(files);
-			renameTab(PathUtils.getFilenameWithoutSuffix(file.getParentFile().getName()));
+			renameTab(IOUtils.getFilenameWithoutSuffix(file.getParentFile().getName()));
 			Tab tab = favoritesList.getSelectionModel().getSelectedItem();
 			tab.setText(selectedTab.getName());
 		}
@@ -273,7 +273,7 @@ public class Favorites extends C64VBox implements UIPart {
 		final File file = fileDialog.showSaveDialog(favoritesList.getScene().getWindow());
 		if (file != null) {
 			util.getConfig().getSidplay2Section().setLastDirectory(file.getParentFile());
-			File target = new File(file.getParentFile(), PathUtils.getFilenameWithoutSuffix(file.getName()) + ".js2");
+			File target = new File(file.getParentFile(), IOUtils.getFilenameWithoutSuffix(file.getName()) + ".js2");
 			try {
 				getSelectedFavoritesTab().saveFavorites(target);
 			} catch (IOException e1) {

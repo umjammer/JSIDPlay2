@@ -79,7 +79,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import ui.common.C64VBox;
 import ui.common.C64Window;
@@ -820,7 +820,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 		String name = new File(contentEntry.getId()).getName();
 		File contentEntryFile = new File(targetDir, name);
-		File contentEntryChecksumFile = new File(targetDir, PathUtils.getFilenameWithoutSuffix(name) + ".md5");
+		File contentEntryChecksumFile = new File(targetDir, IOUtils.getFilenameWithoutSuffix(name) + ".md5");
 
 		// file already downloaded and checksum ok?
 		if (contentEntryFile.exists() && contentEntryChecksumFile.exists()) {
@@ -956,7 +956,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	private byte[] readBytes(InputStream is) throws IOException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PathUtils.copy(is, os);
+		IOUtils.copy(is, os);
 		return os.toByteArray();
 	}
 

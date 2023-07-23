@@ -30,7 +30,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import sidplay.Player;
@@ -178,7 +178,7 @@ public class GameBase extends C64VBox implements UIPart {
 			}
 		} catch (IOException | SidTuneError e) {
 			System.err.println(e.getMessage());
-			File file = PathUtils.getFile(linkMusic.getText().replace('\\', '/'), sidPlay2Section.getHvsc(),
+			File file = IOUtils.getFile(linkMusic.getText().replace('\\', '/'), sidPlay2Section.getHvsc(),
 					sidPlay2Section.getCgsc());
 			try {
 				util.getPlayer().play(SidTune.load(file));

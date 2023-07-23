@@ -1,7 +1,7 @@
 package libsidutils.status;
 
 import static libsidplay.sidtune.SidTune.RESET;
-import static libsidutils.PathUtils.getFileSize;
+import static libsidutils.IOUtils.getFileSize;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

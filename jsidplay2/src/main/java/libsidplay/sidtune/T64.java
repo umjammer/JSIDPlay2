@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import libsidutils.PathUtils;
-import libsidutils.Petscii;
+import libsidutils.IOUtils;
+import libsidutils.CBMCodeUtils;
 
 public class T64 extends Prg {
 	/**
@@ -26,7 +26,7 @@ public class T64 extends Prg {
 	}
 
 	protected static SidTune load(final String name, final byte[] dataBuf) throws SidTuneError {
-		if (!PathUtils.getFilenameSuffix(name).equalsIgnoreCase(".t64")) {
+		if (!IOUtils.getFilenameSuffix(name).equalsIgnoreCase(".t64")) {
 			throw new SidTuneError("T64: Bad file extension expected: .t64");
 		}
 		final T64 t64 = new T64();
@@ -37,7 +37,7 @@ public class T64 extends Prg {
 		// don't trust entry.c64dataLen
 		t64.info.c64dataLen = Math.min(entry.c64dataLen, dataBuf.length - t64.programOffset);
 
-		final String credit = Petscii.petsciiToIso88591(entry.name);
+		final String credit = CBMCodeUtils.petsciiToIso88591(entry.name);
 		t64.info.infoString.add(credit);
 
 		return t64;

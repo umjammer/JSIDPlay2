@@ -6,7 +6,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
-import libsidutils.C64Font;
+import libsidutils.C64FontUtils;
 
 /**
  * Classify SidDump table cells for CSS styling.
@@ -21,7 +21,7 @@ public class DirectoryCellFactory
 
 	static {
 		try {
-			InputStream fontStream = DirectoryCellFactory.class.getResourceAsStream(C64Font.FONT_NAME);
+			InputStream fontStream = DirectoryCellFactory.class.getResourceAsStream(C64FontUtils.FONT_NAME);
 			c64Font = Font.loadFont(fontStream, 10);
 		} catch (Exception e) {
 			throw new ExceptionInInitializerError(e);

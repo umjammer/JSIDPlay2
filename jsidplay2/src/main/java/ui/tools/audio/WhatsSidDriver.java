@@ -1,6 +1,6 @@
 package ui.tools.audio;
 
-import static libsidutils.PathUtils.getFilenameWithoutSuffix;
+import static libsidutils.IOUtils.getFilenameWithoutSuffix;
 
 import java.io.File;
 import java.io.IOException;

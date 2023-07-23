@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import libsidutils.PathUtils;
-import libsidutils.Petscii;
+import libsidutils.IOUtils;
+import libsidutils.CBMCodeUtils;
 import libsidutils.assembler.KickAssembler;
 import libsidutils.assembler.KickAssemblerResult;
 
@@ -75,7 +75,7 @@ class Mus extends PSid {
 	}
 
 	private int detect(File musFile, final byte[] buffer, final String errorMessage) throws SidTuneError {
-		String suffix = PathUtils.getFilenameSuffix(musFile.getName().toLowerCase(Locale.ENGLISH));
+		String suffix = IOUtils.getFilenameSuffix(musFile.getName().toLowerCase(Locale.ENGLISH));
 		if (!DEFAULT_MUS_NAMES.stream().anyMatch(ext -> suffix.endsWith(ext))) {
 			throw new SidTuneError(errorMessage);
 		}
@@ -149,7 +149,7 @@ class Mus extends PSid {
 
 		info.loadAddr = MUS_DATA_ADDR;
 		info.compatibility = PSIDv2;
-		info.infoString.add(PathUtils.getFilenameWithoutSuffix(musFile.getName()));
+		info.infoString.add(IOUtils.getFilenameWithoutSuffix(musFile.getName()));
 		info.infoString.add("<?>");
 		info.infoString.add("<?>");
 
@@ -164,7 +164,7 @@ class Mus extends PSid {
 
 	private String getCredits(byte[] musBuf, int voice3DataEnd) {
 		byte[] creditsBytes = Arrays.copyOfRange(musBuf, voice3DataEnd, musBuf.length - 1);
-		return Petscii.petsciiToIso88591(creditsBytes);
+		return CBMCodeUtils.petsciiToIso88591(creditsBytes);
 	}
 
 	/**
@@ -177,7 +177,7 @@ class Mus extends PSid {
 	private static File getStereoTune(final File file) {
 		// Get all sibling files
 		final File[] siblings = file.getParentFile().listFiles((dir, name) -> {
-			String suffix = PathUtils.getFilenameSuffix(name.toLowerCase(Locale.ENGLISH));
+			String suffix = IOUtils.getFilenameSuffix(name.toLowerCase(Locale.ENGLISH));
 			return DEFAULT_MUS_NAMES.stream().filter(ext -> suffix.endsWith(ext)).findFirst().isPresent();
 		});
 		// For each possible MUS/STR extension, check if there is ...

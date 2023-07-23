@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.collection.service.HVSCEntryService;
@@ -65,7 +65,7 @@ public final class SearchIndexCreator {
 				return;
 			}
 			try {
-				String collectionRelName = PathUtils.getCollectionName(root, file);
+				String collectionRelName = IOUtils.getCollectionName(root, file);
 				if (collectionRelName != null) {
 					HVSCEntry hvscEntry = hvscEntryService.add(player, collectionRelName, file);
 					stilService.add(stilPath -> player.getStilEntry(stilPath), hvscEntry);

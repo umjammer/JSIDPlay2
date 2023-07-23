@@ -1,7 +1,7 @@
 package build;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static libsidutils.PathUtils.deleteDirectory;
+import static libsidutils.IOUtils.deleteDirectory;
 import static ui.entities.PersistenceProperties.CGSC_DS;
 import static ui.entities.PersistenceProperties.HVSC_DS;
 import static ui.musiccollection.MusicCollectionType.CGSC;
@@ -32,7 +32,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import net.java.truevfs.access.TArchiveDetector;
@@ -139,8 +139,8 @@ public class OnlineContent {
 		Process proc = Runtime.getRuntime().exec(new String[] { upxExe, "--lzma", "--best",
 				/* "--ultra-brute", */deployDir + "/jsiddevice-" + projectVersion + ".exe" });
 
-		PathUtils.copy(proc.getErrorStream(), System.err);
-		PathUtils.copy(proc.getInputStream(), System.out);
+		IOUtils.copy(proc.getErrorStream(), System.err);
+		IOUtils.copy(proc.getInputStream(), System.out);
 
 		proc.waitFor();
 	}
@@ -328,7 +328,7 @@ public class OnlineContent {
 	}
 
 	private String createOutputFilename(String filename, int partNum) {
-		return PathUtils.getFilenameWithoutSuffix(filename) + String.format(".%03d", partNum);
+		return IOUtils.getFilenameWithoutSuffix(filename) + String.format(".%03d", partNum);
 	}
 
 	private BufferedOutputStream createOutputStream(String filename) throws FileNotFoundException {

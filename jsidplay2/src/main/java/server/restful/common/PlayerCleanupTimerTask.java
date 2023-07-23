@@ -1,7 +1,7 @@
 package server.restful.common;
 
 import static java.util.Optional.ofNullable;
-import static libsidutils.PathUtils.deleteDirectory;
+import static libsidutils.IOUtils.deleteDirectory;
 import static server.restful.common.IServletSystemProperties.CLEANUP_DIRECTORY_PERIOD;
 import static server.restful.common.IServletSystemProperties.MAXIMUM_DURATION_TEMP_DIRECTORIES;
 import static server.restful.common.IServletSystemProperties.RTMP_PRINT_PLAYER_PERIOD;

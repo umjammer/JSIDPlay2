@@ -33,7 +33,7 @@
  */
 package libsidplay.components.cart.supported;
 
-import static libsidutils.PathUtils.getFileSize;
+import static libsidutils.IOUtils.getFileSize;
 
 import java.io.DataInputStream;
 import java.io.EOFException;

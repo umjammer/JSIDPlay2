@@ -1,6 +1,6 @@
 package server.restful.servlets;
 
-import static libsidutils.PathUtils.getFilenameSuffix;
+import static libsidutils.IOUtils.getFilenameSuffix;
 import static libsidutils.ZipFileUtils.newFileInputStream;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.ATTACHMENT;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
@@ -20,7 +20,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
@@ -72,7 +72,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
 			response.addHeader(CONTENT_DISPOSITION,
 					ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.name()));
-			PathUtils.copy(newFileInputStream(file), response.getOutputStream());
+			IOUtils.copy(newFileInputStream(file), response.getOutputStream());
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

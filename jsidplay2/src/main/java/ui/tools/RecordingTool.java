@@ -27,7 +27,7 @@ import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.sidtune.MD5Method;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.fingerprinting.FingerPrinting;
 import libsidutils.fingerprinting.ini.IniFingerprintConfig;
 import libsidutils.siddatabase.SidDatabase;
@@ -244,7 +244,7 @@ public class RecordingTool {
 	private void processFile(ExecutorService executor, File file) throws IOException, SidTuneError {
 		try {
 			SidTune tune = SidTune.load(file);
-			String collectionName = PathUtils.getCollectionName(directory, file);
+			String collectionName = IOUtils.getCollectionName(directory, file);
 
 			Player player = new Player(config);
 			player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
@@ -324,7 +324,7 @@ public class RecordingTool {
 		} else {
 			targetFile = file;
 		}
-		String filename = PathUtils.getFilenameWithoutSuffix(targetFile.getAbsolutePath());
+		String filename = IOUtils.getFilenameWithoutSuffix(targetFile.getAbsolutePath());
 		if (tune.getInfo().getSongs() > 1) {
 			filename += String.format("-%02d", song);
 		}

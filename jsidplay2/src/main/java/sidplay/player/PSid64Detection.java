@@ -7,7 +7,7 @@ import java.util.Locale;
 
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
-import libsidutils.Petscii;
+import libsidutils.CBMCodeUtils;
 
 public final class PSid64Detection {
 
@@ -97,7 +97,7 @@ public final class PSid64Detection {
 
 	private static boolean checkScreenMessage(byte[] ram, int videoScreenAddress, String expected, int row,
 			int column) {
-		byte[] expectedScreenCodes = Petscii.petsciiToScreenRam(expected.toLowerCase(Locale.US));
+		byte[] expectedScreenCodes = CBMCodeUtils.petsciiToScreenRam(expected.toLowerCase(Locale.US));
 		final int offset = (row - 1) * 40 + column - 1;
 		for (int i = 0; i < expected.length(); i++) {
 			if (ram[videoScreenAddress + offset + i] != expectedScreenCodes[i]) {

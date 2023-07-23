@@ -38,7 +38,7 @@ import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.prg2tap.PRG2TAP;
 import libsidutils.prg2tap.PRG2TAPProgram;
 
@@ -486,7 +486,7 @@ public class HardwareEnsemble implements Ultimate64 {
 			final File convertedTape = new File(tmpDir, file.getName() + ".tap");
 			convertedTape.deleteOnExit();
 			SidTune prog = SidTune.load(file);
-			String name = PathUtils.getFilenameWithoutSuffix(file.getName());
+			String name = IOUtils.getFilenameWithoutSuffix(file.getName());
 			PRG2TAPProgram program = new PRG2TAPProgram(prog, name);
 
 			PRG2TAP prg2tap = new PRG2TAP();

@@ -23,7 +23,7 @@ import libsidplay.components.c1541.C1541;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import sidplay.fingerprinting.FingerprintJsonClient;
 import sidplay.player.DebugUtil;
@@ -189,7 +189,7 @@ public class JSidPlay2Main extends Application implements Function<SidTune, Stri
 		Iterator<String> infos = info.getInfoString().iterator();
 		String name = infos.hasNext() ? infos.next().replaceAll("[:\\\\/*?|<>]", "_") : defaultName;
 		String filename = new File(player.getConfig().getSidplay2Section().getTmpDir(),
-				PathUtils.getFilenameWithoutSuffix(name)).getAbsolutePath();
+				IOUtils.getFilenameWithoutSuffix(name)).getAbsolutePath();
 		if (info.getSongs() > 1) {
 			filename += String.format("-%02d", info.getCurrentSong());
 		}

@@ -23,7 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import libsidutils.sidid.SidIdInfo;
 import libsidutils.sidid.SidIdInfo.PlayerInfoSection;
 import libsidutils.sidid.SidIdV2;
@@ -50,7 +50,7 @@ class Prg extends SidTune {
 	protected byte[] program;
 
 	protected static SidTune load(final String name, final byte[] dataBuf) throws SidTuneError {
-		if (!PathUtils.getFilenameSuffix(name).equalsIgnoreCase(".prg") || dataBuf.length < 2) {
+		if (!IOUtils.getFilenameSuffix(name).equalsIgnoreCase(".prg") || dataBuf.length < 2) {
 			throw new SidTuneError("PRG: Bad file extension expected: .prg and length > 2");
 		}
 		final Prg prg = new Prg();
@@ -60,7 +60,7 @@ class Prg extends SidTune {
 		prg.info.c64dataLen = dataBuf.length - prg.programOffset;
 		prg.info.loadAddr = (dataBuf[0] & 0xff) + ((dataBuf[1] & 0xff) << 8);
 
-		prg.info.infoString.add(PathUtils.getFilenameWithoutSuffix(name));
+		prg.info.infoString.add(IOUtils.getFilenameWithoutSuffix(name));
 
 		return prg;
 	}

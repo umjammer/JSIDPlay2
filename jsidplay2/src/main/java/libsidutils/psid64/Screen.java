@@ -5,7 +5,7 @@ import static libsidplay.sidtune.SidTune.Compatibility.PSIDv1;
 import java.util.Iterator;
 
 import libsidplay.sidtune.SidTuneInfo;
-import libsidutils.Petscii;
+import libsidutils.CBMCodeUtils;
 
 public class Screen {
 	private static final String PACKAGE = "PSID64";
@@ -130,7 +130,7 @@ public class Screen {
 
 	private void clear() {
 		for (int i = 0; i < SCREEN_SIZE; ++i) {
-			screen[i] = Petscii.iso88591ToScreenRam(' ');
+			screen[i] = CBMCodeUtils.iso88591ToScreenRam(' ');
 		}
 	}
 
@@ -147,7 +147,7 @@ public class Screen {
 			moveDown();
 		} else {
 			int offs = offset(x, y);
-			screen[offs] = Petscii.iso88591ToScreenRam((char) c);
+			screen[offs] = CBMCodeUtils.iso88591ToScreenRam((char) c);
 			moveRight();
 		}
 	}

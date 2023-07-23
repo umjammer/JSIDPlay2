@@ -37,7 +37,7 @@ import javafx.scene.web.WebEngine;
 import javafx.stage.Modality;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.PathUtils;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import ui.common.C64VBox;
 import ui.common.C64Window;
@@ -116,7 +116,7 @@ public class WebView extends C64VBox implements UIPart {
 									targetDir.mkdirs();
 									Files.move(Paths.get(downloadedFile.getAbsolutePath()),
 											Paths.get(targetFile.getAbsolutePath()), REPLACE_EXISTING);
-									if (showTuneInfos && PathUtils.getFilenameSuffix(targetFile.getName())
+									if (showTuneInfos && IOUtils.getFilenameSuffix(targetFile.getName())
 											.equalsIgnoreCase(".sid")) {
 										showTuneInfos(util.getPlayer().getTune(), targetFile);
 									}
