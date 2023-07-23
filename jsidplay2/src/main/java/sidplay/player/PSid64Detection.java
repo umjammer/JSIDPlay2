@@ -3,6 +3,7 @@ package sidplay.player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
@@ -96,10 +97,10 @@ public final class PSid64Detection {
 
 	private static boolean checkScreenMessage(byte[] ram, int videoScreenAddress, String expected, int row,
 			int column) {
+		byte[] expectedScreenCodes = Petscii.petsciiToScreenRam(expected.toLowerCase(Locale.US));
 		final int offset = (row - 1) * 40 + column - 1;
 		for (int i = 0; i < expected.length(); i++) {
-			final byte screenCode = Petscii.iso88591ToPetscii(expected.charAt(i));
-			if (ram[videoScreenAddress + offset + i] != screenCode) {
+			if (ram[videoScreenAddress + offset + i] != expectedScreenCodes[i]) {
 				return false;
 			}
 		}
