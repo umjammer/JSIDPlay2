@@ -1,7 +1,6 @@
 package server.restful.common;
 
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
@@ -10,35 +9,24 @@ import static libsidutils.IOUtils.getFileSize;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
-import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
@@ -62,40 +50,28 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.IOUtils;
-import libsidutils.ZipFileUtils;
 import libsidutils.siddatabase.SidDatabase;
-import net.java.truevfs.access.TFile;
-import server.restful.common.parameter.RequestPathServletParameters.DirectoryRequestPathServletParameters;
-import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
 import server.restful.common.parameter.ServletUsageFormatter;
 import sidplay.filefilter.AudioTuneFileFilter;
 import sidplay.filefilter.VideoTuneFileFilter;
-import ui.assembly64.ContentEntry;
-import ui.assembly64.ContentEntrySearchResult;
-import ui.common.comparator.FileComparator;
 import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
-import ui.common.filefilter.FilteredFileFilter;
-import ui.common.filefilter.MP3TuneFileFilter;
 import ui.common.filefilter.TapeFileFilter;
-import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
-import ui.entities.config.SidPlay2Section;
 
 @SuppressWarnings("serial")
 public abstract class JSIDPlay2Servlet extends HttpServlet {
 
-	protected static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
-	protected static final VideoTuneFileFilter VIDEO_TUNE_FILE_FILTER = new VideoTuneFileFilter();
-	protected static final MP3TuneFileFilter MP3_TUNE_FILE_FILTER = new MP3TuneFileFilter();
-	protected static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
-	protected static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
-	protected static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
-	protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule())
+	public static final AudioTuneFileFilter AUDIO_TUNE_FILE_FILTER = new AudioTuneFileFilter();
+	public static final VideoTuneFileFilter VIDEO_TUNE_FILE_FILTER = new VideoTuneFileFilter();
+	public static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
+	public static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
+	public static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
+	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule())
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-	protected static final String C64_MUSIC = "/C64Music";
-	protected static final String CGSC = "/CGSC";
+	public static final String C64_MUSIC = "/C64Music";
+	public static final String CGSC = "/CGSC";
 
 	protected Configuration configuration;
 
@@ -104,6 +80,14 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected JSIDPlay2Servlet(Configuration configuration, Properties directoryProperties) {
 		this.configuration = configuration;
 		this.directoryProperties = directoryProperties;
+	}
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public Properties getDirectoryProperties() {
+		return directoryProperties;
 	}
 
 	public abstract String getServletPath();
@@ -261,100 +245,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return commander;
 	}
 
-	protected File getFile(JCommander commander, FileRequestPathServletParameters fileRequestPathServletParameters,
-			HttpServletRequest request) {
-		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
-
-		boolean adminRole = !isSecured() || request.isUserInRole(ROLE_ADMIN);
-		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
-
-		String path = fileRequestPathServletParameters.getFilePath();
-		if (path == null || usageFormatter.getException() != null) {
-			return null;
-		}
-		if (fileRequestPathServletParameters.getItemId() != null
-				&& fileRequestPathServletParameters.getCategoryId() != null) {
-			File file = fetchAssembly64Files(fileRequestPathServletParameters.getItemId(),
-					fileRequestPathServletParameters.getCategoryId(), path.substring(1));
-			if (file != null && file.exists()) {
-				return file;
-			}
-		} else if (sidplay2Section.getHvsc() != null && path.startsWith(C64_MUSIC)) {
-			File file = IOUtils.getFile(path.substring(C64_MUSIC.length()), sidplay2Section.getHvsc(), null);
-			if (file.exists() && file.getAbsolutePath().startsWith(sidplay2Section.getHvsc().getAbsolutePath())) {
-				return file;
-			}
-		} else if (sidplay2Section.getCgsc() != null && path.startsWith(CGSC)) {
-			File file = IOUtils.getFile(path.substring(CGSC.length()), null, sidplay2Section.getCgsc());
-			if (file.exists() && file.getAbsolutePath().startsWith(sidplay2Section.getCgsc().getAbsolutePath())) {
-				return file;
-			}
-		} else {
-			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
-				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-				String directoryValue = splitted.length > 0 ? splitted[0] : null;
-				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
-					TFile root = new TFile(directoryValue);
-					File file = IOUtils.getFile(path.substring(directoryLogicalName.length()), root, null);
-					if (file.exists() && file.getAbsolutePath().startsWith(root.getAbsolutePath())) {
-						return file;
-					}
-				}
-			}
-		}
-		usageFormatter.setException(new FileNotFoundException(path));
-		return null;
-	}
-
-	protected List<String> getDirectory(JCommander commander,
-			DirectoryRequestPathServletParameters directoryRequestPathServletParameters, HttpServletRequest request) {
-		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
-
-		boolean adminRole = !isSecured() || request.isUserInRole(ROLE_ADMIN);
-		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
-
-		String path = directoryRequestPathServletParameters.getDirectory();
-		if (path == null || usageFormatter.getException() != null) {
-			return null;
-		}
-		File filePath = new File(path);
-		if (path.equals("/")) {
-			List<String> files = getRoot(adminRole, sidplay2Section.getHvsc(), sidplay2Section.getCgsc());
-			if (files != null) {
-				return files;
-			}
-		} else if (path.startsWith(C64_MUSIC)) {
-			List<String> files = getCollectionFiles(sidplay2Section.getHvsc(), C64_MUSIC, filePath,
-					directoryRequestPathServletParameters);
-			if (files != null) {
-				return files;
-			}
-		} else if (path.startsWith(CGSC)) {
-			List<String> files = getCollectionFiles(sidplay2Section.getCgsc(), CGSC, filePath,
-					directoryRequestPathServletParameters);
-			if (files != null) {
-				return files;
-			}
-		} else {
-			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
-				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-				String directoryValue = splitted.length > 0 ? splitted[0] : null;
-				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
-					File root = new TFile(directoryValue);
-					List<String> files = getCollectionFiles(root, directoryLogicalName, filePath,
-							directoryRequestPathServletParameters);
-					if (files != null) {
-						return files;
-					}
-				}
-			}
-		}
-		usageFormatter.setException(new FileNotFoundException(path));
-		return null;
-	}
-
 	protected String getCollectionName(File file) throws IOException, SidTuneError {
 		String result = "";
 
@@ -436,98 +326,4 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	private File fetchAssembly64Files(String itemId, String categoryId, String fileId) {
-		try {
-			String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
-			String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
-			URL url = new URL(assembly64Url + "/leet/search/v2/contententries/" + encodedItemId + "/" + categoryId);
-			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
-
-			ContentEntrySearchResult contentEntries = OBJECT_MAPPER.readValue(connection.getInputStream(),
-					ContentEntrySearchResult.class);
-
-			File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
-			targetDir.mkdir();
-
-			File file = new File(fileId);
-			boolean mustFetchAttachments = VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
-					|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file);
-
-			List<ContentEntry> contentEntriesToFetch = contentEntries.getContentEntry().stream()
-					.filter(contentEntry -> Objects.equals(contentEntry.getId(), fileId)
-							|| (mustFetchAttachments && (DISK_FILE_FILTER.accept(new File(contentEntry.getId()))
-									|| TAPE_FILE_FILTER.accept(new File(contentEntry.getId()))
-									|| CART_FILE_FILTER.accept(new File(contentEntry.getId())))))
-					.collect(Collectors.toList());
-
-			File result = null;
-			for (ContentEntry contentEntry : contentEntriesToFetch) {
-
-				File contentEntryFile = new File(targetDir, contentEntry.getId());
-				// create file as directory to handle sub-directories (subdir/file.txt)
-				contentEntryFile.getParentFile().mkdirs();
-
-				fetchAssembly64File(itemId, categoryId, contentEntry.getId(), contentEntryFile);
-
-				if (Objects.equals(contentEntry.getId(), fileId)) {
-					result = contentEntryFile;
-				}
-			}
-			return result;
-		} catch (IOException e) {
-			error(e);
-		}
-		return null;
-	}
-
-	private void fetchAssembly64File(String itemId, String categoryId, String fileId, File contentEntryFile) {
-		try {
-			String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
-			String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
-			String encodedContentEntryId = new String(Base64.getEncoder().encode(fileId.getBytes()));
-			URL url = new URL(assembly64Url + "/leet/search/v2/binary/" + encodedItemId + "/" + categoryId + "/"
-					+ encodedContentEntryId);
-			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
-
-			try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {
-				IOUtils.copy(connection.getInputStream(), outputStream);
-			}
-		} catch (IOException e) {
-			error(e);
-		}
-	}
-
-	private List<String> getRoot(boolean adminRole, File hvscRoot, File cgscRoot) {
-		List<String> result = new ArrayList<>();
-		if (hvscRoot != null) {
-			result.add(C64_MUSIC + "/");
-		}
-		if (cgscRoot != null) {
-			result.add(CGSC + "/");
-		}
-		directoryProperties.stringPropertyNames().stream().sorted().forEach(directoryLogicalName -> {
-			String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
-			boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
-			if (!needToBeAdmin || adminRole) {
-				result.add(directoryLogicalName + "/");
-			}
-		});
-		return result;
-	}
-
-	private List<String> getCollectionFiles(File rootFile, String virtualCollectionRoot, File filePath,
-			DirectoryRequestPathServletParameters servletParameters) {
-		if (rootFile == null) {
-			return null;
-		}
-		File parentFile = ZipFileUtils.newFile(rootFile, filePath.toString().substring(virtualCollectionRoot.length()));
-
-		String virtualParentFile = virtualCollectionRoot + IOUtils.getCollectionName(rootFile, parentFile);
-
-		return concat(of(virtualParentFile + "/../"),
-				stream(ofNullable(parentFile.listFiles(new FilteredFileFilter(servletParameters.getFilter())))
-						.orElse(new File[0])).sorted(new FileComparator())
-						.map(file -> new File(virtualParentFile, file.getName()) + (file.isDirectory() ? "/" : "")))
-				.collect(Collectors.toList());
-	}
 }

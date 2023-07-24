@@ -15,7 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.RequestPathServletParameters.DirectoryRequestPathServletParameters;
+import server.restful.common.parameter.requestpath.DirectoryRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -57,7 +57,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			List<String> files = getDirectory(commander, servletParameters, request);
+			final List<String> files = servletParameters.getDirectory(this, commander, request);
 			if (files == null) {
 				commander.usage();
 				return;

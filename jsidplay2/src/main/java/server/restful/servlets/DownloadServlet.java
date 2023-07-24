@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
@@ -57,14 +57,14 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final DownloadServletParameters servletParameters = new DownloadServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = getFile(commander, servletParameters, request);
+			final File file = servletParameters.getFile(this, commander, request);
 			if (file == null) {
 				commander.usage();
 				return;

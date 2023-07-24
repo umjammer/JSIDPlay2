@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import sidplay.ini.IniConfig;
 import ui.entities.config.Configuration;
 
@@ -61,7 +61,7 @@ public class SIDBlasterMappingServlet extends JSIDPlay2Servlet {
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = getFile(commander, servletParameters, request);
+			final File file = servletParameters.getFile(this, commander, request);
 			if (file == null) {
 				commander.usage();
 				return;

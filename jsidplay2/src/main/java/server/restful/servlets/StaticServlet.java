@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.RequestPathServletParameters.WebResourceRequestPathServletParameters;
+import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")

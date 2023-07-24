@@ -16,7 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.RequestParamServletParameters.VideoRequestParamServletParameters;
+import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import server.restful.common.validator.JoystickNumberValidator;
 import server.restful.common.validator.JoystickValueValidator;
 import ui.entities.config.Configuration;

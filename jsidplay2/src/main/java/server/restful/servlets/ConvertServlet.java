@@ -85,7 +85,7 @@ import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
-import server.restful.common.parameter.RequestPathServletParameters.FileRequestPathServletParameters;
+import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
 import sidplay.audio.AVIDriver.AVIFileDriver;
@@ -299,14 +299,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final ConvertServletParameters servletParameters = new ConvertServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
-			final File file = getFile(commander, servletParameters, request);
+			final File file = servletParameters.getFile(this, commander, request);
 			if (file == null) {
 				commander.usage();
 				return;
@@ -405,7 +405,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private AudioDriver getAudioDriverOfAudioFormat(Audio audio, OutputStream outputstream,
-		ConvertServletParameters servletParameters) {
+			ConvertServletParameters servletParameters) {
 		switch (audio) {
 		case WAV:
 			return new WAVStreamDriver(outputstream);
@@ -424,7 +424,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters)
-		throws IOException, SidTuneError {
+			throws IOException, SidTuneError {
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 
 		Player player = new Player(servletParameters.config);
@@ -470,7 +470,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private AudioDriver getAudioDriverOfVideoFormat(Audio audio, UUID uuid,
-		ConvertServletParameters servletParameters) {
+			ConvertServletParameters servletParameters) {
 		switch (audio) {
 		case FLV:
 		default:
@@ -487,7 +487,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters, UUID uuid,
-		Thread... parentThread) throws IOException, SidTuneError {
+			Thread... parentThread) throws IOException, SidTuneError {
 		File videoFile = null;
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 
@@ -535,7 +535,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
-		HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
+			HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
 		String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
 		String qrCodeImgTag = createQrCodeImgTag(getRequestURL(request), "UTF-8", "png", 320, 320);
 
@@ -552,7 +552,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)
-		throws IOException, WriterException {
+			throws IOException, WriterException {
 		ByteArrayOutputStream qrCodeImgData = new ByteArrayOutputStream();
 		ImageIO.write(createBarCodeImage(data, charset, width, height), imgFormat, qrCodeImgData);
 		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));

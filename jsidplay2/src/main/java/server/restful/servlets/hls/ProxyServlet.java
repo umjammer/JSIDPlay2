@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.RequestPathServletParameters.URLRequestPathServletParameters;
+import server.restful.common.parameter.requestpath.URLRequestPathServletParameters;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 
