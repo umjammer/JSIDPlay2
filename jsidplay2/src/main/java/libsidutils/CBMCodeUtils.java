@@ -88,7 +88,7 @@ public class CBMCodeUtils extends C64FontUtils {
 			if (b == 0) {
 				break;
 			}
-			result.append(PETSCII_TO_ISO8859_1[b & 0xff]);
+			result.append((char) PETSCII_TO_ISO8859_1[b & 0xff]);
 		}
 		return result.toString();
 	}
