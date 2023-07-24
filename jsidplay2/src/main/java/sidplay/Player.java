@@ -1010,6 +1010,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		} catch (Throwable e) {
 			if (LOG.isLoggable(Level.FINEST)) {
 				LOG.log(Level.FINEST, String.format("Exception near close: fn=%s", getRecordingFilename()), e);
+			} else if (LOG.isLoggable(Level.FINE)) {
+				LOG.log(Level.FINE, String.format("Exception near close: %s", e.getMessage()));
 			}
 		} finally {
 			if (whatsSidEvent != null) {
