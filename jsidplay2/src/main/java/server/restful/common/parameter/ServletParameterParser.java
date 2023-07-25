@@ -20,18 +20,26 @@ import com.beust.jcommander.ParameterException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * 
+ * Parse servlet parameters using JCommander based on annotated parameter
+ * objects.
+ * 
+ * @author khaendel
+ *
+ */
 public class ServletParameterParser {
 
 	private final JCommander commander;
 	private final ServletUsageFormatter usageFormatter;
 
-	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response,
-		final Object parameterObject, String programName) throws IOException {
+	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response, Object parameterObject,
+			String programName) throws IOException {
 		this(request, response, parameterObject, programName, false);
 	}
 
-	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response,
-		final Object parameterObject, String programName, boolean acceptUnknownOptions) throws IOException {
+	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response, Object parameterObject,
+			String programName, boolean acceptUnknownOptions) throws IOException {
 		commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
 				.columnSize(Integer.MAX_VALUE)
 				.console(new PrintStreamConsole(
