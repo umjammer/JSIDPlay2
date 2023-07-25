@@ -12,18 +12,6 @@ import server.restful.common.parameter.requestpath.impl.DirectoryRequestPathServ
  */
 public class DirectoryRequestPathServletParameters extends DirectoryRequestPathServletParametersImpl {
 
-	private String directoryPath;
-
-	@Override
-	public String getDirectoryPath() {
-		return directoryPath;
-	}
-
-	@Parameter(descriptionKey = "DIRECTORY_PATH")
-	public void setDirectoryPath(String directory) {
-		this.directoryPath = directory;
-	}
-
 	private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";
 
 	@Override
@@ -34,6 +22,18 @@ public class DirectoryRequestPathServletParameters extends DirectoryRequestPathS
 	@Parameter(names = { "--filter" }, descriptionKey = "FILTER", order = -2)
 	public void setFilter(String filter) {
 		this.filter = filter;
+	}
+
+	private String directoryPath;
+
+	@Override
+	public String getDirectoryPath() {
+		return directoryPath;
+	}
+
+	@Parameter(descriptionKey = "DIRECTORY_PATH")
+	public void setDirectoryPath(String directory) {
+		this.directoryPath = directory;
 	}
 
 }

@@ -18,11 +18,11 @@ public class StatusText {
 
 	private final Player player;
 
+	private final boolean showStatus;
+
 	private final Status status;
 
 	private final double waitForScrollInFrames;
-
-	private final boolean showStatus;
 
 	private Boolean currentDirection;
 	private boolean newDirection;
@@ -31,9 +31,9 @@ public class StatusText {
 
 	public StatusText(Player player, boolean showStatus) {
 		this.player = player;
+		this.showStatus = showStatus;
 		status = new Status(player, RESOURCE_BUNDLE);
 		waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
-		this.showStatus = showStatus;
 	}
 
 	public void update(File diskImage) {
