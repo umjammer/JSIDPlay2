@@ -223,7 +223,7 @@ public class RecordingTool {
 							if (quit) {
 								return;
 							}
-							processFile(executor, file);
+							processFile(file);
 							if (System.in.available() > 0) {
 								final int key = System.in.read();
 								if (key == 'q') {
@@ -241,7 +241,7 @@ public class RecordingTool {
 		}
 	}
 
-	private void processFile(ExecutorService executor, File file) throws IOException, SidTuneError {
+	private void processFile(File file) throws IOException, SidTuneError {
 		try {
 			SidTune tune = SidTune.load(file);
 			String collectionName = IOUtils.getCollectionName(directory, file);
