@@ -65,7 +65,7 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final PressKeyServletParameters servletParameters = new PressKeyServletParameters();
@@ -73,7 +73,8 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					getServletPath());
 
-			if (parser.hasException()) {
+			if ((servletParameters.type == null && servletParameters.press == null && servletParameters.release == null)
+					|| parser.hasException()) {
 				parser.usage();
 				return;
 			}

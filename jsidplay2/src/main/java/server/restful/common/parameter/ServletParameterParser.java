@@ -33,6 +33,15 @@ public class ServletParameterParser {
 	private final JCommander commander;
 	private final ServletUsageFormatter usageFormatter;
 
+	/**
+	 * Parse request parameters and request path according to annotated parameters
+	 * of the parameterObject.
+	 * 
+	 * @param request         servlet request to parse
+	 * @param response        servlet response to output usage message
+	 * @param parameterObject annotated parameters of the parameterObject
+	 * @param programName     for usage message
+	 */
 	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response, Object parameterObject,
 			String programName) throws IOException {
 		this(request, response, parameterObject, programName, false);
