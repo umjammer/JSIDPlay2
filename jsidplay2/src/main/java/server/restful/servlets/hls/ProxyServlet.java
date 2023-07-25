@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestpath.URLRequestPathServletParameters;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
@@ -53,13 +54,13 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		// super.doGet(request); // Calls are very frequent, therefore we are silent here
 		try {
 			final ProxyServletParameters servletParameters = new ProxyServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.getUrl() == null) {
+			if (((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

@@ -20,7 +20,7 @@ public class WebResourceRequestPathServletParameters {
 		return resource;
 	}
 
-	@Parameter(descriptionKey = "RESOURCE", converter = WebResourceConverter.class)
+	@Parameter(descriptionKey = "RESOURCE", converter = WebResourceConverter.class, required = true)
 	public void setResource(InputStream resource) {
 		this.resource = resource;
 	}

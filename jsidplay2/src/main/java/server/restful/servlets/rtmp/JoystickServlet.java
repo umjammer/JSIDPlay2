@@ -16,6 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import server.restful.common.validator.JoystickNumberValidator;
 import server.restful.common.validator.JoystickValueValidator;
@@ -85,7 +86,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 			final JoystickServletParameters servletParameters = new JoystickServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.getUuid() == null) {
+			if (((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

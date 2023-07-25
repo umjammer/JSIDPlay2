@@ -40,7 +40,7 @@ public interface IDirectoryRequestPathServletParameters {
 		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 
 		String path = getDirectoryPath();
-		if (path == null || usageFormatter.getException() != null) {
+		if (path == null) {
 			return null;
 		}
 		File filePath = new File(path);

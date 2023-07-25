@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
@@ -60,7 +61,7 @@ public class SetDefaultEmulationReSidServlet extends JSIDPlay2Servlet {
 			final SetDefaultEmulationReSidServletParameters servletParameters = new SetDefaultEmulationReSidServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.getUuid() == null) {
+			if (((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

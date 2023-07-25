@@ -85,6 +85,7 @@ import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -307,7 +308,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
 			final File file = servletParameters.getFile(this, commander, request);
-			if (file == null) {
+			if (file == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

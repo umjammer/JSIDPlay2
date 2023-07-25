@@ -21,6 +21,7 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
@@ -64,7 +65,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
 			final File file = servletParameters.getFile(this, commander, request);
-			if (file == null) {
+			if (file == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

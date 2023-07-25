@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
@@ -57,13 +58,13 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final StaticServletParameters servletParameters = new StaticServletParameters();
 
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (servletParameters.getResource() == null) {
+			if (((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

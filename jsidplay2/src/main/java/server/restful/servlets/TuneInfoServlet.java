@@ -27,6 +27,7 @@ import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.config.Configuration;
@@ -75,7 +76,7 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
 			final File file = servletParameters.getFile(this, commander, request);
-			if (file == null) {
+			if (file == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

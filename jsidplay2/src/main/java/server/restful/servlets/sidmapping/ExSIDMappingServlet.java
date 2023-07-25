@@ -25,6 +25,7 @@ import libsidplay.common.ChipModel;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.parameter.ServletUsageFormatter;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import sidplay.ini.IniConfig;
 import ui.entities.config.Configuration;
@@ -66,7 +67,7 @@ public class ExSIDMappingServlet extends JSIDPlay2Servlet {
 			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
 
 			final File file = servletParameters.getFile(this, commander, request);
-			if (file == null) {
+			if (file == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
 				commander.usage();
 				return;
 			}

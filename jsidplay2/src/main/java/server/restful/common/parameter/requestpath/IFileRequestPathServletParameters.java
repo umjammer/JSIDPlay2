@@ -51,7 +51,7 @@ public interface IFileRequestPathServletParameters {
 		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 
 		String path = getFilePath();
-		if (path == null || usageFormatter.getException() != null) {
+		if (path == null) {
 			return null;
 		}
 		if (getItemId() != null && getCategoryId() != null) {
