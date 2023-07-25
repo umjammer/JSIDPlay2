@@ -10,16 +10,16 @@ import com.beust.jcommander.Parameter;
  */
 public class DirectoryRequestPathServletParameters implements IDirectoryRequestPathServletParameters {
 
-	private String directory;
+	private String directoryPath;
 
 	@Override
-	public String getDirectory() {
-		return directory;
+	public String getDirectoryPath() {
+		return directoryPath;
 	}
 
-	@Parameter(descriptionKey = "DIRECTORY")
-	public void setDirectory(String directory) {
-		this.directory = directory;
+	@Parameter(descriptionKey = "DIRECTORY_PATH")
+	public void setDirectoryPath(String directory) {
+		this.directoryPath = directory;
 	}
 
 	private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";

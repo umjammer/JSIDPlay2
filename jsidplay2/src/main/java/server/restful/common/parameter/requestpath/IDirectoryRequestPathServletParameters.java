@@ -29,7 +29,7 @@ import ui.entities.config.SidPlay2Section;
 
 public interface IDirectoryRequestPathServletParameters {
 
-	String getDirectory();
+	String getDirectoryPath();
 
 	String getFilter();
 
@@ -39,7 +39,7 @@ public interface IDirectoryRequestPathServletParameters {
 		boolean adminRole = !servlet.isSecured() || request.isUserInRole(ROLE_ADMIN);
 		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
 
-		String path = getDirectory();
+		String path = getDirectoryPath();
 		if (path == null || usageFormatter.getException() != null) {
 			return null;
 		}
