@@ -2,13 +2,15 @@ package server.restful.common.parameter.requestpath;
 
 import com.beust.jcommander.Parameter;
 
+import server.restful.common.parameter.requestpath.impl.DirectoryRequestPathServletParametersImpl;
+
 /**
  * Local directory name.
  * 
  * @author ken
  *
  */
-public class DirectoryRequestPathServletParameters implements IDirectoryRequestPathServletParameters {
+public class DirectoryRequestPathServletParameters extends DirectoryRequestPathServletParametersImpl {
 
 	private String directoryPath;
 

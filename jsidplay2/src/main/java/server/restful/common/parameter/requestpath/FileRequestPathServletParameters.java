@@ -2,13 +2,15 @@ package server.restful.common.parameter.requestpath;
 
 import com.beust.jcommander.Parameter;
 
+import server.restful.common.parameter.requestpath.impl.FileRequestPathServletParametersImpl;
+
 /**
  * Local file (filePath) or an Assemble64 file (filePath, itemId, categoryId).
  * 
  * @author ken
  *
  */
-public class FileRequestPathServletParameters implements IFileRequestPathServletParameters {
+public class FileRequestPathServletParameters extends FileRequestPathServletParametersImpl {
 
 	private String itemId;
 

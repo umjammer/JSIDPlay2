@@ -1,4 +1,4 @@
-package server.restful.common.parameter.requestpath;
+package server.restful.common.parameter.requestpath.impl;
 
 import static server.restful.common.JSIDPlay2Servlet.C64_MUSIC;
 import static server.restful.common.JSIDPlay2Servlet.CART_FILE_FILTER;
@@ -31,15 +31,9 @@ import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 import ui.entities.config.SidPlay2Section;
 
-public interface IFileRequestPathServletParameters {
+public abstract class FileRequestPathServletParametersImpl implements IFileRequestPathServletParameters {
 
-	String getFilePath();
-
-	String getItemId();
-
-	String getCategoryId();
-
-	default File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) throws IOException {
+	public File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) throws IOException {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
 
 		boolean adminRole = !servlet.isSecured() || isAdmin;
@@ -82,7 +76,7 @@ public interface IFileRequestPathServletParameters {
 		return null;
 	}
 
-	default File fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId)
+	private File fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId)
 			throws IOException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
@@ -122,7 +116,7 @@ public interface IFileRequestPathServletParameters {
 		return result;
 	}
 
-	default void fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId,
+	private void fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId,
 			File contentEntryFile) throws IOException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));

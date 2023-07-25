@@ -1,4 +1,4 @@
-package server.restful.common.parameter.requestpath;
+package server.restful.common.parameter.requestpath.impl;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -23,13 +23,9 @@ import ui.common.comparator.FileComparator;
 import ui.common.filefilter.FilteredFileFilter;
 import ui.entities.config.SidPlay2Section;
 
-public interface IDirectoryRequestPathServletParameters {
+public abstract class DirectoryRequestPathServletParametersImpl implements IDirectoryRequestPathServletParameters {
 
-	String getDirectoryPath();
-
-	String getFilter();
-
-	default List<String> fetchDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
+	public List<String> fetchDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
 
 		boolean adminRole = !servlet.isSecured() || isAdmin;
@@ -40,18 +36,18 @@ public interface IDirectoryRequestPathServletParameters {
 		}
 		File filePath = new File(path);
 		if (path.equals("/")) {
-			List<String> files = getRoot(servlet.getDirectoryProperties(), adminRole, sidplay2Section.getHvsc(),
+			List<String> files = fetchRoot(servlet.getDirectoryProperties(), adminRole, sidplay2Section.getHvsc(),
 					sidplay2Section.getCgsc());
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(C64_MUSIC)) {
-			List<String> files = getCollectionFiles(sidplay2Section.getHvsc(), C64_MUSIC, filePath);
+			List<String> files = fetchCollectionFiles(sidplay2Section.getHvsc(), C64_MUSIC, filePath);
 			if (files != null) {
 				return files;
 			}
 		} else if (path.startsWith(CGSC)) {
-			List<String> files = getCollectionFiles(sidplay2Section.getCgsc(), CGSC, filePath);
+			List<String> files = fetchCollectionFiles(sidplay2Section.getCgsc(), CGSC, filePath);
 			if (files != null) {
 				return files;
 			}
@@ -62,7 +58,7 @@ public interface IDirectoryRequestPathServletParameters {
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {
 					File root = new TFile(directoryValue);
-					List<String> files = getCollectionFiles(root, directoryLogicalName, filePath);
+					List<String> files = fetchCollectionFiles(root, directoryLogicalName, filePath);
 					if (files != null) {
 						return files;
 					}
@@ -73,7 +69,7 @@ public interface IDirectoryRequestPathServletParameters {
 		return null;
 	}
 
-	default List<String> getRoot(Properties directoryProperties, boolean adminRole, File hvscRoot, File cgscRoot) {
+	private List<String> fetchRoot(Properties directoryProperties, boolean adminRole, File hvscRoot, File cgscRoot) {
 		List<String> result = new ArrayList<>();
 		if (hvscRoot != null) {
 			result.add(C64_MUSIC + "/");
@@ -91,7 +87,7 @@ public interface IDirectoryRequestPathServletParameters {
 		return result;
 	}
 
-	default List<String> getCollectionFiles(File rootFile, String virtualCollectionRoot, File filePath) {
+	private List<String> fetchCollectionFiles(File rootFile, String virtualCollectionRoot, File filePath) {
 		if (rootFile == null) {
 			return null;
 		}
