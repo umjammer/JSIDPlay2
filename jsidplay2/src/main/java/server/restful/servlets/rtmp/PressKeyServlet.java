@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.converter.KeyTableEntryConverter;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
@@ -27,14 +26,13 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.PressKeyServletParameters")
 	public static class PressKeyServletParameters extends VideoRequestParamServletParameters {
 
-		@Parameter(names = { "--type" }, descriptionKey = "TYPE", converter = KeyTableEntryConverter.class, order = 1)
+		@Parameter(names = { "--type" }, descriptionKey = "TYPE", order = 1)
 		private KeyTableEntry type;
 
-		@Parameter(names = { "--press" }, descriptionKey = "PRESS", converter = KeyTableEntryConverter.class, order = 2)
+		@Parameter(names = { "--press" }, descriptionKey = "PRESS", order = 2)
 		private KeyTableEntry press;
 
-		@Parameter(names = {
-				"--release" }, descriptionKey = "RELEASE", converter = KeyTableEntryConverter.class, order = 3)
+		@Parameter(names = { "--release" }, descriptionKey = "RELEASE", order = 3)
 		private KeyTableEntry release;
 
 	}
