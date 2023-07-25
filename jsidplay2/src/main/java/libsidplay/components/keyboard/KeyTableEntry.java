@@ -19,11 +19,6 @@ public enum KeyTableEntry {
 		this.col = col;
 	}
 
-	@Override
-	public final String toString() {
-		return this.getClass().getName() + "( " + this.getRow() + ", " + this.getCol() + " )";
-	}
-
 	public int getRow() {
 		return row;
 	}

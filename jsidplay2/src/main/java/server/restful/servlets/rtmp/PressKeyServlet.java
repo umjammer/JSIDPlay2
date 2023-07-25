@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.converter.KeyTableEntryConverter;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
@@ -26,14 +27,15 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.PressKeyServletParameters")
 	public static class PressKeyServletParameters extends VideoRequestParamServletParameters {
 
-		@Parameter(names = { "--type" }, descriptionKey = "TYPE", order = 1)
-		private String type;
+		@Parameter(names = { "--type" }, descriptionKey = "TYPE", converter = KeyTableEntryConverter.class, order = 1)
+		private KeyTableEntry type;
 
-		@Parameter(names = { "--press" }, descriptionKey = "PRESS", order = 2)
-		private String press;
+		@Parameter(names = { "--press" }, descriptionKey = "PRESS", converter = KeyTableEntryConverter.class, order = 2)
+		private KeyTableEntry press;
 
-		@Parameter(names = { "--release" }, descriptionKey = "RELEASE", order = 3)
-		private String release;
+		@Parameter(names = {
+				"--release" }, descriptionKey = "RELEASE", converter = KeyTableEntryConverter.class, order = 3)
+		private KeyTableEntry release;
 
 	}
 
@@ -78,20 +80,16 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			UUID uuid = servletParameters.getUuid();
 
 			if (servletParameters.type != null) {
-				KeyTableEntry key = KeyTableEntry.valueOf(KeyTableEntry.class, servletParameters.type);
+				info(String.format("typeKey: RTMP stream of: %s, key=%s", uuid, servletParameters.type.name()));
+				update(uuid, rtmpPlayerWithStatus -> rtmpPlayerWithStatus.typeKey(servletParameters.type));
 
-				info(String.format("typeKey: RTMP stream of: %s, key=%s", uuid, key.name()));
-				update(uuid, rtmpPlayerWithStatus -> rtmpPlayerWithStatus.typeKey(key));
 			} else if (servletParameters.press != null) {
-				KeyTableEntry key = KeyTableEntry.valueOf(KeyTableEntry.class, servletParameters.press);
+				info(String.format("pressKey: RTMP stream of: %s, key=%s", uuid, servletParameters.press.name()));
+				update(uuid, rtmpPlayerWithStatus -> rtmpPlayerWithStatus.pressKey(servletParameters.press));
 
-				info(String.format("pressKey: RTMP stream of: %s, key=%s", uuid, key.name()));
-				update(uuid, rtmpPlayerWithStatus -> rtmpPlayerWithStatus.pressKey(key));
 			} else if (servletParameters.release != null) {
-				KeyTableEntry key = KeyTableEntry.valueOf(KeyTableEntry.class, servletParameters.release);
-
-				info(String.format("releaseKey: RTMP stream of: %s, key=%s", uuid, key.name()));
-				update(uuid, rtmpPlayerWithStatus -> rtmpPlayerWithStatus.releaseKey(key));
+				info(String.format("releaseKey: RTMP stream of: %s, key=%s", uuid, servletParameters.release.name()));
+				update(uuid, rtmpPlayerWithStatus -> rtmpPlayerWithStatus.releaseKey(servletParameters.release));
 			}
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
