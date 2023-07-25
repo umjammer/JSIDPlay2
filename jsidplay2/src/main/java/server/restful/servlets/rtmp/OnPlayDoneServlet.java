@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
+import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
@@ -68,13 +69,14 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		super.doPost(request);
 		try {
 			final OnPlayDoneServletParameters servletParameters = new OnPlayDoneServletParameters();
 
-			parseRequestParameters(request, response, servletParameters, getServletPath(), true);
-			if (servletParameters.getUuid() == null) {
+			/*ServletParameterParser parser = */new ServletParameterParser(request, response, servletParameters, getServletPath(), true);
+
+			if (servletParameters.getUuid() == null /*|| parser.hasException()*/) {
 				// Not every video has a valid UUID as it's name! e.g.
 				// https://haendel.ddns.net/live/jsidplay2
 				return;

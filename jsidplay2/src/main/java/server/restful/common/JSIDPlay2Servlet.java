@@ -2,8 +2,6 @@ package server.restful.common;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Stream.concat;
-import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 import static libsidutils.IOUtils.getFileSize;
 import static org.apache.http.HttpHeaders.ACCEPT;
@@ -26,16 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 
 import org.apache.tomcat.util.http.fileupload.FileItemIterator;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +45,6 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.IOUtils;
 import libsidutils.siddatabase.SidDatabase;
-import server.restful.common.parameter.ServletUsageFormatter;
 import sidplay.filefilter.AudioTuneFileFilter;
 import sidplay.filefilter.VideoTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
@@ -209,40 +202,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		result.append("/");
 		result.append(getFileSize(runtime.maxMemory()));
 		return result.toString();
-	}
-
-	private String[] getRequestParameters(HttpServletRequest request) {
-		return concat(
-				Collections.list(request.getParameterNames()).stream()
-						.flatMap(name -> asList(request.getParameterValues(name)).stream()
-								.filter(v -> !"null".equals(v) && !"undefined".equals(v))
-								.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
-						.flatMap(Function.identity()),
-				ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
-	}
-
-	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
-			final Object parameterObject, String programName) throws IOException {
-		return parseRequestParameters(request, response, parameterObject, programName, false);
-	}
-
-	protected JCommander parseRequestParameters(HttpServletRequest request, HttpServletResponse response,
-			final Object parameterObject, String programName, boolean acceptUnknownOptions) throws IOException {
-		JCommander commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
-				.columnSize(Integer.MAX_VALUE)
-				.console(new PrintStreamConsole(
-						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
-				.acceptUnknownOptions(acceptUnknownOptions).build();
-		String[] requestParameters = getRequestParameters(request);
-		ServletUsageFormatter usageFormatter = new ServletUsageFormatter(commander, request, response,
-				requestParameters);
-		commander.setUsageFormatter(usageFormatter);
-		try {
-			commander.parse(requestParameters);
-		} catch (ParameterException e) {
-			usageFormatter.setException(e);
-		}
-		return commander;
 	}
 
 	protected String getCollectionName(File file) throws IOException, SidTuneError {

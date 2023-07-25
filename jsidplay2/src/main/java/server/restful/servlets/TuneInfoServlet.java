@@ -1,6 +1,7 @@
 package server.restful.servlets;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
+import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
@@ -16,7 +17,6 @@ import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -27,7 +27,7 @@ import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.ServletUsageFormatter;
+import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import ui.entities.collection.HVSCEntry;
 import ui.entities.config.Configuration;
@@ -73,11 +73,12 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 		try {
 			final TuneInfoServletParameters servletParameters = new TuneInfoServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
+			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+					getServletPath());
 
-			final File file = servletParameters.getFile(this, commander, request);
-			if (file == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
-				commander.usage();
+			final File file = servletParameters.getFile(this, parser, request.isUserInRole(ROLE_ADMIN));
+			if (file == null || parser.hasException()) {
+				parser.usage();
 				return;
 			}
 			Object tuneInfos = getTuneInfos(file, servletParameters.list);

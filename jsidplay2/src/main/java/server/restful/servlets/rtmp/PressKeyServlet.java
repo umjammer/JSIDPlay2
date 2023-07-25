@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -17,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.ServletUsageFormatter;
+import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import ui.entities.config.Configuration;
 
@@ -66,14 +65,16 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final PressKeyServletParameters servletParameters = new PressKeyServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
-				commander.usage();
+			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+					getServletPath());
+
+			if (parser.hasException()) {
+				parser.usage();
 				return;
 			}
 			UUID uuid = servletParameters.getUuid();

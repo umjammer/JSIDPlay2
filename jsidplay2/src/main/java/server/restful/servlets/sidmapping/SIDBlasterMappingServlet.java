@@ -2,6 +2,7 @@ package server.restful.servlets.sidmapping;
 
 import static libsidplay.components.pla.PLA.MAX_SIDS;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
+import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
@@ -11,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.ServletUsageFormatter;
+import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import sidplay.ini.IniConfig;
 import ui.entities.config.Configuration;
@@ -60,11 +60,12 @@ public class SIDBlasterMappingServlet extends JSIDPlay2Servlet {
 		try {
 			final SIDBlasterMappingServletParameters servletParameters = new SIDBlasterMappingServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
+			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+					getServletPath());
 
-			final File file = servletParameters.getFile(this, commander, request);
-			if (file == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
-				commander.usage();
+			final File file = servletParameters.getFile(this, parser, request.isUserInRole(ROLE_ADMIN));
+			if (file == null || parser.hasException()) {
+				parser.usage();
 				return;
 			}
 			final IEmulationSection emulationSection = servletParameters.emulationSection;

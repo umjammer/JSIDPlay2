@@ -1,6 +1,7 @@
 package server.restful.servlets;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
+import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
@@ -8,14 +9,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.ServletUsageFormatter;
+import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.DirectoryRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
@@ -56,11 +56,12 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 		try {
 			final DirectoryServletParameters servletParameters = new DirectoryServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
+			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+					getServletPath());
 
-			final List<String> files = servletParameters.getDirectory(this, commander, request);
-			if (files == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
-				commander.usage();
+			final List<String> files = servletParameters.getDirectory(this, parser, request.isUserInRole(ROLE_ADMIN));
+			if (files == null || parser.hasException()) {
+				parser.usage();
 				return;
 			}
 			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(files));

@@ -4,7 +4,6 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
-import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.JSIDPlay2Servlet.C64_MUSIC;
 import static server.restful.common.JSIDPlay2Servlet.CGSC;
 
@@ -15,14 +14,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import com.beust.jcommander.JCommander;
-
-import jakarta.servlet.http.HttpServletRequest;
 import libsidutils.IOUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.ServletUsageFormatter;
+import server.restful.common.parameter.ServletParameterParser;
 import ui.common.comparator.FileComparator;
 import ui.common.filefilter.FilteredFileFilter;
 import ui.entities.config.SidPlay2Section;
@@ -33,11 +29,10 @@ public interface IDirectoryRequestPathServletParameters {
 
 	String getFilter();
 
-	default List<String> getDirectory(JSIDPlay2Servlet servlet, JCommander commander, HttpServletRequest request) {
+	default List<String> getDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
 
-		boolean adminRole = !servlet.isSecured() || request.isUserInRole(ROLE_ADMIN);
-		ServletUsageFormatter usageFormatter = (ServletUsageFormatter) commander.getUsageFormatter();
+		boolean adminRole = !servlet.isSecured() || isAdmin;
 
 		String path = getDirectoryPath();
 		if (path == null) {
@@ -74,7 +69,7 @@ public interface IDirectoryRequestPathServletParameters {
 				}
 			}
 		}
-		usageFormatter.setException(new FileNotFoundException(path));
+		parser.setException(new FileNotFoundException(path));
 		return null;
 	}
 

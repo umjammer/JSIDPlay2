@@ -5,6 +5,7 @@ import static libsidutils.ZipFileUtils.newFileInputStream;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.ATTACHMENT;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
+import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 
@@ -14,7 +15,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.ServletUsageFormatter;
+import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import ui.entities.config.Configuration;
 
@@ -63,11 +63,12 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 		try {
 			final DownloadServletParameters servletParameters = new DownloadServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
+			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+					getServletPath());
 
-			final File file = servletParameters.getFile(this, commander, request);
-			if (file == null || ((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
-				commander.usage();
+			final File file = servletParameters.getFile(this, parser, request.isUserInRole(ROLE_ADMIN));
+			if (file == null || parser.hasException()) {
+				parser.usage();
 				return;
 			}
 			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -16,7 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.parameter.ServletUsageFormatter;
+import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 import server.restful.common.validator.JoystickNumberValidator;
 import server.restful.common.validator.JoystickValueValidator;
@@ -35,7 +34,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 		}
 
 		@Parameter(names = {
-				"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = 1)
+			"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = 1)
 		public void setNumber(int number) {
 			this.number = number;
 		}
@@ -47,7 +46,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 		}
 
 		@Parameter(names = {
-				"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = 2)
+			"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = 2)
 		public void setValue(int value) {
 			this.value = value;
 		}
@@ -80,14 +79,16 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final JoystickServletParameters servletParameters = new JoystickServletParameters();
 
-			JCommander commander = parseRequestParameters(request, response, servletParameters, getServletPath());
-			if (((ServletUsageFormatter) commander.getUsageFormatter()).getException() != null) {
-				commander.usage();
+			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+					getServletPath());
+
+			if (parser.hasException()) {
+				parser.usage();
 				return;
 			}
 			UUID uuid = servletParameters.getUuid();
