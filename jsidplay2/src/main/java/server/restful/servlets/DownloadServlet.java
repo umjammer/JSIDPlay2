@@ -66,7 +66,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					getServletPath());
 
-			final File file = servletParameters.getFile(this, parser, request.isUserInRole(ROLE_ADMIN));
+			final File file = servletParameters.fetchFile(this, parser, request.isUserInRole(ROLE_ADMIN));
 			if (file == null || parser.hasException()) {
 				parser.usage();
 				return;

@@ -39,7 +39,7 @@ public interface IFileRequestPathServletParameters {
 
 	String getCategoryId();
 
-	default File getFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) throws IOException {
+	default File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) throws IOException {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
 
 		boolean adminRole = !servlet.isSecured() || isAdmin;

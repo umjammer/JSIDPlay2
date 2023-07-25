@@ -29,7 +29,7 @@ public interface IDirectoryRequestPathServletParameters {
 
 	String getFilter();
 
-	default List<String> getDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
+	default List<String> fetchDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
 
 		boolean adminRole = !servlet.isSecured() || isAdmin;
