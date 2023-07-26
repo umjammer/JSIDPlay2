@@ -103,7 +103,7 @@ public class CBMCodeUtils extends C64FontUtils {
 	 *
 	 * @return screen RAM characters.
 	 */
-	public static byte[] iso88591ToScreenRam(String iso, int maxLen) {
+	public static final byte[] iso88591ToScreenRam(String iso, int maxLen) {
 		byte[] result = new byte[Math.min(iso.length(), maxLen)];
 		for (int i = 0; i < result.length; i++) {
 			result[i] = (byte) ISO8859_1_TO_SCREENRAM[iso.charAt(i) & 0xff];
@@ -118,7 +118,7 @@ public class CBMCodeUtils extends C64FontUtils {
 	 * 
 	 * @return screen RAM byte
 	 */
-	public static byte iso88591ToScreenRam(char iso) {
+	public static final byte iso88591ToScreenRam(char iso) {
 		return (byte) ISO8859_1_TO_SCREENRAM[iso & 0xff];
 	}
 
