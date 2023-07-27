@@ -88,7 +88,7 @@
                 <b-card-text>
                   <div class="settings-box">
                     <div class="button-box">
-                      <b-button v-b-modal.modal-set-default-user size="sm" variant="success">
+                      <b-button v-b-modal.modal-set-default-user size="sm" variant="outline-success">
                         <span>{{ $t("setDefaultUser") }}</span></b-button
                       >
                       <b-modal id="modal-set-default-user" :title="$t('confirmationTitle')" @ok="setDefaultUser">
@@ -1380,7 +1380,7 @@
                 <b-card-text>
                   <div class="settings-box">
                     <div class="button-box">
-                      <b-button v-b-modal.modal-set-default size="sm" variant="success">
+                      <b-button v-b-modal.modal-set-default size="sm" variant="outline-success">
                         <span>{{ $t("setDefault") }}</span></b-button
                       >
                       <b-modal id="modal-set-default" :title="$t('confirmationTitle')" @ok="setDefault">
@@ -1402,11 +1402,11 @@
                       <b-card-text>
                         <div class="settings-box">
                           <div class="button-box">
-                            <b-button size="sm" variant="success" v-on:click="mobileProfile">
+                            <b-button size="sm" variant="outline-success" v-on:click="mobileProfile">
                               <b-icon-phone-fill> </b-icon-phone-fill>
                               <span>{{ $t("mobileProfile") }}</span></b-button
                             >
-                            <b-button size="sm" variant="success" v-on:click="wifiProfile">
+                            <b-button size="sm" variant="outline-success" v-on:click="wifiProfile">
                               <b-icon-wifi> </b-icon-wifi>
                               <span>{{ $t("wifiProfile") }}</span></b-button
                             >
