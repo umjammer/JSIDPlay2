@@ -36,15 +36,8 @@ import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
-import static sidplay.audio.Audio.AAC;
-import static sidplay.audio.Audio.AVI;
-import static sidplay.audio.Audio.FLAC;
 import static sidplay.audio.Audio.FLV;
 import static sidplay.audio.Audio.MP3;
-import static sidplay.audio.Audio.MP4;
-import static sidplay.audio.Audio.SID_DUMP;
-import static sidplay.audio.Audio.SID_REG;
-import static sidplay.audio.Audio.WAV;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -77,7 +70,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos656x.PALEmulation;
-import libsidplay.config.IConfig;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
@@ -90,7 +82,6 @@ import server.restful.common.parameter.requestpath.FileRequestPathServletParamet
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
 import sidplay.audio.AVIDriver.AVIFileDriver;
-import sidplay.audio.Audio;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.FLACDriver.FLACStreamDriver;
 import sidplay.audio.FLVDriver.FLVFileDriver;
@@ -317,8 +308,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			if (AUDIO_TUNE_FILE_FILTER.accept(file)
 					|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file))) {
 
-				Audio audio = getAudioFormat(servletParameters.config);
-				AudioDriver driver = getAudioDriverOfAudioFormat(audio, response.getOutputStream(), servletParameters);
+				AudioDriver driver = getAudioDriverOfAudioFormat(response.getOutputStream(), servletParameters);
 
 				if (Boolean.TRUE.equals(servletParameters.download)) {
 					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
@@ -332,10 +322,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				UUID uuid = UUID.randomUUID();
 
-				Audio audio = getVideoFormat(servletParameters.config);
-				AudioDriver driver = getAudioDriverOfVideoFormat(audio, uuid, servletParameters);
+				AudioDriver driver = getAudioDriverOfVideoFormat(uuid, servletParameters);
 
-				if (Boolean.FALSE.equals(servletParameters.download) && audio == FLV) {
+				if (Boolean.FALSE.equals(servletParameters.download) && driver.lookup(FLVStreamDriver.class) != null) {
 					if (count() < MAX_RTMP_IN_PARALLEL) {
 						Thread parentThread = currentThread();
 						new Thread(() -> {
@@ -388,27 +377,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return getFilenameWithoutSuffix(file.getName()) + driver.getExtension();
 	}
 
-	private Audio getAudioFormat(IConfig config) {
-		switch (Optional.ofNullable(config.getAudioSection().getAudio()).orElse(MP3)) {
-		case WAV:
-			return WAV;
-		case FLAC:
-			return FLAC;
-		case AAC:
-			return AAC;
-		case MP3:
-		default:
-			return MP3;
-		case SID_DUMP:
-			return SID_DUMP;
-		case SID_REG:
-			return SID_REG;
-		}
-	}
-
-	private AudioDriver getAudioDriverOfAudioFormat(Audio audio, OutputStream outputstream,
+	private AudioDriver getAudioDriverOfAudioFormat(OutputStream outputstream,
 			ConvertServletParameters servletParameters) {
-		switch (audio) {
+		switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
 		case WAV:
 			return new WAVStreamDriver(outputstream);
 		case FLAC:
@@ -459,21 +430,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.stopC64(false);
 	}
 
-	private Audio getVideoFormat(IConfig config) {
-		switch (Optional.ofNullable(config.getAudioSection().getAudio()).orElse(FLV)) {
-		case FLV:
-		default:
-			return FLV;
-		case AVI:
-			return AVI;
-		case MP4:
-			return MP4;
-		}
-	}
-
-	private AudioDriver getAudioDriverOfVideoFormat(Audio audio, UUID uuid,
-			ConvertServletParameters servletParameters) {
-		switch (audio) {
+	private AudioDriver getAudioDriverOfVideoFormat(UUID uuid, ConvertServletParameters servletParameters) {
+		switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(FLV)) {
 		case FLV:
 		default:
 			if (Boolean.TRUE.equals(servletParameters.download)) {
