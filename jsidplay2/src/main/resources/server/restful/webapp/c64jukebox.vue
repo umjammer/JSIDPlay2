@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <style lang="scss" scoped>
@@ -367,7 +367,11 @@
                               <b-link
                                 style="
                                   white-space: pre-line;
-                                  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+                                  text-shadow:
+                                    -1px 0 black,
+                                    0 1px black,
+                                    1px 0 black,
+                                    0 -1px black;
                                   font-family: sans;
                                   color: #007bff;
                                   background-color: white;
@@ -464,7 +468,8 @@
                                   small
                                   v-if="entry.loading || entry.loadingDisk"
                                 ></b-spinner>
-                                <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)"> </b-icon-camera-video-fill>
+                                <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)">
+                                </b-icon-camera-video-fill>
                                 <span>{{ shortEntry(entry.filename) }}</span>
                               </a>
                               <b-button
@@ -1106,9 +1111,14 @@
                         <b-icon-trash-fill> </b-icon-trash-fill>
                         <span>{{ $t("reset") }}</span>
                       </b-button>
-                      <b-button variant="success" v-b-modal.modal-import-playlist v-if="importFile != null" class="mr-2">
+                      <b-button
+                        variant="success"
+                        v-b-modal.modal-import-playlist
+                        v-if="importFile != null"
+                        class="mr-2"
+                      >
                         <b-icon-file-arrow-up-fill> </b-icon-file-arrow-up-fill>
-						<span>{{ $t("startImport") }}</span>
+                        <span>{{ $t("startImport") }}</span>
                       </b-button>
                       <b-modal id="modal-import-playlist" :title="$t('confirmationTitle')" @ok="importPlaylist">
                         <p>{{ $t("removePlaylistReally") }}</p>
@@ -1175,13 +1185,7 @@
                             }}</span>
                           </div>
                         </div>
-                        <b-button
-                          v-b-modal:[`modal-remove-${index}`]
-                          pill
-                          variant="outline-danger"
-                          size="sm"
-                          style="height: fit-content"
-                        >
+                        <b-button v-b-modal:[`modal-remove-${index}`] pill size="sm" style="height: fit-content">
                           <b-icon-trash-fill style="margin: 2px"> </b-icon-trash-fill>
                         </b-button>
                         <b-modal :id="`modal-remove-${index}`" :title="$t('confirmationTitle')" @ok="remove(index)">
@@ -3495,7 +3499,8 @@
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
-                this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+                this.currentSid =
+                  this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
@@ -3512,7 +3517,8 @@
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
-                this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+                this.currentSid =
+                  this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
@@ -3550,7 +3556,8 @@
               this.playlist[this.playlistIndex].itemId,
               this.playlist[this.playlistIndex].categoryId
             );
-            this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+            this.currentSid =
+              this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
@@ -3975,7 +3982,8 @@
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
-                this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+                this.currentSid =
+                  this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
@@ -4292,7 +4300,8 @@
             }
           }
           if (this.playlist.length !== 0) {
-            this.currentSid = this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+            this.currentSid =
+              this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
