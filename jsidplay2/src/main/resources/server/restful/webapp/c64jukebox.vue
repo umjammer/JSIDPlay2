@@ -795,7 +795,7 @@
                                       target="c64"
                                     >
                                       <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                      <span>{{ shortEntry(innerRow.item.filename) }}</span>
+                                      <span style="word-break: break-all;">{{ shortEntry(innerRow.item.filename) }}</span>
                                     </a>
                                     <b-button
                                       size="sm"
@@ -851,7 +851,7 @@
                                     target="c64"
                                   >
                                     <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                    <span>{{ shortEntry(innerRow.item.filename) }}</span>
+                                    <span style="word-break: break-all;">{{ shortEntry(innerRow.item.filename) }}</span>
                                   </a>
                                   <b-button
                                     size="sm"
