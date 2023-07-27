@@ -10,15 +10,16 @@
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
-    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <!-- Load required Bootstrap, BootstrapVue and Icons CSS -->
     <link type="text/css" rel="stylesheet" href="/static/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.css" />
-    <link type="text/css" rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.min.css" />
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue-icons.min.css" />
 
-    <!-- Load Vue followed by BootstrapVue -->
+    <!-- Load Vue followed by BootstrapVue and Icons -->
     <script src="/static/vue@2.6.14/dist/vue.min.js"></script>
     <script src="/static/vue-router@3.5.4/dist/vue-router.min.js"></script>
     <script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.js"></script>
+    <script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue-icons.min.js"></script>
 
     <!-- helpers -->
     <script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>
@@ -53,7 +54,7 @@
           <div v-show="deviceCount > 0">
             <b-button
               size="sm"
-              variant="secondary"
+              variant="success"
               v-on:click="
                 play(
                   '',
@@ -63,12 +64,14 @@
                 )
               "
             >
+              <b-icon-play-fill> </b-icon-play-fill>
               <span>Play using Hardware</span>
             </b-button>
-            <b-button size="sm" variant="secondary" v-on:click="stop()">
+            <b-button variant="success" size="sm" v-on:click="stop()">
+              <b-icon-stop-fill> </b-icon-stop-fill>
               <span>Stop Hardware Player</span>
             </b-button>
-            <b-button size="sm" variant="secondary" v-on:click="end()">
+            <b-button size="sm" variant="danger" v-on:click="end()">
               <span>Quit Hardware Player</span>
             </b-button>
           </div>
@@ -175,7 +178,7 @@
                 </template>
 
                 <b-button size="sm" variant="success" v-on:click="fetchDirectory(rootDir)">
-                  <i class="fas fa-home"></i>
+                  <b-icon-house-door-fill> </b-icon-house-door-fill>
                 </b-button>
 
                 <span
@@ -203,7 +206,7 @@
                   variant="secondary"
                   v-on:click="fetchDirectory(top200Dir)"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill></b-icon-filter-circle-fill>
                   <span>{{ $t("top200") }}</span>
                 </b-button>
 
@@ -220,7 +223,7 @@
                   variant="secondary"
                   v-on:click="fetchDirectory(oneFilerTop200Dir)"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>{{ $t("onefilerTop200") }}</span>
                 </b-button>
 
@@ -230,7 +233,7 @@
                   variant="secondary"
                   v-on:click="fetchDirectory(toolsTop200Dir)"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>{{ $t("toolsTop100") }}</span>
                 </b-button>
 
@@ -247,7 +250,7 @@
                   variant="secondary"
                   v-on:click="fetchDirectory(musicTop200Dir)"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill></b-icon-filter-circle-fill>
                   <span>{{ $t("musicTop200") }}</span>
                 </b-button>
 
@@ -264,7 +267,7 @@
                   variant="secondary"
                   v-on:click="fetchDirectory(graphicsTop200Dir)"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>{{ $t("graphicsTop200") }}</span>
                 </b-button>
 
@@ -281,7 +284,7 @@
                   variant="secondary"
                   v-on:click="fetchDirectory(gamesTop200Dir)"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>{{ $t("gamesTop200") }}</span>
                 </b-button>
 
@@ -309,7 +312,7 @@
                     showAudio = true;
                   "
                 >
-                  <i class="fas fa-plus"></i>
+                  <b-icon-plus> </b-icon-plus>
                   <span>{{ $t("addAllToPlaylist") }}</span>
                 </b-button>
 
@@ -327,7 +330,7 @@
                         >
                           <div class="directory parent">
                             <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                            <i class="fas fa-arrow-up" v-if="!entry.loading"></i><span>{{ entry.filename }}</span>
+                            <b-icon-arrow-up v-if="!entry.loading"> </b-icon-arrow-up> <span>{{ entry.filename }}</span>
                             <span class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</span>
                           </div>
                         </b-list-group-item>
@@ -360,7 +363,7 @@
                               />
                             </template>
                             <template #default>
-                              <i class="fas fa-download"></i>
+                              <b-icon-download> </b-icon-download>
                               <b-link
                                 style="
                                   white-space: pre-line;
@@ -388,8 +391,8 @@
                         >
                           <div :class="directory">
                             <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                            <i class="fas fa-folder" v-if="!entry.loading"></i
-                            ><span>{{ shortEntry(entry.filename) }}</span>
+                            <b-icon-folder-fill v-if="!entry.loading"> </b-icon-folder-fill>
+                            <span>{{ shortEntry(entry.filename) }}</span>
                           </div>
                         </b-list-group-item>
                       </template>
@@ -401,7 +404,7 @@
                         >
                           <div style="flex-grow: 4; word-break: break-all">
                             <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                            <i class="fas fa-music" v-if="!entry.loading"></i>
+                            <b-icon-music-note v-if="!entry.loading"> </b-icon-music-note>
                             <b-link
                               style="white-space: pre-line"
                               v-on:click="
@@ -422,7 +425,7 @@
                             v-on:click="openDownloadMP3Url(entry.filename)"
                             v-show="!isMP3(entry)"
                           >
-                            <i class="fas fa-download"></i>
+                            <b-icon-download> </b-icon-download>
                             <span>{{ $t("downloadMP3") }}</span></b-button
                           >
                           <b-button
@@ -430,7 +433,7 @@
                             style="font-size: smaller; padding: 2px 4px"
                             v-on:click="openDownloadSIDUrl(entry.filename)"
                           >
-                            <i class="fas fa-download"></i>
+                            <b-icon-download> </b-icon-download>
                           </b-button>
                           <div>
                             <b-button
@@ -445,7 +448,7 @@
                                 showAudio = true;
                               "
                             >
-                              <i class="fas fa-plus"></i>
+                              <b-icon-plus> </b-icon-plus>
                             </b-button>
                           </div>
                         </b-list-group-item>
@@ -461,7 +464,7 @@
                                   small
                                   v-if="entry.loading || entry.loadingDisk"
                                 ></b-spinner>
-                                <i class="fas fa-video" v-if="!(entry.loading || entry.loadingDisk)"></i>
+                                <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)"> </b-icon-camera-video-fill>
                                 <span>{{ shortEntry(entry.filename) }}</span>
                               </a>
                               <b-button
@@ -478,8 +481,8 @@
                                 style="font-size: smaller; padding: 2px 4px"
                                 v-on:click="openDownloadSIDUrl(entry.filename)"
                               >
-                                <i class="fas fa-download"></i
-                              ></b-button>
+                                <b-icon-download> </b-icon-download>
+                              </b-button>
                             </div>
                             <div>
                               <div v-show="entry.directoryMode > 0" class="disk-directory">
@@ -501,16 +504,16 @@
                           <template v-else>
                             <a v-bind:href="createConvertUrl('', entry.filename)" v-on:click="pause" target="c64">
                               <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                              <i class="fas fa-video" v-if="!entry.loading"></i
-                              ><span>{{ shortEntry(entry.filename) }}</span>
+                              <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
+                              <span>{{ shortEntry(entry.filename) }}</span>
                             </a>
                             <b-button
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
                               v-on:click="openDownloadSIDUrl(entry.filename)"
                             >
-                              <i class="fas fa-download"></i
-                            ></b-button>
+                              <b-icon-download> </b-icon-download>
+                            </b-button>
                           </template>
                         </b-list-group-item>
                       </template>
@@ -521,7 +524,7 @@
                           style="white-space: pre-line"
                         >
                           <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                          <i class="fas fa-download" v-if="!entry.loading"></i>
+                          <b-icon-download v-if="!entry.loading"> </b-icon-download>
                           <b-link style="white-space: pre-line" v-on:click="openDownloadUrl(entry.filename)">
                             <span>{{ shortEntry(entry.filename) }}</span>
                           </b-link>
@@ -555,7 +558,7 @@
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>Rob Hubbard</span>
                 </b-button>
 
@@ -572,7 +575,7 @@
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Galway_Martin')"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>Martin Galway</span>
                 </b-button>
 
@@ -582,7 +585,7 @@
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>Chris H&uuml;lsbeck</span>
                 </b-button>
 
@@ -599,7 +602,7 @@
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>Reyn Ouwehand</span>
                 </b-button>
 
@@ -616,7 +619,7 @@
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>Jeroen Tel</span>
                 </b-button>
 
@@ -626,7 +629,7 @@
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
                 >
-                  <i class="fas fa-filter"></i>
+                  <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
                   <span>Ben Daglish</span>
                 </b-button>
 
@@ -673,12 +676,13 @@
                           }
                         "
                       >
-                        <i class="fas fa-eraser"></i>
+                        <b-icon-eraser-fill> </b-icon-eraser-fill>
                       </b-button>
                     </template>
                     <template #cell(actions)="row">
                       <b-button size="sm" @click="requestContentEntries(row.item)" class="mr-1" style="padding: 0">
-                        <i :class="row.detailsShowing ? 'fas fa-caret-up' : 'fas fa-caret-down'"></i>
+                        <b-icon-caret-up-fill v-if="row.detailsShowing"> </b-icon-caret-up-fill>
+                        <b-icon-caret-down-fill v-if="!row.detailsShowing"> </b-icon-caret-down-fill>
                       </b-button>
                     </template>
                     <template #row-details="row">
@@ -706,7 +710,7 @@
                             <template v-if="isMusic(innerRow.item)">
                               <div style="white-space: pre-line; display: flex; justify-content: space-between">
                                 <div style="flex-grow: 4; word-break: break-all">
-                                  <i class="fas fa-music"></i>
+                                  <b-icon-music-note> </b-icon-music-note>
                                   <b-link
                                     style="white-space: pre-line"
                                     v-on:click="
@@ -729,7 +733,7 @@
                                     openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)
                                   "
                                 >
-                                  <i class="fas fa-download"></i>
+                                  <b-icon-download> </b-icon-download>
                                   <span>{{ $t("downloadMP3") }}</span>
                                 </b-button>
                                 <b-button
@@ -739,7 +743,7 @@
                                     openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                   "
                                 >
-                                  <i class="fas fa-download"></i>
+                                  <b-icon-download> </b-icon-download>
                                 </b-button>
                                 <div>
                                   <b-button
@@ -756,7 +760,7 @@
                                       playlistIndex = 0;
                                     "
                                   >
-                                    <i class="fas fa-plus"></i>
+                                    <b-icon-plus> </b-icon-plus>
                                   </b-button>
                                 </div>
                               </div>
@@ -778,7 +782,7 @@
                                       v-on:click="pause"
                                       target="c64"
                                     >
-                                      <i class="fas fa-video"></i>
+                                      <b-icon-camera-video-fill> </b-icon-camera-video-fill>
                                       <span>{{ shortEntry(innerRow.item.filename) }}</span>
                                     </a>
                                     <b-button
@@ -797,8 +801,8 @@
                                         openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                       "
                                     >
-                                      <i class="fas fa-download"></i
-                                    ></b-button>
+                                      <b-icon-download> </b-icon-download>
+                                    </b-button>
                                   </div>
                                   <div>
                                     <div v-show="innerRow.item.directoryMode > 0">
@@ -834,7 +838,8 @@
                                     v-on:click="pause"
                                     target="c64"
                                   >
-                                    <i class="fas fa-video"></i><span>{{ shortEntry(innerRow.item.filename) }}</span>
+                                    <b-icon-camera-video-fill> </b-icon-camera-video-fill>
+                                    <span>{{ shortEntry(innerRow.item.filename) }}</span>
                                   </a>
                                   <b-button
                                     size="sm"
@@ -843,14 +848,14 @@
                                       openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                     "
                                   >
-                                    <i class="fas fa-download"></i
-                                  ></b-button>
+                                    <b-icon-download> </b-icon-download>
+                                  </b-button>
                                 </template>
                               </span>
                             </template>
                             <template v-else>
                               <div>
-                                <i class="fas fa-download"></i>
+                                <b-icon-download> </b-icon-download>
                                 <b-link
                                   style="white-space: pre-line"
                                   v-on:click="openDownloadUrl(innerRow.item.filename, row.item.id, row.item.categoryId)"
@@ -1098,34 +1103,36 @@
                       >
                       </b-form-file>
                       <b-button v-if="importFile != null" @click="importFile = null">
-                        <i class="fas fa-trash"></i><span>{{ $t("reset") }}</span>
+                        <b-icon-trash-fill> </b-icon-trash-fill>
+                        <span>{{ $t("reset") }}</span>
                       </b-button>
-                      <b-button v-b-modal.modal-import-playlist v-if="importFile != null" class="mr-2">
-                        <i class="fas fa-file-import"></i><span>{{ $t("startImport") }}</span>
+                      <b-button variant="success" v-b-modal.modal-import-playlist v-if="importFile != null" class="mr-2">
+                        <b-icon-file-arrow-up-fill> </b-icon-file-arrow-up-fill>
+						<span>{{ $t("startImport") }}</span>
                       </b-button>
                       <b-modal id="modal-import-playlist" :title="$t('confirmationTitle')" @ok="importPlaylist">
                         <p>{{ $t("removePlaylistReally") }}</p>
                       </b-modal>
                     </div>
                     <b-button v-b-modal.modal-fetch-favorites size="sm">
-                      <i class="fas fa-download"></i>
+                      <b-icon-download> </b-icon-download>
                       <span>{{ $t("fetchFavorites") }}</span></b-button
                     >
                     <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
                       <p>{{ $t("removePlaylistReally") }}</p>
                     </b-modal>
                     <b-button size="sm" @click="exportPlaylist" v-if="playlist.length > 0">
-                      <i class="fas fa-file-export"></i>
+                      <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
                       <span>{{ $t("exportPlaylist") }}</span></b-button
                     >
                     <b-button variant="success" v-on:click="setNextPlaylistEntry" v-if="playlist.length > 0">
-                      <i class="fas fa-forward"></i>
+                      <b-icon-forward-fill> </b-icon-forward-fill>
                       <span>{{ $t("next") }}</span></b-button
                     >
                   </div>
                   <div class="button-box" v-if="playlist.length > 0">
                     <b-button v-b-modal.modal-remove-playlist variant="danger" size="sm">
-                      <i class="fas fa-trash"></i>
+                      <b-icon-trash-fill> </b-icon-trash-fill>
                       <span>{{ $t("removePlaylist") }}</span></b-button
                     >
                     <b-modal id="modal-remove-playlist" :title="$t('confirmationTitle')" @ok="removePlaylist">
@@ -1175,7 +1182,7 @@
                           size="sm"
                           style="height: fit-content"
                         >
-                          <i class="fas fa-minus" style="margin: 2px"></i>
+                          <b-icon-trash-fill style="margin: 2px"> </b-icon-trash-fill>
                         </b-button>
                         <b-modal :id="`modal-remove-${index}`" :title="$t('confirmationTitle')" @ok="remove(index)">
                           <p>{{ $t("removeReally") }}</p>
@@ -1380,11 +1387,11 @@
                         <div class="settings-box">
                           <div class="button-box">
                             <b-button size="sm" variant="success" v-on:click="mobileProfile">
-                              <i class="fas fa-mobile"></i>
+                              <b-icon-phone-fill> </b-icon-phone-fill>
                               <span>{{ $t("mobileProfile") }}</span></b-button
                             >
                             <b-button size="sm" variant="success" v-on:click="wifiProfile">
-                              <i class="fas fa-wifi"></i>
+                              <b-icon-wifi> </b-icon-wifi>
                               <span>{{ $t("wifiProfile") }}</span></b-button
                             >
                           </div>
