@@ -515,11 +515,9 @@
                             v-on:click.self="pause"
                             target="c64"
                           >
-                            <div>
-                              <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                              <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
-                              <span>{{ shortEntry(entry.filename) }}</span>
-                            </div>
+                            <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+                            <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
+                            <span>{{ shortEntry(entry.filename) }}</span>
                             <b-button
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
