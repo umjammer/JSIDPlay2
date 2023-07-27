@@ -128,3 +128,15 @@ button {
 .field-category,.field-name,.field-event,.field-released,.field-handle,.field-rating {
 	padding-right: 0.3em !important;	
 }
+
+ol.striped-list {
+	padding-inline-start: 1.25rem;
+}
+
+ol.striped-list > li:nth-of-type(odd) {
+    background-color: rgba(0,0,0,.05) ;
+}
+
+ol.striped-list > li {
+    padding: 6px;
+}

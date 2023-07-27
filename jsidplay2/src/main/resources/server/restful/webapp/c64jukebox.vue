@@ -60,7 +60,7 @@
                   '',
                   playlist[playlistIndex].filename,
                   playlist[playlistIndex].itemId,
-                  playlist[playlistIndex].categoryId,
+                  playlist[playlistIndex].categoryId
                 )
               "
             >
@@ -306,7 +306,7 @@
                       .forEach((entry) =>
                         playlist.push({
                           filename: entry.filename,
-                        }),
+                        })
                       );
                     tabIndex = 5;
                     showAudio = true;
@@ -829,7 +829,7 @@
                                                 program.directoryLine,
                                                 innerRow.item.filename,
                                                 row.item.id,
-                                                row.item.categoryId,
+                                                row.item.categoryId
                                               )
                                             "
                                             v-on:click="pause"
@@ -1157,32 +1157,31 @@
                     </b-modal>
                   </div>
 
-                  <ol>
+                  <ol class="striped-list">
                     <li
                       v-for="(entry, index) in playlist"
                       :key="index"
                       :class="index == playlistIndex ? 'highlighted' : ''"
+                      v-on:click="
+                        playlistIndex = index;
+                        Vue.nextTick(function () {
+                          play(
+                            '',
+                            playlist[playlistIndex].filename,
+                            playlist[playlistIndex].itemId,
+                            playlist[playlistIndex].categoryId
+                          );
+                        });
+                        currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
+                        updateSid(
+                          playlist[playlistIndex].filename,
+                          playlist[playlistIndex].itemId,
+                          playlist[playlistIndex].categoryId
+                        );
+                      "
                     >
                       <span style="display: flex; justify-content: space-between">
-                        <div
-                          v-on:click="
-                            playlistIndex = index;
-                            Vue.nextTick(function () {
-                              play(
-                                '',
-                                playlist[playlistIndex].filename,
-                                playlist[playlistIndex].itemId,
-                                playlist[playlistIndex].categoryId,
-                              );
-                            });
-                            currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
-                            updateSid(
-                              playlist[playlistIndex].filename,
-                              playlist[playlistIndex].itemId,
-                              playlist[playlistIndex].categoryId,
-                            );
-                          "
-                        >
+                        <div>
                           <div class="playlist-item">
                             <span>{{ shortEntry(entry.filename) }}</span>
                           </div>
@@ -1192,7 +1191,13 @@
                             }}</span>
                           </div>
                         </div>
-                        <b-button v-b-modal:[`modal-remove-${index}`] pill size="sm" style="height: fit-content">
+                        <b-button
+                          v-b-modal:[`modal-remove-${index}`]
+                          v-on:click.stop=""
+                          pill
+                          size="sm"
+                          style="height: fit-content"
+                        >
                           <b-icon-trash-fill style="margin: 2px"> </b-icon-trash-fill>
                         </b-button>
                         <b-modal :id="`modal-remove-${index}`" :title="$t('confirmationTitle')" @ok="remove(index)">
@@ -3168,7 +3173,7 @@
                 "",
                 this.playlist[this.playlistIndex].filename,
                 this.playlist[this.playlistIndex].itemId,
-                this.playlist[this.playlistIndex].categoryId,
+                this.playlist[this.playlistIndex].categoryId
               );
             }
           },
@@ -3511,7 +3516,7 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId,
+                  this.playlist[this.playlistIndex].categoryId
                 );
                 this.showAudio = true;
               };
@@ -3529,7 +3534,7 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId,
+                  this.playlist[this.playlistIndex].categoryId
                 );
                 this.showAudio = true;
               };
@@ -3561,14 +3566,14 @@
               "",
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId,
+              this.playlist[this.playlistIndex].categoryId
             );
             this.currentSid =
               this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId,
+              this.playlist[this.playlistIndex].categoryId
             );
           },
           setDefault: function () {
@@ -3626,7 +3631,7 @@
           },
           createDownloadUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
             );
             return (
               window.location.protocol +
@@ -3641,7 +3646,7 @@
           },
           createConvertUrl: function (autostart, entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
             );
             return (
               window.location.protocol +
@@ -3790,7 +3795,7 @@
           },
           createSIDMappingUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
             );
             return (
               window.location.protocol +
@@ -3817,19 +3822,19 @@
           openDownloadMP3Url: function (entry, itemId, categoryId) {
             var url = this.createConvertUrl(
               "",
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
             );
             window.open(
               url +
                 "&download=true" +
                 (typeof itemId === "undefined" && typeof categoryId === "undefined"
                   ? ""
-                  : "&itemId=" + itemId + "&categoryId=" + categoryId),
+                  : "&itemId=" + itemId + "&categoryId=" + categoryId)
             );
           },
           openDownloadSIDUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
             );
             window.open(
               window.location.protocol +
@@ -3843,12 +3848,12 @@
                 url +
                 (typeof itemId === "undefined" && typeof categoryId === "undefined"
                   ? ""
-                  : "?itemId=" + itemId + "&categoryId=" + categoryId),
+                  : "?itemId=" + itemId + "&categoryId=" + categoryId)
             );
           },
           openDownloadUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
             );
             window.open(this.createDownloadUrl(entry, itemId, categoryId));
           },
@@ -3994,13 +3999,13 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId,
+                  this.playlist[this.playlistIndex].categoryId
                 );
                 this.$refs.audioElm.src = this.createConvertUrl(
                   "",
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId,
+                  this.playlist[this.playlistIndex].categoryId
                 );
                 this.showAudio = true;
               })
@@ -4063,7 +4068,7 @@
             entry.loadingDisk = true; //the loading begin
             var url =
               uriEncode(
-                (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename,
+                (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename
               ) +
               (typeof itemId === "undefined" && typeof categoryId === "undefined"
                 ? ""
@@ -4312,7 +4317,7 @@
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId,
+              this.playlist[this.playlistIndex].categoryId
             );
 
             this.showAudio = true;
@@ -4320,7 +4325,7 @@
               "",
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId,
+              this.playlist[this.playlistIndex].categoryId
             );
           }
           if (localStorage.sortBy) {
@@ -4392,16 +4397,16 @@
           convertOptions: {
             handler: function (after, before) {
               this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(
-                this.convertOptions.config.sidplay2Section.defaultPlayLength,
+                this.convertOptions.config.sidplay2Section.defaultPlayLength
               );
               this.convertOptions.config.sidplay2Section.startTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.startTime,
+                this.convertOptions.config.sidplay2Section.startTime
               );
               this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeInTime,
+                this.convertOptions.config.sidplay2Section.fadeInTime
               );
               this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeOutTime,
+                this.convertOptions.config.sidplay2Section.fadeOutTime
               );
               localStorage.convertOptions = JSON.stringify(this.convertOptions);
             },
