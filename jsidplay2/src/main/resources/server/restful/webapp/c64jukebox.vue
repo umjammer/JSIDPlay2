@@ -462,16 +462,18 @@
                             v-on:click.self="pause"
                             target="c64"
                           >
-                            <div>
-                              <b-spinner
-                                type="border"
-                                variant="primary"
-                                small
-                                v-if="entry.loading || entry.loadingDisk"
-                              ></b-spinner>
-                              <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)">
-                              </b-icon-camera-video-fill>
-                              <span>{{ shortEntry(entry.filename) }}</span>
+                            <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                              <div style="flex-grow: 4; word-break: break-all">
+                                <b-spinner
+                                  type="border"
+                                  variant="primary"
+                                  small
+                                  v-if="entry.loading || entry.loadingDisk"
+                                ></b-spinner>
+                                <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)">
+                                </b-icon-camera-video-fill>
+                                <span>{{ shortEntry(entry.filename) }}</span>
+                              </div>
                               <b-button
                                 size="sm"
                                 style="font-size: smaller; padding: 2px 4px"
