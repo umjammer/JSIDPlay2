@@ -60,7 +60,7 @@
                   '',
                   playlist[playlistIndex].filename,
                   playlist[playlistIndex].itemId,
-                  playlist[playlistIndex].categoryId
+                  playlist[playlistIndex].categoryId,
                 )
               "
             >
@@ -306,7 +306,7 @@
                       .forEach((entry) =>
                         playlist.push({
                           filename: entry.filename,
-                        })
+                        }),
                       );
                     tabIndex = 5;
                     showAudio = true;
@@ -405,23 +405,19 @@
                           button
                           :variant="getVariant(entry)"
                           style="white-space: pre-line; display: flex; justify-content: space-between"
+                          v-on:click="
+                            currentSid = shortEntry(entry.filename);
+                            updateSid(entry.filename);
+                            showAudio = true;
+                            Vue.nextTick(function () {
+                              play('', entry.filename);
+                            });
+                          "
                         >
                           <div style="flex-grow: 4; word-break: break-all">
                             <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
                             <b-icon-music-note v-if="!entry.loading"> </b-icon-music-note>
-                            <b-link
-                              style="white-space: pre-line"
-                              v-on:click="
-                                currentSid = shortEntry(entry.filename);
-                                updateSid(entry.filename);
-                                showAudio = true;
-                                Vue.nextTick(function () {
-                                  play('', entry.filename);
-                                });
-                              "
-                            >
-                              <span class="sid-file">{{ shortEntry(entry.filename) }}</span>
-                            </b-link>
+                            <span class="sid-file">{{ shortEntry(entry.filename) }}</span>
                           </div>
                           <b-button
                             size="sm"
@@ -527,12 +523,11 @@
                           :button="!isVideo(entry)"
                           :variant="getVariant(entry)"
                           style="white-space: pre-line"
+                          v-on:click="openDownloadUrl(entry.filename)"
                         >
                           <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
                           <b-icon-download v-if="!entry.loading"> </b-icon-download>
-                          <b-link style="white-space: pre-line" v-on:click="openDownloadUrl(entry.filename)">
-                            <span>{{ shortEntry(entry.filename) }}</span>
-                          </b-link>
+                          <span>{{ shortEntry(entry.filename) }}</span>
                         </b-list-group-item>
                       </template>
                     </div>
@@ -822,7 +817,7 @@
                                                 program.directoryLine,
                                                 innerRow.item.filename,
                                                 row.item.id,
-                                                row.item.categoryId
+                                                row.item.categoryId,
                                               )
                                             "
                                             v-on:click="pause"
@@ -1165,14 +1160,14 @@
                                 '',
                                 playlist[playlistIndex].filename,
                                 playlist[playlistIndex].itemId,
-                                playlist[playlistIndex].categoryId
+                                playlist[playlistIndex].categoryId,
                               );
                             });
                             currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
                             updateSid(
                               playlist[playlistIndex].filename,
                               playlist[playlistIndex].itemId,
-                              playlist[playlistIndex].categoryId
+                              playlist[playlistIndex].categoryId,
                             );
                           "
                         >
@@ -3161,7 +3156,7 @@
                 "",
                 this.playlist[this.playlistIndex].filename,
                 this.playlist[this.playlistIndex].itemId,
-                this.playlist[this.playlistIndex].categoryId
+                this.playlist[this.playlistIndex].categoryId,
               );
             }
           },
@@ -3504,7 +3499,7 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.showAudio = true;
               };
@@ -3522,7 +3517,7 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.showAudio = true;
               };
@@ -3554,14 +3549,14 @@
               "",
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
             this.currentSid =
               this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
           },
           setDefault: function () {
@@ -3619,7 +3614,7 @@
           },
           createDownloadUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             return (
               window.location.protocol +
@@ -3634,7 +3629,7 @@
           },
           createConvertUrl: function (autostart, entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             return (
               window.location.protocol +
@@ -3783,7 +3778,7 @@
           },
           createSIDMappingUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             return (
               window.location.protocol +
@@ -3810,19 +3805,19 @@
           openDownloadMP3Url: function (entry, itemId, categoryId) {
             var url = this.createConvertUrl(
               "",
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             window.open(
               url +
                 "&download=true" +
                 (typeof itemId === "undefined" && typeof categoryId === "undefined"
                   ? ""
-                  : "&itemId=" + itemId + "&categoryId=" + categoryId)
+                  : "&itemId=" + itemId + "&categoryId=" + categoryId),
             );
           },
           openDownloadSIDUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             window.open(
               window.location.protocol +
@@ -3836,12 +3831,12 @@
                 url +
                 (typeof itemId === "undefined" && typeof categoryId === "undefined"
                   ? ""
-                  : "?itemId=" + itemId + "&categoryId=" + categoryId)
+                  : "?itemId=" + itemId + "&categoryId=" + categoryId),
             );
           },
           openDownloadUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             window.open(this.createDownloadUrl(entry, itemId, categoryId));
           },
@@ -3987,13 +3982,13 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.$refs.audioElm.src = this.createConvertUrl(
                   "",
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.showAudio = true;
               })
@@ -4056,7 +4051,7 @@
             entry.loadingDisk = true; //the loading begin
             var url =
               uriEncode(
-                (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename
+                (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename,
               ) +
               (typeof itemId === "undefined" && typeof categoryId === "undefined"
                 ? ""
@@ -4305,7 +4300,7 @@
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
 
             this.showAudio = true;
@@ -4313,7 +4308,7 @@
               "",
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
           }
           if (localStorage.sortBy) {
@@ -4385,16 +4380,16 @@
           convertOptions: {
             handler: function (after, before) {
               this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(
-                this.convertOptions.config.sidplay2Section.defaultPlayLength
+                this.convertOptions.config.sidplay2Section.defaultPlayLength,
               );
               this.convertOptions.config.sidplay2Section.startTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.startTime
+                this.convertOptions.config.sidplay2Section.startTime,
               );
               this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeInTime
+                this.convertOptions.config.sidplay2Section.fadeInTime,
               );
               this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeOutTime
+                this.convertOptions.config.sidplay2Section.fadeOutTime,
               );
               localStorage.convertOptions = JSON.stringify(this.convertOptions);
             },
