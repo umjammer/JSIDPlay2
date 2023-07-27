@@ -3,9 +3,7 @@ package server.restful.common.parameter;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static java.util.Arrays.asList;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -41,6 +39,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import build.OnlineContent;
+import libsidutils.IOUtils;
 import server.restful.JSIDPlay2Server.JSIDPlay2ServerParameters;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
@@ -183,8 +182,6 @@ public class ServletParameterHelper {
 		private static final CharsetDecoder US_ASCII_DECODER = StandardCharsets.US_ASCII.newDecoder()
 				.onMalformedInput(CodingErrorAction.REPORT);
 
-		private static final int BUFFER_LENGTH = 1024;
-
 		private static final String ILLEGAL_CHARACTERS_IN_RESOURCE_NAME = "Illegal characters in resourceName=%s (Expected US_ASCII or unicode escape sequences)\nlineNo=%d,colNo=%d";
 
 		private static final Locale[] OTHER_LOCALES = new Locale[] { Locale.GERMAN };
@@ -282,8 +279,9 @@ public class ServletParameterHelper {
 				LOG.info(String.format("Check encoding of %s", resourceName));
 
 				ByteBuffer byteBuffer = null;
-				byte[] byteArray = getByteArray(resourceName);
+				byte[] byteArray = null;
 				try {
+					byteArray = IOUtils.readAllBytes(getClass().getResourceAsStream(resourceName));
 					byteBuffer = ByteBuffer.wrap(byteArray);
 					US_ASCII_DECODER.decode(byteBuffer);
 				} catch (CharacterCodingException e) {
@@ -291,19 +289,10 @@ public class ServletParameterHelper {
 					LOG.log(Level.SEVERE, String.format(ILLEGAL_CHARACTERS_IN_RESOURCE_NAME, resourceName,
 							lineColumn.getKey(), lineColumn.getValue()), e);
 					throw e;
+				} catch (IOException e) {
+					LOG.log(Level.SEVERE, String.format("checkEncoding failed for %s", resourceName), e);
+					throw e;
 				}
-			}
-		}
-
-		private byte[] getByteArray(String resourceName) throws IOException {
-			try (InputStream is = getClass().getResourceAsStream(resourceName)) {
-				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-				int nRead;
-				byte[] data = new byte[BUFFER_LENGTH];
-				while ((nRead = is.read(data, 0, data.length)) != -1) {
-					buffer.write(data, 0, nRead);
-				}
-				return buffer.toByteArray();
 			}
 		}
 

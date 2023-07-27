@@ -1,5 +1,6 @@
 package libsidutils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -40,6 +41,8 @@ public class IOUtils {
 	private static final Pattern SEPARATOR = Pattern.compile("[/\\\\]");
 
 	private static final int COPY_BUFFER_CHUNK_SIZE = 16 * 1024;
+
+	private static final int BUFFER_LENGTH = 64;
 
 	/**
 	 * Create a filename of the given path relative to the collection root dir. <BR>
@@ -250,17 +253,29 @@ public class IOUtils {
 		}
 	}
 
+	public static byte[] readAllBytes(InputStream is) throws IOException {
+		if (is == null)
+			throw new IOException("no InputStream");
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		int nRead;
+		byte[] b = new byte[BUFFER_LENGTH];
+		while ((nRead = is.read(b, 0, b.length)) != -1) {
+			buffer.write(b, 0, nRead);
+		}
+		return buffer.toByteArray();
+	}
+
 	public static int readNBytes(InputStream is, byte[] b, int off, int len) throws IOException {
 		if (off < 0 || len < 0 || len > b.length - off)
 			throw new IndexOutOfBoundsException();
-		int n = 0;
-		while (n < len) {
-			int count = is.read(b, off + n, len - n);
+		int nRead = 0;
+		while (nRead < len) {
+			int count = is.read(b, off + nRead, len - nRead);
 			if (count < 0)
 				break;
-			n += count;
+			nRead += count;
 		}
-		return n;
+		return nRead;
 	}
 
 }
