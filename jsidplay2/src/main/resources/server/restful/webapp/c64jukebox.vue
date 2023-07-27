@@ -459,7 +459,7 @@
                             :button="!isVideo(entry)"
                             :variant="getVariant(entry)"
                             v-bind:href="createConvertUrl('', entry.filename)"
-                            v-on:click="pause"
+                            v-on:click.self="pause"
                             target="c64"
                           >
                             <div>
@@ -512,7 +512,7 @@
                             :button="!isVideo(entry)"
                             :variant="getVariant(entry)"
                             v-bind:href="createConvertUrl('', entry.filename)"
-                            v-on:click="pause"
+                            v-on:click.self="pause"
                             target="c64"
                           >
                             <div>
