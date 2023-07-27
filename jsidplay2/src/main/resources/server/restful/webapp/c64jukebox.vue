@@ -1143,7 +1143,7 @@
                       <span>{{ $t("exportPlaylist") }}</span></b-button
                     >
                     <b-button variant="success" v-on:click="setNextPlaylistEntry" v-if="playlist.length > 0">
-                      <b-icon-forward-fill> </b-icon-forward-fill>
+                      <b-icon-play-fill> </b-icon-play-fill>
                       <span>{{ $t("next") }}</span></b-button
                     >
                   </div>
