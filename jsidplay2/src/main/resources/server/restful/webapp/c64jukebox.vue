@@ -422,7 +422,7 @@
                           <b-button
                             size="sm"
                             style="font-size: smaller; padding: 2px 4px"
-                            v-on:click="openDownloadMP3Url(entry.filename)"
+                            v-on:click.prevent="openDownloadMP3Url(entry.filename)"
                             v-show="!isMP3(entry)"
                           >
                             <b-icon-download> </b-icon-download>
@@ -431,7 +431,7 @@
                           <b-button
                             size="sm"
                             style="font-size: smaller; padding: 2px 4px"
-                            v-on:click="openDownloadSIDUrl(entry.filename)"
+                            v-on:click.prevent="openDownloadSIDUrl(entry.filename)"
                           >
                             <b-icon-download> </b-icon-download>
                           </b-button>
@@ -440,7 +440,7 @@
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
                               variant="primary"
-                              v-on:click="
+                              v-on:click.prevent="
                                 playlist.push({
                                   filename: entry.filename,
                                 });
@@ -454,25 +454,29 @@
                         </b-list-group-item>
                       </template>
                       <template v-else-if="isVideo(entry)">
-                        <b-list-group-item :button="!isVideo(entry)" :variant="getVariant(entry)">
-                          <template v-if="canFastload(entry)">
+                        <template v-if="canFastload(entry)">
+                          <b-list-group-item
+                            :button="!isVideo(entry)"
+                            :variant="getVariant(entry)"
+                            v-bind:href="createConvertUrl('', entry.filename)"
+                            v-on:click="pause"
+                            target="c64"
+                          >
                             <div>
-                              <a v-bind:href="createConvertUrl('', entry.filename)" v-on:click="pause" target="c64">
-                                <b-spinner
-                                  type="border"
-                                  variant="primary"
-                                  small
-                                  v-if="entry.loading || entry.loadingDisk"
-                                ></b-spinner>
-                                <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)">
-                                </b-icon-camera-video-fill>
-                                <span>{{ shortEntry(entry.filename) }}</span>
-                              </a>
+                              <b-spinner
+                                type="border"
+                                variant="primary"
+                                small
+                                v-if="entry.loading || entry.loadingDisk"
+                              ></b-spinner>
+                              <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)">
+                              </b-icon-camera-video-fill>
+                              <span>{{ shortEntry(entry.filename) }}</span>
                               <b-button
                                 size="sm"
                                 style="font-size: smaller; padding: 2px 4px"
                                 variant="primary"
-                                v-on:click="fetchDiskDirectory(entry)"
+                                v-on:click.prevent="fetchDiskDirectory(entry)"
                                 :disabled="entry.loadingDisk"
                               >
                                 <span> {{ $t("showDirectory") }} </span>
@@ -480,7 +484,7 @@
                               <b-button
                                 size="sm"
                                 style="font-size: smaller; padding: 2px 4px"
-                                v-on:click="openDownloadSIDUrl(entry.filename)"
+                                v-on:click.prevent="openDownloadSIDUrl(entry.filename)"
                               >
                                 <b-icon-download> </b-icon-download>
                               </b-button>
@@ -501,22 +505,30 @@
                                 </div>
                               </div>
                             </div>
-                          </template>
-                          <template v-else>
-                            <a v-bind:href="createConvertUrl('', entry.filename)" v-on:click="pause" target="c64">
+                          </b-list-group-item>
+                        </template>
+                        <template v-else>
+                          <b-list-group-item
+                            :button="!isVideo(entry)"
+                            :variant="getVariant(entry)"
+                            v-bind:href="createConvertUrl('', entry.filename)"
+                            v-on:click="pause"
+                            target="c64"
+                          >
+                            <div>
                               <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
                               <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
                               <span>{{ shortEntry(entry.filename) }}</span>
-                            </a>
+                            </div>
                             <b-button
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
-                              v-on:click="openDownloadSIDUrl(entry.filename)"
+                              v-on:click.prevent="openDownloadSIDUrl(entry.filename)"
                             >
                               <b-icon-download> </b-icon-download>
                             </b-button>
-                          </template>
-                        </b-list-group-item>
+                          </b-list-group-item>
+                        </template>
                       </template>
                       <template v-else>
                         <b-list-group-item
