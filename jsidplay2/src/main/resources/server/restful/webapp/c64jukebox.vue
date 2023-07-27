@@ -405,7 +405,7 @@
                           button
                           :variant="getVariant(entry)"
                           style="white-space: pre-line; display: flex; justify-content: space-between"
-                          v-on:click.self="
+                          v-on:click="
                             currentSid = shortEntry(entry.filename);
                             updateSid(entry.filename);
                             showAudio = true;
@@ -422,7 +422,7 @@
                           <b-button
                             size="sm"
                             style="font-size: smaller; padding: 2px 4px"
-                            v-on:click="openDownloadMP3Url(entry.filename)"
+                            v-on:click.stop="openDownloadMP3Url(entry.filename)"
                             v-show="!isMP3(entry)"
                           >
                             <b-icon-download> </b-icon-download>
@@ -431,7 +431,7 @@
                           <b-button
                             size="sm"
                             style="font-size: smaller; padding: 2px 4px"
-                            v-on:click="openDownloadSIDUrl(entry.filename)"
+                            v-on:click.stop="openDownloadSIDUrl(entry.filename)"
                           >
                             <b-icon-download> </b-icon-download>
                           </b-button>
@@ -440,7 +440,7 @@
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
                               variant="primary"
-                              v-on:click="
+                              v-on:click.stop="
                                 playlist.push({
                                   filename: entry.filename,
                                 });
