@@ -182,7 +182,7 @@ public class ServletParameterHelper {
 		private static final CharsetDecoder US_ASCII_DECODER = StandardCharsets.US_ASCII.newDecoder()
 				.onMalformedInput(CodingErrorAction.REPORT);
 
-		private static final String ILLEGAL_CHARACTERS_IN_RESOURCE_NAME = "Illegal characters in resourceName=%s (Expected US_ASCII or unicode escape sequences)\nlineNo=%d,colNo=%d";
+		private static final String ILLEGAL_CHARACTERS_IN_RESOURCE_NAME = "Illegal characters in resource=%s (Expected US_ASCII or unicode escape sequences prefixed by \\u)\nlineNo=%d,colNo=%d";
 
 		private static final Locale[] OTHER_LOCALES = new Locale[] { Locale.GERMAN };
 
