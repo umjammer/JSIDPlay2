@@ -108,7 +108,7 @@ public class SleepDriver implements AudioDriver {
 		if (millis == null) {
 			return "00:00:00.000";
 		}
-		return (new SimpleDateFormat("mm:ss:SSS")).format(new Date(millis));
+		return new SimpleDateFormat("mm:ss:SSS").format(new Date(millis));
 	}
 
 }
