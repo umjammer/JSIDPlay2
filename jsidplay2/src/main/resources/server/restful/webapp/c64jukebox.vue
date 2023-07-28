@@ -60,7 +60,7 @@
                   '',
                   playlist[playlistIndex].filename,
                   playlist[playlistIndex].itemId,
-                  playlist[playlistIndex].categoryId
+                  playlist[playlistIndex].categoryId,
                 )
               "
             >
@@ -306,7 +306,7 @@
                       .forEach((entry) =>
                         playlist.push({
                           filename: entry.filename,
-                        })
+                        }),
                       );
                     tabIndex = 5;
                     showAudio = true;
@@ -837,7 +837,7 @@
                                                 program.directoryLine,
                                                 innerRow.item.filename,
                                                 row.item.id,
-                                                row.item.categoryId
+                                                row.item.categoryId,
                                               )
                                             "
                                             v-on:click="pause"
@@ -1183,14 +1183,14 @@
                             '',
                             playlist[playlistIndex].filename,
                             playlist[playlistIndex].itemId,
-                            playlist[playlistIndex].categoryId
+                            playlist[playlistIndex].categoryId,
                           );
                         });
                         currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
                         updateSid(
                           playlist[playlistIndex].filename,
                           playlist[playlistIndex].itemId,
-                          playlist[playlistIndex].categoryId
+                          playlist[playlistIndex].categoryId,
                         );
                       "
                     >
@@ -2363,151 +2363,178 @@
                       <template #title>{{ $t("mutingCfgHeader") }}</template>
 
                       <b-card-text>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteVoice1">
-                              {{ $t("convertMessages.config.emulationSection.muteVoice1") }}
-                              <b-form-checkbox
-                                id="muteVoice1"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteVoice1"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteVoice2">
-                              {{ $t("convertMessages.config.emulationSection.muteVoice2") }}
-                              <b-form-checkbox
-                                id="muteVoice2"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteVoice2"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteVoice3">
-                              {{ $t("convertMessages.config.emulationSection.muteVoice3") }}
-                              <b-form-checkbox
-                                id="muteVoice3"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteVoice3"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteVoice4">
-                              {{ $t("convertMessages.config.emulationSection.muteVoice4") }}
-                              <b-form-checkbox
-                                id="muteVoice4"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteVoice4"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
+                        <b-tabs
+                          v-model="muteSidTabConfigIndex"
+                          active-nav-item-class="font-weight-bold text-italic"
+                          pills
+                          card
+                          align="right"
+                        >
+                          <b-tab>
+                            <template #title>{{ $t("muteSidHeader") }}</template>
 
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteStereoVoice1">
-                              {{ $t("convertMessages.config.emulationSection.muteStereoVoice1") }}
-                              <b-form-checkbox
-                                id="muteStereoVoice1"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteStereoVoice1"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteStereoVoice2">
-                              {{ $t("convertMessages.config.emulationSection.muteStereoVoice2") }}
-                              <b-form-checkbox
-                                id="muteStereoVoice2"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteStereoVoice2"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteStereoVoice3">
-                              {{ $t("convertMessages.config.emulationSection.muteStereoVoice3") }}
-                              <b-form-checkbox
-                                id="muteStereoVoice3"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteStereoVoice3"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteStereoVoice4">
-                              {{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }}
-                              <b-form-checkbox
-                                id="muteStereoVoice4"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteStereoVoice4"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteThirdSIDVoice1">
-                              {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice1") }}
-                              <b-form-checkbox
-                                id="muteThirdSIDVoice1"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteThirdSIDVoice1"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteThirdSIDVoice2">
-                              {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice2") }}
-                              <b-form-checkbox
-                                id="muteThirdSIDVoice2"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteThirdSIDVoice2"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteThirdSIDVoice3">
-                              {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice3") }}
-                              <b-form-checkbox
-                                id="muteThirdSIDVoice3"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteThirdSIDVoice3"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="muteThirdSIDVoice4">
-                              {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }}
-                              <b-form-checkbox
-                                id="muteThirdSIDVoice4"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4"
-                              >
-                              </b-form-checkbox></label
-                          ></span>
-                        </div>
+                            <b-card-text>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteVoice1">
+                                    {{ $t("convertMessages.config.emulationSection.muteVoice1") }}
+                                    <b-form-checkbox
+                                      id="muteVoice1"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteVoice1"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteVoice2">
+                                    {{ $t("convertMessages.config.emulationSection.muteVoice2") }}
+                                    <b-form-checkbox
+                                      id="muteVoice2"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteVoice2"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteVoice3">
+                                    {{ $t("convertMessages.config.emulationSection.muteVoice3") }}
+                                    <b-form-checkbox
+                                      id="muteVoice3"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteVoice3"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteVoice4">
+                                    {{ $t("convertMessages.config.emulationSection.muteVoice4") }}
+                                    <b-form-checkbox
+                                      id="muteVoice4"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteVoice4"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                            </b-card-text>
+                          </b-tab>
+
+                          <b-tab>
+                            <template #title>{{ $t("muteStereoSidHeader") }}</template>
+
+                            <b-card-text>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteStereoVoice1">
+                                    {{ $t("convertMessages.config.emulationSection.muteStereoVoice1") }}
+                                    <b-form-checkbox
+                                      id="muteStereoVoice1"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteStereoVoice1"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteStereoVoice2">
+                                    {{ $t("convertMessages.config.emulationSection.muteStereoVoice2") }}
+                                    <b-form-checkbox
+                                      id="muteStereoVoice2"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteStereoVoice2"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteStereoVoice3">
+                                    {{ $t("convertMessages.config.emulationSection.muteStereoVoice3") }}
+                                    <b-form-checkbox
+                                      id="muteStereoVoice3"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteStereoVoice3"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteStereoVoice4">
+                                    {{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }}
+                                    <b-form-checkbox
+                                      id="muteStereoVoice4"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteStereoVoice4"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                            </b-card-text>
+                          </b-tab>
+
+                          <b-tab>
+                            <template #title>{{ $t("muteThirdSidHeader") }}</template>
+
+                            <b-card-text>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteThirdSIDVoice1">
+                                    {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice1") }}
+                                    <b-form-checkbox
+                                      id="muteThirdSIDVoice1"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteThirdSIDVoice1"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteThirdSIDVoice2">
+                                    {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice2") }}
+                                    <b-form-checkbox
+                                      id="muteThirdSIDVoice2"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteThirdSIDVoice2"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteThirdSIDVoice3">
+                                    {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice3") }}
+                                    <b-form-checkbox
+                                      id="muteThirdSIDVoice3"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteThirdSIDVoice3"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                              <div class="settings-box">
+                                <span class="setting">
+                                  <label for="muteThirdSIDVoice4">
+                                    {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }}
+                                    <b-form-checkbox
+                                      id="muteThirdSIDVoice4"
+                                      class="right"
+                                      v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4"
+                                    >
+                                    </b-form-checkbox></label
+                                ></span>
+                              </div>
+                            </b-card-text>
+                          </b-tab>
+                        </b-tabs>
                       </b-card-text>
                     </b-tab>
 
@@ -2910,6 +2937,9 @@
           residFilter6581CfgHeader: "MOS6581",
           residFilter8580CfgHeader: "MOS8580",
           mutingCfgHeader: "Muting",
+          muteSidHeader: "SID",
+          muteStereoSidHeader: "Stereo SID",
+          muteThirdSidHeader: "3rd SID",
           floppyCartCfgHeader: "Floppy/Cart",
           showDirectory: "DIR",
           firstSid: "Main SID",
@@ -3030,6 +3060,9 @@
           residFilter6581CfgHeader: "MOS6581",
           residFilter8580CfgHeader: "MOS8580",
           mutingCfgHeader: "Stummschalten",
+          muteSidHeader: "SID",
+          muteStereoSidHeader: "Stereo SID",
+          muteThirdSidHeader: "3. SID",
           floppyCartCfgHeader: "Floppy/Cart",
           showDirectory: "DIR",
           firstSid: "Haupt SID",
@@ -3124,7 +3157,7 @@
             },
             {
               key: "released",
-               label: "Release",
+              label: "Release",
               sortable: true,
               class: "field-released",
             },
@@ -3174,6 +3207,7 @@
           filterTabConfigIndex: 0,
           residFpFilterModelTabConfigIndex: 0,
           residFilterModelTabConfigIndex: 0,
+          muteSidTabConfigIndex: 0,
           loadingSid: false,
           loadingStil: false,
           loadingAssembly64: false,
@@ -3191,7 +3225,7 @@
                 "",
                 this.playlist[this.playlistIndex].filename,
                 this.playlist[this.playlistIndex].itemId,
-                this.playlist[this.playlistIndex].categoryId
+                this.playlist[this.playlistIndex].categoryId,
               );
             }
           },
@@ -3534,7 +3568,7 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.showAudio = true;
               };
@@ -3552,7 +3586,7 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.showAudio = true;
               };
@@ -3584,14 +3618,14 @@
               "",
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
             this.currentSid =
               this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
           },
           setDefault: function () {
@@ -3649,7 +3683,7 @@
           },
           createDownloadUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             return (
               window.location.protocol +
@@ -3664,7 +3698,7 @@
           },
           createConvertUrl: function (autostart, entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             return (
               window.location.protocol +
@@ -3813,7 +3847,7 @@
           },
           createSIDMappingUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             return (
               window.location.protocol +
@@ -3840,19 +3874,19 @@
           openDownloadMP3Url: function (entry, itemId, categoryId) {
             var url = this.createConvertUrl(
               "",
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             window.open(
               url +
                 "&download=true" +
                 (typeof itemId === "undefined" && typeof categoryId === "undefined"
                   ? ""
-                  : "&itemId=" + itemId + "&categoryId=" + categoryId)
+                  : "&itemId=" + itemId + "&categoryId=" + categoryId),
             );
           },
           openDownloadSIDUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             window.open(
               window.location.protocol +
@@ -3866,12 +3900,12 @@
                 url +
                 (typeof itemId === "undefined" && typeof categoryId === "undefined"
                   ? ""
-                  : "?itemId=" + itemId + "&categoryId=" + categoryId)
+                  : "?itemId=" + itemId + "&categoryId=" + categoryId),
             );
           },
           openDownloadUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
+              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry,
             );
             window.open(this.createDownloadUrl(entry, itemId, categoryId));
           },
@@ -4017,13 +4051,13 @@
                 this.updateSid(
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.$refs.audioElm.src = this.createConvertUrl(
                   "",
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
+                  this.playlist[this.playlistIndex].categoryId,
                 );
                 this.showAudio = true;
               })
@@ -4086,7 +4120,7 @@
             entry.loadingDisk = true; //the loading begin
             var url =
               uriEncode(
-                (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename
+                (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename,
               ) +
               (typeof itemId === "undefined" && typeof categoryId === "undefined"
                 ? ""
@@ -4335,7 +4369,7 @@
             this.updateSid(
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
 
             this.showAudio = true;
@@ -4343,7 +4377,7 @@
               "",
               this.playlist[this.playlistIndex].filename,
               this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
+              this.playlist[this.playlistIndex].categoryId,
             );
           }
           if (localStorage.sortBy) {
@@ -4415,16 +4449,16 @@
           convertOptions: {
             handler: function (after, before) {
               this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(
-                this.convertOptions.config.sidplay2Section.defaultPlayLength
+                this.convertOptions.config.sidplay2Section.defaultPlayLength,
               );
               this.convertOptions.config.sidplay2Section.startTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.startTime
+                this.convertOptions.config.sidplay2Section.startTime,
               );
               this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeInTime
+                this.convertOptions.config.sidplay2Section.fadeInTime,
               );
               this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeOutTime
+                this.convertOptions.config.sidplay2Section.fadeOutTime,
               );
               localStorage.convertOptions = JSON.stringify(this.convertOptions);
             },
