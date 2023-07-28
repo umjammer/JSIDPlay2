@@ -1910,6 +1910,7 @@
                             </label>
                             <b-form-timepicker
                               id="startTime"
+                              reset-button
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.startTime"
                             />
@@ -1922,6 +1923,7 @@
                             </label>
                             <b-form-timepicker
                               id="defaultPlayLength"
+                              reset-button
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.defaultPlayLength"
                             />
@@ -1934,6 +1936,7 @@
                             </label>
                             <b-form-timepicker
                               id="fadeInTime"
+                              reset-button
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.fadeInTime"
                           /></span>
@@ -1945,6 +1948,7 @@
                             </label>
                             <b-form-timepicker
                               id="fadeOutTime"
+                              reset-button
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.fadeOutTime"
                           /></span>
@@ -1953,68 +1957,64 @@
                           <span class="setting"
                             ><label for="mainVolume">
                               {{ $t("convertMessages.config.audioSection.mainVolume") }}
-                              <span class="value">{{ convertOptions.config.audioSection.mainVolume }}db</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="mainVolume"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.mainVolume"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="volumeFormatter"
                                 min="-6"
                                 max="6"
                                 step="1"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting"
                             ><label for="secondVolume"
                               >{{ $t("convertMessages.config.audioSection.secondVolume") }}
-                              <span class="value">{{ convertOptions.config.audioSection.secondVolume }}db</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="secondVolume"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.secondVolume"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="volumeFormatter"
                                 min="-6"
                                 max="6"
                                 step="1"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting">
                             <label for="thirdVolume">
                               {{ $t("convertMessages.config.audioSection.thirdVolume") }}
-                              <span class="value">{{ convertOptions.config.audioSection.thirdVolume }}db</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="thirdVolume"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.thirdVolume"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="volumeFormatter"
                                 min="-6"
                                 max="6"
                                 step="1"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting">
                             <label for="mainBalance">
                               {{ $t("convertMessages.config.audioSection.mainBalance") }}
-                              <span class="value">{{ convertOptions.config.audioSection.mainBalance }}</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="mainBalance"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.mainBalance"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="balanceFormatter"
                                 min="0"
                                 max="1"
                                 step="0.1"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
@@ -2022,85 +2022,80 @@
                             <label for="secondBalance"
                               >{{ $t("convertMessages.config.audioSection.secondBalance") }}
 
-                              <span class="value">{{ convertOptions.config.audioSection.secondBalance }}</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="secondBalance"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.secondBalance"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="balanceFormatter"
                                 min="0"
                                 max="1"
                                 step="0.1"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting">
                             <label for="thirdBalance"
                               >{{ $t("convertMessages.config.audioSection.thirdBalance") }}
-                              <span class="value">{{ convertOptions.config.audioSection.thirdBalance }}</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="thirdBalance"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.thirdBalance"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="balanceFormatter"
                                 min="0"
                                 max="1"
                                 step="0.1"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting">
                             <label for="mainDelay">
                               {{ $t("convertMessages.config.audioSection.mainDelay") }}
-                              <span class="value">{{ convertOptions.config.audioSection.mainDelay }}ms</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="mainDelay"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.mainDelay"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="delayFormatter"
                                 min="0"
                                 max="100"
                                 step="10"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting"
                             ><label for="secondDelay">
                               {{ $t("convertMessages.config.audioSection.secondDelay") }}
-                              <span class="value">{{ convertOptions.config.audioSection.secondDelay }}ms</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="secondDelay"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.secondDelay"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="delayFormatter"
                                 min="0"
                                 max="100"
                                 step="10"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                         <div class="settings-box">
                           <span class="setting"
                             ><label for="thirdDelay">
                               {{ $t("convertMessages.config.audioSection.thirdDelay") }}
-                              <span class="value">{{ convertOptions.config.audioSection.thirdDelay }}ms</span>
-                              <b-form-input
+                              <b-form-spinbutton
                                 id="thirdDelay"
                                 class="right"
                                 v-model="convertOptions.config.audioSection.thirdDelay"
-                                type="range"
+                                :locale="i18n.locale"
+                                :formatter-fn="delayFormatter"
                                 min="0"
                                 max="100"
                                 step="10"
-                                no-wheel="true"
-                              ></b-form-input> </label
+                              ></b-form-spinbutton> </label
                           ></span>
                         </div>
                       </b-card-text>
@@ -3432,6 +3427,15 @@
               .split("/")
               .slice(filename.endsWith("/") ? -2 : -1)
               .join("/");
+          },
+          volumeFormatter: function (value) {
+            return value.toLocaleString(this.$i18n.locale) + " db";
+          },
+          balanceFormatter: function (value) {
+            return value.toLocaleString(this.$i18n.locale);
+          },
+          delayFormatter: function (value) {
+            return value.toLocaleString(this.$i18n.locale) + " ms";
           },
           pathEntry: function (filename) {
             const files = filename.split("/");
