@@ -911,7 +911,7 @@
                         style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
                       >
                         <template #first>
-                          <b-form-select-option value="">--Select a category--</b-form-select-option>
+                          <b-form-select-option value="">{{ $t("firstCategory") }}</b-form-select-option>
                         </template>
                       </b-form-select>
                     </template>
@@ -2919,6 +2919,7 @@
           setDefaultUser: "Restore Default User",
           setDefaultReally: "Do you really want to restore defaults?",
           setDefaultUserReally: "Do you really want to restore default user?",
+          firstCategory: "",
 
           convertMessages: $convertMessagesEn,
         },
@@ -3038,6 +3039,7 @@
           setDefaultUser: "Standardbenutzer wiederherstellen",
           setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
           setDefaultUserReally: "Wollen sie wirklich den Standardbenutzer wiederherstellen?",
+          firstCategory: "",
 
           convertMessages: $convertMessagesDe,
         },
@@ -3106,6 +3108,7 @@
           searchFields: [
             {
               key: "category",
+              label: "Content",
               sortable: true,
               class: "field-category",
             },
@@ -3121,6 +3124,7 @@
             },
             {
               key: "released",
+               label: "Release",
               sortable: true,
               class: "field-released",
             },
