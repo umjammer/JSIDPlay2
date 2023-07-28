@@ -517,16 +517,20 @@
                             v-on:click.self="pause"
                             target="c64"
                           >
-                            <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                            <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
-                            <span>{{ shortEntry(entry.filename) }}</span>
-                            <b-button
-                              size="sm"
-                              style="font-size: smaller; padding: 2px 4px"
-                              v-on:click.prevent="openDownloadSIDUrl(entry.filename)"
-                            >
-                              <b-icon-download> </b-icon-download>
-                            </b-button>
+                            <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                              <div style="flex-grow: 4; word-break: break-all">
+                                <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
+                                <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
+                                <span>{{ shortEntry(entry.filename) }}</span>
+                              </div>
+                              <b-button
+                                size="sm"
+                                style="font-size: smaller; padding: 2px 4px"
+                                v-on:click.prevent="openDownloadSIDUrl(entry.filename)"
+                              >
+                                <b-icon-download> </b-icon-download>
+                              </b-button>
+                            </div>
                           </b-list-group-item>
                         </template>
                       </template>
@@ -795,7 +799,9 @@
                                       target="c64"
                                     >
                                       <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                      <span style="word-break: break-all;">{{ shortEntry(innerRow.item.filename) }}</span>
+                                      <span style="word-break: break-all">{{
+                                        shortEntry(innerRow.item.filename)
+                                      }}</span>
                                     </a>
                                     <b-button
                                       size="sm"
@@ -851,7 +857,7 @@
                                     target="c64"
                                   >
                                     <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                    <span style="word-break: break-all;">{{ shortEntry(innerRow.item.filename) }}</span>
+                                    <span style="word-break: break-all">{{ shortEntry(innerRow.item.filename) }}</span>
                                   </a>
                                   <b-button
                                     size="sm"
