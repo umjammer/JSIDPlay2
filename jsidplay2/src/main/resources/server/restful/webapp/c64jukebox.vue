@@ -316,7 +316,7 @@
                   <span>{{ $t("addAllToPlaylist") }}</span>
                 </b-button>
 
-                <div style="height: 40px"></div>
+                <div style="height: 4px"></div>
 
                 <b-card-text>
                   <b-list-group>
