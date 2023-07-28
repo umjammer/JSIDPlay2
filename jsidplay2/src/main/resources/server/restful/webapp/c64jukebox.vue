@@ -784,25 +784,27 @@
                             <template v-else-if="isVideo(innerRow.item)">
                               <span>
                                 <template v-if="canFastload(innerRow.item)">
-                                  <div>
-                                    <b-spinner
-                                      type="border"
-                                      variant="primary"
-                                      small
-                                      v-if="innerRow.item.loadingDisk"
-                                    ></b-spinner>
-                                    <a
-                                      v-bind:href="
-                                        createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
-                                      "
-                                      v-on:click="pause"
-                                      target="c64"
-                                    >
-                                      <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                      <span style="word-break: break-all">{{
-                                        shortEntry(innerRow.item.filename)
-                                      }}</span>
-                                    </a>
+                                  <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                                    <div style="flex-grow: 4; word-break: break-all">
+                                      <b-spinner
+                                        type="border"
+                                        variant="primary"
+                                        small
+                                        v-if="innerRow.item.loadingDisk"
+                                      ></b-spinner>
+                                      <a
+                                        v-bind:href="
+                                          createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                        "
+                                        v-on:click="pause"
+                                        target="c64"
+                                      >
+                                        <b-icon-camera-video-fill> </b-icon-camera-video-fill>
+                                        <span style="word-break: break-all">{{
+                                          shortEntry(innerRow.item.filename)
+                                        }}</span>
+                                      </a>
+                                    </div>
                                     <b-button
                                       size="sm"
                                       style="font-size: smaller; padding: 2px 4px"
@@ -849,25 +851,31 @@
                                   </div>
                                 </template>
                                 <template v-else>
-                                  <a
-                                    v-bind:href="
-                                      createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
-                                    "
-                                    v-on:click="pause"
-                                    target="c64"
-                                  >
-                                    <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                    <span style="word-break: break-all">{{ shortEntry(innerRow.item.filename) }}</span>
-                                  </a>
-                                  <b-button
-                                    size="sm"
-                                    style="font-size: smaller; padding: 2px 4px"
-                                    v-on:click="
-                                      openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
-                                    "
-                                  >
-                                    <b-icon-download> </b-icon-download>
-                                  </b-button>
+                                  <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                                    <div style="flex-grow: 4; word-break: break-all">
+                                      <a
+                                        v-bind:href="
+                                          createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                        "
+                                        v-on:click="pause"
+                                        target="c64"
+                                      >
+                                        <b-icon-camera-video-fill> </b-icon-camera-video-fill>
+                                        <span style="word-break: break-all">{{
+                                          shortEntry(innerRow.item.filename)
+                                        }}</span>
+                                      </a>
+                                    </div>
+                                    <b-button
+                                      size="sm"
+                                      style="font-size: smaller; padding: 2px 4px"
+                                      v-on:click="
+                                        openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
+                                      "
+                                    >
+                                      <b-icon-download> </b-icon-download>
+                                    </b-button>
+                                  </div>
                                 </template>
                               </span>
                             </template>
