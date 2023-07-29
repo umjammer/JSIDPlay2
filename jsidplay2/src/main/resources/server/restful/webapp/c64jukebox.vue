@@ -45,9 +45,9 @@
               {{ lang }}
             </option>
           </select>
-          <h2>C64 Jukebox</h2>
+          <h1 class="c64jukebox">C64 Jukebox</h1>
         </div>
-        <div class="audio" style="position: relative">
+        <div class="audio" style="position: relative; text-align: center; background: white">
           <audio ref="audioElm" v-show="showAudio" v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls>
             I'm sorry. Your browser doesn't support HTML5 audio
           </audio>
@@ -76,7 +76,9 @@
             </b-button>
           </div>
           <div style="position: absolute; bottom: 5px; left: 0px; line-height: 0.7">
-            <span class="current-sid">{{ currentSid }}</span>
+            <span class="current-sid"
+              ><span v-if="currentSid">{{ $t("currentlyPlaying") }}</span> <span>{{ currentSid }}</span></span
+            >
           </div>
         </div>
         <div>
@@ -1230,7 +1232,7 @@
                 <b-card-text>
                   <b-container fluid>
                     <b-row>
-                      <b-col>
+                      <b-col style="border-right: 1px dotted grey">
                         <b
                           ><div style="margin-bottom: 8px; text-align: center">{{ $t("HARDSID") }}</div></b
                         >
@@ -1245,7 +1247,7 @@
                       </b-col-->
                     </b-row>
                     <b-row>
-                      <b-col style="border: 1px dotted grey">
+                      <b-col style="border-right: 1px dotted grey">
                         <div>
                           <b-container>
                             <b-img-lazy
@@ -1301,7 +1303,7 @@
                           </div>
                         </div>
                       </b-col>
-                      <b-col style="border: 1px dotted grey">
+                      <b-col>
                         <div>
                           <b-container>
                             <b-img-lazy
@@ -1318,7 +1320,7 @@
                         </div>
                       </b-col>
 
-                      <!--b-col style="border: 1px dotted grey;">
+                      <!--b-col style="border-left: 1px dotted grey;">
                         <div>
                           <b-container>
 							<b-img-lazy
@@ -1333,7 +1335,7 @@
                       </b-col-->
                     </b-row>
                     <b-row>
-                      <b-col>
+                      <b-col style="border-right: 1px dotted grey">
                         <div class="settings-box">
                           <span class="setting">
                             <b-button
@@ -1377,7 +1379,7 @@
                         </div>
                       </b-col>
 
-                      <!--b-col>
+                      <!--b-col style="border-left: 1px dotted grey;">
 						<div class="settings-box">
                     	  <span class="setting">
 							<b-button
@@ -1401,7 +1403,7 @@
                     </b-row>
                   </b-container>
 
-                  <p>
+                  <p style="margin-top: 16px">
                     {{ $t("USE_REAL_HARDWARE") }}
                   </p>
                   <p>
@@ -1455,6 +1457,7 @@
                     active-nav-item-class="font-weight-bold text-italic"
                     pills
                     card
+                    small
                     align="right"
                   >
                     <b-tab>
@@ -3036,6 +3039,7 @@
           STREAMING_NOTES:
             "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
           CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
+          currentlyPlaying: "Playing: ",
           parentDirectoryHint: "Go up one Level",
           sidInfoKey: "Name",
           sidInfoValue: "Value",
@@ -3172,6 +3176,7 @@
           STREAMING_NOTES:
             "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
           CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
+          currentlyPlaying: "Es spielt: ",
           parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
           sidInfoKey: "Name",
           sidInfoValue: "Wert",
