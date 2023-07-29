@@ -1228,129 +1228,99 @@
                 </template>
 
                 <b-card-text>
-                  <p>
-                    {{ $t("USE_REAL_HARDWARE") }}
-                  </p>
-                  <p>
-                    {{ $t("HARDWARE_PREPARATION_1") }}
-                    <a href="https://zadig.akeo.ie/" target="_blank">
-                      {{ $t("HERE") }}
-                    </a>
-                    {{ $t("HARDWARE_PREPARATION_2") }}
-                  </p>
-                  <p>
-                    <b> {{ $t("STREAMING_NOTES") }} </b>
-                  </p>
-                  <p>
-                    <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
+                  <b-container fluid>
+                    <b-row>
+                      <b-col>
+                        <b
+                          ><div style="margin-bottom: 8px; text-align: center">{{ $t("HARDSID") }}</div></b
+                        >
+                      </b-col>
+                      <b-col>
+                        <b
+                          ><div style="margin-bottom: 8px; text-align: center">{{ $t("EXSID") }}</div></b
+                        >
+                      </b-col>
+                      <!--b-col>
+                        <b><div style="margin-bottom: 8px; text-align: center;">{{ $t("SIDBLASTER") }}</div></b>
+                      </b-col-->
+                    </b-row>
+                    <b-row>
+                      <b-col style="border: 1px dotted grey">
+                        <div>
+                          <b-container>
+                            <b-img-lazy
+                              src="/static/images/hardsid4u.jpeg"
+                              alt="HardSID4U"
+                              p-4
+                              bg-dark
+                              thumbnail
+                              block
+                              center
+                              fluid
+                            />
+                          </b-container>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label size="sm" for="hardsid6581">
+                                <b-form-select
+                                  id="hardsid6581"
+                                  class="right"
+                                  v-model="convertOptions.config.emulationSection.hardsid6581"
+                                  size="sm"
+                                  class="mt-3"
+                                  :select-size="1"
+                                >
+                                  <option :value="0">1</option>
+                                  <option :value="1">2</option>
+                                  <option :value="2">3</option>
+                                  <option :value="3">4</option>
+                                </b-form-select>
+                                <span>{{ $t("convertMessages.config.emulationSection.hardsid6581") }}</span>
+                              </label></span
+                            >
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label size="sm" for="hardsid8580">
+                                <b-form-select
+                                  id="hardsid8580"
+                                  class="right"
+                                  v-model="convertOptions.config.emulationSection.hardsid8580"
+                                  size="sm"
+                                  class="mt-3"
+                                  :select-size="1"
+                                >
+                                  <option :value="0">1</option>
+                                  <option :value="1">2</option>
+                                  <option :value="2">3</option>
+                                  <option :value="3">4</option>
+                                </b-form-select>
+                                <span>{{ $t("convertMessages.config.emulationSection.hardsid8580") }}</span>
+                              </label></span
+                            >
+                          </div>
+                        </div>
+                      </b-col>
+                      <b-col style="border: 1px dotted grey">
+                        <div>
+                          <b-container>
+                            <b-img-lazy
+                              src="/static/images/exsid.jpg"
+                              width="300px"
+                              height="200px"
+                              alt="ExSID"
+                              thumbnail
+                              block
+                              center
+                              fluid
+                            />
+                          </b-container>
+                        </div>
+                      </b-col>
 
-                    <a
-                      href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
-                      target="_blank"
-                    >
-                      <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
-                    >.
-                    <b-img-lazy src="/static/images/usbc.jpg" alt="HardSID4U" block center fluid />
-                  </p>
-                  <div style="padding-top: 48px">
-                    <div>
-                      <b-img-lazy src="/static/images/hardsid4u.jpeg" alt="HardSID4U" block center fluid />
-                    </div>
-                    <div class="settings-box">
-                      <span class="setting">
-                        <label for="hardsid6581">
-                          {{ $t("convertMessages.config.emulationSection.hardsid6581") }}
-                          <b-form-select
-                            id="hardsid6581"
-                            class="right"
-                            v-model="convertOptions.config.emulationSection.hardsid6581"
-                            size="sm"
-                            class="mt-3"
-                            :select-size="1"
-                          >
-                            <option :value="0">1</option>
-                            <option :value="1">2</option>
-                            <option :value="2">3</option>
-                            <option :value="3">4</option>
-                          </b-form-select>
-                        </label></span
-                      >
-                    </div>
-                    <div class="settings-box">
-                      <span class="setting">
-                        <label for="hardsid8580">
-                          {{ $t("convertMessages.config.emulationSection.hardsid8580") }}
-                          <b-form-select
-                            id="hardsid8580"
-                            class="right"
-                            v-model="convertOptions.config.emulationSection.hardsid8580"
-                            size="sm"
-                            class="mt-3"
-                            :select-size="1"
-                          >
-                            <option :value="0">1</option>
-                            <option :value="1">2</option>
-                            <option :value="2">3</option>
-                            <option :value="3">4</option>
-                          </b-form-select>
-                        </label></span
-                      >
-                    </div>
-                    <div class="settings-box">
-                      <span class="setting">
-                        <b-button
-                          size="sm"
-                          variant="success"
-                          v-on:click="
-                            HardwareFunctions.init = init_hardsid;
-                            HardwareFunctions.reset = reset_hardsid;
-                            HardwareFunctions.write = write_hardsid;
-                            HardwareFunctions.next = next_hardsid;
-                            HardwareFunctions.quit = quit_hardsid;
-                            HardwareFunctions.mapping = 'hardsid-mapping';
-                            init();
-                          "
-                        >
-                          <span>{{ $t("CONNECT_HARDSID") }}</span>
-                        </b-button>
-                      </span>
-                    </div>
-                  </div>
-                  <div style="padding-top: 48px">
-                    <div>
-                      <b-img-lazy
-                        src="/static/images/exsid.jpg"
-                        width="300px"
-                        height="200px"
-                        alt="ExSID"
-                        block
-                        center
-                        fluid
-                      />
-                    </div>
-                    <div class="settings-box">
-                      <span class="setting">
-                        <b-button
-                          size="sm"
-                          variant="success"
-                          v-on:click="
-                            HardwareFunctions.init = init_exsid;
-                            HardwareFunctions.reset = reset_exsid;
-                            HardwareFunctions.write = write_exsid;
-                            HardwareFunctions.next = next_exsid;
-                            HardwareFunctions.quit = quit_exsid;
-                            HardwareFunctions.mapping = 'exsid-mapping';
-                            init();
-                          "
-                        >
-                          <span>{{ $t("CONNECT_EXSID") }}</span>
-                        </b-button></span
-                      >
-                    </div>
-                  </div>
-                  <!-- TODO timing not yet good enough -->
-                  <!--div style="padding-top: 48px">
-						<div>
+                      <!--b-col style="border: 1px dotted grey;">
+                        <div>
+                          <b-container>
 							<b-img-lazy
 								src="/static/images/sidblaster.jpeg"
 								alt="SIDBlaster"
@@ -1358,9 +1328,58 @@
 								center
 								fluid
 							/>
+                          </b-container>
 						</div>
+                      </b-col-->
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <b-button
+                              size="sm"
+                              variant="success"
+                              v-on:click="
+                                HardwareFunctions.init = init_hardsid;
+                                HardwareFunctions.reset = reset_hardsid;
+                                HardwareFunctions.write = write_hardsid;
+                                HardwareFunctions.next = next_hardsid;
+                                HardwareFunctions.quit = quit_hardsid;
+                                HardwareFunctions.mapping = 'hardsid-mapping';
+                                init();
+                              "
+                            >
+                              <span>{{ $t("CONNECT") }}</span>
+                            </b-button>
+                          </span>
+                        </div>
+                      </b-col>
+
+                      <b-col>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <b-button
+                              size="sm"
+                              variant="success"
+                              v-on:click="
+                                HardwareFunctions.init = init_exsid;
+                                HardwareFunctions.reset = reset_exsid;
+                                HardwareFunctions.write = write_exsid;
+                                HardwareFunctions.next = next_exsid;
+                                HardwareFunctions.quit = quit_exsid;
+                                HardwareFunctions.mapping = 'exsid-mapping';
+                                init();
+                              "
+                            >
+                              <span>{{ $t("CONNECT") }}</span>
+                            </b-button></span
+                          >
+                        </div>
+                      </b-col>
+
+                      <!--b-col>
 						<div class="settings-box">
-                    	<span class="setting">
+                    	  <span class="setting">
 							<b-button
 								size="sm"
 								variant="success"
@@ -1374,10 +1393,38 @@
 									init();
 								"
 							>
-								<span>{{ $t("CONNECT_SIDBLASTER") }}</span>
-							</b-button></span>
+                              <span>{{ $t("CONNECT") }}</span>
+							</b-button></span
+						  >
 						</div>
-					</div-->
+                      </b-col-->
+                    </b-row>
+                  </b-container>
+
+                  <p>
+                    {{ $t("USE_REAL_HARDWARE") }}
+                  </p>
+                  <p>
+                    {{ $t("HARDWARE_PREPARATION_1") }}
+                    <a href="https://zadig.akeo.ie/" target="_blank">
+                      {{ $t("HERE") }}
+                    </a>
+                    {{ $t("HARDWARE_PREPARATION_2") }}
+                  </p>
+                  <p>
+                    <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
+
+                    <a
+                      href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
+                      target="_blank"
+                    >
+                      <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
+                    >.
+                    <b-img-lazy src="/static/images/usbc.jpg" alt="HardSID4U" block center fluid />
+                  </p>
+                  <p>
+                    <b> {{ $t("STREAMING_NOTES") }} </b>
+                  </p>
                 </b-card-text>
               </b-tab>
               <b-tab>
@@ -2976,13 +3023,14 @@
           CFG: "Configuration",
           HARDWARE: "Hardware",
           USE_REAL_HARDWARE:
-            "You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device. Please click the corresponding 'Connect to ...' button below.",
+            "You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device.",
           HARDWARE_PREPARATION_1: "Only on a Windows-PC WinUSB is required, download from",
           HARDWARE_PREPARATION_2: ", but on Linux and MacOSX it works out-of-the-box.",
           HERE: "here",
-          CONNECT_HARDSID: "Connect to HardSID 4U, HardSID UPlay and HardSID Uno",
-          CONNECT_EXSID: "Connect to ExSID, ExSID+",
-          CONNECT_SIDBLASTER: "Connect to SIDBlaster",
+          HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
+          EXSID: "ExSID, ExSID+",
+          SIDBLASTER: "SIDBlaster",
+          CONNECT: "Connect...",
           USE_MOBILE_DEVICES_1: "To use mobile devices, please use an",
           USE_MOBILE_DEVICES_2: "USBC to USB adapter",
           STREAMING_NOTES:
@@ -3110,14 +3158,15 @@
           CFG: "Konfiguration",
           HARDWARE: "Hardware",
           USE_REAL_HARDWARE:
-            "Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy. Bitte klicken Sie den entsprechendem 'Verbinden mit ...' Button, siehe unten.",
+            "Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy.",
           HARDWARE_PREPARATION_1:
             "Auf Linux und MacOSX funktioniert es auf Anhieb, nur auf einem Windows-PC ist WinUSB erforderlich, bitte",
           HARDWARE_PREPARATION_2: " herunterladen.",
           HERE: "hier",
-          CONNECT_HARDSID: "Verbinde mit HardSID 4U, HardSID UPlay and HardSID Uno",
-          CONNECT_EXSID: "Verbinde mit ExSID, ExSID+",
-          CONNECT_SIDBLASTER: "Verbinde mit SIDBlaster",
+          HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
+          EXSID: "ExSID, ExSID+",
+          SIDBLASTER: "SIDBlaster",
+          CONNECT: "Verbinden...",
           USE_MOBILE_DEVICES_1: "Um Mobilger\u00e4te zu verwenden, verwenden Sie bitte einen",
           USE_MOBILE_DEVICES_2: "USBC nach USB adapter",
           STREAMING_NOTES:
