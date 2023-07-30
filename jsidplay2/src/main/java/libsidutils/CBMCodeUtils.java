@@ -37,7 +37,7 @@ public class CBMCodeUtils extends C64FontUtils {
 			0x23, 0x2f, 0x7c, 0x7c, 0x2f, 0x5c, 0x5c, 0x2d, // 0xe8
 			0x2f, 0x2d, 0x2d, 0x7c, 0x7c, 0x7c, 0x7c, 0x2d, // 0xf0
 			0x2d, 0x2d, 0x2f, 0x5c, 0x5c, 0x2f, 0x2f, 0x23 // 0xf8
-	 };
+	};
 
 	/**
 	 * ISO-8859-1 to screen RAM conversion table (Font2: upper case and lower case
@@ -145,7 +145,7 @@ public class CBMCodeUtils extends C64FontUtils {
 	 * @param petscii PETSCII byte
 	 * @return screen RAM character
 	 */
-	private static byte petsciiToScreenRam(byte petscii) {
+	public static byte petsciiToScreenRam(byte petscii) {
 		int code = petscii & 0xff;
 		if (code < 0x1F) {
 			code += 0x80;
