@@ -56,8 +56,11 @@ public class Cartridge {
 			if (!new String(header, 0, 0x10, ISO88591).equals("C64 CARTRIDGE   ")) {
 				throw new RuntimeException("File is not a .CRT file");
 			}
-			return values()[(header[0x16] & 0xff) << 8 | header[0x17] & 0xff];
-
+			final int cartIdx = (header[0x16] & 0xff) << 8 | header[0x17] & 0xff;
+			if (cartIdx < 0 || cartIdx >= values().length) {
+				throw new RuntimeException("Cartridge magic value: " + cartIdx + " unsupported!");
+			}
+			return values()[cartIdx];
 		}
 	}
 
