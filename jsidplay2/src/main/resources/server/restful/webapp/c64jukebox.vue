@@ -189,7 +189,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 0px;
-                    right: 304px;
+                    right: 264px;
                     z-index: 9999;
                   "
                   >{{ $t("filter") }}</span
@@ -202,7 +202,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 0px;
-                    right: 224px;
+                    right: 184px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -219,7 +219,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 0px;
-                    right: 140px;
+                    right: 100px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -246,7 +246,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 30px;
-                    right: 240px;
+                    right: 190px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -263,7 +263,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 30px;
-                    right: 150px;
+                    right: 100px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -280,7 +280,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 30px;
-                    right: 70px;
+                    right: 20px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -577,7 +577,7 @@
                   @click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
                 >
                   <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
-                  <span>Rob Hubbard</span>
+                  <span>R. Hubbard</span>
                 </b-button>
 
                 <b-button
@@ -594,7 +594,7 @@
                   @click="(event) => requestSearchResults(event, 'Galway_Martin')"
                 >
                   <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
-                  <span>Martin Galway</span>
+                  <span>M. Galway</span>
                 </b-button>
 
                 <b-button
@@ -604,7 +604,7 @@
                   @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
                 >
                   <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
-                  <span>Chris H&uuml;lsbeck</span>
+                  <span>C. H&uuml;lsbeck</span>
                 </b-button>
 
                 <b-button
@@ -621,7 +621,7 @@
                   @click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
                 >
                   <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
-                  <span>Reyn Ouwehand</span>
+                  <span>R. Ouwehand</span>
                 </b-button>
 
                 <b-button
@@ -648,7 +648,7 @@
                   @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
                 >
                   <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
-                  <span>Ben Daglish</span>
+                  <span>B. Daglish</span>
                 </b-button>
 
                 <div style="height: 40px"></div>
@@ -684,7 +684,7 @@
                     </template>
                     <template #head(actions)="row">
                       <b-button
-                        size="xsm"
+                        size="sm"
                         style="padding: 0px"
                         variant="secondary"
                         @click="
@@ -1117,7 +1117,7 @@
 
                 <b-card-text>
                   <div class="button-box">
-                    <div>
+                    <div style="display: flex; justify-content: space-between">
                       <b-form-file
                         v-model="importFile"
                         accept=".js2,.json"
@@ -1128,14 +1128,27 @@
                         label-size="sm"
                         :placeholder="$t('importPlaylistPlaceholder')"
                         :drop-placeholder="$t('importPlaylistDropPlaceholder')"
+                        style="width: 70%; margin-bottom: 0px !important; translate: -6px -12px"
                       >
                       </b-form-file>
-                      <b-button v-if="importFile != null" @click="importFile = null">
+                      <div>
+                        <b-button size="sm" @click="exportPlaylist" v-if="playlist.length > 0">
+                          <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
+                          <span>{{ $t("exportPlaylist") }}</span></b-button
+                        >
+                        <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
+                          <p>{{ $t("removePlaylistReally") }}</p>
+                        </b-modal>
+                      </div>
+                    </div>
+                    <div>
+                      <b-button size="sm" v-if="importFile != null" @click="importFile = null">
                         <b-icon-trash-fill> </b-icon-trash-fill>
                         <span>{{ $t("reset") }}</span>
                       </b-button>
                       <b-button
                         variant="success"
+                        size="sm"
                         v-b-modal.modal-import-playlist
                         v-if="importFile != null"
                         class="mr-2"
@@ -1147,30 +1160,33 @@
                         <p>{{ $t("removePlaylistReally") }}</p>
                       </b-modal>
                     </div>
-                    <b-button v-b-modal.modal-fetch-favorites size="sm">
-                      <b-icon-download> </b-icon-download>
-                      <span>{{ $t("fetchFavorites") }}</span></b-button
-                    >
-                    <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
-                      <p>{{ $t("removePlaylistReally") }}</p>
-                    </b-modal>
-                    <b-button size="sm" @click="exportPlaylist" v-if="playlist.length > 0">
-                      <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
-                      <span>{{ $t("exportPlaylist") }}</span></b-button
-                    >
-                    <b-button variant="success" v-on:click="setNextPlaylistEntry" v-if="playlist.length > 0">
-                      <b-icon-play-fill> </b-icon-play-fill>
-                      <span>{{ $t("next") }}</span></b-button
-                    >
-                  </div>
-                  <div class="button-box" v-if="playlist.length > 0">
-                    <b-button v-b-modal.modal-remove-playlist variant="danger" size="sm">
+                    <b-button v-if="playlist.length > 0" v-b-modal.modal-remove-playlist variant="danger" size="sm">
                       <b-icon-trash-fill> </b-icon-trash-fill>
                       <span>{{ $t("removePlaylist") }}</span></b-button
                     >
                     <b-modal id="modal-remove-playlist" :title="$t('confirmationTitle')" @ok="removePlaylist">
                       <p>{{ $t("removePlaylistReally") }}</p>
                     </b-modal>
+                    <b-button v-b-modal.modal-fetch-favorites size="sm">
+                      <b-icon-download> </b-icon-download>
+                      <span>{{ $t("fetchFavorites") }}</span></b-button
+                    >
+                    <b-button variant="success" size="sm" v-on:click="setNextPlaylistEntry" v-if="playlist.length > 0">
+                      <b-icon-play-fill> </b-icon-play-fill>
+                      <span>{{ $t("next") }}</span></b-button
+                    >
+                  </div>
+                  <div class="button-box">
+                    <b-input-group size="sm" class="mb-2">
+                      <b-input-group-prepend is-text>
+                        <b-icon icon="search"></b-icon>
+                      </b-input-group-prepend>
+                      <b-form-input
+                        type="search"
+                        v-model="filterText"
+                        :placeholder="$t('searchPlaceholder')"
+                      ></b-form-input>
+                    </b-input-group>
                   </div>
 
                   <ol class="striped-list">
@@ -1178,6 +1194,11 @@
                       v-for="(entry, index) in playlist"
                       :key="index"
                       :class="index == playlistIndex ? 'highlighted' : ''"
+                      :style="
+                        filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
+                          ? 'height: 0; padding: 0px;visibility: hidden;'
+                          : ''
+                      "
                       v-on:click="
                         playlistIndex = index;
                         Vue.nextTick(function () {
@@ -3092,13 +3113,14 @@
           next: "Next",
           reset: "Reset",
           startImport: "Import",
-          fetchFavorites: "Download",
+          fetchFavorites: "Examples",
           removePlaylist: "Remove All",
           confirmationTitle: "Confirmation Dialogue",
           removePlaylistReally: "Do you really want to remove ALL playlist entries?",
           exportPlaylist: "Export",
-          importPlaylistPlaceholder: "Import favorites or drop it here...",
+          importPlaylistPlaceholder: "Import...",
           importPlaylistDropPlaceholder: "Drop favorites here...",
+          searchPlaceholder: "Quick search",
           random: "Random Playback",
           mobileProfile: "Mobile profile",
           wifiProfile: "WiFi profile",
@@ -3229,13 +3251,14 @@
           next: "N\u00e4chster",
           reset: "Zur\u00fccksetzen",
           startImport: "Importieren",
-          fetchFavorites: "Laden",
+          fetchFavorites: "Beispiele",
           removePlaylist: "L\u00f6schen",
           confirmationTitle: "Sicherheitsabfrage",
           removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
           exportPlaylist: "Export",
-          importPlaylistPlaceholder: "Importiere Favoriten oder DnD...",
+          importPlaylistPlaceholder: "Import...",
           importPlaylistDropPlaceholder: "DnD Favoriten hier...",
+          searchPlaceholder: "Schnellsuche",
           random: "Zuf\u00e4llige Wiedergabe",
           mobileProfile: "Mobiles Profil",
           wifiProfile: "WiFi Profil",
@@ -3397,6 +3420,7 @@
           playlist: [],
           playlistIndex: 0,
           random: true,
+          filterText: "",
           // CFG (configuration)
           stereoMode: "AUTO",
           // pre-fetched filter definitions
