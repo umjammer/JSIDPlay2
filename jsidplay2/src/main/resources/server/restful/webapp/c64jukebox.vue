@@ -219,7 +219,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 0px;
-                    right: 100px;
+                    right: 102px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -231,7 +231,7 @@
 
                 <b-button
                   size="sm"
-                  style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 70px; z-index: 9999"
+                  style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 26px; z-index: 9999"
                   variant="secondary"
                   v-on:click="fetchDirectory(toolsTop200Dir)"
                 >
@@ -263,7 +263,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 30px;
-                    right: 100px;
+                    right: 96px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -280,7 +280,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 30px;
-                    right: 20px;
+                    right: 16px;
                     z-index: 9999;
                   "
                   variant="secondary"
