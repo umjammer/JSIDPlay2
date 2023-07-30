@@ -516,7 +516,7 @@
                             :button="!isVideo(entry)"
                             :variant="getVariant(entry)"
                             v-bind:href="createConvertUrl('', entry.filename)"
-                            v-on:click.self="pause"
+                            v-on:click="pause"
                             target="c64"
                           >
                             <div style="white-space: pre-line; display: flex; justify-content: space-between">
