@@ -296,7 +296,7 @@
                     font-size: smaller;
                     padding: 2px 4px;
                     position: absolute;
-                    top: 30px;
+                    top: 60px;
                     right: 16px;
                     z-index: 9999;
                   "
