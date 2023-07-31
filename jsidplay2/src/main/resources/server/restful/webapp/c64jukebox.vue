@@ -1274,10 +1274,7 @@
                             <b-img-lazy
                               src="/static/images/hardsid4u.jpeg"
                               alt="HardSID4U"
-                              p-4
-                              bg-dark
                               thumbnail
-                              block
                               center
                               fluid
                             />
@@ -1329,11 +1326,8 @@
                           <b-container>
                             <b-img-lazy
                               src="/static/images/exsid.jpg"
-                              width="300px"
-                              height="200px"
                               alt="ExSID"
                               thumbnail
-                              block
                               center
                               fluid
                             />
@@ -1347,7 +1341,7 @@
 							<b-img-lazy
 								src="/static/images/sidblaster.jpeg"
 								alt="SIDBlaster"
-								block
+                                thumbnail
 								center
 								fluid
 							/>
@@ -3314,7 +3308,7 @@
 
       new Vue({
         el: "#app",
-        i18n, //import mutil-lang
+        i18n, //import multi-lang
         data: {
           carouselImageHeight:
             window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
