@@ -13,6 +13,7 @@ import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
 import libsidplay.sidtune.SidTune;
+import libsidplay.sidtune.SidTune.Clock;
 import libsidplay.sidtune.SidTune.Model;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
@@ -52,10 +53,10 @@ public class TuneDirectory extends Directory {
 		super.title = toTitle(title);
 		id = toId(info.getStartSong(), info.getSongs());
 
-		if (author != null) {
+		if (author != null && author.length() > 0) {
 			dirEntries.add(toDirEntry(author));
 		}
-		if (released != null) {
+		if (released != null && released.length() > 0) {
 			dirEntries.add(toDirEntry(released));
 		}
 		String playerId = tune.identify().stream().collect(Collectors.joining(","));
@@ -63,22 +64,26 @@ public class TuneDirectory extends Directory {
 			dirEntries.add(toDirEntry(playerId));
 		}
 		dirEntries.add(toDirEntry("" + info.getCompatibility()));
-		dirEntries.add(toDirEntry("" + info.getClockSpeed()));
+		if (info.getClockSpeed() != Clock.UNKNOWN) {
+			dirEntries.add(toDirEntry("" + info.getClockSpeed()));
+		}
 		dirEntries.add(toDirEntry("" + tune.getSongSpeed(1)));
 		dirEntries.add(toDirEntry("" + info.getAudioTypeString()));
-		dirEntries.add(toDirEntry("" + info.getSIDModel(0)));
+		if (info.getSIDModel(0) != Model.UNKNOWN) {
+			dirEntries.add(toDirEntry("" + info.getSIDModel(0)));
+		}
 		if (info.getSIDModel(1) != Model.UNKNOWN) {
-			dirEntries.add(toDirEntry("+" + info.getSIDModel(1)));
+			dirEntries.add(toDirEntry("" + info.getSIDModel(1)));
 		}
 		if (info.getSIDModel(2) != Model.UNKNOWN) {
-			dirEntries.add(toDirEntry("+" + info.getSIDModel(2)));
+			dirEntries.add(toDirEntry("" + info.getSIDModel(2)));
 		}
-		dirEntries.add(toDirEntry("" + info.getSIDChipBase(0)));
+		dirEntries.add(toDirEntry(String.format("$%04X", info.getSIDChipBase(0))));
 		if (info.getSIDChipBase(1) != 0) {
-			dirEntries.add(toDirEntry("+" + info.getSIDChipBase(1)));
+			dirEntries.add(toDirEntry(String.format("$%04X", info.getSIDChipBase(1))));
 		}
 		if (info.getSIDChipBase(2) != 0) {
-			dirEntries.add(toDirEntry("+" + info.getSIDChipBase(2)));
+			dirEntries.add(toDirEntry(String.format("$%04X", info.getSIDChipBase(2))));
 		}
 		dirEntries.add(toDirEntry(lengthFnct.getAsDouble() + "s"));
 		dirEntries.add(toDirEntry("DRV_ADDR=" + info.getDeterminedDriverAddr()));
