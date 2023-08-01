@@ -324,7 +324,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				AudioDriver driver = getAudioDriverOfVideoFormat(uuid, servletParameters);
 
-				if (Boolean.FALSE.equals(servletParameters.download) && driver.lookup(FLVStreamDriver.class) != null) {
+				if (Boolean.FALSE.equals(servletParameters.download)
+						&& driver.lookup(FLVStreamDriver.class).isPresent()) {
 					if (count() < MAX_RTMP_IN_PARALLEL) {
 						Thread parentThread = currentThread();
 						new Thread(() -> {
