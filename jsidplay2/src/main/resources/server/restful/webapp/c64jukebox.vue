@@ -75,7 +75,7 @@
               <span>Quit Hardware Player</span>
             </b-button>
           </div>
-          <div style="position: absolute; bottom: 5px; left: 0px; line-height: 0.7">
+          <div style="position: absolute; bottom: 5px; line-height: 0.7; width: 100%">
             <span class="current-sid"
               ><span v-if="currentSid">{{ $t("currentlyPlaying") }}</span> <span>{{ currentSid }}</span></span
             >
