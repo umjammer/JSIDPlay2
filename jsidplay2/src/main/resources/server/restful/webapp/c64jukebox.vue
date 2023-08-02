@@ -333,8 +333,8 @@
                           <div class="directory parent">
                             <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
                             <b-icon-arrow-up v-if="!entry.loading"> </b-icon-arrow-up> <span>{{ entry.filename }}</span>
-                            <span class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</span>
                           </div>
+                          <div class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</div>
                         </b-list-group-item>
 
                         <b-carousel
