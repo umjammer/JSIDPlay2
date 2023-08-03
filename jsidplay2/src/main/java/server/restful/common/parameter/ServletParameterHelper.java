@@ -219,10 +219,9 @@ public class ServletParameterHelper {
 					}
 				}
 				// check parameter order
-				if (orders.contains(parameter.order())) {
+				if (!orders.add(parameter.order())) {
 					throw JsonMappingException.from(prov, "Ambigous order " + parameter.order());
 				}
-				orders.add(parameter.order());
 				// check arity of boolean parameter
 				if (serverParameter
 						&& Stream.of(Boolean.class, boolean.class).anyMatch(writer.getType().getRawClass()::equals)

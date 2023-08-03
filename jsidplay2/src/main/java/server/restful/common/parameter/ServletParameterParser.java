@@ -54,11 +54,10 @@ public class ServletParameterParser {
 				.console(new PrintStreamConsole(
 						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
 				.acceptUnknownOptions(acceptUnknownOptions).build();
-		String[] requestParameters = getRequestParameters(request);
-		usageFormatter = new ServletUsageFormatter(commander, request, response, requestParameters);
+		usageFormatter = new ServletUsageFormatter(commander, request, response);
 		commander.setUsageFormatter(usageFormatter);
 		try {
-			commander.parse(requestParameters);
+			commander.parse(getRequestParameters(request));
 		} catch (ParameterException e) {
 			usageFormatter.setException(e);
 		}
@@ -76,7 +75,7 @@ public class ServletParameterParser {
 		return usageFormatter.getException() != null;
 	}
 
-	private String[] getRequestParameters(HttpServletRequest request) {
+	static String[] getRequestParameters(HttpServletRequest request) {
 		return concat(
 				Collections.list(request.getParameterNames()).stream()
 						.flatMap(name -> asList(request.getParameterValues(name)).stream()

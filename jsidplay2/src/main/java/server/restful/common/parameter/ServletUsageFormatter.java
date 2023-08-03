@@ -11,7 +11,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -32,16 +31,13 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private Exception exception;
-	private String[] requestParameters;
 	private ResourceBundle bundle;
 
-	public ServletUsageFormatter(JCommander commander, HttpServletRequest request, HttpServletResponse response,
-			String[] requestParameters) {
+	public ServletUsageFormatter(JCommander commander, HttpServletRequest request, HttpServletResponse response) {
 		super(commander);
 		this.commander = commander;
 		this.request = request;
 		this.response = response;
-		this.requestParameters = requestParameters;
 		this.bundle = getBundle();
 	}
 
@@ -62,81 +58,19 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			response.setStatus(exception != null ? SC_INTERNAL_SERVER_ERROR : SC_OK);
 			response.setContentType(MIME_TYPE_TEXT.toString());
 
-			// optional error message
 			if (exception != null) {
-				out.append("Servlet-Parameter ERROR!");
-				out.append("\n");
-				out.append(exception.getClass().getSimpleName());
-				out.append(": ");
-				out.append(exception.getMessage());
-				out.append("\n");
-				out.append("\n");
+				appendErrorMessage(out);
 
-				if (requestParameters.length > 0) {
-					out.append("Current Servlet-Parameter options:");
-					out.append("\n");
-					out.append(Strings.join(" ", requestParameters));
-					out.append("\n");
-					out.append("\n");
-				}
+				appendCurrentRequestParameters(out);
 			}
-			out.append("Example Usage:");
-			out.append("\n");
+			appendExampleRequest(out, indentCount, indent);
 
-			StringBuilder mainLine = new StringBuilder();
-			mainLine.append(indent).append("HTTP-").append(request.getMethod()).append(" ");
-
-			StringBuilder urlAsString = new StringBuilder();
-			// Base url + servlet path
-			urlAsString.append(BASE_URL).append(commander.getProgramDisplayName());
-
-			// Request path
-			if (commander.getMainParameter() != null) {
-				urlAsString.append(bundle.getString("EXAMPLE_REQUEST_PATH"));
-			}
-
-			List<ParameterDescription> arguments = commander.getFields().values().stream()
-					.filter(pd -> !pd.getParameter().hidden()).sorted(commander.getParameterDescriptionComparator())
-					.collect(Collectors.toList());
-
-			// Query parameters
-			Iterator<ParameterDescription> it = arguments.iterator();
-			if (it.hasNext()) {
-				urlAsString.append("?");
-				while (it.hasNext()) {
-					ParameterDescription parameterDescription = it.next();
-
-					urlAsString.append(getName(parameterDescription.getNames()));
-					urlAsString.append("=");
-					urlAsString.append(getExampleValue(parameterDescription));
-
-					if (it.hasNext()) {
-						urlAsString.append("&");
-					}
-				}
-			}
-			URL url = new URL(urlAsString.toString());
-			URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
-					url.getQuery(), url.getRef());
-
-			String asciiString = uri.toASCIIString();
-
-			mainLine.append(asciiString);
-			wrapDescription(out, indentCount, mainLine.toString());
-			out.append("\n");
-			out.append("\n");
-
-			// Request path description
 			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				out.append(indent).append("Servlet Path:");
-				out.append("\n");
-				out.append("      ");
-				out.append(commander.getMainParameterValue().getDescription());
-				out.append("\n");
-				out.append("\n");
+				appendRequestPath(out, indent);
 			}
-			if (arguments.size() > 0) {
-				out.append(indent).append("Servlet Parameter");
+
+			if (commander.getFields().size() > 0) {
+				out.append(indent).append("Servlet Parameter").append("\n");
 			}
 
 		} catch (URISyntaxException | MalformedURLException e) {
@@ -144,7 +78,95 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 	}
 
-	private String getExampleValue(ParameterDescription parameterDescription) {
+	private void appendErrorMessage(StringBuilder out) {
+		out.append("Servlet-Parameter ERROR!");
+		out.append("\n");
+		out.append(exception.getClass().getSimpleName());
+		out.append(": ");
+		out.append(exception.getMessage());
+		out.append("\n");
+		out.append("\n");
+	}
+
+	private void appendCurrentRequestParameters(StringBuilder out) {
+		String[] requestParameters = ServletParameterParser.getRequestParameters(request);
+		if (requestParameters.length > 0) {
+			out.append("Current Servlet-Parameter options:");
+			out.append("\n");
+			out.append(Strings.join(" ", requestParameters));
+			out.append("\n");
+			out.append("\n");
+		}
+	}
+
+	private void appendExampleRequest(StringBuilder out, int indentCount, String indent)
+			throws MalformedURLException, URISyntaxException {
+		out.append("Example Usage:");
+		out.append("\n");
+
+		wrapDescription(out, indentCount, createExampleUsage(indent));
+		out.append("\n");
+		out.append("\n");
+	}
+
+	private void appendRequestPath(StringBuilder out, String indent) {
+		out.append(indent).append("Servlet Path:");
+		out.append("\n");
+		out.append("      ");
+		out.append(commander.getMainParameterValue().getDescription());
+		out.append("\n");
+		out.append("\n");
+	}
+
+	private String createExampleUsage(String indent) throws MalformedURLException, URISyntaxException {
+		StringBuilder result = new StringBuilder();
+
+		// protocol
+		result.append(indent).append("HTTP(S)-");
+
+		// request method
+		result.append(request.getMethod()).append(" ");
+
+		StringBuilder urlAsString = new StringBuilder();
+
+		// base URL
+		urlAsString.append(BASE_URL);
+
+		// servlet path
+		urlAsString.append(commander.getProgramDisplayName());
+
+		// request path
+		if (commander.getMainParameter() != null) {
+			urlAsString.append(bundle.getString("EXAMPLE_REQUEST_PATH"));
+		}
+
+		// request parameters
+		Iterator<ParameterDescription> it = commander.getFields().values().stream()
+				.filter(pd -> !pd.getParameter().hidden()).sorted(commander.getParameterDescriptionComparator())
+				.collect(Collectors.toList()).iterator();
+		if (it.hasNext()) {
+			urlAsString.append("?");
+			while (it.hasNext()) {
+				ParameterDescription parameterDescription = it.next();
+
+				urlAsString.append(getName(parameterDescription.getNames()));
+				urlAsString.append("=");
+				urlAsString.append(createExampleParameterValue(parameterDescription));
+
+				if (it.hasNext()) {
+					urlAsString.append("&");
+				}
+			}
+		}
+		URL url = new URL(urlAsString.toString());
+		URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
+				url.getQuery(), url.getRef());
+		result.append(uri.toASCIIString());
+
+		return result.toString();
+	}
+
+	private String createExampleParameterValue(ParameterDescription parameterDescription) {
 		if (parameterDescription.getParameter().password()) {
 			return "********";
 		} else if (parameterDescription.getDefault() != null
