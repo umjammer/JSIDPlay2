@@ -85,10 +85,10 @@ public class Convenience {
 	private static final String MACOSX = "__MACOSX";
 
 	private static final UUIDFileFilter UUID_FILE_FILTER = new UUIDFileFilter();
-	private static final TuneFileFilter tuneFileFilter = new TuneFileFilter();
-	private static final DiskFileFilter diskFileFilter = new DiskFileFilter();
-	private static final TapeFileFilter tapeFileFilter = new TapeFileFilter();
-	private static final CartFileFilter cartFileFilter = new CartFileFilter();
+	private static final TuneFileFilter TUNE_FILE_FILTER = new TuneFileFilter();
+	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
+	private static final TapeFileFilter TAPE_FILE_FILTER = new TapeFileFilter();
+	private static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
 
 	/**
 	 * Magically chooses files to be attached, rules are: Attach first supported
@@ -96,7 +96,7 @@ public class Convenience {
 	 * B).
 	 */
 	public static final BiPredicate<File, File> LEXICALLY_FIRST_MEDIA = (file, toAttach) -> toAttach == null
-			|| !tuneFileFilter.accept(file) && file.getName().compareTo(toAttach.getName()) < 0;
+			|| !TUNE_FILE_FILTER.accept(file) && file.getName().compareTo(toAttach.getName()) < 0;
 
 	public static final BiPredicate<File, File> NO_MEDIA = (f1, f2) -> false;
 
@@ -149,22 +149,23 @@ public class Convenience {
 
 		File tmpDir = new File(player.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 		tmpDir.mkdirs();
-		boolean isCartridge = cartFileFilter.accept(file);
+		boolean isCartridge = CART_FILE_FILTER.accept(file);
 		TFile tFile = new TFile(file);
 		File toAttach = null;
 		if (tFile.exists()) {
 			if (tFile.isArchive()) {
 				// uncompress zip
 				TFile.cp_rp(tFile, tmpDir, TArchiveDetector.ALL);
-				// search media file to attach
 				toAttach = getToAttach(tmpDir, tFile, isMediaToAttach, null, !isCartridge);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
+				// uncompress gzip
 				File dst = new File(tmpDir, IOUtils.getFilenameWithoutSuffix(file.getName()));
 				try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 					TFile.cp(is, dst);
 				}
 				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("7z")) {
+				// uncompress 7zip
 				Extract7ZipUtil extract7Zip = new Extract7ZipUtil(tFile, tmpDir);
 				extract7Zip.extract();
 				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
@@ -172,10 +173,10 @@ public class Convenience {
 				// uncompress zip entry
 				File zipEntry = new File(tmpDir, tFile.getName());
 				TFile.cp_rp(tFile, zipEntry, TArchiveDetector.ALL);
-				// search media file to attach
 				getToAttach(tmpDir, zipEntry.getParentFile(), NO_MEDIA, null, !isCartridge);
 				toAttach = zipEntry;
 			} else if (isSupportedMedia(file)) {
+				// normal file
 				if (deepScan) {
 					getToAttach(file.getParentFile(), file.getParentFile(), NO_MEDIA, null, !isCartridge);
 				}
@@ -183,14 +184,14 @@ public class Convenience {
 			}
 		}
 		if (toAttach != null) {
-			if (tuneFileFilter.accept(toAttach)) {
+			if (TUNE_FILE_FILTER.accept(toAttach)) {
 				player.play(SidTune.load(toAttach));
 				return true;
-			} else if (diskFileFilter.accept(toAttach)) {
+			} else if (DISK_FILE_FILTER.accept(toAttach)) {
 				player.insertDisk(toAttach);
 				player.resetC64(String.format(LOAD_8_1_RUN, dirEntry != null ? toFilename(dirEntry) : "*"));
 				return true;
-			} else if (tapeFileFilter.accept(toAttach)) {
+			} else if (TAPE_FILE_FILTER.accept(toAttach)) {
 				player.insertTape(toAttach);
 				player.resetC64(LOAD_RUN);
 				return true;
@@ -200,7 +201,7 @@ public class Convenience {
 					player.play(SidTune.load("nuvieplayer-v1.0.prg", is));
 				}
 				return true;
-			} else if (cartFileFilter.accept(toAttach)) {
+			} else if (CART_FILE_FILTER.accept(toAttach)) {
 				player.insertCartridge(CartridgeType.CRT, toAttach);
 				player.resetC64(null);
 				return true;
@@ -265,8 +266,8 @@ public class Convenience {
 	 * @return is it a well-known format
 	 */
 	public boolean isSupportedMedia(File file) {
-		return cartFileFilter.accept(file) || tuneFileFilter.accept(file) || diskFileFilter.accept(file)
-				|| tapeFileFilter.accept(file);
+		return CART_FILE_FILTER.accept(file) || TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
+				|| TAPE_FILE_FILTER.accept(file);
 	}
 
 	private void deleteOutdatedTempDirectories() {
