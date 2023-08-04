@@ -1,6 +1,7 @@
 package server.restful.servlets.rtmp;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
+import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
 
@@ -71,7 +72,7 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			info(String.format("insertNextDisk: RTMP stream of: %s", uuid));
 			update(uuid, rtmpPlayerWithStatus -> insertNextDisk(rtmpPlayerWithStatus, diskImageName));
 
-			setOutput(request, response, diskImageName.toString(), String.class);
+			setOutput(response, MIME_TYPE_JSON, diskImageName.toString());
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
