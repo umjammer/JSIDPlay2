@@ -117,16 +117,16 @@ public class ServletParameterHelper {
 			STILServletParameters.class, TuneInfoServletParameters.class);
 
 	public static void check() {
-		MAIN_PARAMETER_CLASSES.forEach(clz -> check(clz, new BeanParameterChecker(false)));
-		SERVLET_PARAMETER_CLASSES.forEach(clz -> check(clz, new BeanParameterChecker(true)));
+		MAIN_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);
+		SERVLET_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);
 	}
 
-	private static void check(Class<?> servletParameterClass, SimpleBeanPropertyFilter filter)
-			throws ExceptionInInitializerError {
+	private static void check(Class<?> servletParameterClass) throws ExceptionInInitializerError {
 		try {
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
-			createObjectMapper(filter).writerWithDefaultPrettyPrinter()
+			createObjectMapper(new BeanParameterChecker(SERVLET_PARAMETER_CLASSES.contains(servletParameterClass)))
+					.writerWithDefaultPrettyPrinter()
 					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
 		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
