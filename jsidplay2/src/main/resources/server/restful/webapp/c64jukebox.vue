@@ -1117,30 +1117,31 @@
 
                 <b-card-text>
                   <div class="button-box">
-                    <div style="display: flex; justify-content: space-between">
+                    <b-input-group size="sm" class="mb-2">
                       <b-form-file
                         v-model="importFile"
                         accept=".js2,.json"
                         :state="Boolean(importFile)"
                         ref="file-input"
-                        class="mb-2"
-                        label-cols-sm="2"
                         label-size="sm"
                         :placeholder="$t('importPlaylistPlaceholder')"
                         :drop-placeholder="$t('importPlaylistDropPlaceholder')"
-                        style="width: 70%; margin-bottom: 0px !important; translate: -6px -12px"
                       >
                       </b-form-file>
-                      <div>
-                        <b-button size="sm" @click="exportPlaylist" v-if="playlist.length > 0">
+                      <b-input-group-append>
+                        <b-button
+                          @click="exportPlaylist"
+                          v-if="playlist.length > 0"
+                          style="margin-top: 8px !important"
+                        >
                           <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
                           <span>{{ $t("exportPlaylist") }}</span></b-button
                         >
                         <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
                           <p>{{ $t("removePlaylistReally") }}</p>
                         </b-modal>
-                      </div>
-                    </div>
+                      </b-input-group-append>
+                    </b-input-group>
                     <div>
                       <b-button size="sm" v-if="importFile != null" @click="importFile = null">
                         <b-icon-trash-fill> </b-icon-trash-fill>
@@ -1271,13 +1272,7 @@
                       <b-col style="border-right: 1px dotted grey">
                         <div>
                           <b-container>
-                            <b-img-lazy
-                              src="/static/images/hardsid4u.jpeg"
-                              alt="HardSID4U"
-                              thumbnail
-                              center
-                              fluid
-                            />
+                            <b-img-lazy src="/static/images/hardsid4u.jpeg" alt="HardSID4U" thumbnail center fluid />
                           </b-container>
                           <div class="settings-box">
                             <span class="setting">
@@ -1324,13 +1319,7 @@
                       <b-col>
                         <div>
                           <b-container>
-                            <b-img-lazy
-                              src="/static/images/exsid.jpg"
-                              alt="ExSID"
-                              thumbnail
-                              center
-                              fluid
-                            />
+                            <b-img-lazy src="/static/images/exsid.jpg" alt="ExSID" thumbnail center fluid />
                           </b-container>
                         </div>
                       </b-col>
