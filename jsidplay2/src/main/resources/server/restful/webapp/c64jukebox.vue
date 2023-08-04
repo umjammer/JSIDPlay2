@@ -1126,6 +1126,7 @@
                         label-size="sm"
                         :placeholder="$t('importPlaylistPlaceholder')"
                         :drop-placeholder="$t('importPlaylistDropPlaceholder')"
+                        :browse-text="$t('browse')"
                       >
                       </b-form-file>
                       <b-input-group-append>
@@ -3100,8 +3101,9 @@
           removePlaylist: "Remove All",
           confirmationTitle: "Confirmation Dialogue",
           removePlaylistReally: "Do you really want to remove ALL playlist entries?",
+          browse: "Import...",
           exportPlaylist: "Export",
-          importPlaylistPlaceholder: "Import...",
+          importPlaylistPlaceholder: "",
           importPlaylistDropPlaceholder: "Drop favorites here...",
           searchPlaceholder: "Quick search",
           random: "Random Playback",
@@ -3238,8 +3240,9 @@
           removePlaylist: "L\u00f6schen",
           confirmationTitle: "Sicherheitsabfrage",
           removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
-          exportPlaylist: "Export",
-          importPlaylistPlaceholder: "Import...",
+          browse: "Importieren...",
+          exportPlaylist: "Exportieren",
+          importPlaylistPlaceholder: "",
           importPlaylistDropPlaceholder: "DnD Favoriten hier...",
           searchPlaceholder: "Schnellsuche",
           random: "Zuf\u00e4llige Wiedergabe",
