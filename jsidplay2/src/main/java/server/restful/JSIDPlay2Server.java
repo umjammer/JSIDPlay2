@@ -485,7 +485,7 @@ public final class JSIDPlay2Server {
 				commander.usage();
 				exit(0);
 			}
-			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null) {
+			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && entityManagerFactory == null) {
 				entityManagerFactory = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
 						new PersistenceProperties(jsidplay2Server.parameters.whatsSidDatabaseDriver,
 								jsidplay2Server.parameters.whatsSidDatabaseUrl,
