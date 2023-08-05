@@ -379,11 +379,18 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			 */
 			@Override
 			public void end() {
+				ISidPlay2Section sidplay2Section = config.getSidplay2Section();
+
 				if (tune != RESET || forceCheckSongLength) {
-					if (!config.getSidplay2Section().isSingle() && playList.hasNext()) {
+					if (!sidplay2Section.isSingle() && playList.hasNext()) {
 						nextSong();
-					} else if (config.getSidplay2Section().isLoop()) {
-						stateProperty.set(RESTART);
+					} else if (sidplay2Section.isLoop()) {
+						if (checkLoopOffInRecordMode && getAudioDriver().isRecording()) {
+							stateProperty.set(END);
+							System.out.println("Warning: Loop has been disabled during recording!");
+						} else {
+							stateProperty.set(RESTART);
+						}
 					} else {
 						stateProperty.set(END);
 					}
@@ -523,7 +530,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		final IEmulationSection emulationSection = config.getEmulationSection();
 
 		super.reset();
-		timer.reset();
 		emulationSection.getOverrideSection().reset();
 
 		if (emulationSection.getUltimate64Mode() != Ultimate64Mode.OFF && tune == RESET) {
@@ -798,7 +804,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 
 		fastForwardVICFrames = 0;
 		playList.prepare();
-		timer.setStart(sidplay2Section.getStartTime());
 		stateProperty.addListener(pauseListener);
 
 		setClock(CPUClock.getCPUClock(emulationSection, tune));
@@ -809,6 +814,11 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		if (getAudio() != null) {
 			setAudioAndDriver(audioSection.getAudio(), audioSection.getAudio().getAudioDriver(audioSection, tune));
 		}
+
+		timer.setStart(sidplay2Section.getStartTime());
+		timer.setRecording(checkDefaultLengthInRecordMode && getAudioDriver().isRecording());
+		timer.reset();
+
 		verifyConfiguration(sidplay2Section);
 
 		if (getAudioDriver() instanceof VideoDriver) {
@@ -860,16 +870,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * @throws IOException configuration error
 	 */
 	private void verifyConfiguration(ISidPlay2Section sidplay2Section) throws IOException {
-		if (checkDefaultLengthInRecordMode && getAudioDriver().isRecording()
-				&& sidplay2Section.getDefaultPlayLength() <= 0
-				&& getSidDatabaseInfo(db -> db.getSongLength(tune), 0.) == 0) {
-			throw new IniConfigException("Unknown song length in record mode, use default",
-					() -> sidplay2Section.setDefaultPlayLength(180));
-		}
-		if (checkLoopOffInRecordMode && getAudioDriver().isRecording() && sidplay2Section.isLoop()) {
-			sidplay2Section.setLoop(false);
-			System.out.println("Warning: Loop has been disabled during recording!");
-		}
 		if (getAudio() == Audio.LIVE_SID_DUMP && (tune == RESET || tune.getInfo().getPlayAddr() == 0)) {
 			throw new RuntimeException("SIDDump audio driver requires a well-known player address of the tune");
 		}
