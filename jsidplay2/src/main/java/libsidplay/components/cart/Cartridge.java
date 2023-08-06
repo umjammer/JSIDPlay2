@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import builder.resid.SampleMixer;
 import builder.resid.SampleMixer.NoOpSampleMixer;
@@ -17,6 +18,7 @@ import libsidplay.components.cart.supported.EpyxFastLoad;
 import libsidplay.components.cart.supported.Expert;
 import libsidplay.components.cart.supported.FinalV1;
 import libsidplay.components.cart.supported.FinalV3;
+import libsidplay.components.cart.supported.GMod2;
 import libsidplay.components.cart.supported.GeoRAM;
 import libsidplay.components.cart.supported.MagicDesk;
 import libsidplay.components.cart.supported.MikroAss;
@@ -39,28 +41,40 @@ public class Cartridge {
 
 	/** CCS64 cartridge type map */
 	public enum CRTType {
-		NORMAL, ACTION_REPLAY, KCS_POWER_CARTRIDGE, FINAL_CARTRIDGE_III, SIMONS_BASIC, OCEAN_TYPE_1, EXPERT_CARTRIDGE,
-		FUN_PLAY__POWER_PLAY,
+		NORMAL(0), ACTION_REPLAY(1), KCS_POWER_CARTRIDGE(2), FINAL_CARTRIDGE_III(3), SIMONS_BASIC(4), OCEAN_TYPE_1(5),
+		EXPERT_CARTRIDGE(6), FUN_PLAY__POWER_PLAY(7),
 
-		SUPER_GAMES, ATOMIC_POWER, EPYX_FASTLOAD, WESTERMANN_LEARNING, REX_UTILITY, FINAL_CARTRIDGE_I, MAGIC_FORMEL,
-		C64_GAME_SYSTEM__SYSTEM_3,
+		SUPER_GAMES(8), ATOMIC_POWER(9), EPYX_FASTLOAD(10), WESTERMANN_LEARNING(11), REX_UTILITY(12),
+		FINAL_CARTRIDGE_I(13), MAGIC_FORMEL(14), C64_GAME_SYSTEM__SYSTEM_3(15),
 
-		WARPSPEED, DINAMIC, ZAXXON__SUPER_ZAXXON, MAGIC_DESK__DOMARK__HES_AUSTRALIA, SUPER_SNAPSHOT_5, COMAL_80,
-		STRUCTURED_BASIC, ROSS,
+		WARPSPEED(16), DINAMIC(17), ZAXXON__SUPER_ZAXXON(18), MAGIC_DESK__DOMARK__HES_AUSTRALIA(19),
+		SUPER_SNAPSHOT_5(20), COMAL_80(21), STRUCTURED_BASIC(22), ROSS(23),
 
-		DELA_EP64, DELA_EP7X8, DELA_EP256, REX_EP256, MIKRO_ASSEMBLER, RESERVED, ACTION_REPLAY_4, STARDOS,
+		DELA_EP64(24), DELA_EP7X8(25), DELA_EP256(26), REX_EP256(27), MIKRO_ASSEMBLER(28), FINAL_PLUS(29),
+		ACTION_REPLAY_4(30), STARDOS(31),
 
-		EASYFLASH;
+		EASYFLASH(32), GMOD2(60);
+
+		private int magic;
+
+		private CRTType(int magic) {
+			this.magic = magic;
+		}
 
 		public static CRTType getType(byte[] header) {
 			if (!new String(header, 0, 0x10, ISO88591).equals("C64 CARTRIDGE   ")) {
 				throw new RuntimeException("File is not a .CRT file");
 			}
-			final int cartIdx = (header[0x16] & 0xff) << 8 | header[0x17] & 0xff;
-			if (cartIdx < 0 || cartIdx >= values().length) {
-				throw new RuntimeException("Cartridge magic value: " + cartIdx + " unsupported!");
+			CRTType cart = getType((header[0x16] & 0xff) << 8 | header[0x17] & 0xff);
+			if (cart == null) {
+				throw new RuntimeException("Cartridge magic value: "
+						+ ((header[0x16] & 0xff) << 8 | header[0x17] & 0xff) + " unsupported!");
 			}
-			return values()[cartIdx];
+			return cart;
+		}
+
+		private static CRTType getType(int magic) {
+			return Arrays.asList(values()).stream().filter(crt -> crt.magic == magic).findFirst().orElse(null);
 		}
 	}
 
@@ -215,6 +229,8 @@ public class Cartridge {
 			return new MagicDesk(is, pla);
 		case OCEAN_TYPE_1:
 			return new OceanType1(is, pla);
+		case GMOD2:
+			return new GMod2(is, pla);
 		default:
 			throw new RuntimeException("Cartridges of format: " + type + " unsupported");
 		}

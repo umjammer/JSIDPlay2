@@ -59,6 +59,7 @@ link:https://www.6581-8580.com[https://www.6581-8580.com^]
 | GeoRAM (64kb, 128kb, 256kb, 512kb, 1024kb and 2048kb)
 | REU (1700: 128 kB, 1750: 512 kB, 1764: 256 kB, 1750 XL: 2 MB and 16 MB which was never produced)
 | SFX Sound Expander [FM-YAM alike] (OPL1: YM3526 and OPL2: YM3812)
+| GMod2  (8Kb, 16Kb, 32Kb, 64Kb, 128Kb, 256Kb and 512Kb)
 
 |===
 
