@@ -371,7 +371,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			 * If a tune ends, there are these possibilities:
 			 * <OL>
 			 * <LI>Play next song (except singles)
-			 * <LI>Play again looping song
+			 * <LI>Play again looping song (except recordings)
 			 * <LI>End tune
 			 * </OL>
 			 *

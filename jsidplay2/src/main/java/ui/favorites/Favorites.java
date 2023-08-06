@@ -392,7 +392,7 @@ public class Favorites extends C64VBox implements UIPart {
 		SidPlay2Section sidPlay2Section = util.getConfig().getSidplay2Section();
 		PlaybackType pt = sidPlay2Section.getPlaybackType();
 
-		if (!sidPlay2Section.isLoop()) {
+		if (!sidPlay2Section.isLoop() || util.getPlayer().getAudioDriver().isRecording()) {
 			if (pt == PlaybackType.RANDOM_ALL) {
 				favoritesList.getSelectionModel()
 						.select(Math.abs(random.nextInt(Integer.MAX_VALUE)) % favoritesList.getTabs().size());

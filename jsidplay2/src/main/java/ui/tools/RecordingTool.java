@@ -138,10 +138,8 @@ public class RecordingTool {
 			if (fingerprinting) {
 				config.getAudioSection().setSamplingRate(SamplingRate.VERY_LOW);
 			}
-			config.getSidplay2Section().setDefaultPlayLength(180);
 			config.getSidplay2Section().setEnableDatabase(true);
 			config.getSidplay2Section().setSingle(false);
-			config.getSidplay2Section().setLoop(false);
 
 			if (previousDirectory != null) {
 				previousSidDatabase = new SidDatabase(previousDirectory);

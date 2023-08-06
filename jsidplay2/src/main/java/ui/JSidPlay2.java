@@ -80,7 +80,7 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 					SidPlay2Section sidplay2Section = util.getConfig().getSidplay2Section();
 					PlaybackType pt = sidplay2Section.getPlaybackType();
 
-					if (!sidplay2Section.isLoop()) {
+					if (!sidplay2Section.isLoop() || util.getPlayer().getAudioDriver().isRecording()) {
 						if (pt == PlaybackType.RANDOM_HVSC) {
 							playNextRandomHVSC();
 						}
