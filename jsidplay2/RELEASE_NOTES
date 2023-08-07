@@ -4,4 +4,4 @@ JSIDPlay2:
 Bugfix: Prevent JSIDPlay2 to hang and scan whole directory tree, if called with a SID as command line argument
 Bugfix: thread safety issues fixed
 Feature: Recording tool added for collections like HVSC using a configurable number of parallel threads
-Feature: GMod2 cartridge support added (except for EEPROM functionality)
+Feature: GMod2 cartridge support added (untested EEPROM functionality)
