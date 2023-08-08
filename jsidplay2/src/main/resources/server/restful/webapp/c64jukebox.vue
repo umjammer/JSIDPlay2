@@ -699,8 +699,8 @@
                     </template>
                     <template #cell(actions)="row">
                       <b-button size="sm" @click="requestContentEntries(row.item)" class="mr-1" style="padding: 0">
-                        <b-icon-caret-up-fill v-if="row.detailsShowing"> </b-icon-caret-up-fill>
-                        <b-icon-caret-down-fill v-if="!row.detailsShowing"> </b-icon-caret-down-fill>
+                        <b-icon-caret-down-fill v-if="row.detailsShowing"> </b-icon-caret-down-fill>
+                        <b-icon-caret-right-fill v-if="!row.detailsShowing"> </b-icon-caret-right-fill>
                       </b-button>
                     </template>
                     <template #row-details="row">
@@ -3083,7 +3083,7 @@
           },
           username: "Username",
           password: "Password",
-          filter: "Top:",
+          filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
           gamesTop200: "Games",
@@ -3222,7 +3222,7 @@
           },
           username: "Benutzername",
           password: "Passwort",
-          filter: "Top:",
+          filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
           gamesTop200: "Games",
