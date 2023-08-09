@@ -42,15 +42,18 @@ import libsidplay.components.pla.PLA;
 public class GMod2 extends Cartridge {
 
 	/**
-	 * Currently active ROM bank.
+	 * Currently active flash ROM bank.
 	 */
 	protected int currentRomBank;
 
 	/**
-	 * ROML banks 0..3 (each of size 0x2000).
+	 * 512KiB flash ROM - ROML banks 0..6 (each of size 0x2000).
 	 */
-	protected final byte[][] romLBanks;
+	protected final byte[][] romlBanks;
 
+	/**
+	 * 2kB EEPROM
+	 */
 	private M93C86 m93c86 = new M93C86();
 
 	private int eeprom_cs = 0, eeprom_data = 0, eeprom_clock = 0;
@@ -59,7 +62,7 @@ public class GMod2 extends Cartridge {
 		super(pla);
 		final byte[] chipHeader = new byte[0x10];
 
-		romLBanks = new byte[64][0x2000];
+		romlBanks = new byte[64][0x2000];
 		for (int i = 0; i < 64 && dis.available() > 0; i++) {
 			dis.readFully(chipHeader);
 			if (chipHeader[0xb] >= (byte) 0x40
@@ -67,7 +70,7 @@ public class GMod2 extends Cartridge {
 				throw new RuntimeException("Unexpected Chip header!");
 			}
 			int bank = chipHeader[0xb] & 0xff;
-			dis.readFully(romLBanks[bank]);
+			dis.readFully(romlBanks[bank]);
 		}
 	}
 
@@ -83,6 +86,13 @@ public class GMod2 extends Cartridge {
 		@Override
 		public void write(int address, byte value) {
 			if (address == 0xde00) {
+				if ((value & 0x40) != 0 && (value & 0x80) != 0) {
+					// ultimax mode
+					pla.setGameExrom(true, true, true, false);
+				} else {
+					pla.setGameExrom(true, (value & 0x80) != 0);
+				}
+
 				currentRomBank = value & 0x3f;
 
 				eeprom_cs = (value >> 6) & 1;
@@ -93,7 +103,6 @@ public class GMod2 extends Cartridge {
 					m93c86.m93c86_write_data(eeprom_data);
 					m93c86.m93c86_write_clock(eeprom_clock);
 				}
-				pla.setGameExrom(true, (value & 0x80) != 0);
 			}
 		}
 	};
@@ -101,7 +110,7 @@ public class GMod2 extends Cartridge {
 	private final Bank romlBank = new Bank() {
 		@Override
 		public byte read(int address) {
-			return romLBanks[currentRomBank][address & 0x1fff];
+			return romlBanks[currentRomBank][address & 0x1fff];
 		}
 	};
 
@@ -113,7 +122,7 @@ public class GMod2 extends Cartridge {
 
 		@Override
 		public void write(int address, byte value) {
-			romLBanks[currentRomBank][address & 0x1fff] = value;
+			romlBanks[currentRomBank][address & 0x1fff] = value;
 		};
 	};
 
