@@ -51,7 +51,7 @@ public class IniConfig implements IConfig {
 	private static IniConfig singleInstance;
 
 	/** INI configuration filename or null (use internal configuration) */
-	private File iniPath;
+	private final File iniPath;
 
 	@ParametersDelegate
 	private ISidPlay2Section sidplay2Section;

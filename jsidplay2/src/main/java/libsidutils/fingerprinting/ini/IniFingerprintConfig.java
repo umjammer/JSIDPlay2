@@ -74,7 +74,9 @@ public class IniFingerprintConfig implements IFingerprintConfig {
 				clear();
 				/* validate loaded configuration */
 				if (fingerPrintSection.getVersion() == REQUIRED_CONFIG_VERSION) {
-					System.out.println("Use INI file: " + iniPath);
+					if (createIfNotExists) {
+						System.out.println("Use INI file: " + iniPath);
+					}
 					return;
 				}
 			} catch (final Exception e) {
@@ -99,7 +101,7 @@ public class IniFingerprintConfig implements IFingerprintConfig {
 	 *
 	 * @return the absolute path name of the INI file to use
 	 */
-	private static File getINIPath() {
+	public static File getINIPath() {
 		for (final String parent : new String[] { System.getProperty("user.dir"), System.getProperty("user.home"), }) {
 			File configPlace = new File(parent, FILE_NAME);
 			if (configPlace.exists()) {
