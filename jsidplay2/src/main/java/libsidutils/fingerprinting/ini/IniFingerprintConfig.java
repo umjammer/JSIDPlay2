@@ -114,7 +114,12 @@ public class IniFingerprintConfig implements IFingerprintConfig {
 	 * @param iniFile the INI file to backup
 	 */
 	private void createINIBackup(final File iniFile) {
-		iniFile.renameTo(new File(iniFile.getParentFile(), FILE_NAME + ".bak"));
+		File bakFile = new File(iniFile.getParentFile(), FILE_NAME + ".bak");
+		iniFile.renameTo(bakFile);
+
+		int currentVersion = fingerPrintSection.getVersion();
+		System.out.println("Configuration file version=" + currentVersion + " is older than expected version="
+				+ REQUIRED_CONFIG_VERSION + ", a backup has been created: " + bakFile);
 	}
 
 	private void readInternal() {
