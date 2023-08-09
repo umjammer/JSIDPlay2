@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import sidplay.ini.IniReader;
+import sidplay.ini.converter.BeanToStringConverter;
 
 /**
  * INI configuration file support responsible to load and save all emulator
@@ -137,7 +138,7 @@ public class IniFingerprintConfig implements IFingerprintConfig {
 		}
 	}
 
-	public void write() {
+	public final void write() {
 		if (!iniReader.isDirty()) {
 			return;
 		}
@@ -153,6 +154,11 @@ public class IniFingerprintConfig implements IFingerprintConfig {
 	@Override
 	public final IFingerprintSection getFingerPrintSection() {
 		return fingerPrintSection;
+	}
+
+	@Override
+	public final String toString() {
+		return BeanToStringConverter.toString(this);
 	}
 
 }
