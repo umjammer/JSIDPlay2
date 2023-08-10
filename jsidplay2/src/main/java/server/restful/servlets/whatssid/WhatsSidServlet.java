@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
 import javax.persistence.QueryTimeoutException;
 
 import jakarta.servlet.Filter;
@@ -80,18 +81,16 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 		super.doPost(request);
 		try {
 			WAVBean wavBean = getInput(request, WAVBean.class);
-			int hashCode = wavBean.hashCode();
 
+			int hashCode = request.getRemoteAddr().hashCode() ^ wavBean.hashCode();
 			MusicInfoWithConfidenceBean musicInfoWithConfidence;
-			if (!MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode) && isWhatsSidEnabled()) {
-				WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
-				FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
-				musicInfoWithConfidence = fingerPrinting.match(wavBean);
-				MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-				info(valueOf(musicInfoWithConfidence));
-			} else {
+			if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode) || !isWhatsSidEnabled()) {
 				musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
 				info(valueOf(musicInfoWithConfidence) + " (cached)");
+			} else {
+				musicInfoWithConfidence = match(getEntityManager(), wavBean);
+				MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
+				info(valueOf(musicInfoWithConfidence));
 			}
 			setOutput(request, response, musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
 		} catch (QueryTimeoutException qte) {
@@ -111,6 +110,12 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	 */
 	private boolean isWhatsSidEnabled() {
 		return !WHATSID_LOW_PRIO || count() == 0;
+	}
+
+	private MusicInfoWithConfidenceBean match(EntityManager entityManager, WAVBean wavBean) throws IOException {
+		WhatsSidService whatsSidService = new WhatsSidService(entityManager);
+		FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
+		return fingerPrinting.match(wavBean);
 	}
 
 }
