@@ -11,6 +11,7 @@ package sidplay;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static libsidplay.common.SIDEmu.NONE;
+import static libsidplay.config.ISidPlay2Properties.MAX_SONG_LENGTH;
 import static libsidplay.sidtune.SidTune.RESET;
 import static libsidutils.CBMCodeUtils.petsciiToScreenRam;
 import static sidplay.ini.IniDefaults.DEFAULT_AUDIO;
@@ -816,10 +817,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		}
 
 		timer.setStart(sidplay2Section.getStartTime());
-		timer.setRecording(checkDefaultLengthInRecordMode && getAudioDriver().isRecording());
+		verifyConfiguration();
 		timer.reset();
-
-		verifyConfiguration(sidplay2Section);
 
 		if (getAudioDriver() instanceof VideoDriver) {
 			addVideoDriver((VideoDriver) getAudioDriver());
@@ -866,11 +865,14 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 
 	/**
 	 * Check the configuration.
-	 *
-	 * @throws IOException configuration error
 	 */
-	private void verifyConfiguration(ISidPlay2Section sidplay2Section) throws IOException {
-		if (getAudio() == Audio.LIVE_SID_DUMP && (tune == RESET || tune.getInfo().getPlayAddr() == 0)) {
+	private void verifyConfiguration() {
+		if (checkDefaultLengthInRecordMode && getAudioDriver().isRecording()) {
+			timer.setLimitEnd(MAX_SONG_LENGTH);
+			System.out.println(String.format("Unknown song length in record mode, using %ds", MAX_SONG_LENGTH));
+		}
+		if ((getAudio() == Audio.SID_DUMP || getAudio() == Audio.LIVE_SID_DUMP)
+				&& (tune == RESET || tune.getInfo().getPlayAddr() == 0)) {
 			throw new RuntimeException("SIDDump audio driver requires a well-known player address of the tune");
 		}
 	}

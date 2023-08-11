@@ -35,7 +35,10 @@ public abstract class Timer {
 	 */
 	private double fadeOut;
 
-	private boolean recording;
+	/**
+	 * Limited song length in s to prevent unlimited song time situation.
+	 */
+	private int limitEnd;
 
 	/**
 	 * Tune start time has been reached
@@ -80,8 +83,8 @@ public abstract class Timer {
 		this.start = start;
 	}
 
-	public void setRecording(boolean recording) {
-		this.recording = recording;
+	public void setLimitEnd(int limitEnd) {
+		this.limitEnd = limitEnd;
 	}
 
 	/**
@@ -133,10 +136,9 @@ public abstract class Timer {
 		}
 		// ... or play default length (0 means forever)
 		end = config.getSidplay2Section().getDefaultPlayLength();
-		if (end == 0 && recording) {
-			// Prevent unlimited song length in record mode
-			end = 180;
-			System.out.println("Unknown song length in record mode, using 180s");
+		// ... prevent unlimited song length by limiting end time
+		if (end == 0) {
+			end = limitEnd;
 		}
 		if (end > 0) {
 			// use default length (is meant to be relative to start)
