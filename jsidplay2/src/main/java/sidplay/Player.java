@@ -84,6 +84,7 @@ import libsidutils.stil.STIL.STILEntry;
 import sidplay.audio.Audio;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.MP3Driver.MP3StreamDriver;
+import sidplay.audio.SIDDumpDriver;
 import sidplay.audio.VideoDriver;
 import sidplay.audio.exceptions.IniConfigException;
 import sidplay.audio.exceptions.SongEndException;
@@ -871,7 +872,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			timer.setLimitEnd(MAX_SONG_LENGTH);
 			System.out.println(String.format("Unknown song length in record mode, using %ds", MAX_SONG_LENGTH));
 		}
-		if ((getAudio() == Audio.SID_DUMP || getAudio() == Audio.LIVE_SID_DUMP)
+		if (getAudioDriver().lookup(SIDDumpDriver.class).isPresent()
 				&& (tune == RESET || tune.getInfo().getPlayAddr() == 0)) {
 			throw new RuntimeException("SIDDump audio driver requires a well-known player address of the tune");
 		}
