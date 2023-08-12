@@ -36,9 +36,9 @@ public abstract class Timer {
 	private double fadeOut;
 
 	/**
-	 * Limited song length in s to prevent unlimited song time situation.
+	 * Limited song length in s, if song length is unknown.
 	 */
-	private int limitEnd;
+	private double defaultLength;
 
 	/**
 	 * Tune start time has been reached
@@ -83,8 +83,8 @@ public abstract class Timer {
 		this.start = start;
 	}
 
-	public void setLimitEnd(int limitEnd) {
-		this.limitEnd = limitEnd;
+	public void setDefaultLength(double defaultLength) {
+		this.defaultLength = defaultLength;
 	}
 
 	/**
@@ -135,11 +135,7 @@ public abstract class Timer {
 			}
 		}
 		// ... or play default length (0 means forever)
-		end = config.getSidplay2Section().getDefaultPlayLength();
-		// ... prevent unlimited song length by limiting end time
-		if (end == 0) {
-			end = limitEnd;
-		}
+		end = defaultLength;
 		if (end > 0) {
 			// use default length (is meant to be relative to start)
 			end = schedule(start + end, endTimeEvent);

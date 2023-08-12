@@ -818,6 +818,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		}
 
 		timer.setStart(sidplay2Section.getStartTime());
+		timer.setDefaultLength(config.getSidplay2Section().getDefaultPlayLength());
 		verifyConfiguration();
 		timer.reset();
 
@@ -869,7 +870,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 */
 	private void verifyConfiguration() {
 		if (checkDefaultLengthInRecordMode && getAudioDriver().isRecording()) {
-			timer.setLimitEnd(MAX_SONG_LENGTH);
+			timer.setDefaultLength(MAX_SONG_LENGTH);
 			System.out.println(String.format("Unknown song length in record mode, using %ds", MAX_SONG_LENGTH));
 		}
 		if (getAudioDriver().lookup(SIDDumpDriver.class).isPresent()
