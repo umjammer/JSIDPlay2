@@ -51,3 +51,28 @@ TIP: You can change the quality settings of MP3 recordings this way:
 ----
 <1> Bitrate in kbps (-1=auto, 32 40 48 56 64 80 96 112 128 160 192 224 256 320)
 <2> or alternatively use variable bitrate and highest quality (0=best, 5=medium, 9=worst)
+
+== [[RecordingTool]]Do mass recordings by command Line
+You can record the full HVSC (all SIDs) as MP3 using parallel processing.
+[source,subs="attributes+"]
+----
+recordingtool.sh # <1>
+--audio MP3 # <2>
+--maxThreads <maxThreads> # <3>
+--destinationDirectory <recordingDirectory # <4>
+--hvsc <pathToHVSC> # <5>
+<rootDirectory> # <6>
+----
+<1> Launch command-line version
+<2> Output format.
+<3> Maximum number of recordings done in parallel.
+<4> Optional output directory. Sub-directories will be created automatically to get the same folder structure like <rootDirectory>. If parameter is missing, all recordings are created in the same folder like the SIDs).
+<5> HVSC directory to read the song length database (SLDB). That means the file in sub-folder DOCUMENTS/STIL.txt will be read.
+<6> Main parameter: Directory to create recordings for. If you want to record full HVSC please use HVSC directory the same like above (<pathToHVSC>).
+
+Example:
+[source,subs="attributes+"]
+----
+recordingtool.sh --audio MP3 --maxThreads 8 --hvsc /media/nas1/Ken/C64/C64Music --destinationDirectory /home/ken/out /media/nas1/Ken/C64/C64Music
+----
+TIP: You can use even more parameters (change output format, mute voices, etc. just to name a few). Please refer to the usage messages.

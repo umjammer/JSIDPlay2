@@ -545,10 +545,10 @@ Create a software or hardware replacement for a SID by implementing the Network 
 
 == FAQ
 
-=== How to Record SID as MP3 by Command Line
+=== How to Record SIDs as MP3 by Command Line
 Record your favorite SID music to MP3 files.
 
-<<mp3recording.ad#RecordAsMp3,Record SID as MP3 by Command Line>>
+<<mp3recording.ad#RecordAsMp3,Record SIDs as MP3 by Command Line>>
 
 [glossary]
 == Glossary
