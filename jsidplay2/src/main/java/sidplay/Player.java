@@ -869,7 +869,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * Check the configuration.
 	 */
 	private void verifyConfiguration() {
-		if (checkDefaultLengthInRecordMode && getAudioDriver().isRecording()) {
+		if (checkDefaultLengthInRecordMode && getAudioDriver().isRecording()
+				&& config.getSidplay2Section().getDefaultPlayLength() == 0) {
 			timer.setDefaultLength(MAX_SONG_LENGTH);
 			System.out.println(String.format("Unknown song length in record mode, using %ds", MAX_SONG_LENGTH));
 		}
