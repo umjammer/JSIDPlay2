@@ -10,11 +10,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +32,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ServletUsageFormatter extends DefaultUsageFormatter {
+
+	private static final Logger LOG = Logger.getLogger(ServletUsageFormatter.class.getName());
 
 	private JCommander commander;
 	private HttpServletRequest request;
@@ -91,8 +96,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			boolean hasDescription = !description.isEmpty();
 
 			// First line, command name
-			out.append(indent).append("  ").append(parameter.required() ? "* " : "  ").append(getName(pd.getNames()))
-					.append("\n");
+			out.append(indent).append("  ").append(parameter.required() ? "* " : "  ")
+					.append(getServletParameterNames(pd.getNames())).append("\n");
 
 			if (hasDescription) {
 				wrapDescription(out, indentCount, s(indentCount) + description);
@@ -155,7 +160,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 	private void appendCurrentRequestParameters(StringBuilder out) {
 		String[] requestParameters = ServletParameterParser.getRequestParameters(request);
-		if (requestParameters.length > 0) {
+		if (LOG.isLoggable(Level.FINEST) && requestParameters.length > 0) {
 			out.append("Internal Info: Current servlet parameters converted to command line arguments:");
 			out.append("\n");
 			out.append(Strings.join(" ", requestParameters));
@@ -176,8 +181,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 	private void appendRequestPath(StringBuilder out, String indent) {
 		out.append(indent).append("  Servlet Path:");
-		out.append("\n");
-		out.append("      ");
+		out.append(newLineAndIndent(6));
 		out.append(commander.getMainParameterValue().getDescription());
 		out.append("\n");
 		out.append("\n");
@@ -214,7 +218,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			while (it.hasNext()) {
 				ParameterDescription parameterDescription = it.next();
 
-				urlAsString.append(getName(parameterDescription.getNames()));
+				urlAsString.append(getExampleServletParameterName(parameterDescription.getNames()));
 				urlAsString.append("=");
 				urlAsString.append(createExampleParameterValue(parameterDescription));
 
@@ -229,6 +233,11 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		result.append(uri.toASCIIString());
 
 		return result.toString();
+	}
+
+	private String getExampleServletParameterName(String names) {
+		return Arrays.asList(names.split(", ")).stream().map(this::getParameterName)
+				.max(Comparator.comparingInt(String::length)).orElse("");
 	}
 
 	private String createExampleParameterValue(ParameterDescription parameterDescription) {
@@ -251,9 +260,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		return ResourceBundle.getBundle(parameters.resourceBundle(), Locale.getDefault());
 	}
 
-	private String getName(String names) {
-		return Arrays.asList(names.split(",")).stream().findFirst().map(this::getParameterName)
-				.orElseGet(() -> getParameterName(names));
+	private String getServletParameterNames(String names) {
+		return Arrays.asList(names.split(", ")).stream().map(this::getParameterName).collect(Collectors.joining(", "));
 	}
 
 	private String getParameterName(String name) {
