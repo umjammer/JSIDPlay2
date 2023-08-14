@@ -10,7 +10,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.Strings;
+import com.beust.jcommander.WrappedParameter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -62,15 +65,12 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 				appendErrorMessage(out);
 
 				appendCurrentRequestParameters(out);
+
+				appendExampleRequest(out, indentCount, indent);
 			}
-			appendExampleRequest(out, indentCount, indent);
 
 			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
 				appendRequestPath(out, indent);
-			}
-
-			if (commander.getFields().size() > 0) {
-				out.append(indent).append("Servlet Parameter").append("\n");
 			}
 
 		} catch (URISyntaxException | MalformedURLException e) {
@@ -78,12 +78,75 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 	}
 
+	public void appendAllParametersDetails(StringBuilder out, int indentCount, String indent,
+			List<ParameterDescription> sortedParameters) {
+		if (sortedParameters.size() > 0) {
+			out.append(indent).append("  Servlet Parameters:\n");
+		}
+
+		for (ParameterDescription pd : sortedParameters) {
+			WrappedParameter parameter = pd.getParameter();
+			String description = pd.getDescription();
+			boolean hasDescription = !description.isEmpty();
+
+			// First line, command name
+			out.append(indent).append("  ").append(parameter.required() ? "* " : "  ").append(getName(pd.getNames()))
+					.append("\n");
+
+			if (hasDescription) {
+				wrapDescription(out, indentCount, s(indentCount) + description);
+			}
+			Object def = pd.getDefault();
+
+			if (pd.isDynamicParameter()) {
+				String syntax = "Syntax: " + parameter.names()[0] + "key" + parameter.getAssignment() + "value";
+
+				if (hasDescription) {
+					out.append(newLineAndIndent(indentCount));
+				} else {
+					out.append(s(indentCount));
+				}
+				out.append(syntax);
+			}
+
+			if (def != null && !pd.isHelp()) {
+				String displayedDef = Strings.isStringEmpty(def.toString()) ? "<empty string>" : def.toString();
+				String defaultText = "Default: " + (parameter.password() ? "********" : displayedDef);
+
+				if (hasDescription) {
+					out.append(newLineAndIndent(indentCount));
+				} else {
+					out.append(s(indentCount));
+				}
+				out.append(defaultText);
+			}
+			Class<?> type = pd.getParameterized().getType();
+
+			if (type.isEnum()) {
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				String valueList = EnumSet.allOf((Class<? extends Enum>) type).toString();
+				String possibleValues = "Possible Values: " + valueList;
+
+				// Prevent duplicate values list, since it is set as 'Options: [values]' if the
+				// description
+				// of an enum field is empty in ParameterDescription#init(..)
+				if (!description.contains("Options: " + valueList)) {
+					if (hasDescription) {
+						out.append(newLineAndIndent(indentCount));
+					} else {
+						out.append(s(indentCount));
+					}
+					out.append(possibleValues);
+				}
+			}
+			out.append("\n");
+		}
+	}
+
 	private void appendErrorMessage(StringBuilder out) {
-		out.append("Servlet-Parameter ERROR!");
-		out.append("\n");
 		out.append(exception.getClass().getSimpleName());
 		out.append(": ");
-		out.append(exception.getMessage());
+		out.append(exception.getMessage().replace("main parameter", "servlet parameter").replace("option", "servlet parameter").replaceAll("--", ""));
 		out.append("\n");
 		out.append("\n");
 	}
@@ -91,7 +154,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private void appendCurrentRequestParameters(StringBuilder out) {
 		String[] requestParameters = ServletParameterParser.getRequestParameters(request);
 		if (requestParameters.length > 0) {
-			out.append("Current Servlet-Parameter options:");
+			out.append("Internal Info: Current servlet parameters converted to command line arguments:");
 			out.append("\n");
 			out.append(Strings.join(" ", requestParameters));
 			out.append("\n");
@@ -110,7 +173,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	}
 
 	private void appendRequestPath(StringBuilder out, String indent) {
-		out.append(indent).append("Servlet Path:");
+		out.append(indent).append("  Servlet Path:");
 		out.append("\n");
 		out.append("      ");
 		out.append(commander.getMainParameterValue().getDescription());
@@ -199,6 +262,15 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		} else {
 			return name;
 		}
+	}
+
+	/**
+	 * Returns new line followed by indent-many spaces.
+	 *
+	 * @return new line followed by indent-many spaces
+	 */
+	private static String newLineAndIndent(int indent) {
+		return "\n" + s(indent);
 	}
 
 }
