@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -245,11 +244,6 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			return "********";
 		} else if (parameterDescription.getDefault() != null) {
 			return String.valueOf(parameterDescription.getDefault());
-		} else if (parameterDescription.getParameterized().getType().equals(UUID.class)) {
-			return UUID.randomUUID().toString();
-		} else if (parameterDescription.getParameterized().getType().isEnum()) {
-			List<?> list = Arrays.asList(parameterDescription.getParameterized().getType().getEnumConstants());
-			return list.stream().findFirst().get().toString();
 		}
 		return "null";
 	}
