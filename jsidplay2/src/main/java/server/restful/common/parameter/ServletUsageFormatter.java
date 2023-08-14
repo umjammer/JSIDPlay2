@@ -153,7 +153,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		out.append(exception.getClass().getSimpleName());
 		out.append(": ");
 		out.append(exception.getMessage().replace("main parameter", "servlet parameter")
-				.replace("option", "servlet parameter").replaceAll("--", ""));
+				.replace("option", "servlet parameter").replaceAll("--", "").replaceAll("-", ""));
 		out.append("\n");
 		out.append("\n");
 	}
