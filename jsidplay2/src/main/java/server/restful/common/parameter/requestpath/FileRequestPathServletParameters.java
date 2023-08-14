@@ -43,7 +43,7 @@ public class FileRequestPathServletParameters extends FileRequestPathServletPara
 		return filePath;
 	}
 
-	@Parameter(descriptionKey = "FILE_PATH")
+	@Parameter(descriptionKey = "FILE_PATH", required = true)
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
