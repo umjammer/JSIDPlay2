@@ -78,6 +78,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 	}
 
+	@Override
 	public void appendAllParametersDetails(StringBuilder out, int indentCount, String indent,
 			List<ParameterDescription> sortedParameters) {
 		if (sortedParameters.size() > 0) {
@@ -146,7 +147,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private void appendErrorMessage(StringBuilder out) {
 		out.append(exception.getClass().getSimpleName());
 		out.append(": ");
-		out.append(exception.getMessage().replace("main parameter", "servlet parameter").replace("option", "servlet parameter").replaceAll("--", ""));
+		out.append(exception.getMessage().replace("main parameter", "servlet parameter")
+				.replace("option", "servlet parameter").replaceAll("--", ""));
 		out.append("\n");
 		out.append("\n");
 	}
