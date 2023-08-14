@@ -16,10 +16,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.beust.jcommander.DefaultUsageFormatter;
 import com.beust.jcommander.JCommander;
@@ -243,15 +243,15 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private String createExampleParameterValue(ParameterDescription parameterDescription) {
 		if (parameterDescription.getParameter().password()) {
 			return "********";
-		} else if (parameterDescription.getDefault() != null
-				|| !parameterDescription.getParameterAnnotation().required()) {
+		} else if (parameterDescription.getDefault() != null) {
 			return String.valueOf(parameterDescription.getDefault());
-		} else if (Stream.of(Boolean.class, boolean.class)
-				.anyMatch(parameterDescription.getParameterized().getType()::equals)) {
-			return String.valueOf(false);
-		} else {
-			return String.valueOf(0);
+		} else if (parameterDescription.getParameterized().getType().equals(UUID.class)) {
+			return UUID.randomUUID().toString();
+		} else if (parameterDescription.getParameterized().getType().isEnum()) {
+			List<?> list = Arrays.asList(parameterDescription.getParameterized().getType().getEnumConstants());
+			return list.stream().findFirst().get().toString();
 		}
+		return "null";
 	}
 
 	private ResourceBundle getBundle() {
