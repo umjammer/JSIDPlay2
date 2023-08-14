@@ -152,8 +152,8 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private void appendErrorMessage(StringBuilder out) {
 		out.append(exception.getClass().getSimpleName());
 		out.append(": ");
-		out.append(exception.getMessage().replace("main parameter", "servlet parameter")
-				.replace("option", "servlet parameter").replaceAll("--", "").replaceAll("-", ""));
+		out.append(exception.getMessage().replaceAll("[mM]ain parameter", "servlet path")
+				.replace("[oO]ption", "servlet parameter").replaceAll("--", "").replaceAll("-", ""));
 		out.append("\n");
 		out.append("\n");
 	}
