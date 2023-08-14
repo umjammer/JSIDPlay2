@@ -31,7 +31,7 @@ public class DirectoryRequestPathServletParameters extends DirectoryRequestPathS
 		return directoryPath;
 	}
 
-	@Parameter(descriptionKey = "DIRECTORY_PATH")
+	@Parameter(descriptionKey = "DIRECTORY_PATH", required = true)
 	public void setDirectoryPath(String directory) {
 		this.directoryPath = directory;
 	}
