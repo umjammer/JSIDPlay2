@@ -898,7 +898,7 @@
                     </template>
 
                     <template #head(category)="data">
-                      <label for="category" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
+                      <label for="category" style="font-size: smaller; margin-left: 0px">{{ $t("Search.category") }}</label>
                       <b-form-select
                         id="category"
                         v-model="category"
@@ -918,7 +918,7 @@
                       </b-form-select>
                     </template>
                     <template #head(name)="data">
-                      <label for="name" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
+                      <label for="name" style="font-size: smaller; margin-left: 0px">{{ $t("Search.name") }}</label>
                       <b-form-input
                         type="text"
                         id="name"
@@ -931,22 +931,8 @@
                         spellcheck="false"
                       />
                     </template>
-                    <template #head(group)="data">
-                      <label for="group" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
-                      <b-form-input
-                        type="text"
-                        id="group"
-                        v-model="group"
-                        @change="requestSearchResults"
-                        style="max-width: 100%; padding: 0.175em 0em"
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                      />
-                    </template>
                     <template #head(event)="data">
-                      <label for="event" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
+                      <label for="event" style="font-size: smaller; margin-left: 0px">{{ $t("Search.event") }}</label>
                       <b-form-input
                         type="text"
                         id="event"
@@ -960,7 +946,7 @@
                       />
                     </template>
                     <template #head(released)="data" style="padding-right: calc(0.3rem + 0.1em)">
-                      <label for="released" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
+                      <label for="released" style="font-size: smaller; margin-left: 0px">{{ $t("Search.release") }}</label>
                       <b-form-input
                         type="text"
                         id="released"
@@ -974,7 +960,7 @@
                       />
                     </template>
                     <template #head(handle)="data">
-                      <label for="handle" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
+                      <label for="handle" style="font-size: smaller; margin-left: 0px">{{ $t("Search.handle") }}</label>
                       <b-form-input
                         type="text"
                         id="handle"
@@ -988,7 +974,7 @@
                       />
                     </template>
                     <template #head(rating)="data">
-                      <label for="rating" style="font-size: smaller; margin-left: 0px">{{ data.label }}</label>
+                      <label for="rating" style="font-size: smaller; margin-left: 0px">{{ $t("Search.rating") }}</label>
                       <b-form-input
                         type="number"
                         id="rating"
@@ -3053,7 +3039,7 @@
             name: "File Name",
             title: "Title",
             author: "Author",
-            released: "Released",
+            released: "Release",
             format: "Format",
             playerId: "Player ID",
             noOfSongs: "No. of Songs",
@@ -3081,6 +3067,14 @@
             relocNoPages: "Reloc. no. Pages",
             stilGlbComment: "Tune Size (b)",
           },
+          Search: {
+            category: "Content",
+            name: "Name",
+            event: "Event",
+            release: "Release",
+            handle: "Handle",
+            rating: "Rating",
+          },          
           username: "Username",
           password: "Password",
           filter: "Top",
@@ -3192,7 +3186,7 @@
             name: "Dateiname",
             title: "Titel",
             author: "Autor",
-            released: "Publiziert",
+            released: "Release",
             format: "Format",
             playerId: "Player ID",
             noOfSongs: "Song Anzahl",
@@ -3220,6 +3214,14 @@
             relocNoPages: "Reloc. Seitenanzahl",
             stilGlbComment: "STIL glb. Kommentar",
           },
+          Search: {
+            category: "Inhalt",
+            name: "Name",
+            event: "Event",
+            release: "Release",
+            handle: "Handle",
+            rating: "Wertung",
+          },          
           username: "Benutzername",
           password: "Passwort",
           filter: "Top",
