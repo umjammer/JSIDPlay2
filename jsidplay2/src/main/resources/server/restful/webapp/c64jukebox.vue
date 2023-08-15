@@ -85,7 +85,7 @@
           <b-card no-body>
             <b-tabs v-model="tabIndex" active-nav-item-class="font-weight-bold text-italic" pills card>
               <b-tab>
-                <template #title>{{ $t("CON") }}</template>
+                <template #title>{{ $t("LOGIN") }}</template>
 
                 <b-card-text>
                   <div class="settings-box">
@@ -3015,11 +3015,11 @@
       }
       const messages = {
         en: {
-          CON: "Login",
-          SIDS: "Directories",
+          LOGIN: "Login",
+          SIDS: "Directory",
           ASSEMBLY64: "Search",
           SID: "SID",
-          STIL: "STIL",
+          STIL: "Info",
           STILINFO: {
             SUBTUNE: "Song",
             NAME: "Name",
@@ -3153,11 +3153,11 @@
           convertMessages: $convertMessagesEn,
         },
         de: {
-          CON: "Anmeldung",
-          SIDS: "Verzeichnisse",
+          LOGIN: "Anmeldung",
+          SIDS: "Verzeichnis",
           ASSEMBLY64: "Suche",
           SID: "SID",
-          STIL: "STIL",
+          STIL: "Info",
           STILINFO: {
             SUBTUNE: "Song",
             NAME: "Name",
@@ -3309,7 +3309,7 @@
           showAudio: false,
           langs: ["de", "en"],
           directoryMode: 0,
-          // CON (connection parameters)
+          // LOGIN
           username: "jsidplay2",
           password: "jsidplay2!",
           // SIDS (directories containing SIDS)
