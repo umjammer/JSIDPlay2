@@ -30,6 +30,13 @@ import com.beust.jcommander.WrappedParameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Change usage message to represent a servlet call. Servlet path is treated
+ * like a main argument and servlet parameters as options.
+ * 
+ * @author khaendel
+ *
+ */
 public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 	private static final Logger LOG = Logger.getLogger(ServletUsageFormatter.class.getName());
@@ -61,26 +68,27 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	@Override
 	public void appendMainLine(StringBuilder out, boolean hasOptions, boolean hasCommands, int indentCount,
 			String indent) {
-		try {
-			response.setStatus(exception != null ? SC_INTERNAL_SERVER_ERROR : SC_OK);
-			response.setContentType(MIME_TYPE_TEXT.toString());
+		response.setStatus(exception != null ? SC_INTERNAL_SERVER_ERROR : SC_OK);
+		response.setContentType(MIME_TYPE_TEXT.toString());
 
-			if (exception != null) {
-				appendErrorMessage(out);
+		if (LOG.isLoggable(Level.FINEST)) {
+			appendCurrentRequestParameters(out, indent);
+		}
 
-				if (LOG.isLoggable(Level.FINEST)) {
-					appendCurrentRequestParameters(out);
-				}
+		if (exception != null) {
+			appendErrorMessage(out);
+		}
 
-				appendExampleUsage(out, indentCount, indent);
-			}
+		out.append(indent).append("Usage: ");
+		out.append(commander.getProgramDisplayName());
+		out.append("[<servlet path>]");
+		if (hasOptions) {
+			out.append("[?<servlet parameters>]");
+			out.append("\n");
+		}
 
-			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				appendServletPath(out, indent);
-			}
-
-		} catch (URISyntaxException | MalformedURLException e) {
-			throw new RuntimeException(e);
+		if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
+			appendServletPath(out, indentCount, indent);
 		}
 	}
 
@@ -88,6 +96,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	public void appendAllParametersDetails(StringBuilder out, int indentCount, String indent,
 			List<ParameterDescription> sortedParameters) {
 		if (sortedParameters.size() > 0) {
+			out.append("\n");
 			out.append(indent).append("  Servlet Parameters:\n");
 		}
 
@@ -148,21 +157,18 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			}
 			out.append("\n");
 		}
+		try {
+			appendExampleUsage(out, indentCount, indent);
+		} catch (URISyntaxException | MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	private void appendErrorMessage(StringBuilder out) {
-		out.append(exception.getClass().getSimpleName());
-		out.append(": ");
-		out.append(exception.getMessage().replaceAll("[mM]ain parameters?", "servlet path")
-				.replaceAll("[oO]ption", "servlet parameter").replaceAll("--", "").replaceAll("-", ""));
-		out.append("\n");
-		out.append("\n");
-	}
-
-	private void appendCurrentRequestParameters(StringBuilder out) {
+	private void appendCurrentRequestParameters(StringBuilder out, String indent) {
 		String[] requestParameters = ServletParameterParser.getRequestParameters(request);
 		if (requestParameters.length > 0) {
-			out.append("Internal Info: Current servlet parameters converted to command line arguments:");
+			out.append(indent)
+					.append("  Internal Info: Current servlet parameters converted to command line arguments:");
 			out.append("\n");
 			out.append(Strings.join(" ", requestParameters));
 			out.append("\n");
@@ -170,20 +176,31 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 	}
 
-	private void appendExampleUsage(StringBuilder out, int indentCount, String indent)
-			throws MalformedURLException, URISyntaxException {
-		out.append("Example Usage:");
+	private void appendErrorMessage(StringBuilder out) {
+		out.append(exception.getClass().getSimpleName());
+		out.append(":");
+		out.append(newLineAndIndent(2));
+		out.append(exception.getMessage().replaceAll("[mM]ain parameters? are", "servlet path is")
+				.replaceAll("[mM]ain parameters?", "servlet path").replaceAll("[oO]ption", "servlet parameter")
+				.replaceAll("--", "").replaceAll("-", ""));
 		out.append("\n");
-
-		wrapDescription(out, indentCount, createExampleUsage(indent));
+		out.append("--------------------------------------------------------------------------------");
 		out.append("\n");
 		out.append("\n");
 	}
 
-	private void appendServletPath(StringBuilder out, String indent) {
-		out.append(indent).append("  Servlet Path:");
-		out.append(newLineAndIndent(6));
+	private void appendServletPath(StringBuilder out, int indentCount, String indent) {
+		out.append(newLineAndIndent(2)).append("Servlet Path:");
+		out.append(newLineAndIndent(indentCount));
 		out.append(commander.getMainParameterValue().getDescription());
+		out.append("\n");
+	}
+
+	private void appendExampleUsage(StringBuilder out, int indentCount, String indent)
+			throws MalformedURLException, URISyntaxException {
+		out.append(newLineAndIndent(2)).append("Example:");
+
+		wrapDescription(out, indentCount, createExampleUsage(indent));
 		out.append("\n");
 		out.append("\n");
 	}
@@ -192,6 +209,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		StringBuilder result = new StringBuilder();
 
 		// protocol
+		result.append(newLineAndIndent(6));
 		result.append(indent).append("HTTP(S)-");
 
 		// request method

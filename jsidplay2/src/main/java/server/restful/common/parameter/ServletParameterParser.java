@@ -23,7 +23,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * 
  * Parse servlet parameters using JCommander based on annotated parameter
- * objects.
+ * objects. Servlet path is treated like a main argument and servlet parameters
+ * as options.
  * 
  * @author khaendel
  *
