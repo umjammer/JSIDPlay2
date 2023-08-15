@@ -201,7 +201,7 @@ public class ServletParameterHelper {
 				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
-			if (parameters != null && parameter != null) {
+			if (serverParameter && parameter != null) {
 				for (String name : parameter.names()) {
 					// check parameter name length
 					if (name.startsWith("--")) {

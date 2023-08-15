@@ -68,13 +68,15 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 			if (exception != null) {
 				appendErrorMessage(out);
 
-				appendCurrentRequestParameters(out);
+				if (LOG.isLoggable(Level.FINEST)) {
+					appendCurrentRequestParameters(out);
+				}
 
-				appendExampleRequest(out, indentCount, indent);
+				appendExampleUsage(out, indentCount, indent);
 			}
 
 			if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
-				appendRequestPath(out, indent);
+				appendServletPath(out, indent);
 			}
 
 		} catch (URISyntaxException | MalformedURLException e) {
@@ -151,15 +153,15 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private void appendErrorMessage(StringBuilder out) {
 		out.append(exception.getClass().getSimpleName());
 		out.append(": ");
-		out.append(exception.getMessage().replaceAll("[mM]ain parameter", "servlet path")
-				.replace("[oO]ption", "servlet parameter").replaceAll("--", "").replaceAll("-", ""));
+		out.append(exception.getMessage().replaceAll("[mM]ain parameters?", "servlet path")
+				.replaceAll("[oO]ption", "servlet parameter").replaceAll("--", "").replaceAll("-", ""));
 		out.append("\n");
 		out.append("\n");
 	}
 
 	private void appendCurrentRequestParameters(StringBuilder out) {
 		String[] requestParameters = ServletParameterParser.getRequestParameters(request);
-		if (LOG.isLoggable(Level.FINEST) && requestParameters.length > 0) {
+		if (requestParameters.length > 0) {
 			out.append("Internal Info: Current servlet parameters converted to command line arguments:");
 			out.append("\n");
 			out.append(Strings.join(" ", requestParameters));
@@ -168,7 +170,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 	}
 
-	private void appendExampleRequest(StringBuilder out, int indentCount, String indent)
+	private void appendExampleUsage(StringBuilder out, int indentCount, String indent)
 			throws MalformedURLException, URISyntaxException {
 		out.append("Example Usage:");
 		out.append("\n");
@@ -178,7 +180,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		out.append("\n");
 	}
 
-	private void appendRequestPath(StringBuilder out, String indent) {
+	private void appendServletPath(StringBuilder out, String indent) {
 		out.append(indent).append("  Servlet Path:");
 		out.append(newLineAndIndent(6));
 		out.append(commander.getMainParameterValue().getDescription());
@@ -215,11 +217,11 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		if (it.hasNext()) {
 			urlAsString.append("?");
 			while (it.hasNext()) {
-				ParameterDescription parameterDescription = it.next();
+				ParameterDescription def = it.next();
 
-				urlAsString.append(getExampleServletParameterName(parameterDescription.getNames()));
+				urlAsString.append(getExampleServletParameterName(def.getNames()));
 				urlAsString.append("=");
-				urlAsString.append(createExampleParameterValue(parameterDescription));
+				urlAsString.append(def.getParameter().password() ? "********" : String.valueOf(def.getDefault()));
 
 				if (it.hasNext()) {
 					urlAsString.append("&");
@@ -237,15 +239,6 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private String getExampleServletParameterName(String names) {
 		return Arrays.asList(names.split(", ")).stream().map(this::getParameterName)
 				.max(Comparator.comparingInt(String::length)).orElse("");
-	}
-
-	private String createExampleParameterValue(ParameterDescription parameterDescription) {
-		if (parameterDescription.getParameter().password()) {
-			return "********";
-		} else if (parameterDescription.getDefault() != null) {
-			return String.valueOf(parameterDescription.getDefault());
-		}
-		return "null";
 	}
 
 	private ResourceBundle getBundle() {
