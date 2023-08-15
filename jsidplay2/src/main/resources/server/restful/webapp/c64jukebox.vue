@@ -570,7 +570,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 0px;
-                    right: 252px;
+                    right: 268px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -587,7 +587,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 0px;
-                    right: 128px;
+                    right: 144px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -599,7 +599,7 @@
 
                 <b-button
                   size="sm"
-                  style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 0px; z-index: 9999"
+                  style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 16px; z-index: 9999"
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
                 >
@@ -614,7 +614,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 30px;
-                    right: 211px;
+                    right: 256px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -631,7 +631,7 @@
                     padding: 2px 4px;
                     position: absolute;
                     top: 30px;
-                    right: 109px;
+                    right: 144px;
                     z-index: 9999;
                   "
                   variant="secondary"
@@ -643,7 +643,14 @@
 
                 <b-button
                   size="sm"
-                  style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 0px; z-index: 9999"
+                  style="
+                    font-size: smaller;
+                    padding: 2px 4px;
+                    position: absolute;
+                    top: 30px;
+                    right: 28px;
+                    z-index: 9999;
+                  "
                   variant="secondary"
                   @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
                 >
@@ -898,7 +905,9 @@
                     </template>
 
                     <template #head(category)="data">
-                      <label for="category" style="font-size: smaller; margin-left: 0px">{{ $t("Search.category") }}</label>
+                      <label for="category" style="font-size: smaller; margin-left: 0px">{{
+                        $t("Search.category")
+                      }}</label>
                       <b-form-select
                         id="category"
                         v-model="category"
@@ -946,7 +955,9 @@
                       />
                     </template>
                     <template #head(released)="data" style="padding-right: calc(0.3rem + 0.1em)">
-                      <label for="released" style="font-size: smaller; margin-left: 0px">{{ $t("Search.release") }}</label>
+                      <label for="released" style="font-size: smaller; margin-left: 0px">{{
+                        $t("Search.release")
+                      }}</label>
                       <b-form-input
                         type="text"
                         id="released"
@@ -1116,11 +1127,7 @@
                       >
                       </b-form-file>
                       <b-input-group-append>
-                        <b-button
-                          @click="exportPlaylist"
-                          v-if="playlist.length > 0"
-                          style="margin-top: 8px !important"
-                        >
+                        <b-button @click="exportPlaylist" v-if="playlist.length > 0" style="margin-top: 8px !important">
                           <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
                           <span>{{ $t("exportPlaylist") }}</span></b-button
                         >
@@ -3074,7 +3081,7 @@
             release: "Release",
             handle: "Handle",
             rating: "Rating",
-          },          
+          },
           username: "Username",
           password: "Password",
           filter: "Top",
@@ -3221,7 +3228,7 @@
             release: "Release",
             handle: "Handle",
             rating: "Wertung",
-          },          
+          },
           username: "Benutzername",
           password: "Passwort",
           filter: "Top",
