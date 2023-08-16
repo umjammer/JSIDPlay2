@@ -193,7 +193,9 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 	private void appendServletPath(StringBuilder out, int indentCount, String indent) {
 		out.append(newLineAndIndent(2)).append("Servlet Path:");
-		out.append(newLineAndIndent(indentCount));
+		out.append("\n");
+		out.append(indent).append("  ")
+				.append(commander.getMainParameterValue().getParameter().required() ? "* " : "  ");
 		out.append(commander.getMainParameterValue().getDescription());
 		out.append("\n");
 	}
