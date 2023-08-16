@@ -33,9 +33,21 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 		}
 
 		@Parameter(names = {
-			"--currentTime" }, converter = FractionSecondsToMsConverter.class, descriptionKey = "CURRENT_TIME", order = -2)
+				"--currentTime" }, converter = FractionSecondsToMsConverter.class, descriptionKey = "CURRENT_TIME", order = -2)
 		public void setCurrentTime(Long currentTime) {
 			this.currentTime = currentTime;
+		}
+
+		private Long bufferedEnd = null;
+
+		public Long getBufferedEnd() {
+			return bufferedEnd;
+		}
+
+		@Parameter(names = {
+				"--bufferedEnd" }, converter = FractionSecondsToMsConverter.class, descriptionKey = "BUFFERED_END", order = -3)
+		public void setBufferedEnd(Long bufferedEnd) {
+			this.bufferedEnd = bufferedEnd;
 		}
 	}
 
@@ -71,7 +83,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		// super.doGet(request); // Calls are very frequent, therefore we are silent here
 		try {
 			final OnKeepAliveServletParameters servletParameters = new OnKeepAliveServletParameters();
@@ -85,9 +97,10 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			}
 			UUID uuid = servletParameters.getUuid();
 			Long currentTime = servletParameters.getCurrentTime();
+			Long bufferedEnd = servletParameters.getBufferedEnd();
 
 //			info(String.format("onKeepAlive: HLS stream of: %s", uuid));   // Calls are very frequent, therefore we are silent here
-			update(uuid, playerWithStatus -> playerWithStatus.onKeepAlive(currentTime));
+			update(uuid, playerWithStatus -> playerWithStatus.onKeepAlive(currentTime, bufferedEnd));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

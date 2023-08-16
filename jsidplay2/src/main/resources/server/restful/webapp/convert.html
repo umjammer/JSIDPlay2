@@ -371,6 +371,16 @@
             }
             return null;
           },
+          bufferedEnd: function () {
+            if ("$hlsType" === "VIDEO_JS") {
+              var video = videojs("video-container");
+              return video.bufferedEnd();
+            } else if ("$hlsType" === "HLS_JS") {
+              var video = document.getElementById("video-container");
+              return video.duration;
+            }
+            return null;
+          },
           toggleShiftLeft: function (element) {
             this.shiftLeftPressed ^= true;
             if (this.shiftLeftPressed) {
@@ -562,7 +572,7 @@
                   // console.log("HLS keep alive: $uuid");
                 }
               };
-              xhttp.open("GET", "/static/on_keep_alive?name=$uuid&currentTime=" + outerThis.currentTime(), true);
+              xhttp.open("GET", "/static/on_keep_alive?name=$uuid&currentTime=" + outerThis.currentTime() + "&bufferedEnd=" + outerThis.bufferedEnd(), true);
               xhttp.send();
             }, this.notifyForHLS);
 

@@ -67,7 +67,7 @@ public final class PlayerWithStatus {
 		}
 	}
 
-	public void onKeepAlive(Long currentTime) {
+	public void onKeepAlive(Long currentTime, Long bufferedEnd) {
 		LocalDateTime maxDuration = created.plusSeconds(RTMP_EXCEEDS_MAXIMUM_DURATION);
 		if (LocalDateTime.now().isBefore(maxDuration)) {
 			validUntil = LocalDateTime.now().plusSeconds(HLS_NOT_YET_PLAYED_TIMEOUT);
@@ -75,7 +75,7 @@ public final class PlayerWithStatus {
 			validUntil = maxDuration;
 		}
 		player.getAudioDriver().lookup(SleepDriver.class)
-				.ifPresent(sleepDriver -> sleepDriver.setClientTime(currentTime));
+				.ifPresent(sleepDriver -> sleepDriver.setClientTime(currentTime, bufferedEnd));
 	}
 
 	public boolean isInvalid() {

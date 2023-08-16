@@ -44,11 +44,16 @@ public class SleepDriver implements AudioDriver {
 	 */
 	private volatile Long clientTime;
 
+	/**
+	 * Current buffered end of a video player client
+	 */
+	private volatile Long bufferedEnd;
+
 	private ByteBuffer sampleBuffer;
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
-		throws IOException, LineUnavailableException, InterruptedException {
+			throws IOException, LineUnavailableException, InterruptedException {
 		this.cpuClock = cpuClock;
 		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
@@ -58,6 +63,7 @@ public class SleepDriver implements AudioDriver {
 		startC64Time = 0;
 		c64Time = 0;
 		clientTime = null;
+		bufferedEnd = null;
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
 	}
 
@@ -67,11 +73,10 @@ public class SleepDriver implements AudioDriver {
 			startTime = System.currentTimeMillis();
 			startC64Time = context.getTime(Phase.PHI2);
 		}
-		time = clientTime != null ? clientTime : System.currentTimeMillis() - startTime;
-		time += /* from rolling a dice */ 4000;
+		time = (System.currentTimeMillis() - startTime) + /* from rolling a dice */ 4000;
 		c64Time = (long) ((context.getTime(Phase.PHI2) - startC64Time) * 1000 / cpuClock.getCpuFrequency());
 
-		long gap = c64Time - time;
+		long gap = clientTime != null && bufferedEnd != null ? bufferedEnd - clientTime : c64Time - time;
 		if (gap > MAX_TIME_GAP) {
 			// slow down video production, that a client-side fastForward after a key press
 			// jumps not too far, but not long enough to block a fast forward
@@ -86,8 +91,9 @@ public class SleepDriver implements AudioDriver {
 		}
 	}
 
-	public void setClientTime(Long clientTime) {
+	public void setClientTime(Long clientTime, Long bufferedEnd) {
 		this.clientTime = clientTime;
+		this.bufferedEnd = bufferedEnd;
 	}
 
 	@Override
