@@ -203,8 +203,9 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 	private void appendExampleUsage(StringBuilder out, int indentCount, String indent)
 			throws MalformedURLException, URISyntaxException {
 		out.append(newLineAndIndent(2)).append("Example:");
+		out.append("\n");
 
-		wrapDescription(out, indentCount, createExampleUsage(indent));
+		wrapDescription(out, indentCount, s(indentCount) + createExampleUsage(indent));
 		out.append("\n");
 		out.append("\n");
 	}
@@ -213,7 +214,6 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		StringBuilder result = new StringBuilder();
 
 		// protocol
-		result.append(newLineAndIndent(6));
 		result.append(indent).append("HTTP(S)-");
 
 		// request method
