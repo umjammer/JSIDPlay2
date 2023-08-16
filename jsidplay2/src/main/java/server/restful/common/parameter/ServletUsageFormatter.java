@@ -81,11 +81,13 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 
 		out.append(indent).append("Usage: ");
 		out.append(commander.getProgramDisplayName());
-		out.append("[<servlet path>]");
-		if (hasOptions) {
-			out.append("[?<servlet parameters>]");
-			out.append("\n");
+		if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
+			out.append("[<servlet path>]");
 		}
+		if (hasOptions) {
+			out.append("?[<servlet parameters>]");
+		}
+		out.append("\n");
 
 		if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
 			appendServletPath(out, indentCount, indent);
