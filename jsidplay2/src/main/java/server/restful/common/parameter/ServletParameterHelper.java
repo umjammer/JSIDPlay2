@@ -201,21 +201,23 @@ public class ServletParameterHelper {
 				throws Exception {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
-			if (serverParameter && parameter != null) {
-				for (String name : parameter.names()) {
-					// check parameter name length
-					if (name.startsWith("--")) {
-						if (name.length() <= 3) {
-							throw JsonMappingException.from(prov,
-									"name prefixed by '--' must be at least two characters long");
+			if (parameter != null) {
+				if (serverParameter) {
+					for (String name : parameter.names()) {
+						// check parameter name length
+						if (name.startsWith("--")) {
+							if (name.length() <= 3) {
+								throw JsonMappingException.from(prov,
+										"name prefixed by '--' must be at least two characters long");
+							}
+						} else if (name.startsWith("-")) {
+							if (name.length() > 2) {
+								throw JsonMappingException.from(prov,
+										"name prefixed by '-' must not be more than one character long");
+							}
+						} else {
+							throw JsonMappingException.from(prov, "name must be prefixed by '-' or '--'");
 						}
-					} else if (name.startsWith("-")) {
-						if (name.length() > 2) {
-							throw JsonMappingException.from(prov,
-									"name prefixed by '-' must not be more than one character long");
-						}
-					} else {
-						throw JsonMappingException.from(prov, "name must be prefixed by '-' or '--'");
 					}
 				}
 				// check parameter order
