@@ -2948,9 +2948,9 @@
       function uriEncode(entry) {
         // escape is deprecated and cannot handle utf8
         // encodeURI() will not encode: ~!@#$&*()=:/,;?+'
-        // untested characters: !*=,;?
-        // tested characters: /~@#$&():+''
-        return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23").replace(/&/g, "%26");
+        // untested characters: !*=,;
+        // tested characters: /~@#$&():+''?
+        return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23").replace(/&/g, "%26").replace(/\?/g, "%3F");
       }
       function petsciiToFont(str, fontSet) {
         var original = str;
