@@ -232,13 +232,15 @@ public class Convenience {
 		for (File member : asList) {
 			File memberFile = new File(dir, member.getName());
 			if (memberFile.isFile() && isSupportedMedia(memberFile)) {
-				if (canAttachCartridge && memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
+				if (canAttachCartridge && !player.getC64().isCartridge()
+						&& memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
 					try {
 						player.insertCartridge(CartridgeType.REU, memberFile);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				} else if (canAttachCartridge && memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".crt")) {
+				} else if (canAttachCartridge && !player.getC64().isCartridge()
+						&& memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".crt")) {
 					try {
 						player.insertCartridge(CartridgeType.CRT, memberFile);
 						toAttach = memberFile;
