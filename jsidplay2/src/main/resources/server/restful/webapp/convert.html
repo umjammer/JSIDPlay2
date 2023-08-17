@@ -33,65 +33,64 @@
   </head>
   <body>
     <div id="app">
-      <div style="margin-top: 20px" v-if="!hls"></div>
+      <div class="locale-changer">
+        <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
+        <b-form-select v-model="$i18n.locale" size="sm" style="width: auto; margin: 1px">
+          <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
+            {{ lang }}
+          </option>
+        </b-form-select>
+      </div>
 
-      <div class="left-button-container">
-        <div class="button-container">
-          <b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-secondary" size="sm">6581</b-button>
+      <div class="all">
+        <div class="left-button-container">
+          <div class="button-container">
+            <b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-dark" size="sm">6581</b-button>
+          </div>
+          <div class="button-container">
+            <b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-dark" size="sm">8580</b-button>
+          </div>
+          <div class="button-container">
+            <b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-dark" size="sm">RESID</b-button>
+          </div>
+          <div class="button-container">
+            <b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-dark" size="sm">RESIDFP</b-button>
+          </div>
         </div>
-        <div class="button-container">
-          <b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-secondary" size="sm">8580</b-button>
+
+        <div class="right-button-container">
+          <div class="button-container">
+            <b-button v-on:click="insertDisk()" pill variant="outline-dark" size="sm">{{
+              $t("insertNextDisk")
+            }}</b-button>
+          </div>
+          <div class="button-container">
+            <b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-dark" size="sm">Joy1 Btn</b-button>
+          </div>
+          <div class="button-container">
+            <b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-dark" size="sm">Joy2 Btn</b-button>
+          </div>
         </div>
-        <div class="button-container">
-          <b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-secondary" size="sm">RESID</b-button>
-        </div>
-        <div class="button-container">
-          <b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-secondary" size="sm"
-            >RESIDFP</b-button
+
+        <div id="playerContainer" class="outer video-wrapper">
+          <video
+            v-if="hls"
+            id="video-container"
+            class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
+            poster="/static/poster.png"
+            controls
+            preload="none"
+            autoplay
           >
+            <p class="vjs-no-js">
+              To view this video please enable JavaScript, and consider upgrading to a web browser that
+              <a href="https://videojs.com/html5-video-support/" target="_blank"> supports HTML5 video </a>
+            </p>
+            I'm sorry. Your browser doesn't support HTML5 video
+          </video>
+          <div style="width: 100%; height: 200px" v-if="!hls"></div>
         </div>
       </div>
-
-      <div class="right-button-container">
-        <div>
-          <select v-model="$i18n.locale">
-            <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
-              {{ lang }}
-            </option>
-          </select>
-        </div>
-        <div class="button-container">
-          <b-button v-on:click="insertDisk()" pill variant="outline-secondary" size="sm">{{
-            $t("insertNextDisk")
-          }}</b-button>
-        </div>
-        <div class="button-container">
-          <b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-secondary" size="sm">Joy1 Btn</b-button>
-        </div>
-        <div class="button-container">
-          <b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-secondary" size="sm">Joy2 Btn</b-button>
-        </div>
-      </div>
-
-      <div id="playerContainer" class="outer video-wrapper">
-        <video
-          v-if="hls"
-          id="video-container"
-          class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
-          poster="/static/poster.png"
-          controls
-          preload="none"
-          autoplay
-        >
-          <p class="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a web browser that
-            <a href="https://videojs.com/html5-video-support/" target="_blank"> supports HTML5 video </a>
-          </p>
-          I'm sorry. Your browser doesn't support HTML5 video
-        </video>
-      </div>
-
-      <div style="width: 320px; height: 200px" v-if="!hls"></div>
 
       <div class="video-bar">
         <b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right">{{
@@ -572,7 +571,14 @@
                   // console.log("HLS keep alive: $uuid");
                 }
               };
-              xhttp.open("GET", "/static/on_keep_alive?name=$uuid&currentTime=" + outerThis.currentTime() + "&bufferedEnd=" + outerThis.bufferedEnd(), true);
+              xhttp.open(
+                "GET",
+                "/static/on_keep_alive?name=$uuid&currentTime=" +
+                  outerThis.currentTime() +
+                  "&bufferedEnd=" +
+                  outerThis.bufferedEnd(),
+                true
+              );
               xhttp.send();
             }, this.notifyForHLS);
 

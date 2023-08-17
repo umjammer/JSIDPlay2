@@ -7,11 +7,15 @@
 .locale-changer {
 	display: flex;
 	justify-content: space-between;
-	background-color: rgb(0 136 255 / 30%);
+	background-color: rgb(0 136 255 / 50%);
 }
 
-.text-italic {
-	font-style: italic;
+.audio {
+	padding-top: 2px;
+	padding-bottom: 16px;
+	position: relative;
+	text-align: center;
+	background-color: rgb(0 136 255 / 30%);
 }
 
 .current-sid {
@@ -19,6 +23,10 @@
 	font-style: italic;
 	font-size: small;
 	padding: 4px 16px;
+}
+
+.text-italic {
+	font-style: italic;
 }
 
 .stil-subtune-header, .stil-name-header, .stil-author-header, .stil-title-header, .stil-artist-header {
@@ -89,14 +97,6 @@ div i {
 	padding: 4px;
 }
 
-.custom-control-label,.custom-range,.value,label,.custom-select {
-	margin: 8px;
-}
-
-.audio {
-	padding-bottom: 16px;
-}
-
 .playlist-item {
     cursor:pointer;
     color:#0d6efd;
@@ -153,6 +153,6 @@ ol.striped-list > li {
     padding: 6px;
 }
 
-.custom-select {
+#category {
 	background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.075rem center/8px 10px !important;
 }
