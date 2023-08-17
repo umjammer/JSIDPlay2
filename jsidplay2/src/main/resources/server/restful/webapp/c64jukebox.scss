@@ -97,6 +97,11 @@ div i {
 	padding: 4px;
 }
 
+.custom-control-label,.custom-range,.value,label,.custom-select {
+	margin-top: 8px;
+	margin-right: 8px;
+}
+
 .playlist-item {
     cursor:pointer;
     color:#0d6efd;
