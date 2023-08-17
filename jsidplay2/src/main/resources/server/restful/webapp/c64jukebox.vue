@@ -40,12 +40,17 @@
     <div id="app">
       <b-form>
         <div class="locale-changer">
-          <select @change="updateLanguage" v-model="$i18n.locale" style="float: right">
+          <h1 class="c64jukebox" style="width: 100%;">C64 Jukebox</h1>
+          <b-form-select
+            @change="updateLanguage"
+            v-model="$i18n.locale"
+            size="sm"
+            style="width: auto; margin: 0px;"
+          >
             <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
               {{ lang }}
             </option>
-          </select>
-          <h1 class="c64jukebox">C64 Jukebox</h1>
+          </b-form-select>
         </div>
         <div class="audio" style="position: relative; text-align: center; background: white">
           <audio ref="audioElm" v-show="showAudio" v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls>
@@ -1276,7 +1281,6 @@
                                   class="right"
                                   v-model="convertOptions.config.emulationSection.hardsid6581"
                                   size="sm"
-                                  class="mt-3"
                                   :select-size="1"
                                 >
                                   <option :value="0">1</option>
@@ -1296,7 +1300,6 @@
                                   class="right"
                                   v-model="convertOptions.config.emulationSection.hardsid8580"
                                   size="sm"
-                                  class="mt-3"
                                   :select-size="1"
                                 >
                                   <option :value="0">1</option>
@@ -1934,7 +1937,6 @@
                                 class="right"
                                 v-model="convertOptions.config.emulationSection.dualSidBase"
                                 size="sm"
-                                class="mt-3"
                                 :select-size="1"
                               >
                                 <option :value="54304">0xd420</option>
@@ -1955,7 +1957,6 @@
                                 class="right"
                                 v-model="convertOptions.config.emulationSection.thirdSIDBase"
                                 size="sm"
-                                class="mt-3"
                                 :select-size="1"
                               >
                                 <option :value="54304">0xd420</option>
@@ -2136,7 +2137,6 @@
                                 class="right"
                                 v-model="convertOptions.config.audioSection.audioBufferSize"
                                 size="sm"
-                                class="mt-3"
                               >
                                 <option :value="1024">1024</option>
                                 <option :value="2048">2048</option>
@@ -2200,7 +2200,6 @@
                                                   v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
                                                   :options="reSIDfpFilters6581"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2226,7 +2225,6 @@
                                                   "
                                                   :options="reSIDfpFilters6581"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2253,7 +2251,6 @@
                                                   "
                                                   :options="reSIDfpFilters6581"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2290,7 +2287,6 @@
                                                   v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
                                                   :options="reSIDfpFilters8580"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2315,7 +2311,6 @@
                                                   "
                                                   :options="reSIDfpFilters8580"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2343,7 +2338,6 @@
                                                   "
                                                   :options="reSIDfpFilters8580"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2395,7 +2389,6 @@
                                                   v-model="convertOptions.config.emulationSection.filter6581"
                                                   :options="reSIDfilters6581"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2417,7 +2410,6 @@
                                                   v-model="convertOptions.config.emulationSection.stereoFilter6581"
                                                   :options="reSIDfilters6581"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2438,7 +2430,6 @@
                                                   v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
                                                   :options="reSIDfilters6581"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2475,7 +2466,6 @@
                                                   v-model="convertOptions.config.emulationSection.filter8580"
                                                   :options="reSIDfilters8580"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2497,7 +2487,6 @@
                                                   v-model="convertOptions.config.emulationSection.stereoFilter8580"
                                                   :options="reSIDfilters8580"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
@@ -2518,7 +2507,6 @@
                                                   v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
                                                   :options="reSIDfilters8580"
                                                   size="sm"
-                                                  class="mt-3"
                                                   :select-size="3"
                                                 ></b-form-select> </label
                                             ></span>
