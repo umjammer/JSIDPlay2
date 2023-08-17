@@ -40,13 +40,8 @@
     <div id="app">
       <b-form>
         <div class="locale-changer">
-          <h1 class="c64jukebox" style="width: 100%;">C64 Jukebox</h1>
-          <b-form-select
-            @change="updateLanguage"
-            v-model="$i18n.locale"
-            size="sm"
-            style="width: auto; margin: 0px;"
-          >
+          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
+          <b-form-select @change="updateLanguage" v-model="$i18n.locale" size="sm" style="width: auto; margin: 0px">
             <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
               {{ lang }}
             </option>
