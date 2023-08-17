@@ -47,7 +47,7 @@
             </option>
           </b-form-select>
         </div>
-        <div class="audio" style="position: relative; text-align: center; background: white">
+        <div class="audio" style="position: relative; text-align: center; background-color: rgb(0 136 255 / 30%);">
           <audio ref="audioElm" v-show="showAudio" v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls>
             I'm sorry. Your browser doesn't support HTML5 audio
           </audio>
