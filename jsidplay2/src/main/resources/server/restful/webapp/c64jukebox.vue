@@ -1489,9 +1489,14 @@
                                 <span class="setting"
                                   ><label for="cbr">
                                     {{ $t("convertMessages.config.audioSection.cbr") }}
-                                    <select id="cbr" class="right" v-model="convertOptions.config.audioSection.cbr">
+                                    <b-form-select
+                                      id="cbr"
+                                      class="right"
+                                      v-model="convertOptions.config.audioSection.cbr"
+                                      size="sm"
+                                    >
                                       <option v-for="cbr in cbrs">{{ cbr }}</option>
-                                    </select></label
+                                    </b-form-select></label
                                   ></span
                                 >
                               </div>
@@ -1511,15 +1516,16 @@
                                 <span class="setting"
                                   ><label for="vbrQuality">
                                     {{ $t("convertMessages.config.audioSection.vbrQuality") }}
-                                    <select
+                                    <b-form-select
                                       id="vbrQuality"
                                       class="right"
                                       v-model="convertOptions.config.audioSection.vbrQuality"
+                                      size="sm"
                                     >
                                       <option v-for="vbrQuality in vbrQualities">
                                         {{ vbrQuality }}
                                       </option>
-                                    </select></label
+                                    </b-form-select></label
                                   ></span
                                 >
                               </div>
