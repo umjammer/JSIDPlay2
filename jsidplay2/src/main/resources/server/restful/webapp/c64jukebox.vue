@@ -918,7 +918,7 @@
                 </b-table>
               </b-card-text>
             </b-tab>
-            <b-tab :disabled="!hasInfo">
+            <b-tab :disabled="this.infos.toString() === ''">
               <template #title>
                 {{ $t("SID") }}
                 <b-spinner
@@ -945,7 +945,7 @@
                 </div>
               </b-card-text>
             </b-tab>
-            <b-tab :disabled="!hasStil">
+            <b-tab :disabled="this.stil.toString() === ''">
               <template #title>
                 {{ $t("STIL") }}
                 <b-spinner
@@ -3251,8 +3251,6 @@
           // SID (info + picture)
           infos: "",
           stil: [],
-          hasStil: false,
-          hasInfo: false,
           hasHardware: false,
           picture: "",
           currentSid: "",
@@ -4090,11 +4088,6 @@
             })
               .then((response) => {
                 this.infos = response.data;
-                if (!this.infos) {
-                    this.hasInfo = false;
-                  } else {
-                    this.hasInfo = true;
-                  }
               })
               .catch((error) => {
                 this.infos = [];
@@ -4120,10 +4113,7 @@
               .then((response) => {
                 this.stil = response.data;
                 if (!this.stil) {
-                  this.hasStil = false;
                   this.stil = [];
-                } else {
-                  this.hasStil = true;
                 }
               })
               .catch((error) => {
