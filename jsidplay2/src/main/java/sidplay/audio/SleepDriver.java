@@ -3,6 +3,7 @@ package sidplay.audio;
 import static java.lang.Short.BYTES;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static libsidplay.config.IAudioSystemProperties.MAX_TIME_GAP;
+import static libsidplay.config.IAudioSystemProperties.SLEEP_DRIVER_SLEEP_TIME;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -80,7 +81,7 @@ public class SleepDriver implements AudioDriver {
 		if (gap > MAX_TIME_GAP) {
 			// slow down video production, that a client-side fastForward after a key press
 			// jumps not too far, but not long enough to block a fast forward
-			final long sleepTime = Math.min(gap - MAX_TIME_GAP, 1000);
+			final long sleepTime = Math.min(gap - MAX_TIME_GAP, SLEEP_DRIVER_SLEEP_TIME);
 
 			if (SLEEP_DRIVER.isLoggable(Level.FINE)) {
 				SLEEP_DRIVER.fine(String.format("recordingTime=%s, clientTime=%s, c64Time=%s, time=%s, sleepTime=%s",
