@@ -918,7 +918,7 @@
                 </b-table>
               </b-card-text>
             </b-tab>
-            <b-tab>
+            <b-tab :disabled="!hasInfo">
               <template #title>
                 {{ $t("SID") }}
                 <b-spinner
@@ -3252,6 +3252,7 @@
           infos: "",
           stil: [],
           hasStil: false,
+          hasInfo: false,
           hasHardware: false,
           picture: "",
           currentSid: "",
@@ -4089,6 +4090,11 @@
             })
               .then((response) => {
                 this.infos = response.data;
+                if (!this.infos) {
+                    this.hasInfo = false;
+                  } else {
+                    this.hasInfo = true;
+                  }
               })
               .catch((error) => {
                 this.infos = [];
