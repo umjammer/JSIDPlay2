@@ -17,7 +17,6 @@
 
     <!-- Load Vue followed by BootstrapVue and Icons -->
     <script src="/static/vue@2.6.14/dist/vue.min.js"></script>
-    <script src="/static/vue-router@3.5.4/dist/vue-router.min.js"></script>
     <script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.js"></script>
     <script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue-icons.min.js"></script>
 
