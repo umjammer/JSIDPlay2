@@ -11,14 +11,14 @@
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <!-- Load required Bootstrap, BootstrapVue and Icons CSS -->
-    <link type="text/css" rel="stylesheet" href="/static/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.css" />
-    <link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue-icons.min.css" />
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.23.1/dist/bootstrap-vue.min.css" />
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap-vue@2.23.1/dist/bootstrap-vue-icons.min.css" />
 
     <!-- Load Vue followed by BootstrapVue and Icons -->
-    <script src="/static/vue@2.6.14/dist/vue.min.js"></script>
-    <script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue.min.js"></script>
-    <script src="/static/bootstrap-vue@2.22.0/dist/bootstrap-vue-icons.min.js"></script>
+    <script src="/static/vue@2.7.14/dist/vue.min.js"></script>
+    <script src="/static/bootstrap-vue@2.23.1/dist/bootstrap-vue.min.js"></script>
+    <script src="/static/bootstrap-vue@2.23.1/dist/bootstrap-vue-icons.min.js"></script>
 
     <!-- helpers -->
     <script src="/static/vue-i18n@8.27.2/dist/vue-i18n.min.js"></script>

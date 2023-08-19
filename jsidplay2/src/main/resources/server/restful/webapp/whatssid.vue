@@ -5,7 +5,7 @@
     <title>WhatsSID</title>
   </head>
   <body>
-    <script src="/static/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="/static/vue@2.7.14/dist/vue.min.js"></script>
     <script src="/static/axios@0.27.2/dist/axios.min.js"></script>
 
     <h1>WhatsSID?</h1>
