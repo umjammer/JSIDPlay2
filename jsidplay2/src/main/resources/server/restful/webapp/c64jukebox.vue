@@ -1634,6 +1634,7 @@
                             <b-form-timepicker
                               id="startTime"
                               reset-button
+                              reset-value="timeConverter('00:00')"
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.startTime"
                             />
@@ -1647,6 +1648,7 @@
                             <b-form-timepicker
                               id="defaultPlayLength"
                               reset-button
+                              reset-value="timeConverter('00:00')"
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.defaultPlayLength"
                             />
@@ -1660,6 +1662,7 @@
                             <b-form-timepicker
                               id="fadeInTime"
                               reset-button
+                              reset-value="timeConverter('00:00')"
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.fadeInTime"
                             />
@@ -1673,6 +1676,7 @@
                             <b-form-timepicker
                               id="fadeOutTime"
                               reset-button
+                              reset-value="timeConverter('00:00')"
                               class="right"
                               v-model="convertOptions.config.sidplay2Section.fadeOutTime"
                             />
