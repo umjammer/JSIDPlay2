@@ -70,6 +70,7 @@ import server.restful.servlets.STILServlet;
 import server.restful.servlets.StartPageServlet;
 import server.restful.servlets.StaticServlet;
 import server.restful.servlets.TuneInfoServlet;
+import server.restful.servlets.WebJarsServlet;
 import server.restful.servlets.hls.OnKeepAliveServlet;
 import server.restful.servlets.hls.ProxyServlet;
 import server.restful.servlets.rtmp.InsertNextDiskServlet;
@@ -163,6 +164,11 @@ public final class JSIDPlay2Server {
 	public static final String CONTEXT_ROOT_STATIC = "/static";
 
 	/**
+	 * Context root of webjars
+	 */
+	public static final String CONTEXT_ROOT_WEBJARS = "/webjars";
+
+	/**
 	 * Context root of all servlets
 	 */
 	public static final String CONTEXT_ROOT_SERVLET = "/jsidplay2service/JSIDPlay2REST";
@@ -206,11 +212,11 @@ public final class JSIDPlay2Server {
 	 */
 	private static final List<Class<? extends JSIDPlay2Servlet>> SERVLETS = asList(FiltersServlet.class,
 			DirectoryServlet.class, DiskDirectoryServlet.class, TuneInfoServlet.class, PhotoServlet.class,
-			ConvertServlet.class, DownloadServlet.class, FavoritesServlet.class, StaticServlet.class,
-			StartPageServlet.class, InsertTuneServlet.class, InsertHashesServlet.class, FindTuneServlet.class,
-			FindHashServlet.class, WhatsSidServlet.class, TuneExistsServlet.class, OnKeepAliveServlet.class,
-			OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class, SetSidModel6581Servlet.class,
-			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
+			ConvertServlet.class, DownloadServlet.class, FavoritesServlet.class, WebJarsServlet.class,
+			StaticServlet.class, StartPageServlet.class, InsertTuneServlet.class, InsertHashesServlet.class,
+			FindTuneServlet.class, FindHashServlet.class, WhatsSidServlet.class, TuneExistsServlet.class,
+			OnKeepAliveServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class,
+			SetSidModel6581Servlet.class, SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
 			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
 			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class, SIDBlasterMappingServlet.class);
 

@@ -766,6 +766,32 @@
 				</executions>
 			</plugin>
 			<plugin>
+			    <groupId>org.orienteer.jnpm</groupId>
+			    <artifactId>jnpm-maven-plugin</artifactId>
+			    <version>1.5</version>
+			    <executions>
+			        <execution>
+			            <goals>
+			                <goal>install</goal>
+			            </goals>
+						<!-- Check for newest version here: -->
+						<!-- https://www.npmjs.com -->
+						<!-- Note: Change server.restful.common.HlsType as well! -->
+			            <configuration>
+			                <packages>
+			                    <package>vue@2.7.14</package>
+			                    <package>bootstrap@4.6.2</package>
+			                    <package>bootstrap-vue@2.23.1</package>
+			                    <package>vue-i18n@8.28.2</package>
+			                    <package>axios@0.27.2</package>
+			                    <package>hls.js@1.4.10</package>
+			                    <package>video.js@8.5.2</package>
+			                </packages>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1.1</version>

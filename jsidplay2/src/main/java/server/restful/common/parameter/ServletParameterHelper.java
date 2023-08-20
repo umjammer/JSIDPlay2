@@ -50,6 +50,7 @@ import server.restful.servlets.PhotoServlet.PhotoServletParameters;
 import server.restful.servlets.STILServlet.STILServletParameters;
 import server.restful.servlets.StaticServlet.StaticServletParameters;
 import server.restful.servlets.TuneInfoServlet.TuneInfoServletParameters;
+import server.restful.servlets.WebJarsServlet.WebJarsServletParameters;
 import server.restful.servlets.hls.OnKeepAliveServlet.OnKeepAliveServletParameters;
 import server.restful.servlets.hls.ProxyServlet.ProxyServletParameters;
 import server.restful.servlets.rtmp.InsertNextDiskServlet.InsertNextDiskServletParameters;
@@ -113,8 +114,8 @@ public class ServletParameterHelper {
 			SIDBlasterMappingServletParameters.class,
 			//
 			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
-			DownloadServletParameters.class, PhotoServletParameters.class, StaticServletParameters.class,
-			STILServletParameters.class, TuneInfoServletParameters.class);
+			DownloadServletParameters.class, PhotoServletParameters.class, WebJarsServletParameters.class,
+			StaticServletParameters.class, STILServletParameters.class, TuneInfoServletParameters.class);
 
 	public static void check() {
 		MAIN_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);
