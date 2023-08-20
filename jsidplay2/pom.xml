@@ -771,6 +771,8 @@
 			    <version>1.5</version>
 			    <executions>
 			        <execution>
+						<id>webjars</id>
+						<phase>generate-sources</phase>
 			            <goals>
 			                <goal>install</goal>
 			            </goals>
@@ -1259,6 +1261,25 @@
 											<runOnConfiguration>true</runOnConfiguration>
 											<runOnIncremental>true</runOnIncremental>
 										</execute>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.orienteer.jnpm
+										</groupId>
+										<artifactId>
+											jnpm-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.5,)
+										</versionRange>
+										<goals>
+											<goal>install</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
