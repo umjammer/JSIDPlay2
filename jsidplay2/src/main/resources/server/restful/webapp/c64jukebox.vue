@@ -37,7 +37,7 @@
   </head>
   <body>
     <div id="app">
-      <b-form>
+      <b-form id="main">
         <div class="locale-changer">
           <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
           <b-form-select @change="updateLanguage" v-model="$i18n.locale" size="sm" style="width: auto; margin: 1px">
@@ -183,14 +183,13 @@
                 <b-icon-house-door-fill> </b-icon-house-door-fill>
               </b-button>
 
-              <span
-                style="font-style: italic; padding: 2px 4px; position: absolute; top: 0px; right: 264px; z-index: 9999"
-                >{{ $t("filter") }}</span
-              >
+              <span style="font-style: italic; padding: 2px 4px; position: absolute; top: 0px; right: 264px">{{
+                $t("filter")
+              }}</span>
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 184px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 184px"
                 variant="secondary"
                 v-on:click="fetchDirectory(top200Dir)"
               >
@@ -200,7 +199,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 102px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 102px"
                 variant="secondary"
                 v-on:click="fetchDirectory(oneFilerTop200Dir)"
               >
@@ -210,7 +209,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 26px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 26px"
                 variant="secondary"
                 v-on:click="fetchDirectory(toolsTop200Dir)"
               >
@@ -220,7 +219,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 190px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 190px"
                 variant="secondary"
                 v-on:click="fetchDirectory(musicTop200Dir)"
               >
@@ -230,7 +229,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 96px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 96px"
                 variant="secondary"
                 v-on:click="fetchDirectory(graphicsTop200Dir)"
               >
@@ -240,7 +239,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 16px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 16px"
                 variant="secondary"
                 v-on:click="fetchDirectory(gamesTop200Dir)"
               >
@@ -250,7 +249,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 60px; right: 16px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 60px; right: 16px"
                 variant="primary"
                 v-show="directory.filter((entry) => isMusic(entry)).length > 0"
                 v-on:click="
@@ -411,9 +410,10 @@
                         <b-list-group-item
                           :button="!isVideo(entry)"
                           :variant="getVariant(entry)"
-                          v-bind:href="createConvertUrl('', entry.filename)"
-                          v-on:click="pause"
-                          target="c64"
+                          v-on:click="
+                            pause();
+                            openiframe(createConvertUrl('', entry.filename));
+                          "
                         >
                           <div style="white-space: pre-line; display: flex; justify-content: space-between">
                             <div style="flex-grow: 4; word-break: break-all">
@@ -450,13 +450,14 @@
                                 <span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
                               </div>
                               <div v-for="(program, index) in entry.diskDirectory" :key="index">
-                                <a
-                                  v-bind:href="createConvertUrl(program.directoryLine, entry.filename)"
-                                  v-on:click="pause"
-                                  target="c64"
+                                <b-link
+                                  v-on:click="
+                                    pause();
+                                    openiframe(createConvertUrl(program.directoryLine, entry.filename));
+                                  "
                                 >
                                   <span class="c64-font">{{ program.formatted }}</span>
-                                </a>
+                                </b-link>
                               </div>
                             </div>
                           </div>
@@ -466,9 +467,10 @@
                         <b-list-group-item
                           :button="!isVideo(entry)"
                           :variant="getVariant(entry)"
-                          v-bind:href="createConvertUrl('', entry.filename)"
-                          v-on:click="pause"
-                          target="c64"
+                          v-on:click="
+                            pause();
+                            openiframe(createConvertUrl('', entry.filename));
+                          "
                         >
                           <div style="white-space: pre-line; display: flex; justify-content: space-between">
                             <div style="flex-grow: 4; word-break: break-all">
@@ -516,7 +518,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 268px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 268px"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
               >
@@ -526,7 +528,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 144px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 144px"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Galway_Martin')"
               >
@@ -536,7 +538,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 16px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 16px"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
               >
@@ -546,7 +548,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 256px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 256px"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
               >
@@ -556,7 +558,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 144px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 144px"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
               >
@@ -566,7 +568,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 28px; z-index: 9999"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 28px"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
               >
@@ -717,18 +719,19 @@
                                       small
                                       v-if="innerRow.item.loadingDisk"
                                     ></b-spinner>
-                                    <a
-                                      v-bind:href="
-                                        createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                    <b-link
+                                      v-on:click="
+                                        pause();
+                                        openiframe(
+                                          createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                        );
                                       "
-                                      v-on:click="pause"
-                                      target="c64"
                                     >
                                       <b-icon-camera-video-fill> </b-icon-camera-video-fill>
                                       <span style="word-break: break-all">{{
                                         shortEntry(innerRow.item.filename)
                                       }}</span>
-                                    </a>
+                                    </b-link>
                                   </div>
                                   <b-button
                                     size="sm"
@@ -756,20 +759,21 @@
                                         <span class="c64-font">{{ innerRow.item.diskDirectoryHeader }}</span>
                                       </div>
                                       <div v-for="(program, index) in innerRow.item.diskDirectory" :key="index">
-                                        <a
-                                          v-bind:href="
-                                            createConvertUrl(
-                                              program.directoryLine,
-                                              innerRow.item.filename,
-                                              row.item.id,
-                                              row.item.categoryId
-                                            )
+                                        <b-link
+                                          v-on:click="
+                                            pause();
+                                            openiframe(
+                                              createConvertUrl(
+                                                program.directoryLine,
+                                                innerRow.item.filename,
+                                                row.item.id,
+                                                row.item.categoryId
+                                              )
+                                            );
                                           "
-                                          v-on:click="pause"
-                                          target="c64"
                                         >
                                           <span class="c64-font">{{ program.formatted }}</span>
-                                        </a>
+                                        </b-link>
                                       </div>
                                     </div>
                                   </div>
@@ -778,18 +782,19 @@
                               <template v-else>
                                 <div style="white-space: pre-line; display: flex; justify-content: space-between">
                                   <div style="flex-grow: 4; word-break: break-all">
-                                    <a
-                                      v-bind:href="
-                                        createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                    <b-link
+                                      v-on:click="
+                                        pause();
+                                        openiframe(
+                                          createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                        );
                                       "
-                                      v-on:click="pause"
-                                      target="c64"
                                     >
                                       <b-icon-camera-video-fill> </b-icon-camera-video-fill>
                                       <span style="word-break: break-all">{{
                                         shortEntry(innerRow.item.filename)
                                       }}</span>
-                                    </a>
+                                    </b-link>
                                   </div>
                                   <b-button
                                     size="sm"
@@ -2905,6 +2910,25 @@
         } else {
           pom.click();
         }
+      }
+      function closeiframe() {
+        var iframe = document.getElementById("c64");
+        if (iframe) {
+          document.getElementById("app").removeChild(iframe);
+          document.getElementById("main").classList.remove("hide");
+        }
+      }
+      function openiframe(url) {
+        closeiframe();
+        document.getElementById("main").classList.add("hide");
+
+        var iframe = document.createElement("iframe");
+        iframe.setAttribute("id", "c64");
+        iframe.classList.add("responsive-iframe");
+        iframe.onload = function () {
+        };
+        iframe.src = url;
+        document.getElementById("app").appendChild(iframe);
       }
       const messages = {
         en: {

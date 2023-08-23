@@ -34,7 +34,20 @@
     <div id="app">
       <div class="locale-changer">
         <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
-        <b-form-select v-model="$i18n.locale" size="sm" style="width: auto; margin: 1px">
+        <b-button
+          v-if="window.self !== window.top"
+          onclick="parent.closeiframe()"
+          pill
+          variant="outline-dark"
+          size="sm"
+          >{{ $t("close") }}</b-button
+        >
+        <b-form-select
+          v-if="window.self === window.top"
+          v-model="$i18n.locale"
+          size="sm"
+          style="width: auto; margin: 1px"
+        >
           <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
             {{ lang }}
           </option>
@@ -72,7 +85,7 @@
         </div>
 
         <div id="playerContainer" class="outer video-wrapper">
-<video
+          <video
             v-if="hls"
             id="video-container"
             class="video-js vjs-default-skin vjs-big-play-centered vjs-show-big-play-button-on-pause"
@@ -277,6 +290,7 @@
 
       const messages = {
         en: {
+          close: "Close",
           barcode: "Barcode",
           keyboard: "Keyboard",
           insertNextDisk: "Next Disk",
@@ -294,6 +308,7 @@
           joyBtnDone: "Joystick button has been pressed!",
         },
         de: {
+          close: "Schliessen",
           barcode: "Barcode",
           keyboard: "Tastatur",
           insertNextDisk: "N\u00e4chste Disk",
