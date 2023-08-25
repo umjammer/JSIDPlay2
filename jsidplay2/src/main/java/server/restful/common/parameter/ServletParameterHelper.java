@@ -191,10 +191,10 @@ public class ServletParameterHelper {
 
 		private final Set<String> checkedResourceBundles = new HashSet<>();
 
-		private final boolean serverParameter;
+		private final boolean servletParameter;
 
-		private BeanParameterChecker(boolean serverParameter) {
-			this.serverParameter = serverParameter;
+		private BeanParameterChecker(boolean servletParameter) {
+			this.servletParameter = servletParameter;
 		}
 
 		@Override
@@ -203,7 +203,7 @@ public class ServletParameterHelper {
 			Parameters parameters = pojo.getClass().getAnnotation(Parameters.class);
 			Parameter parameter = writer.getAnnotation(Parameter.class);
 			if (parameter != null) {
-				if (serverParameter) {
+				if (servletParameter) {
 					for (String name : parameter.names()) {
 						// check parameter name length
 						if (name.startsWith("--")) {
@@ -226,7 +226,7 @@ public class ServletParameterHelper {
 					throw JsonMappingException.from(prov, "Ambigous order " + parameter.order());
 				}
 				// check arity of boolean parameter
-				if (serverParameter
+				if (servletParameter
 						&& Stream.of(Boolean.class, boolean.class).anyMatch(writer.getType().getRawClass()::equals)
 						&& parameter.arity() != 1) {
 					throw JsonMappingException.from(prov, "Arity must be 1, but is " + parameter.arity());
@@ -240,7 +240,7 @@ public class ServletParameterHelper {
 							+ ".properties (key=" + parameter.descriptionKey() + ")");
 				}
 				if (parameter.names().length == 0) {
-					if (serverParameter && !rootResBundle.containsKey("EXAMPLE_REQUEST_PATH")) {
+					if (servletParameter && !rootResBundle.containsKey("EXAMPLE_REQUEST_PATH")) {
 						throw JsonMappingException.from(prov, "Localization missing in " + parameters.resourceBundle()
 								+ ".properties (key=EXAMPLE_REQUEST_PATH)");
 					}
@@ -261,7 +261,7 @@ public class ServletParameterHelper {
 					if (parameter.names().length == 0) {
 						// Since ResourceBundle evaluates parent bundles as well, but we must know if
 						// localization is only contained in that bundle, therefore ==
-						if (serverParameter && resBundle.getString("EXAMPLE_REQUEST_PATH") == rootResBundle
+						if (servletParameter && resBundle.getString("EXAMPLE_REQUEST_PATH") == rootResBundle
 								.getString("EXAMPLE_REQUEST_PATH")) {
 							throw JsonMappingException.from(prov,
 									"Localization missing in " + parameters.resourceBundle() + "_" + locale
