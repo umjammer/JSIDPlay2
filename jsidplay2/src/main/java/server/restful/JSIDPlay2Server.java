@@ -73,6 +73,7 @@ import server.restful.servlets.TuneInfoServlet;
 import server.restful.servlets.WebJarsServlet;
 import server.restful.servlets.hls.OnKeepAliveServlet;
 import server.restful.servlets.hls.ProxyServlet;
+import server.restful.servlets.rtmp.InsertNextCartServlet;
 import server.restful.servlets.rtmp.InsertNextDiskServlet;
 import server.restful.servlets.rtmp.JoystickServlet;
 import server.restful.servlets.rtmp.OnPlayDoneServlet;
@@ -216,9 +217,10 @@ public final class JSIDPlay2Server {
 			StaticServlet.class, StartPageServlet.class, InsertTuneServlet.class, InsertHashesServlet.class,
 			FindTuneServlet.class, FindHashServlet.class, WhatsSidServlet.class, TuneExistsServlet.class,
 			OnKeepAliveServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class,
-			SetSidModel6581Servlet.class, SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
-			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
-			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class, SIDBlasterMappingServlet.class);
+			InsertNextCartServlet.class, SetSidModel6581Servlet.class, SetSidModel8580Servlet.class,
+			SetDefaultEmulationReSidServlet.class, SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class,
+			JoystickServlet.class, ProxyServlet.class, STILServlet.class, HardSIDMappingServlet.class,
+			ExSIDMappingServlet.class, SIDBlasterMappingServlet.class);
 
 	private static EntityManagerFactory entityManagerFactory;
 

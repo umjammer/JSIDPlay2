@@ -121,7 +121,7 @@ public class Convenience {
 		}
 	}
 
-	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
+	public ConvenienceResult autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry)
 			throws IOException, SidTuneError {
 		return autostart(file, isMediaToAttach, dirEntry, false);
 	}
@@ -141,8 +141,10 @@ public class Convenience {
 	 * @throws IOException  image read error
 	 * @throws SidTuneError invalid tune
 	 */
-	public boolean autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry, boolean deepScan)
-			throws IOException, SidTuneError {
+	public ConvenienceResult autostart(File file, BiPredicate<File, File> isMediaToAttach, String dirEntry,
+			boolean deepScan) throws IOException, SidTuneError {
+		ConvenienceResult result = new ConvenienceResult();
+
 		if (!player.getC64().getCartridge().isCreatingSamples()) {
 			player.getC64().ejectCartridge();
 		}
@@ -156,29 +158,29 @@ public class Convenience {
 			if (tFile.isArchive()) {
 				// uncompress zip
 				TFile.cp_rp(tFile, tmpDir, TArchiveDetector.ALL);
-				toAttach = getToAttach(tmpDir, tFile, isMediaToAttach, null, !isCartridge);
+				toAttach = getToAttach(result, tmpDir, tFile, isMediaToAttach, null, !isCartridge);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
 				// uncompress gzip
 				File dst = new File(tmpDir, IOUtils.getFilenameWithoutSuffix(file.getName()));
 				try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 					TFile.cp(is, dst);
 				}
-				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
+				toAttach = getToAttach(result, tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
 			} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("7z")) {
 				// uncompress 7zip
 				Extract7ZipUtil extract7Zip = new Extract7ZipUtil(tFile, tmpDir);
 				extract7Zip.extract();
-				toAttach = getToAttach(tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
+				toAttach = getToAttach(result, tmpDir, tmpDir, isMediaToAttach, null, !isCartridge);
 			} else if (tFile.isEntry()) {
 				// uncompress zip entry
 				File zipEntry = new File(tmpDir, tFile.getName());
 				TFile.cp_rp(tFile, zipEntry, TArchiveDetector.ALL);
-				getToAttach(tmpDir, zipEntry.getParentFile(), NO_MEDIA, null, !isCartridge);
+				getToAttach(result, tmpDir, zipEntry.getParentFile(), NO_MEDIA, null, !isCartridge);
 				toAttach = zipEntry;
 			} else if (isSupportedMedia(file)) {
 				// normal file
 				if (deepScan) {
-					getToAttach(file.getParentFile(), file.getParentFile(), NO_MEDIA, null, !isCartridge);
+					getToAttach(result, file.getParentFile(), file.getParentFile(), NO_MEDIA, null, !isCartridge);
 				}
 				toAttach = file;
 			}
@@ -186,28 +188,37 @@ public class Convenience {
 		if (toAttach != null) {
 			if (TUNE_FILE_FILTER.accept(toAttach)) {
 				player.play(SidTune.load(toAttach));
-				return true;
+				result.setSuccess(true);
+				return result;
 			} else if (DISK_FILE_FILTER.accept(toAttach)) {
 				player.insertDisk(toAttach);
 				player.resetC64(String.format(LOAD_8_1_RUN, dirEntry != null ? toFilename(dirEntry) : "*"));
-				return true;
+				result.setSuccess(true);
+				return result;
 			} else if (TAPE_FILE_FILTER.accept(toAttach)) {
 				player.insertTape(toAttach);
 				player.resetC64(LOAD_RUN);
-				return true;
+				result.setSuccess(true);
+				return result;
 			} else if (toAttach.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
 				try (InputStream is = new ByteArrayInputStream(NUVIE_PLAYER)) {
 					player.insertCartridge(CartridgeType.REU, toAttach);
 					player.play(SidTune.load("nuvieplayer-v1.0.prg", is));
 				}
-				return true;
+				result.setAttatchedCartridge(toAttach);
+				result.setAttachedCartridgeType(CartridgeType.REU);
+				result.setSuccess(true);
+				return result;
 			} else if (CART_FILE_FILTER.accept(toAttach)) {
 				player.insertCartridge(CartridgeType.CRT, toAttach);
 				player.resetC64(null);
-				return true;
+				result.setAttatchedCartridge(toAttach);
+				result.setAttachedCartridgeType(CartridgeType.CRT);
+				result.setSuccess(true);
+				return result;
 			}
 		}
-		return false;
+		return result;
 	}
 
 	/**
@@ -221,8 +232,8 @@ public class Convenience {
 	 * @param toAttach    current media to attach
 	 * @return media to attach
 	 */
-	private File getToAttach(File dir, File file, BiPredicate<File, File> mediaTester, File toAttach,
-			boolean canAttachCartridge) {
+	private File getToAttach(ConvenienceResult result, File dir, File file, BiPredicate<File, File> mediaTester,
+			File toAttach, boolean canAttachCartridge) {
 		final File[] listFiles = file.listFiles();
 		if (listFiles == null) {
 			return toAttach;
@@ -236,6 +247,8 @@ public class Convenience {
 						&& memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".reu")) {
 					try {
 						player.insertCartridge(CartridgeType.REU, memberFile);
+						result.setAttatchedCartridge(memberFile);
+						result.setAttachedCartridgeType(CartridgeType.REU);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -243,6 +256,8 @@ public class Convenience {
 						&& memberFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".crt")) {
 					try {
 						player.insertCartridge(CartridgeType.CRT, memberFile);
+						result.setAttatchedCartridge(memberFile);
+						result.setAttachedCartridgeType(CartridgeType.CRT);
 						toAttach = memberFile;
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -251,7 +266,7 @@ public class Convenience {
 					toAttach = memberFile;
 				}
 			} else if (memberFile.isDirectory() && !memberFile.getName().equals(MACOSX)) {
-				File toAttachChild = getToAttach(memberFile, new TFile(memberFile), mediaTester, toAttach,
+				File toAttachChild = getToAttach(result, memberFile, new TFile(memberFile), mediaTester, toAttach,
 						canAttachCartridge);
 				if (toAttachChild != null) {
 					toAttach = toAttachChild;

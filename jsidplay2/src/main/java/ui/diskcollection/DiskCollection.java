@@ -269,7 +269,8 @@ public class DiskCollection extends C64VBox implements UIPart {
 			if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".pdf")) {
 				DesktopUtil.open(extractedFile);
 			} else {
-				if (convenience.autostart(extractedFile, Convenience.LEXICALLY_FIRST_MEDIA, dirEntry, true)) {
+				if (convenience.autostart(extractedFile, Convenience.LEXICALLY_FIRST_MEDIA, dirEntry, true)
+						.isSuccess()) {
 					util.setPlayingTab(this);
 				}
 			}

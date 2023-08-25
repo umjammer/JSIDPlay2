@@ -53,6 +53,7 @@ import server.restful.servlets.TuneInfoServlet.TuneInfoServletParameters;
 import server.restful.servlets.WebJarsServlet.WebJarsServletParameters;
 import server.restful.servlets.hls.OnKeepAliveServlet.OnKeepAliveServletParameters;
 import server.restful.servlets.hls.ProxyServlet.ProxyServletParameters;
+import server.restful.servlets.rtmp.InsertNextCartServlet.InsertNextCartServletParameters;
 import server.restful.servlets.rtmp.InsertNextDiskServlet.InsertNextDiskServletParameters;
 import server.restful.servlets.rtmp.JoystickServlet.JoystickServletParameters;
 import server.restful.servlets.rtmp.OnPlayDoneServlet.OnPlayDoneServletParameters;
@@ -105,10 +106,11 @@ public class ServletParameterHelper {
 	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(OnKeepAliveServletParameters.class,
 			ProxyServletParameters.class,
 			//
-			InsertNextDiskServletParameters.class, JoystickServletParameters.class, OnPlayDoneServletParameters.class,
-			OnPlayServletParameters.class, PressKeyServletParameters.class,
-			SetDefaultEmulationReSidFpServletParameters.class, SetDefaultEmulationReSidServletParameters.class,
-			SetSidModel6581ServletParameters.class, SetSidModel8580ServletParameters.class,
+			InsertNextDiskServletParameters.class, InsertNextCartServletParameters.class,
+			JoystickServletParameters.class, OnPlayDoneServletParameters.class, OnPlayServletParameters.class,
+			PressKeyServletParameters.class, SetDefaultEmulationReSidFpServletParameters.class,
+			SetDefaultEmulationReSidServletParameters.class, SetSidModel6581ServletParameters.class,
+			SetSidModel8580ServletParameters.class,
 			//
 			ExSIDMappingServletParameters.class, HardSIDMappingServletParameters.class,
 			SIDBlasterMappingServletParameters.class,

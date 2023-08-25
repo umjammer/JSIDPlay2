@@ -23,22 +23,22 @@ import server.restful.common.parameter.requestparam.VideoRequestParamServletPara
 import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
-public class InsertNextDiskServlet extends JSIDPlay2Servlet {
+public class InsertNextCartServlet extends JSIDPlay2Servlet {
 
-	@Parameters(resourceBundle = "server.restful.servlets.rtmp.InsertNextDiskServletParameters")
-	public static class InsertNextDiskServletParameters extends VideoRequestParamServletParameters {
+	@Parameters(resourceBundle = "server.restful.servlets.rtmp.InsertNextCartServletParameters")
+	public static class InsertNextCartServletParameters extends VideoRequestParamServletParameters {
 
 	}
 
-	public static final String INSERT_NEXT_DISK_PATH = "/insert_next_disk";
+	public static final String INSERT_NEXT_CART_PATH = "/insert_next_cart";
 
-	public InsertNextDiskServlet(Configuration configuration, Properties directoryProperties) {
+	public InsertNextCartServlet(Configuration configuration, Properties directoryProperties) {
 		super(configuration, directoryProperties);
 	}
 
 	@Override
 	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + INSERT_NEXT_DISK_PATH;
+		return CONTEXT_ROOT_STATIC + INSERT_NEXT_CART_PATH;
 	}
 
 	@Override
@@ -47,10 +47,10 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 	}
 
 	/**
-	 * Insert next disk for Player running as a RTMP live video stream.
+	 * Insert next cart for Player running as a RTMP live video stream.
 	 *
 	 * {@code
-	 * http://haendel.ddns.net:8080/static/insert_next_disk?name=<uuid>
+	 * http://haendel.ddns.net:8080/static/insert_next_cart?name=<uuid>
 	 * }
 	 * 
 	 */
@@ -59,7 +59,7 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		super.doGet(request);
 		try {
-			final InsertNextDiskServletParameters servletParameters = new InsertNextDiskServletParameters();
+			final InsertNextCartServletParameters servletParameters = new InsertNextCartServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					getServletPath());
@@ -70,12 +70,12 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			}
 			UUID uuid = servletParameters.getUuid();
 
-			StringBuilder diskImageName = new StringBuilder();
+			StringBuilder cartImageName = new StringBuilder();
 
-			info(String.format("insertNextDisk: RTMP stream of: %s", uuid));
-			update(uuid, rtmpPlayerWithStatus -> insertNextDisk(rtmpPlayerWithStatus, diskImageName));
+			info(String.format("insertNextCart: RTMP stream of: %s", uuid));
+			update(uuid, rtmpPlayerWithStatus -> insertNextCart(rtmpPlayerWithStatus, cartImageName));
 
-			setOutput(response, MIME_TYPE_JSON, diskImageName.toString());
+			setOutput(response, MIME_TYPE_JSON, cartImageName.toString());
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -84,10 +84,10 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private void insertNextDisk(PlayerWithStatus rtmpPlayerWithStatus, StringBuilder diskImageName) {
+	private void insertNextCart(PlayerWithStatus rtmpPlayerWithStatus, StringBuilder cartImageName) {
 		try {
-			diskImageName
-					.append(Optional.ofNullable(rtmpPlayerWithStatus.insertNextDisk()).map(File::getName).orElse(""));
+			cartImageName
+					.append(Optional.ofNullable(rtmpPlayerWithStatus.insertNextCart()).map(File::getName).orElse(null));
 		} catch (IOException e) {
 			error(e);
 		}

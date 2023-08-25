@@ -69,7 +69,11 @@
 }
 
 .button-container {
-	margin: 2px 0px; 	
+	margin: 2px 0px;
+}
+
+.button-container .btn {
+	padding: 0.4rem 0.25rem;
 }
 
 .barcode-container img {

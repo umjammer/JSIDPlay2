@@ -136,8 +136,8 @@ public class GameBasePage extends C64VBox implements UIPart {
 				@Override
 				public void downloadStop(File downloadedFile) {
 					try {
-						if (downloadedFile != null
-								&& convenience.autostart(downloadedFile, FILE_TO_RUN_DETECTOR, null, true)) {
+						if (downloadedFile != null && convenience
+								.autostart(downloadedFile, FILE_TO_RUN_DETECTOR, null, true).isSuccess()) {
 							downloadedFile.deleteOnExit();
 							Platform.runLater(() -> {
 								util.setPlayingTab(GameBasePage.this);

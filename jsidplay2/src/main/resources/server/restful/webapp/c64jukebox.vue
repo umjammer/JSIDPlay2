@@ -2925,8 +2925,7 @@
         var iframe = document.createElement("iframe");
         iframe.setAttribute("id", "c64");
         iframe.classList.add("responsive-iframe");
-        iframe.onload = function () {
-        };
+        iframe.onload = function () {};
         iframe.src = url;
         document.getElementById("app").appendChild(iframe);
       }

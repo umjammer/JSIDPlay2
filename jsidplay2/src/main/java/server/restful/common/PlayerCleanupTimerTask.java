@@ -29,6 +29,7 @@ import org.apache.juli.logging.Log;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import sidplay.Player;
 import sidplay.filefilter.UUIDFileFilter;
+import ui.common.ConvenienceResult;
 
 public final class PlayerCleanupTimerTask extends TimerTask {
 
@@ -47,10 +48,10 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 		this.catalinaBaseFile = context.getCatalinaBase();
 	}
 
-	public static final void create(UUID uuid, Player player, File diskImage,
+	public static final void create(UUID uuid, Player player, File diskImage, ConvenienceResult convenienceResult,
 			ConvertServletParameters servletParameters) {
-		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, servletParameters.getShowStatus(),
-				servletParameters.getPressSpaceInterval()));
+		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, convenienceResult,
+				servletParameters.getShowStatus(), servletParameters.getPressSpaceInterval()));
 	}
 
 	public static final void update(UUID uuid, Consumer<PlayerWithStatus> playerWithStatusConsumer) {

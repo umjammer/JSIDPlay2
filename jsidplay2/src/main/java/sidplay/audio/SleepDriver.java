@@ -84,9 +84,9 @@ public class SleepDriver implements AudioDriver {
 			final long sleepTime = Math.min(gap - MAX_TIME_GAP, SLEEP_DRIVER_SLEEP_TIME);
 
 			if (SLEEP_DRIVER.isLoggable(Level.FINE)) {
-				SLEEP_DRIVER.fine(String.format("recordingTime=%s, clientTime=%s, c64Time=%s, time=%s, sleepTime=%s",
-						millisToDate(System.currentTimeMillis() - startTime), millisToDate(clientTime),
-						millisToDate(c64Time), millisToDate(time), millisToDate(sleepTime)));
+				SLEEP_DRIVER.fine(String.format("time=%s, clientTime=%s, c64Time=%s, gap=%s, sleepTime=%s",
+						millisToDate(time), millisToDate(clientTime), millisToDate(c64Time), millisToDate(gap),
+						millisToDate(sleepTime)));
 			}
 			Thread.sleep(sleepTime);
 		}

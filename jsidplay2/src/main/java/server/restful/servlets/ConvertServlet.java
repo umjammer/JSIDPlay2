@@ -96,6 +96,7 @@ import sidplay.audio.SleepDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
 import ui.common.Convenience;
+import ui.common.ConvenienceResult;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 
@@ -468,7 +469,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
 
-		new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart, true);
+		ConvenienceResult convenienceResult = new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA,
+				servletParameters.autostart, true);
 
 		if (servletParameters.sfxSoundExpander && !player.getC64().isCartridge()) {
 			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
@@ -480,7 +482,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			player.getConfig().getC1541Section().setJiffyDosInstalled(false);
 		}
 		if (uuid != null) {
-			create(uuid, player, file, servletParameters);
+			create(uuid, player, file, convenienceResult, servletParameters);
 		}
 		player.stopC64(false);
 		return videoFile;

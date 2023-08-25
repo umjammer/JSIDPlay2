@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
 import libsidplay.common.Event;
+import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.sidtune.SidTune;
 import net.java.truevfs.access.TArchiveDetector;
@@ -25,15 +26,23 @@ import net.java.truevfs.access.TFile;
 import sidplay.Player;
 import sidplay.audio.SleepDriver;
 import sidplay.player.State;
+import ui.common.ConvenienceResult;
+import ui.common.filefilter.CartFileFilter;
 import ui.common.filefilter.DiskFileFilter;
 
 public final class PlayerWithStatus {
 
 	private static final DiskFileFilter DISK_FILE_FILTER = new DiskFileFilter();
 
+	private static final CartFileFilter CART_FILE_FILTER = new CartFileFilter();
+
 	private final Player player;
 
 	private File diskImage;
+
+	private File attachedCartridge;
+
+	private CartridgeType attachedCartridgeType;
 
 	private final int pressSpaceInterval;
 
@@ -45,9 +54,12 @@ public final class PlayerWithStatus {
 
 	private int playCounter;
 
-	public PlayerWithStatus(Player player, File diskImage, boolean showStatus, int pressSpaceInterval) {
+	public PlayerWithStatus(Player player, File diskImage, ConvenienceResult convenienceResult, boolean showStatus,
+			int pressSpaceInterval) {
 		this.player = player;
 		this.diskImage = diskImage;
+		this.attachedCartridge = convenienceResult.getAttatchedCartridge();
+		this.attachedCartridgeType = convenienceResult.getAttachedCartridgeType();
 		this.pressSpaceInterval = pressSpaceInterval;
 		statusText = new StatusText(player, showStatus);
 		created = LocalDateTime.now();
@@ -92,10 +104,18 @@ public final class PlayerWithStatus {
 
 	public File insertNextDisk() throws IOException {
 		diskImage = determineNextDiskImage(diskImage);
-		if (DISK_FILE_FILTER.accept(diskImage)) {
+		if (diskImage != null && DISK_FILE_FILTER.accept(diskImage)) {
 			player.insertDisk(extract(diskImage));
 		}
 		return diskImage;
+	}
+
+	public File insertNextCart() throws IOException {
+		attachedCartridge = determineNextCartImage(attachedCartridge);
+		if (attachedCartridge != null && CART_FILE_FILTER.accept(attachedCartridge)) {
+			player.insertCartridge(attachedCartridgeType, attachedCartridge);
+		}
+		return attachedCartridge;
 	}
 
 	public void setDefaultSidModel6581() {
@@ -177,6 +197,23 @@ public final class PlayerWithStatus {
 			return filesList.stream().sorted().findFirst().orElse(diskImage);
 		}
 		return diskImage;
+	}
+
+	private File determineNextCartImage(File cartImage) {
+		if (cartImage != null) {
+			File[] files = cartImage.getParentFile().listFiles(CART_FILE_FILTER);
+			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0])).stream()
+					.filter(File::isFile).collect(Collectors.toList());
+			Iterator<File> fileIterator = filesList.stream().sorted().iterator();
+			while (fileIterator.hasNext()) {
+				File file = fileIterator.next();
+				if (file.equals(cartImage) && fileIterator.hasNext()) {
+					return fileIterator.next();
+				}
+			}
+			return filesList.stream().sorted().findFirst().orElse(cartImage);
+		}
+		return cartImage;
 	}
 
 	private File extract(File diskImage) throws IOException {

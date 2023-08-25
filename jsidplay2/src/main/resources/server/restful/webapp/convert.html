@@ -72,8 +72,13 @@
 
         <div class="right-button-container">
           <div class="button-container">
-            <b-button v-on:click="insertDisk()" pill variant="outline-dark" size="sm">{{
+            <b-button v-on:click="insertNextDisk()" pill variant="outline-dark" size="sm">{{
               $t("insertNextDisk")
+            }}</b-button>
+          </div>
+          <div class="button-container">
+            <b-button v-on:click="insertNextCart()" pill variant="outline-dark" size="sm">{{
+              $t("insertNextCart")
             }}</b-button>
           </div>
           <div class="button-container">
@@ -260,15 +265,17 @@
         </b-card>
       </b-collapse>
 
-      <h3>{{ $t("infosHeader") }}</h3>
-      <ul>
-        <li>{{ $t("regardingTimeoutsTip1") }}</li>
-        <li>{{ $t("regardingTimeoutsTip2") }}</li>
-        <li v-if="!hls">{{ $t("regardingTimeoutsTip3") }}</li>
-      </ul>
+      <b-container>
+        <h3>{{ $t("infosHeader") }}</h3>
+        <ul>
+          <li>{{ $t("regardingTimeoutsTip1") }}</li>
+          <li>{{ $t("regardingTimeoutsTip2") }}</li>
+          <li v-if="!hls">{{ $t("regardingTimeoutsTip3") }}</li>
+        </ul>
+      </b-container>
     </div>
     <script>
-      var clickUrl;
+      var audio;
 
       axios({
         method: "get",
@@ -277,14 +284,14 @@
       }).then((response) => {
         var reader = new window.FileReader();
         reader.onload = function () {
-          clickUrl = reader.result;
+          let clickUrl = reader.result;
+          audio = new Audio();
+          audio.src = clickUrl;
         };
         reader.readAsDataURL(response.data);
       });
 
       function playClick() {
-        const audio = new Audio();
-        audio.src = clickUrl;
         audio.play();
       }
 
@@ -294,6 +301,7 @@
           barcode: "Barcode",
           keyboard: "Keyboard",
           insertNextDisk: "Next Disk",
+          insertNextCart: "Next Cart",
           mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
           infosHeader: "Infos",
           regardingTimeoutsTip1: "Actions and key presses are delayed a few seconds.",
@@ -301,6 +309,7 @@
           regardingTimeoutsTip3:
             "If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
           nextDiskDone: "Next Disk has been inserted!",
+          nextDiskCart: "Next Cartridge has been inserted!",
           defaultSidModel6581Done: "Default SID model has been set to 6581!",
           defaultSidModel8580Done: "Default SID model has been set to 8580!",
           defaultEmulationResidDone: "Default emulation has been set to RESID!",
@@ -312,6 +321,7 @@
           barcode: "Barcode",
           keyboard: "Tastatur",
           insertNextDisk: "N\u00e4chste Disk",
+          insertNextCart: "N\u00e4chstes Modul",
           mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
           infosHeader: "Informationen",
           regardingTimeoutsTip1: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
@@ -319,6 +329,7 @@
           regardingTimeoutsTip3:
             "Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
           nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
+          nextCartDone: "N\u00e4chstes Modul wurde eingesteckt!",
           defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
           defaultSidModel8580Done: "Default SID Chip ist jetzt 8580!",
           defaultEmulationResidDone: "Default Emulation ist jetzt RESID!",
@@ -361,7 +372,7 @@
             this.msg = msg;
             setTimeout(() => {
               this.msg = "";
-            }, 500);
+            }, 3000);
           },
           fastForward: function () {
             if (this.hls) {
@@ -471,7 +482,7 @@
               this.fastForward();
             });
           },
-          insertDisk: function () {
+          insertNextDisk: function () {
             axios({
               method: "get",
               url: "/static/insert_next_disk?name=$uuid",
@@ -479,12 +490,33 @@
                 username: this.username,
                 password: this.password,
               },
-            }).then((response) => {
-              playClick();
-              let result = response.data;
-              this.printMsg(this.$i18n.t("nextDiskDone"));
-              this.fastForward();
-            });
+            })
+              .then((response) => {
+                playClick();
+                let result = response.data;
+                if (result) {
+                  this.printMsg(this.$i18n.t("nextDiskDone")) + ": " + result;
+                  this.fastForward();
+                }
+              });
+          },
+          insertNextCart: function () {
+            axios({
+              method: "get",
+              url: "/static/insert_next_cart?name=$uuid",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            })
+              .then((response) => {
+                playClick();
+                let result = response.data;
+                if (result) {
+                  this.printMsg(this.$i18n.t("nextCartDone") + ": " + result);
+                  this.fastForward();
+                }
+              });
           },
           setDefaultSidModel6581: function () {
             axios({
