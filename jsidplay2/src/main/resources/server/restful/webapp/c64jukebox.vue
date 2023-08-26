@@ -88,6 +88,33 @@
               <template #title>{{ $t("ABOUT") }}</template>
 
               <b-card-text>
+                <p style="text-align: center; font-size: smaller; padding: 16px">
+                  C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
+                  JSIDPlay2 is copyrighted to:<br />
+                  2007-
+                  <script type="text/javascript">
+                    document.write(new Date().getFullYear());
+                  </script>
+                  Ken H&#228;ndel,<br />
+                  Antti S. Lankila and Wilfred Bos<br /><br />
+                  Distortion Simulation and 6581/8580 emulation:<br />
+                  Copyright &#169; 2005-2011 Antti S. Lankila<br />
+                  ReSID engine and 6581/8580 emulation:<br />
+                  Copyright &#169; 1999-2011 Dag Lem<br />
+                  Source code of JSIDPlay2 and the built-in AppServer can be found at:<br />
+                  <a href="https://sourceforge.net/projects/jsidplay2" target="_blank"
+                    >https://sourceforge.net/projects/jsidplay2</a
+                  ><br /><br />
+                  The search function of this web-site is powered by Assembly64 by Fredrik &Aring;berg.<br />
+                  <a href="https://hackerswithstyle.se/assembly/" target="_blank"
+                    >http://hackerswithstyle.ddns.net/assembly/</a
+                  ><br />
+                  Thank you mate!<br /><br />
+                  This program is free software; you can redistribute it and/or modify<br />
+                  it under the terms of the GNU General Public License as published by<br />
+                  the Free Software Foundation; either version 2 of the License, or<br />
+                  (at your option) any later version.
+                </p>
                 <div class="settings-box">
                   <div class="button-box">
                     <b-button v-b-modal.modal-set-default-user size="sm" variant="outline-success">
@@ -131,33 +158,6 @@
                     /></label>
                   </span>
                 </div>
-                <p style="text-align: center; font-size: smaller; padding: 16px">
-                  C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
-                  JSIDPlay2 is copyrighted to:<br />
-                  2007-
-                  <script type="text/javascript">
-                    document.write(new Date().getFullYear());
-                  </script>
-                  Ken H&#228;ndel,<br />
-                  Antti S. Lankila and Wilfred Bos<br /><br />
-                  Distortion Simulation and 6581/8580 emulation:<br />
-                  Copyright &#169; 2005-2011 Antti S. Lankila<br />
-                  ReSID engine and 6581/8580 emulation:<br />
-                  Copyright &#169; 1999-2011 Dag Lem<br />
-                  Source code of JSIDPlay2 and the built-in AppServer can be found at:<br />
-                  <a href="https://sourceforge.net/projects/jsidplay2" target="_blank"
-                    >https://sourceforge.net/projects/jsidplay2</a
-                  ><br /><br />
-                  The search function of this web-site is powered by Assembly64 by Fredrik &Aring;berg.<br />
-                  <a href="https://hackerswithstyle.se/assembly/" target="_blank"
-                    >http://hackerswithstyle.ddns.net/assembly/</a
-                  ><br />
-                  Thank you mate!<br /><br />
-                  This program is free software; you can redistribute it and/or modify<br />
-                  it under the terms of the GNU General Public License as published by<br />
-                  the Free Software Foundation; either version 2 of the License, or<br />
-                  (at your option) any later version.
-                </p>
               </b-card-text>
             </b-tab>
             <b-tab active style="position: relative">
