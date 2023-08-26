@@ -247,27 +247,6 @@
                 <span>{{ $t("gamesTop200") }}</span>
               </b-button>
 
-              <b-button
-                size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 60px; right: 16px"
-                variant="primary"
-                v-show="directory.filter((entry) => isMusic(entry)).length > 0"
-                v-on:click="
-                  directory
-                    .filter((entry) => isMusic(entry))
-                    .forEach((entry) =>
-                      playlist.push({
-                        filename: entry.filename,
-                      })
-                    );
-                  tabIndex = 5;
-                  showAudio = true;
-                "
-              >
-                <b-icon-plus> </b-icon-plus>
-                <span>{{ $t("addAllToPlaylist") }}</span>
-              </b-button>
-
               <div style="height: 4px"></div>
 
               <b-card-text>
@@ -287,6 +266,27 @@
                         <div class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</div>
                       </b-list-group-item>
 
+		              <b-button
+		                size="sm"
+		                style="font-size: smaller; padding: 2px 4px; float: right;"
+		                variant="primary"
+		                v-show="directory.filter((entry) => isMusic(entry)).length > 0"
+		                v-on:click="
+		                  directory
+		                    .filter((entry) => isMusic(entry))
+		                    .forEach((entry) =>
+		                      playlist.push({
+		                        filename: entry.filename,
+		                      })
+		                    );
+		                  tabIndex = 5;
+		                  showAudio = true;
+		                "
+		              >
+		                <b-icon-plus> </b-icon-plus>
+		                <span>{{ $t("addAllToPlaylist") }}</span>
+		              </b-button>
+		
                       <b-carousel
                         v-show="directory.filter((entry) => isPicture(entry)).length > 0"
                         id="picture-carousel"
@@ -296,7 +296,6 @@
                         indicators
                         fade
                         no-hover-pause
-                        background="#ababab"
                         @sliding-start="onSlideStart"
                         @sliding-end="onSlideEnd"
                       >
@@ -408,7 +407,7 @@
                     <template v-else-if="isVideo(entry)">
                       <template v-if="canFastload(entry)">
                         <b-list-group-item
-                          :button="!isVideo(entry)"
+                          button
                           :variant="getVariant(entry)"
                           v-on:click="
                             pause();
@@ -465,7 +464,7 @@
                       </template>
                       <template v-else>
                         <b-list-group-item
-                          :button="!isVideo(entry)"
+                          button
                           :variant="getVariant(entry)"
                           v-on:click="
                             pause();
@@ -491,7 +490,7 @@
                     </template>
                     <template v-else>
                       <b-list-group-item
-                        :button="!isVideo(entry)"
+                        button
                         :variant="getVariant(entry)"
                         style="white-space: pre-line"
                         v-on:click="openDownloadUrl(entry.filename)"
