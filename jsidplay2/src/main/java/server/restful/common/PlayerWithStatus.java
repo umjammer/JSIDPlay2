@@ -6,6 +6,7 @@ import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMU
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -103,7 +104,7 @@ public final class PlayerWithStatus {
 	}
 
 	public File insertNextDisk() throws IOException {
-		diskImage = determineNextDiskImage(diskImage);
+		diskImage = determineNextImage(diskImage, DISK_FILE_FILTER);
 		if (diskImage != null && DISK_FILE_FILTER.accept(diskImage)) {
 			player.insertDisk(extract(diskImage));
 		}
@@ -111,9 +112,9 @@ public final class PlayerWithStatus {
 	}
 
 	public File insertNextCart() throws IOException {
-		attachedCartridge = determineNextCartImage(attachedCartridge);
+		attachedCartridge = determineNextImage(attachedCartridge, CART_FILE_FILTER);
 		if (attachedCartridge != null && CART_FILE_FILTER.accept(attachedCartridge)) {
-			player.insertCartridge(attachedCartridgeType, attachedCartridge);
+			player.insertCartridge(attachedCartridgeType, extract(attachedCartridge));
 		}
 		return attachedCartridge;
 	}
@@ -182,38 +183,21 @@ public final class PlayerWithStatus {
 		}));
 	}
 
-	private File determineNextDiskImage(File diskImage) {
-		if (diskImage != null) {
-			File[] files = diskImage.getParentFile().listFiles(DISK_FILE_FILTER);
+	private File determineNextImage(File imageFile, FileFilter fileFilter) {
+		if (imageFile != null) {
+			File[] files = imageFile.getParentFile().listFiles(fileFilter);
 			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0])).stream()
 					.filter(File::isFile).collect(Collectors.toList());
 			Iterator<File> fileIterator = filesList.stream().sorted().iterator();
 			while (fileIterator.hasNext()) {
 				File file = fileIterator.next();
-				if (file.equals(diskImage) && fileIterator.hasNext()) {
+				if (file.equals(imageFile) && fileIterator.hasNext()) {
 					return fileIterator.next();
 				}
 			}
-			return filesList.stream().sorted().findFirst().orElse(diskImage);
+			return filesList.stream().sorted().findFirst().orElse(imageFile);
 		}
-		return diskImage;
-	}
-
-	private File determineNextCartImage(File cartImage) {
-		if (cartImage != null) {
-			File[] files = cartImage.getParentFile().listFiles(CART_FILE_FILTER);
-			List<File> filesList = Arrays.asList(Optional.ofNullable(files).orElse(new File[0])).stream()
-					.filter(File::isFile).collect(Collectors.toList());
-			Iterator<File> fileIterator = filesList.stream().sorted().iterator();
-			while (fileIterator.hasNext()) {
-				File file = fileIterator.next();
-				if (file.equals(cartImage) && fileIterator.hasNext()) {
-					return fileIterator.next();
-				}
-			}
-			return filesList.stream().sorted().findFirst().orElse(cartImage);
-		}
-		return cartImage;
+		return imageFile;
 	}
 
 	private File extract(File diskImage) throws IOException {
