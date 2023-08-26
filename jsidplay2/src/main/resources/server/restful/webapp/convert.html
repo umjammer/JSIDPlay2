@@ -490,15 +490,14 @@
                 username: this.username,
                 password: this.password,
               },
-            })
-              .then((response) => {
-                playClick();
-                let result = response.data;
-                if (result) {
-                  this.printMsg(this.$i18n.t("nextDiskDone")) + ": " + result;
-                  this.fastForward();
-                }
-              });
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              if (result) {
+                this.printMsg(this.$i18n.t("nextDiskDone")) + ": " + result;
+                this.fastForward();
+              }
+            });
           },
           insertNextCart: function () {
             axios({
@@ -508,15 +507,14 @@
                 username: this.username,
                 password: this.password,
               },
-            })
-              .then((response) => {
-                playClick();
-                let result = response.data;
-                if (result) {
-                  this.printMsg(this.$i18n.t("nextCartDone") + ": " + result);
-                  this.fastForward();
-                }
-              });
+            }).then((response) => {
+              playClick();
+              let result = response.data;
+              if (result) {
+                this.printMsg(this.$i18n.t("nextCartDone") + ": " + result);
+                this.fastForward();
+              }
+            });
           },
           setDefaultSidModel6581: function () {
             axios({

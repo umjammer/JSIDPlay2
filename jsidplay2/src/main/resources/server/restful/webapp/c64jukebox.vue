@@ -315,27 +315,26 @@
                           </template>
                         </b-carousel-slide>
                       </b-carousel>
-		              <b-button
-		                size="sm"
-		                style="font-size: smaller; padding: 2px 4px; float: right;"
-		                variant="primary"
-		                v-show="directory.filter((entry) => isMusic(entry)).length > 0"
-		                v-on:click="
-		                  directory
-		                    .filter((entry) => isMusic(entry))
-		                    .forEach((entry) =>
-		                      playlist.push({
-		                        filename: entry.filename,
-		                      })
-		                    );
-		                  tabIndex = 5;
-		                  showAudio = true;
-		                "
-		              >
-		                <b-icon-plus> </b-icon-plus>
-		                <span>{{ $t("addAllToPlaylist") }}</span>
-		              </b-button>
-		
+                      <b-button
+                        size="sm"
+                        style="font-size: smaller; padding: 2px 4px; float: right"
+                        variant="primary"
+                        v-show="directory.filter((entry) => isMusic(entry)).length > 0"
+                        v-on:click="
+                          directory
+                            .filter((entry) => isMusic(entry))
+                            .forEach((entry) =>
+                              playlist.push({
+                                filename: entry.filename,
+                              })
+                            );
+                          tabIndex = 5;
+                          showAudio = true;
+                        "
+                      >
+                        <b-icon-plus> </b-icon-plus>
+                        <span>{{ $t("addAllToPlaylist") }}</span>
+                      </b-button>
                     </template>
                     <template v-else-if="isDirectory(entry)">
                       <b-list-group-item
