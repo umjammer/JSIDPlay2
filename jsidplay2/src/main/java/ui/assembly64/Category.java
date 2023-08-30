@@ -18,11 +18,18 @@ public class Category {
 	};
 
 	private IntegerProperty idProperty = new SimpleIntegerProperty();
-	private StringProperty nameProperty = new SimpleStringProperty();
+
 	private StringProperty typeProperty = new SimpleStringProperty();
-	private StringProperty descriptionProperty = new SimpleStringProperty();
+
+	private StringProperty nameProperty = new SimpleStringProperty();
 
 	public Category() {
+	}
+
+	public Category(PresetEntry preset) {
+		setType(preset.getAqlKey());
+		setName(preset.getName());
+		setId(preset.getId());
 	}
 
 	public Integer getId() {
@@ -30,7 +37,15 @@ public class Category {
 	}
 
 	public void setId(Integer id) {
-		idProperty.set(id);
+		this.idProperty.set(id);
+	}
+
+	public String getType() {
+		return typeProperty.get();
+	}
+
+	public void setType(String type) {
+		this.typeProperty.set(type);
 	}
 
 	public String getName() {
@@ -41,24 +56,8 @@ public class Category {
 		nameProperty.set(name);
 	}
 
-	public String getType() {
-		return typeProperty.get();
-	}
-
-	public void setType(String type) {
-		typeProperty.set(type);
-	}
-
-	public String getDescription() {
-		return descriptionProperty.get();
-	}
-
-	public void setDescription(String description) {
-		descriptionProperty.set(description);
-	}
-
 	@Override
 	public String toString() {
-		return getDescription();
+		return getName();
 	}
 }

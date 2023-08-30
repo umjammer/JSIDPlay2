@@ -114,68 +114,35 @@
 								</contextMenu>
 							</TableView>
 						</VBox>
-						<Button focusTraversable="false" onAction="#prevPage"
-							disable="true" fx:id="prevButton" GridPane.rowIndex="1"
-							GridPane.columnIndex="0" GridPane.hgrow="ALWAYS">
-							<tooltip>
-								<Tooltip text="%PREV" />
-							</tooltip>
-							<graphic>
-								<ImageView>
-									<image>
-										<Image url="@/ui/icons/playback_prev.png" />
-									</image>
-								</ImageView>
-							</graphic>
-						</Button>
-						<Button focusTraversable="false" onAction="#nextPage"
-							disable="true" fx:id="nextButton" GridPane.rowIndex="1"
-							GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-							<tooltip>
-								<Tooltip text="%NEXT" />
-							</tooltip>
-							<graphic>
-								<ImageView>
-									<image>
-										<Image url="@/ui/icons/playback_next.png" />
-									</image>
-								</ImageView>
-							</graphic>
-						</Button>
 						<TitledPane text="%FILTER_OPTIONS" GridPane.rowIndex="2"
 							GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS"
 							expanded="false">
 							<VBox>
 								<GridPane vgap="10" hgap="10">
 									<CheckBox text="%D64" fx:id="d64CheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+										GridPane.rowIndex="0" GridPane.columnIndex="0" />
 									<CheckBox text="%T64" fx:id="t64CheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+										GridPane.rowIndex="0" GridPane.columnIndex="1" />
 									<CheckBox text="%D81" fx:id="d81CheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+										GridPane.rowIndex="0" GridPane.columnIndex="2" />
 									<CheckBox text="%D71" fx:id="d71CheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+										GridPane.rowIndex="0" GridPane.columnIndex="3" />
 									<CheckBox text="%PRG" fx:id="prgCheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="0" GridPane.columnIndex="4" />
-									<VBox GridPane.rowIndex="0" GridPane.columnIndex="5">
-										<Label text="" />
-										<CheckBox text="%SEARCH_FROM_START" fx:id="searchFromStartCheckBox"
-											onAction="#search" />
-									</VBox>
+										GridPane.rowIndex="0" GridPane.columnIndex="4" />
 									<VBox GridPane.rowIndex="0" GridPane.columnIndex="6">
 										<Label text="%AGE" />
 										<ComboBox fx:id="ageComboBox" onAction="#search" />
 									</VBox>
 									<CheckBox text="%TAP" fx:id="tapCheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+										GridPane.rowIndex="1" GridPane.columnIndex="0" />
 									<CheckBox text="%CRT" fx:id="crtCheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+										GridPane.rowIndex="1" GridPane.columnIndex="1" />
 									<CheckBox text="%SID" fx:id="sidCheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+										GridPane.rowIndex="1" GridPane.columnIndex="2" />
 									<CheckBox text="%BIN" fx:id="binCheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+										GridPane.rowIndex="1" GridPane.columnIndex="3" />
 									<CheckBox text="%G64" fx:id="g64CheckBox" onAction="#search"
-										selected="true" GridPane.rowIndex="1" GridPane.columnIndex="4" />
+										GridPane.rowIndex="1" GridPane.columnIndex="4" />
 								</GridPane>
 							</VBox>
 						</TitledPane>

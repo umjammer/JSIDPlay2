@@ -21,12 +21,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -61,7 +60,6 @@ import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -108,8 +106,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	public static final String ID = "ASSEMBLY64";
 
-	private static final int MAX_ROWS = 500;
-
 	private static final int DEFAULT_WIDTH = 150;
 
 	@FXML
@@ -138,8 +134,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private ComboBox<Age> ageComboBox;
 
 	@FXML
-	private CheckBox searchFromStartCheckBox, d64CheckBox, t64CheckBox, d81CheckBox, d71CheckBox, prgCheckBox,
-			tapCheckBox, crtCheckBox, sidCheckBox, binCheckBox, g64CheckBox;
+	private CheckBox d64CheckBox, t64CheckBox, d81CheckBox, d71CheckBox, prgCheckBox, tapCheckBox, crtCheckBox,
+			sidCheckBox, binCheckBox, g64CheckBox;
 
 	@FXML
 	private TableView<SearchResult> assembly64Table;
@@ -160,9 +156,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private MenuItem removeColumnMenuItem, insertDiskMenuItem, insertTapeMenuItem, autostartMenuItem;
 
 	@FXML
-	private Button prevButton, nextButton;
-
-	@FXML
 	private Directory directory;
 
 	@FXML
@@ -180,8 +173,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private ContentEntry contentEntry;
 
 	private File contentEntryFile;
-
-	private int searchOffset, searchStop;
 
 	private DiskFileFilter diskFileFilter;
 
@@ -214,7 +205,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 		diskFileFilter = new DiskFileFilter();
 		tapeFileFilter = new TapeFileFilter();
 
-		categoryItems = FXCollections.observableArrayList(requestCategories());
+		categoryItems = FXCollections.observableArrayList(getCategories(requestPresets()));
 		objectMapper = createObjectMapper();
 
 		searchResultItems = FXCollections.<SearchResult>observableArrayList();
@@ -281,6 +272,14 @@ public class Assembly64 extends C64VBox implements UIPart {
 		pauseTransitionContentEntries.setOnFinished(evt -> requestContentEntries());
 	}
 
+	private List<Category> getCategories(Collection<Presets> presets) {
+		List<Category> categories = presets.stream().filter(preset -> "subcat".equals(preset.getType())).findFirst()
+				.map(Presets::getValues).orElse(Collections.emptyList()).stream().map(Category::new)
+				.sorted(Comparator.comparing(Category::getName)).collect(Collectors.toList());
+		categories.add(0, Category.ALL);
+		return categories;
+	}
+
 	@Override
 	public void doClose() {
 		sequentialTransitionSearchResult.stop();
@@ -299,19 +298,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	@FXML
 	private void search() {
-		searchOffset = 0;
-		searchAgain();
-	}
-
-	@FXML
-	private void prevPage() {
-		searchOffset -= MAX_ROWS;
-		searchAgain();
-	}
-
-	@FXML
-	private void nextPage() {
-		searchOffset = searchStop;
 		searchAgain();
 	}
 
@@ -579,19 +565,16 @@ public class Assembly64 extends C64VBox implements UIPart {
 		return new ObjectMapper().registerModule(module);
 	}
 
-	private List<Category> requestCategories() {
+	private Collection<Presets> requestPresets() {
 		String assembly64Url = util.getConfig().getOnlineSection().getAssembly64Url();
 
 		URLConnection connection = null;
 		try {
-			URL url = new URL(assembly64Url + "/leet/search/v2/categories");
+			URL url = new URL(assembly64Url + "/leet/search/v2/aql/presets");
 			connection = requestURL(url);
 			String responseString = readString(connection);
-			List<Category> result = new ObjectMapper().readValue(responseString, new TypeReference<List<Category>>() {
+			return new ObjectMapper().readValue(responseString, new TypeReference<List<Presets>>() {
 			});
-			result.sort(Comparator.comparing(Category::getDescription));
-			result.add(0, Category.ALL);
-			return FXCollections.<Category>observableArrayList(result);
 		} catch (IOException e) {
 			System.err.println("Unexpected result: " + e.getMessage());
 			return Collections.emptyList();
@@ -618,8 +601,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 			final String handle = get(handleTextField);
 			final String event = get(eventTextField);
 			final Integer rating = get(ratingComboBox, value -> value, Integer.valueOf(0)::equals, null);
-			final Integer category = get(categoryComboBox, value -> value.getId(), Category.ALL::equals, null);
-			final String searchFromStart = get(searchFromStartCheckBox);
+			final String subCategory = get(categoryComboBox, value -> value.getType(), Category.ALL::equals, null);
 			final String d64 = get(d64CheckBox);
 			final String t64 = get(t64CheckBox);
 			final String d71 = get(d71CheckBox);
@@ -630,7 +612,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 			final String sid = get(sidCheckBox);
 			final String bin = get(binCheckBox);
 			final String g64 = get(g64CheckBox);
-			final String or = getOr();
 			final Integer days = get(ageComboBox, value -> value.getDays(), Age.ALL::equals, -1);
 			final String dateFrom = get(releasedTextField, true);
 			final String dateTo = get(releasedTextField, false);
@@ -639,99 +620,84 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			URLConnection connection = null;
 			try {
-				URI uri = new URI(assembly64Url + "/leet/search/v2");
-				int matchCount = 0;
+				Collection<String> searchCriterias = new ArrayList<>();
 				if (name != null) {
-					matchCount++;
-					uri = appendURI(uri, "name", name);
+					searchCriterias.add("name:\"" + name + "\"");
 				}
 				if (group != null) {
-					matchCount++;
-					uri = appendURI(uri, "group", group);
+					searchCriterias.add("group:\"" + group + "\"");
 				}
 				if (year != null) {
-					matchCount++;
-					uri = appendURI(uri, "year", String.valueOf(year));
+					searchCriterias.add("year:" + year);
 				}
 				if (handle != null) {
-					matchCount++;
-					uri = appendURI(uri, "handle", handle);
+					searchCriterias.add("handle:\"" + handle + "\"");
 				}
 				if (event != null) {
-					matchCount++;
-					uri = appendURI(uri, "event", event);
+					searchCriterias.add("event:\"" + event + "\"");
 				}
 				if (rating != null) {
-					matchCount++;
-					uri = appendURI(uri, "rating", String.valueOf(rating));
+					searchCriterias.add("rating:>=" + rating);
 				}
-				if (category != null) {
-					matchCount++;
-					uri = appendURI(uri, "category", String.valueOf(category));
+				if (subCategory != null) {
+					searchCriterias.add("subcat:" + subCategory);
 				}
-				if (searchFromStart != null) {
-					uri = appendURI(uri, "searchFromStart", searchFromStart);
+				if (days > 0) {
+					searchCriterias.add("latest:\"" + days + "days\"");
 				}
-				if (d64 != null) {
-					uri = appendURI(uri, "d64", d64);
+				if (dateFrom != null || dateTo != null) {
+					searchCriterias.add("date:" + dateFrom + "-" + dateTo);
 				}
-				if (t64 != null) {
-					uri = appendURI(uri, "t64", t64);
-				}
-				if (d71 != null) {
-					uri = appendURI(uri, "d71", d71);
-				}
-				if (d81 != null) {
-					uri = appendURI(uri, "d81", d81);
-				}
-				if (prg != null) {
-					uri = appendURI(uri, "prg", prg);
-				}
-				if (tap != null) {
-					uri = appendURI(uri, "tap", tap);
-				}
-				if (crt != null) {
-					uri = appendURI(uri, "crt", crt);
-				}
-				if (sid != null) {
-					uri = appendURI(uri, "sid", sid);
-				}
-				if (bin != null) {
-					uri = appendURI(uri, "bin", bin);
-				}
-				if (g64 != null) {
-					uri = appendURI(uri, "g64", g64);
-				}
-				if (or != null) {
-					uri = appendURI(uri, "or", or);
-				}
-				if (days != null) {
-					uri = appendURI(uri, "days", String.valueOf(days));
-				}
-				if (dateFrom != null) {
-					matchCount++;
-					uri = appendURI(uri, "dateFrom", dateFrom);
-				}
-				if (dateTo != null) {
-					matchCount++;
-					uri = appendURI(uri, "dateTo", dateTo);
-				}
-				uri = appendURI(uri, "offset", String.valueOf(searchOffset));
 
-				if (matchCount == 0) {
+				Collection<String> types = new ArrayList<>();
+				if (YES.equals(d64)) {
+					types.add("d64");
+				}
+				if (YES.equals(t64)) {
+					types.add("t64");
+				}
+				if (YES.equals(d71)) {
+					types.add("d71");
+				}
+				if (YES.equals(d81)) {
+					types.add("d81");
+				}
+				if (YES.equals(prg)) {
+					types.add("prg");
+				}
+				if (YES.equals(tap)) {
+					types.add("tap");
+				}
+				if (YES.equals(crt)) {
+					types.add("crt");
+				}
+				if (YES.equals(sid)) {
+					types.add("sid");
+				}
+				if (YES.equals(bin)) {
+					types.add("bin");
+				}
+				if (YES.equals(g64)) {
+					types.add("g64");
+				}
+
+				StringBuilder query = new StringBuilder();
+				if (!searchCriterias.isEmpty()) {
+					query.append(searchCriterias.stream().collect(Collectors.joining("+")));
+				}
+				if (!types.isEmpty()) {
+					query.append("+type:" + types.stream().collect(Collectors.joining(",")));
+				}
+
+				if (searchCriterias.isEmpty()) {
 					// avoid to request everything, it would take too much time!
 					return;
 				}
+				URI uri = appendURI(new URI(assembly64Url + "/leet/search/v2/aql"), "query", query.toString());
 
 				connection = requestURL(uri.toURL());
-				responseString = readString(connection);
-				String start = connection.getHeaderField("start");
-				searchOffset = start != null ? Integer.parseInt(start) : 0;
-				prevButton.setDisable(start == null || searchOffset == 0);
 
-				String stop = connection.getHeaderField("stop");
-				searchStop = stop != null ? Integer.parseInt(stop) : searchOffset + MAX_ROWS;
-				nextButton.setDisable(stop == null);
+				responseString = readString(connection);
 
 				searchResultItems.setAll(objectMapper.readValue(responseString, SearchResult[].class));
 			} catch (IOException | URISyntaxException e) {
@@ -893,10 +859,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 		return field.isSelected() ? YES : NO;
 	}
 
-	private String getOr() {
-		return NO;
-	}
-
 	private void autostart(String dirEntry) {
 		if (contentEntry != null && contentEntryFile != null) {
 			try {
@@ -927,20 +889,9 @@ public class Assembly64 extends C64VBox implements UIPart {
 		return md5.toString();
 	}
 
-	public URI appendURI(URI oldUri, String queryParamName, String queryParamValue)
-			throws URISyntaxException, UnsupportedEncodingException {
-		String newQuery = oldUri.getQuery();
-		if (newQuery == null) {
-			newQuery = queryParamName + "=" + encodeValue(queryParamValue);
-		} else {
-			newQuery += "&" + queryParamName + "=" + encodeValue(queryParamValue);
-		}
-
+	public URI appendURI(URI oldUri, String queryParamName, String queryParamValue) throws URISyntaxException {
+		String newQuery = queryParamName + "=" + queryParamValue;
 		return new URI(oldUri.getScheme(), oldUri.getAuthority(), oldUri.getPath(), newQuery, oldUri.getFragment());
-	}
-
-	private String encodeValue(String value) throws UnsupportedEncodingException {
-		return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
 	}
 
 	private String readString(URLConnection connection) throws IOException {

@@ -831,8 +831,8 @@
                       id="category"
                       v-model="category"
                       @change="requestSearchResults"
-                      value-field="id"
-                      text-field="description"
+                      value-field="aqlKey"
+                      text-field="name"
                       :options="categories"
                       size="sm"
                       class="mt-1"
@@ -4309,60 +4309,58 @@
             var parameterList = [];
             if (typeof token !== "undefined") {
               this.name = "";
-              this.category = this.categories.filter(function (item) {
-                return item.name === "hvscmusic";
-              })[0].id;
+              this.category = "hvscmusic";
               this.event = "";
               this.released = "";
               this.rating = "";
               this.handle = token;
             }
             if (this.name !== "") {
-              parameterList.push("name=" + this.name);
+              parameterList.push('name:"' + uriEncode(this.name) + '"');
             }
             if (this.category !== "") {
-              parameterList.push("category=" + this.category);
+              parameterList.push("subcat:" + this.category);
             }
             if (this.event !== "") {
-              parameterList.push("event=" + this.event);
+              parameterList.push('event:"' + uriEncode(this.event) + '"');
             }
             if (this.released.length === 4) {
-              parameterList.push("dateFrom=" + this.released + "0101");
-              parameterList.push("dateTo=" + this.released + "1231");
+              parameterList.push("date:" + this.released + "0101-" + this.released + "1231");
             }
             if (this.released.length === 7) {
               var splitted = this.released.split("-");
               var year = splitted[0];
               var month = splitted[1];
-              parameterList.push("dateFrom=" + year + month + "01");
-              parameterList.push("dateTo=" + year + month + daysInMonth(month, year));
+              parameterList.push("date:" + year + month + "01-" + year + month + daysInMonth(month, year));
             }
             if (this.released.length === 10) {
               var splitted = this.released.split("-");
               var year = splitted[0];
               var month = splitted[1];
               var day = splitted[2];
-              parameterList.push("dateFrom=" + year + month + day);
-              parameterList.push("dateTo=" + year + month + day);
+              parameterList.push("date:" + year + month + day + "-" + year + month + day);
             }
             if (this.rating !== "") {
-              parameterList.push("rating=" + this.rating);
+              parameterList.push("rating:>=" + this.rating);
             }
             if (this.handle !== "") {
-              parameterList.push("handle=" + this.handle);
+              parameterList.push('handle:"' + uriEncode(this.handle) + '"');
             }
-            return parameterList.length > 0 ? "?" + parameterList.join("&") : "";
+            return parameterList.length > 0 ? "?query=" + parameterList.join("+") : "";
           },
           fetchCategories: function () {
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/v2/categories",
+              url: "$assembly64Url/leet/search/v2/aql/presets",
             })
               .then((response) => {
-                this.categories = response.data;
+                let presets = response.data;
+                this.categories = presets.filter(function (item) {
+                  return item.type == "subcat";
+                })[0].values;
                 this.categories.sort((a, b) => {
-                  return a.description.localeCompare(b.description);
+                  return a.name.localeCompare(b.name);
                 });
               })
               .catch((error) => {
@@ -4388,7 +4386,7 @@
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/v2" + url,
+              url: "$assembly64Url/leet/search/v2/aql" + url,
             })
               .then((response) => {
                 if (response.status === 200) {
@@ -4400,7 +4398,7 @@
                       id: obj.id,
                       category: data.categories.filter(function (item) {
                         return item.id === obj.category;
-                      })[0]?.description,
+                      })[0]?.name,
                       categoryId: obj.category,
                       name: obj.name,
                       group: obj.group,
