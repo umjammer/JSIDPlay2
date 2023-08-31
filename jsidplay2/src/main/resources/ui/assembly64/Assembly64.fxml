@@ -53,10 +53,6 @@
 			<TextField fx:id="groupTextField" onAction="#search"
 				onKeyReleased="#search" />
 		</VBox>
-		<VBox fx:id="yearVBox">
-			<Label text="%YEAR" />
-			<ComboBox fx:id="yearComboBox" onAction="#search" minWidth="100" />
-		</VBox>
 		<VBox fx:id="handleVBox">
 			<Label text="%HANDLE" />
 			<TextField fx:id="handleTextField" onAction="#search"

@@ -115,8 +115,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private HBox hBox;
 
 	@FXML
-	private VBox nameVBox, groupVBox, yearVBox, handleVBox, eventVBox, ratingVBox, categoryVBox, updatedVBox,
-			releasedVBox;
+	private VBox nameVBox, groupVBox, handleVBox, eventVBox, ratingVBox, categoryVBox, updatedVBox, releasedVBox;
 
 	@FXML
 	private TextField nameTextField, groupTextField, handleTextField, eventTextField, updatedTextField;
@@ -128,7 +127,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private ComboBox<Category> categoryComboBox;
 
 	@FXML
-	private ComboBox<Integer> yearComboBox, ratingComboBox;
+	private ComboBox<Integer> ratingComboBox;
 
 	@FXML
 	private ComboBox<Age> ageComboBox;
@@ -243,11 +242,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 		directory.prefWidthProperty().bind(assembly64Table.widthProperty().multiply(0.5));
 		directory.prefHeightProperty().bind(borderPane.heightProperty().multiply(0.4));
 
-		yearComboBox.setItems(FXCollections.<Integer>observableArrayList(
-				concat(of(0), rangeClosed(1980, Year.now().getValue())).boxed().collect(Collectors.toList())));
-		yearComboBox.getSelectionModel().select(0);
-		yearComboBox.setConverter(new IntegerToStringConverter(util.getBundle(), "ALL_CONTENT"));
-
 		ratingComboBox.setItems(FXCollections
 				.<Integer>observableArrayList(concat(of(0), rangeClosed(1, 10)).boxed().collect(Collectors.toList())));
 		ratingComboBox.getSelectionModel().select(0);
@@ -330,6 +324,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	private void restoreColumns() {
 		hBox.getChildren().clear();
+		util.getConfig().getAssembly64Section().getColumns().removeIf(column -> column.getColumnType() == null);
 		for (Assembly64Column column : util.getConfig().getAssembly64Section().getColumns()) {
 			setColumnWidth(column, addColumn(column).getPrefWidth());
 		}
@@ -378,7 +373,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 		TableColumn<SearchResult, ?> tableColumn;
 		switch (columnType) {
-		case YEAR:
 		case RATING:
 			TableColumn<SearchResult, Integer> tableColumnInteger = new TableColumn<>();
 			tableColumn = tableColumnInteger;
@@ -415,9 +409,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 		case GROUP:
 			hBox.getChildren().add(groupVBox);
 			break;
-		case YEAR:
-			hBox.getChildren().add(yearVBox);
-			break;
 		case HANDLE:
 			hBox.getChildren().add(handleVBox);
 			break;
@@ -449,9 +440,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 			break;
 		case GROUP:
 			groupTextField.setPrefWidth(width.doubleValue());
-			break;
-		case YEAR:
-			yearComboBox.setPrefWidth(width.doubleValue());
 			break;
 		case HANDLE:
 			handleTextField.setPrefWidth(width.doubleValue());
@@ -486,11 +474,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 			hBox.getChildren().remove(groupVBox);
 			repeatSearch = !groupTextField.getText().isEmpty();
 			groupTextField.setText("");
-			break;
-		case YEAR:
-			hBox.getChildren().remove(yearVBox);
-			repeatSearch = yearComboBox.getSelectionModel().getSelectedIndex() > 0;
-			yearComboBox.getSelectionModel().select(0);
 			break;
 		case HANDLE:
 			hBox.getChildren().remove(handleVBox);
@@ -539,8 +522,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 						return hBox.getChildren().add(nameVBox);
 					case GROUP:
 						return hBox.getChildren().add(groupVBox);
-					case YEAR:
-						return hBox.getChildren().add(yearVBox);
 					case HANDLE:
 						return hBox.getChildren().add(handleVBox);
 					case EVENT:
@@ -597,7 +578,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			final String name = get(nameTextField);
 			final String group = get(groupTextField);
-			final Integer year = get(yearComboBox, Function.identity(), Integer.valueOf(0)::equals, null);
 			final String handle = get(handleTextField);
 			final String event = get(eventTextField);
 			final Integer rating = get(ratingComboBox, value -> value, Integer.valueOf(0)::equals, null);
@@ -626,9 +606,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 				}
 				if (group != null) {
 					searchCriterias.add("group:\"" + group + "\"");
-				}
-				if (year != null) {
-					searchCriterias.add("year:" + year);
 				}
 				if (handle != null) {
 					searchCriterias.add("handle:\"" + handle + "\"");

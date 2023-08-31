@@ -1,7 +1,7 @@
 package ui.entities.config;
 
 public enum Assembly64ColumnType {
-	NAME(300), GROUP(150), YEAR(150), HANDLE(150), EVENT(150), RATING(150), CATEGORY(150), UPDATED(150), RELEASED(150);
+	NAME(300), GROUP(150), HANDLE(150), EVENT(150), RATING(150), CATEGORY(150), UPDATED(150), RELEASED(150);
 
 	private double defaultWidth;
 
