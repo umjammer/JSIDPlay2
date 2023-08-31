@@ -4386,7 +4386,7 @@
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/v2/aql" + url,
+              url: "$assembly64Url/leet/search/v2/aql/0/500" + url,
             })
               .then((response) => {
                 if (response.status === 200) {

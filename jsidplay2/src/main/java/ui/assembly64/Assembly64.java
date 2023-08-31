@@ -60,6 +60,7 @@ import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -106,6 +107,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	public static final String ID = "ASSEMBLY64";
 
+	private static final int MAX_ROWS = 500;
+
 	private static final int DEFAULT_WIDTH = 150;
 
 	@FXML
@@ -133,8 +136,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private ComboBox<Age> ageComboBox;
 
 	@FXML
-	private CheckBox d64CheckBox, t64CheckBox, d81CheckBox, d71CheckBox, prgCheckBox, tapCheckBox, crtCheckBox,
-			sidCheckBox, binCheckBox, g64CheckBox;
+	private CheckBox d64CheckBox, t64CheckBox, d81CheckBox, d71CheckBox, prgCheckBox,
+			tapCheckBox, crtCheckBox, sidCheckBox, binCheckBox, g64CheckBox;
 
 	@FXML
 	private TableView<SearchResult> assembly64Table;
@@ -155,6 +158,9 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private MenuItem removeColumnMenuItem, insertDiskMenuItem, insertTapeMenuItem, autostartMenuItem;
 
 	@FXML
+	private Button prevButton, nextButton;
+
+	@FXML
 	private Directory directory;
 
 	@FXML
@@ -172,6 +178,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private ContentEntry contentEntry;
 
 	private File contentEntryFile;
+
+	private int searchOffset, searchStop = MAX_ROWS;
 
 	private DiskFileFilter diskFileFilter;
 
@@ -292,6 +300,19 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	@FXML
 	private void search() {
+		searchOffset = 0;
+		searchAgain();
+	}
+
+	@FXML
+	private void prevPage() {
+		searchOffset -= MAX_ROWS;
+		searchAgain();
+	}
+
+	@FXML
+	private void nextPage() {
+		searchOffset = searchStop;
 		searchAgain();
 	}
 
@@ -670,13 +691,18 @@ public class Assembly64 extends C64VBox implements UIPart {
 					// avoid to request everything, it would take too much time!
 					return;
 				}
-				URI uri = appendURI(new URI(assembly64Url + "/leet/search/v2/aql"), "query", query.toString());
+				URI uri = appendURI(new URI(assembly64Url + "/leet/search/v2/aql/" + searchOffset + "/" + MAX_ROWS), "query", query.toString());
 
 				connection = requestURL(uri.toURL());
 
 				responseString = readString(connection);
 
 				searchResultItems.setAll(objectMapper.readValue(responseString, SearchResult[].class));
+
+				prevButton.setDisable(searchOffset == 0);
+				nextButton.setDisable(searchResultItems.size() < MAX_ROWS);
+
+				searchStop = searchOffset + searchResultItems.size();
 			} catch (IOException | URISyntaxException e) {
 				try {
 					ErrorMessage errorMessage = objectMapper.readValue(responseString, ErrorMessage.class);

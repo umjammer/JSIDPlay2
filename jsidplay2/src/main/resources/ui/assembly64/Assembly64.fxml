@@ -110,6 +110,34 @@
 								</contextMenu>
 							</TableView>
 						</VBox>
+						<Button focusTraversable="false" onAction="#prevPage"
+							disable="true" fx:id="prevButton" GridPane.rowIndex="1"
+							GridPane.columnIndex="0" GridPane.hgrow="ALWAYS">
+							<tooltip>
+								<Tooltip text="%PREV" />
+							</tooltip>
+							<graphic>
+								<ImageView>
+									<image>
+										<Image url="@/ui/icons/playback_prev.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+						<Button focusTraversable="false" onAction="#nextPage"
+							disable="true" fx:id="nextButton" GridPane.rowIndex="1"
+							GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+							<tooltip>
+								<Tooltip text="%NEXT" />
+							</tooltip>
+							<graphic>
+								<ImageView>
+									<image>
+										<Image url="@/ui/icons/playback_next.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
 						<TitledPane text="%FILTER_OPTIONS" GridPane.rowIndex="2"
 							GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS"
 							expanded="false">
