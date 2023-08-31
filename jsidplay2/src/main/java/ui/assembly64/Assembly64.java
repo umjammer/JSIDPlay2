@@ -136,8 +136,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private ComboBox<Age> ageComboBox;
 
 	@FXML
-	private CheckBox d64CheckBox, t64CheckBox, d81CheckBox, d71CheckBox, prgCheckBox,
-			tapCheckBox, crtCheckBox, sidCheckBox, binCheckBox, g64CheckBox;
+	private CheckBox d64CheckBox, t64CheckBox, d81CheckBox, d71CheckBox, prgCheckBox, tapCheckBox, crtCheckBox,
+			sidCheckBox, binCheckBox, g64CheckBox;
 
 	@FXML
 	private TableView<SearchResult> assembly64Table;
@@ -603,6 +603,9 @@ public class Assembly64 extends C64VBox implements UIPart {
 			final String event = get(eventTextField);
 			final Integer rating = get(ratingComboBox, value -> value, Integer.valueOf(0)::equals, null);
 			final String subCategory = get(categoryComboBox, value -> value.getType(), Category.ALL::equals, null);
+			final Integer days = get(ageComboBox, value -> value.getDays(), Age.ALL::equals, -1);
+			final String dateFrom = get(releasedTextField, true);
+			final String dateTo = get(releasedTextField, false);
 			final String d64 = get(d64CheckBox);
 			final String t64 = get(t64CheckBox);
 			final String d71 = get(d71CheckBox);
@@ -613,9 +616,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 			final String sid = get(sidCheckBox);
 			final String bin = get(binCheckBox);
 			final String g64 = get(g64CheckBox);
-			final Integer days = get(ageComboBox, value -> value.getDays(), Age.ALL::equals, -1);
-			final String dateFrom = get(releasedTextField, true);
-			final String dateTo = get(releasedTextField, false);
 
 			String responseString = null;
 
@@ -691,7 +691,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 					// avoid to request everything, it would take too much time!
 					return;
 				}
-				URI uri = appendURI(new URI(assembly64Url + "/leet/search/v2/aql/" + searchOffset + "/" + MAX_ROWS), "query", query.toString());
+				URI uri = appendURI(new URI(assembly64Url + "/leet/search/v2/aql/" + searchOffset + "/" + MAX_ROWS),
+						"query", query.toString());
 
 				connection = requestURL(uri.toURL());
 
