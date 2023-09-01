@@ -4,7 +4,8 @@ import static java.util.Base64.getEncoder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -40,18 +41,22 @@ public class FingerprintJsonClient implements IFingerprintMatcher {
 
 	@Override
 	public MusicInfoWithConfidenceBean match(WAVBean wavBean) throws IOException {
-		HttpURLConnection connection = sendJson(wavBean);
-		if (connection != null && connection.getResponseCode() == 200 && connection.getContentLength() > 0) {
-			return receiveJson(connection);
+		try {
+			HttpURLConnection connection = sendJson(wavBean);
+			if (connection != null && connection.getResponseCode() == 200 && connection.getContentLength() > 0) {
+				return receiveJson(connection);
+			}
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
-	private HttpURLConnection sendJson(WAVBean wavBean) throws IOException {
+	private HttpURLConnection sendJson(WAVBean wavBean) throws IOException, URISyntaxException {
 		String header = getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
 		String wavBytes = getEncoder().encodeToString(wavBean.getWav());
 
-		HttpURLConnection connection = (HttpURLConnection) new URL(url + "/whatssid").openConnection();
+		HttpURLConnection connection = (HttpURLConnection) new URI(url + "/whatssid").toURL().openConnection();
 		connection.setConnectTimeout(connectionTimeout);
 		connection.setDoOutput(true);
 		connection.setInstanceFollowRedirects(false);

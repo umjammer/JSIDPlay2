@@ -2,7 +2,8 @@ package ui.common.download;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -40,8 +41,8 @@ public class MultiDownload {
 					}
 				}
 
-			}, new URL(urls.get(0)), true).start();
-		} catch (MalformedURLException e) {
+			}, new URI(urls.get(0)).toURL(), true).start();
+		} catch (MalformedURLException | URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}

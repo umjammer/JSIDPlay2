@@ -14,12 +14,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -536,11 +534,11 @@ public class ToolBar extends C64VBox implements UIPart {
 			int port = appServerConnectors.getPreferredProtocol().equals("http") ? emulationSection.getAppServerPort()
 					: emulationSection.getAppServerSecurePort();
 
-			URI uri = new URL(util.getConfig().getOnlineSection().getOnlinePlayerUrl()).toURI();
+			URI uri = new URI(util.getConfig().getOnlineSection().getOnlinePlayerUrl());
 			URI localURI = new URI(appServerConnectors.getPreferredProtocol(), null, "127.0.0.1", port, uri.getPath(),
 					uri.getQuery(), uri.getFragment());
 			DesktopUtil.browse(localURI.toString());
-		} catch (MalformedURLException | URISyntaxException e) {
+		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
@@ -579,23 +577,19 @@ public class ToolBar extends C64VBox implements UIPart {
 			SidPlay2Section section = util.getConfig().getSidplay2Section();
 			int x = (int) (section.getFrameX() + section.getFrameWidth() / 2);
 			try {
-				Runtime.getRuntime().exec("sndvol -f " + x);
+				Runtime.getRuntime().exec(new String[] { "sndvol", "-f", String.valueOf(x) }, null, null);
 			} catch (IOException e) {
-				try {
-					Runtime.getRuntime().exec("sndvol32");
-				} catch (IOException e1) {
-					String toolTip = "For Windows: sndvol or sndvol32 not found!";
-					volumeButton.setDisable(true);
-					volumeButton.setTooltip(new Tooltip(toolTip));
-					System.err.println(toolTip);
-				}
+				String toolTip = "For Windows: sndvol not found!";
+				volumeButton.setDisable(true);
+				volumeButton.setTooltip(new Tooltip(toolTip));
+				System.err.println(toolTip);
 			}
 		} else if (os == OS.LINUX) {
 			try {
-				Runtime.getRuntime().exec("pavucontrol");
+				Runtime.getRuntime().exec(new String[] { "pavucontrol" }, null, null);
 			} catch (IOException e2) {
 				try {
-					Runtime.getRuntime().exec("kmix");
+					Runtime.getRuntime().exec(new String[] { "kmix" }, null, null);
 				} catch (IOException e3) {
 					String toolTip = "For Linux: pavucontrol(PulseAudio) or kmix(ALSA) not found!";
 					volumeButton.setDisable(true);
@@ -706,7 +700,7 @@ public class ToolBar extends C64VBox implements UIPart {
 
 	private String getHostname() {
 		try {
-			Process proc = Runtime.getRuntime().exec("hostname");
+			Process proc = Runtime.getRuntime().exec(new String[] { "hostname" }, null, null);
 			return IOUtils.convertStreamToString(proc.getInputStream(), UTF_8.name());
 		} catch (IOException e) {
 			return "?hostname?";

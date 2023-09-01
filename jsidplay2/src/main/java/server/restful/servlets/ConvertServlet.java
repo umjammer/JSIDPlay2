@@ -45,6 +45,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -542,8 +544,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		return result.toString();
 	}
 
-	private void waitUntilVideoIsAvailable(UUID uuid) throws InterruptedException, MalformedURLException {
-		URL url = new URL(getVideoUrl(true, uuid));
+	private void waitUntilVideoIsAvailable(UUID uuid)
+			throws InterruptedException, MalformedURLException, URISyntaxException {
+		URL url = new URI(getVideoUrl(true, uuid)).toURL();
 		int retryCount = 0;
 		while (retryCount++ < WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT) {
 			try {

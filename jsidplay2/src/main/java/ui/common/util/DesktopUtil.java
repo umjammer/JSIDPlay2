@@ -3,8 +3,8 @@ package ui.common.util;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.function.Consumer;
 
 public class DesktopUtil {
@@ -18,7 +18,7 @@ public class DesktopUtil {
 		openInSeparateThread(link, desktop -> {
 			try {
 				if (desktop.isSupported(Desktop.Action.BROWSE)) {
-					desktop.browse(new URL(link).toURI());
+					desktop.browse(new URI(link));
 				} else {
 					System.err.println("Awt Desktop action BROWSE is not supported!");
 				}

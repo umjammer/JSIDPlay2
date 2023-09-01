@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Base64;
@@ -33,7 +35,8 @@ import ui.entities.config.SidPlay2Section;
 
 public abstract class FileRequestPathServletParametersImpl implements IFileRequestPathServletParameters {
 
-	public File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) throws IOException {
+	public File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin)
+			throws IOException, URISyntaxException {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
 
 		boolean adminRole = !servlet.isSecured() || isAdmin;
@@ -77,10 +80,10 @@ public abstract class FileRequestPathServletParametersImpl implements IFileReque
 	}
 
 	private File fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId)
-			throws IOException {
+			throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
-		URL url = new URL(assembly64Url + "/leet/search/v2/contententries/" + encodedItemId + "/" + categoryId);
+		URL url = new URI(assembly64Url + "/leet/search/v2/contententries/" + encodedItemId + "/" + categoryId).toURL();
 		URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
 		ContentEntrySearchResult contentEntries = OBJECT_MAPPER.readValue(connection.getInputStream(),
@@ -117,12 +120,12 @@ public abstract class FileRequestPathServletParametersImpl implements IFileReque
 	}
 
 	private void fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId,
-			File contentEntryFile) throws IOException {
+			File contentEntryFile) throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
 		String encodedContentEntryId = new String(Base64.getEncoder().encode(fileId.getBytes()));
-		URL url = new URL(assembly64Url + "/leet/search/v2/binary/" + encodedItemId + "/" + categoryId + "/"
-				+ encodedContentEntryId);
+		URL url = new URI(assembly64Url + "/leet/search/v2/binary/" + encodedItemId + "/" + categoryId + "/"
+				+ encodedContentEntryId).toURL();
 		URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
 		try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {

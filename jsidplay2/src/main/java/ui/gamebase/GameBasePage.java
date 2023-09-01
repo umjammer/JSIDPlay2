@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
@@ -75,19 +77,20 @@ public class GameBasePage extends C64VBox implements UIPart {
 			if (newValue != null) {
 				if (!newValue.getScreenshotFilename().isEmpty()) {
 					try {
-						URL url = new URL(util.getConfig().getOnlineSection().getGb64ScreenshotUrl()
-								+ newValue.getScreenshotFilename().replace('\\', '/'));
+						URL url = new URI(util.getConfig().getOnlineSection().getGb64ScreenshotUrl()
+								+ newValue.getScreenshotFilename().replace('\\', '/')).toURL();
 						setScreenshot(url);
-					} catch (MalformedURLException e) {
+					} catch (MalformedURLException | URISyntaxException e) {
 						System.err.println(e.getMessage());
 					}
 				}
 				Image image = new Image(new ByteArrayInputStream(Photos.getPhoto("???", "???")));
 				if (!newValue.getMusicians().getPhotoFilename().isEmpty()) {
 					try {
-						image = new Image(new URL(util.getConfig().getOnlineSection().getGb64PhotosUrl()
-								+ newValue.getMusicians().getPhotoFilename().replace('\\', '/')).toExternalForm());
-					} catch (MalformedURLException e) {
+						image = new Image(new URI(util.getConfig().getOnlineSection().getGb64PhotosUrl()
+								+ newValue.getMusicians().getPhotoFilename().replace('\\', '/')).toURL()
+								.toExternalForm());
+					} catch (MalformedURLException | URISyntaxException e) {
 						System.err.println(e.getMessage());
 					}
 				}
@@ -153,9 +156,9 @@ public class GameBasePage extends C64VBox implements UIPart {
 					DoubleProperty progressProperty = util.progressProperty(gamebaseTable.getScene());
 					progressProperty.setValue(step / 100.f);
 				}
-			}, new URL(util.getConfig().getOnlineSection().getGb64GamesUrl() + game.getFilename().replace('\\', '/')),
-					false).start();
-		} catch (IOException e) {
+			}, new URI(util.getConfig().getOnlineSection().getGb64GamesUrl() + game.getFilename().replace('\\', '/'))
+					.toURL(), false).start();
+		} catch (IOException | URISyntaxException e) {
 			System.err.println(e.getMessage());
 		}
 	}

@@ -572,12 +572,12 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 		URLConnection connection = null;
 		try {
-			URL url = new URL(assembly64Url + "/leet/search/v2/aql/presets");
+			URL url = new URI(assembly64Url + "/leet/search/v2/aql/presets").toURL();
 			connection = requestURL(url);
 			String responseString = readString(connection);
 			return new ObjectMapper().readValue(responseString, new TypeReference<List<Presets>>() {
 			});
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			System.err.println("Unexpected result: " + e.getMessage());
 			return Collections.emptyList();
 		}
@@ -740,7 +740,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			URLConnection connection = null;
 			try {
-				URL url = new URL(assembly64Url + "/leet/search/v2/contententries" + "/" + itemId + "/" + categoryId);
+				URL url = new URI(assembly64Url + "/leet/search/v2/contententries" + "/" + itemId + "/" + categoryId)
+						.toURL();
 				connection = requestURL(url);
 				String responseString = readString(connection);
 				ContentEntrySearchResult contentEntry = objectMapper.readValue(responseString,
@@ -750,7 +751,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 				if (autostart.getAndSet(false)) {
 					autostart(null);
 				}
-			} catch (IOException e) {
+			} catch (IOException | URISyntaxException e) {
 				System.err.println("Unexpected result: " + e.getMessage());
 			}
 		} finally {
@@ -773,7 +774,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 					REPLACE_EXISTING);
 
 			contentEntryFile = targetFile;
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			System.err.println(String.format("Cannot DOWNLOAD file '%s'.", contentEntry.getId()));
 		}
 		directory.loadPreview(contentEntryFile);
@@ -782,7 +783,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 		}
 	}
 
-	private File requestContentEntry(ContentEntry contentEntry) throws FileNotFoundException, IOException {
+	private File requestContentEntry(ContentEntry contentEntry)
+			throws FileNotFoundException, IOException, URISyntaxException {
 		// name without embedded sub-folder (sid/name.sid -> name.sid):
 
 		File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
@@ -806,8 +808,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 		final String fileId = Base64.getEncoder().encodeToString(contentEntry.getId().getBytes());
 
 		URLConnection connection = null;
-		URL url = new URL(assembly64Url + "/leet/search/v2/binary" + "/" + itemId + "/"
-				+ searchResult.getCategory().getId() + "/" + fileId);
+		URL url = new URI(assembly64Url + "/leet/search/v2/binary" + "/" + itemId + "/"
+				+ searchResult.getCategory().getId() + "/" + fileId).toURL();
 		connection = requestURL(url);
 		byte[] responseBytes = readBytes(connection.getInputStream());
 

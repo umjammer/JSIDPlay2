@@ -5,7 +5,8 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -210,9 +211,9 @@ public class DiskCollection extends C64VBox implements UIPart {
 									}
 								});
 							}
-						}, new URL(downloadUrl), true);
+						}, new URI(downloadUrl).toURL(), true);
 				downloadThread.start();
-			} catch (MalformedURLException e2) {
+			} catch (MalformedURLException | URISyntaxException e2) {
 				e2.printStackTrace();
 			}
 		}

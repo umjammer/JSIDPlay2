@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -155,11 +157,11 @@ public class GameBase extends C64VBox implements UIPart {
 		if (enableGameBase.isSelected()) {
 			enableGameBase.setDisable(true);
 			try {
-				final URL url = new URL(onlineSection.getGamebaseUrl());
+				final URL url = new URI(onlineSection.getGamebaseUrl()).toURL();
 				DownloadThread downloadThread = new DownloadThread(util.getConfig(),
 						new GameBaseListener(util, letter.getScene()), url, true);
 				downloadThread.start();
-			} catch (MalformedURLException e) {
+			} catch (MalformedURLException | URISyntaxException e) {
 				e.printStackTrace();
 			}
 		}
@@ -171,12 +173,12 @@ public class GameBase extends C64VBox implements UIPart {
 		final OnlineSection onlineSection = util.getConfig().getOnlineSection();
 
 		try {
-			URL url = new URL(onlineSection.getGb64MusicUrl() + linkMusic.getText().replace('\\', '/'));
+			URL url = new URI(onlineSection.getGb64MusicUrl() + linkMusic.getText().replace('\\', '/')).toURL();
 			try (InputStream is = url.openStream()) {
 				util.getPlayer().play(SidTune.load(linkMusic.getText(), is));
 				util.setPlayingTab(this);
 			}
-		} catch (IOException | SidTuneError e) {
+		} catch (IOException | SidTuneError | URISyntaxException e) {
 			System.err.println(e.getMessage());
 			File file = IOUtils.getFile(linkMusic.getText().replace('\\', '/'), sidPlay2Section.getHvsc(),
 					sidPlay2Section.getCgsc());

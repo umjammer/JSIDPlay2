@@ -250,7 +250,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 				}
 			}
 		}
-		URL url = new URL(urlAsString.toString());
+		URL url = new URI(urlAsString.toString()).toURL();
 		URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
 				url.getQuery(), url.getRef());
 		result.append(uri.toASCIIString());

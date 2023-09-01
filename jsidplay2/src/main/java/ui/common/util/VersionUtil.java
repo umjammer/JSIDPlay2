@@ -4,7 +4,7 @@ import static ui.common.util.InternetUtil.openConnection;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 import java.util.Properties;
 
@@ -29,7 +29,7 @@ public class VersionUtil {
 
 	public static String fetchRemoteVersion(SidPlay2Section sidplay2Section) {
 		try {
-			URLConnection connection = openConnection(new URL(ONLINE_VERSION_RESOURCE), sidplay2Section);
+			URLConnection connection = openConnection(new URI(ONLINE_VERSION_RESOURCE).toURL(), sidplay2Section);
 			return getVersion(connection);
 		} catch (Exception e) {
 			return null;

@@ -10,7 +10,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -794,8 +795,8 @@ public class MusicCollection extends C64VBox implements UIPart {
 						});
 					}
 				}
-			}, new URL(realUrl), false).start();
-		} catch (MalformedURLException e) {
+			}, new URI(realUrl).toURL(), false).start();
+		} catch (MalformedURLException | URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}

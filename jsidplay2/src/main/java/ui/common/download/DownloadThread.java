@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -110,7 +112,7 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 			} else {
 				downloadedFile = download(url, true, true);
 			}
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			LOG.fine(e.getMessage());
 			listener.downloadStop(null);
 			return;
@@ -134,25 +136,25 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 		try {
 			File crcFile = download(getCrcUrl(), false, false);
 			return checkCrc(crcFile, file);
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			// no CRC available, check passes
 			return true;
 		}
 	}
 
-	private boolean isSplittedInChunks() throws MalformedURLException {
+	private boolean isSplittedInChunks() throws MalformedURLException, URISyntaxException {
 		return checkExistingURL(getURL(1));
 	}
 
-	private boolean hasNextPart(int part) throws MalformedURLException {
+	private boolean hasNextPart(int part) throws MalformedURLException, URISyntaxException {
 		return checkExistingURL(getURL(part));
 	}
 
-	private URL getCrcUrl() throws MalformedURLException {
-		return new URL(getURLUsingExt(".crc"));
+	private URL getCrcUrl() throws MalformedURLException, URISyntaxException {
+		return new URI(getURLUsingExt(".crc")).toURL();
 	}
 
-	private File downloadAndMergeChunks() throws IOException, MalformedURLException {
+	private File downloadAndMergeChunks() throws IOException, MalformedURLException, URISyntaxException {
 		File downloadedFile;
 		List<File> chunks = new ArrayList<>();
 		int part = 1;
@@ -165,8 +167,8 @@ public class DownloadThread extends Thread implements RBCWrapperDelegate {
 		return downloadedFile;
 	}
 
-	private URL getURL(int part) throws MalformedURLException {
-		return new URL(getURLUsingExt("." + String.format("%03d", part)));
+	private URL getURL(int part) throws MalformedURLException, URISyntaxException {
+		return new URI(getURLUsingExt("." + String.format("%03d", part))).toURL();
 	}
 
 	private boolean checkExistingURL(URL currentURL) {

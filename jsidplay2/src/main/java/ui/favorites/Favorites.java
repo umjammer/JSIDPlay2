@@ -10,7 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -206,9 +207,9 @@ public class Favorites extends C64VBox implements UIPart {
 								}
 							});
 						}
-					}, new URL(util.getConfig().getOnlineSection().getFavoritesUrl()), false);
+					}, new URI(util.getConfig().getOnlineSection().getFavoritesUrl()).toURL(), false);
 			downloadThread.start();
-		} catch (MalformedURLException e) {
+		} catch (MalformedURLException | URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}

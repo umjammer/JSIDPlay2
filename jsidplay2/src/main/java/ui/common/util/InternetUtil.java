@@ -65,14 +65,14 @@ public class InternetUtil {
 					if (location != null) {
 						try {
 							// absolute URI
-							currentURL = new URL(location);
-						} catch (MalformedURLException e) {
+							currentURL = new URI(location).toURL();
+						} catch (MalformedURLException | URISyntaxException e) {
 							try {
 								// Deal with relative URLs where location must be encoded properly
 								URI uri = new URI(currentURL.getProtocol(), currentURL.getUserInfo(),
 										currentURL.getHost(), currentURL.getPort(), location, currentURL.getQuery(),
 										currentURL.getRef());
-								currentURL = new URL(uri.toASCIIString());
+								currentURL = new URI(uri.toASCIIString()).toURL();
 							} catch (URISyntaxException e2) {
 								throw new IOException("Redirection failed for location: " + location);
 							}

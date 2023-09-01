@@ -6,6 +6,8 @@ import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -138,8 +140,8 @@ public class WebView extends C64VBox implements UIPart {
 								progressProperty.setValue(step / 100.f);
 							});
 						}
-					}, new URL(href), false).start();
-				} catch (MalformedURLException e) {
+					}, new URI(href).toURL(), false).start();
+				} catch (MalformedURLException | URISyntaxException e) {
 					e.printStackTrace();
 				}
 			}
