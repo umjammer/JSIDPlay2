@@ -1107,11 +1107,10 @@
                   <li
                     v-for="(entry, index) in playlist"
                     :key="index"
-                    :class="index == playlistIndex ? 'highlighted' : ''"
                     :style="
-                      filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
+                      (filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
                         ? 'height: 0; padding: 0px;visibility: hidden;'
-                        : ''
+                        : '') + (index == playlistIndex ? ' background-color: #8dfba6 !important;' : '')
                     "
                     v-on:click="
                       playlistIndex = index;
