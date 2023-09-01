@@ -69,11 +69,12 @@ Click link:https://sourceforge.net/projects/jsidplay2/files/[here^] to download
 
 == Latest Beta Version
 
+JSIDPlay2 for Java 8, 11, 17, 21, ...
 |===
-|         | JSIDPlay2 for Java 8, 11, 17, ...
-| Linux   | link:{codebase}{artifactId}-{version}-linux.zip[Download]
-| Windows | link:{codebase}{artifactId}-{version}-win.zip[Download]
-| MacOSX  | link:{codebase}{artifactId}-{version}-mac.zip[Download]
+| *Architecture* | *x86_64*                                                       | *aarm64*
+| Windows      | link:{codebase}{artifactId}-{version}-win.zip[Download]	     |
+| Linux        | link:{codebase}{artifactId}-{version}-linux.zip[Download]	 | link:{codebase}{artifactId}-{version}-linux-aarch64.zip[Download]
+| MacOSX       | link:{codebase}{artifactId}-{version}-mac.zip[Download]      | link:{codebase}{artifactId}-{version}-mac-aarch64.zip[Download] e.g. Apple M1
 |===
 
 link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
