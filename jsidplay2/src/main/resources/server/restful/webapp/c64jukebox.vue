@@ -429,7 +429,7 @@
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
                               variant="primary"
-                              v-on:click.prevent="fetchDiskDirectory(entry)"
+                              v-on:click.stop="fetchDiskDirectory(entry)"
                               :disabled="entry.loadingDisk"
                             >
                               <span> {{ $t("showDirectory") }} </span>
@@ -437,7 +437,7 @@
                             <b-button
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
-                              v-on:click.prevent="openDownloadSIDUrl(entry.filename)"
+                              v-on:click.stop="openDownloadSIDUrl(entry.filename)"
                             >
                               <b-icon-download> </b-icon-download>
                             </b-button>
@@ -479,7 +479,7 @@
                             <b-button
                               size="sm"
                               style="font-size: smaller; padding: 2px 4px"
-                              v-on:click.prevent="openDownloadSIDUrl(entry.filename)"
+                              v-on:click.stop="openDownloadSIDUrl(entry.filename)"
                             >
                               <b-icon-download> </b-icon-download>
                             </b-button>
