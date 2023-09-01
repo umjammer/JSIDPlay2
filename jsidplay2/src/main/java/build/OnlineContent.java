@@ -63,8 +63,6 @@ public class OnlineContent {
 
 	static {
 		DebugUtil.init();
-		// Parameter classes are being checked for development errors at build time
-		ServletParameterHelper.check();
 	}
 
 	private static final int MAX_ZIP_FILESIZE = 37748736;
@@ -101,6 +99,9 @@ public class OnlineContent {
 	private volatile boolean ready;
 
 	private void execute(String[] args) throws Exception {
+		// Parameter classes are being checked for development errors at build time
+		ServletParameterHelper.check();
+
 		JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 		commander.parse(Arrays.asList(args).stream().map(arg -> arg == null ? "" : arg).toArray(String[]::new));
 		if (help) {
