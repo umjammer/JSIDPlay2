@@ -179,7 +179,7 @@
                 ></b-spinner>
               </template>
 
-              <b-button size="sm" variant="success" v-on:click="fetchDirectory(rootDir)">
+              <b-button variant="success" v-on:click="fetchDirectory(rootDir)">
                 <b-icon-house-door-fill> </b-icon-house-door-fill>
               </b-button>
 
@@ -317,7 +317,7 @@
                       </b-carousel>
                       <b-button
                         size="sm"
-                        style="font-size: smaller; padding: 2px 4px; float: right"
+                        style="padding: 2px 4px; float: right"
                         variant="primary"
                         v-show="directory.filter((entry) => isMusic(entry)).length > 0"
                         v-on:click="
@@ -370,25 +370,19 @@
                           <span class="sid-file">{{ shortEntry(entry.filename) }}</span>
                         </div>
                         <b-button
-                          size="sm"
-                          style="font-size: smaller; padding: 2px 4px"
+                          style="padding: 2px 4px; white-space: nowrap"
                           v-on:click.stop="openDownloadMP3Url(entry.filename)"
                           v-show="!isMP3(entry)"
                         >
                           <b-icon-download> </b-icon-download>
-                          <span>{{ $t("downloadMP3") }}</span></b-button
+                          <span style="font-size: x-small">{{ $t("downloadMP3") }}</span></b-button
                         >
-                        <b-button
-                          size="sm"
-                          style="font-size: smaller; padding: 2px 4px"
-                          v-on:click.stop="openDownloadSIDUrl(entry.filename)"
-                        >
+                        <b-button style="padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
                           <b-icon-download> </b-icon-download>
                         </b-button>
                         <div>
                           <b-button
-                            size="sm"
-                            style="font-size: smaller; padding: 2px 4px"
+                            style="padding: 2px 4px"
                             variant="primary"
                             v-on:click.stop="
                               playlist.push({
@@ -426,19 +420,14 @@
                               <span>{{ shortEntry(entry.filename) }}</span>
                             </div>
                             <b-button
-                              size="sm"
-                              style="font-size: smaller; padding: 2px 4px"
+                              style="padding: 2px 4px"
                               variant="primary"
                               v-on:click.stop="fetchDiskDirectory(entry)"
                               :disabled="entry.loadingDisk"
                             >
-                              <span> {{ $t("showDirectory") }} </span>
+                              <b-icon-journal-text> </b-icon-journal-text>
                             </b-button>
-                            <b-button
-                              size="sm"
-                              style="font-size: smaller; padding: 2px 4px"
-                              v-on:click.stop="openDownloadSIDUrl(entry.filename)"
-                            >
+                            <b-button style="padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
                               <b-icon-download> </b-icon-download>
                             </b-button>
                           </div>
@@ -476,11 +465,7 @@
                               <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
                               <span>{{ shortEntry(entry.filename) }}</span>
                             </div>
-                            <b-button
-                              size="sm"
-                              style="font-size: smaller; padding: 2px 4px"
-                              v-on:click.stop="openDownloadSIDUrl(entry.filename)"
-                            >
+                            <b-button style="padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
                               <b-icon-download> </b-icon-download>
                             </b-button>
                           </div>
@@ -607,7 +592,6 @@
                   </template>
                   <template #head(actions)="row">
                     <b-button
-                      size="sm"
                       style="padding: 0px"
                       variant="secondary"
                       @click="
@@ -621,7 +605,7 @@
                     </b-button>
                   </template>
                   <template #cell(actions)="row">
-                    <b-button size="sm" @click="requestContentEntries(row.item)" class="mr-1" style="padding: 0">
+                    <b-button @click="requestContentEntries(row.item)" class="mr-1" style="padding: 0">
                       <b-icon-caret-down-fill v-if="row.detailsShowing"> </b-icon-caret-down-fill>
                       <b-icon-caret-right-fill v-if="!row.detailsShowing"> </b-icon-caret-right-fill>
                     </b-button>
@@ -668,18 +652,16 @@
                               </div>
 
                               <b-button
-                                size="sm"
-                                style="font-size: smaller; padding: 2px 4px"
+                                style="padding: 2px 4px; white-space: nowrap"
                                 v-on:click="
                                   openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)
                                 "
                               >
                                 <b-icon-download> </b-icon-download>
-                                <span>{{ $t("downloadMP3") }}</span>
+                                <span style="font-size: x-small">{{ $t("downloadMP3") }}</span>
                               </b-button>
                               <b-button
-                                size="sm"
-                                style="font-size: smaller; padding: 2px 4px"
+                                style="padding: 2px 4px"
                                 v-on:click="
                                   openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                 "
@@ -688,8 +670,7 @@
                               </b-button>
                               <div>
                                 <b-button
-                                  size="sm"
-                                  style="font-size: smaller; padding: 2px 4px"
+                                  style="padding: 2px 4px"
                                   variant="primary"
                                   v-on:click="
                                     playlist.push({
@@ -732,17 +713,15 @@
                                     </b-link>
                                   </div>
                                   <b-button
-                                    size="sm"
-                                    style="font-size: smaller; padding: 2px 4px"
+                                    style="padding: 2px 4px"
                                     variant="primary"
                                     v-on:click="fetchDiskDirectory(innerRow.item, row.item.id, row.item.categoryId)"
                                     :disabled="innerRow.item.loadingDisk"
                                   >
-                                    <span> {{ $t("showDirectory") }} </span>
+                                    <b-icon-journal-text> </b-icon-journal-text>
                                   </b-button>
                                   <b-button
-                                    size="sm"
-                                    style="font-size: smaller; padding: 2px 4px"
+                                    style="padding: 2px 4px"
                                     v-on:click="
                                       openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                     "
@@ -795,8 +774,7 @@
                                     </b-link>
                                   </div>
                                   <b-button
-                                    size="sm"
-                                    style="font-size: smaller; padding: 2px 4px"
+                                    style="padding: 2px 4px"
                                     v-on:click="
                                       openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                     "
@@ -824,9 +802,7 @@
                   </template>
 
                   <template #head(category)="data">
-                    <label for="category" style="font-size: smaller; margin-left: 0px">{{
-                      $t("Search.category")
-                    }}</label>
+                    <label for="category" style="margin-left: 0px">{{ $t("Search.category") }}</label>
                     <b-form-select
                       id="category"
                       v-model="category"
@@ -846,7 +822,7 @@
                     </b-form-select>
                   </template>
                   <template #head(name)="data">
-                    <label for="name" style="font-size: smaller; margin-left: 0px">{{ $t("Search.name") }}</label>
+                    <label for="name" style="margin-left: 0px">{{ $t("Search.name") }}</label>
                     <b-form-input
                       type="text"
                       id="name"
@@ -860,7 +836,7 @@
                     />
                   </template>
                   <template #head(event)="data">
-                    <label for="event" style="font-size: smaller; margin-left: 0px">{{ $t("Search.event") }}</label>
+                    <label for="event" style="margin-left: 0px">{{ $t("Search.event") }}</label>
                     <b-form-input
                       type="text"
                       id="event"
@@ -874,9 +850,7 @@
                     />
                   </template>
                   <template #head(released)="data" style="padding-right: calc(0.3rem + 0.1em)">
-                    <label for="released" style="font-size: smaller; margin-left: 0px">{{
-                      $t("Search.release")
-                    }}</label>
+                    <label for="released" style="margin-left: 0px">{{ $t("Search.release") }}</label>
                     <b-form-input
                       type="text"
                       id="released"
@@ -890,7 +864,7 @@
                     />
                   </template>
                   <template #head(handle)="data">
-                    <label for="handle" style="font-size: smaller; margin-left: 0px">{{ $t("Search.handle") }}</label>
+                    <label for="handle" style="margin-left: 0px">{{ $t("Search.handle") }}</label>
                     <b-form-input
                       type="text"
                       id="handle"
@@ -904,7 +878,7 @@
                     />
                   </template>
                   <template #head(rating)="data">
-                    <label for="rating" style="font-size: smaller; margin-left: 0px">{{ $t("Search.rating") }}</label>
+                    <label for="rating" style="margin-left: 0px">{{ $t("Search.rating") }}</label>
                     <b-form-input
                       type="number"
                       id="rating"
@@ -1050,14 +1024,11 @@
                         <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
                         <span>{{ $t("exportPlaylist") }}</span></b-button
                       >
-                      <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
-                        <p>{{ $t("removePlaylistReally") }}</p>
-                      </b-modal>
                     </b-input-group-append>
                   </b-input-group>
                   <div>
                     <b-button size="sm" v-if="importFile != null" @click="importFile = null">
-                      <b-icon-trash-fill> </b-icon-trash-fill>
+                      <b-icon-backspace> </b-icon-backspace>
                       <span>{{ $t("reset") }}</span>
                     </b-button>
                     <b-button
@@ -1074,18 +1045,32 @@
                       <p>{{ $t("removePlaylistReally") }}</p>
                     </b-modal>
                   </div>
-                  <b-button v-if="playlist.length > 0" v-b-modal.modal-remove-playlist variant="danger" size="sm">
+                  <b-button
+                    v-if="!importFile && playlist.length > 0"
+                    v-b-modal.modal-remove-playlist
+                    variant="danger"
+                    size="sm"
+                  >
                     <b-icon-trash-fill> </b-icon-trash-fill>
                     <span>{{ $t("removePlaylist") }}</span></b-button
                   >
                   <b-modal id="modal-remove-playlist" :title="$t('confirmationTitle')" @ok="removePlaylist">
                     <p>{{ $t("removePlaylistReally") }}</p>
                   </b-modal>
-                  <b-button v-b-modal.modal-fetch-favorites size="sm">
+                  <b-button v-if="!importFile" v-b-modal.modal-fetch-favorites size="sm">
                     <b-icon-download> </b-icon-download>
                     <span>{{ $t("fetchFavorites") }}</span></b-button
                   >
-                  <b-button variant="success" size="sm" v-on:click="setNextPlaylistEntry" v-if="playlist.length > 0">
+                  <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
+                    <p>{{ $t("removePlaylistReally") }}</p>
+                  </b-modal>
+                  <b-button
+                    v-if="!importFile"
+                    variant="success"
+                    size="sm"
+                    v-on:click="setNextPlaylistEntry"
+                    v-if="playlist.length > 0"
+                  >
                     <b-icon-play-fill> </b-icon-play-fill>
                     <span>{{ $t("next") }}</span></b-button
                   >
@@ -1110,7 +1095,7 @@
                     :style="
                       (filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
                         ? 'height: 0; padding: 0px;visibility: hidden;'
-                        : '') + (index == playlistIndex ? ' background-color: #8dfba6 !important;' : '')
+                        : '') + (index == playlistIndex ? ' background-color: rgb(0 255 58 / 50%) !important' : '')
                     "
                     v-on:click="
                       playlistIndex = index;
@@ -1136,7 +1121,7 @@
                           <span>{{ shortEntry(entry.filename) }}</span>
                         </div>
                         <div v-show="pathEntry(entry.filename).length > 1">
-                          <span style="font-size: smaller; line-break: anywhere">{{ pathEntry(entry.filename) }}</span>
+                          <span style="line-break: anywhere">{{ pathEntry(entry.filename) }}</span>
                         </div>
                       </div>
                       <b-button
@@ -1144,7 +1129,8 @@
                         v-on:click.stop=""
                         pill
                         size="sm"
-                        style="height: fit-content"
+                        variant="danger"
+                        style="height: fit-content; opacity: 0.7"
                       >
                         <b-icon-trash-fill style="margin: 2px"> </b-icon-trash-fill>
                       </b-button>
@@ -1251,7 +1237,6 @@
                       <div class="settings-box">
                         <span class="setting">
                           <b-button
-                            size="sm"
                             variant="success"
                             v-on:click="
                               HardwareFunctions.init = init_hardsid;
@@ -1273,7 +1258,6 @@
                       <div class="settings-box">
                         <span class="setting">
                           <b-button
-                            size="sm"
                             variant="success"
                             v-on:click="
                               HardwareFunctions.init = init_exsid;
@@ -1295,7 +1279,6 @@
 						<div class="settings-box">
                     	  <span class="setting">
 							<b-button
-								size="sm"
 								variant="success"
 								v-on:click="
 									HardwareFunctions.init = init_sidblaster;
@@ -1409,7 +1392,6 @@
                                     id="cbr"
                                     class="right"
                                     v-model="convertOptions.config.audioSection.cbr"
-                                    size="sm"
                                   >
                                     <option v-for="cbr in cbrs">{{ cbr }}</option>
                                   </b-form-select></label
@@ -1436,7 +1418,6 @@
                                     id="vbrQuality"
                                     class="right"
                                     v-model="convertOptions.config.audioSection.vbrQuality"
-                                    size="sm"
                                   >
                                     <option v-for="vbrQuality in vbrQualities">
                                       {{ vbrQuality }}
@@ -1859,7 +1840,6 @@
                               id="dualSidBase"
                               class="right"
                               v-model="convertOptions.config.emulationSection.dualSidBase"
-                              size="sm"
                               :select-size="1"
                             >
                               <option :value="54304">0xd420</option>
@@ -1879,7 +1859,6 @@
                               id="thirdSIDBase"
                               class="right"
                               v-model="convertOptions.config.emulationSection.thirdSIDBase"
-                              size="sm"
                               :select-size="1"
                             >
                               <option :value="54304">0xd420</option>
@@ -2059,7 +2038,6 @@
                               id="audioBufferSize"
                               class="right"
                               v-model="convertOptions.config.audioSection.audioBufferSize"
-                              size="sm"
                             >
                               <option :value="1024">1024</option>
                               <option :value="2048">2048</option>
@@ -2122,7 +2100,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
                                                 :options="reSIDfpFilters6581"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2145,7 +2122,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter6581"
                                                 :options="reSIDfpFilters6581"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2169,7 +2145,6 @@
                                                   convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581
                                                 "
                                                 :options="reSIDfpFilters6581"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2205,7 +2180,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
                                                 :options="reSIDfpFilters8580"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2227,7 +2201,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter8580"
                                                 :options="reSIDfpFilters8580"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2252,7 +2225,6 @@
                                                   convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580
                                                 "
                                                 :options="reSIDfpFilters8580"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2303,7 +2275,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.filter6581"
                                                 :options="reSIDfilters6581"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2324,7 +2295,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.stereoFilter6581"
                                                 :options="reSIDfilters6581"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2344,7 +2314,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
                                                 :options="reSIDfilters6581"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2380,7 +2349,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.filter8580"
                                                 :options="reSIDfilters8580"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2401,7 +2369,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.stereoFilter8580"
                                                 :options="reSIDfilters8580"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -2421,7 +2388,6 @@
                                                 class="right"
                                                 v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
                                                 :options="reSIDfilters8580"
-                                                size="sm"
                                                 :select-size="3"
                                               ></b-form-select> </label
                                           ></span>
@@ -3061,7 +3027,6 @@
           muteStereoSidHeader: "Stereo SID",
           muteThirdSidHeader: "3rd SID",
           floppyCartCfgHeader: "Floppy/Cart",
-          showDirectory: "DIR",
           firstSid: "Main SID",
           secondSid: "Stereo SID",
           thirdSid: "3-SID",
@@ -3208,7 +3173,6 @@
           muteStereoSidHeader: "Stereo SID",
           muteThirdSidHeader: "3. SID",
           floppyCartCfgHeader: "Floppy/Cart",
-          showDirectory: "DIR",
           firstSid: "Haupt SID",
           secondSid: "Stereo SID",
           thirdSid: "3-SID",
