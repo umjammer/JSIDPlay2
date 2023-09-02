@@ -357,6 +357,26 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-enforcer-plugin</artifactId>
+			  <version>1.4.1</version>
+			  <executions>
+			    <execution>
+			      <id>enforce-maven</id>
+			      <goals>
+			        <goal>enforce</goal>
+			      </goals>
+			      <configuration>
+			        <rules>
+			          <requireMavenVersion>
+			            <version>3.2.5</version>
+			          </requireMavenVersion>
+			        </rules>
+			      </configuration>
+			    </execution>
+			  </executions>
+			</plugin>
 			<!-- https://mvnrepository.com/artifact/org.codehaus.mojo/versions-maven-plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -497,6 +517,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.6.0</version>
 				<executions>
 					<execution>
 						<id>unpack-natives</id>
