@@ -370,19 +370,19 @@
                           <span class="sid-file">{{ shortEntry(entry.filename) }}</span>
                         </div>
                         <b-button
-                          style="padding: 2px 4px; white-space: nowrap"
+                          style="height: fit-content; padding: 2px 4px; white-space: nowrap"
                           v-on:click.stop="openDownloadMP3Url(entry.filename)"
                           v-show="!isMP3(entry)"
                         >
                           <b-icon-download> </b-icon-download>
                           <span style="font-size: x-small">{{ $t("downloadMP3") }}</span></b-button
                         >
-                        <b-button style="padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
+                        <b-button style="height: fit-content; padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
                           <b-icon-download> </b-icon-download>
                         </b-button>
                         <div>
                           <b-button
-                            style="padding: 2px 4px"
+                            style="height: fit-content; padding: 2px 4px"
                             variant="primary"
                             v-on:click.stop="
                               playlist.push({
@@ -420,14 +420,14 @@
                               <span>{{ shortEntry(entry.filename) }}</span>
                             </div>
                             <b-button
-                              style="padding: 2px 4px"
+                              style="height: fit-content; padding: 2px 4px"
                               variant="primary"
                               v-on:click.stop="fetchDiskDirectory(entry)"
                               :disabled="entry.loadingDisk"
                             >
                               <b-icon-journal-text> </b-icon-journal-text>
                             </b-button>
-                            <b-button style="padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
+                            <b-button style="height: fit-content; padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
                               <b-icon-download> </b-icon-download>
                             </b-button>
                           </div>
@@ -465,7 +465,7 @@
                               <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
                               <span>{{ shortEntry(entry.filename) }}</span>
                             </div>
-                            <b-button style="padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
+                            <b-button style="height: fit-content; padding: 2px 4px" v-on:click.stop="openDownloadSIDUrl(entry.filename)">
                               <b-icon-download> </b-icon-download>
                             </b-button>
                           </div>
@@ -652,7 +652,7 @@
                               </div>
 
                               <b-button
-                                style="padding: 2px 4px; white-space: nowrap"
+                                style="height: fit-content; padding: 2px 4px; white-space: nowrap;"
                                 v-on:click="
                                   openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)
                                 "
@@ -661,7 +661,7 @@
                                 <span style="font-size: x-small">{{ $t("downloadMP3") }}</span>
                               </b-button>
                               <b-button
-                                style="padding: 2px 4px"
+                                style="height: fit-content; padding: 2px 4px;"
                                 v-on:click="
                                   openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                 "
@@ -670,7 +670,7 @@
                               </b-button>
                               <div>
                                 <b-button
-                                  style="padding: 2px 4px"
+                                  style="height: fit-content; padding: 2px 4px;"
                                   variant="primary"
                                   v-on:click="
                                     playlist.push({
@@ -713,7 +713,7 @@
                                     </b-link>
                                   </div>
                                   <b-button
-                                    style="padding: 2px 4px"
+                                    style="height: fit-content; padding: 2px 4px"
                                     variant="primary"
                                     v-on:click="fetchDiskDirectory(innerRow.item, row.item.id, row.item.categoryId)"
                                     :disabled="innerRow.item.loadingDisk"
@@ -721,7 +721,7 @@
                                     <b-icon-journal-text> </b-icon-journal-text>
                                   </b-button>
                                   <b-button
-                                    style="padding: 2px 4px"
+                                    style="height: fit-content; padding: 2px 4px"
                                     v-on:click="
                                       openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                     "
@@ -774,7 +774,7 @@
                                     </b-link>
                                   </div>
                                   <b-button
-                                    style="padding: 2px 4px"
+                                    style="height: fit-content; padding: 2px 4px"
                                     v-on:click="
                                       openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
                                     "
