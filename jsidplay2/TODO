@@ -5,7 +5,6 @@ TODO:
 - Test Wilfred's "HardSID USB write buffer" according to email of 25.2. 15:15
 - Add UDB broadcast to JSIDPlay2 to detect responding JSIDDevices
 - What to do to use your own filter, this is totally unclear to the user
-- Test classes seem not always to work with JDK17.
 - Playlists are wanted to be shared online
 - the ability to have music playback occur alongside your SID dump feature. This would look a bit like a tracker,
   and would allow a listener to see the connections between register values and sounds.

@@ -5,14 +5,12 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.testfx.api.FxRobot;
-import org.testfx.api.FxRobotInterface;
 import org.testfx.framework.junit.ApplicationTest;
 
-import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import libsidplay.C64;
 import libsidplay.common.Event;
-import libsidutils.Petscii;
+import libsidutils.CBMCodeUtils;
 import sidplay.Player;
 import ui.JSidPlay2;
 import ui.JSidPlay2Main;
@@ -38,6 +36,10 @@ public class JSIDPlay2Test extends ApplicationTest {
 	 * Timeout for the file browser to open.
 	 */
 	protected static final int FILE_BROWSER_OPENED_TIMEOUT = 2000;
+	/**
+	 * Timeout until the file chooser has selected a file completely.
+	 */
+	protected static final int FILE_CHOOSER_TIMEOUT = 1500;
 	/**
 	 * Timeout until the C64 has been reset completely.
 	 */
@@ -118,17 +120,6 @@ public class JSIDPlay2Test extends ApplicationTest {
 	}
 
 	/**
-	 * Prevent a bug hitting the wrong menu-item, when mouse is moved diagonal
-	 *
-	 * @see org.testfx.api.FxRobotInterface#clickOn(java.lang.String,
-	 *      javafx.scene.input.MouseButton[])
-	 */
-	@Override
-	public FxRobotInterface clickOn(String query, MouseButton... buttons) {
-		return super.clickOn(query, buttons).moveBy(1, 1);
-	}
-
-	/**
 	 * Check C64 RAM contents.
 	 *
 	 * @param address  start address
@@ -157,7 +148,7 @@ public class JSIDPlay2Test extends ApplicationTest {
 		final byte[] ram = player.getC64().getRAM();
 		final int offset = (row - 1) * 40 + column - 1;
 		for (int i = 0; i < expected.length(); i++) {
-			final byte screenCode = Petscii.iso88591ToPetscii(expected.charAt(i));
+			final byte screenCode = CBMCodeUtils.iso88591ToScreenRam(expected.charAt(i));
 			if (ram[0x0400 + offset + i] != screenCode) {
 				return false;
 			}

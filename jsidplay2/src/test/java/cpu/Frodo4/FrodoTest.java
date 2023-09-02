@@ -40,13 +40,17 @@ public class FrodoTest extends JSIDPlay2Test {
 	@Test
 	public void testDADB() {
 		clickOn("#VIDEO");
-		clickOn("#file");
-		clickOn("#load");
+		press(KeyCode.CONTROL);
+		type(KeyCode.L);
+		release(KeyCode.CONTROL);
 		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
 		release(KeyCode.CONTROL);
 		type(D, A, D, B, PERIOD, P, R, G);
+		push(ENTER);
+		sleep(FILE_CHOOSER_TIMEOUT);
 		push(ENTER);
 		sleep(C64_RESET_TIMEOUT);
 
@@ -63,13 +67,17 @@ public class FrodoTest extends JSIDPlay2Test {
 	@Test
 	public void testDE00all() {
 		clickOn("#VIDEO");
-		clickOn("#file");
-		clickOn("#load");
+		press(KeyCode.CONTROL);
+		type(KeyCode.L);
+		release(KeyCode.CONTROL);
 		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
 		release(KeyCode.CONTROL);
 		type(D, E, DIGIT0, DIGIT0, A, L, L, MINUS, S, Y, S, DIGIT4, DIGIT9, DIGIT1, DIGIT5, DIGIT2, PERIOD, P, R, G);
+		push(ENTER);
+		sleep(FILE_CHOOSER_TIMEOUT);
 		push(ENTER);
 		sleep(C64_RESET_TIMEOUT);
 

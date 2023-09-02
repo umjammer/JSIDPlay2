@@ -32,13 +32,20 @@ public class WolfgangLorentzTest extends JSIDPlay2Test {
 
 	@Test
 	public void testDisk1() {
+		config.getC1541Section().setJiffyDosInstalled(false);
+
 		clickOn("#VIDEO");
-		clickOn("#floppy");
+		press(KeyCode.CONTROL);
+		type(KeyCode.DIGIT8);
+		release(KeyCode.CONTROL);
 		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
 		release(KeyCode.CONTROL);
 		press(SHIFT).type(D).release(SHIFT).type(I, S, K, DIGIT1, PERIOD, D, DIGIT6, DIGIT4);
+		push(ENTER);
+		sleep(FILE_CHOOSER_TIMEOUT);
 		push(ENTER);
 		player.resetC64("LOAD\"*\",8\rRUN\r");
 		sleep(C64_RESET_TIMEOUT);
@@ -53,13 +60,20 @@ public class WolfgangLorentzTest extends JSIDPlay2Test {
 
 	@Test
 	public void testDisk2() {
+		config.getC1541Section().setJiffyDosInstalled(false);
+
 		clickOn("#VIDEO");
-		clickOn("#floppy");
+		press(KeyCode.CONTROL);
+		type(KeyCode.DIGIT8);
+		release(KeyCode.CONTROL);
 		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
 		release(KeyCode.CONTROL);
 		press(SHIFT).type(D).release(SHIFT).type(I, S, K, DIGIT2, PERIOD, D, DIGIT6, DIGIT4);
+		push(ENTER);
+		sleep(FILE_CHOOSER_TIMEOUT);
 		push(ENTER);
 		player.resetC64("LOAD\"*\",8\rRUN\r");
 		sleep(C64_RESET_TIMEOUT);
@@ -74,13 +88,20 @@ public class WolfgangLorentzTest extends JSIDPlay2Test {
 
 	@Test
 	public void testDisk3() {
+		config.getC1541Section().setJiffyDosInstalled(false);
+
 		clickOn("#VIDEO");
-		clickOn("#floppy");
+		press(KeyCode.CONTROL);
+		type(KeyCode.DIGIT8);
+		release(KeyCode.CONTROL);
 		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
 		release(KeyCode.CONTROL);
 		press(SHIFT).type(D).release(SHIFT).type(I, S, K, DIGIT3, PERIOD, D, DIGIT6, DIGIT4);
+		push(ENTER);
+		sleep(FILE_CHOOSER_TIMEOUT);
 		push(ENTER);
 		player.resetC64("LOAD\"*\",8\rRUN\r");
 		sleep(C64_RESET_TIMEOUT);

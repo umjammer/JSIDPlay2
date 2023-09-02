@@ -40,13 +40,17 @@ public class CIATest extends JSIDPlay2Test {
 	@Test
 	public void detectCIA6526() {
 		clickOn("#VIDEO");
-		clickOn("#file");
-		clickOn("#load");
+		press(KeyCode.CONTROL);
+		type(KeyCode.L);
+		release(KeyCode.CONTROL);
 		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
 		release(KeyCode.CONTROL);
 		type(C, I, A).press(SHIFT).type(UNDERSCORE).release(SHIFT).type(D, E, T, E, C, T, I, O, N, PERIOD, P, R, G);
+		push(ENTER);
+		sleep(FILE_CHOOSER_TIMEOUT);
 		push(ENTER);
 		sleep(C64_RESET_TIMEOUT);
 
@@ -56,13 +60,17 @@ public class CIATest extends JSIDPlay2Test {
 	@Test
 	public void timerBCountsA() {
 		clickOn("#VIDEO");
-		clickOn("#file");
-		clickOn("#load");
+		press(KeyCode.CONTROL);
+		type(KeyCode.L);
+		release(KeyCode.CONTROL);
 		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
 		release(KeyCode.CONTROL);
 		type(C, M, P, MINUS, B, MINUS, C, O, U, N, T, S, MINUS, A, PERIOD, P, R, G);
+		push(ENTER);
+		sleep(FILE_CHOOSER_TIMEOUT);
 		push(ENTER);
 		sleep(15000);
 
