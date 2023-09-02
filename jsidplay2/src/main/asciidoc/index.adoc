@@ -59,32 +59,30 @@ Please read manual here:
 | MacOSX  | link:https://adoptium.net[https://adoptium.net^]
 |===
 
-*Note:* If you have a modern Apple computer and get trouble launching JSIDPlay2 on your machine,
-please try a Java Runtime, where JavaFX is already bundled with.
-For example link:https://bell-sw.com/pages/downloads/[https://bell-sw.com/pages/downloads/^]
-
 == Official Releases
 
 Click link:https://sourceforge.net/projects/jsidplay2/files/[here^] to download
 
-== Latest Beta Version
+== Latest Beta Versions
 
-JSIDPlay2 for Java 8, 11, 17, 21, ...
+JSIDPlay2 is compatible wit Java 8, 11, 17, 21, etc.
+
+A separate program (.exe/.sh) is required and available for Java 8 to launch.
 |===
-| *Architecture* | *x86_64*                                                       | *aarm64*
+|              | *x86_64*                                                       | *aarm64*
 | Windows      | link:{codebase}{artifactId}-{version}-win.zip[Download]	     |
 | Linux        | link:{codebase}{artifactId}-{version}-linux.zip[Download]	 | link:{codebase}{artifactId}-{version}-linux-aarch64.zip[Download]
-| MacOSX       | link:{codebase}{artifactId}-{version}-mac.zip[Download]      | link:{codebase}{artifactId}-{version}-mac-aarch64.zip[Download] e.g. Apple M1
+| MacOSX       | link:{codebase}{artifactId}-{version}-mac.zip[Download]      | link:{codebase}{artifactId}-{version}-mac-aarch64.zip[Download] (e.g. Apple M1)
 |===
 
 link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
 
-link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (standalone)
+link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (e.g. for link:https://www.acid64.com[ACID64])
 
-link:{codebase}jsidplay2app.apk[Download jsidplay2app] (app for android)
+link:{codebase}jsidplay2app.apk[Download jsidplay2app] (*deprecated* android app has been replaced by link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox])
 
 == JSIDPlay2 Server
-link:https://haendel.ddns.net:8443/static/c64jukebox.vue[JSIDPlay2 - Online Demo^]
+link:https://haendel.ddns.net:8443/static/c64jukebox.vue[JSIDPlay2 - Web Version^]
 
 link:https://haendel.ddns.net:8443[API Documentation^]
 
