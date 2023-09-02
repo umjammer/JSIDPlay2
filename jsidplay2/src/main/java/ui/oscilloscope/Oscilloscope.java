@@ -161,6 +161,9 @@ public class Oscilloscope extends C64VBox implements UIPart {
 		for (int chipNum = 0; chipNum < MAX_SIDS; chipNum++) {
 			updateGauges(chipNum, Gauge::reset);
 		}
+		if (sequentialTransition != null) {
+			sequentialTransition.stop();
+		}
 		pauseTransition = new PauseTransition();
 		pauseTransition.setDuration(Duration.millis(1000. / util.getPlayer().getC64().getClock().getScreenRefresh()));
 		pauseTransition.setOnFinished(evt -> util.getPlayer().getC64()
