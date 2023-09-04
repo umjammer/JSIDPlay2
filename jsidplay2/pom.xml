@@ -28,7 +28,7 @@
 		<javafx.main.class>ui.JSidPlay2Main</javafx.main.class>
 		<!-- Optional: FTP upload coordinates -->
 		<serverId></serverId>
-		<serverUrl>file:///home/ken/Downloads/release</serverUrl>
+		<serverUrl>file://${user.home}/Downloads/release</serverUrl>
 		<remoteDir>public_html</remoteDir>
 		<!-- Optional: extra online content -->
 		<gb64.mdbfile />
