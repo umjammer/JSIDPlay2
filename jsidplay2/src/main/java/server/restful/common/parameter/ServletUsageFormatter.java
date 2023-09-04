@@ -233,26 +233,27 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 
 		// request parameters
+		StringBuilder queryParameters = new StringBuilder();
+
 		Iterator<ParameterDescription> it = commander.getFields().values().stream()
 				.filter(pd -> !pd.getParameter().hidden()).sorted(commander.getParameterDescriptionComparator())
 				.collect(Collectors.toList()).iterator();
 		if (it.hasNext()) {
-			urlAsString.append("?");
 			while (it.hasNext()) {
 				ParameterDescription def = it.next();
 
-				urlAsString.append(getExampleServletParameterName(def.getNames()));
-				urlAsString.append("=");
-				urlAsString.append(def.getParameter().password() ? "********" : String.valueOf(def.getDefault()));
+				queryParameters.append(getExampleServletParameterName(def.getNames()));
+				queryParameters.append("=");
+				queryParameters.append(def.getParameter().password() ? "********" : String.valueOf(def.getDefault()));
 
 				if (it.hasNext()) {
-					urlAsString.append("&");
+					queryParameters.append("&");
 				}
 			}
 		}
 		URL url = new URI(urlAsString.toString()).toURL();
 		URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
-				url.getQuery(), url.getRef());
+				queryParameters.toString(), url.getRef());
 		result.append(uri.toASCIIString());
 
 		return result.toString();
