@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit.ApplicationTest;
 
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import libsidplay.C64;
 import libsidplay.common.Event;
@@ -117,6 +118,22 @@ public class JSIDPlay2Test extends ApplicationTest {
 	public void start(Stage stage) {
 		stage.setOnCloseRequest(evt -> evt.consume());
 		stage.show();
+	}
+
+	public void load() {
+		clickOn("#VIDEO");
+		press(KeyCode.CONTROL);
+		type(KeyCode.L);
+		release(KeyCode.CONTROL);
+		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+	}
+
+	public void insertDisk() {
+		clickOn("#VIDEO");
+		press(KeyCode.CONTROL);
+		type(KeyCode.DIGIT8);
+		release(KeyCode.CONTROL);
+		sleep(FILE_BROWSER_OPENED_TIMEOUT);
 	}
 
 	/**

@@ -28,17 +28,12 @@ public class WolfgangLorentzTest extends JSIDPlay2Test {
 	@Before
 	public void before() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/cpu/Testsuite/d64"));
+		config.getC1541Section().setJiffyDosInstalled(false);
 	}
 
 	@Test
 	public void testDisk1() {
-		config.getC1541Section().setJiffyDosInstalled(false);
-
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.DIGIT8);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		insertDisk();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -60,13 +55,7 @@ public class WolfgangLorentzTest extends JSIDPlay2Test {
 
 	@Test
 	public void testDisk2() {
-		config.getC1541Section().setJiffyDosInstalled(false);
-
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.DIGIT8);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		insertDisk();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -88,13 +77,7 @@ public class WolfgangLorentzTest extends JSIDPlay2Test {
 
 	@Test
 	public void testDisk3() {
-		config.getC1541Section().setJiffyDosInstalled(false);
-
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.DIGIT8);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		insertDisk();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);

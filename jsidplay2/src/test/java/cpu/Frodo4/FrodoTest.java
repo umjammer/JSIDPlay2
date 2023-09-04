@@ -39,11 +39,7 @@ public class FrodoTest extends JSIDPlay2Test {
 
 	@Test
 	public void testDADB() {
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -66,11 +62,7 @@ public class FrodoTest extends JSIDPlay2Test {
 
 	@Test
 	public void testDE00all() {
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);

@@ -47,11 +47,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 		config.getEmulationSection().setUserSidModel(ChipModel.AUTO);
 		config.getEmulationSection().setDefaultSidModel(ChipModel.MOS8580);
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -73,11 +69,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 	public void loadPSidStereoTest() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/sid/examples/stereo/2sids/Nata"));
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -103,11 +95,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 	public void loadPSidTest() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/sid/examples"));
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -133,11 +121,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 	public void loadP00Test() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/sid/examples"));
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -155,11 +139,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 	public void loadMusTest() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/sid/examples"));
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -185,11 +165,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 	public void loadMusStereoTest() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/sid/examples/stereo"));
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -217,11 +193,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 	public void loadPrgTest() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/sid/examples"));
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
@@ -241,11 +213,7 @@ public class SidTuneTest extends JSIDPlay2Test {
 	public void loadPSid3SidTest() {
 		config.getSidplay2Section().setLastDirectory(new File("src/test/resources/sid/examples/stereo/3sids"));
 
-		clickOn("#VIDEO");
-		press(KeyCode.CONTROL);
-		type(KeyCode.L);
-		release(KeyCode.CONTROL);
-		sleep(FILE_BROWSER_OPENED_TIMEOUT);
+		load();
 
 		press(KeyCode.CONTROL);
 		type(KeyCode.A);
