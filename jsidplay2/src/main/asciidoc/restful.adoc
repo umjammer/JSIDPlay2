@@ -341,7 +341,7 @@ java -Dhibernate.dialect.storage_engine=innodb \
 	--whatsSIDDatabasePassword <password> \
 	--whatsSIDDatabaseDialect org.hibernate.dialect.MySQL55Dialect \
 	--fingerprinting true \
-	--hvsc <pathToHVSC># <1>
+	--hvsc <pathToHVSC> \ # <1>
 	<pathToMusicCollection> & # <2>
 ----
 <1> pathToHVSC is used to read song length file database contained in HVSC
@@ -380,8 +380,8 @@ java -Dhibernate.dialect.storage_engine=innodb \
 	--whatsSIDDatabasePassword <password> \
 	--whatsSIDDatabaseDialect org.hibernate.dialect.MySQL55Dialect \
 	--fingerprinting true \
-	--hvsc <pathToHVSC> # <1>
-	--previousDirectory <previousPathToHVSC> # <2>
+	--hvsc <pathToHVSC> \ # <1>
+	--previousDirectory <previousPathToHVSC> \ # <2>
 	<pathToMusicCollection> & # <3>
 ----
 <1> pathToHVSC is used to read song length file database contained in HVSC

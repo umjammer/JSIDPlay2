@@ -67,7 +67,7 @@ Click link:https://sourceforge.net/projects/jsidplay2/files/[here^] to download
 
 JSIDPlay2 is compatible wit Java 8, 11, 17, 21, etc.
 
-A separate program (.exe/.sh) is required and available for Java 8 to launch.
+A separate program (.exe/.sh) is required and available to launch with Java 8.
 |===
 |              | *x86_64*                                                       | *aarm64*
 | Windows      | link:{codebase}{artifactId}-{version}-win.zip[Download]	     |
