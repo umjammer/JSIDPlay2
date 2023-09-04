@@ -8,6 +8,7 @@
     <stringAttribute key="M2_PROFILES" value=""/>
     <listAttribute key="M2_PROPERTIES">
         <listEntry value="upx.exe=${upx.exe}"/>
+        <listEntry value="serverUrl=${serverUrl}"/>
     </listAttribute>
     <stringAttribute key="M2_RUNTIME" value="EMBEDDED"/>
     <booleanAttribute key="M2_SKIP_TESTS" value="false"/>

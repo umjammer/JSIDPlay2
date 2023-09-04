@@ -12,6 +12,7 @@
         <listEntry value="cgsc.7z=${cgsc.7z}"/>
         <listEntry value="hvmec.zip=${hvmec.zip}"/>
         <listEntry value="upx.exe=${upx.exe}"/>
+        <listEntry value="serverUrl=${serverUrl}"/>
     </listAttribute>
     <stringAttribute key="M2_RUNTIME" value="EMBEDDED"/>
     <booleanAttribute key="M2_SKIP_TESTS" value="false"/>
