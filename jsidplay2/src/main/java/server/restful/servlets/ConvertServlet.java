@@ -480,6 +480,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (servletParameters.reuSize != null && !player.getC64().isCartridge()) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
 		}
+		if ("25"/* CSDB REU */.equals(servletParameters.getCategoryId()) && !player.getC64().isCartridge()) {
+			player.insertCartridge(CartridgeType.REU, 16384);
+		}
 		if (TAPE_FILE_FILTER.accept(file)) {
 			player.getConfig().getC1541Section().setJiffyDosInstalled(false);
 		}
