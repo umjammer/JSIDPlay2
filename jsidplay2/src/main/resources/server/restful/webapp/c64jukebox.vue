@@ -2897,8 +2897,15 @@
         var iframe = document.createElement("iframe");
         iframe.setAttribute("id", "c64");
         iframe.classList.add("responsive-iframe");
-        iframe.onload = function () {};
-        iframe.src = url;
+        iframe.onload = function () {
+          iframe.onload = function () {};
+          iframe.src = url;
+        };
+        iframe.src =
+          "data:text/html;charset=utf-8,<html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
+          i18n.t("pleaseWait") +
+          "</p><span><i></i><i></i></span></div></body>";
+
         document.getElementById("app").appendChild(iframe);
       }
       const messages = {
@@ -3044,6 +3051,7 @@
           setDefaultReally: "Do you really want to restore defaults?",
           setDefaultUserReally: "Do you really want to restore default user?",
           firstCategory: "",
+          pleaseWait: "Please wait...",
 
           convertMessages: $convertMessagesEn,
         },
@@ -3190,6 +3198,7 @@
           setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
           setDefaultUserReally: "Wollen sie wirklich den Standardbenutzer wiederherstellen?",
           firstCategory: "",
+          pleaseWait: "Bitte warten...",
 
           convertMessages: $convertMessagesDe,
         },

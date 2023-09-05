@@ -3,6 +3,7 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
+import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.STATIC_RES_MAX_AGE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_DE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_EN;
@@ -57,7 +58,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final StaticServletParameters servletParameters = new StaticServletParameters();
@@ -72,6 +73,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			try (InputStream source = servletParameters.getResource()) {
 
 				Map<String, String> replacements = new HashMap<>();
+				replacements.put("$baseUrl", BASE_URL);
 				replacements.put("$convertOptions", CONVERT_OPTIONS);
 				replacements.put("$convertMessagesEn", CONVERT_MESSAGES_EN);
 				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);

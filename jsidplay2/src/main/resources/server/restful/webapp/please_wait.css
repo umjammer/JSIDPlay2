@@ -1,0 +1,52 @@
+.loading span {
+    position: absolute;
+    height: 10px;
+    width: 84px;
+    top: 50px;
+    overflow: hidden;
+}
+.loading span > i {
+    position: absolute;
+    height: 4px;
+    width: 4px;
+    border-radius: 50%;
+    -webkit-animation: wait 4s infinite;
+    -moz-animation: wait 4s infinite;
+    -o-animation: wait 4s infinite;
+    animation: wait 4s infinite;
+}
+.loading span > i:nth-of-type(1) {
+    left: -28px;
+    background: #0008ff;
+}
+.loading span > i:nth-of-type(2) {
+    left: -21px;
+    -webkit-animation-delay: 0.8s;
+    animation-delay: 0.8s;
+    background: #ff0202;
+}
+
+@-webkit-keyframes wait {
+    0%   { left: -7px  }
+    30%  { left: 52px  }
+    60%  { left: 22px  }
+    100% { left: 100px }
+}
+@-moz-keyframes wait {
+    0%   { left: -7px  }
+    30%  { left: 52px  }
+    60%  { left: 22px  }
+    100% { left: 100px }
+}
+@-o-keyframes wait {
+    0%   { left: -7px  }
+    30%  { left: 52px  }
+    60%  { left: 22px  }
+    100% { left: 100px }
+}
+@keyframes wait {
+    0%   { left: -7px  }
+    30%  { left: 52px  }
+    60%  { left: 22px  }
+    100% { left: 100px }
+}
