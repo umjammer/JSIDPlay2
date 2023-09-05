@@ -2896,7 +2896,7 @@
 
         var iframe = document.createElement("iframe");
         iframe.setAttribute("id", "c64");
-        iframe.classList.add("responsive-iframe");
+        iframe.classList.add("iframe_c64");
         iframe.onload = function () {
           iframe.onload = function () {};
           iframe.src = url;
