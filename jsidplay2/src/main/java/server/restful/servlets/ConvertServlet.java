@@ -72,6 +72,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos656x.PALEmulation;
+import libsidplay.config.IC1541Section;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
@@ -422,12 +423,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
 
-		if (servletParameters.sfxSoundExpander && !player.getC64().isCartridge()) {
-			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
-		}
-		if (servletParameters.reuSize != null && !player.getC64().isCartridge()) {
-			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
-		}
+		insertCartridge(servletParameters, player);
+
 		SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(servletParameters.startSong);
 		player.play(tune);
@@ -454,6 +451,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			Thread... parentThread) throws IOException, SidTuneError {
 		File videoFile = null;
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
+		IC1541Section c1541Section = servletParameters.config.getC1541Section();
+
+		if (TAPE_FILE_FILTER.accept(file)) {
+			c1541Section.setJiffyDosInstalled(false);
+		}
 
 		Player player = new Player(servletParameters.config);
 		if (Boolean.TRUE.equals(servletParameters.download)) {
@@ -474,6 +476,16 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		ConvenienceResult convenienceResult = new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA,
 				servletParameters.autostart, true);
 
+		insertCartridge(servletParameters, player);
+
+		if (uuid != null) {
+			create(uuid, player, file, convenienceResult, servletParameters);
+		}
+		player.stopC64(false);
+		return videoFile;
+	}
+
+	private void insertCartridge(ConvertServletParameters servletParameters, Player player) throws IOException {
 		if (servletParameters.sfxSoundExpander && !player.getC64().isCartridge()) {
 			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
 		}
@@ -483,14 +495,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if ("25"/* CSDB REU */.equals(servletParameters.getCategoryId()) && !player.getC64().isCartridge()) {
 			player.insertCartridge(CartridgeType.REU, 16384);
 		}
-		if (TAPE_FILE_FILTER.accept(file)) {
-			player.getConfig().getC1541Section().setJiffyDosInstalled(false);
-		}
-		if (uuid != null) {
-			create(uuid, player, file, convenienceResult, servletParameters);
-		}
-		player.stopC64(false);
-		return videoFile;
 	}
 
 	private File createVideoFile(Player player, AudioDriver driver) throws IOException {
