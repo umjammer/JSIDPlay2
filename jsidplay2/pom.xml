@@ -26,6 +26,7 @@
 		<hostname>haendel.ddns.net</hostname>
 		<port>8443</port>
 		<javafx.main.class>ui.JSidPlay2Main</javafx.main.class>
+		<hvsc.version>hvsc79</hvsc.version>
 		<!-- Optional: FTP upload coordinates -->
 		<serverId></serverId>
 		<serverUrl>file://${user.home}/Downloads/release</serverUrl>
@@ -36,8 +37,6 @@
 		<cgsc.7z />
 		<hvmec.zip />
 		<upx.exe />
-		<!-- Optional: server database name -->
-		<hvsc.version>hvsc79</hvsc.version>
 	</properties>
 
 	<scm>
