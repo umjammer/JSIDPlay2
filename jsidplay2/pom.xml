@@ -389,6 +389,10 @@
 			      </goals>
 			      <configuration>
 			        <rules>
+			          <banDuplicatePomDependencyVersions/>
+			          <requireJavaVersion>
+			            <version>[1.8,)</version>
+			          </requireJavaVersion>
 			          <requireMavenVersion>
 			            <version>3.2.5</version>
 			          </requireMavenVersion>
