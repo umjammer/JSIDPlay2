@@ -31,6 +31,7 @@ public class SFXSoundExpander extends Cartridge {
 		super(pla);
 		type = sizeKB;
 		context = pla.getCPU().getEventScheduler();
+		reset();
 	}
 
 	@Override
@@ -41,8 +42,6 @@ public class SFXSoundExpander extends Cartridge {
 	@Override
 	public void reset() {
 		super.reset();
-		pla.setGameExrom(true, true);
-
 		fmOpl = FMOPL_072.init(type, 3579545, (int) context.getCyclesPerSecond());
 	}
 
