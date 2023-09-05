@@ -380,7 +380,7 @@
 			<plugin>
 			  <groupId>org.apache.maven.plugins</groupId>
 			  <artifactId>maven-enforcer-plugin</artifactId>
-			  <version>1.4.1</version>
+			  <version>3.4.0</version>
 			  <executions>
 			    <execution>
 			      <id>enforce-maven</id>
@@ -389,12 +389,14 @@
 			      </goals>
 			      <configuration>
 			        <rules>
-			          <banDuplicatePomDependencyVersions/>
+			          <banDuplicatePomDependencyVersions />
 			          <requireJavaVersion>
 			            <version>[1.8,)</version>
+			            <message>Invalid Java version. It should, at least, be Java 8!</message>
 			          </requireJavaVersion>
 			          <requireMavenVersion>
-			            <version>3.2.5</version>
+			            <version>3.5.2</version>
+					    <message>Invalid Maven version. It should, at least, be 3.5.2</message>
 			          </requireMavenVersion>
 			        </rules>
 			      </configuration>
