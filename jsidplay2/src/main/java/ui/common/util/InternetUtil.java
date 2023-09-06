@@ -1,5 +1,7 @@
 package ui.common.util;
 
+import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -54,6 +56,7 @@ public class InternetUtil {
 			URLConnection openConnection = currentURL.openConnection(getProxy(sidplay2Section));
 			if (openConnection instanceof HttpURLConnection) {
 				HttpURLConnection connection = (HttpURLConnection) openConnection;
+				connection.setConnectTimeout(CONNECTION_TIMEOUT);
 				connection.setInstanceFollowRedirects(false);
 				int responseCode = connection.getResponseCode();
 
