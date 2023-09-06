@@ -2870,6 +2870,17 @@
           return new Date(time * 1000).toISOString().slice(14, 19);
         }
       }
+      function messageListener(event) {
+        if (event.origin !== "$baseUrl") {
+          console.log("Ignored: Got a message from bad origin: " + event.origin);
+        } else {
+          var myMsg = event.data;
+          if (myMsg == "1") {
+            var iframe = document.getElementById("c64");
+            iframe.setAttribute("data-isloaded", "1");
+          }
+        }
+      }
       function download(filename, contentType, text) {
         var pom = document.createElement("a");
         pom.setAttribute("href", "data:" + contentType + "," + encodeURIComponent(text));
@@ -2897,8 +2908,14 @@
         var iframe = document.createElement("iframe");
         iframe.setAttribute("id", "c64");
         iframe.classList.add("iframe_c64");
+        iframe.setAttribute("data-isloaded", "0");
         iframe.onload = function () {
-          iframe.onload = function () {};
+          iframe.onload = function () {
+            var isLoaded = iframe.getAttribute("data-isloaded");
+            if (isLoaded != "1") {
+              setTimeout(() => closeiframe(), 5000);
+            }
+          };
           iframe.src = url;
         };
         iframe.src =
@@ -4619,6 +4636,7 @@
       window.addEventListener("popstate", function () {
         history.pushState(null, null, document.URL);
       });
+      window.addEventListener("message", messageListener, false);
     </script>
   </body>
 </html>

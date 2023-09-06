@@ -25,6 +25,13 @@
     <script src="/webjars/axios/0.27.2/dist/axios.min.js"></script>
     <script src="$hlsScript"></script>
 
+    <script type="text/javascript">
+      var sourceURL = document.referrer;
+      if (sourceURL) {
+        window.parent.postMessage("1", sourceURL);
+      }
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
