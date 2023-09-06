@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -559,7 +560,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				// Give video production a jump start
 				Thread.sleep(1000);
 				return;
-			} catch (InterruptedException e) {
+			} catch (InterruptedException | SocketTimeoutException e) {
 				throw e;
 			} catch (IOException e) {
 				// connection not yet established, retry!
