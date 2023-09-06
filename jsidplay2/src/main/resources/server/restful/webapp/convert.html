@@ -671,6 +671,24 @@
                   var hls = new Hls();
                   hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
                   hls.attachMedia(video);
+                  hls.on(Hls.Events.ERROR, function (event, data) {
+                      if (data.fatal) {
+                        switch(data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                          console.log("fatal network error encountered, try to recover");
+                          hls.startLoad();
+                          break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                          console.log("fatal media error encountered, try to recover");
+                          hls.recoverMediaError();
+                          break;
+                        default:
+                            console.log("fatal error encountered, cannot recover");
+                            hls.destroy();
+                            break;
+                        }
+                      }
+                  });
                   var promise = video.play();
                   if (promise !== undefined) {
                     promise
