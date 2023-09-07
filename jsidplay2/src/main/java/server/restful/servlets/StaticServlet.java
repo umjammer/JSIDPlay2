@@ -79,11 +79,15 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);
 				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
-				if (mimeType.isText()) {
+				if (mimeType.isCacheable()) {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
+				} else {
+					response.setHeader(HttpHeaders.PRAGMA, "no-cache");
+					response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
+				}
+				if (mimeType.isText()) {
 					setOutput(response, mimeType, IOUtils.convertStreamToString(source, "UTF-8", replacements));
 				} else {
-					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
 					response.setContentType(mimeType.toString());
 					IOUtils.copy(source, response.getOutputStream());
 				}
