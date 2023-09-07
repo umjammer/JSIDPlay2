@@ -403,6 +403,31 @@
 			    </execution>
 			  </executions>
 			</plugin>
+			<plugin>
+			  <groupId>com.hubspot.maven.plugins</groupId>
+			  <artifactId>prettier-maven-plugin</artifactId>
+			  <version>0.21</version>
+			  <configuration>
+				<prettierJavaVersion>2.0.0</prettierJavaVersion>
+				<printWidth>120</printWidth>
+				<tabWidth>2</tabWidth>
+				<useTabs>false</useTabs>
+				<ignoreConfigFile>true</ignoreConfigFile>
+				<ignoreEditorConfig>true</ignoreEditorConfig>
+				<inputGlobs>
+				  <inputGlob>src/main/resources/server/restful/webapp/*.vue</inputGlob>
+				  <inputGlob>src/main/resources/server/restful/webapp/*.html</inputGlob>
+				</inputGlobs>
+			  </configuration>
+			  <executions>
+			    <execution>
+			      <phase>validate</phase>
+			      <goals>
+			        <goal>write</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			</plugin>
 			<!-- https://mvnrepository.com/artifact/org.codehaus.mojo/versions-maven-plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -1325,6 +1350,25 @@
 										</versionRange>
 										<goals>
 											<goal>install</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.hubspot.maven.plugins
+										</groupId>
+										<artifactId>
+											prettier-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.21,)
+										</versionRange>
+										<goals>
+											<goal>write</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

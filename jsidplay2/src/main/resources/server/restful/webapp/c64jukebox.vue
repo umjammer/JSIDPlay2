@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <style lang="scss" scoped>
@@ -297,11 +297,7 @@
                             <b-link
                               style="
                                 white-space: pre-line;
-                                text-shadow:
-                                  -1px 0 black,
-                                  0 1px black,
-                                  1px 0 black,
-                                  0 -1px black;
+                                text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
                                 font-family: sans;
                                 color: #007bff;
                                 background-color: white;

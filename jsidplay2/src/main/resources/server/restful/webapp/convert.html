@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <style lang="scss" scoped>
@@ -41,12 +41,7 @@
     <div id="app">
       <div class="locale-changer">
         <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
-        <b-button
-          v-if="window.self !== window.top"
-          onclick="parent.closeiframe()"
-          pill
-          variant="outline-dark"
-          size="sm"
+        <b-button v-if="window.self !== window.top" onclick="parent.closeiframe()" pill variant="outline-dark" size="sm"
           >{{ $t("close") }}</b-button
         >
         <b-form-select
@@ -55,44 +50,74 @@
           size="sm"
           style="width: auto; margin: 1px"
         >
-          <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
-            {{ lang }}
-          </option>
+          <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
         </b-form-select>
       </div>
 
       <div class="all">
         <div class="left-button-container">
           <div class="button-container">
-            <b-button v-on:click="setDefaultSidModel6581()" pill variant="outline-dark" size="sm" style="font-size: smaller;">6581</b-button>
+            <b-button
+              v-on:click="setDefaultSidModel6581()"
+              pill
+              variant="outline-dark"
+              size="sm"
+              style="font-size: smaller"
+              >6581</b-button
+            >
           </div>
           <div class="button-container">
-            <b-button v-on:click="setDefaultSidModel8580()" pill variant="outline-dark" size="sm" style="font-size: smaller;">8580</b-button>
+            <b-button
+              v-on:click="setDefaultSidModel8580()"
+              pill
+              variant="outline-dark"
+              size="sm"
+              style="font-size: smaller"
+              >8580</b-button
+            >
           </div>
           <div class="button-container">
-            <b-button v-on:click="setDefaultEmulationReSid()" pill variant="outline-dark" size="sm" style="font-size: smaller;">RESID</b-button>
+            <b-button
+              v-on:click="setDefaultEmulationReSid()"
+              pill
+              variant="outline-dark"
+              size="sm"
+              style="font-size: smaller"
+              >RESID</b-button
+            >
           </div>
           <div class="button-container">
-            <b-button v-on:click="setDefaultEmulationReSidFp()" pill variant="outline-dark" size="sm" style="font-size: smaller;">RESIDFP</b-button>
+            <b-button
+              v-on:click="setDefaultEmulationReSidFp()"
+              pill
+              variant="outline-dark"
+              size="sm"
+              style="font-size: smaller"
+              >RESIDFP</b-button
+            >
           </div>
         </div>
 
         <div class="right-button-container">
           <div class="button-container">
-            <b-button v-on:click="insertNextDisk()" pill variant="outline-dark" size="sm" style="font-size: smaller;">{{
-              $t("insertNextDisk")
-            }}</b-button>
+            <b-button v-on:click="insertNextDisk()" pill variant="outline-dark" size="sm" style="font-size: smaller"
+              >{{ $t("insertNextDisk") }}</b-button
+            >
           </div>
           <div class="button-container">
-            <b-button v-on:click="insertNextCart()" pill variant="outline-dark" size="sm" style="font-size: smaller;">{{
-              $t("insertNextCart")
-            }}</b-button>
+            <b-button v-on:click="insertNextCart()" pill variant="outline-dark" size="sm" style="font-size: smaller"
+              >{{ $t("insertNextCart") }}</b-button
+            >
           </div>
           <div class="button-container">
-            <b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-dark" size="sm" style="font-size: smaller;">Joy1 Btn</b-button>
+            <b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-dark" size="sm" style="font-size: smaller"
+              >Joy1 Btn</b-button
+            >
           </div>
           <div class="button-container">
-            <b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-dark" size="sm" style="font-size: smaller;">Joy2 Btn</b-button>
+            <b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-dark" size="sm" style="font-size: smaller"
+              >Joy2 Btn</b-button
+            >
           </div>
         </div>
 
@@ -117,15 +142,13 @@
       </div>
 
       <div class="video-bar">
-        <b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right">{{
-          $t("barcode")
-        }}</b-button>
+        <b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right"
+          >{{ $t("barcode") }}</b-button
+        >
         <b-button v-b-toggle.collapse-keyboard variant="primary" size="sm">{{ $t("keyboard") }}</b-button>
       </div>
 
-      <p>
-        {{ msg }}
-      </p>
+      <p>{{ msg }}</p>
 
       <b-collapse id="collapse-barcode" class="mt-2">
         <b-card>
@@ -672,8 +695,8 @@
                   hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
                   hls.attachMedia(video);
                   hls.on(Hls.Events.ERROR, function (event, data) {
-                      if (data.fatal) {
-                        switch(data.type) {
+                    if (data.fatal) {
+                      switch (data.type) {
                         case Hls.ErrorTypes.NETWORK_ERROR:
                           console.log("fatal network error encountered, try to recover");
                           hls.startLoad();
@@ -683,11 +706,11 @@
                           hls.recoverMediaError();
                           break;
                         default:
-                            console.log("fatal error encountered, cannot recover");
-                            hls.destroy();
-                            break;
-                        }
+                          console.log("fatal error encountered, cannot recover");
+                          hls.destroy();
+                          break;
                       }
+                    }
                   });
                   var promise = video.play();
                   if (promise !== undefined) {
