@@ -14,7 +14,7 @@ public class DebugUtil {
 			System.setProperty("hsqldb.reconfig_logging", "false");
 			// configure JSIDPlay2 logging (java util logging)
 			LogManager.getLogManager().readConfiguration(DebugUtil.class.getResourceAsStream(LOG_CONFIG_RESOURCE));
-		} catch (final IOException e) {
+		} catch (final IOException | NullPointerException e) {
 			Logger.getAnonymousLogger().severe("Could not load " + LOG_CONFIG_RESOURCE + ": " + e.getMessage());
 		}
 	}

@@ -2906,9 +2906,9 @@
         document.getElementById("main").classList.add("hide");
 
         var iframe = document.createElement("iframe");
-        iframe.setAttribute("id", "c64");
-        iframe.classList.add("iframe_c64");
+        iframe.setAttribute("name", Date.now());
         iframe.setAttribute("data-isloaded", "0");
+        iframe.classList.add("iframe_c64");
         iframe.onload = function () {
           iframe.onload = function () {
             var isLoaded = iframe.getAttribute("data-isloaded");
