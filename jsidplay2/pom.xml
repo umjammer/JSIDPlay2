@@ -621,7 +621,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>3.3.0</version>
 				<executions>
 					<execution>
 						<id>default-jar</id>
@@ -663,7 +663,7 @@
 								</manifestEntries>
 							</archive>
 							<outputDirectory>${project.build.directory}/standalone</outputDirectory>
-							<finalName>${project.artifactId}-console-${project.version}</finalName>
+							<classifier>console</classifier>
 							<excludes>
 								<exclude>**/*</exclude>
 							</excludes>
@@ -688,7 +688,7 @@
 								</manifestEntries>
 							</archive>
 							<outputDirectory>${project.build.directory}/standalone</outputDirectory>
-							<finalName>${project.artifactId}-sidblastertool-${project.version}</finalName>
+							<classifier>sidblastertool</classifier>
 							<excludes>
 								<exclude>**/*</exclude>
 							</excludes>
@@ -737,7 +737,7 @@
 								<exclude>builder/resid/residfp/ReSIDfp$FakeStereo.class</exclude>
 							</excludes>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
-							<finalName>jsiddevice-${project.version}</finalName>
+							<classifier>jsiddevice</classifier>
 							<archive>
 								<addMavenDescriptor>false</addMavenDescriptor>
 								<manifest>
@@ -778,7 +778,7 @@
 								<exclude>sidplay/ConsolePlayer*.class</exclude>
 							</excludes>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
-							<finalName>libsidplay-${project.version}</finalName>
+							<classifier>libsidplay</classifier>
 							<archive>
 								<addMavenDescriptor>false</addMavenDescriptor>
 								<manifest>
@@ -1023,7 +1023,7 @@
 						</goals>
 						<configuration>
 							<headerType>gui</headerType>
-							<jar>${project.build.directory}/deploy/jsiddevice-${project.version}.jar</jar>
+							<jar>${project.build.directory}/deploy/${project.artifactId}-${project.version}-jsiddevice.jar</jar>
 							<outfile>${project.build.directory}/deploy/jsiddevice-${project.version}.exe</outfile>
 							<errTitle>NetworkSIDDevice</errTitle>
 							<chdir>.</chdir>

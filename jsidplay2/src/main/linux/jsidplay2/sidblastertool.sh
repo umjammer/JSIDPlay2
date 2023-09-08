@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar ./${project.artifactId}-sidblastertool-${project.version}.jar "$@"
+java -jar ./${project.artifactId}-${project.version}-sidblastertool.jar "$@"
