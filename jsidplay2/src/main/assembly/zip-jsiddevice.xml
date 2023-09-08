@@ -22,7 +22,7 @@
 			<outputDirectory></outputDirectory>
 			<includes>
                 <include>jsiddevice-${project.version}.exe</include>
-                <include>jsiddevice-${project.version}.jar</include>
+                <include>jsidplay2-${project.version}-jsiddevice.jar</include>
                 <include>jsiddevice.png</include>
             </includes>
 			<filtered>false</filtered>

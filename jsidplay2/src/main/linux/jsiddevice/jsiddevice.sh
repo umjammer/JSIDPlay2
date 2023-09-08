@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar ./jsiddevice-${project.version}.jar
+java -jar ./jsidplay2-${project.version}-jsiddevice.jar
