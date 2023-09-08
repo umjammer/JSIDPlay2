@@ -98,7 +98,8 @@ public abstract class DirectoryRequestPathServletParametersImpl implements IDire
 		return concat(of(virtualParentFile + "/../"),
 				stream(ofNullable(parentFile.listFiles(new FilteredFileFilter(getFilter()))).orElse(new File[0]))
 						.sorted(new FileComparator())
-						.map(file -> new File(virtualParentFile, file.getName()) + (file.isDirectory() ? "/" : "")))
+						.map(file -> new File(virtualParentFile, file.getName()).toString().replace("\\", "/")
+								+ (file.isDirectory() ? "/" : "")))
 				.collect(Collectors.toList());
 	}
 
