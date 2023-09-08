@@ -1,3 +1,3 @@
 #!/bin/bash
 export LD_LIBRARY_PATH=.
-java -jar ./${project.artifactId}-${project.version}-console.jar "$@"
+java -classpath ./${project.artifactId}-${project.version}-ui.jar sidplay.ConsolePlayer "$@"

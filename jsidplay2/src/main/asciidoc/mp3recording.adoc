@@ -4,7 +4,7 @@ You can record SID as MP3 by command line using the following minimum options:
 
 [source,subs="attributes+"]
 ----
-java -jar jsidplay2-console-{version}.jar # <1>
+jsidplay2-console.sh # <1>
 --audio LIVE_MP3 # <2>
 ---- 
 <1> Launch command-line version

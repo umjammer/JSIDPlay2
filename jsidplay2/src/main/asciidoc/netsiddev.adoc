@@ -228,7 +228,7 @@ E.g you can use ConsolePlayer to use these SID implementations for playback.
 
 [source,subs="attributes+"]
 ----
-java -jar {artifactId}-console-{version}.jar \
+jsidplay2-console.sh \
 	--engine NETSID \
 	--NetSIDDevHost 127.0.0.1 \
 	--NetSIDDevPort 6581 # <1>

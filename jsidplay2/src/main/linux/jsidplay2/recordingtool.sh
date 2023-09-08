@@ -1,2 +1,2 @@
 #!/bin/bash
-java -classpath ./${project.artifactId}-${project.version}.jar ui.tools.RecordingTool  "$@"
+java -classpath ./${project.artifactId}-${project.version}-ui.jar ui.tools.RecordingTool  "$@"

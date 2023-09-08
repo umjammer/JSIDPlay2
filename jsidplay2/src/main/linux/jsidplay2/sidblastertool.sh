@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar ./${project.artifactId}-${project.version}-sidblastertool.jar "$@"
+java -classpath ./${project.artifactId}-${project.version}-ui.jar ui.tools.SIDBlasterTool  "$@"

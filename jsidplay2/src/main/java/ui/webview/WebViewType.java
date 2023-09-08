@@ -67,7 +67,7 @@ public enum WebViewType {
 					result = result.substring(0, occurrence)
 							+ result.substring(occurrence).replace("/jsidplay2-", "/jsidplay2_doc-");
 				}
-				result = result.replace(".jar", "-javadoc.jar");
+				result = result.replace("-ui.jar", "-javadoc.jar");
 				return result;
 			} else {
 				URL resource = getClass().getResource(url.replace(JAR_URL, ""));

@@ -206,14 +206,14 @@ please use the following command.
 
 [source,subs="attributes+"]
 ----
-java -classpath jsidplay2-{version}.jar server.restful.JSIDPlay2Server # <1>
+java -classpath jsidplay2-{version}-ui.jar server.restful.JSIDPlay2Server # <1>
 ----
 <1> Launch the JSIDPlay2 AppServer standalone
 
 For all supported parameters, please type:
 [source,subs="attributes+"]
 ----
-java -classpath jsidplay2-{version}.jar server.restful.JSIDPlay2Server --help # <1>
+java -classpath jsidplay2-{version}-ui.jar server.restful.JSIDPlay2Server --help # <1>
 ----
 <1> Show usage of the JSIDPlay2 AppServer standalone
 
@@ -231,9 +231,9 @@ please type 'vi ~/jsidplay2-server.sh'.
 [source,subs="attributes+"]
 ----
 #!/bin/bash -x
-cd /home/ken/Downloads/{artifactId}-{version}
+cd /home/ken/Downloads/{artifactId}-{version}-linux
 pkill -f server.restful.JSIDPlay2Server
-java -classpath {artifactId}-{version}.jar server.restful.JSIDPlay2Server \
+java -classpath {artifactId}-{version}-ui.jar server.restful.JSIDPlay2Server \
 	--appServerKeystore /home/ken/jsidplay2.ks \
 	--appServerKeystorePassword jsidplay2 \
 	--appServerKeyAlias jsidplay2 \
@@ -331,10 +331,10 @@ and if database already contains the song.
 [source,subs="attributes+"]
 ----
 #!/bin/bash -x
-cd /home/ken/Downloads/{artifactId}-{version}
+cd /home/ken/Downloads/{artifactId}-{version}-linux
 pkill -f server.restful.JSIDPlay2Server
 java -Dhibernate.dialect.storage_engine=innodb \
-	-classpath {artifactId}-{version}.jar ui.tools.RecordingTool \
+	-classpath {artifactId}-{version}-ui.jar ui.tools.RecordingTool \
 	--whatsSIDDatabaseDriver com.mysql.cj.jdbc.Driver \
 	--whatsSIDDatabaseUrl "jdbc:mysql://127.0.0.1:3306/{hvsc_version}?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" \
 	--whatsSIDDatabaseUsername <username> \
@@ -370,10 +370,10 @@ Keep in mind in the end the update requires another 250GB of disk space for the 
 [source,subs="attributes+"]
 ----
 #!/bin/bash -x
-cd /home/ken/Downloads/{artifactId}-{version}
+cd /home/ken/Downloads/{artifactId}-{version}-linux
 pkill -f server.restful.JSIDPlay2Server
 java -Dhibernate.dialect.storage_engine=innodb \
-	-classpath {artifactId}-{version}.jar ui.tools.RecordingTool \
+	-classpath {artifactId}-{version}-ui.jar ui.tools.RecordingTool \
 	--whatsSIDDatabaseDriver com.mysql.cj.jdbc.Driver \
 	--whatsSIDDatabaseUrl "jdbc:mysql://127.0.0.1:3306/{hvsc_version}?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" \
 	--whatsSIDDatabaseUsername <username> \
@@ -402,10 +402,10 @@ You only have to add additional WhatsSID database parameters.
 [source,subs="attributes+"]
 ----
 #!/bin/bash -x
-cd /home/ken/Downloads/{artifactId}-{version}
+cd /home/ken/Downloads/{artifactId}-{version}-linux
 pkill -f server.restful.JSIDPlay2Server
 java -Dhibernate.dialect.storage_engine=innodb \
-	-classpath {artifactId}-{version} server.restful.JSIDPlay2Server \
+	-classpath {artifactId}-{version}-ui server.restful.JSIDPlay2Server \
 	--appServerKeystore /home/ken/jsidplay2.ks \
 	--appServerKeystorePassword jsidplay2 \
 	--appServerKeyAlias jsidplay2 \
@@ -433,7 +433,7 @@ After=network.target network-online.target
 [Service]
 ExecStart=java \
 	-Dhibernate.dialect.storage_engine=innodb \
-	-classpath /home/ken/Downloads/{artifactId}-{version}/jsidplay2-{version}.jar \
+	-classpath /home/ken/Downloads/{artifactId}-{version}-linux/jsidplay2-{version}-ui.jar \
 	server.restful.JSIDPlay2Server \
 	--appServerKeystore /home/ken/jsidplay2.ks \
 	--appServerKeystorePassword jsidplay2 \
