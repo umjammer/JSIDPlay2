@@ -407,6 +407,7 @@
 			  <groupId>com.hubspot.maven.plugins</groupId>
 			  <artifactId>prettier-maven-plugin</artifactId>
 			  <version>0.18</version>
+			  <!-- version>0.19</version requires Java11 -->
 			  <configuration>
 				<prettierJavaVersion>2.0.0</prettierJavaVersion>
 				<printWidth>120</printWidth>
@@ -1175,7 +1176,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.6.0</version>
 				<executions>
 					<execution>
 						<id>zip-standalone</id>
