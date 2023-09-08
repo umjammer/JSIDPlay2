@@ -75,9 +75,9 @@ A separate program (.exe/.sh) is required and available to launch with Java 8.
 | MacOSX       | link:{codebase}{artifactId}-{version}-mac.zip[Download]      | link:{codebase}{artifactId}-{version}-mac-aarch64.zip[Download] (e.g. Apple M1)
 |===
 
-link:{codebase}libsidplay-{version}.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
+link:{codebase}jsidplay2-{version}-libsidplay.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
 
-link:{codebase}jsiddevice-{version}.jar[Download Network SID Device] (e.g. for link:https://www.acid64.com[ACID64])
+link:{codebase}jsidplay2-{version}-jsiddevice.jar[Download Network SID Device] (e.g. for link:https://www.acid64.com[ACID64])
 
 link:{codebase}jsidplay2app.apk[Download jsidplay2app] (*deprecated* android app has been replaced by link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox])
 
