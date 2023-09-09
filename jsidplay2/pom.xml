@@ -11,6 +11,7 @@
 		<url>https://sourceforge.net/projects/jsidplay2/</url>
 		<name>Ken Händel</name>
 	</organization>
+	<inceptionYear>2007</inceptionYear>
 	<name>JSIDPlay2</name>
 	<url>https://sourceforge.net/projects/jsidplay2/</url>
 	<description>This is a Commodore 64 emulator specialized for sound reproduction. It is also a SID player for music collections like HVSC and CGSC.
@@ -542,6 +543,17 @@
 							</sources>
 						</configuration>
 					</execution>
+					<execution>
+					  <id>timestamp-property</id>
+					  <goals>
+					    <goal>timestamp-property</goal>
+					  </goals>
+					  <phase>validate</phase>
+					  <configuration>
+					    <name>current.year</name>
+					    <pattern>yyyy</pattern>
+					  </configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -912,7 +924,7 @@
 							    <fileVersion>${project.version}.0.0</fileVersion>
 							    <txtFileVersion>${project.version}</txtFileVersion>
 							    <fileDescription>JSIDPlay2 UI Version</fileDescription>
-							    <copyright>Copyright (©) 2007-2023 Ken Händel</copyright>
+  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
 							    <productVersion>${project.version}.0.0</productVersion>
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
@@ -958,7 +970,7 @@
 							    <fileVersion>${project.version}.0.0</fileVersion>
 							    <txtFileVersion>${project.version}</txtFileVersion>
 							    <fileDescription>JSIDPlay2 UI Version for Java8</fileDescription>
-							    <copyright>Copyright (©) 2007-2023 Ken Händel</copyright>
+  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
 							    <productVersion>${project.version}.0.0</productVersion>
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
@@ -999,7 +1011,7 @@
 							    <fileVersion>${project.version}.0.0</fileVersion>
 							    <txtFileVersion>${project.version}</txtFileVersion>
 							    <fileDescription>JSIDPlay2 Console Version</fileDescription>
-							    <copyright>Copyright (©) 2007-2023 Ken Händel</copyright>
+  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
 							    <productVersion>${project.version}.0.0</productVersion>
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
@@ -1039,7 +1051,7 @@
 							    <fileVersion>${project.version}.0.0</fileVersion>
 							    <txtFileVersion>${project.version}</txtFileVersion>
 							    <fileDescription>JSIDDevice Version</fileDescription>
-							    <copyright>Copyright (©) 2007-2023 Ken Händel</copyright>
+  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
 							    <productVersion>${project.version}.0.0</productVersion>
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
@@ -1080,7 +1092,7 @@
 							    <fileVersion>${project.version}.0.0</fileVersion>
 							    <txtFileVersion>${project.version}</txtFileVersion>
 							    <fileDescription>SIDBlaster Tool</fileDescription>
-							    <copyright>Copyright (©) 2007-2023 Ken Händel</copyright>
+  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
 							    <productVersion>${project.version}.0.0</productVersion>
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
@@ -1121,7 +1133,7 @@
 							    <fileVersion>${project.version}.0.0</fileVersion>
 							    <txtFileVersion>${project.version}</txtFileVersion>
 							    <fileDescription>Recording Tool</fileDescription>
-							    <copyright>Copyright (©) 2007-2023 Ken Händel</copyright>
+  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
 							    <productVersion>${project.version}.0.0</productVersion>
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
