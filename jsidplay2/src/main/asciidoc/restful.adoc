@@ -405,7 +405,7 @@ You only have to add additional WhatsSID database parameters.
 cd /home/ken/Downloads/{artifactId}-{version}-linux
 pkill -f server.restful.JSIDPlay2Server
 java -Dhibernate.dialect.storage_engine=innodb \
-	-classpath {artifactId}-{version}-ui server.restful.JSIDPlay2Server \
+	-classpath {artifactId}-{version}-ui.jar server.restful.JSIDPlay2Server \
 	--appServerKeystore /home/ken/jsidplay2.ks \
 	--appServerKeystorePassword jsidplay2 \
 	--appServerKeyAlias jsidplay2 \

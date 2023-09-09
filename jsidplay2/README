@@ -106,3 +106,18 @@ Java JMX - jvisualvm connection parameters for JSIDPlay2:
 
 Remote Debugging:
 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9999
+
+Internal Testing the build (Java8 and newer):
+=============================================
+export PATH=/home/ken/Downloads/jdk1.8.0_211/bin:$PATH
+./jsidplay2-console.sh 
+./jsidplay2-console.sh ~/Downloads/Turrican_2-The_Final_Fight.sid 
+./jsidplay2-java8.sh ~/Downloads/Turrican_2-The_Final_Fight.sid 
+./jsidplay2.sh ~/Downloads/Turrican_2-The_Final_Fight.sid 
+./sidblastertool.sh 
+./recordingtool.sh 
+cd ../deploy/
+unzip jsiddevice-4.8.zip
+java -jar ./jsidplay2-4.8-libsidplay.jar ~/Downloads/Turrican_2-The_Final_Fight.sid 
+./jsiddevice-4.8/jsiddevice.sh
+./jsiddevice-4.8/jsiddevice-console.sh
