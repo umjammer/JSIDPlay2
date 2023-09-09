@@ -56,12 +56,27 @@
 
 	<profiles>
 		<profile>
-			<id>development</id>
+			<id>development-java8</id>
 			<properties>
 				<maven.test.skip>true</maven.test.skip>
+				<additional.javadoc.options></additional.javadoc.options>
+				<javadoc.path>${java.home}/../bin/javadoc</javadoc.path>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
+			    <jdk>1.8</jdk>
+			</activation>
+		</profile>
+		<profile>
+			<id>development</id>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+				<additional.javadoc.options>-html5</additional.javadoc.options>
+				<javadoc.path>${java.home}/bin/javadoc</javadoc.path>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			    <jdk>[1.9,)</jdk>
 			</activation>
 		</profile>
 		<profile>
@@ -572,8 +587,8 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<additionalOptions>-html5 -source 8</additionalOptions>
-							<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+							<additionalOptions>${additional.javadoc.options} -source 8</additionalOptions>
+							<javadocExecutable>${javadoc.path}</javadocExecutable>
 							<doclint>${doclint}</doclint>
 							<jarOutputDirectory>${project.build.directory}/standalone</jarOutputDirectory>
 							<finalName>${project.artifactId}_doc-${project.version}</finalName>
