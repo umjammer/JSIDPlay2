@@ -698,8 +698,8 @@
                     if (data.fatal) {
                       switch (data.type) {
                         case Hls.ErrorTypes.NETWORK_ERROR:
-                          console.log("fatal network error encountered, try to recover");
-                          hls.startLoad();
+                          console.log("fatal network error encountered, cannot recover");
+                          hls.destroy();
                           break;
                         case Hls.ErrorTypes.MEDIA_ERROR:
                           console.log("fatal media error encountered, try to recover");
