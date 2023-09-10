@@ -5,9 +5,7 @@ import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -51,7 +49,7 @@ import ui.tuneinfos.TuneInfos;
 
 public class WebView extends C64VBox implements UIPart {
 
-	public class HyperlinkRedirectListener implements ChangeListener<Worker.State>, EventListener {
+	public class HyperlinkRedirectListener implements ChangeListener<Worker.State> {
 
 		private static final String IMG_TAG = "img";
 		private static final String CLICK_EVENT = "click";
@@ -71,7 +69,80 @@ public class WebView extends C64VBox implements UIPart {
 						EventTarget eventTarget = (EventTarget) node;
 						if (eventTarget.toString().matches("^(https?|ftp)://.*$")
 								&& !eventTarget.toString().endsWith("#null")) {
-							eventTarget.addEventListener(CLICK_EVENT, this, false);
+							eventTarget.addEventListener(CLICK_EVENT, new EventListener() {
+
+								private String href;
+
+								@Override
+								public void handleEvent(Event event) {
+									if (event.getCurrentTarget() instanceof HTMLAnchorElement) {
+										HTMLAnchorElement anchorElement = (HTMLAnchorElement) event.getCurrentTarget();
+										href = anchorElement.getHref();
+										if (href == null) {
+											return;
+										}
+										if (convenience.isSupportedMedia(new File(href))) {
+											// prevent to open media embedded in the browser window
+											event.preventDefault();
+										}
+										Platform.runLater(() -> {
+											try {
+												// we try to download even unsupported media links
+												// (HTTP redirection is very likely)
+												new DownloadThread(util.getConfig(), new IDownloadListener() {
+
+													@Override
+													public void downloadStop(File downloadedFile) {
+														try {
+															isDownloading = false;
+															Platform.runLater(() -> webView.setCursor(Cursor.DEFAULT));
+															if (downloadedFile != null) {
+
+																File targetDir = new File(
+																		util.getConfig().getSidplay2Section()
+																				.getTmpDir(),
+																		UUID.randomUUID().toString());
+																File targetFile = new File(targetDir,
+																		downloadedFile.getName());
+																targetDir.mkdirs();
+																Files.move(Paths.get(downloadedFile.getAbsolutePath()),
+																		Paths.get(targetFile.getAbsolutePath()),
+																		REPLACE_EXISTING);
+																if (showTuneInfos && IOUtils
+																		.getFilenameSuffix(targetFile.getName())
+																		.equalsIgnoreCase(".sid")) {
+																	showTuneInfos(util.getPlayer().getTune(),
+																			targetFile);
+																}
+
+																convenience.autostart(targetFile, LEXICALLY_FIRST_MEDIA,
+																		null, true);
+																Platform.runLater(
+																		() -> util.setPlayingTab(WebView.this));
+															}
+														} catch (IOException | SidTuneError e) {
+															// ignore
+														}
+													}
+
+													@Override
+													public void downloadStep(int step) {
+														isDownloading = true;
+														Platform.runLater(() -> {
+															webView.setCursor(Cursor.WAIT);
+															DoubleProperty progressProperty = util
+																	.progressProperty(webView.getScene());
+															progressProperty.setValue(step / 100.f);
+														});
+													}
+												}, new URI(href).toURL(), false).start();
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+										});
+									}
+								}
+							}, false);
 						}
 					}
 				}
@@ -84,65 +155,6 @@ public class WebView extends C64VBox implements UIPart {
 							n.setSrc(m.toExternalForm());
 						}
 					}
-				}
-			}
-		}
-
-		@Override
-		public void handleEvent(Event event) {
-			if (event.getCurrentTarget() instanceof HTMLAnchorElement) {
-				HTMLAnchorElement anchorElement = (HTMLAnchorElement) event.getCurrentTarget();
-				String href = anchorElement.getHref();
-				if (href == null) {
-					return;
-				}
-				try {
-					if (convenience.isSupportedMedia(new File(href))) {
-						// prevent to open media embedded in the browser window
-						event.preventDefault();
-					}
-					// we try to download even unsupported media links
-					// (HTTP redirection is very likely)
-					new DownloadThread(util.getConfig(), new IDownloadListener() {
-
-						@Override
-						public void downloadStop(File downloadedFile) {
-							try {
-								isDownloading = false;
-								Platform.runLater(() -> webView.setCursor(Cursor.DEFAULT));
-								if (downloadedFile != null) {
-
-									File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(),
-											UUID.randomUUID().toString());
-									File targetFile = new File(targetDir, downloadedFile.getName());
-									targetDir.mkdirs();
-									Files.move(Paths.get(downloadedFile.getAbsolutePath()),
-											Paths.get(targetFile.getAbsolutePath()), REPLACE_EXISTING);
-									if (showTuneInfos && IOUtils.getFilenameSuffix(targetFile.getName())
-											.equalsIgnoreCase(".sid")) {
-										showTuneInfos(util.getPlayer().getTune(), targetFile);
-									}
-
-									convenience.autostart(targetFile, LEXICALLY_FIRST_MEDIA, null, true);
-									Platform.runLater(() -> util.setPlayingTab(WebView.this));
-								}
-							} catch (IOException | SidTuneError e) {
-								// ignore
-							}
-						}
-
-						@Override
-						public void downloadStep(int step) {
-							isDownloading = true;
-							Platform.runLater(() -> {
-								webView.setCursor(Cursor.WAIT);
-								DoubleProperty progressProperty = util.progressProperty(webView.getScene());
-								progressProperty.setValue(step / 100.f);
-							});
-						}
-					}, new URI(href).toURL(), false).start();
-				} catch (MalformedURLException | URISyntaxException e) {
-					e.printStackTrace();
 				}
 			}
 		}

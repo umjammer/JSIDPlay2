@@ -283,7 +283,7 @@ q   - quit player
 
 In the following image the general layout of the UI is shown.
   
-image:StartScreen.png[JSidplay2 {version} - Start Screen]
+image:images/StartScreen.png[JSidplay2 {version} - Start Screen]
 
 The main window is divided in several regions:
 

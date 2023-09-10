@@ -171,5 +171,5 @@ Credits go first to the original authors for doing such a great sidplay2 softwar
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   
-link:https://www.disclaimer.de/disclaimer.htm[image:disclaimer.gif[Disclaimer]]
+link:https://www.disclaimer.de/disclaimer.htm[image:{codebase}images/disclaimer.gif[Disclaimer]]
   
