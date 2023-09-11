@@ -80,6 +80,14 @@
 			</activation>
 		</profile>
 		<profile>
+			<id>release-java8</id>
+			<properties>
+				<maven.test.skip>false</maven.test.skip>
+				<additional.javadoc.options></additional.javadoc.options>
+				<javadoc.path>${java.home}/../bin/javadoc</javadoc.path>
+			</properties>
+		</profile>
+		<profile>
 			<id>release</id>
 			<properties>
 				<maven.test.skip>false</maven.test.skip>
