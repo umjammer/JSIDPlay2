@@ -51,7 +51,7 @@
           <audio ref="audioElm" v-show="showAudio" v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls>
             I'm sorry. Your browser doesn't support HTML5 audio
           </audio>
-          <div v-show="deviceCount > 0">
+          <div v-bind:style="{ display: hardwareDisplay }">
             <b-button
               size="sm"
               variant="success"
@@ -92,7 +92,7 @@
                   C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
                   JSIDPlay2 is copyrighted to:<br />
                   2007-
-                  <script type="text/javascript">
+                  <script type="application/javascript">
                     document.write(new Date().getFullYear());
                   </script>
                   Ken H&#228;ndel,<br />
@@ -1622,7 +1622,7 @@
                             <b-form-timepicker
                               id="startTime"
                               reset-button
-                              reset-value="00:00"
+                              reset-value="'00:00'"
                               class="right"
                               v-model="startTime"
                             />
@@ -1636,7 +1636,7 @@
                             <b-form-timepicker
                               id="defaultPlayLength"
                               reset-button
-                              reset-value="00:00"
+                              reset-value="'00:00'"
                               class="right"
                               v-model="defaultPlayLength"
                             />
@@ -1650,7 +1650,7 @@
                             <b-form-timepicker
                               id="fadeInTime"
                               reset-button
-                              reset-value="00:00"
+                              reset-value="'00:00'"
                               class="right"
                               v-model="fadeInTime"
                             />
@@ -1664,7 +1664,7 @@
                             <b-form-timepicker
                               id="fadeOutTime"
                               reset-button
-                              reset-value="00:00"
+                              reset-value="'00:00'"
                               class="right"
                               v-model="fadeOutTime"
                             />
@@ -1679,7 +1679,6 @@
                               id="mainVolume"
                               class="right"
                               v-model="convertOptions.config.audioSection.mainVolume"
-                              :locale="i18n.locale"
                               :formatter-fn="volumeFormatter"
                               min="-6"
                               max="6"
@@ -1695,7 +1694,6 @@
                               id="secondVolume"
                               class="right"
                               v-model="convertOptions.config.audioSection.secondVolume"
-                              :locale="i18n.locale"
                               :formatter-fn="volumeFormatter"
                               min="-6"
                               max="6"
@@ -1711,7 +1709,6 @@
                               id="thirdVolume"
                               class="right"
                               v-model="convertOptions.config.audioSection.thirdVolume"
-                              :locale="i18n.locale"
                               :formatter-fn="volumeFormatter"
                               min="-6"
                               max="6"
@@ -1727,7 +1724,6 @@
                               id="mainBalance"
                               class="right"
                               v-model="convertOptions.config.audioSection.mainBalance"
-                              :locale="i18n.locale"
                               :formatter-fn="balanceFormatter"
                               min="0"
                               max="1"
@@ -1744,7 +1740,6 @@
                               id="secondBalance"
                               class="right"
                               v-model="convertOptions.config.audioSection.secondBalance"
-                              :locale="i18n.locale"
                               :formatter-fn="balanceFormatter"
                               min="0"
                               max="1"
@@ -1760,7 +1755,6 @@
                               id="thirdBalance"
                               class="right"
                               v-model="convertOptions.config.audioSection.thirdBalance"
-                              :locale="i18n.locale"
                               :formatter-fn="balanceFormatter"
                               min="0"
                               max="1"
@@ -1776,7 +1770,6 @@
                               id="mainDelay"
                               class="right"
                               v-model="convertOptions.config.audioSection.mainDelay"
-                              :locale="i18n.locale"
                               :formatter-fn="delayFormatter"
                               min="0"
                               max="100"
@@ -1792,7 +1785,6 @@
                               id="secondDelay"
                               class="right"
                               v-model="convertOptions.config.audioSection.secondDelay"
-                              :locale="i18n.locale"
                               :formatter-fn="delayFormatter"
                               min="0"
                               max="100"
@@ -1808,7 +1800,6 @@
                               id="thirdDelay"
                               class="right"
                               v-model="convertOptions.config.audioSection.thirdDelay"
-                              :locale="i18n.locale"
                               :formatter-fn="delayFormatter"
                               min="0"
                               max="100"
@@ -3364,12 +3355,15 @@
           defaultConvertOptions: $convertOptions,
         },
         computed: {
+        	hardwareDisplay: function() {
+        	  return deviceCount > 0 ? 'block' : 'none'
+          },
           startTime: {
             set: function (val) {
               this.convertOptions.config.sidplay2Section.startTime = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.startTime;
+              return (this.convertOptions.config.sidplay2Section.startTime).toString();
             },
           },
           defaultPlayLength: {
@@ -3377,7 +3371,7 @@
               this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.defaultPlayLength;
+              return (this.convertOptions.config.sidplay2Section.defaultPlayLength).toString();
             },
           },
           fadeInTime: {
@@ -3385,7 +3379,7 @@
               this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.fadeInTime;
+              return (this.convertOptions.config.sidplay2Section.fadeInTime).toString();
             },
           },
           fadeOutTime: {
@@ -3393,7 +3387,7 @@
               this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.fadeOutTime;
+              return (this.convertOptions.config.sidplay2Section.fadeOutTime).toString();;
             },
           },
           playlistEntryUrl: function () {
