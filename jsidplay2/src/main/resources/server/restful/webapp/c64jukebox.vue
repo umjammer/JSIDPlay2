@@ -11,18 +11,18 @@
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <!-- Load required Bootstrap, BootstrapVue and Icons CSS -->
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.6.2/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue.min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons.min.css" />
+    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.6.2/dist/css/bootstrap$min.css" />
+    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.css" />
+    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.css" />
 
     <!-- Load Vue followed by BootstrapVue and Icons -->
-    <script src="/webjars/vue/2.7.14/dist/vue.min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue.min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons.min.js"></script>
+    <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
+    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.js"></script>
+    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.js"></script>
 
     <!-- helpers -->
-    <script src="/webjars/vue-i18n/8.28.2/dist/vue-i18n.min.js"></script>
-    <script src="/webjars/axios/0.27.2/dist/axios.min.js"></script>
+    <script src="/webjars/vue-i18n/8.28.2/dist/vue-i18n$min.js"></script>
+    <script src="/webjars/axios/0.27.2/dist/axios$min.js"></script>
 
     <!-- USB -->
     <script src="/static/usb/hardsid.js"></script>
@@ -91,11 +91,7 @@
                 <p style="text-align: center; font-size: smaller; padding: 16px">
                   C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
                   JSIDPlay2 is copyrighted to:<br />
-                  2007-
-                  <script type="application/javascript">
-                    document.write(new Date().getFullYear());
-                  </script>
-                  Ken H&#228;ndel,<br />
+                  2007-$year Ken H&#228;ndel,<br />
                   Antti S. Lankila and Wilfred Bos<br /><br />
                   Distortion Simulation and 6581/8580 emulation:<br />
                   Copyright &#169; 2005-2011 Antti S. Lankila<br />
@@ -278,7 +274,10 @@
                         @sliding-start="onSlideStart"
                         @sliding-end="onSlideEnd"
                       >
-                        <b-carousel-slide v-for="entry in directory.filter((entry) => isPicture(entry))">
+                        <b-carousel-slide
+                          v-for="entry in directory.filter((entry) => isPicture(entry))"
+                          v-bind:key="entry.filename"
+                        >
                           <template #img>
                             <b-img-lazy
                               :src="createDownloadUrl(entry.filename)"
@@ -2891,31 +2890,6 @@
           document.getElementById("main").classList.remove("hide");
         }
       }
-      function openiframe(url) {
-        closeiframe();
-        document.getElementById("main").classList.add("hide");
-
-        var iframe = document.createElement("iframe");
-        iframe.setAttribute("id", "c64");
-        iframe.setAttribute("name", Date.now());
-        iframe.setAttribute("data-isloaded", "0");
-        iframe.classList.add("iframe_c64");
-        iframe.onload = function () {
-          iframe.onload = function () {
-            var isLoaded = iframe.getAttribute("data-isloaded");
-            if (isLoaded != "1") {
-              setTimeout(() => closeiframe(), 5000);
-            }
-          };
-          iframe.src = url;
-        };
-        iframe.src =
-          "data:text/html;charset=utf-8,<html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
-          i18n.t("pleaseWait") +
-          "</p><span><i></i><i></i></span></div></body>";
-
-        document.getElementById("app").appendChild(iframe);
-      }
       const messages = {
         en: {
           ABOUT: "About",
@@ -3355,15 +3329,15 @@
           defaultConvertOptions: $convertOptions,
         },
         computed: {
-        	hardwareDisplay: function() {
-        	  return deviceCount > 0 ? 'block' : 'none'
+          hardwareDisplay: function () {
+            return deviceCount > 0 ? "block" : "none";
           },
           startTime: {
             set: function (val) {
               this.convertOptions.config.sidplay2Section.startTime = timeConverter(val);
             },
             get: function () {
-              return (this.convertOptions.config.sidplay2Section.startTime).toString();
+              return this.convertOptions.config.sidplay2Section.startTime.toString();
             },
           },
           defaultPlayLength: {
@@ -3371,7 +3345,7 @@
               this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(val);
             },
             get: function () {
-              return (this.convertOptions.config.sidplay2Section.defaultPlayLength).toString();
+              return this.convertOptions.config.sidplay2Section.defaultPlayLength.toString();
             },
           },
           fadeInTime: {
@@ -3379,7 +3353,7 @@
               this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(val);
             },
             get: function () {
-              return (this.convertOptions.config.sidplay2Section.fadeInTime).toString();
+              return this.convertOptions.config.sidplay2Section.fadeInTime.toString();
             },
           },
           fadeOutTime: {
@@ -3387,7 +3361,7 @@
               this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(val);
             },
             get: function () {
-              return (this.convertOptions.config.sidplay2Section.fadeOutTime).toString();;
+              return this.convertOptions.config.sidplay2Section.fadeOutTime.toString();
             },
           },
           playlistEntryUrl: function () {
@@ -3453,6 +3427,31 @@
           },
         },
         methods: {
+          openiframe: function (url) {
+            closeiframe();
+            document.getElementById("main").classList.add("hide");
+
+            var iframe = document.createElement("iframe");
+            iframe.setAttribute("id", "c64");
+            iframe.setAttribute("name", Date.now());
+            iframe.setAttribute("data-isloaded", "0");
+            iframe.classList.add("iframe_c64");
+            iframe.onload = function () {
+              iframe.onload = function () {
+                var isLoaded = iframe.getAttribute("data-isloaded");
+                if (isLoaded != "1") {
+                  setTimeout(() => closeiframe(), 5000);
+                }
+              };
+              iframe.src = url;
+            };
+            iframe.src =
+              "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
+              i18n.t("pleaseWait") +
+              "</p><span><i></i><i></i></span></div></body>";
+
+            document.getElementById("app").appendChild(iframe);
+          },
           init: async function () {
             sidWriteQueue.clear();
             if (typeof timer !== "undefined") {
@@ -4024,7 +4023,9 @@
               (typeof itemId === "undefined" && typeof categoryId === "undefined"
                 ? ""
                 : "&itemId=" + itemId + "&categoryId=" + categoryId) +
-              (autostart ? "&autostart=" + uriEncode(autostart) : "")
+              (autostart ? "&autostart=" + uriEncode(autostart) : "") +
+              "&devtools=" +
+              $devtools
             );
           },
           createSIDMappingUrl: function (entry, itemId, categoryId) {

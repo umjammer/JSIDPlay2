@@ -11,21 +11,21 @@
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <!-- Load required Bootstrap, BootstrapVue and Icons CSS -->
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.6.2/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue.min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons.min.css" />
+    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.6.2/dist/css/bootstrap$min.css" />
+    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.css" />
+    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.css" />
 
     <!-- Load Vue followed by BootstrapVue and Icons -->
-    <script src="/webjars/vue/2.7.14/dist/vue.min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue.min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons.min.js"></script>
+    <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
+    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.js"></script>
+    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.js"></script>
 
     <!-- helpers -->
-    <script src="/webjars/vue-i18n/8.28.2/dist/vue-i18n.min.js"></script>
-    <script src="/webjars/axios/0.27.2/dist/axios.min.js"></script>
+    <script src="/webjars/vue-i18n/8.28.2/dist/vue-i18n$min.js"></script>
+    <script src="/webjars/axios/0.27.2/dist/axios$min.js"></script>
     <script src="$hlsScript"></script>
 
-    <script type="text/javascript">
+    <script type="application/javascript">
       var sourceURL = document.referrer;
       if (sourceURL) {
         window.parent.postMessage("1", sourceURL);
@@ -41,15 +41,10 @@
     <div id="app">
       <div class="locale-changer">
         <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
-        <b-button v-if="window.self !== window.top" onclick="parent.closeiframe()" pill variant="outline-dark" size="sm"
+        <b-button v-if="closeable()" onclick="parent.closeiframe()" pill variant="outline-dark" size="sm"
           >{{ $t("close") }}</b-button
         >
-        <b-form-select
-          v-if="window.self === window.top"
-          v-model="$i18n.locale"
-          size="sm"
-          style="width: auto; margin: 1px"
-        >
+        <b-form-select v-if="localizeable()" v-model="$i18n.locale" size="sm" style="width: auto; margin: 1px">
           <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
         </b-form-select>
       </div>
@@ -387,6 +382,12 @@
           msg: "",
         },
         methods: {
+          closeable: function () {
+            return window.self !== window.top;
+          },
+          localizeable: function () {
+            return window.self === window.top;
+          },
           startVideo: function () {
             if (!this.hls) {
               setTimeout(() => {

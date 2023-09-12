@@ -109,6 +109,17 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
 	public static class ConvertServletParameters extends FileRequestPathServletParameters {
 
+		private Boolean useDevTools = Boolean.FALSE;
+
+		public Boolean getUseDevTools() {
+			return useDevTools;
+		}
+
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", order = -14)
+		public void setUseDevTools(Boolean useDevTools) {
+			this.useDevTools = useDevTools;
+		}
+
 		private Integer startSong;
 
 		public Integer getStartSong() {
@@ -511,17 +522,18 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
 		String qrCodeImgTag = createQrCodeImgTag(getRequestURL(request), "UTF-8", "png", 320, 320);
 
-		Map<String, String> result = new HashMap<>();
-		result.put("$uuid", uuid.toString());
-		result.put("$qrCodeImgTag", qrCodeImgTag);
-		result.put("$videoUrl", videoUrl);
-		result.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
-		result.put("$hlsType", servletParameters.getHlsType().name());
-		result.put("$hlsScript", servletParameters.getHlsType().getScript());
-		result.put("$hlsStyle", servletParameters.getHlsType().getStyle());
-		result.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
-		result.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
-		return result;
+		Map<String, String> replacements = new HashMap<>();
+		replacements.put("$uuid", uuid.toString());
+		replacements.put("$qrCodeImgTag", qrCodeImgTag);
+		replacements.put("$videoUrl", videoUrl);
+		replacements.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
+		replacements.put("$hlsType", servletParameters.getHlsType().name());
+		replacements.put("$hlsScript", servletParameters.getHlsType().getScript());
+		replacements.put("$hlsStyle", servletParameters.getHlsType().getStyle());
+		replacements.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
+		replacements.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
+		replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
+		return replacements;
 	}
 
 	private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)

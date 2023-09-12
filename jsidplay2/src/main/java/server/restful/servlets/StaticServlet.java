@@ -11,12 +11,14 @@ import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPT
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.http.HttpHeaders;
 
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
@@ -34,6 +36,17 @@ public class StaticServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
 	public static class StaticServletParameters extends WebResourceRequestPathServletParameters {
+
+		private Boolean useDevTools = Boolean.FALSE;
+
+		public Boolean getUseDevTools() {
+			return useDevTools;
+		}
+
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", order = -2)
+		public void setUseDevTools(Boolean useDevTools) {
+			this.useDevTools = useDevTools;
+		}
 
 	}
 
@@ -78,6 +91,9 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$convertMessagesEn", CONVERT_MESSAGES_EN);
 				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);
 				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
+				replacements.put("$year", String.valueOf(LocalDate.now().getYear()));
+				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
+				replacements.put("$devtools", String.valueOf(servletParameters.getUseDevTools()));
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 				if (mimeType.isCacheable()) {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
