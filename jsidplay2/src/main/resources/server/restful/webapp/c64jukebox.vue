@@ -2656,9 +2656,6 @@
     </div>
 
     <script>
-      async function save_config(convertOptions) {
-        localStorage.convertOptions = JSON.stringify(convertOptions);
-      }
       async function init_hardsid() {
         await hardsid_usb_init(true, SysMode.SIDPLAY);
         deviceCount = hardsid_usb_getdevcount();
@@ -4626,7 +4623,7 @@
           },
           convertOptions: {
             handler: function (after, before) {
-              save_config(this.convertOptions);
+              localStorage.convertOptions = JSON.stringify(this.convertOptions);
             },
             deep: true,
           },
