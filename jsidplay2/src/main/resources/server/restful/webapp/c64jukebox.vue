@@ -1622,9 +1622,9 @@
                             <b-form-timepicker
                               id="startTime"
                               reset-button
-                              reset-value="timeConverter('00:00')"
+                              reset-value="00:00"
                               class="right"
-                              v-model="convertOptions.config.sidplay2Section.startTime"
+                              v-model="startTime"
                             />
                           </label>
                         </span>
@@ -1636,9 +1636,9 @@
                             <b-form-timepicker
                               id="defaultPlayLength"
                               reset-button
-                              reset-value="timeConverter('00:00')"
+                              reset-value="00:00"
                               class="right"
-                              v-model="convertOptions.config.sidplay2Section.defaultPlayLength"
+                              v-model="defaultPlayLength"
                             />
                           </label>
                         </span>
@@ -1650,9 +1650,9 @@
                             <b-form-timepicker
                               id="fadeInTime"
                               reset-button
-                              reset-value="timeConverter('00:00')"
+                              reset-value="00:00"
                               class="right"
-                              v-model="convertOptions.config.sidplay2Section.fadeInTime"
+                              v-model="fadeInTime"
                             />
                           </label>
                         </span>
@@ -1664,9 +1664,9 @@
                             <b-form-timepicker
                               id="fadeOutTime"
                               reset-button
-                              reset-value="timeConverter('00:00')"
+                              reset-value="00:00"
                               class="right"
-                              v-model="convertOptions.config.sidplay2Section.fadeOutTime"
+                              v-model="fadeOutTime"
                             />
                           </label>
                         </span>
@@ -3361,6 +3361,38 @@
           defaultConvertOptions: $convertOptions,
         },
         computed: {
+          startTime: {
+            set: function (val) {
+              this.convertOptions.config.sidplay2Section.startTime = timeConverter(val);
+            },
+            get: function () {
+              return this.convertOptions.config.sidplay2Section.startTime;
+            },
+          },
+          defaultPlayLength: {
+            set: function (val) {
+              this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(val);
+            },
+            get: function () {
+              return this.convertOptions.config.sidplay2Section.defaultPlayLength;
+            },
+          },
+          fadeInTime: {
+            set: function (val) {
+              this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(val);
+            },
+            get: function () {
+              return this.convertOptions.config.sidplay2Section.fadeInTime;
+            },
+          },
+          fadeOutTime: {
+            set: function (val) {
+              this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(val);
+            },
+            get: function () {
+              return this.convertOptions.config.sidplay2Section.fadeOutTime;
+            },
+          },
           playlistEntryUrl: function () {
             if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
               return undefined;
@@ -4381,7 +4413,7 @@
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/v2/aql/0/500" + url,
+              url: "$assembly64Url/leet/search/v2/aql/0/200" + url,
             })
               .then((response) => {
                 if (response.status === 200) {
@@ -4596,18 +4628,6 @@
           },
           convertOptions: {
             handler: function (after, before) {
-              this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(
-                this.convertOptions.config.sidplay2Section.defaultPlayLength
-              );
-              this.convertOptions.config.sidplay2Section.startTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.startTime
-              );
-              this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeInTime
-              );
-              this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(
-                this.convertOptions.config.sidplay2Section.fadeOutTime
-              );
               localStorage.convertOptions = JSON.stringify(this.convertOptions);
             },
             deep: true,
