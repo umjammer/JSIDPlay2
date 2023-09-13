@@ -93,7 +93,6 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
 				replacements.put("$year", String.valueOf(LocalDate.now().getYear()));
 				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
-				replacements.put("$devtools", String.valueOf(servletParameters.getUseDevTools()));
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 				if (mimeType.isCacheable()) {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);

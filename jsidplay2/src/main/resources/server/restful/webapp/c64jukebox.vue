@@ -4022,7 +4022,7 @@
                 : "&itemId=" + itemId + "&categoryId=" + categoryId) +
               (autostart ? "&autostart=" + uriEncode(autostart) : "") +
               "&devtools=" +
-              $devtools
+              ("$min" !== ".min")
             );
           },
           createSIDMappingUrl: function (entry, itemId, categoryId) {

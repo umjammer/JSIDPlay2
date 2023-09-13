@@ -5,13 +5,18 @@
     <title>WhatsSID</title>
   </head>
   <body>
-    <script src="/webjars/vue/2.7.14/dist/vue.min.js"></script>
-    <script src="/webjars/axios/0.27.2/dist/axios.min.js"></script>
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
-    <h1>WhatsSID?</h1>
+    <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
+    <script src="/webjars/axios/0.27.2/dist/axios$min.js"></script>
+
+    <h1>WhatsSID? Music Recognition</h1>
 
     <div id="app">
-      <h1>Upload a WAV File</h1>
+      <p>Upload a WAV File to detect song</p>
       <form enctype="multipart/form-data">
         <input type="file" name="file" v-on:change="fileChange($event.target.files)" />
         <button type="button" v-on:click="upload()">Upload</button>
