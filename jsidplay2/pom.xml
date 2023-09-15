@@ -61,6 +61,7 @@
 				<maven.test.skip>true</maven.test.skip>
 				<additional.javadoc.options></additional.javadoc.options>
 				<javadoc.path>${java.home}/../bin/javadoc</javadoc.path>
+				<generatedSource>${project.build.directory}/generated-sources/annotation</generatedSource>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -73,6 +74,7 @@
 				<maven.test.skip>true</maven.test.skip>
 				<additional.javadoc.options>-html5</additional.javadoc.options>
 				<javadoc.path>${java.home}/bin/javadoc</javadoc.path>
+				<generatedSource>${project.build.directory}/generated-sources</generatedSource>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -564,7 +566,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources</source>
+								<source>${generatedSource}</source>
 							</sources>
 						</configuration>
 					</execution>
