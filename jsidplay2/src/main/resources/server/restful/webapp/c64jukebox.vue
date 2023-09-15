@@ -3429,6 +3429,7 @@
               "</p><span><i></i><i></i></span></div></body>";
 
             document.getElementById("app").appendChild(iframe);
+            window.scrollTo(0, 0);
           },
           init: async function () {
             sidWriteQueue.clear();
