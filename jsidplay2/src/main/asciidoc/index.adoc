@@ -63,16 +63,24 @@ Please read manual here:
 
 Click link:https://sourceforge.net/projects/jsidplay2/files/[here^] to download
 
+== Java version compatibility
+
+JSIDPlay2 source code is still downward compatible to the Java 8 API, but unfortunately compatibility is a bit more complicated.
+Because of the use of JavaFX as a dependency, that has been compiled with Java 17, we need this at runtime as well for the UI version.
+
+JSIDPlay2 has been tested and is compatible wit Oracle Java 8 (with JavaFX already included), OpenJDK 17 (with JafaFX contained in my release)
+and OpenJDK 21 preview release (with JafaFX contained in my release).
+The reason, why we are not compatible with Java 11 is, that a compatible JavaFX version is missing and there is no JDK distribution known to me containing JavaFX.
+
+Btw, a separate program (.exe/.sh) is required and available to launch with Oracle Java 8.
+
 == Latest Beta Versions
 
-JSIDPlay2 is compatible wit Java 8, 11, 17, 21, etc.
-
-A separate program (.exe/.sh) is required and available to launch with Java 8.
 |===
-|              | *x86_64*                                                       | *aarm64*
-| Windows      | link:{codebase}{artifactId}-{version}-win.zip[Download]	     |
+|              | *x86_64*                                                    | *aarm64*
+| Windows      | link:{codebase}{artifactId}-{version}-win.zip[Download]	 |
 | Linux        | link:{codebase}{artifactId}-{version}-linux.zip[Download]	 | link:{codebase}{artifactId}-{version}-linux-aarch64.zip[Download]
-| MacOSX       | link:{codebase}{artifactId}-{version}-mac.zip[Download]      | link:{codebase}{artifactId}-{version}-mac-aarch64.zip[Download] (e.g. Apple M1)
+| MacOSX       | link:{codebase}{artifactId}-{version}-mac.zip[Download]     | link:{codebase}{artifactId}-{version}-mac-aarch64.zip[Download] (e.g. Apple M1)
 |===
 
 link:{codebase}jsidplay2-{version}-libsidplay.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
