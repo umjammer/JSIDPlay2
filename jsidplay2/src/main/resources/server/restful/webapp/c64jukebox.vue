@@ -3415,6 +3415,7 @@
             iframe.setAttribute("data-isloaded", "0");
             iframe.classList.add("iframe_c64");
             iframe.onload = function () {
+              window.scrollTo(0, 0);
               iframe.onload = function () {
                 var isLoaded = iframe.getAttribute("data-isloaded");
                 if (isLoaded != "1") {
@@ -3429,7 +3430,6 @@
               "</p><span><i></i><i></i></span></div></body>";
 
             document.getElementById("app").appendChild(iframe);
-            window.scrollTo(0, 0);
           },
           init: async function () {
             sidWriteQueue.clear();
