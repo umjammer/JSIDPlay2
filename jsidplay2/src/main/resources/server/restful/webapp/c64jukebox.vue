@@ -40,6 +40,18 @@
       <b-form id="main">
         <div class="locale-changer">
           <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
+          <b-button
+            :pressed.sync="theaterMode"
+            :variant="theaterMode ? 'success' : 'primary'"
+            size="sm"
+            v-on:click="theaterMode ? setNextPlaylistEntry() : pause()"
+          >
+            <span style="white-space: nowrap">
+              <b-icon-play-fill v-show="!theaterMode"> </b-icon-play-fill>
+              <b-icon-pause-fill v-show="theaterMode"> </b-icon-pause-fill>
+              {{ $t("theaterMode") }}
+            </span>
+          </b-button>
           <b-form-select @change="updateLanguage" v-model="$i18n.locale" size="sm" style="width: auto; margin: 1px">
             <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
               {{ lang }}
@@ -156,7 +168,7 @@
                 </div>
               </b-card-text>
             </b-tab>
-            <b-tab active style="position: relative">
+            <b-tab active style="position: relative" :disabled="theaterMode">
               <template #title>
                 {{ $t("SIDS") }}
                 <b-spinner
@@ -354,7 +366,7 @@
                           currentSid = shortEntry(entry.filename);
                           updateSid(entry.filename);
                           showAudio = true;
-                          Vue.nextTick(function () {
+                          $nextTick(function () {
                             play('', entry.filename);
                           });
                         "
@@ -492,7 +504,7 @@
                 </b-list-group>
               </b-card-text>
             </b-tab>
-            <b-tab style="position: relative">
+            <b-tab style="position: relative" :disabled="theaterMode">
               <template #title>
                 {{ $t("ASSEMBLY64") }}
                 <b-spinner
@@ -646,7 +658,7 @@
                                     currentSid = shortEntry(innerRow.item.filename);
                                     updateSid(innerRow.item.filename, row.item.id, row.item.categoryId);
                                     showAudio = true;
-                                    Vue.nextTick(function () {
+                                    $nextTick(function () {
                                       play('', innerRow.item.filename, row.item.id, row.item.categoryId);
                                     });
                                   "
@@ -998,7 +1010,7 @@
                 </div>
               </b-card-text>
             </b-tab>
-            <b-tab>
+            <b-tab :disabled="theaterMode">
               <template #title>
                 {{ $t("PL") }}
                 <b-spinner
@@ -1103,7 +1115,7 @@
                     "
                     v-on:click="
                       playlistIndex = index;
-                      Vue.nextTick(function () {
+                      $nextTick(function () {
                         play(
                           '',
                           playlist[playlistIndex].filename,
@@ -2899,6 +2911,7 @@
           STREAMING_NOTES:
             "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
           CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
+          theaterMode: "Theater Mode",
           currentlyPlaying: "Playing: ",
           parentDirectoryHint: "Go up one Level",
           sidInfoKey: "Name",
@@ -3046,6 +3059,7 @@
           STREAMING_NOTES:
             "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
           CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
+          theaterMode: "Theater Modus",
           currentlyPlaying: "Es spielt: ",
           parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
           sidInfoKey: "Name",
@@ -3173,6 +3187,7 @@
         el: "#app",
         i18n, //import multi-lang
         data: {
+          theaterMode: false,
           carouselImageHeight:
             window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
           slide: 0,
@@ -3759,6 +3774,10 @@
           setNextPlaylistEntry: function () {
             this.stop();
 
+            if (this.theaterMode) {
+              this.playRandomHVSC();
+              return;
+            }
             if (this.playlist.length === 0) {
               return;
             }
@@ -4226,6 +4245,27 @@
                 console.log(error);
               })
               .finally(() => (this.loadingPl = false));
+          },
+          playRandomHVSC: function () {
+            this.loadingCfg = true; //the loading begin
+            axios({
+              method: "get",
+              url: "/jsidplay2service/JSIDPlay2REST/random-hvsc",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            })
+              .then((response) => {
+                this.tabIndex = 3;
+                this.currentSid = response.data;
+                this.updateSid(response.data);
+                this.play("", response.data);
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+              .finally(() => (this.loadingCfg = false));
           },
           fetchFilters: function () {
             this.loadingCfg = true; //the loading begin
