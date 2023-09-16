@@ -7,3 +7,4 @@ Bugfix: thread safety issues fixed
 Bugfix: automated tests repaired
 Feature: Recording tool added for collections like HVSC using a configurable number of parallel threads
 Feature: GMod2 cartridge support added (untested EEPROM functionality)
+Feature: Theater mode added to C64Jukebox (random HVSC playback)
