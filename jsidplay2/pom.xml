@@ -922,7 +922,7 @@
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
-							<downloadUrl>https://java.com/download</downloadUrl>
+							<downloadUrl>https://adoptium.net/de/temurin/releases/?arch=x64&amp;package=jdk</downloadUrl>
 							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsidplay2.ico</icon>
@@ -937,7 +937,7 @@
 							</classPath>
 							<jre>
 								<path>%JAVA_HOME%;%PATH%</path>
-								<minVersion>1.9.0</minVersion>
+								<minVersion>1.17.0</minVersion>
 								<opts>
 									<opt>--module-path</opt>
 									<opt>.</opt>
