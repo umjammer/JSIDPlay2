@@ -1252,9 +1252,7 @@
                     <b-col style="border-right: 1px dotted grey">
                       <div class="settings-box">
                         <span class="setting">
-                          <b-button
-                            variant="success" v-on:click="hardware_hardsid_init()"
-                          >
+                          <b-button variant="success" v-on:click="hardware_hardsid_init()">
                             <span>{{ $t("CONNECT") }}</span>
                           </b-button>
                         </span>
@@ -3355,7 +3353,7 @@
           },
           stereoParameters: function () {
             if (this.showHardwarePlayer) {
-        	  return "";
+              return "";
             }
             if (this.stereoMode === "FORCE_2SID") {
               return "&dualSID=true&dualSIDBase=" + this.convertOptions.config.emulationSection.dualSidBase;
@@ -3401,7 +3399,7 @@
             HardwareFunctions.write = write_hardsid;
             HardwareFunctions.next = next_hardsid;
             HardwareFunctions.quit = quit_hardsid;
-            HardwareFunctions.mapping = 'hardsid-mapping';
+            HardwareFunctions.mapping = "hardsid-mapping";
             this.init();
           },
           hardware_exsid_init: function () {
@@ -3413,13 +3411,13 @@
             HardwareFunctions.mapping = "exsid-mapping";
             this.init();
           },
-          hardware_sidblaster_init: function() {
+          hardware_sidblaster_init: function () {
             HardwareFunctions.init = init_sidblaster;
             HardwareFunctions.reset = reset_sidblaster;
             HardwareFunctions.write = write_sidblaster;
             HardwareFunctions.next = next_sidblaster;
             HardwareFunctions.quit = quit_sidblaster;
-            HardwareFunctions.mapping = 'sidblaster-mapping';
+            HardwareFunctions.mapping = "sidblaster-mapping";
             this.init();
           },
           openiframe: function (url) {
@@ -3892,7 +3890,7 @@
               "?enableSidDatabase=" +
               this.convertOptions.config.sidplay2Section.enableDatabase +
               "&startTime=" +
-              (this.showHardwarePlayer? '0' : this.convertOptions.config.sidplay2Section.startTime) +
+              (this.showHardwarePlayer ? "0" : this.convertOptions.config.sidplay2Section.startTime) +
               "&defaultLength=" +
               this.convertOptions.config.sidplay2Section.defaultPlayLength +
               "&fadeIn=" +
