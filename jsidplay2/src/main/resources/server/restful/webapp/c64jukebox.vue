@@ -63,7 +63,7 @@
           <audio ref="audioElm" v-show="showAudio" v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls>
             I'm sorry. Your browser doesn't support HTML5 audio
           </audio>
-          <div v-bind:style="{ display: hardwareDisplay }">
+          <div v-show="showHardwarePlayer">
             <b-button
               size="sm"
               variant="success"
@@ -1253,16 +1253,7 @@
                       <div class="settings-box">
                         <span class="setting">
                           <b-button
-                            variant="success"
-                            v-on:click="
-                              HardwareFunctions.init = init_hardsid;
-                              HardwareFunctions.reset = reset_hardsid;
-                              HardwareFunctions.write = write_hardsid;
-                              HardwareFunctions.next = next_hardsid;
-                              HardwareFunctions.quit = quit_hardsid;
-                              HardwareFunctions.mapping = 'hardsid-mapping';
-                              init();
-                            "
+                            variant="success" v-on:click="hardware_hardsid_init()"
                           >
                             <span>{{ $t("CONNECT") }}</span>
                           </b-button>
@@ -1273,18 +1264,7 @@
                     <b-col>
                       <div class="settings-box">
                         <span class="setting">
-                          <b-button
-                            variant="success"
-                            v-on:click="
-                              HardwareFunctions.init = init_exsid;
-                              HardwareFunctions.reset = reset_exsid;
-                              HardwareFunctions.write = write_exsid;
-                              HardwareFunctions.next = next_exsid;
-                              HardwareFunctions.quit = quit_exsid;
-                              HardwareFunctions.mapping = 'exsid-mapping';
-                              init();
-                            "
-                          >
+                          <b-button variant="success" v-on:click="hardware_exsid_init()">
                             <span>{{ $t("CONNECT") }}</span>
                           </b-button></span
                         >
@@ -1295,16 +1275,7 @@
 						<div class="settings-box">
                     	  <span class="setting">
 							<b-button
-								variant="success"
-								v-on:click="
-									HardwareFunctions.init = init_sidblaster;
-									HardwareFunctions.reset = reset_sidblaster;
-									HardwareFunctions.write = write_sidblaster;
-									HardwareFunctions.next = next_sidblaster;
-									HardwareFunctions.quit = quit_sidblaster;
-									HardwareFunctions.mapping = 'sidblaster-mapping';
-									init();
-								"
+								variant="success" v-on:click="hardware_sidblaster_init()"
 							>
                               <span>{{ $t("CONNECT") }}</span>
 							</b-button></span
@@ -3193,6 +3164,7 @@
           slide: 0,
           sliding: null,
           showAudio: false,
+          showHardwarePlayer: false,
           langs: ["de", "en"],
           directoryMode: 0,
           // ABOUT
@@ -3382,6 +3354,9 @@
             );
           },
           stereoParameters: function () {
+            if (this.showHardwarePlayer) {
+        	  return "";
+            }
             if (this.stereoMode === "FORCE_2SID") {
               return "&dualSID=true&dualSIDBase=" + this.convertOptions.config.emulationSection.dualSidBase;
             } else if (this.stereoMode === "FORCE_3SID") {
@@ -3420,6 +3395,33 @@
           },
         },
         methods: {
+          hardware_hardsid_init: function () {
+            HardwareFunctions.init = init_hardsid;
+            HardwareFunctions.reset = reset_hardsid;
+            HardwareFunctions.write = write_hardsid;
+            HardwareFunctions.next = next_hardsid;
+            HardwareFunctions.quit = quit_hardsid;
+            HardwareFunctions.mapping = 'hardsid-mapping';
+            this.init();
+          },
+          hardware_exsid_init: function () {
+            HardwareFunctions.init = init_exsid;
+            HardwareFunctions.reset = reset_exsid;
+            HardwareFunctions.write = write_exsid;
+            HardwareFunctions.next = next_exsid;
+            HardwareFunctions.quit = quit_exsid;
+            HardwareFunctions.mapping = "exsid-mapping";
+            this.init();
+          },
+          hardware_sidblaster_init: function() {
+            HardwareFunctions.init = init_sidblaster;
+            HardwareFunctions.reset = reset_sidblaster;
+            HardwareFunctions.write = write_sidblaster;
+            HardwareFunctions.next = next_sidblaster;
+            HardwareFunctions.quit = quit_sidblaster;
+            HardwareFunctions.mapping = 'sidblaster-mapping';
+            this.init();
+          },
           openiframe: function (url) {
             closeiframe();
             document.getElementById("main").classList.add("hide");
@@ -3458,6 +3460,7 @@
               // regularly process SID write queue from now on!
               timer = setTimeout(() => this.doPlay());
               this.showAudio = false;
+              this.showHardwarePlayer = true;
             }
           },
           doPlay: async function () {
@@ -3577,6 +3580,7 @@
             });
             deviceCount = 0;
             this.showAudio = true;
+            this.showHardwarePlayer = false;
           },
           sortChanged(e) {
             localStorage.sortBy = JSON.stringify(e.sortBy);
@@ -3888,7 +3892,7 @@
               "?enableSidDatabase=" +
               this.convertOptions.config.sidplay2Section.enableDatabase +
               "&startTime=" +
-              this.convertOptions.config.sidplay2Section.startTime +
+              (this.showHardwarePlayer? '0' : this.convertOptions.config.sidplay2Section.startTime) +
               "&defaultLength=" +
               this.convertOptions.config.sidplay2Section.defaultPlayLength +
               "&fadeIn=" +
@@ -4040,6 +4044,8 @@
               "?defaultModel=" +
               this.convertOptions.config.emulationSection.defaultSidModel +
               "&fakeStereo=" +
+              this.convertOptions.config.emulationSection.fakeStereo +
+              "&exsidFakeStereo=" +
               this.convertOptions.config.emulationSection.fakeStereo +
               "&hardSid6581=" +
               this.convertOptions.config.emulationSection.hardsid6581 +
