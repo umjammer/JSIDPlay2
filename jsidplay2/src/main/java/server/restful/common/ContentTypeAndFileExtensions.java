@@ -27,7 +27,7 @@ public enum ContentTypeAndFileExtensions {
 	/**
 	 * Video formats
 	 */
-	IME_TYPE_FLV(create("video/x-flv", (Charset) null), false, true, ".flv", ".f4v"),
+	MIME_TYPE_FLV(create("video/x-flv", (Charset) null), false, true, ".flv", ".f4v"),
 	MIME_TYPE_AVI(create("video/msvideo", (Charset) null), false, true, ".avi"),
 	MIME_TYPE_MP4(create("video/mp4", (Charset) null), false, true, ".mp4"),
 	/**
