@@ -3263,7 +3263,6 @@
           random: true,
           filterText: "",
           // CFG (configuration)
-          stereoMode: "AUTO",
           // pre-fetched filter definitions
           reSIDfilters6581: [],
           reSIDfilters8580: [],
@@ -3294,6 +3293,29 @@
         computed: {
           hardwareDisplay: function () {
             return deviceCount > 0 ? "block" : "none";
+          },
+          stereoMode: {
+        	set: function (val) {
+          		if (val === "FORCE_3SID") {
+                  this.convertOptions.config.emulationSection.forceStereoTune = true;
+                  this.convertOptions.config.emulationSection.force3SIDTune = true;
+                } else if (val === "FORCE_2SID") {
+                  this.convertOptions.config.emulationSection.forceStereoTune = true;
+                  this.convertOptions.config.emulationSection.force3SIDTune = false;
+                } else {
+                  this.convertOptions.config.emulationSection.forceStereoTune = false;
+                  this.convertOptions.config.emulationSection.force3SIDTune = false;
+                }
+        	  },
+              get: function () {
+                if (this.convertOptions.config.emulationSection.force3SIDTune) {
+                  return "FORCE_3SID";
+                } else if (this.convertOptions.config.emulationSection.forceStereoTune) {
+                	return "FORCE_2SID";
+                } else {
+                	return "AUTO";
+                }
+              },
           },
           startTime: {
             set: function (val) {
@@ -3350,22 +3372,6 @@
                 ? "&sfxSoundExpanderType=" + this.convertOptions.sfxSoundExpanderType
                 : "")
             );
-          },
-          stereoParameters: function () {
-            if (this.showHardwarePlayer) {
-              return "";
-            }
-            if (this.stereoMode === "FORCE_2SID") {
-              return "&dualSID=true&dualSIDBase=" + this.convertOptions.config.emulationSection.dualSidBase;
-            } else if (this.stereoMode === "FORCE_3SID") {
-              return (
-                "&dualSID=true&dualSIDBase=" +
-                this.convertOptions.config.emulationSection.dualSidBase +
-                "&thirdSID=true&thirdSIDBase=" +
-                this.convertOptions.config.emulationSection.thirdSIDBase
-              );
-            }
-            return "";
           },
           translatedFields() {
             return [
@@ -4005,6 +4011,15 @@
               this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
               "&detectPSID64ChipModel=" +
               this.convertOptions.config.emulationSection.detectPSID64ChipModel +
+              (this.showHardwarePlayer ? "" :
+                  "&dualSID=" +
+                  this.convertOptions.config.emulationSection.forceStereoTune +
+                  "&dualSIDBase=" +
+                  this.convertOptions.config.emulationSection.dualSidBase +
+                  "&thirdSID=" + 
+                  this.convertOptions.config.emulationSection.force3SIDTune +
+                  "&thirdSIDBase=" +
+                  this.convertOptions.config.emulationSection.thirdSIDBase) +
               "&videoTuneAsAudio=" +
               this.convertOptions.videoTuneAsAudio +
               "&hls=" +
@@ -4019,7 +4034,6 @@
               this.convertOptions.config.c1541Section.jiffyDosInstalled +
               this.sfxSoundExpanderParameters +
               this.reuParameters +
-              this.stereoParameters +
               (typeof itemId === "undefined" && typeof categoryId === "undefined"
                 ? ""
                 : "&itemId=" + itemId + "&categoryId=" + categoryId) +
@@ -4050,7 +4064,15 @@
               "&hardSid8580=" +
               this.convertOptions.config.emulationSection.hardsid8580 +
               (HardwareFunctions.mapping === "hardsid-mapping" ? "&chipCount=" + chipCount : "") +
-              this.stereoParameters +
+              (this.showHardwarePlayer ? "" :
+                  "&dualSID=" +
+                  this.convertOptions.config.emulationSection.forceStereoTune +
+                  "&dualSIDBase=" +
+                  this.convertOptions.config.emulationSection.dualSidBase +
+                  "&thirdSID=" + 
+                  this.convertOptions.config.emulationSection.force3SIDTune +
+                  "&thirdSIDBase=" +
+                  this.convertOptions.config.emulationSection.thirdSIDBase) +
               (typeof itemId === "undefined" && typeof categoryId === "undefined"
                 ? ""
                 : "&itemId=" + itemId + "&categoryId=" + categoryId)
@@ -4545,13 +4567,6 @@
             this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
             this.mobileProfile();
           }
-          if (this.convertOptions.config.emulationSection.dualSID) {
-            this.stereoMode = "FORCE_3SID";
-          } else if (this.convertOptions.config.emulationSection.thirdSID) {
-            this.stereoMode = "FORCE_2SID";
-          } else {
-            this.stereoMode = "AUTO";
-          }
           if (localStorage.random) {
             this.random = JSON.parse(localStorage.random);
           }
@@ -4652,19 +4667,6 @@
               localStorage.convertOptions = JSON.stringify(this.convertOptions);
             },
             deep: true,
-          },
-          stereoMode(newValue, oldValue) {
-            if (this.stereoMode === "FORCE_3SID") {
-              this.convertOptions.config.emulationSection.dualSID = true;
-              this.convertOptions.config.emulationSection.thirdSID = true;
-            } else if (this.stereoMode === "FORCE_2SID") {
-              this.convertOptions.config.emulationSection.dualSID = true;
-              this.convertOptions.config.emulationSection.thirdSID = false;
-            } else {
-              this.convertOptions.config.emulationSection.dualSID = false;
-              this.convertOptions.config.emulationSection.thirdSID = false;
-            }
-            localStorage.convertOptions = JSON.stringify(this.convertOptions);
           },
         },
       });
