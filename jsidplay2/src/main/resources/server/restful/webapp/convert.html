@@ -317,6 +317,8 @@
       });
 
       function playClick() {
+        audio.pause();
+        audio.currentTime = 0;
         audio.play();
       }
 
