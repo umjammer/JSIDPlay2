@@ -3292,9 +3292,6 @@
           defaultConvertOptions: $convertOptions,
         },
         computed: {
-          hardwareDisplay: function () {
-            return deviceCount > 0 ? "block" : "none";
-          },
           stereoMode: {
             set: function (val) {
               if (val === "FORCE_3SID") {
@@ -3350,18 +3347,6 @@
               return timeConverter(this.convertOptions.config.sidplay2Section.fadeOutTime).toString();
             },
           },
-          playlistEntryUrl: function () {
-            if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-              return undefined;
-            } else {
-              return this.createConvertUrl(
-                "",
-                this.playlist[this.playlistIndex].filename,
-                this.playlist[this.playlistIndex].itemId,
-                this.playlist[this.playlistIndex].categoryId
-              );
-            }
-          },
           reuParameters: function () {
             return this.convertOptions.reuSize !== null ? "&reuSize=" + this.convertOptions.reuSize : "";
           },
@@ -3400,6 +3385,32 @@
           },
         },
         methods: {
+          openiframe: function (url) {
+            closeiframe();
+            document.getElementById("main").classList.add("hide");
+
+            var iframe = document.createElement("iframe");
+            iframe.setAttribute("id", "c64");
+            iframe.setAttribute("name", Date.now());
+            iframe.setAttribute("data-isloaded", "0");
+            iframe.classList.add("iframe_c64");
+            iframe.onload = function () {
+              window.scrollTo(0, 0);
+              iframe.onload = function () {
+                var isLoaded = iframe.getAttribute("data-isloaded");
+                if (isLoaded != "1") {
+                  setTimeout(() => closeiframe(), 5000);
+                }
+              };
+              iframe.src = url;
+            };
+            iframe.src =
+              "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
+              i18n.t("pleaseWait") +
+              "</p><span><i></i><i></i></span></div></body>";
+
+            document.getElementById("app").appendChild(iframe);
+          },
           hardware_hardsid_init: function () {
             HardwareFunctions.init = init_hardsid;
             HardwareFunctions.reset = reset_hardsid;
@@ -3426,32 +3437,6 @@
             HardwareFunctions.quit = quit_sidblaster;
             HardwareFunctions.mapping = "sidblaster-mapping";
             this.init();
-          },
-          openiframe: function (url) {
-            closeiframe();
-            document.getElementById("main").classList.add("hide");
-
-            var iframe = document.createElement("iframe");
-            iframe.setAttribute("id", "c64");
-            iframe.setAttribute("name", Date.now());
-            iframe.setAttribute("data-isloaded", "0");
-            iframe.classList.add("iframe_c64");
-            iframe.onload = function () {
-              window.scrollTo(0, 0);
-              iframe.onload = function () {
-                var isLoaded = iframe.getAttribute("data-isloaded");
-                if (isLoaded != "1") {
-                  setTimeout(() => closeiframe(), 5000);
-                }
-              };
-              iframe.src = url;
-            };
-            iframe.src =
-              "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
-              i18n.t("pleaseWait") +
-              "</p><span><i></i><i></i></span></div></body>";
-
-            document.getElementById("app").appendChild(iframe);
           },
           init: async function () {
             sidWriteQueue.clear();
