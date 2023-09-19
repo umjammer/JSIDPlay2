@@ -162,7 +162,7 @@
                         autocorrect="off"
                         autocapitalize="off"
                         spellcheck="false"
-                        v-on:blur="fetchDirectory(rootDir)"
+                        v-on:blur="delayedFetchDirectory(rootDir)"
                     /></label>
                   </span>
                 </div>
@@ -3156,6 +3156,7 @@
         el: "#app",
         i18n, //import multi-lang
         data: {
+          timeoutId: undefined,
           theaterMode: false,
           carouselImageHeight:
             window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
@@ -3322,7 +3323,7 @@
               this.convertOptions.config.sidplay2Section.startTime = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.startTime.toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.startTime).toString();
             },
           },
           defaultPlayLength: {
@@ -3330,7 +3331,7 @@
               this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.defaultPlayLength.toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.defaultPlayLength).toString();
             },
           },
           fadeInTime: {
@@ -3338,7 +3339,7 @@
               this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.fadeInTime.toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.fadeInTime).toString();
             },
           },
           fadeOutTime: {
@@ -3346,7 +3347,7 @@
               this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(val);
             },
             get: function () {
-              return this.convertOptions.config.sidplay2Section.fadeOutTime.toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.fadeOutTime).toString();
             },
           },
           playlistEntryUrl: function () {
@@ -4115,6 +4116,13 @@
               (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
             );
             window.open(this.createDownloadUrl(entry, itemId, categoryId));
+          },
+          delayedFetchDirectory: function (entry) {
+        	  let outer = this;
+        	  clearTimeout(this.timeoutId);
+        	  this.timeoutId = setTimeout(function() {
+					outer.fetchDirectory(entry);
+				}, 1000);        	  
           },
           fetchDirectory: function (entry) {
             entry.loading = true; //the loading begin
