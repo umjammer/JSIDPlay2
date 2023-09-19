@@ -3296,27 +3296,27 @@
             return deviceCount > 0 ? "block" : "none";
           },
           stereoMode: {
-        	set: function (val) {
-          		if (val === "FORCE_3SID") {
-                  this.convertOptions.config.emulationSection.forceStereoTune = true;
-                  this.convertOptions.config.emulationSection.force3SIDTune = true;
-                } else if (val === "FORCE_2SID") {
-                  this.convertOptions.config.emulationSection.forceStereoTune = true;
-                  this.convertOptions.config.emulationSection.force3SIDTune = false;
-                } else {
-                  this.convertOptions.config.emulationSection.forceStereoTune = false;
-                  this.convertOptions.config.emulationSection.force3SIDTune = false;
-                }
-        	  },
-              get: function () {
-                if (this.convertOptions.config.emulationSection.force3SIDTune) {
-                  return "FORCE_3SID";
-                } else if (this.convertOptions.config.emulationSection.forceStereoTune) {
-                	return "FORCE_2SID";
-                } else {
-                	return "AUTO";
-                }
-              },
+            set: function (val) {
+              if (val === "FORCE_3SID") {
+                this.convertOptions.config.emulationSection.forceStereoTune = true;
+                this.convertOptions.config.emulationSection.force3SIDTune = true;
+              } else if (val === "FORCE_2SID") {
+                this.convertOptions.config.emulationSection.forceStereoTune = true;
+                this.convertOptions.config.emulationSection.force3SIDTune = false;
+              } else {
+                this.convertOptions.config.emulationSection.forceStereoTune = false;
+                this.convertOptions.config.emulationSection.force3SIDTune = false;
+              }
+            },
+            get: function () {
+              if (this.convertOptions.config.emulationSection.force3SIDTune) {
+                return "FORCE_3SID";
+              } else if (this.convertOptions.config.emulationSection.forceStereoTune) {
+                return "FORCE_2SID";
+              } else {
+                return "AUTO";
+              }
+            },
           },
           startTime: {
             set: function (val) {
@@ -4012,12 +4012,13 @@
               this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
               "&detectPSID64ChipModel=" +
               this.convertOptions.config.emulationSection.detectPSID64ChipModel +
-              (this.showHardwarePlayer ? "" :
-                  "&dualSID=" +
+              (this.showHardwarePlayer
+                ? ""
+                : "&dualSID=" +
                   this.convertOptions.config.emulationSection.forceStereoTune +
                   "&dualSIDBase=" +
                   this.convertOptions.config.emulationSection.dualSidBase +
-                  "&thirdSID=" + 
+                  "&thirdSID=" +
                   this.convertOptions.config.emulationSection.force3SIDTune +
                   "&thirdSIDBase=" +
                   this.convertOptions.config.emulationSection.thirdSIDBase) +
@@ -4065,12 +4066,13 @@
               "&hardSid8580=" +
               this.convertOptions.config.emulationSection.hardsid8580 +
               (HardwareFunctions.mapping === "hardsid-mapping" ? "&chipCount=" + chipCount : "") +
-              (this.showHardwarePlayer ? "" :
-                  "&dualSID=" +
+              (this.showHardwarePlayer
+                ? ""
+                : "&dualSID=" +
                   this.convertOptions.config.emulationSection.forceStereoTune +
                   "&dualSIDBase=" +
                   this.convertOptions.config.emulationSection.dualSidBase +
-                  "&thirdSID=" + 
+                  "&thirdSID=" +
                   this.convertOptions.config.emulationSection.force3SIDTune +
                   "&thirdSIDBase=" +
                   this.convertOptions.config.emulationSection.thirdSIDBase) +
@@ -4118,11 +4120,11 @@
             window.open(this.createDownloadUrl(entry, itemId, categoryId));
           },
           delayedFetchDirectory: function (entry) {
-        	  let outer = this;
-        	  clearTimeout(this.timeoutId);
-        	  this.timeoutId = setTimeout(function() {
-					outer.fetchDirectory(entry);
-				}, 1000);        	  
+            let outer = this;
+            clearTimeout(this.timeoutId);
+            this.timeoutId = setTimeout(function () {
+              outer.fetchDirectory(entry);
+            }, 1000);
           },
           fetchDirectory: function (entry) {
             entry.loading = true; //the loading begin
