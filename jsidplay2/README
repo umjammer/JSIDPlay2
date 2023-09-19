@@ -109,9 +109,12 @@ Remote Debugging:
 
 Internal Testing the build (Java8 and newer):
 =============================================
-export PATH=/home/ken/Downloads/jdk1.8.0_211/bin:$PATH
+cd workspace/jsidplay2
+cp ../deploy/*.sh .
+chmod +x *.sh
 ./jsidplay2-console.sh 
 ./jsidplay2-console.sh ~/Downloads/Turrican_2-The_Final_Fight.sid 
+export PATH=/home/ken/Downloads/jdk1.8.0_211/bin:$PATH
 ./jsidplay2-java8.sh ~/Downloads/Turrican_2-The_Final_Fight.sid 
 ./jsidplay2.sh ~/Downloads/Turrican_2-The_Final_Fight.sid 
 ./sidblastertool.sh 

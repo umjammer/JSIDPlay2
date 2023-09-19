@@ -3,7 +3,7 @@ TODO:
 
 - HardSID support for VICE project
 - Test Wilfred's "HardSID USB write buffer" according to email of 25.2. 15:15
-- Add UDB broadcast to JSIDPlay2 to detect responding JSIDDevices
+- Add UDP broadcast to JSIDPlay2 to detect responding JSIDDevices
 - What to do to use your own filter, this is totally unclear to the user
 - Playlists are wanted to be shared online
 - the ability to have music playback occur alongside your SID dump feature. This would look a bit like a tracker,
@@ -13,6 +13,7 @@ TODO:
 - freely configurable filter definitions
 - Support of executable .command files on MACOSX
 - Maximize oscilloscope view on demand
-HTML Client app:
-- show current number of videos in parallel
+- Feature Ideas by Aidan Crouzet-Pascal regarding oscilloscope view, sent by email at 4.7.23
+C64 Jukebox:
+- show current number of videos created in parallel on the server side
 - support of several playlists
