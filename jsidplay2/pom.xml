@@ -458,7 +458,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.16.0</version>
+				<version>2.16.1</version>
 				<configuration>
 					<generateBackupPoms>false</generateBackupPoms>
 					<rulesUri>file:///${project.basedir}/rule-set.xml</rulesUri>
@@ -859,7 +859,7 @@
 			                    <package>bootstrap-vue@2.23.1</package>
 			                    <package>vue-i18n@8.28.2</package>
 			                    <package>axios@0.27.2</package>
-			                    <package>hls.js@1.4.10</package>
+			                    <package>hls.js@1.4.12</package>
 			                    <package>video.js@8.5.2</package>
 			                </packages>
 			            </configuration>
