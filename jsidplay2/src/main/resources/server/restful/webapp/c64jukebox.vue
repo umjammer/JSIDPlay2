@@ -3320,7 +3320,7 @@
               this.convertOptions.config.sidplay2Section.startTime = timeConverter(val);
             },
             get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.startTime).toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.startTime);
             },
           },
           defaultPlayLength: {
@@ -3328,7 +3328,7 @@
               this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(val);
             },
             get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.defaultPlayLength).toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.defaultPlayLength);
             },
           },
           fadeInTime: {
@@ -3336,7 +3336,7 @@
               this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(val);
             },
             get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.fadeInTime).toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.fadeInTime);
             },
           },
           fadeOutTime: {
@@ -3344,20 +3344,8 @@
               this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(val);
             },
             get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.fadeOutTime).toString();
+              return timeConverter(this.convertOptions.config.sidplay2Section.fadeOutTime);
             },
-          },
-          reuParameters: function () {
-            return this.convertOptions.reuSize !== null ? "&reuSize=" + this.convertOptions.reuSize : "";
-          },
-          sfxSoundExpanderParameters: function () {
-            return (
-              "&sfxSoundExpander=" +
-              this.convertOptions.sfxSoundExpander +
-              (this.convertOptions.sfxSoundExpanderType !== null
-                ? "&sfxSoundExpanderType=" + this.convertOptions.sfxSoundExpanderType
-                : "")
-            );
           },
           translatedFields() {
             return [
@@ -3864,9 +3852,10 @@
               window.location.host +
               "/jsidplay2service/JSIDPlay2REST/convert" +
               url +
-              (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                ? ""
-                : "?itemId=" + itemId + "&categoryId=" + categoryId)
+              "?itemId=" +
+              itemId +
+              "&categoryId=" +
+              categoryId
             );
           },
           createConvertUrl: function (autostart, entry, itemId, categoryId) {
@@ -4019,11 +4008,16 @@
               this.convertOptions.showStatus +
               "&jiffydos=" +
               this.convertOptions.config.c1541Section.jiffyDosInstalled +
-              this.sfxSoundExpanderParameters +
-              this.reuParameters +
-              (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                ? ""
-                : "&itemId=" + itemId + "&categoryId=" + categoryId) +
+              "&sfxSoundExpander=" +
+              this.convertOptions.sfxSoundExpander +
+              "&sfxSoundExpanderType=" +
+              this.convertOptions.sfxSoundExpanderType +
+              "&reuSize=" +
+              this.convertOptions.reuSize +
+              "&itemId=" +
+              itemId +
+              "&categoryId=" +
+              categoryId +
               (autostart ? "&autostart=" + uriEncode(autostart) : "") +
               "&devtools=" +
               ("$min" !== ".min")
@@ -4051,33 +4045,14 @@
               "&hardSid8580=" +
               this.convertOptions.config.emulationSection.hardsid8580 +
               (HardwareFunctions.mapping === "hardsid-mapping" ? "&chipCount=" + chipCount : "") +
-              (this.showHardwarePlayer
-                ? ""
-                : "&dualSID=" +
-                  this.convertOptions.config.emulationSection.forceStereoTune +
-                  "&dualSIDBase=" +
-                  this.convertOptions.config.emulationSection.dualSidBase +
-                  "&thirdSID=" +
-                  this.convertOptions.config.emulationSection.force3SIDTune +
-                  "&thirdSIDBase=" +
-                  this.convertOptions.config.emulationSection.thirdSIDBase) +
-              (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                ? ""
-                : "&itemId=" + itemId + "&categoryId=" + categoryId)
+              "&itemId=" +
+              itemId +
+              "&categoryId=" +
+              categoryId
             );
           },
           openDownloadMP3Url: function (entry, itemId, categoryId) {
-            var url = this.createConvertUrl(
-              "",
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
-            );
-            window.open(
-              url +
-                "&download=true" +
-                (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                  ? ""
-                  : "&itemId=" + itemId + "&categoryId=" + categoryId)
-            );
+            window.open(this.createConvertUrl("", entry, itemId, categoryId) + "&download=true");
           },
           openDownloadSIDUrl: function (entry, itemId, categoryId) {
             var url = uriEncode(
@@ -4093,9 +4068,10 @@
                 window.location.host +
                 "/jsidplay2service/JSIDPlay2REST/download" +
                 url +
-                (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                  ? ""
-                  : "?itemId=" + itemId + "&categoryId=" + categoryId)
+                "?itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId
             );
           },
           openDownloadUrl: function (entry, itemId, categoryId) {
@@ -4143,9 +4119,10 @@
             var url =
               uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
               "?list=true" +
-              (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                ? ""
-                : "&itemId=" + itemId + "&categoryId=" + categoryId);
+              "&itemId=" +
+              itemId +
+              "&categoryId=" +
+              categoryId;
             axios({
               method: "get",
               url: "/jsidplay2service/JSIDPlay2REST/info" + url,
@@ -4167,9 +4144,10 @@
             this.loadingStil = true; //the loading begin
             var url =
               uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
-              (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                ? ""
-                : "?itemId=" + itemId + "&categoryId=" + categoryId);
+              "?itemId=" +
+              itemId +
+              "&categoryId=" +
+              categoryId;
             axios({
               method: "get",
               url: "/jsidplay2service/JSIDPlay2REST/stil" + url,
@@ -4194,9 +4172,10 @@
             this.loadingSid = true; //the loading begin
             var url =
               uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
-              (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                ? ""
-                : "?itemId=" + itemId + "&categoryId=" + categoryId);
+              "?itemId=" +
+              itemId +
+              "&categoryId=" +
+              categoryId;
             axios({
               method: "get",
               url: "/jsidplay2service/JSIDPlay2REST/photo" + url,
@@ -4342,9 +4321,10 @@
               uriEncode(
                 (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename
               ) +
-              (typeof itemId === "undefined" && typeof categoryId === "undefined"
-                ? ""
-                : "?itemId=" + itemId + "&categoryId=" + categoryId);
+              "?itemId=" +
+              itemId +
+              "&categoryId=" +
+              categoryId;
             axios({
               method: "get",
               url: "/jsidplay2service/JSIDPlay2REST/disk-directory" + url,
@@ -4520,7 +4500,6 @@
           },
         },
         mounted: function () {
-          window.myAccessor = this;
           window.addEventListener("resize", () => {
             this.carouselImageHeight =
               window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
