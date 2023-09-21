@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.testfx.api.FxRobot;
-import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.api.FxToolkit;
 
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -17,7 +17,7 @@ import ui.JSidPlay2;
 import ui.JSidPlay2Main;
 import ui.entities.config.Configuration;
 
-public class JSIDPlay2Test extends ApplicationTest {
+public class JSIDPlay2Test extends FxRobot {
 
 	private static JSidPlay2 jSidplay2;
 
@@ -26,6 +26,8 @@ public class JSIDPlay2Test extends ApplicationTest {
 		public void start(Stage primaryStage) {
 			super.start(primaryStage);
 			JSIDPlay2Test.jSidplay2 = jSidplay2;
+			primaryStage.setOnCloseRequest(evt -> evt.consume());
+			primaryStage.show();
 		}
 	}
 
@@ -68,7 +70,8 @@ public class JSIDPlay2Test extends ApplicationTest {
 	public static void setUpClass() throws Exception {
 		try {
 			if (jSidplay2 == null) {
-				launch(JSidPlay2TestMain.class);
+				FxToolkit.registerPrimaryStage();
+				FxToolkit.setupApplication(JSidPlay2TestMain.class);
 			}
 			do {
 				Thread.sleep(JSIDPLAY2_STARTUP_SLEEP);
@@ -107,17 +110,6 @@ public class JSIDPlay2Test extends ApplicationTest {
 			}
 		}
 		return super.sleep(milliseconds);
-	}
-
-	/**
-	 * Show primary stage.
-	 *
-	 * @see org.testfx.framework.junit.ApplicationTest#start(javafx.stage.Stage)
-	 */
-	@Override
-	public void start(Stage stage) {
-		stage.setOnCloseRequest(evt -> evt.consume());
-		stage.show();
 	}
 
 	public void load() {
