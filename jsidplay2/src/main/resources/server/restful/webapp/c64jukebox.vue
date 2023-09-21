@@ -69,7 +69,7 @@
               variant="success"
               v-on:click="
                 play(
-                  '',
+                  undefined,
                   playlist[playlistIndex].filename,
                   playlist[playlistIndex].itemId,
                   playlist[playlistIndex].categoryId
@@ -367,7 +367,7 @@
                           updateSid(entry.filename);
                           showAudio = true;
                           $nextTick(function () {
-                            play('', entry.filename);
+                            play(undefined, entry.filename);
                           });
                         "
                       >
@@ -414,7 +414,7 @@
                           :variant="getVariant(entry)"
                           v-on:click="
                             pause();
-                            openiframe(createConvertUrl('', entry.filename));
+                            openiframe(createConvertUrl(undefined, entry.filename));
                           "
                         >
                           <div style="white-space: pre-line; display: flex; justify-content: space-between">
@@ -451,7 +451,7 @@
                               </div>
                               <div v-for="(program, index) in entry.diskDirectory" :key="index">
                                 <b-link
-                                  v-on:click="
+                                  v-on:click.stop="
                                     pause();
                                     openiframe(createConvertUrl(program.directoryLine, entry.filename));
                                   "
@@ -469,7 +469,7 @@
                           :variant="getVariant(entry)"
                           v-on:click="
                             pause();
-                            openiframe(createConvertUrl('', entry.filename));
+                            openiframe(createConvertUrl(undefined, entry.filename));
                           "
                         >
                           <div style="white-space: pre-line; display: flex; justify-content: space-between">
@@ -659,7 +659,7 @@
                                     updateSid(innerRow.item.filename, row.item.id, row.item.categoryId);
                                     showAudio = true;
                                     $nextTick(function () {
-                                      play('', innerRow.item.filename, row.item.id, row.item.categoryId);
+                                      play(undefined, innerRow.item.filename, row.item.id, row.item.categoryId);
                                     });
                                   "
                                 >
@@ -718,7 +718,12 @@
                                       v-on:click="
                                         pause();
                                         openiframe(
-                                          createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                          createConvertUrl(
+                                            undefined,
+                                            innerRow.item.filename,
+                                            row.item.id,
+                                            row.item.categoryId
+                                          )
                                         );
                                       "
                                     >
@@ -779,7 +784,12 @@
                                       v-on:click="
                                         pause();
                                         openiframe(
-                                          createConvertUrl('', innerRow.item.filename, row.item.id, row.item.categoryId)
+                                          createConvertUrl(
+                                            undefined,
+                                            innerRow.item.filename,
+                                            row.item.id,
+                                            row.item.categoryId
+                                          )
                                         );
                                       "
                                     >
@@ -1117,7 +1127,7 @@
                       playlistIndex = index;
                       $nextTick(function () {
                         play(
-                          '',
+                          undefined,
                           playlist[playlistIndex].filename,
                           playlist[playlistIndex].itemId,
                           playlist[playlistIndex].categoryId
@@ -3405,7 +3415,7 @@
             HardwareFunctions.write = write_hardsid;
             HardwareFunctions.next = next_hardsid;
             HardwareFunctions.quit = quit_hardsid;
-            HardwareFunctions.mapping = "hardsid-mapping";
+            HardwareFunctions.mapping = "hardsid-mapping/";
             this.init();
           },
           hardware_exsid_init: function () {
@@ -3414,7 +3424,7 @@
             HardwareFunctions.write = write_exsid;
             HardwareFunctions.next = next_exsid;
             HardwareFunctions.quit = quit_exsid;
-            HardwareFunctions.mapping = "exsid-mapping";
+            HardwareFunctions.mapping = "exsid-mapping/";
             this.init();
           },
           hardware_sidblaster_init: function () {
@@ -3423,7 +3433,7 @@
             HardwareFunctions.write = write_sidblaster;
             HardwareFunctions.next = next_sidblaster;
             HardwareFunctions.quit = quit_sidblaster;
-            HardwareFunctions.mapping = "sidblaster-mapping";
+            HardwareFunctions.mapping = "sidblaster-mapping/";
             this.init();
           },
           init: async function () {
@@ -3859,15 +3869,12 @@
             );
           },
           createConvertUrl: function (autostart, entry, itemId, categoryId) {
-            var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
-            );
             return (
               window.location.protocol +
               "//" +
               window.location.host +
-              "/jsidplay2service/JSIDPlay2REST/convert" +
-              url +
+              "/jsidplay2service/JSIDPlay2REST/convert/" +
+              uriEncode(entry) +
               "?enableSidDatabase=" +
               this.convertOptions.config.sidplay2Section.enableDatabase +
               "&startTime=" +
@@ -4018,22 +4025,20 @@
               itemId +
               "&categoryId=" +
               categoryId +
-              (autostart ? "&autostart=" + uriEncode(autostart) : "") +
+              "&autostart=" +
+              uriEncode(autostart) +
               "&devtools=" +
               ("$min" !== ".min")
             );
           },
           createSIDMappingUrl: function (entry, itemId, categoryId) {
-            var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
-            );
             return (
               window.location.protocol +
               "//" +
               window.location.host +
               "/jsidplay2service/JSIDPlay2REST/" +
               HardwareFunctions.mapping +
-              url +
+              uriEncode(entry) +
               "?defaultModel=" +
               this.convertOptions.config.emulationSection.defaultSidModel +
               "&fakeStereo=" +
@@ -4044,7 +4049,7 @@
               this.convertOptions.config.emulationSection.hardsid6581 +
               "&hardSid8580=" +
               this.convertOptions.config.emulationSection.hardsid8580 +
-              (HardwareFunctions.mapping === "hardsid-mapping" ? "&chipCount=" + chipCount : "") +
+              (HardwareFunctions.mapping === "hardsid-mapping/" ? "&chipCount=" + chipCount : "") +
               "&itemId=" +
               itemId +
               "&categoryId=" +
@@ -4052,12 +4057,9 @@
             );
           },
           openDownloadMP3Url: function (entry, itemId, categoryId) {
-            window.open(this.createConvertUrl("", entry, itemId, categoryId) + "&download=true");
+            window.open(this.createConvertUrl(undefined, entry, itemId, categoryId) + "&download=true");
           },
           openDownloadSIDUrl: function (entry, itemId, categoryId) {
-            var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
-            );
             window.open(
               window.location.protocol +
                 "//" +
@@ -4066,8 +4068,8 @@
                 this.password +
                 "@" +
                 window.location.host +
-                "/jsidplay2service/JSIDPlay2REST/download" +
-                url +
+                "/jsidplay2service/JSIDPlay2REST/download/" +
+                uriEncode(entry) +
                 "?itemId=" +
                 itemId +
                 "&categoryId=" +
@@ -4075,9 +4077,6 @@
             );
           },
           openDownloadUrl: function (entry, itemId, categoryId) {
-            var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
-            );
             window.open(this.createDownloadUrl(entry, itemId, categoryId));
           },
           delayedFetchDirectory: function (entry) {
@@ -4116,16 +4115,16 @@
           },
           fetchInfo: function (entry, itemId, categoryId) {
             this.loadingSid = true; //the loading begin
-            var url =
-              uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
-              "?list=true" +
-              "&itemId=" +
-              itemId +
-              "&categoryId=" +
-              categoryId;
             axios({
               method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/info" + url,
+              url:
+                "/jsidplay2service/JSIDPlay2REST/info/" +
+                uriEncode(entry) +
+                "?list=true" +
+                "&itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -4142,15 +4141,15 @@
           },
           fetchStil: function (entry, itemId, categoryId) {
             this.loadingStil = true; //the loading begin
-            var url =
-              uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
-              "?itemId=" +
-              itemId +
-              "&categoryId=" +
-              categoryId;
             axios({
               method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/stil" + url,
+              url:
+                "/jsidplay2service/JSIDPlay2REST/stil/" +
+                uriEncode(entry) +
+                "?itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -4170,15 +4169,15 @@
           },
           fetchPhoto: function (entry, itemId, categoryId) {
             this.loadingSid = true; //the loading begin
-            var url =
-              uriEncode((typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry) +
-              "?itemId=" +
-              itemId +
-              "&categoryId=" +
-              categoryId;
             axios({
               method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/photo" + url,
+              url:
+                "/jsidplay2service/JSIDPlay2REST/photo/" +
+                uriEncode(entry) +
+                "?itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -4260,7 +4259,7 @@
                 this.tabIndex = 3;
                 this.currentSid = response.data;
                 this.updateSid(response.data);
-                this.play("", response.data);
+                this.play(undefined, response.data);
               })
               .catch((error) => {
                 console.log(error);
@@ -4317,17 +4316,15 @@
               entry.directoryMode = 0xe000;
             }
             entry.loadingDisk = true; //the loading begin
-            var url =
-              uriEncode(
-                (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry.filename
-              ) +
-              "?itemId=" +
-              itemId +
-              "&categoryId=" +
-              categoryId;
             axios({
               method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/disk-directory" + url,
+              url:
+                "/jsidplay2service/JSIDPlay2REST/disk-directory/" +
+                uriEncode(entry.filename) +
+                "?itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId,
               auth: {
                 username: this.username,
                 password: this.password,
