@@ -3853,15 +3853,12 @@
             }
           },
           createDownloadUrl: function (entry, itemId, categoryId) {
-            var url = uriEncode(
-              (typeof itemId === "undefined" && typeof categoryId === "undefined" ? "" : "/") + entry
-            );
             return (
               window.location.protocol +
               "//" +
               window.location.host +
-              "/jsidplay2service/JSIDPlay2REST/convert" +
-              url +
+              "/jsidplay2service/JSIDPlay2REST/convert/" +
+              uriEncode(entry) +
               "?itemId=" +
               itemId +
               "&categoryId=" +
@@ -4498,8 +4495,12 @@
         },
         mounted: function () {
           window.addEventListener("resize", () => {
-            this.carouselImageHeight =
-              window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
+            let outer = this;
+            clearTimeout(window.resizedFinished);
+            window.resizedFinished = setTimeout(function () {
+              outer.carouselImageHeight =
+                window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
+            }, 1000);
           });
 
           this.hasHardware = typeof navigator.usb !== "undefined";
@@ -4645,6 +4646,7 @@
       // prevent back button
       history.pushState(null, null, document.URL);
       window.addEventListener("popstate", function () {
+	    closeiframe();
         history.pushState(null, null, document.URL);
       });
       window.addEventListener("message", messageListener, false);
