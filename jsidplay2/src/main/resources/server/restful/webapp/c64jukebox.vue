@@ -30,11 +30,13 @@
     <script src="/static/usb/exsid.js"></script>
     <script src="/static/usb/sidblaster.js"></script>
 
-	<style>
-		html {
-			overscroll-behavior: none;
-		}
-	</style>
+	<!-- disable pull reload -->
+    <style>
+      html,
+      body {
+        overscroll-behavior: none;
+      }
+    </style>
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -4652,7 +4654,7 @@
       // prevent back button
       history.pushState(null, null, document.URL);
       window.addEventListener("popstate", function () {
-	    closeiframe();
+        closeiframe();
         history.pushState(null, null, document.URL);
       });
       window.addEventListener("message", messageListener, false);
