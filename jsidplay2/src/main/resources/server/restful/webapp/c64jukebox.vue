@@ -30,7 +30,7 @@
     <script src="/static/usb/exsid.js"></script>
     <script src="/static/usb/sidblaster.js"></script>
 
-	<!-- disable pull reload -->
+    <!-- disable pull reload -->
     <style>
       html,
       body {
