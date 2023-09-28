@@ -1447,8 +1447,8 @@
                             <div class="settings-box">
                               <span class="setting">
                                 <b-form-group class="right" :label="$t('convertMessages.hlsType')" label-for="hlsType">
-                                  <b-form-radio-group v-model="convertOptions.hlsType" style="display: flex">
-                                    <b-form-radio id="hlsType" value="VIDEO_JS">video-js</b-form-radio>
+                                  <b-form-radio-group v-model="convertOptions.hlsType">
+                                    <b-form-radio value="VIDEO_JS" id="hlsType">video-js</b-form-radio>
                                     <b-form-radio value="HLS_JS">hls-js</b-form-radio>
                                   </b-form-radio-group>
                                 </b-form-group>
@@ -1808,8 +1808,8 @@
                       <div class="settings-box">
                         <span class="setting">
                           <b-form-group class="right" :label="$t('stereoMode')" label-for="stereoModeAuto">
-                            <b-form-radio-group id="stereoMode" v-model="stereoMode" style="display: flex">
-                              <b-form-radio id="stereoModeAuto" value="AUTO">Auto</b-form-radio>
+                            <b-form-radio-group v-model="stereoMode">
+                              <b-form-radio value="AUTO" id="stereoModeAuto">Auto</b-form-radio>
                               <b-form-radio value="FORCE_2SID">2-SID</b-form-radio>
                               <b-form-radio value="FORCE_3SID">3-SID</b-form-radio>
                             </b-form-radio-group>
@@ -1861,12 +1861,10 @@
                             label-for="pal"
                           >
                             <b-form-radio-group
-                              id="defaultClockSpeed"
                               class="right"
                               v-model="convertOptions.config.emulationSection.defaultClockSpeed"
-                              style="display: flex"
                             >
-                              <b-form-radio id="pal" value="PAL">PAL</b-form-radio>
+                              <b-form-radio value="PAL" id="pal">PAL</b-form-radio>
                               <b-form-radio value="NTSC">NTSC</b-form-radio>
                             </b-form-radio-group>
                           </b-form-group>
@@ -1879,12 +1877,10 @@
                             label-for="residfp"
                           >
                             <b-form-radio-group
-                              id="defaultEmulation"
                               class="right"
                               v-model="convertOptions.config.emulationSection.defaultEmulation"
-                              style="display: flex"
                             >
-                              <b-form-radio id="residfp" value="RESIDFP">RESIDFP</b-form-radio>
+                              <b-form-radio value="RESIDFP" id="residfp">RESIDFP</b-form-radio>
                               <b-form-radio value="RESID">RESID</b-form-radio>
                             </b-form-radio-group>
                           </b-form-group>
@@ -1897,12 +1893,10 @@
                             label-for="mos6581"
                           >
                             <b-form-radio-group
-                              id="defaultSidModel"
                               class="right"
                               v-model="convertOptions.config.emulationSection.defaultSidModel"
-                              style="display: flex"
                             >
-                              <b-form-radio id="mos6581" value="MOS6581">MOS6581</b-form-radio>
+                              <b-form-radio value="MOS6581" id="mos6581">MOS6581</b-form-radio>
                               <b-form-radio value="MOS8580">MOS8580</b-form-radio>
                             </b-form-radio-group>
                           </b-form-group>
@@ -1914,13 +1908,8 @@
                             :label="$t('convertMessages.config.audioSection.sampling')"
                             label-for="decimate"
                           >
-                            <b-form-radio-group
-                              id="sampling"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.sampling"
-                              style="display: flex"
-                            >
-                              <b-form-radio id="decimate" value="DECIMATE">DECIMATE</b-form-radio>
+                            <b-form-radio-group class="right" v-model="convertOptions.config.audioSection.sampling">
+                              <b-form-radio value="DECIMATE" id="decimate">DECIMATE</b-form-radio>
                               <b-form-radio value="RESAMPLE">RESAMPLE</b-form-radio>
                             </b-form-radio-group>
                           </b-form-group>
@@ -1929,13 +1918,8 @@
                       <div class="settings-box">
                         <span class="setting">
                           <b-form-group :label="$t('convertMessages.config.audioSection.samplingRate')" label-for="low">
-                            <b-form-radio-group
-                              id="samplingRate"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.samplingRate"
-                              style="display: flex"
-                            >
-                              <b-form-radio id="low" value="LOW">LOW</b-form-radio>
+                            <b-form-radio-group class="right" v-model="convertOptions.config.audioSection.samplingRate">
+                              <b-form-radio value="LOW" id="low">LOW</b-form-radio>
                               <b-form-radio value="MEDIUM">MEDIUM</b-form-radio>
                               <b-form-radio value="HIGH">HIGH</b-form-radio>
                             </b-form-radio-group>
@@ -1985,12 +1969,8 @@
                             :label="$t('convertMessages.config.emulationSection.sidToRead')"
                             label-for="firstSid"
                           >
-                            <b-form-radio-group
-                              id="sidToRead"
-                              v-model="convertOptions.config.emulationSection.sidToRead"
-                              style="display: flex"
-                            >
-                              <b-form-radio id="firstSid" value="FIRST_SID">{{ $t("firstSid") }}</b-form-radio>
+                            <b-form-radio-group v-model="convertOptions.config.emulationSection.sidToRead">
+                              <b-form-radio value="FIRST_SID" id="firstSid">{{ $t("firstSid") }}</b-form-radio>
                               <b-form-radio value="SECOND_SID">{{ $t("secondSid") }}</b-form-radio>
                               <b-form-radio value="THIRD_SID">{{ $t("thirdSid") }}</b-form-radio>
                             </b-form-radio-group>
@@ -2589,7 +2569,7 @@
                         <span class="setting">
                           <b-form-group class="right" :label="$t('convertMessages.reuSize')" label-for="reuSizeAuto">
                             <b-form-radio-group v-model="convertOptions.reuSize">
-                              <b-form-radio id="reuSizeAuto" value="null">Auto</b-form-radio>
+                              <b-form-radio value="null" id="reuSizeAuto">Auto</b-form-radio>
                               <b-form-radio value="128">REU 1700 (128KB)</b-form-radio>
                               <b-form-radio value="512">REU 1750 (512KB)</b-form-radio>
                               <b-form-radio value="256">REU 1764 (256KB)</b-form-radio>
@@ -2613,13 +2593,12 @@
                       </div>
                       <div class="settings-box">
                         <span class="setting">
-                          <b-form-group :label="$t('convertMessages.sfxSoundExpanderType')" label-for="0">
-                            <b-form-radio-group
-                              id="sfxSoundExpanderType"
-                              class="right"
-                              v-model="convertOptions.sfxSoundExpanderType"
-                            >
-                              <b-form-radio id="0" value="0">OPL1 (YM3526)</b-form-radio>
+                          <b-form-group
+                            :label="$t('convertMessages.sfxSoundExpanderType')"
+                            label-for="sfxSoundExpanderType0"
+                          >
+                            <b-form-radio-group class="right" v-model="convertOptions.sfxSoundExpanderType">
+                              <b-form-radio value="0" id="sfxSoundExpanderType0">OPL1 (YM3526)</b-form-radio>
                               <b-form-radio value="1">OPL2 (YM3812)</b-form-radio>
                             </b-form-radio-group>
                           </b-form-group>
