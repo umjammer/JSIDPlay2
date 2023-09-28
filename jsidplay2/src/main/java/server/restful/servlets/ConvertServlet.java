@@ -330,7 +330,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 				}
 				response.setContentType(getMimeType(driver.getExtension()).toString());
-				convert2audio(file, driver, servletParameters);
+				if ("HEAD".equals(request.getMethod())) {
+					response.setContentLengthLong(-1);
+				} else {
+					convert2audio(file, driver, servletParameters);
+				}
 
 			} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
 					|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
