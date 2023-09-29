@@ -84,7 +84,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		if (commander.getMainParameter() != null && commander.getMainParameterValue() != null) {
 			out.append("[<servlet path>]");
 		}
-		if (hasOptions) {
+		if (commander.getFields().values().stream().filter(pd -> !pd.getParameter().hidden()).count() > 0) {
 			out.append("?[<servlet parameters>]");
 		}
 		out.append("\n");
@@ -253,7 +253,7 @@ public class ServletUsageFormatter extends DefaultUsageFormatter {
 		}
 		URL url = new URI(urlAsString.toString()).toURL();
 		URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(),
-				queryParameters.toString(), url.getRef());
+				queryParameters.length() > 0 ? queryParameters.toString() : null, url.getRef());
 		result.append(uri.toASCIIString());
 
 		return result.toString();

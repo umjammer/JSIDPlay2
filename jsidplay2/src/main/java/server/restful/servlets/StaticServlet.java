@@ -43,7 +43,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", order = -2)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -2)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
 		}

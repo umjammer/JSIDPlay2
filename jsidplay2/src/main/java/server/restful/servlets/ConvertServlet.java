@@ -115,7 +115,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", order = -14)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -14)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
 		}
