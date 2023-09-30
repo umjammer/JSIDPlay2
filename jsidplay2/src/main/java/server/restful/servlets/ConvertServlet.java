@@ -491,7 +491,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		ConvenienceResult convenienceResult = new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA,
 				servletParameters.autostart, true);
 
-		insertCartridge(servletParameters, player);
+		if (!player.getC64().isCartridge()) {
+			insertCartridge(servletParameters, player);
+		}
 
 		if (uuid != null) {
 			create(uuid, player, file, convenienceResult, servletParameters);
@@ -501,13 +503,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	private void insertCartridge(ConvertServletParameters servletParameters, Player player) throws IOException {
-		if (servletParameters.sfxSoundExpander && !player.getC64().isCartridge()) {
+		if (servletParameters.sfxSoundExpander) {
 			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
-		}
-		if (servletParameters.reuSize != null && !player.getC64().isCartridge()) {
+		} else if (servletParameters.reuSize != null) {
 			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
-		}
-		if ("25"/* CSDB REU */.equals(servletParameters.getCategoryId()) && !player.getC64().isCartridge()) {
+		} else if (servletParameters.isREU()) {
 			player.insertCartridge(CartridgeType.REU, 16384);
 		}
 	}
@@ -583,7 +583,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				Thread.sleep(500);
 			}
 		}
-		throw new IOException("Video is still not available, please retry!");
+		throw new IOException("Video is still not available, please retry later!");
 	}
 
 }

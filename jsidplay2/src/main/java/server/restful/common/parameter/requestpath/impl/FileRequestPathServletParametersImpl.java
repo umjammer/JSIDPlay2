@@ -35,6 +35,8 @@ import ui.entities.config.SidPlay2Section;
 
 public abstract class FileRequestPathServletParametersImpl implements IFileRequestPathServletParameters {
 
+	private static final String ASSEMBLY64_CSDB_REU_ID = "25";
+
 	public File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin)
 			throws IOException, URISyntaxException {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
@@ -77,6 +79,10 @@ public abstract class FileRequestPathServletParametersImpl implements IFileReque
 		}
 		parser.setException(new FileNotFoundException(path));
 		return null;
+	}
+
+	public boolean isREU() {
+		return ASSEMBLY64_CSDB_REU_ID.equals(getCategoryId());
 	}
 
 	private File fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId)
