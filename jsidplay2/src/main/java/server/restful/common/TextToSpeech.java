@@ -34,24 +34,36 @@ public class TextToSpeech implements Consumer<Player> {
 	}
 
 	private String createText(SidTuneInfo info) {
-		StringBuilder result = new StringBuilder("Now playing: ");
+		String title = null, author = null, released = null;
 		Iterator<String> it = info.getInfoString().iterator();
 		if (it.hasNext()) {
-			result.append(it.next());
-		}
-		if (it.hasNext()) {
-			String author = it.next();
-			if (!"<?>".equals(author)) {
-				result.append(", by: ").append(author);
+			String next = it.next();
+			if (!next.isEmpty() && !"<?>".equals(next)) {
+				title = next;
 			}
 		}
 		if (it.hasNext()) {
-			String released = it.next();
-			if (!"<?>".equals(released)) {
-				result.append(", released at: ").append(released);
+			String next = it.next();
+			if (!next.isEmpty() && !"<?>".equals(next)) {
+				author = next;
 			}
 		}
-		return result.toString();
+		if (it.hasNext()) {
+			String next = it.next();
+			if (!next.isEmpty() && !"<?>".equals(next)) {
+				released = next;
+			}
+		}
+		return "<speak>" + "<voice language=\"en-GB\" gender=\"female\" required=\"gender\"\n"
+				+ "ordering=\"gender language\">" + "<p>"
+				+ (title != null ? "<s>Now playing: " + replaceUmlauts(title) + "</s>" : "")
+				+ (author != null ? "<s>By: " + replaceUmlauts(author) + "</s>" : "")
+				+ (released != null ? "<s>Released at: " + released + "</s>" : "") + "  </p>" + "<voice>" + "</speak>";
+	}
+
+	private String replaceUmlauts(String title) {
+		return title.replace('ä', 'a').replace('Ä', 'A').replace('ö', 'o').replace('Ö', 'O').replace('ü', 'u')
+				.replace('Ü', 'U').replace('ß', 's').replaceAll("[^\\x00-\\x7F]", "");
 	}
 
 	@Override
@@ -61,8 +73,8 @@ public class TextToSpeech implements Consumer<Player> {
 
 			File speechFile = File.createTempFile("speech", ".wav", sidplay2Section.getTmpDir());
 			speechFile.deleteOnExit();
-			Process process = new ProcessBuilder("/usr/bin/espeak", text, "-s", "150", "-p", "20", "-k", "20", "-l",
-					"5", "-w", speechFile.getAbsolutePath()).start();
+			Process process = new ProcessBuilder("/usr/bin/espeak", text, "-m", "-w", speechFile.getAbsolutePath())
+					.start();
 			int waitFlag = process.waitFor();// Wait to finish application execution.
 			if (waitFlag == 0) {
 				int returnVal = process.exitValue();
