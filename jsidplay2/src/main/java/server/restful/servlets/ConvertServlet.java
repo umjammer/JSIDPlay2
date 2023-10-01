@@ -31,6 +31,7 @@ import static server.restful.common.IServletSystemProperties.RTMP_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
+import static server.restful.common.IServletSystemProperties.TEXT_TO_SPEECH;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT;
 import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
@@ -79,6 +80,7 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.TextToSpeech;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
@@ -442,6 +444,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(servletParameters.startSong);
+		if (TEXT_TO_SPEECH) {
+			TextToSpeech textToSpeech = new TextToSpeech(tune.getInfo());
+			info(textToSpeech.getText());
+			player.setMenuHook(textToSpeech);
+		}
 		player.play(tune);
 		player.stopC64(false);
 	}
