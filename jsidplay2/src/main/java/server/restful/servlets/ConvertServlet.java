@@ -133,7 +133,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.startSong = startSong;
 		}
 
-		private TextToSpeechType textToSpeechType = TextToSpeechType.NONE;
+		private TextToSpeechType textToSpeechType = TextToSpeechType.ESPEAK;
 
 		public TextToSpeechType getTextToSpeechType() {
 			return textToSpeechType;
