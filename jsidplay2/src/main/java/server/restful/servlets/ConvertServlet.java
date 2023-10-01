@@ -31,7 +31,6 @@ import static server.restful.common.IServletSystemProperties.RTMP_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.RTMP_EXCEEDS_MAXIMUM_DURATION;
 import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
-import static server.restful.common.IServletSystemProperties.TEXT_TO_SPEECH;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT;
 import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
@@ -80,10 +79,11 @@ import libsidplay.sidtune.SidTuneError;
 import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.TextToSpeech;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
+import server.restful.common.text2speech.TextToSpeech;
+import server.restful.common.text2speech.TextToSpeechType;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
 import sidplay.audio.AVIDriver.AVIFileDriver;
@@ -117,7 +117,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -14)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -15)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
 		}
@@ -128,9 +128,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -13)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -14)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
+		}
+
+		private TextToSpeechType textToSpeechType = TextToSpeechType.NONE;
+
+		public TextToSpeechType getTextToSpeechType() {
+			return textToSpeechType;
+		}
+
+		@Parameter(names = "--textToSpeechType", arity = 1, descriptionKey = "TEXT_TO_SPEECH_TYPE", order = -13)
+		public void setTextToSpeechType(TextToSpeechType textToSpeechType) {
+			this.textToSpeechType = textToSpeechType;
 		}
 
 		private Boolean download = Boolean.FALSE;
@@ -431,6 +442,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (root != null) {
 			player.setSidDatabase(new SidDatabase(root));
 		}
+		if (servletParameters.textToSpeechType != TextToSpeechType.NONE) {
+			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType));
+		}
 		Thread[] parentThreads = of(currentThread()).toArray(Thread[]::new);
 
 		player.setAudioDriver(driver);
@@ -444,11 +458,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(servletParameters.startSong);
-		if (TEXT_TO_SPEECH) {
-			TextToSpeech textToSpeech = new TextToSpeech(tune.getInfo());
-			info(textToSpeech.getText());
-			player.setMenuHook(textToSpeech);
-		}
 		player.play(tune);
 		player.stopC64(false);
 	}

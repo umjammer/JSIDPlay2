@@ -1429,6 +1429,22 @@
                                 ></span
                               >
                             </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <b-form-group
+                                  class="right"
+                                  :label="$t('convertMessages.textToSpeechType')"
+                                  label-for="textToSpeechType"
+                                >
+                                  <b-form-radio-group v-model="convertOptions.textToSpeechType">
+                                    <b-form-radio value="NONE" id="textToSpeechType">{{
+                                      $t("textToSpeechTypeOff")
+                                    }}</b-form-radio>
+                                    <b-form-radio value="ESPEAK">ESPEAK</b-form-radio>
+                                  </b-form-radio-group>
+                                </b-form-group>
+                              </span>
+                            </div>
                           </b-card-text>
                         </b-tab>
 
@@ -2954,6 +2970,7 @@
           stereoMode: "Stereo Mode",
           streamingCfgHeader: "Streaming",
           audioStreamingCfgHeader: "Audio",
+          textToSpeechTypeOff: "Off",
           videoStreamingCfgHeader: "Video",
           playbackCfgHeader: "Playback",
           emulationCfgHeader: "Emulation",
@@ -3102,6 +3119,7 @@
           stereoMode: "Stereo Mode",
           streamingCfgHeader: "Streaming",
           audioStreamingCfgHeader: "Audio",
+          textToSpeechTypeOff: "Aus",
           videoStreamingCfgHeader: "Video",
           playbackCfgHeader: "Wiedergabe",
           emulationCfgHeader: "Emulation",
@@ -4005,6 +4023,8 @@
               this.convertOptions.sfxSoundExpanderType +
               "&reuSize=" +
               this.convertOptions.reuSize +
+              "&textToSpeechType=" +
+              this.convertOptions.textToSpeechType +
               "&itemId=" +
               itemId +
               "&categoryId=" +
