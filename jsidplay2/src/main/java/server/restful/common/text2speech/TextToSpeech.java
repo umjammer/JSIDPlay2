@@ -86,7 +86,7 @@ public class TextToSpeech implements Consumer<Player> {
 						throw new IOException("Number of channels must be one or two");
 					}
 
-					// 2 Sample Frequencies lower than target frequency? Duplicate samples.
+					// 2. Sample Frequencies lower than target frequency? Duplicate samples.
 					int factor = 1;
 					int srcSampleRate = (int) stream.getFormat().getSampleRate();
 					int targetSampleRate = sampleRate.getFrequency();

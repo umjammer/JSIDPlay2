@@ -31,9 +31,7 @@ public enum TextToSpeechType {
 		Iterator<String> it = info.getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next();
-			if (!next.isEmpty()) {
-				title = next.replace("<?>", "Unknown Title");
-			}
+			title = next.isEmpty() || next.equals("<?>") ? "Unknown Title" : next;
 		}
 		if (it.hasNext()) {
 			String next = it.next();
