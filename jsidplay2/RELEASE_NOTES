@@ -9,3 +9,4 @@ Bugfix: automated tests repaired
 Feature: Recording tool added for whole collections like HVSC using a configurable number of parallel threads
 Feature: GMod2 cartridge support added (RAM expansion works fine, EEPROM functionality is untested)
 Feature: Theater mode added to C64Jukebox (random HVSC playback)
+Feature: Text2Speech added to JSIDPlay2Server calling external program espeak (https://espeak.sourceforge.net/)
