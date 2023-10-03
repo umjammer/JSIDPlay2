@@ -47,12 +47,11 @@ public enum TextToSpeechType {
 				released = next;
 			}
 		}
-		String ssml = "<speak>" + "<voice language=\"en-GB\" gender=\"female\" required=\"gender\"\n"
-				+ "ordering=\"gender language\">" + "<p>"
+		String ssml = "<speak>" + "<voice language=\"en-GB\" gender=\"female\">" + "<p>"
 				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
-				+ (author != null ? "<s>By: " + replaceSpecials(author) + "</s>" : "")
+				+ (author != null ? "<s>by " + replaceSpecials(replaceAliasName(author)) + "</s>" : "")
 				+ (released != null
-						? "<s>Released in: " + replaceUnknownDate(replaceDateRange(replaceSpecials(released))) + "</s>"
+						? "<s>released in " + replaceUnknownDate(replaceDateRange(replaceSpecials(released))) + "</s>"
 						: "")
 				+ "  </p>" + "<voice>" + "</speak>";
 		return new String[] { "espeak", ssml, "-m", "-w", wavFile };
@@ -60,6 +59,15 @@ public enum TextToSpeechType {
 
 	private static String replaceSpecials(String string) {
 		return Junidecode.unidecode(string).replaceAll("[/\\\\()]", "<break time=\"500ms\"/>").toLowerCase(Locale.US);
+	}
+
+	private static String replaceAliasName(String string) {
+		Pattern pattern = Pattern.compile("([^(]*)[(]([^)]*)[)]");
+		Matcher matcher = pattern.matcher(string);
+		if (matcher.matches()) {
+			return matcher.group(1) + "(Alias " + matcher.group(2) + ")";
+		}
+		return string;
 	}
 
 	private static String replaceUnknownDate(String string) {
