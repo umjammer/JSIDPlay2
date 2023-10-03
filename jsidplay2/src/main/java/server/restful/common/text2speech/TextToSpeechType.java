@@ -1,9 +1,13 @@
 package server.restful.common.text2speech;
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import libsidplay.sidtune.SidTuneInfo;
+import net.gcardone.junidecode.Junidecode;
 
 public enum TextToSpeechType {
 	NONE(TextToSpeechType::createNoArgumentsFunction), ESPEAK(TextToSpeechType::createEspeakArgumentsFunction);
@@ -27,8 +31,8 @@ public enum TextToSpeechType {
 		Iterator<String> it = info.getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next();
-			if (!next.isEmpty() && !"<?>".equals(next)) {
-				title = next;
+			if (!next.isEmpty()) {
+				title = next.replace("<?>", "Unknown Title");
 			}
 		}
 		if (it.hasNext()) {
@@ -47,14 +51,33 @@ public enum TextToSpeechType {
 				+ "ordering=\"gender language\">" + "<p>"
 				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
 				+ (author != null ? "<s>By: " + replaceSpecials(author) + "</s>" : "")
-				+ (released != null ? "<s>Released at: " + released + "</s>" : "") + "  </p>" + "<voice>" + "</speak>";
+				+ (released != null
+						? "<s>Released in: " + replaceUnknownDate(replaceDateRange(replaceSpecials(released))) + "</s>"
+						: "")
+				+ "  </p>" + "<voice>" + "</speak>";
 		return new String[] { "espeak", ssml, "-m", "-w", wavFile };
 	}
 
 	private static String replaceSpecials(String string) {
-		return string.replace('ä', 'a').replace('Ä', 'A').replace('ö', 'o').replace('Ö', 'O').replace('ü', 'u')
-				.replace('Ü', 'U').replace('ß', 's').replaceAll("[^\\x00-\\x7F]", "")
-				.replaceAll("/", "<break time=\"250ms\"/>").replaceAll("\\\\", "<break time=\"250ms\"/>");
+		return Junidecode.unidecode(string).replaceAll("[/\\\\()]", "<break time=\"500ms\"/>").toLowerCase(Locale.US);
+	}
+
+	private static String replaceUnknownDate(String string) {
+		Pattern pattern = Pattern.compile("19([89])[?](.*)");
+		Matcher matcher = pattern.matcher(string);
+		if (matcher.matches()) {
+			return "the " + matcher.group(1) + "0s" + "<break time=\"250ms\"/>" + matcher.group(2);
+		}
+		return string;
+	}
+
+	private static String replaceDateRange(String string) {
+		Pattern pattern = Pattern.compile("([0-9]{4})-([0-9]{2})(.*)");
+		Matcher matcher = pattern.matcher(string);
+		if (matcher.matches()) {
+			return matcher.group(1) + " to " + matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
+		}
+		return string;
 	}
 
 }

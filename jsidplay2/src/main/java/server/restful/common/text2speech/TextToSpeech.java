@@ -134,7 +134,9 @@ public class TextToSpeech implements Consumer<Player> {
 			}
 			wavFile.delete();
 		} catch (IOException | InterruptedException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
+			System.err
+					.println("Error during Text2Speech! Install or deactivate it!? (https://espeak.sourceforge.net/)\n"
+							+ e.getMessage());
 		}
 	}
 
