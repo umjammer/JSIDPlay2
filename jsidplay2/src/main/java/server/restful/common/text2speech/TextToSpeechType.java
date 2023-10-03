@@ -43,17 +43,18 @@ public enum TextToSpeechType {
 				released = next;
 			}
 		}
-		String text = "<speak>" + "<voice language=\"en-GB\" gender=\"female\" required=\"gender\"\n"
+		String ssml = "<speak>" + "<voice language=\"en-GB\" gender=\"female\" required=\"gender\"\n"
 				+ "ordering=\"gender language\">" + "<p>"
-				+ (title != null ? "<s>Now playing: " + replaceUmlauts(title) + "</s>" : "")
-				+ (author != null ? "<s>By: " + replaceUmlauts(author) + "</s>" : "")
+				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
+				+ (author != null ? "<s>By: " + replaceSpecials(author) + "</s>" : "")
 				+ (released != null ? "<s>Released at: " + released + "</s>" : "") + "  </p>" + "<voice>" + "</speak>";
-		return new String[] { "espeak", text, "-m", "-w", wavFile };
+		return new String[] { "espeak", ssml, "-m", "-w", wavFile };
 	}
 
-	private static String replaceUmlauts(String title) {
-		return title.replace('ä', 'a').replace('Ä', 'A').replace('ö', 'o').replace('Ö', 'O').replace('ü', 'u')
-				.replace('Ü', 'U').replace('ß', 's').replaceAll("[^\\x00-\\x7F]", "");
+	private static String replaceSpecials(String string) {
+		return string.replace('ä', 'a').replace('Ä', 'A').replace('ö', 'o').replace('Ö', 'O').replace('ü', 'u')
+				.replace('Ü', 'U').replace('ß', 's').replaceAll("[^\\x00-\\x7F]", "")
+				.replaceAll("/", "<break time=\"250ms\"/>").replaceAll("\\\\", "<break time=\"250ms\"/>");
 	}
 
 }

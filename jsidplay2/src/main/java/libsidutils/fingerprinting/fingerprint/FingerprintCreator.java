@@ -92,7 +92,9 @@ public class FingerprintCreator {
 						}
 					}
 				}
-				bytes = result.array();
+				bytes = new byte[result.position()];
+				((Buffer) result).rewind();
+				result.get(bytes);
 			}
 
 			// 3. convert to float mono mix
