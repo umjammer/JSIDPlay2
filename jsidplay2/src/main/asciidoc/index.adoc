@@ -52,32 +52,34 @@ Please read manual here:
 
 == Minimum System Requirement
 
+Java is required and must be installed separately. You can choose to install OpenJDK or as an alternative Oracle JDK
 |===
-|         | Java
-| Linux   | link:https://adoptium.net[https://adoptium.net^]
-| Windows | link:https://adoptium.net[https://adoptium.net^]
-| MacOSX  | link:https://adoptium.net[https://adoptium.net^]
+| *Platform*        | *OpenJDK Java* | *Oracle Java*
+| Windows/Linux/MacOSX   | link:https://adoptium.net[https://adoptium.net^] | link:https://www.oracle.com/java/technologies/downloads/[https://www.oracle.com/java/technologies/downloads/^]
 |===
-
-== Official Releases
-
-Click link:https://sourceforge.net/projects/jsidplay2/files/[here^] to download
 
 == Java version compatibility
 
-JSIDPlay2 source code is still downward compatible to the Java 8 API, but unfortunately compatibility is a bit more complicated.
-Because of the use of JavaFX as a dependency, that has been compiled with Java 17, we need this at runtime as well for the UI version.
+JSIDPlay2 source code is still downward compatible to the Java 8 API.
+This being said, you can use JSIDPlay2 using Oracle Java 8 and separate start scrips with *java8* in its name.
+This works only with Oracle Java 8, because JavaFX is built-in and my bundled JavaFX libraries are ignored.
+In OpenJDK 8 JavaFX is NOT built-in, that will not work, unfortunately.
 
-JSIDPlay2 has been tested and is compatible wit Oracle Java 8 (with JavaFX already included), OpenJDK 17 (with JafaFX contained in my release)
-and OpenJDK 21 preview release (with JafaFX contained in my release).
-The reason, why we are not compatible with Java 11 is, that a compatible JavaFX version is missing and there is no JDK distribution known to me containing JavaFX.
+Or as an alternative, you can choose OpenJDK or Oracle Java Java 17 or never.
 
-Btw, a separate program (.exe/.sh) is required and available to launch with Oracle Java 8.
+JSIDPlay2 has been tested and is compatible with Oracle Java 8, OpenJDK 17 and OpenJDK 21.
+
+My recommendation is to use the latest Java version and if this is not possible, than fallback to Oracle Java 8
+
+== Official Releases
+
+link:https://sourceforge.net/projects/jsidplay2/files/[Official releases^] are more stable, but maybe outdated.
+If you require the latest bug fixes or features, please use the latest beta version below.
 
 == Latest Beta Versions
 
 |===
-|              | *x86_64*                                                    | *aarm64*
+| *Platform*             | *x64*                                                       | *AArch64* / *ARM64*
 | Windows      | link:{codebase}{artifactId}-{version}-win.zip[Download]	 |
 | Linux        | link:{codebase}{artifactId}-{version}-linux.zip[Download]	 | link:{codebase}{artifactId}-{version}-linux-aarch64.zip[Download]
 | MacOSX       | link:{codebase}{artifactId}-{version}-mac.zip[Download]     | link:{codebase}{artifactId}-{version}-mac-aarch64.zip[Download] (e.g. Apple M1)
@@ -85,12 +87,14 @@ Btw, a separate program (.exe/.sh) is required and available to launch with Orac
 
 link:{codebase}jsidplay2-{version}-libsidplay.jar[Download libsidplay] (only the library) and link:{codebase}Test.java[here] is an example to use it.
 
-link:{codebase}jsidplay2-{version}-jsiddevice.jar[Download Network SID Device] (e.g. for link:https://www.acid64.com[ACID64])
+link:{codebase}jsidplay2-{version}-jsiddevice.jar[Download Network SID Device] (e.g. to be used altogether with link:https://www.acid64.com[ACID64])
 
-link:{codebase}jsidplay2app.apk[Download jsidplay2app] (*deprecated* android app has been replaced by link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox])
+link:{codebase}jsidplay2app.apk[Download jsidplay2app] (*deprecated*).
+
+The android app has been replaced by a HTML5 web version called  link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox])
 
 == JSIDPlay2 Server
-link:https://haendel.ddns.net:8443/static/c64jukebox.vue[JSIDPlay2 - Web Version^]
+link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox (HTML5 web version)^]
 
 link:https://haendel.ddns.net:8443[API Documentation^]
 
