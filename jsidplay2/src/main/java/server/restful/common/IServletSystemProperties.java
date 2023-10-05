@@ -255,4 +255,9 @@ public interface IServletSystemProperties {
 	boolean UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS = Boolean
 			.valueOf(getProperty("jsidplay2.uncaught.exceptionhandler.exceptions", "false"));
 
+	/**
+	 * Experimental: Text to speech to announce tunes.
+	 */
+	boolean TEXT_TO_SPEECH = Boolean.valueOf(getProperty("jsidplay2.audio.text2speech", "true"));
+
 }
