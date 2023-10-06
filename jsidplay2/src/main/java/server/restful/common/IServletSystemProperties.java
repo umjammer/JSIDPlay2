@@ -132,9 +132,15 @@ public interface IServletSystemProperties {
 			getProperty(H2 + ".overhead.window.update.threshold", String.valueOf(1024)));
 
 	/**
-	 * JSIDPlay2Server cache control max age of static resources in s.
+	 * Servlet response header to set the maximum age of cacheable resources in s.
 	 */
-	int STATIC_RES_MAX_AGE = valueOf(getProperty("jsidplay2.cache.max.age", String.valueOf(1 * 24 * 60 * 60)));
+	String CACHE_CONTROL_RESPONSE_HEADER_CACHED = getProperty("jsidplay2.whatssid.cache_control.response.header.cached",
+			"public, max-age=86400");
+	/**
+	 * Servlet response header to disable caching for non-cacheable resources.
+	 */
+	String CACHE_CONTROL_RESPONSE_HEADER_UNCACHED = getProperty("jsidplay2.whatssid.cache_control.response.header.uncached",
+			"private, no-store, no-cache, must-revalidate");
 
 	//
 	// ConvertServlet

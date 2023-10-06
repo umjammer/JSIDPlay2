@@ -4,7 +4,7 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
-import static server.restful.common.IServletSystemProperties.STATIC_RES_MAX_AGE;
+import static server.restful.common.IServletSystemProperties.*;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_DE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_EN;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPTIONS;
@@ -95,10 +95,9 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 				if (mimeType.isCacheable()) {
-					response.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=" + STATIC_RES_MAX_AGE);
+					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_CACHED);
 				} else {
-					response.setHeader(HttpHeaders.PRAGMA, "no-cache");
-					response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
+					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
 				}
 				if (mimeType.isText()) {
 					setOutput(response, mimeType, IOUtils.convertStreamToString(source, "UTF-8", replacements));

@@ -20,6 +20,7 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
+import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_UNCACHED;
 import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.MAX_AUD_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
@@ -372,8 +373,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						}, "RTMP").start();
 						waitUntilVideoIsAvailable(uuid);
 
-						response.setHeader(HttpHeaders.PRAGMA, "no-cache");
-						response.setHeader(HttpHeaders.CACHE_CONTROL, "private, no-store, no-cache, must-revalidate");
+						response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
 
 						Map<String, String> replacements = createReplacements(servletParameters, request, file, uuid);
 						try (InputStream is = ConvertServlet.class
