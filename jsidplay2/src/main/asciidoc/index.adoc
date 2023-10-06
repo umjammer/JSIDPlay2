@@ -13,12 +13,12 @@ link:https://sourceforge.net/projects/jsidplay2/[JSIDPlay2@Sourceforge^]
 == Introduction
 
 I am a C64 fan since 1986 as many other people are. I played games, watched demos and read books, but when the time goes by, all activities stopped slowly in the beginning of the 90s. 
-But one thing from the past i actually do until today, that is listening the precious SID music of all the talented music artists and demo groups. So many thanks to all of you for your work collected in the link:https://www.hvsc.c64.org/[HVSC].
+But one thing from the past i actually do until today, that is listening the precious SID music of all the talented music artists and demo groups. So many thanks to all of you for your work collected in the link:https://www.hvsc.c64.org/[HVSC^].
 
-To listen the new releases from the still active groups i often used link:https://sourceforge.net/projects/sidplay2/[sidplay2]  for windows or an emulator like link:https://www.ccs64.com/[CCS64] , because my commodore was on the attic.
+To listen the new releases from the still active groups i often used link:https://sourceforge.net/projects/sidplay2/[sidplay2^]  for windows or an emulator like link:http://www.ccs64.com/[CCS64^] , because my commodore was on the attic.
 
 I am a Java developer and wanted to have my very own java implementation to create a so called C64 Jukebox. 
-I decided to create a 1:1 conversion of link:https://sourceforge.net/projects/sidplay2/[sidplay2] from C++ to java. It should have all features of the original.
+I decided to create a 1:1 conversion of link:https://sourceforge.net/projects/sidplay2/[sidplay2^] from C++ to java. It should have all features of the original.
 It was a long time work and when it was finished i decided to make it open source, that others can integrate into their java emulators. +
 Perhaps there will be plugins for many java apps some day or a version running even on a mobile.
 
@@ -30,14 +30,14 @@ The current version has been evolved toward a full featured and very compatible 
 Thank you!
 
 If you want to give feedback, please mailto:kschwiersch@yahoo.de?subject=JSIDPlay2[email me]. +
-If you want to know who i am, you can visit my link:https://haendel-junior.de/[homepage]. +
-If you want to visit my other open source project, please visit link:https://www.totalcmd.net/plugring/tc_java.html[Total Comander Plugin Interface] page.
+If you want to know who i am, you can visit my link:https://haendel-junior.de/[homepage^]. +
+If you want to visit my other open source project, please visit link:https://www.totalcmd.net/plugring/tc_java.html[Total Comander Plugin Interface^] page.
 
 == Features
 
 JSidplay2 is able to
 
-* load sound files with extensions: SID (PSID/RSID), MUS, DAT, P00, PRG, STR. You can find most of them in the link:https://www.hvsc.c64.org/[High Voltage SID Collection], the biggest music collecton on earth. 
+* load sound files with extensions: SID (PSID/RSID), MUS, DAT, P00, PRG, STR. You can find most of them in the link:https://www.hvsc.c64.org/[High Voltage SID Collection^], the biggest music collecton on earth. 
 * play mono, stereo and 3-SID formats
 * play with custom sample rates (sample size is 16 bit)
 * load external SID Filter definition
@@ -52,7 +52,7 @@ Please read manual here:
 
 == Minimum System Requirement
 
-Java is required and must be installed separately. You can choose to install OpenJDK or as an alternative Oracle JDK
+Java is required and must be installed separately. You can choose to install OpenJDK or as an alternative Oracle Java
 |===
 | *Platform*        | *OpenJDK Java* | *Oracle Java*
 | Windows/Linux/MacOSX   | link:https://adoptium.net[https://adoptium.net^] | link:https://www.oracle.com/java/technologies/downloads/[https://www.oracle.com/java/technologies/downloads/^]
@@ -60,12 +60,13 @@ Java is required and must be installed separately. You can choose to install Ope
 
 == Java version compatibility
 
+You can choose OpenJDK or Oracle Java 17 or never.
+
+Or as an alternative, 
 JSIDPlay2 source code is still downward compatible to the Java 8 API.
 This being said, you can use JSIDPlay2 using Oracle Java 8 and separate start scrips with *java8* in its name.
 This works only with Oracle Java 8, because JavaFX is built-in and my bundled JavaFX libraries are ignored.
 In OpenJDK 8 JavaFX is NOT built-in, that will not work, unfortunately.
-
-Or as an alternative, you can choose OpenJDK or Oracle Java Java 17 or never.
 
 JSIDPlay2 has been tested and is compatible with Oracle Java 8, OpenJDK 17 and OpenJDK 21.
 
@@ -91,14 +92,14 @@ link:{codebase}jsidplay2-{version}-jsiddevice.jar[Download Network SID Device] (
 
 link:{codebase}jsidplay2app.apk[Download jsidplay2app] (*deprecated*).
 
-The android app has been replaced by a HTML5 web version called  link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox])
+link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox^] is the HTML5 web version and the replacement of the old jsidplay2app
 
 == JSIDPlay2 Server
 link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64Jukebox (HTML5 web version)^]
 
-link:https://haendel.ddns.net:8443[API Documentation^]
-
 link:https://haendel.ddns.net:8443/static/whatssid.vue[WhatsSID? Tune Recognition^]
+
+link:https://haendel.ddns.net:8443[API Documentation^]
 
 == Metrics
 
