@@ -1040,6 +1040,24 @@
               </template>
 
               <b-card-text>
+                <div v-if="!importFile" class="playlist-examples-box">
+                  <span size="sm">{{ $t("fetchFavorites") }}</span>
+                  <b-link
+                    v-for="(favoritesName, index) in favoritesNames"
+                    :key="index"
+                    v-b-modal:[`modal-fetch-favorites-${index}`]
+                    size="sm"
+                  >
+                    <span>{{ favoritesName }}</span>
+                    <b-modal
+                      :id="`modal-fetch-favorites-${index}`"
+                      :title="$t('confirmationTitle')"
+                      @ok="fetchFavorites(index)"
+                    >
+                      <p>{{ $t("removePlaylistReally") }}</p>
+                    </b-modal>
+                  </b-link>
+                </div>
                 <div class="button-box">
                   <b-input-group size="sm" class="mb-2">
                     <b-form-file
@@ -1089,13 +1107,6 @@
                     <span>{{ $t("removePlaylist") }}</span></b-button
                   >
                   <b-modal id="modal-remove-playlist" :title="$t('confirmationTitle')" @ok="removePlaylist">
-                    <p>{{ $t("removePlaylistReally") }}</p>
-                  </b-modal>
-                  <b-button v-if="!importFile" v-b-modal.modal-fetch-favorites size="sm">
-                    <b-icon-download> </b-icon-download>
-                    <span>{{ $t("fetchFavorites") }}</span></b-button
-                  >
-                  <b-modal id="modal-fetch-favorites" :title="$t('confirmationTitle')" @ok="fetchFavorites">
                     <p>{{ $t("removePlaylistReally") }}</p>
                   </b-modal>
                   <b-button
@@ -3276,6 +3287,7 @@
           importFile: null,
           playlist: [],
           playlistIndex: 0,
+          favoritesNames: [],
           random: true,
           filterText: "",
           // CFG (configuration)
@@ -4207,22 +4219,26 @@
               })
               .finally(() => (this.loadingSid = false));
           },
-          fetchFavorites: function () {
+          fetchFavorites: function (number) {
             this.loadingPl = true; //the loading begin
             axios({
               method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/favorites",
+              url: "/jsidplay2service/JSIDPlay2REST/favorites?favoritesNumber=" + number,
               auth: {
                 username: this.username,
                 password: this.password,
               },
             })
               .then((response) => {
-                this.playlist = response.data.map((file) => {
-                  return {
-                    filename: file,
-                  };
-                });
+                if (response.data.toString().startsWith("[{")) {
+                  this.playlist = JSON.parse(response.data);
+                } else {
+                  this.playlist = response.data.map((file) => {
+                    return {
+                      filename: file,
+                    };
+                  });
+                }
                 this.playlistIndex = 0;
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
@@ -4245,6 +4261,25 @@
               .catch((error) => {
                 this.playlist = [];
                 this.playlistIndex = 0;
+                console.log(error);
+              })
+              .finally(() => (this.loadingPl = false));
+          },
+          fetchFavoritesNames: function () {
+            this.loadingPl = true; //the loading begin
+            axios({
+              method: "get",
+              url: "/jsidplay2service/JSIDPlay2REST/favorites_names",
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            })
+              .then((response) => {
+                this.favoritesNames = response.data;
+              })
+              .catch((error) => {
+                this.favoritesNames = [];
                 console.log(error);
               })
               .finally(() => (this.loadingPl = false));
@@ -4527,6 +4562,7 @@
             this.fetchDirectory(this.rootDir);
           }
           this.fetchFilters();
+          this.fetchFavoritesNames();
           this.fetchCategories();
           if (localStorage.convertOptions) {
             // restore configuration from last run

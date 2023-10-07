@@ -63,6 +63,7 @@ import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.DirectoryServlet;
 import server.restful.servlets.DiskDirectoryServlet;
 import server.restful.servlets.DownloadServlet;
+import server.restful.servlets.FavoritesNamesServlet;
 import server.restful.servlets.FavoritesServlet;
 import server.restful.servlets.FiltersServlet;
 import server.restful.servlets.PhotoServlet;
@@ -214,14 +215,15 @@ public final class JSIDPlay2Server {
 	 */
 	private static final List<Class<? extends JSIDPlay2Servlet>> SERVLETS = asList(FiltersServlet.class,
 			DirectoryServlet.class, DiskDirectoryServlet.class, TuneInfoServlet.class, PhotoServlet.class,
-			ConvertServlet.class, DownloadServlet.class, FavoritesServlet.class, WebJarsServlet.class,
-			StaticServlet.class, StartPageServlet.class, InsertTuneServlet.class, InsertHashesServlet.class,
-			FindTuneServlet.class, FindHashServlet.class, WhatsSidServlet.class, TuneExistsServlet.class,
-			OnKeepAliveServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class, InsertNextDiskServlet.class,
-			InsertNextCartServlet.class, SetSidModel6581Servlet.class, SetSidModel8580Servlet.class,
-			SetDefaultEmulationReSidServlet.class, SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class,
-			JoystickServlet.class, ProxyServlet.class, STILServlet.class, HardSIDMappingServlet.class,
-			ExSIDMappingServlet.class, SIDBlasterMappingServlet.class, RandomHVSCServlet.class);
+			ConvertServlet.class, DownloadServlet.class, FavoritesServlet.class, FavoritesNamesServlet.class,
+			WebJarsServlet.class, StaticServlet.class, StartPageServlet.class, InsertTuneServlet.class,
+			InsertHashesServlet.class, FindTuneServlet.class, FindHashServlet.class, WhatsSidServlet.class,
+			TuneExistsServlet.class, OnKeepAliveServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class,
+			InsertNextDiskServlet.class, InsertNextCartServlet.class, SetSidModel6581Servlet.class,
+			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
+			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
+			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class, SIDBlasterMappingServlet.class,
+			RandomHVSCServlet.class);
 
 	private static EntityManagerFactory entityManagerFactory;
 

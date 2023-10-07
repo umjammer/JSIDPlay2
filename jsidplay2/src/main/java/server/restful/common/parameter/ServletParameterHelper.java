@@ -46,6 +46,7 @@ import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
 import server.restful.servlets.DiskDirectoryServlet.DiskDirectoryServletParameters;
 import server.restful.servlets.DownloadServlet.DownloadServletParameters;
+import server.restful.servlets.FavoritesServlet.FavoritesServletParameters;
 import server.restful.servlets.PhotoServlet.PhotoServletParameters;
 import server.restful.servlets.STILServlet.STILServletParameters;
 import server.restful.servlets.StaticServlet.StaticServletParameters;
@@ -116,8 +117,9 @@ public class ServletParameterHelper {
 			SIDBlasterMappingServletParameters.class,
 			//
 			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
-			DownloadServletParameters.class, PhotoServletParameters.class, WebJarsServletParameters.class,
-			StaticServletParameters.class, STILServletParameters.class, TuneInfoServletParameters.class);
+			DownloadServletParameters.class, FavoritesServletParameters.class, PhotoServletParameters.class,
+			WebJarsServletParameters.class, StaticServletParameters.class, STILServletParameters.class,
+			TuneInfoServletParameters.class);
 
 	public static void check() {
 		MAIN_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);
