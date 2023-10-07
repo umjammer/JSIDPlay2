@@ -12,7 +12,6 @@ import static libsidutils.IOUtils.copy;
 import static libsidutils.IOUtils.getFilenameSuffix;
 import static libsidutils.IOUtils.getFilenameWithoutSuffix;
 import static libsidutils.ZipFileUtils.newFileInputStream;
-import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.ATTACHMENT;
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
@@ -24,7 +23,6 @@ import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPO
 import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.MAX_AUD_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
-import static server.restful.common.IServletSystemProperties.MAX_RTMP_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.MAX_VID_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.NOTIFY_FOR_HLS;
 import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
@@ -34,7 +32,6 @@ import static server.restful.common.IServletSystemProperties.RTMP_NOT_YET_PLAYED
 import static server.restful.common.IServletSystemProperties.RTMP_UPLOAD_URL;
 import static server.restful.common.IServletSystemProperties.TEXT_TO_SPEECH;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT;
-import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
@@ -360,28 +357,25 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				if (Boolean.FALSE.equals(servletParameters.download)
 						&& driver.lookup(FLVStreamDriver.class).isPresent()) {
-					if (count() < MAX_RTMP_IN_PARALLEL) {
-						Thread parentThread = currentThread();
-						new Thread(() -> {
-							try {
-								info(String.format("START uuid=%s", uuid), parentThread);
-								convert2video(file, driver, servletParameters, uuid, parentThread);
-								info(String.format("END uuid=%s", uuid), parentThread);
-							} catch (IOException | SidTuneError e) {
-								error(e, parentThread);
-							}
-						}, "RTMP").start();
-						waitUntilVideoIsAvailable(uuid);
 
-						response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
-
-						Map<String, String> replacements = createReplacements(servletParameters, request, file, uuid);
-						try (InputStream is = ConvertServlet.class
-								.getResourceAsStream("/server/restful/webapp/convert.html")) {
-							setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
+					Thread parentThread = currentThread();
+					new Thread(() -> {
+						try {
+							info(String.format("START uuid=%s", uuid), parentThread);
+							convert2video(file, driver, servletParameters, uuid, parentThread);
+							info(String.format("END uuid=%s", uuid), parentThread);
+						} catch (IOException | SidTuneError e) {
+							error(e, parentThread);
 						}
-					} else {
-						response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
+					}, "RTMP").start();
+					waitUntilVideoIsAvailable(uuid);
+
+					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
+
+					Map<String, String> replacements = createReplacements(servletParameters, request, file, uuid);
+					try (InputStream is = ConvertServlet.class
+							.getResourceAsStream("/server/restful/webapp/convert.html")) {
+						setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 					}
 				} else {
 
@@ -541,7 +535,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
 			HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
 		String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
-		String qrCodeImgTag = createQrCodeImgTag(getRequestURL(request), "UTF-8", "png", 320, 320);
+		String qrCodeImgTag = createQrCodeImgTag(createShareWithURL(request), "UTF-8", "png", 320, 320);
 
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("$uuid", uuid.toString());
@@ -574,7 +568,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private String getRequestURL(HttpServletRequest request) {
+	private String createShareWithURL(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
 		result.append(request.getRequestURL());
 		if (request.getQueryString() != null) {

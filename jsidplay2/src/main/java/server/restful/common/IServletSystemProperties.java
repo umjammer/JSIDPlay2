@@ -139,7 +139,8 @@ public interface IServletSystemProperties {
 	/**
 	 * Servlet response header to disable caching for non-cacheable resources.
 	 */
-	String CACHE_CONTROL_RESPONSE_HEADER_UNCACHED = getProperty("jsidplay2.whatssid.cache_control.response.header.uncached",
+	String CACHE_CONTROL_RESPONSE_HEADER_UNCACHED = getProperty(
+			"jsidplay2.whatssid.cache_control.response.header.uncached",
 			"private, no-store, no-cache, must-revalidate");
 
 	//
@@ -160,11 +161,6 @@ public interface IServletSystemProperties {
 	 * Maximum number of ConvertServlet requests in parallel.
 	 */
 	int MAX_CONVERT_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.max.parallel", "7"));
-
-	/**
-	 * Video streaming: Maximum number of RTMP threads in parallel.
-	 */
-	int MAX_RTMP_IN_PARALLEL = valueOf(getProperty("jsidplay2.rtmp.max.parallel", "7"));
 
 	/**
 	 * Video streaming: Interval between simulated key presses of the space key in s
