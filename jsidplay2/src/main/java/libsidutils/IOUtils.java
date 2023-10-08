@@ -234,12 +234,11 @@ public class IOUtils {
 		}
 	}
 
-	public static String convertStreamToString(java.io.InputStream is, String charsetName) {
+	public static String convertStreamToString(InputStream is, String charsetName) {
 		return convertStreamToString(is, charsetName, new HashMap<>());
 	}
 
-	public static String convertStreamToString(java.io.InputStream is, String charsetName,
-			Map<String, String> replacements) {
+	public static String convertStreamToString(InputStream is, String charsetName, Map<String, String> replacements) {
 		try (java.util.Scanner s = new java.util.Scanner(is, charsetName)) {
 			s.useDelimiter("\\A");
 			String string = s.hasNext() ? s.next() : "";

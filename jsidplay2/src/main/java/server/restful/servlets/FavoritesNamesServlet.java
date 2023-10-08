@@ -59,7 +59,8 @@ public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 	private List<String> getFavoritesNames() {
 		List<String> filters = configuration.getFavorites().stream().map(FavoritesSection::getName)
 				.collect(Collectors.toList());
-		filters.add("Specials"); // Small hack to add entries (only supported in C64 Jukebox)
+		// Small hack to add entries (only supported in C64 Jukebox)
+		filters.add("Specials");
 		return filters;
 	}
 
