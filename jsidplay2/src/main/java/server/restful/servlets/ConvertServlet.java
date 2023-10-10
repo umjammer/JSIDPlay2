@@ -35,6 +35,7 @@ import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAI
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
+import static server.restful.common.filters.PlayerBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 import static sidplay.audio.Audio.FLV;
 import static sidplay.audio.Audio.MP3;
 
@@ -79,6 +80,7 @@ import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
+import server.restful.common.filters.PlayerBasedRateLimiterFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import server.restful.common.text2speech.TextToSpeech;
@@ -286,13 +288,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new CounterBasedRateLimiterFilter());
+		return Arrays.asList(new CounterBasedRateLimiterFilter(), new PlayerBasedRateLimiterFilter());
 	}
 
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
+		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		return result;
 	}
 
