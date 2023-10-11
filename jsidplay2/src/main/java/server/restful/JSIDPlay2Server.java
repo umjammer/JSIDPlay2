@@ -56,6 +56,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerCleanupTimerTask;
@@ -237,6 +238,8 @@ public final class JSIDPlay2Server {
 
 	private Properties servletUtilProperties;
 
+	private SidDatabase sidDatabase;
+
 	private static JSIDPlay2Server instance;
 
 	private JSIDPlay2Server() {
@@ -253,6 +256,14 @@ public final class JSIDPlay2Server {
 		JSIDPlay2Server result = new JSIDPlay2Server();
 		result.parameters.configuration = configuration;
 		result.servletUtilProperties = result.getServletUtilProperties();
+		File hvsc = configuration.getSidplay2Section().getHvsc();
+		if (hvsc != null) {
+			try {
+				result.sidDatabase = new SidDatabase(hvsc);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		Player.initializeTmpDir(configuration);
 		return result;
 	}
@@ -425,8 +436,9 @@ public final class JSIDPlay2Server {
 		List<JSIDPlay2Servlet> result = new ArrayList<>();
 
 		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
-			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor(Configuration.class, Properties.class)
-					.newInstance(parameters.configuration, servletUtilProperties);
+			JSIDPlay2Servlet servlet = servletCls
+					.getDeclaredConstructor(Configuration.class, SidDatabase.class, Properties.class)
+					.newInstance(parameters.configuration, sidDatabase, servletUtilProperties);
 
 			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getURLPattern());
 

@@ -13,6 +13,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.ServletParameterParser;
@@ -29,8 +30,9 @@ public class SetDefaultEmulationReSidServlet extends JSIDPlay2Servlet {
 
 	public static final String SET_DEFAULT_EMULATION_RESID_PATH = "/set_default_emulation_resid";
 
-	public SetDefaultEmulationReSidServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public SetDefaultEmulationReSidServlet(Configuration configuration, SidDatabase sidDatabase,
+			Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class SetDefaultEmulationReSidServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final SetDefaultEmulationReSidServletParameters servletParameters = new SetDefaultEmulationReSidServletParameters();

@@ -17,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.URLRequestPathServletParameters;
@@ -33,8 +34,8 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 
 	public static final String PROXY_PATH = "/proxy";
 
-	public ProxyServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public ProxyServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -54,7 +55,8 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// super.doGet(request); // Calls are very frequent, therefore we are silent here
+		// super.doGet(request); // Calls are very frequent, therefore we are silent
+		// here
 		try {
 			final ProxyServletParameters servletParameters = new ProxyServletParameters();
 

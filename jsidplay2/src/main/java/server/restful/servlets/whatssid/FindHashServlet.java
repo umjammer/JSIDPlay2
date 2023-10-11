@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.fingerprinting.rest.beans.HashBeans;
 import libsidutils.fingerprinting.rest.beans.IntArrayBean;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 import ui.entities.whatssid.service.WhatsSidService;
@@ -22,8 +23,8 @@ public class FindHashServlet extends JSIDPlay2Servlet {
 
 	public static final String FIND_HASH_PATH = "/hash";
 
-	public FindHashServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public FindHashServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

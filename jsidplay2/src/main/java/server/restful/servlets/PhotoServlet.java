@@ -20,6 +20,7 @@ import jsidplay2.Photos;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
@@ -35,8 +36,8 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 
 	public static final String PHOTO_PATH = "/photo";
 
-	public PhotoServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public PhotoServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

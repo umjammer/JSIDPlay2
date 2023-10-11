@@ -46,8 +46,8 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 
 	public static final String TUNE_INFO_PATH = "/info";
 
-	public TuneInfoServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public TuneInfoServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -108,11 +108,9 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			return null;
 		}
 		SidTune tune = SidTune.load(tuneFile);
-		File root = configuration.getSidplay2Section().getHvsc();
 		DoubleSupplier songLengthFnct = () -> 0;
-		if (root != null) {
-			SidDatabase db = new SidDatabase(root);
-			songLengthFnct = () -> db.getTuneLength(tune);
+		if (sidDatabase != null) {
+			songLengthFnct = () -> sidDatabase.getTuneLength(tune);
 		}
 		return new HVSCEntry(songLengthFnct, "", tuneFile, tune);
 	}

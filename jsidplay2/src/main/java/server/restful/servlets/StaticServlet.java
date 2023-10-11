@@ -4,7 +4,8 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
-import static server.restful.common.IServletSystemProperties.*;
+import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_CACHED;
+import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_UNCACHED;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_DE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_EN;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPTIONS;
@@ -25,6 +26,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
@@ -50,8 +52,8 @@ public class StaticServlet extends JSIDPlay2Servlet {
 
 	}
 
-	public StaticServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public StaticServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

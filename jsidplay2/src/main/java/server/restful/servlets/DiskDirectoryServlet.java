@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
@@ -36,8 +37,8 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 
 	public static final String DISK_DIRECTORY_PATH = "/disk-directory";
 
-	public DiskDirectoryServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public DiskDirectoryServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

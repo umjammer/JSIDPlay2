@@ -14,6 +14,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.converter.FractionSecondsToMsConverter;
 import server.restful.common.parameter.ServletParameterParser;
@@ -53,8 +54,8 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 
 	public static final String ON_KEEP_ALIVE_PATH = "/on_keep_alive";
 
-	public OnKeepAliveServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public OnKeepAliveServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -84,7 +85,8 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// super.doGet(request); // Calls are very frequent, therefore we are silent here
+		// super.doGet(request); // Calls are very frequent, therefore we are silent
+		// here
 		try {
 			final OnKeepAliveServletParameters servletParameters = new OnKeepAliveServletParameters();
 

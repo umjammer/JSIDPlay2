@@ -13,6 +13,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.ServletParameterParser;
@@ -29,8 +30,8 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 
 	public static final String ON_PLAY_DONE_PATH = "/on_play_done";
 
-	public OnPlayDoneServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public OnPlayDoneServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -69,14 +70,15 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doPost(request);
 		try {
 			final OnPlayDoneServletParameters servletParameters = new OnPlayDoneServletParameters();
 
-			/*ServletParameterParser parser = */new ServletParameterParser(request, response, servletParameters, getServletPath(), true);
+			/* ServletParameterParser parser = */new ServletParameterParser(request, response, servletParameters,
+					getServletPath(), true);
 
-			if (servletParameters.getUuid() == null /*|| parser.hasException()*/) {
+			if (servletParameters.getUuid() == null /* || parser.hasException() */) {
 				// Not every video has a valid UUID as it's name! e.g.
 				// https://haendel.ddns.net/live/jsidplay2
 				return;

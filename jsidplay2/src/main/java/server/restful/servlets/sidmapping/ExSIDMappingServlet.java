@@ -24,6 +24,7 @@ import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
@@ -43,8 +44,8 @@ public class ExSIDMappingServlet extends JSIDPlay2Servlet {
 
 	public static final String EXSID_MAPPING_PATH = "/exsid-mapping";
 
-	public ExSIDMappingServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public ExSIDMappingServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

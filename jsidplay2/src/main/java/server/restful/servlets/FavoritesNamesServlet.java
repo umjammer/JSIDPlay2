@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 import ui.entities.config.FavoritesSection;
@@ -21,8 +22,8 @@ public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 
 	public static final String FAVORITES_NAMES_PATH = "/favorites_names";
 
-	public FavoritesNamesServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public FavoritesNamesServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

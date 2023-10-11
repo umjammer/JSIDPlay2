@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.fingerprinting.rest.beans.MusicInfoBean;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 import ui.entities.whatssid.service.WhatsSidService;
@@ -21,8 +22,8 @@ public class TuneExistsServlet extends JSIDPlay2Servlet {
 
 	public static final String TUNE_EXISTS_PATH = "/tune-exists";
 
-	public TuneExistsServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public TuneExistsServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

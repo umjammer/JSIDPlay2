@@ -13,6 +13,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.ServletParameterParser;
@@ -29,8 +30,8 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 
 	public static final String SET_DEFAULT_EMULATION_RESIDFP_PATH = "/set_default_emulation_residfp";
 
-	public SetDefaultEmulationReSidFpServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public SetDefaultEmulationReSidFpServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.fingerprinting.rest.beans.HashBeans;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 import ui.entities.whatssid.service.WhatsSidService;
@@ -23,8 +24,8 @@ public class InsertHashesServlet extends JSIDPlay2Servlet {
 
 	public static final String INSERT_HASHES_PATH = "/insert-hashes";
 
-	public InsertHashesServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public InsertHashesServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

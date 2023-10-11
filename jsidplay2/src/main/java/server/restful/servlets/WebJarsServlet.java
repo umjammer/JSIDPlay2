@@ -17,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
@@ -31,8 +32,8 @@ public class WebJarsServlet extends JSIDPlay2Servlet {
 
 	}
 
-	public WebJarsServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public WebJarsServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

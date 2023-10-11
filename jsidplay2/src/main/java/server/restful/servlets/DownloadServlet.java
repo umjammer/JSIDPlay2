@@ -21,6 +21,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
@@ -36,8 +37,8 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 
 	public static final String DOWNLOAD_PATH = "/download";
 
-	public DownloadServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public DownloadServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

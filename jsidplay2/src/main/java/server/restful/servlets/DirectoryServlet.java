@@ -14,6 +14,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.DirectoryRequestPathServletParameters;
@@ -29,8 +30,8 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 
 	public static final String DIRECTORY_PATH = "/directory";
 
-	public DirectoryServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public DirectoryServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

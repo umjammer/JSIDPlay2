@@ -12,6 +12,7 @@ import java.util.Properties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 import ui.entities.config.FilterSection;
@@ -21,8 +22,8 @@ public class FiltersServlet extends JSIDPlay2Servlet {
 
 	public static final String FILTERS_PATH = "/filters";
 
-	public FiltersServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public FiltersServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

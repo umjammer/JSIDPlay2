@@ -4,7 +4,6 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -20,8 +19,8 @@ public class RandomHVSCServlet extends JSIDPlay2Servlet {
 
 	public static final String RANDOM_HVSC_PATH = "/random-hvsc";
 
-	public RandomHVSCServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public RandomHVSCServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -56,11 +55,8 @@ public class RandomHVSCServlet extends JSIDPlay2Servlet {
 	}
 
 	private String getRandomHVSC() throws IOException {
-		File hvsc = configuration.getSidplay2Section().getHvsc();
-
-		if (hvsc != null) {
-			SidDatabase db = new SidDatabase(hvsc);
-			String rndPath = db.getRandomPath();
+		if (sidDatabase != null) {
+			String rndPath = sidDatabase.getRandomPath();
 			if (rndPath != null) {
 				return JSIDPlay2Servlet.C64_MUSIC + rndPath;
 			}

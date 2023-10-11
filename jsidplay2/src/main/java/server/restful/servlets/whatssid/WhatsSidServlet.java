@@ -30,6 +30,7 @@ import libsidutils.fingerprinting.FingerPrinting;
 import libsidutils.fingerprinting.ini.IniFingerprintConfig;
 import libsidutils.fingerprinting.rest.beans.MusicInfoWithConfidenceBean;
 import libsidutils.fingerprinting.rest.beans.WAVBean;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
@@ -44,8 +45,8 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 	public static final String WHATSSID_PATH = "/whatssid";
 
-	public WhatsSidServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public WhatsSidServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

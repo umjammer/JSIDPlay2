@@ -19,6 +19,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.converter.WebResourceConverter;
 import server.restful.common.parameter.ServletParameterParser;
@@ -47,8 +48,8 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 
 	public static final String FAVORITES_PATH = "/favorites";
 
-	public FavoritesServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public FavoritesServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

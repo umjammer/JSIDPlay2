@@ -277,8 +277,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	public static final String CONVERT_PATH = "/convert";
 
-	public ConvertServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public ConvertServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -433,13 +433,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		Player player = new Player(servletParameters.config);
 		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
+		player.setSidDatabase(sidDatabase);
 		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
 		}
-		File root = configuration.getSidplay2Section().getHvsc();
-		if (root != null) {
-			player.setSidDatabase(new SidDatabase(root));
-		}
+
 		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
 			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType));
 		}

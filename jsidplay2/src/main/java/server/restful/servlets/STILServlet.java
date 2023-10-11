@@ -16,6 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.sidtune.SidTuneError;
+import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import libsidutils.stil.STIL.STILEntry;
 import net.java.truevfs.access.TFile;
@@ -35,8 +36,8 @@ public class STILServlet extends JSIDPlay2Servlet {
 
 	public static final String STIL_PATH = "/stil";
 
-	public STILServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public STILServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

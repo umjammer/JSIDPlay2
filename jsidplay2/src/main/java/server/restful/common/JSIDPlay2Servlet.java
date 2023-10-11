@@ -68,10 +68,13 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected Configuration configuration;
 
+	protected SidDatabase sidDatabase;
+	
 	protected Properties directoryProperties;
 
-	protected JSIDPlay2Servlet(Configuration configuration, Properties directoryProperties) {
+	protected JSIDPlay2Servlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
 		this.configuration = configuration;
+		this.sidDatabase = sidDatabase;
 		this.directoryProperties = directoryProperties;
 	}
 

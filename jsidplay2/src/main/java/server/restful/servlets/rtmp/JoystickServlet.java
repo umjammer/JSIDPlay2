@@ -14,6 +14,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
@@ -34,7 +35,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 		}
 
 		@Parameter(names = {
-			"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = 1)
+				"--number" }, descriptionKey = "NUMBER", validateWith = JoystickNumberValidator.class, order = 1)
 		public void setNumber(int number) {
 			this.number = number;
 		}
@@ -46,7 +47,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 		}
 
 		@Parameter(names = {
-			"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = 2)
+				"--value" }, descriptionKey = "VALUE", validateWith = JoystickValueValidator.class, order = 2)
 		public void setValue(int value) {
 			this.value = value;
 		}
@@ -54,8 +55,8 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 
 	public static final String JOYSTICK_PATH = "/joystick";
 
-	public JoystickServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public JoystickServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final JoystickServletParameters servletParameters = new JoystickServletParameters();

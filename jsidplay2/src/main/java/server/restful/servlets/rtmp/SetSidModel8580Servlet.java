@@ -13,6 +13,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.ServletParameterParser;
@@ -29,8 +30,9 @@ public class SetSidModel8580Servlet extends JSIDPlay2Servlet {
 
 	public static final String SET_DEFAULT_SID_MODEL_8580_PATH = "/set_default_sid_model_8580";
 
-	public SetSidModel8580Servlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public SetSidModel8580Servlet(Configuration configuration, SidDatabase sidDatabase,
+			Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class SetSidModel8580Servlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final SetSidModel8580ServletParameters servletParameters = new SetSidModel8580ServletParameters();

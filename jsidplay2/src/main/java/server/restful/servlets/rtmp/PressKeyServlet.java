@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
@@ -39,8 +40,8 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 
 	public static final String PRESS_KEY_PATH = "/press_key";
 
-	public PressKeyServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public PressKeyServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

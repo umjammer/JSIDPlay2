@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.fingerprinting.rest.beans.IdBean;
 import libsidutils.fingerprinting.rest.beans.MusicInfoBean;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.Configuration;
 import ui.entities.whatssid.service.WhatsSidService;
@@ -24,8 +25,8 @@ public class InsertTuneServlet extends JSIDPlay2Servlet {
 
 	public static final String INSERT_TUNE_PATH = "/insert-tune";
 
-	public InsertTuneServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public InsertTuneServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

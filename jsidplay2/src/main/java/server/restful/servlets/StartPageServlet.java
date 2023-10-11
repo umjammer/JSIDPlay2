@@ -23,6 +23,7 @@ import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.TimeBasedRateLimiterFilter;
 import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
@@ -31,8 +32,8 @@ import ui.entities.config.Configuration;
 @SuppressWarnings("serial")
 public class StartPageServlet extends JSIDPlay2Servlet {
 
-	public StartPageServlet(Configuration configuration, Properties directoryProperties) {
-		super(configuration, directoryProperties);
+	public StartPageServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
+		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			Map<String, String> replacements = new HashMap<>();
