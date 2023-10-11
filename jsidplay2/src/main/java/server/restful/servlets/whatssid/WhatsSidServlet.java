@@ -79,10 +79,15 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			WAVBean wavBean = getInput(request, WAVBean.class);
 
 			int hashCode = request.getRemoteAddr().hashCode() ^ wavBean.hashCode();
-			MusicInfoWithConfidenceBean musicInfoWithConfidence = match(getEntityManager(), wavBean);
-			MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-			info(valueOf(musicInfoWithConfidence));
-
+			MusicInfoWithConfidenceBean musicInfoWithConfidence;
+			if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
+				musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
+				info(valueOf(musicInfoWithConfidence) + " (cached)");
+			} else {
+				musicInfoWithConfidence = match(getEntityManager(), wavBean);
+				MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
+				info(valueOf(musicInfoWithConfidence));
+			}
 			setOutput(request, response, musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
 		} catch (QueryTimeoutException qte) {
 			warn(qte.getClass().getName());
