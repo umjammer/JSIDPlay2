@@ -7,8 +7,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import com.beust.jcommander.Parameters;
 
@@ -16,15 +14,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.siddatabase.SidDatabase;
-import libsidutils.stil.STIL;
 import libsidutils.stil.STIL.STILEntry;
-import net.java.truevfs.access.TFile;
-import net.java.truevfs.access.TFileInputStream;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class STILServlet extends JSIDPlay2Servlet {
@@ -35,10 +28,6 @@ public class STILServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String STIL_PATH = "/stil";
-
-	public STILServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {
@@ -82,16 +71,7 @@ public class STILServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private STILEntry createSTIL(File file)
-			throws IOException, SidTuneError, NoSuchFieldException, IllegalAccessException {
-		File hvscRoot = configuration.getSidplay2Section().getHvsc();
-
-		STIL stil = null;
-		if (hvscRoot != null) {
-			try (InputStream input = new TFileInputStream(new TFile(hvscRoot, STIL.STIL_FILE))) {
-				stil = new STIL(input);
-			}
-		}
+	private STILEntry createSTIL(File file) throws IOException, SidTuneError {
 		return stil != null ? stil.getSTILEntry(getCollectionName(file)) : null;
 	}
 

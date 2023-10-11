@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import com.beust.jcommander.Parameter;
@@ -24,12 +23,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.common.ChipModel;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import sidplay.ini.IniConfig;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class HardSIDMappingServlet extends JSIDPlay2Servlet {
@@ -54,10 +51,6 @@ public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String HARDSID_MAPPING_PATH = "/hardsid-mapping";
-
-	public HardSIDMappingServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

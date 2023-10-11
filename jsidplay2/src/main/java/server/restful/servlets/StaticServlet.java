@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.http.HttpHeaders;
 
@@ -26,12 +25,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class StaticServlet extends JSIDPlay2Servlet {
@@ -50,10 +47,6 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			this.useDevTools = useDevTools;
 		}
 
-	}
-
-	public StaticServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

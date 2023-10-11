@@ -54,7 +54,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -76,7 +75,6 @@ import libsidplay.config.IC1541Section;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
@@ -104,7 +102,6 @@ import sidplay.ini.IniConfig;
 import ui.common.Convenience;
 import ui.common.ConvenienceResult;
 import ui.common.util.InternetUtil;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class ConvertServlet extends JSIDPlay2Servlet {
@@ -276,10 +273,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String CONVERT_PATH = "/convert";
-
-	public ConvertServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.Properties;
 
 import com.beust.jcommander.Parameters;
 
@@ -20,11 +19,9 @@ import jsidplay2.Photos;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneInfo;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class PhotoServlet extends JSIDPlay2Servlet {
@@ -35,10 +32,6 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String PHOTO_PATH = "/photo";
-
-	public PhotoServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

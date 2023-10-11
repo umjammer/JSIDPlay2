@@ -5,7 +5,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.Parameters;
@@ -13,12 +12,10 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class SetSidModel8580Servlet extends JSIDPlay2Servlet {
@@ -29,11 +26,6 @@ public class SetSidModel8580Servlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String SET_DEFAULT_SID_MODEL_8580_PATH = "/set_default_sid_model_8580";
-
-	public SetSidModel8580Servlet(Configuration configuration, SidDatabase sidDatabase,
-			Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

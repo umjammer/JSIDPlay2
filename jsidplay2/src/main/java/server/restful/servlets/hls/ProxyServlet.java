@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
-import java.util.Properties;
 
 import com.beust.jcommander.Parameters;
 
@@ -17,12 +16,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.URLRequestPathServletParameters;
 import ui.common.util.InternetUtil;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class ProxyServlet extends JSIDPlay2Servlet {
@@ -33,10 +30,6 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String PROXY_PATH = "/proxy";
-
-	public ProxyServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

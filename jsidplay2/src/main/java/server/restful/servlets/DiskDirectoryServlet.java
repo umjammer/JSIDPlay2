@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.Parameters;
@@ -21,11 +20,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import libsidutils.directory.Directory;
 import libsidutils.directory.DiskDirectory;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DiskDirectoryServlet extends JSIDPlay2Servlet {
@@ -36,10 +33,6 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String DISK_DIRECTORY_PATH = "/disk-directory";
-
-	public DiskDirectoryServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

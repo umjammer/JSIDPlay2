@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -24,12 +23,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import ui.entities.collection.HVSCEntry;
-import ui.entities.config.Configuration;
 import ui.musiccollection.SearchCriteria;
 
 @SuppressWarnings("serial")
@@ -44,10 +41,6 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String TUNE_INFO_PATH = "/info";
-
-	public TuneInfoServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

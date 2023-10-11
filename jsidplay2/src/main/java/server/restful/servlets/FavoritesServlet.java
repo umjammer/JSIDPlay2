@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.beust.jcommander.Parameter;
@@ -19,12 +18,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.converter.WebResourceConverter;
 import server.restful.common.parameter.ServletParameterParser;
 import ui.entities.collection.HVSCEntry;
-import ui.entities.config.Configuration;
 import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
@@ -47,10 +44,6 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String FAVORITES_PATH = "/favorites";
-
-	public FavoritesServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

@@ -7,18 +7,15 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.DirectoryRequestPathServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class DirectoryServlet extends JSIDPlay2Servlet {
@@ -29,10 +26,6 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String DIRECTORY_PATH = "/directory";
-
-	public DirectoryServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

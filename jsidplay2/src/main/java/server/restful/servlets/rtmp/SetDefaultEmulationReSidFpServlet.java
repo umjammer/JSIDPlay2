@@ -5,7 +5,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.Parameters;
@@ -13,12 +12,10 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
@@ -29,10 +26,6 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String SET_DEFAULT_EMULATION_RESIDFP_PATH = "/set_default_emulation_residfp";
-
-	public SetDefaultEmulationReSidFpServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {
@@ -55,7 +48,7 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		super.doGet(request);
 		try {
 			final SetDefaultEmulationReSidFpServletParameters servletParameters = new SetDefaultEmulationReSidFpServletParameters();

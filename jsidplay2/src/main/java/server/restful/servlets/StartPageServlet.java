@@ -17,24 +17,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.TimeBasedRateLimiterFilter;
 import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class StartPageServlet extends JSIDPlay2Servlet {
-
-	public StartPageServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

@@ -7,7 +7,6 @@ import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPO
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 
 import org.apache.http.HttpHeaders;
 
@@ -17,12 +16,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebJarsResourceRequestPathServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class WebJarsServlet extends JSIDPlay2Servlet {
@@ -30,10 +27,6 @@ public class WebJarsServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.WebJarsServletParameters")
 	public static class WebJarsServletParameters extends WebJarsResourceRequestPathServletParameters {
 
-	}
-
-	public WebJarsServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
 	}
 
 	@Override

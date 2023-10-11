@@ -57,6 +57,9 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
 import libsidutils.siddatabase.SidDatabase;
+import libsidutils.stil.STIL;
+import net.java.truevfs.access.TFile;
+import net.java.truevfs.access.TFileInputStream;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerCleanupTimerTask;
@@ -240,6 +243,8 @@ public final class JSIDPlay2Server {
 
 	private SidDatabase sidDatabase;
 
+	private STIL stil;
+
 	private static JSIDPlay2Server instance;
 
 	private JSIDPlay2Server() {
@@ -261,6 +266,11 @@ public final class JSIDPlay2Server {
 			try {
 				result.sidDatabase = new SidDatabase(hvsc);
 			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try (InputStream input = new TFileInputStream(new TFile(hvsc, STIL.STIL_FILE))) {
+				result.stil = new STIL(input);
+			} catch (IOException | NoSuchFieldException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		}
@@ -436,9 +446,11 @@ public final class JSIDPlay2Server {
 		List<JSIDPlay2Servlet> result = new ArrayList<>();
 
 		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
-			JSIDPlay2Servlet servlet = servletCls
-					.getDeclaredConstructor(Configuration.class, SidDatabase.class, Properties.class)
-					.newInstance(parameters.configuration, sidDatabase, servletUtilProperties);
+			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor().newInstance();
+			servlet.setConfiguration(parameters.configuration);
+			servlet.setDirectoryProperties(servletUtilProperties);
+			servlet.setSidDatabase(sidDatabase);
+			servlet.setStil(stil);
 
 			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getURLPattern());
 

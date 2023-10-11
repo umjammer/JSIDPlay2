@@ -5,7 +5,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.Parameter;
@@ -14,12 +13,10 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.converter.FractionSecondsToMsConverter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class OnKeepAliveServlet extends JSIDPlay2Servlet {
@@ -53,10 +50,6 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String ON_KEEP_ALIVE_PATH = "/on_keep_alive";
-
-	public OnKeepAliveServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

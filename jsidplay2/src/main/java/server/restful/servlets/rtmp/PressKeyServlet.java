@@ -5,7 +5,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.Parameter;
@@ -15,11 +14,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class PressKeyServlet extends JSIDPlay2Servlet {
@@ -39,10 +36,6 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String PRESS_KEY_PATH = "/press_key";
-
-	public PressKeyServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

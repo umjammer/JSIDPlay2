@@ -8,7 +8,6 @@ import static server.restful.common.PlayerCleanupTimerTask.update;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 
 import com.beust.jcommander.Parameters;
@@ -16,12 +15,10 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerWithStatus;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class InsertNextCartServlet extends JSIDPlay2Servlet {
@@ -32,10 +29,6 @@ public class InsertNextCartServlet extends JSIDPlay2Servlet {
 	}
 
 	public static final String INSERT_NEXT_CART_PATH = "/insert_next_cart";
-
-	public InsertNextCartServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {

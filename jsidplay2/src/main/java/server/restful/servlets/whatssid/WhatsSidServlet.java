@@ -8,8 +8,8 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
-import static server.restful.common.PlayerCleanupTimerTask.count;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
+import static server.restful.common.filters.PlayerBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.QueryTimeoutException;
@@ -30,11 +29,10 @@ import libsidutils.fingerprinting.FingerPrinting;
 import libsidutils.fingerprinting.ini.IniFingerprintConfig;
 import libsidutils.fingerprinting.rest.beans.MusicInfoWithConfidenceBean;
 import libsidutils.fingerprinting.rest.beans.WAVBean;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
-import ui.entities.config.Configuration;
+import server.restful.common.filters.PlayerBasedRateLimiterFilter;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
@@ -44,10 +42,6 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			.synchronizedMap(new LRUCache<Integer, MusicInfoWithConfidenceBean>(CACHE_SIZE));
 
 	public static final String WHATSSID_PATH = "/whatssid";
-
-	public WhatsSidServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {
@@ -61,13 +55,14 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new CounterBasedRateLimiterFilter());
+		return Arrays.asList(new CounterBasedRateLimiterFilter(), new PlayerBasedRateLimiterFilter());
 	}
 
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_WHATSIDS_IN_PARALLEL));
+		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(WHATSID_LOW_PRIO ? 1 : Integer.MAX_VALUE));
 		return result;
 	}
 
@@ -84,15 +79,10 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			WAVBean wavBean = getInput(request, WAVBean.class);
 
 			int hashCode = request.getRemoteAddr().hashCode() ^ wavBean.hashCode();
-			MusicInfoWithConfidenceBean musicInfoWithConfidence;
-			if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode) || !isWhatsSidEnabled()) {
-				musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
-				info(valueOf(musicInfoWithConfidence) + " (cached)");
-			} else {
-				musicInfoWithConfidence = match(getEntityManager(), wavBean);
-				MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-				info(valueOf(musicInfoWithConfidence));
-			}
+			MusicInfoWithConfidenceBean musicInfoWithConfidence = match(getEntityManager(), wavBean);
+			MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
+			info(valueOf(musicInfoWithConfidence));
+
 			setOutput(request, response, musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
 		} catch (QueryTimeoutException qte) {
 			warn(qte.getClass().getName());
@@ -104,13 +94,6 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 		} finally {
 			freeEntityManager();
 		}
-	}
-
-	/**
-	 * @return if live streams are not prioritized over WhatsSid
-	 */
-	private boolean isWhatsSidEnabled() {
-		return !WHATSID_LOW_PRIO || count() == 0;
 	}
 
 	private MusicInfoWithConfidenceBean match(EntityManager entityManager, WAVBean wavBean) throws IOException {

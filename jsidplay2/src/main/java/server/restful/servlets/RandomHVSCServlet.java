@@ -5,23 +5,16 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.siddatabase.SidDatabase;
 import server.restful.common.JSIDPlay2Servlet;
-import ui.entities.config.Configuration;
 
 @SuppressWarnings("serial")
 public class RandomHVSCServlet extends JSIDPlay2Servlet {
 
 	public static final String RANDOM_HVSC_PATH = "/random-hvsc";
-
-	public RandomHVSCServlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		super(configuration, sidDatabase, directoryProperties);
-	}
 
 	@Override
 	public String getServletPath() {
@@ -54,7 +47,7 @@ public class RandomHVSCServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private String getRandomHVSC() throws IOException {
+	private String getRandomHVSC() {
 		if (sidDatabase != null) {
 			String rndPath = sidDatabase.getRandomPath();
 			if (rndPath != null) {

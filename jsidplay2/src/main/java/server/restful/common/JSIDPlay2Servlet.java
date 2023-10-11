@@ -45,6 +45,7 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.IOUtils;
 import libsidutils.siddatabase.SidDatabase;
+import libsidutils.stil.STIL;
 import sidplay.filefilter.AudioTuneFileFilter;
 import sidplay.filefilter.VideoTuneFileFilter;
 import ui.common.filefilter.CartFileFilter;
@@ -69,21 +70,33 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	protected Configuration configuration;
 
 	protected SidDatabase sidDatabase;
-	
-	protected Properties directoryProperties;
 
-	protected JSIDPlay2Servlet(Configuration configuration, SidDatabase sidDatabase, Properties directoryProperties) {
-		this.configuration = configuration;
-		this.sidDatabase = sidDatabase;
-		this.directoryProperties = directoryProperties;
-	}
+	protected STIL stil;
+
+	protected Properties directoryProperties;
 
 	public Configuration getConfiguration() {
 		return configuration;
 	}
 
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
 	public Properties getDirectoryProperties() {
 		return directoryProperties;
+	}
+
+	public void setDirectoryProperties(Properties directoryProperties) {
+		this.directoryProperties = directoryProperties;
+	}
+
+	public void setSidDatabase(SidDatabase sidDatabase) {
+		this.sidDatabase = sidDatabase;
+	}
+
+	public void setStil(STIL stil) {
+		this.stil = stil;
 	}
 
 	public abstract String getServletPath();
@@ -216,7 +229,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			result = IOUtils.getCollectionName(hvscRoot, file);
 			if (result.isEmpty()) {
 				// ... then try from MD5
-				result = new SidDatabase(hvscRoot).getPath(SidTune.load(file));
+				result = sidDatabase.getPath(SidTune.load(file));
 			}
 		}
 		return result;
