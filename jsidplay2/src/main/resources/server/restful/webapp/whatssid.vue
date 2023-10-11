@@ -22,7 +22,7 @@
         <button type="button" v-on:click="upload()">Upload</button>
       </form>
       <div>
-        <p>{{ match }}</p>
+        <p v-html="match"></p>
       </div>
     </div>
 
@@ -59,7 +59,7 @@
                 }
               },
               (error) => {
-                console.error(error);
+                this.match = error.response.data;
               }
             );
           },
