@@ -39,6 +39,7 @@
           fileChange(fileList) {
             this.files = new FormData();
             this.files.append("file", fileList[0], fileList[0].name);
+            this.match = "";
           },
           upload() {
             this.match = "Please wait...";
