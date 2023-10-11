@@ -60,8 +60,8 @@
                 }
               },
               (error) => {
-        	    let result = error.response.data;
-                this.match = result? result : error.message;
+                let result = error.response.data;
+                this.match = result ? result : error.message;
               }
             );
           },
