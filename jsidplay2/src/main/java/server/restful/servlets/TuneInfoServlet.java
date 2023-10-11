@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -108,11 +107,8 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			return null;
 		}
 		SidTune tune = SidTune.load(tuneFile);
-		DoubleSupplier songLengthFnct = () -> 0;
-		if (sidDatabase != null) {
-			songLengthFnct = () -> sidDatabase.getTuneLength(tune);
-		}
-		return new HVSCEntry(songLengthFnct, "", tuneFile, tune);
+
+		return new HVSCEntry(() -> sidDatabase != null ? sidDatabase.getTuneLength(tune) : 0, "", tuneFile, tune);
 	}
 
 	private List<Map<String, String>> hvscEntry2SortedList(HVSCEntry hvscEntry) {
