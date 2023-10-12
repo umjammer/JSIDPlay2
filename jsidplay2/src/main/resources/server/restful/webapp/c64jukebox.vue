@@ -22,7 +22,7 @@
 
     <!-- helpers -->
     <script src="/webjars/vue-i18n/8.28.2/dist/vue-i18n$min.js"></script>
-    <script src="/webjars/axios/0.27.2/dist/axios$min.js"></script>
+    <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
 
     <!-- USB -->
     <script src="/static/usb/hardsid.js"></script>

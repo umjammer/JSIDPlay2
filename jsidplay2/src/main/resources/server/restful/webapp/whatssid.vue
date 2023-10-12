@@ -11,7 +11,7 @@
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
-    <script src="/webjars/axios/0.27.2/dist/axios$min.js"></script>
+    <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
 
     <h1>WhatsSID? Music Recognition</h1>
 
