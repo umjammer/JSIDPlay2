@@ -1,6 +1,5 @@
 package server.restful.common.filters;
 
-import static java.lang.String.format;
 import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 import static server.restful.common.PlayerCleanupTimerTask.count;
 
@@ -41,8 +40,7 @@ public final class PlayerBasedRateLimiterFilter implements Filter {
 		} else {
 			// handle limit case, e.g. return status code 429 (Too Many Requests)
 			HttpServletResponse response = (HttpServletResponse) servletResponse;
-			response.sendError(SC_TOO_MANY_REQUESTS, format(
-					"Service currently unavailable, too many RTMP videos in progress (max. %d)!", maxRtmpPerServlet));
+			response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
 		}
 	}
 }
