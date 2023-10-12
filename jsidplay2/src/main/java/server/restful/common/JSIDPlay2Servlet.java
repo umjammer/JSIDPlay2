@@ -229,7 +229,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			result = IOUtils.getCollectionName(hvscRoot, file);
 			if (result.isEmpty()) {
 				// ... then try from MD5
-				result = sidDatabase.getPath(SidTune.load(file));
+				result = sidDatabase != null? sidDatabase.getPath(SidTune.load(file)) : "";
 			}
 		}
 		return result;
