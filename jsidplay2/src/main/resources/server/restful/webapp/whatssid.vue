@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
-    <title>WhatsSID</title>
-  </head>
-  <body>
     <!-- favicon.ico -->
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
@@ -13,6 +9,20 @@
     <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
     <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
 
+    <!-- disable pull reload -->
+    <style>
+      html,
+      body {
+        overscroll-behavior: none;
+      }
+    </style>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <title>WhatsSID</title>
+  </head>
+  <body>
     <h1>WhatsSID? Music Recognition</h1>
 
     <div id="app">
@@ -60,8 +70,10 @@
                 }
               },
               (error) => {
-                let result = error.response.data;
-                this.match = result ? result : error.message;
+                this.match =
+                  error.response && error.response.data
+                    ? error.response.data
+                    : error.name + " (" + error.code + "): " + error.message;
               }
             );
           },
