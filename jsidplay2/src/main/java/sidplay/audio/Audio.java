@@ -137,6 +137,6 @@ public enum Audio {
 
 	public final static List<Audio> getLiveAudio() {
 		return Stream.of(values()).filter(audio -> asList(JavaSound.class, ProxyDriver.class, CmpToMP3FileDriver.class)
-				.stream().filter(audio.audioDriverClass::equals).findFirst().isPresent()).collect(toList());
+				.stream().anyMatch(audio.audioDriverClass::equals)).collect(toList());
 	}
 }
