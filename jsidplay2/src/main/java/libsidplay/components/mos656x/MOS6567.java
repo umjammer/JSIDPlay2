@@ -245,7 +245,9 @@ public class MOS6567 extends VIC {
 			}
 
 			latchedXscroll = xscroll << 2;
-			palEmulation.determineCurrentPalette(rasterY, rasterY == FIRST_DISPLAY_LINE);
+			if (palEmulation != PALEmulation.NONE) {
+				palEmulation.determineCurrentPalette(rasterY, rasterY == FIRST_DISPLAY_LINE);
+			}
 			if (rasterY == FIRST_DISPLAY_LINE) {
 				graphicsRendering = true;
 				((Buffer) pixels).clear();
