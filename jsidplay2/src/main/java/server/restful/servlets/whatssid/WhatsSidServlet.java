@@ -1,9 +1,8 @@
 package server.restful.servlets.whatssid;
 
 import static java.lang.String.valueOf;
-import static libsidplay.common.SamplingRate.VERY_LOW;
 import static libsidplay.config.IWhatsSidSystemProperties.FRAME_MAX_LENGTH;
-import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_MAXIMUM_DURATION;
+import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_FRAME_MAXIMUM_LENGTH;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
@@ -110,11 +109,8 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			throws IOException {
 		WhatsSidService whatsSidService = new WhatsSidService(entityManager);
 		FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
-		if (ServletFileUpload.isMultipartContent(request)) {
-			wavBean.setFrameMaxLength((long) UPLOAD_MAXIMUM_DURATION * VERY_LOW.getFrequency());
-		} else {
-			wavBean.setFrameMaxLength(FRAME_MAX_LENGTH);
-		}
+		wavBean.setFrameMaxLength(
+				ServletFileUpload.isMultipartContent(request) ? UPLOAD_FRAME_MAXIMUM_LENGTH : FRAME_MAX_LENGTH);
 		return fingerPrinting.match(wavBean);
 	}
 
