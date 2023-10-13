@@ -63,6 +63,7 @@ public class WhatsSidDriver extends WAVFileDriver {
 				System.out.printf("Insert Fingerprint for %s (%d)\n", collectionName, songNo);
 
 				WAVBean wavBean = new WAVBean(Files.readAllBytes(Paths.get(recordingFilename)));
+				wavBean.setFrameMaxLength(Long.MAX_VALUE);
 
 				fingerprintInserter.insert(createMusicInfoBean(songNo), wavBean);
 			}

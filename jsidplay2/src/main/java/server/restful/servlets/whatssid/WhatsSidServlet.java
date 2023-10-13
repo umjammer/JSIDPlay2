@@ -1,6 +1,9 @@
 package server.restful.servlets.whatssid;
 
 import static java.lang.String.valueOf;
+import static libsidplay.common.SamplingRate.VERY_LOW;
+import static libsidplay.config.IWhatsSidSystemProperties.FRAME_MAX_LENGTH;
+import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_MAXIMUM_DURATION;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
@@ -20,6 +23,8 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.QueryTimeoutException;
+
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
@@ -84,7 +89,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 				musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
 				info(valueOf(musicInfoWithConfidence) + " (cached)");
 			} else {
-				musicInfoWithConfidence = match(getEntityManager(), wavBean);
+				musicInfoWithConfidence = match(request, getEntityManager(), wavBean);
 				MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
 				info(valueOf(musicInfoWithConfidence));
 			}
@@ -101,9 +106,15 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private MusicInfoWithConfidenceBean match(EntityManager entityManager, WAVBean wavBean) throws IOException {
+	private MusicInfoWithConfidenceBean match(HttpServletRequest request, EntityManager entityManager, WAVBean wavBean)
+			throws IOException {
 		WhatsSidService whatsSidService = new WhatsSidService(entityManager);
 		FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
+		if (ServletFileUpload.isMultipartContent(request)) {
+			wavBean.setFrameMaxLength((long) UPLOAD_MAXIMUM_DURATION * VERY_LOW.getFrequency());
+		} else {
+			wavBean.setFrameMaxLength(FRAME_MAX_LENGTH);
+		}
 		return fingerPrinting.match(wavBean);
 	}
 

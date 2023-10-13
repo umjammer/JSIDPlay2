@@ -31,7 +31,7 @@ public class FingerPrinting implements IFingerprintMatcher, IFingerprintInserter
 		if (wavBean != null && wavBean.getWav().length > 0) {
 
 			if (!fingerPrintingDataSource.tuneExists(musicInfoBean)) {
-				Fingerprint fingerprint = new FingerprintCreator().createFingerprint(config, wavBean, Long.MAX_VALUE);
+				Fingerprint fingerprint = new FingerprintCreator().createFingerprint(config, wavBean);
 				musicInfoBean.setAudioLength(fingerprint.getAudioLength());
 
 				IdBean id = fingerPrintingDataSource.insertTune(musicInfoBean);
@@ -43,9 +43,7 @@ public class FingerPrinting implements IFingerprintMatcher, IFingerprintInserter
 	@Override
 	public MusicInfoWithConfidenceBean match(WAVBean wavBean) throws IOException {
 		if (wavBean != null && wavBean.getWav().length > 0) {
-			long frameMaxLength = wavBean.getFrameMaxLength();
-
-			Fingerprint fingerprint = new FingerprintCreator().createFingerprint(config, wavBean, frameMaxLength);
+			Fingerprint fingerprint = new FingerprintCreator().createFingerprint(config, wavBean);
 
 			Index index = new Index();
 			index.setFingerPrintingClient(fingerPrintingDataSource);

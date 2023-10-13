@@ -262,4 +262,15 @@ public interface IServletSystemProperties {
 	 */
 	boolean TEXT_TO_SPEECH = Boolean.valueOf(getProperty("jsidplay2.audio.text2speech", "true"));
 
+	/**
+	 * Maximum upload request size in bytes (content-length).
+	 */
+	long UPLOAD_SIZE_MAX = Long.valueOf(getProperty("jsidplay2.upload.size.max", String.valueOf((10 << 10 << 10))));
+
+	/**
+	 * Maximum single file upload size in bytes.
+	 */
+	long UPLOAD_FILE_SIZE_MAX = Long
+			.valueOf(getProperty("jsidplay2.upload.file.size.max", String.valueOf((10 << 10 << 10))));
+
 }

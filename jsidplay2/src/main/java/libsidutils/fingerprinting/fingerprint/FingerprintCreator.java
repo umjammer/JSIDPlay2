@@ -30,9 +30,9 @@ public class FingerprintCreator {
 	private final Random RANDOM = new Random();
 	private int oldRandomValue;
 
-	public Fingerprint createFingerprint(IFingerprintConfig config, WAVBean wavBean, long frameMaxLength)
-			throws IOException {
+	public Fingerprint createFingerprint(IFingerprintConfig config, WAVBean wavBean) throws IOException {
 		try {
+			long frameMaxLength = wavBean.getFrameMaxLength();
 			AudioInputStream stream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(wavBean.getWav()));
 			if (stream.getFormat().getSampleSizeInBits() != Short.SIZE) {
 				throw new IOException("Sample size in bits must be " + Short.SIZE);

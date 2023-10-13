@@ -10,6 +10,8 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
+import static server.restful.common.IServletSystemProperties.UPLOAD_FILE_SIZE_MAX;
+import static server.restful.common.IServletSystemProperties.UPLOAD_SIZE_MAX;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -229,7 +231,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			result = IOUtils.getCollectionName(hvscRoot, file);
 			if (result.isEmpty()) {
 				// ... then try from MD5
-				result = sidDatabase != null? sidDatabase.getPath(SidTune.load(file)) : "";
+				result = sidDatabase != null ? sidDatabase.getPath(SidTune.load(file)) : "";
 			}
 		}
 		return result;
@@ -246,7 +248,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			} else if (ServletFileUpload.isMultipartContent(request)) {
 				// file upload (multipart/mixed)
 				ByteArrayOutputStream result = new ByteArrayOutputStream();
-				FileItemIterator itemIterator = new ServletFileUpload().getItemIterator(request);
+				ServletFileUpload servletFileUpload = new ServletFileUpload();
+				servletFileUpload.setSizeMax(UPLOAD_SIZE_MAX);
+				servletFileUpload.setFileSizeMax(UPLOAD_FILE_SIZE_MAX);
+				FileItemIterator itemIterator = servletFileUpload.getItemIterator(request);
 				while (itemIterator.hasNext()) {
 					try (InputStream itemInputStream = itemIterator.next().openStream()) {
 						IOUtils.copy(itemInputStream, result);
@@ -254,8 +259,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					// just the first file
 					break;
 				}
-				Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class, boolean.class });
-				return constructor.newInstance(result.toByteArray(), true);
+				Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class });
+				return constructor.newInstance(result.toByteArray());
 			} else {
 				throw new IOException("Unsupported content type: " + contentType);
 			}
