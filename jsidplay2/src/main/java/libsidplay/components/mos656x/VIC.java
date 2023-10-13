@@ -573,9 +573,10 @@ public abstract class VIC extends Bank {
 				showBorderMain = showBorderVertical || renderCycle == 40;
 			}
 		}
-
-		/* Pixels arrive in 0x12345678 order. */
-		palEmulation.drawPixels(graphicsDataBuffer, pixels::put);
+		if (palEmulation != PALEmulation.NONE) {
+			/* Pixels arrive in 0x12345678 order. */
+			palEmulation.drawPixels(graphicsDataBuffer, pixels::put);
+		}
 	}
 
 	/**

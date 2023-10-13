@@ -22,6 +22,7 @@ import builder.jsidblaster.JSIDBlasterBuilder;
 import builder.jsidblaster.SIDType;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos6510.MOS6510;
+import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
@@ -134,6 +135,7 @@ final public class ConsolePlayer {
 		final SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(song);
 		final Player player = new Player(config, cpuDebug ? MOS6510Debug.class : MOS6510.class);
+		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 		player.setTune(tune);
 		final ConsoleIO consoleIO = new ConsoleIO(config, file.getAbsolutePath());
 		player.setMenuHook(obj -> consoleIO.menu(obj, verbose, quiet, System.out));
