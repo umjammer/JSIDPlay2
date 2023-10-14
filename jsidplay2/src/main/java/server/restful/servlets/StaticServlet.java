@@ -6,6 +6,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_CACHED;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_UNCACHED;
+import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_DE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_EN;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPTIONS;
@@ -13,7 +14,9 @@ import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPT
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpHeaders;
@@ -21,12 +24,14 @@ import org.apache.http.HttpHeaders;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
 
@@ -55,6 +60,18 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
+	public List<Filter> getServletFilters() {
+		return Arrays.asList(new RequestLogFilter());
+	}
+
+	@Override
+	public Map<String, String> getServletFiltersParameterMap() {
+		Map<String, String> result = new HashMap<>();
+		result.put(FILTER_PARAMETER_SERVLET_NAME, getClass().getSimpleName());
+		return result;
+	}
+
+	@Override
 	public boolean isSecured() {
 		return false;
 	}
@@ -67,7 +84,6 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doGet(request);
 		try {
 			final StaticServletParameters servletParameters = new StaticServletParameters();
 

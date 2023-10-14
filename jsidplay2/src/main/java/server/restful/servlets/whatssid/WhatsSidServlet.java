@@ -12,6 +12,7 @@ import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PAR
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
 import static server.restful.common.filters.PlayerBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
+import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
 import server.restful.common.filters.PlayerBasedRateLimiterFilter;
+import server.restful.common.filters.RequestLogFilter;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
@@ -53,21 +55,23 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public boolean isSecured() {
-		return true;
-	}
-
-	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new CounterBasedRateLimiterFilter(), new PlayerBasedRateLimiterFilter());
+		return Arrays.asList(new RequestLogFilter(), new CounterBasedRateLimiterFilter(),
+				new PlayerBasedRateLimiterFilter());
 	}
 
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
+		result.put(FILTER_PARAMETER_SERVLET_NAME, getClass().getSimpleName());
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_WHATSIDS_IN_PARALLEL));
 		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(WHATSID_LOW_PRIO ? 1 : Integer.MAX_VALUE));
 		return result;
+	}
+
+	@Override
+	public boolean isSecured() {
+		return true;
 	}
 
 	/**
@@ -78,7 +82,6 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doPost(request);
 		try {
 			WAVBean wavBean = getInput(request, WAVBean.class);
 

@@ -3,10 +3,7 @@ package server.restful.common;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.of;
-import static libsidutils.IOUtils.getFileSize;
 import static org.apache.http.HttpHeaders.ACCEPT;
-import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
@@ -117,18 +114,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return Collections.emptyMap();
 	}
 
-	protected void doGet(HttpServletRequest request) {
-		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
-	}
-
-	protected void doPost(HttpServletRequest request) {
-		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
-	}
-
-	protected void doPut(HttpServletRequest request) {
-		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
-	}
-
 	protected void info(String msg, Thread... parentThreads) {
 		log(threads(parentThreads) + thread() + msg);
 	}
@@ -157,68 +142,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		StringBuilder result = new StringBuilder();
 		result.append(thread.getName());
 		result.append(": ");
-		return result.toString();
-	}
-
-	private String remoteAddr(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append("from ");
-		result.append(request.getRemoteAddr());
-		result.append(" (");
-		result.append(request.getRemotePort());
-		result.append(") ");
-		return result.toString();
-	}
-
-	private String localAddr(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append("to ");
-		result.append(request.getLocalAddr());
-		result.append(" (");
-		result.append(request.getLocalPort());
-		result.append("), ");
-		return result.toString();
-	}
-
-	private String user(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append("user ");
-		result.append(Optional.ofNullable(request.getRemoteUser()).orElse("<anonymous>"));
-		result.append(", ");
-		return result.toString();
-	}
-
-	private String request(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append(request.getMethod());
-		result.append(" ");
-		result.append(request.getRequestURI());
-		if (request.getQueryString() != null) {
-			result.append("?");
-			result.append(request.getQueryString());
-		}
-		if (request.getContentType() != null) {
-			result.append(" ");
-			result.append(CONTENT_TYPE);
-			result.append("=");
-			result.append(request.getContentType());
-		}
-		if (request.getContentLengthLong() != -1L) {
-			result.append(", ");
-			result.append(CONTENT_LENGTH);
-			result.append("=");
-			result.append(getFileSize(request.getContentLengthLong()));
-		}
-		result.append(", ");
-		return result.toString();
-	}
-
-	private String memory() {
-		StringBuilder result = new StringBuilder();
-		Runtime runtime = Runtime.getRuntime();
-		result.append(getFileSize(runtime.totalMemory() - runtime.freeMemory()));
-		result.append("/");
-		result.append(getFileSize(runtime.maxMemory()));
 		return result.toString();
 	}
 
@@ -288,15 +211,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
-			throws IOException {
-		response.setContentType(ct.toString());
-		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
-				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
-			out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
-		}
-	}
-
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String string)
 			throws JsonProcessingException, IOException {
 		response.setContentType(ct.toString());
@@ -304,6 +218,11 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			out.print(string);
 		}
+	}
+
+	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
+			throws IOException {
+		setOutput(response, ct, e.getClass().getSimpleName() + ": " + e.getMessage());
 	}
 
 }

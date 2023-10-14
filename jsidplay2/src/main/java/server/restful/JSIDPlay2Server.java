@@ -471,7 +471,7 @@ public final class JSIDPlay2Server {
 
 			FilterMap filterMapping = new FilterMap();
 			filterMapping.setFilterName(filterName);
-			filterMapping.addURLPattern(servlet.getURLPattern());
+			filterMapping.addServletName(servlet.getClass().getSimpleName());
 			context.addFilterMap(filterMapping);
 		}));
 	}

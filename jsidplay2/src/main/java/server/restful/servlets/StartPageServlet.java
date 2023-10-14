@@ -8,6 +8,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.MAX_REQUESTS_PER_MINUTE;
 import static server.restful.common.IServletSystemProperties.MIN_TIME_BETWEEN_REQUESTS;
+import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 import static server.restful.common.filters.TimeBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE;
 import static server.restful.common.filters.TimeDistanceBasedRateLimiterFilter.FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS;
 
@@ -23,6 +24,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.filters.TimeBasedRateLimiterFilter;
 import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 
@@ -35,27 +37,28 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public boolean isSecured() {
-		return false;
-	}
-
-	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new TimeDistanceBasedRateLimiterFilter(), new TimeBasedRateLimiterFilter());
+		return Arrays.asList(new RequestLogFilter(), new TimeDistanceBasedRateLimiterFilter(),
+				new TimeBasedRateLimiterFilter());
 	}
 
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
+		result.put(FILTER_PARAMETER_SERVLET_NAME, getClass().getSimpleName());
 		result.put(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS, String.valueOf(MIN_TIME_BETWEEN_REQUESTS));
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE, String.valueOf(MAX_REQUESTS_PER_MINUTE));
 		return result;
 	}
 
 	@Override
+	public boolean isSecured() {
+		return false;
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doGet(request);
 		try {
 			Map<String, String> replacements = new HashMap<>();
 			replacements.put("https://haendel.ddns.net:8443", BASE_URL);
