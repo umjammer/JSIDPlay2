@@ -461,7 +461,8 @@ public final class JSIDPlay2Server {
 
 	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets) {
 		servlets.forEach(servlet -> servlet.getServletFilters().forEach(servletFilter -> {
-			String filterName = servlet.getClass().getSimpleName() + "_" + servletFilter.getClass().getSimpleName();
+			String servletName = servlet.getClass().getSimpleName();
+			String filterName = servletName + "_" + servletFilter.getClass().getSimpleName();
 
 			FilterDef filterDefinition = new FilterDef();
 			filterDefinition.setFilterName(filterName);
@@ -471,7 +472,7 @@ public final class JSIDPlay2Server {
 
 			FilterMap filterMapping = new FilterMap();
 			filterMapping.setFilterName(filterName);
-			filterMapping.addServletName(servlet.getClass().getSimpleName());
+			filterMapping.addServletName(servletName);
 			context.addFilterMap(filterMapping);
 		}));
 	}

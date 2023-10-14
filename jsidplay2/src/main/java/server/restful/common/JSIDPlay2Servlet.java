@@ -207,7 +207,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				JAXBContext.newInstance(tClass).createMarshaller().marshal(result, out);
 			}
 		} catch (Exception e) {
-			// ignore client aborts
+			error(e);
 		}
 	}
 

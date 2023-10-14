@@ -11,7 +11,7 @@ import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
-import static server.restful.common.filters.PlayerBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
+import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ import libsidutils.fingerprinting.rest.beans.WAVBean;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
-import server.restful.common.filters.PlayerBasedRateLimiterFilter;
+import server.restful.common.filters.RTMPBasedRateLimiterFilter;
 import server.restful.common.filters.RequestLogFilter;
 import ui.entities.whatssid.service.WhatsSidService;
 
@@ -57,7 +57,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	@Override
 	public List<Filter> getServletFilters() {
 		return Arrays.asList(new RequestLogFilter(), new CounterBasedRateLimiterFilter(),
-				new PlayerBasedRateLimiterFilter());
+				new RTMPBasedRateLimiterFilter());
 	}
 
 	@Override

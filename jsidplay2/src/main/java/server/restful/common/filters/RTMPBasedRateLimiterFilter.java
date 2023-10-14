@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author ken
  *
  */
-public final class PlayerBasedRateLimiterFilter implements Filter {
+public final class RTMPBasedRateLimiterFilter implements Filter {
 
 	public static final String FILTER_PARAMETER_MAX_RTMP_PER_SERVLET = "maxRtmpPerServlet";
 
