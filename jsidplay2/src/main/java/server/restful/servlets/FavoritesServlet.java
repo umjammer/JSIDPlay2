@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
@@ -30,6 +31,7 @@ import ui.entities.collection.HVSCEntry;
 import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "FavoritesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/favorites")
 public class FavoritesServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.FavoritesServletParameters")
@@ -46,13 +48,6 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 			this.favoritesNumber = favoritesNumber;
 		}
 
-	}
-
-	public static final String FAVORITES_PATH = "/favorites";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + FAVORITES_PATH;
 	}
 
 	@Override
@@ -83,7 +78,7 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 			final FavoritesServletParameters servletParameters = new FavoritesServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if (parser.hasException()) {
 				parser.usage();

@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -19,6 +20,7 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "OnKeepAliveServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/on_keep_alive")
 public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.OnKeepAliveServletParameters")
@@ -49,13 +51,6 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	public static final String ON_KEEP_ALIVE_PATH = "/on_keep_alive";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + ON_KEEP_ALIVE_PATH;
-	}
-
 	@Override
 	public boolean isSecured() {
 		return false;
@@ -82,7 +77,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			final OnKeepAliveServletParameters servletParameters = new OnKeepAliveServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if (parser.hasException()) {
 				parser.usage();

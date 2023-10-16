@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -23,18 +24,12 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.DirectoryRequestPathServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "DirectoryServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/directory/*")
 public class DirectoryServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.DirectoryServletParameters")
 	public static class DirectoryServletParameters extends DirectoryRequestPathServletParameters {
 
-	}
-
-	public static final String DIRECTORY_PATH = "/directory";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + DIRECTORY_PATH;
 	}
 
 	@Override
@@ -66,7 +61,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			final DirectoryServletParameters servletParameters = new DirectoryServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			final List<String> files = servletParameters.fetchDirectory(this, parser, request.isUserInRole(ROLE_ADMIN));
 			if (files == null || parser.hasException()) {

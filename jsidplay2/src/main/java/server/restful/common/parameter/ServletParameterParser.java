@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -41,16 +42,16 @@ public class ServletParameterParser {
 	 * @param request         servlet request to parse
 	 * @param response        servlet response to output usage message
 	 * @param parameterObject annotated parameters of the parameterObject
-	 * @param programName     for usage message
+	 * @param webServlet      servlet to parse parameters for
 	 */
 	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response, Object parameterObject,
-			String programName) throws IOException {
-		this(request, response, parameterObject, programName, false);
+			WebServlet webServlet) throws IOException {
+		this(request, response, parameterObject, webServlet, false);
 	}
 
 	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response, Object parameterObject,
-			String programName, boolean acceptUnknownOptions) throws IOException {
-		commander = JCommander.newBuilder().addObject(parameterObject).programName(programName)
+			WebServlet webServlet, boolean acceptUnknownOptions) throws IOException {
+		commander = JCommander.newBuilder().addObject(parameterObject).programName(webServlet.urlPatterns()[0])
 				.columnSize(Integer.MAX_VALUE)
 				.console(new PrintStreamConsole(
 						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))

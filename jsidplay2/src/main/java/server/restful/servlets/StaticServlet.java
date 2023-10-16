@@ -25,6 +25,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
@@ -35,6 +36,7 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "StaticServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/*")
 public class StaticServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
@@ -51,11 +53,6 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			this.useDevTools = useDevTools;
 		}
 
-	}
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC;
 	}
 
 	@Override
@@ -86,7 +83,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			final StaticServletParameters servletParameters = new StaticServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if (parser.hasException()) {
 				parser.usage();

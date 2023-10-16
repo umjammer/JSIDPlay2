@@ -67,6 +67,7 @@ import com.google.zxing.WriterException;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.cart.CartridgeType;
@@ -106,6 +107,7 @@ import ui.common.ConvenienceResult;
 import ui.common.util.InternetUtil;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "ConvertServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/convert/*")
 public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
@@ -274,13 +276,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	}
 
-	public static final String CONVERT_PATH = "/convert";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + CONVERT_PATH;
-	}
-
 	@Override
 	public List<Filter> getServletFilters() {
 		return Arrays.asList(new RequestLogFilter(), new CounterBasedRateLimiterFilter(),
@@ -322,7 +317,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			final ConvertServletParameters servletParameters = new ConvertServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			final File file = servletParameters.fetchFile(this, parser, request.isUserInRole(ROLE_ADMIN));
 			if (file == null || parser.hasException()) {

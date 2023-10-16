@@ -12,20 +12,15 @@ import java.util.Map;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.RequestLogFilter;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "RandomHVSCServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/random-hvsc")
 public class RandomHVSCServlet extends JSIDPlay2Servlet {
-
-	public static final String RANDOM_HVSC_PATH = "/random-hvsc";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + RANDOM_HVSC_PATH;
-	}
 
 	@Override
 	public List<Filter> getServletFilters() {

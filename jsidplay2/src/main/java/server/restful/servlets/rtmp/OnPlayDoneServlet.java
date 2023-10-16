@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -24,18 +25,12 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "OnPlayDoneServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/on_play_done")
 public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.OnPlayDoneServletParameters")
 	public static class OnPlayDoneServletParameters extends VideoRequestParamServletParameters {
 
-	}
-
-	public static final String ON_PLAY_DONE_PATH = "/on_play_done";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + ON_PLAY_DONE_PATH;
 	}
 
 	@Override
@@ -85,7 +80,7 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 			final OnPlayDoneServletParameters servletParameters = new OnPlayDoneServletParameters();
 
 			/* ServletParameterParser parser = */new ServletParameterParser(request, response, servletParameters,
-					getServletPath(), true);
+					getClass().getAnnotation(WebServlet.class), true);
 
 			if (servletParameters.getUuid() == null /* || parser.hasException() */) {
 				// Not every video has a valid UUID as it's name! e.g.

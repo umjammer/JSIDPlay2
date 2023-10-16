@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,6 +36,7 @@ import javax.persistence.Persistence;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.authenticator.BasicAuthenticator;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.realm.MemoryRealm;
@@ -56,6 +58,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import jakarta.servlet.annotation.WebServlet;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import net.java.truevfs.access.TFile;
@@ -452,7 +455,9 @@ public final class JSIDPlay2Server {
 			servlet.setSidDatabase(sidDatabase);
 			servlet.setStil(stil);
 
-			addServlet(context, servletCls.getSimpleName(), servlet).addMapping(servlet.getURLPattern());
+			WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
+			Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
+			Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
 
 			result.add(servlet);
 		}
@@ -461,8 +466,8 @@ public final class JSIDPlay2Server {
 
 	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets) {
 		servlets.forEach(servlet -> servlet.getServletFilters().forEach(servletFilter -> {
-			String servletName = servlet.getClass().getSimpleName();
-			String filterName = servletName + "_" + servletFilter.getClass().getSimpleName();
+			WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
+			String filterName = webServlet.name() + "_" + servletFilter.getClass().getSimpleName();
 
 			FilterDef filterDefinition = new FilterDef();
 			filterDefinition.setFilterName(filterName);
@@ -472,7 +477,7 @@ public final class JSIDPlay2Server {
 
 			FilterMap filterMapping = new FilterMap();
 			filterMapping.setFilterName(filterName);
-			filterMapping.addServletName(servletName);
+			filterMapping.addServletName(webServlet.name());
 			context.addFilterMap(filterMapping);
 		}));
 	}
@@ -483,8 +488,9 @@ public final class JSIDPlay2Server {
 		context.addSecurityRole(ROLE_USER);
 
 		SecurityCollection securityCollection = new SecurityCollection();
-		servlets.stream().filter(JSIDPlay2Servlet::isSecured).map(JSIDPlay2Servlet::getURLPattern)
-				.forEach(securityCollection::addPattern);
+		servlets.stream().filter(JSIDPlay2Servlet::isSecured)
+				.forEach(servlet -> Stream.of(servlet.getClass().getAnnotation(WebServlet.class).urlPatterns())
+						.forEach(securityCollection::addPattern));
 
 		SecurityConstraint securityConstraint = new SecurityConstraint();
 		securityConstraint.addAuthRole(ROLE_ADMIN);

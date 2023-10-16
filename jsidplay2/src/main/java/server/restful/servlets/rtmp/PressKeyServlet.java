@@ -16,6 +16,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.components.keyboard.KeyTableEntry;
@@ -25,6 +26,7 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "PressKeyServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/press_key")
 public class PressKeyServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.PressKeyServletParameters")
@@ -39,13 +41,6 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 		@Parameter(names = { "--release" }, descriptionKey = "RELEASE", order = 3)
 		private KeyTableEntry release;
 
-	}
-
-	public static final String PRESS_KEY_PATH = "/press_key";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + PRESS_KEY_PATH;
 	}
 
 	@Override
@@ -81,7 +76,7 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 			final PressKeyServletParameters servletParameters = new PressKeyServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if ((servletParameters.type == null && servletParameters.press == null && servletParameters.release == null)
 					|| parser.hasException()) {

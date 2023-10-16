@@ -98,13 +98,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		this.stil = stil;
 	}
 
-	public abstract String getServletPath();
-
 	public abstract boolean isSecured();
-
-	public String getURLPattern() {
-		return getServletPath() + "/*";
-	}
 
 	public List<Filter> getServletFilters() {
 		return Collections.emptyList();
@@ -215,7 +209,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			throws IOException {
 		setOutput(response, ct, e.getClass().getSimpleName() + ": " + e.getMessage());
 	}
-	
+
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String message)
 			throws JsonProcessingException, IOException {
 		response.setContentType(ct.toString());

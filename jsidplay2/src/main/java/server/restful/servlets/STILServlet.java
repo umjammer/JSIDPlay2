@@ -16,6 +16,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.sidtune.SidTuneError;
@@ -26,18 +27,12 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "STILServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/stil/*")
 public class STILServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.STILServletParameters")
 	public static class STILServletParameters extends FileRequestPathServletParameters {
 
-	}
-
-	public static final String STIL_PATH = "/stil";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + STIL_PATH;
 	}
 
 	@Override
@@ -69,7 +64,7 @@ public class STILServlet extends JSIDPlay2Servlet {
 			final STILServletParameters servletParameters = new STILServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			final File file = servletParameters.fetchFile(this, parser, request.isUserInRole(ROLE_ADMIN));
 			if (file == null || parser.hasException()) {

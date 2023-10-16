@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -24,18 +25,12 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "SetSidModel6581Servlet", urlPatterns = CONTEXT_ROOT_STATIC + "/set_default_sid_model_6581")
 public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.SetSidModel6581ServletParameters")
 	public static class SetSidModel6581ServletParameters extends VideoRequestParamServletParameters {
 
-	}
-
-	public static final String SET_DEFAULT_SID_MODEL_6581_PATH = "/set_default_sid_model_6581";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + SET_DEFAULT_SID_MODEL_6581_PATH;
 	}
 
 	@Override
@@ -70,7 +65,7 @@ public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
 			final SetSidModel6581ServletParameters servletParameters = new SetSidModel6581ServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if (parser.hasException()) {
 				parser.usage();

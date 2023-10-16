@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -24,18 +25,13 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "SetDefaultEmulationReSidFpServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/set_default_emulation_residfp")
 public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.SetDefaultEmulationReSidFpServletParameters")
 	public static class SetDefaultEmulationReSidFpServletParameters extends VideoRequestParamServletParameters {
 
-	}
-
-	public static final String SET_DEFAULT_EMULATION_RESIDFP_PATH = "/set_default_emulation_residfp";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + SET_DEFAULT_EMULATION_RESIDFP_PATH;
 	}
 
 	@Override
@@ -70,7 +66,7 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 			final SetDefaultEmulationReSidFpServletParameters servletParameters = new SetDefaultEmulationReSidFpServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if (parser.hasException()) {
 				parser.usage();

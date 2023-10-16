@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -20,14 +21,8 @@ import server.restful.common.filters.RequestLogFilter;
 import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "FavoritesNamesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/favorites_names")
 public class FavoritesNamesServlet extends JSIDPlay2Servlet {
-
-	public static final String FAVORITES_NAMES_PATH = "/favorites_names";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + FAVORITES_NAMES_PATH;
-	}
 
 	@Override
 	public List<Filter> getServletFilters() {

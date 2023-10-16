@@ -21,6 +21,7 @@ import com.beust.jcommander.ParametersDelegate;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.common.ChipModel;
@@ -33,6 +34,7 @@ import server.restful.common.parameter.requestpath.FileRequestPathServletParamet
 import sidplay.ini.IniConfig;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "HardSIDMappingServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/hardsid-mapping/*")
 public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.sidmapping.HardSIDMappingServletParameters")
@@ -52,13 +54,6 @@ public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 		@ParametersDelegate
 		private IEmulationSection emulationSection = new IniConfig().getEmulationSection();
 
-	}
-
-	public static final String HARDSID_MAPPING_PATH = "/hardsid-mapping";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + HARDSID_MAPPING_PATH;
 	}
 
 	@Override
@@ -84,7 +79,7 @@ public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 			final HardSIDMappingServletParameters servletParameters = new HardSIDMappingServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			final File file = servletParameters.fetchFile(this, parser, request.isUserInRole(ROLE_ADMIN));
 			if (file == null || parser.hasException()) {

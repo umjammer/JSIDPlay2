@@ -21,6 +21,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
@@ -33,6 +34,7 @@ import ui.entities.collection.HVSCEntry;
 import ui.musiccollection.SearchCriteria;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "TuneInfoServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/info/*")
 public class TuneInfoServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.TuneInfoServletParameters")
@@ -41,13 +43,6 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 		@Parameter(names = "--list", arity = 1, descriptionKey = "LIST", order = -2)
 		private Boolean list = Boolean.FALSE;
 
-	}
-
-	public static final String TUNE_INFO_PATH = "/info";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + TUNE_INFO_PATH;
 	}
 
 	@Override
@@ -79,7 +74,7 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 			final TuneInfoServletParameters servletParameters = new TuneInfoServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			final File file = servletParameters.fetchFile(this, parser, request.isUserInRole(ROLE_ADMIN));
 			if (file == null || parser.hasException()) {

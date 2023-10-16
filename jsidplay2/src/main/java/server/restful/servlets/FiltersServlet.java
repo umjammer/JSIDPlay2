@@ -13,6 +13,7 @@ import java.util.Map;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -20,14 +21,8 @@ import server.restful.common.filters.RequestLogFilter;
 import ui.entities.config.FilterSection;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "FiltersServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/filters")
 public class FiltersServlet extends JSIDPlay2Servlet {
-
-	public static final String FILTERS_PATH = "/filters";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + FILTERS_PATH;
-	}
 
 	@Override
 	public List<Filter> getServletFilters() {

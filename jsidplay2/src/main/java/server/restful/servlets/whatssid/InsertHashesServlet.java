@@ -15,6 +15,7 @@ import java.util.Map;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.fingerprinting.rest.beans.HashBeans;
@@ -23,14 +24,8 @@ import server.restful.common.filters.RequestLogFilter;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "InsertHashesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/insert-hashes")
 public class InsertHashesServlet extends JSIDPlay2Servlet {
-
-	public static final String INSERT_HASHES_PATH = "/insert-hashes";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + INSERT_HASHES_PATH;
-	}
 
 	@Override
 	public List<Filter> getServletFilters() {

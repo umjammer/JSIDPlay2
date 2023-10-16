@@ -27,6 +27,7 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.fingerprinting.FingerPrinting;
@@ -41,17 +42,11 @@ import server.restful.common.filters.RequestLogFilter;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "WhatsSidServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/whatssid")
 public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 	private static final Map<Integer, MusicInfoWithConfidenceBean> MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP = Collections
 			.synchronizedMap(new LRUCache<Integer, MusicInfoWithConfidenceBean>(CACHE_SIZE));
-
-	public static final String WHATSSID_PATH = "/whatssid";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_SERVLET + WHATSSID_PATH;
-	}
 
 	@Override
 	public List<Filter> getServletFilters() {

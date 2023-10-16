@@ -16,6 +16,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -26,6 +27,7 @@ import server.restful.common.validator.JoystickNumberValidator;
 import server.restful.common.validator.JoystickValueValidator;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "JoystickServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/joystick")
 public class JoystickServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.JoystickServletParameters")
@@ -54,13 +56,6 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 		public void setValue(int value) {
 			this.value = value;
 		}
-	}
-
-	public static final String JOYSTICK_PATH = "/joystick";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + JOYSTICK_PATH;
 	}
 
 	@Override
@@ -95,7 +90,7 @@ public class JoystickServlet extends JSIDPlay2Servlet {
 			final JoystickServletParameters servletParameters = new JoystickServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if (parser.hasException()) {
 				parser.usage();

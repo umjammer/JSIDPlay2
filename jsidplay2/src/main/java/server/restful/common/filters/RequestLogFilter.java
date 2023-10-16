@@ -19,9 +19,8 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 public final class RequestLogFilter extends HttpFilter {
-
-	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());
 

@@ -18,6 +18,7 @@ import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -27,18 +28,12 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "InsertNextDiskServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/insert_next_disk")
 public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.InsertNextDiskServletParameters")
 	public static class InsertNextDiskServletParameters extends VideoRequestParamServletParameters {
 
-	}
-
-	public static final String INSERT_NEXT_DISK_PATH = "/insert_next_disk";
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_STATIC + INSERT_NEXT_DISK_PATH;
 	}
 
 	@Override
@@ -72,7 +67,7 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			final InsertNextDiskServletParameters servletParameters = new InsertNextDiskServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getServletPath());
+					getClass().getAnnotation(WebServlet.class));
 
 			if (parser.hasException()) {
 				parser.usage();

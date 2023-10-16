@@ -20,6 +20,7 @@ import java.util.Map;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
@@ -28,12 +29,8 @@ import server.restful.common.filters.TimeBasedRateLimiterFilter;
 import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "StartPageServlet", urlPatterns = CONTEXT_ROOT_START_PAGE)
 public class StartPageServlet extends JSIDPlay2Servlet {
-
-	@Override
-	public String getServletPath() {
-		return CONTEXT_ROOT_START_PAGE;
-	}
 
 	@Override
 	public List<Filter> getServletFilters() {
