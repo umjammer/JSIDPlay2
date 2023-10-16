@@ -89,6 +89,7 @@ public final class RequestLogFilter extends HttpFilter {
 
 	private String request(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
+		result.append("REQUEST: ");
 		result.append(request.getMethod());
 		result.append(" ");
 		result.append(request.getRequestURI());
@@ -126,7 +127,7 @@ public final class RequestLogFilter extends HttpFilter {
 
 	private String response(HttpServletResponse response) {
 		StringBuilder result = new StringBuilder();
-		result.append("STATUS=");
+		result.append("RESPONSE: STATUS=");
 		result.append(response.getStatus());
 
 		if (LOG.isLoggable(Level.FINEST)) {
