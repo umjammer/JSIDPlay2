@@ -74,6 +74,7 @@ import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.ISidPlay2Section;
+import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import server.restful.common.HlsType;
@@ -426,7 +427,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters)
 			throws IOException, SidTuneError {
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
-		servletParameters.config.getWhatsSidSection().setEnable(false);
+		IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
+
+		whatsSidSection.setEnable(false);
 
 		Player player = new Player(servletParameters.config);
 		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
@@ -475,8 +478,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		File videoFile = null;
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 		IC1541Section c1541Section = servletParameters.config.getC1541Section();
-		servletParameters.config.getWhatsSidSection().setEnable(false);
+		IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 
+		whatsSidSection.setEnable(false);
 		if (TAPE_FILE_FILTER.accept(file)) {
 			c1541Section.setJiffyDosInstalled(false);
 		}
