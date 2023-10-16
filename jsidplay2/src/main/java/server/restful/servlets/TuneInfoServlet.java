@@ -100,20 +100,12 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 	}
 
 	private Object getTuneInfos(final File file, final boolean asList) throws Exception {
-		Object tuneInfos;
 		HVSCEntry hvscEntry = createHVSCEntry(file);
-		if (asList) {
-			tuneInfos = hvscEntry2SortedList(hvscEntry);
-		} else {
-			tuneInfos = hvscEntry2SortedMap(hvscEntry);
-		}
-		return tuneInfos;
+
+		return asList ? hvscEntry2SortedList(hvscEntry) : hvscEntry2SortedMap(hvscEntry);
 	}
 
 	private HVSCEntry createHVSCEntry(File tuneFile) throws Exception {
-		if (tuneFile == null) {
-			return null;
-		}
 		SidTune tune = SidTune.load(tuneFile);
 
 		return new HVSCEntry(() -> sidDatabase != null ? sidDatabase.getTuneLength(tune) : 0, "", tuneFile, tune);
