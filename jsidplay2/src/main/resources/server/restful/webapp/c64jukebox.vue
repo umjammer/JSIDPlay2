@@ -3612,7 +3612,7 @@
             return value.toLocaleString(this.$i18n.locale) + " db";
           },
           balanceFormatter: function (value) {
-            return value.toLocaleString(this.$i18n.locale);
+            return "l(0) ... " + value.toLocaleString(this.$i18n.locale) + " ... r(1)";
           },
           delayFormatter: function (value) {
             return value.toLocaleString(this.$i18n.locale) + " ms";
