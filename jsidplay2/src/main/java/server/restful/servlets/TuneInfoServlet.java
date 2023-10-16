@@ -108,7 +108,8 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 	private HVSCEntry createHVSCEntry(File tuneFile) throws Exception {
 		SidTune tune = SidTune.load(tuneFile);
 
-		return new HVSCEntry(() -> sidDatabase != null ? sidDatabase.getTuneLength(tune) : 0, "", tuneFile, tune);
+		return new HVSCEntry(() -> sidDatabase != null ? sidDatabase.getTuneLength(tune) : 0,
+				getCollectionName(tuneFile), tuneFile, tune);
 	}
 
 	private List<Map<String, String>> hvscEntry2SortedList(HVSCEntry hvscEntry) {
