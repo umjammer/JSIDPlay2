@@ -58,6 +58,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebServlet;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
@@ -467,7 +468,9 @@ public final class JSIDPlay2Server {
 	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets) {
 		servlets.forEach(servlet -> servlet.getServletFilters().forEach(servletFilter -> {
 			WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
-			String filterName = webServlet.name() + "_" + servletFilter.getClass().getSimpleName();
+			WebFilter webFilter = servletFilter.getClass().getAnnotation(WebFilter.class);
+
+			String filterName = webServlet.name() + "_" + webFilter.filterName();
 
 			FilterDef filterDefinition = new FilterDef();
 			filterDefinition.setFilterName(filterName);

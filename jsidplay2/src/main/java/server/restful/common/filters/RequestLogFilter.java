@@ -15,11 +15,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@WebFilter(filterName = "RequestLogFilter")
 public final class RequestLogFilter extends HttpFilter {
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());

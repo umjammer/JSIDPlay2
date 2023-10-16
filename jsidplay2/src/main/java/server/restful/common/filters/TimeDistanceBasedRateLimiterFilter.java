@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,9 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author ken
  *
  */
+@SuppressWarnings("serial")
+@WebFilter(filterName = "TimeDistanceBasedRateLimiterFilter")
 public final class TimeDistanceBasedRateLimiterFilter extends HttpFilter {
-
-	private static final long serialVersionUID = 1L;
 
 	public static final String FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS = "minTimeBetweenRequests";
 
