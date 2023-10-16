@@ -9,6 +9,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -114,7 +115,10 @@ public class SIDMixer implements Mixer {
 					if (resamplerR.input(valR >> fastForwardShift)) {
 						short outputR = (short) Math.max(Math.min(resamplerR.output() + dither, MAX_VALUE), MIN_VALUE);
 						if (!buffer.putShort(outputR).hasRemaining()) {
-							audioProcessors.forEach(processor -> processor.process(buffer));
+							Iterator<AudioProcessor> listIterator = audioProcessors.listIterator();
+							while (listIterator.hasNext()) {
+								listIterator.next().process(buffer);
+							}
 							audioDriver.write();
 							((Buffer) buffer).clear();
 						}
