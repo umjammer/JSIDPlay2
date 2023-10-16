@@ -36,7 +36,6 @@ import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
-import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 import static sidplay.audio.Audio.FLV;
 import static sidplay.audio.Audio.MP3;
 
@@ -291,7 +290,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_SERVLET_NAME, getClass().getSimpleName());
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		return result;

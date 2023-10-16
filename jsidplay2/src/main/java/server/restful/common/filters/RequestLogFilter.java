@@ -25,15 +25,13 @@ public final class RequestLogFilter extends HttpFilter {
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());
 
-	public static final String FILTER_PARAMETER_SERVLET_NAME = "servletName";
-
 	private ServletContext servletContext;
-	private String servletName;
+	private String filterName;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		servletContext = filterConfig.getServletContext();
-		servletName = filterConfig.getInitParameter(FILTER_PARAMETER_SERVLET_NAME);
+		filterName = filterConfig.getFilterName();
 	}
 
 	@Override
@@ -157,7 +155,7 @@ public final class RequestLogFilter extends HttpFilter {
 	}
 
 	public void log(String message) {
-		servletContext.log(servletName + ": " + message);
+		servletContext.log(filterName + ": " + message);
 	}
 
 }

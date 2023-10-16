@@ -4,7 +4,6 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.PlayerCleanupTimerTask.update;
-import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,6 @@ public class InsertNextCartServlet extends JSIDPlay2Servlet {
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_SERVLET_NAME, getClass().getSimpleName());
 		return result;
 	}
 

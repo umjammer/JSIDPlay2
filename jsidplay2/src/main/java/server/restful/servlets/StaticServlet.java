@@ -6,7 +6,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_CACHED;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_UNCACHED;
-import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_DE;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_MESSAGES_EN;
 import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPTIONS;
@@ -67,7 +66,6 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_SERVLET_NAME, getClass().getSimpleName());
 		return result;
 	}
 

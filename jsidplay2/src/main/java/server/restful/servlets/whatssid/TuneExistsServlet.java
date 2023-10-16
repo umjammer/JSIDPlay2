@@ -4,7 +4,6 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -39,7 +38,6 @@ public class TuneExistsServlet extends JSIDPlay2Servlet {
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_SERVLET_NAME, getClass().getSimpleName());
 		return result;
 	}
 
