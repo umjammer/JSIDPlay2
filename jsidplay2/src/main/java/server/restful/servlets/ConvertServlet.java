@@ -433,7 +433,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
 		}
-
 		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
 			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType));
 		}

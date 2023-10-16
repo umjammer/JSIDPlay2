@@ -11,17 +11,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public final class RequestLogFilter implements Filter {
+public final class RequestLogFilter extends HttpFilter {
+
+	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());
 
@@ -37,7 +37,7 @@ public final class RequestLogFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
 		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
@@ -59,7 +59,7 @@ public final class RequestLogFilter implements Filter {
 		return result.toString();
 	}
 
-	private String remoteAddr(ServletRequest request) {
+	private String remoteAddr(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
 		result.append("from ");
 		result.append(request.getRemoteAddr());
@@ -69,7 +69,7 @@ public final class RequestLogFilter implements Filter {
 		return result.toString();
 	}
 
-	private String localAddr(ServletRequest request) {
+	private String localAddr(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
 		result.append("to ");
 		result.append(request.getLocalAddr());
@@ -79,82 +79,70 @@ public final class RequestLogFilter implements Filter {
 		return result.toString();
 	}
 
-	private String user(ServletRequest request) {
+	private String user(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
-		if (request instanceof HttpServletRequest) {
-			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-
-			result.append("user ");
-			result.append(Optional.ofNullable(httpServletRequest.getRemoteUser()).orElse("<anonymous>"));
-			result.append(", ");
-		}
+		result.append("user ");
+		result.append(Optional.ofNullable(request.getRemoteUser()).orElse("<anonymous>"));
+		result.append(", ");
 		return result.toString();
 	}
 
-	private String request(ServletRequest request) {
+	private String request(HttpServletRequest request) {
 		StringBuilder result = new StringBuilder();
-		if (request instanceof HttpServletRequest) {
-			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-
-			result.append(httpServletRequest.getMethod());
+		result.append(request.getMethod());
+		result.append(" ");
+		result.append(request.getRequestURI());
+		if (request.getQueryString() != null) {
+			result.append("?");
+			result.append(request.getQueryString());
+		}
+		if (LOG.isLoggable(Level.FINEST)) {
 			result.append(" ");
-			result.append(httpServletRequest.getRequestURI());
-			if (httpServletRequest.getQueryString() != null) {
-				result.append("?");
-				result.append(httpServletRequest.getQueryString());
-			}
-			if (LOG.isLoggable(Level.FINEST)) {
-				result.append(" ");
-				Enumeration<String> headerNamesEnumeration = httpServletRequest.getHeaderNames();
-				while (headerNamesEnumeration.hasMoreElements()) {
-					String headerName = headerNamesEnumeration.nextElement();
-					result.append(headerName + "=" + httpServletRequest.getHeader(headerName));
-					if (headerNamesEnumeration.hasMoreElements()) {
-						result.append(", ");
-					}
-				}
-			} else {
-				if (request.getContentType() != null) {
-					result.append(" ");
-					result.append(CONTENT_TYPE);
-					result.append("=");
-					result.append(request.getContentType());
-				}
-				if (request.getContentLengthLong() != -1L) {
+			Enumeration<String> headerNamesEnumeration = request.getHeaderNames();
+			while (headerNamesEnumeration.hasMoreElements()) {
+				String headerName = headerNamesEnumeration.nextElement();
+				result.append(headerName + "=" + request.getHeader(headerName));
+				if (headerNamesEnumeration.hasMoreElements()) {
 					result.append(", ");
-					result.append(CONTENT_LENGTH);
-					result.append("=");
-					result.append(getFileSize(request.getContentLengthLong()));
 				}
 			}
-			result.append(", ");
+		} else {
+			if (request.getContentType() != null) {
+				result.append(" ");
+				result.append(CONTENT_TYPE);
+				result.append("=");
+				result.append(request.getContentType());
+			}
+			if (request.getContentLengthLong() != -1L) {
+				result.append(", ");
+				result.append(CONTENT_LENGTH);
+				result.append("=");
+				result.append(getFileSize(request.getContentLengthLong()));
+			}
 		}
+		result.append(", ");
 		return result.toString();
 	}
 
-	private String response(ServletResponse response) {
+	private String response(HttpServletResponse response) {
 		StringBuilder result = new StringBuilder();
-		if (response instanceof HttpServletResponse) {
-			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		result.append("STATUS=");
+		result.append(response.getStatus());
 
-			result.append("STATUS=");
-			result.append(httpServletResponse.getStatus());
-
-			if (LOG.isLoggable(Level.FINEST)) {
+		if (LOG.isLoggable(Level.FINEST)) {
+			result.append(" ");
+			result.append(response.getHeaderNames().stream()
+					.map(headerName -> headerName + "=" + response.getHeader(headerName))
+					.collect(Collectors.joining(", ")));
+		} else {
+			if (response.getContentType() != null) {
 				result.append(" ");
-				result.append(httpServletResponse.getHeaderNames().stream()
-						.map(headerName -> headerName + "=" + httpServletResponse.getHeader(headerName))
-						.collect(Collectors.joining(", ")));
-			} else {
-				if (response.getContentType() != null) {
-					result.append(" ");
-					result.append(CONTENT_TYPE);
-					result.append("=");
-					result.append(response.getContentType());
-				}
+				result.append(CONTENT_TYPE);
+				result.append("=");
+				result.append(response.getContentType());
 			}
-			result.append(", ");
 		}
+		result.append(", ");
 		return result.toString();
 	}
 

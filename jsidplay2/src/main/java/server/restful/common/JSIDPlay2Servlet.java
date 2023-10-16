@@ -211,18 +211,18 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String string)
+	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
+			throws IOException {
+		setOutput(response, ct, e.getClass().getSimpleName() + ": " + e.getMessage());
+	}
+	
+	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String message)
 			throws JsonProcessingException, IOException {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
 				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
-			out.print(string);
+			out.print(message);
 		}
-	}
-
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
-			throws IOException {
-		setOutput(response, ct, e.getClass().getSimpleName() + ": " + e.getMessage());
 	}
 
 }

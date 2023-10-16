@@ -8,12 +8,11 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -22,7 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author ken
  *
  */
-public class TimeBasedRateLimiterFilter implements Filter {
+public class TimeBasedRateLimiterFilter extends HttpFilter {
+
+	private static final long serialVersionUID = 1L;
 
 	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE = "maxRequestsPerMinute";
 
@@ -36,19 +37,18 @@ public class TimeBasedRateLimiterFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+	public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		final RequestTimer timer = requestTimers.compute(servletRequest.getRemoteAddr(), (clientIp, requestTimer) -> {
+		final RequestTimer timer = requestTimers.compute(request.getRemoteAddr(), (clientIp, requestTimer) -> {
 			if (requestTimer == null) {
 				requestTimer = new RequestTimer(clientIp);
 			}
 			return requestTimer;
 		});
 		if (timer.increment() < maxRequestsPerMinute) {
-			chain.doFilter(servletRequest, servletResponse);
+			chain.doFilter(request, response);
 		} else {
 			// handle limit case, e.g. return status code 429 (Too Many Requests)
-			HttpServletResponse response = (HttpServletResponse) servletResponse;
 			response.sendError(SC_TOO_MANY_REQUESTS, "Too Many Requests");
 		}
 	}
