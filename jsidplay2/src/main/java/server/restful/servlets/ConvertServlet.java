@@ -67,6 +67,8 @@ import com.google.zxing.WriterException;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HttpConstraint;
+import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -108,6 +110,7 @@ import ui.common.util.InternetUtil;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "ConvertServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/convert/*")
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = {})) // Chrome ignores basic auth in audio src attribute!
 public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
@@ -288,13 +291,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		return result;
-	}
-
-	@Override
-	public boolean isSecured() {
-		// We cannot secure ConvertServlet here, since Chrome browser ignores basic
-		// authentication in HTML5 audio tag src attribute
-		return false;
 	}
 
 	/**

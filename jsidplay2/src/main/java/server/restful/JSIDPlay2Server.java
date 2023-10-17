@@ -58,6 +58,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebServlet;
 import libsidutils.siddatabase.SidDatabase;
@@ -490,18 +491,21 @@ public final class JSIDPlay2Server {
 		context.addSecurityRole(ROLE_ADMIN);
 		context.addSecurityRole(ROLE_USER);
 
-		SecurityCollection securityCollection = new SecurityCollection();
-		servlets.stream().filter(JSIDPlay2Servlet::isSecured)
-				.forEach(servlet -> Stream.of(servlet.getClass().getAnnotation(WebServlet.class).urlPatterns())
-						.forEach(securityCollection::addPattern));
+		servlets.forEach(servlet -> {
+			WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
+			ServletSecurity servletSecurity = servlet.getClass().getAnnotation(ServletSecurity.class);
 
-		SecurityConstraint securityConstraint = new SecurityConstraint();
-		securityConstraint.addAuthRole(ROLE_ADMIN);
-		securityConstraint.addAuthRole(ROLE_USER);
-		securityConstraint.setAuthConstraint(true);
-		securityConstraint.addCollection(securityCollection);
-		context.addConstraint(securityConstraint);
+			if (servlet.isSecured()) {
+				SecurityCollection securityCollection = new SecurityCollection();
+				Stream.of(webServlet.urlPatterns()).forEach(securityCollection::addPattern);
 
+				SecurityConstraint securityConstraint = new SecurityConstraint();
+				Stream.of(servletSecurity.value().rolesAllowed()).forEach(securityConstraint::addAuthRole);
+				securityConstraint.setAuthConstraint(true);
+				securityConstraint.addCollection(securityCollection);
+				context.addConstraint(securityConstraint);
+			}
+		});
 		context.getPipeline().addValve(new BasicAuthenticator());
 		context.setLoginConfig(new LoginConfig(BASIC_AUTH, REALM_NAME, null, null));
 	}

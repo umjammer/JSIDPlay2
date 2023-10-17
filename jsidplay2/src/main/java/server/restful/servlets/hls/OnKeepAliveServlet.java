@@ -51,11 +51,6 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	@Override
-	public boolean isSecured() {
-		return false;
-	}
-
 	/**
 	 * Keep alive video stream.
 	 * 

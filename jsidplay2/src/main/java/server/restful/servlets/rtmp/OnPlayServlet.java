@@ -44,11 +44,6 @@ public class OnPlayServlet extends JSIDPlay2Servlet {
 		return result;
 	}
 
-	@Override
-	public boolean isSecured() {
-		return false;
-	}
-
 	/**
 	 * Play video stream.
 	 * 

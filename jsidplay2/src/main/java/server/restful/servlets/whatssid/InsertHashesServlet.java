@@ -15,6 +15,8 @@ import java.util.Map;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HttpConstraint;
+import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +27,7 @@ import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "InsertHashesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/insert-hashes")
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_ADMIN }))
 public class InsertHashesServlet extends JSIDPlay2Servlet {
 
 	@Override
@@ -36,11 +39,6 @@ public class InsertHashesServlet extends JSIDPlay2Servlet {
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
 		return result;
-	}
-
-	@Override
-	public boolean isSecured() {
-		return true;
 	}
 
 	@Override

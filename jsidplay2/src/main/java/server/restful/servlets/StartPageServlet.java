@@ -47,11 +47,6 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public boolean isSecured() {
-		return false;
-	}
-
-	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {

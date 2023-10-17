@@ -1,6 +1,8 @@
 package server.restful.servlets;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
+import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
+import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HttpConstraint;
+import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +26,7 @@ import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "FavoritesNamesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/favorites_names")
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 
 	@Override
@@ -33,11 +38,6 @@ public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
 		return result;
-	}
-
-	@Override
-	public boolean isSecured() {
-		return true;
 	}
 
 	/**

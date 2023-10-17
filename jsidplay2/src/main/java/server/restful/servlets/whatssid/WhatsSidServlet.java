@@ -4,6 +4,8 @@ import static java.lang.String.valueOf;
 import static libsidplay.config.IWhatsSidSystemProperties.FRAME_MAX_LENGTH;
 import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_FRAME_MAXIMUM_LENGTH;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
+import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
+import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
@@ -27,6 +29,8 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HttpConstraint;
+import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +47,7 @@ import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "WhatsSidServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/whatssid")
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 	private static final Map<Integer, MusicInfoWithConfidenceBean> MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP = Collections
@@ -60,11 +65,6 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_WHATSIDS_IN_PARALLEL));
 		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(WHATSID_LOW_PRIO ? 1 : Integer.MAX_VALUE));
 		return result;
-	}
-
-	@Override
-	public boolean isSecured() {
-		return true;
 	}
 
 	/**
