@@ -503,6 +503,7 @@ public final class JSIDPlay2Server {
 				Stream.of(servletSecurity.value().rolesAllowed()).forEach(securityConstraint::addAuthRole);
 				securityConstraint.setAuthConstraint(true);
 				securityConstraint.addCollection(securityCollection);
+				
 				context.addConstraint(securityConstraint);
 			}
 		});
