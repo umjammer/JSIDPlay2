@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.beust.jcommander.Parameters;
 
@@ -25,6 +27,8 @@ import ui.common.util.InternetUtil;
 @SuppressWarnings("serial")
 @WebServlet(name = "ProxyServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/proxy/*")
 public class ProxyServlet extends JSIDPlay2Servlet {
+
+	private static final Logger LOG = Logger.getLogger(ProxyServlet.class.getName());
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.ProxyServletParameters")
 	public static class ProxyServletParameters extends URLRequestPathServletParameters {
@@ -52,6 +56,9 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 
 			if (!url.toExternalForm().startsWith(HLS_DOWNLOAD_URL)) {
 				throw new IOException();
+			}
+			if (LOG.isLoggable(Level.FINEST)) {
+				info(String.format("proxy: URL: %s", url));
 			}
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
