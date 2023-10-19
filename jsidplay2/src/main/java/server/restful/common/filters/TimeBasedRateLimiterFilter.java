@@ -40,13 +40,9 @@ public class TimeBasedRateLimiterFilter extends HttpFilter {
 	@Override
 	public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		final RequestTimer timer = requestTimers.compute(request.getRemoteAddr(), (clientIp, requestTimer) -> {
-			if (requestTimer == null) {
-				requestTimer = new RequestTimer(clientIp);
-			}
-			return requestTimer;
-		});
+		final RequestTimer timer = requestTimers.computeIfAbsent(request.getRemoteAddr(), RequestTimer::new);
 		if (timer.increment() < maxRequestsPerMinute) {
+			// let the request through and process as usual
 			chain.doFilter(request, response);
 		} else {
 			// handle limit case, e.g. return status code 429 (Too Many Requests)
