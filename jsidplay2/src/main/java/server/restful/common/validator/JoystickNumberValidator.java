@@ -10,7 +10,7 @@ public class JoystickNumberValidator implements IParameterValidator {
 		try {
 			int n = Integer.parseInt(value);
 			if (n < 0 || n > 1) {
-				throw new ParameterException("Invalid " + name + " value, expected 0 or 1 (found " + value + ")");
+				throw new ParameterException("Invalid " + name + " value, expected 0..1 (found " + value + ")");
 			}
 		} catch (NumberFormatException e) {
 			throw new ParameterException("Parameter " + name + " should be an int (found " + value + ")");
