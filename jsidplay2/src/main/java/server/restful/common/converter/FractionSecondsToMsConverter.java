@@ -1,5 +1,7 @@
 package server.restful.common.converter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import com.beust.jcommander.ParameterException;
@@ -14,8 +16,8 @@ public final class FractionSecondsToMsConverter extends BaseConverter<Long> {
 	@Override
 	public Long convert(String value) {
 		try {
-			return Optional.ofNullable(value).map(Float::parseFloat).map(seconds -> (long) (seconds * 1000))
-					.orElse(null);
+			return Optional.ofNullable(value).map(BigDecimal::new)
+					.map(seconds -> seconds.setScale(3, RoundingMode.DOWN).movePointRight(3).longValue()).orElse(null);
 		} catch (NumberFormatException e) {
 			throw new ParameterException(getErrorString(value, "a time in seconds (pattern: ss.SSS)"));
 		}
