@@ -13,11 +13,10 @@ public final class WebJarsResourceConverter extends BaseConverter<InputStream> {
 
 	@Override
 	public InputStream convert(String value) {
-		InputStream resourceAsStream = WebJarsResourceConverter.class
-				.getResourceAsStream("/META-INF/resources/webjars" + value);
+		InputStream resourceAsStream = getClass().getResourceAsStream("/META-INF/resources/webjars" + value);
 		if (resourceAsStream == null) {
-			throw new ParameterException(getErrorString(value,
-					"an internal web resource (/META-INF/resources/webjars/* as an InputStream)"));
+			throw new ParameterException(
+					getErrorString(value, "an internal web jars (/META-INF/resources/webjars/*) as an InputStream)"));
 		}
 		return resourceAsStream;
 	}

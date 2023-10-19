@@ -13,10 +13,10 @@ public final class WebResourceConverter extends BaseConverter<InputStream> {
 
 	@Override
 	public InputStream convert(String value) {
-		InputStream resourceAsStream = WebResourceConverter.class.getResourceAsStream("/server/restful/webapp" + value);
+		InputStream resourceAsStream = getClass().getResourceAsStream("/server/restful/webapp" + value);
 		if (resourceAsStream == null) {
 			throw new ParameterException(
-					getErrorString(value, "an internal web resource (/server/restful/webapp/* as an InputStream)"));
+					getErrorString(value, "an internal web resource (/server/restful/webapp/*) as an InputStream)"));
 		}
 		return resourceAsStream;
 	}
