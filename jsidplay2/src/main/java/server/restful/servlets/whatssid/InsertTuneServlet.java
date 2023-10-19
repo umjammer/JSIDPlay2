@@ -1,6 +1,5 @@
 package server.restful.servlets.whatssid;
 
-import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
@@ -46,10 +45,6 @@ public class InsertTuneServlet extends JSIDPlay2Servlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			if (!request.isUserInRole(ROLE_ADMIN)) {
-				response.sendError(SC_UNAUTHORIZED, "Only for admin user");
-				return;
-			}
 			MusicInfoBean musicInfoBean = getInput(request, MusicInfoBean.class);
 
 			final WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
