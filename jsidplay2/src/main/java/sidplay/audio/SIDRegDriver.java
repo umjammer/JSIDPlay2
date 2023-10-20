@@ -101,7 +101,7 @@ public abstract class SIDRegDriver implements SIDListener, AudioDriver {
 		if (format != Format.C64_JUKEBOX) {
 			writeHeader(out);
 		}
-		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
+		sampleBuffer = ByteBuffer.allocateDirect(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
 	}
 

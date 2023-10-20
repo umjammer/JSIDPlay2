@@ -52,7 +52,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 		firstTimeStamp = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
 
-		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
+		sampleBuffer = ByteBuffer.allocateDirect(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
 	}
 

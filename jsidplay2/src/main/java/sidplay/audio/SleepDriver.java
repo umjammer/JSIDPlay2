@@ -65,7 +65,7 @@ public class SleepDriver implements AudioDriver {
 		c64Time = 0;
 		clientTime = null;
 		bufferedEnd = null;
-		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
+		sampleBuffer = ByteBuffer.allocateDirect(cfg.getChunkFrames() * BYTES * cfg.getChannels()).order(LITTLE_ENDIAN);
 	}
 
 	@Override

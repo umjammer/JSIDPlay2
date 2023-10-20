@@ -88,7 +88,7 @@ public abstract class SIDDumpDriver extends SIDDumpExtension implements AudioDri
 
 		out.write(toHeaderString().getBytes(StandardCharsets.ISO_8859_1));
 
-		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
+		sampleBuffer = ByteBuffer.allocateDirect(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
 	}
 
