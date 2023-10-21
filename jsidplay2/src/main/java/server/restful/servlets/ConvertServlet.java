@@ -466,8 +466,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			Thread... parentThread) throws IOException, SidTuneError {
 		File videoFile = null;
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
-		IC1541Section c1541Section = servletParameters.config.getC1541Section();
 		IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
+		IC1541Section c1541Section = servletParameters.config.getC1541Section();
 
 		whatsSidSection.setEnable(false);
 		if (TAPE_FILE_FILTER.accept(file)) {
