@@ -10,8 +10,12 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
@@ -26,6 +30,8 @@ import libsidplay.config.ISidPlay2Section;
 import sidplay.Player;
 
 public class TextToSpeech implements Consumer<Player> {
+
+	private static final Logger LOG = Logger.getLogger(TextToSpeech.class.getName());
 
 	private TextToSpeechType textToSpeechType;
 
@@ -48,6 +54,9 @@ public class TextToSpeech implements Consumer<Player> {
 
 			String[] processArguments = textToSpeechType.getProcessArgumentsFunction().apply(player.getTune().getInfo(),
 					wavFile.getAbsolutePath());
+			if (LOG.isLoggable(Level.FINE)) {
+				LOG.fine(Arrays.asList(processArguments).stream().collect(Collectors.joining(" ")));
+			}
 			Process process = new ProcessBuilder(processArguments).start();
 			int waitFlag = process.waitFor();
 			if (waitFlag == 0) {

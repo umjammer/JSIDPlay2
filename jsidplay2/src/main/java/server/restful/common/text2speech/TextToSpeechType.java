@@ -10,8 +10,8 @@ import libsidplay.sidtune.SidTuneInfo;
 import net.gcardone.junidecode.Junidecode;
 
 public enum TextToSpeechType {
-	NONE(TextToSpeechType::createNoArgumentsFunction), ESPEAK(TextToSpeechType::createEspeakArgumentsFunction),
-	PICO2WAVE(TextToSpeechType::createPico2WaveArgumentsFunction);
+	NONE(TextToSpeechType::createNoArgumentsFunction), PICO2WAVE(TextToSpeechType::createPico2WaveArgumentsFunction),
+	ESPEAK(TextToSpeechType::createEspeakArgumentsFunction);
 
 	private BiFunction<SidTuneInfo, String, String[]> processArgumentsFunction;
 
@@ -46,7 +46,7 @@ public enum TextToSpeechType {
 				released = next;
 			}
 		}
-		String text = "<volume level=\"50\"> <pitch level=\"140\">" + "<p>"
+		String text = "<volume level=\"75\"> <pitch level=\"140\">" + "<p>"
 				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
 				+ (author != null ? "<s>by " + replaceSpecials(replaceAliasName(author)) + "</s>" : "")
 				+ (released != null
@@ -76,17 +76,22 @@ public enum TextToSpeechType {
 			}
 		}
 		String ssml = "<speak>" + "<voice language=\"en-GB\" gender=\"female\">" + "<p>"
-				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
-				+ (author != null ? "<s>by " + replaceSpecials(replaceAliasName(author)) + "</s>" : "")
+				+ (title != null ? "<s>Now playing: " + toLower(replaceSpecials(title)) + "</s>" : "")
+				+ (author != null ? "<s>by " + toLower(replaceSpecials(replaceAliasName(author))) + "</s>" : "")
 				+ (released != null
-						? "<s>released in " + replaceUnknownDate(replaceDateRange(replaceSpecials(released))) + "</s>"
+						? "<s>released in " + replaceUnknownDate(replaceDateRange(toLower(replaceSpecials(released))))
+								+ "</s>"
 						: "")
 				+ "  </p>" + "<voice>" + "</speak>";
 		return new String[] { "espeak", ssml, "-m", "-w", wavFile };
 	}
 
 	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\()]", "<break time=\"500ms\"/>").toLowerCase(Locale.US);
+		return Junidecode.unidecode(string).replaceAll("[/\\\\()]", "<break time=\"500ms\"/>");
+	}
+
+	private static String toLower(String string) {
+		return string.toLowerCase(Locale.US);
 	}
 
 	private static String replaceAliasName(String string) {
