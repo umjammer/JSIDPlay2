@@ -31,18 +31,18 @@ public enum TextToSpeechType {
 		String title = null, author = null, released = null;
 		Iterator<String> it = info.getInfoString().iterator();
 		if (it.hasNext()) {
-			String next = it.next();
-			title = next.isEmpty() || next.equals("<?>") ? "Unknown Title" : next;
+			String next = it.next().replace("<?>", "");
+			title = next.isEmpty() ? "Unknown Title" : next;
 		}
 		if (it.hasNext()) {
-			String next = it.next();
-			if (!next.isEmpty() && !"<?>".equals(next)) {
+			String next = it.next().replace("<?>", "");
+			if (!next.isEmpty()) {
 				author = next;
 			}
 		}
 		if (it.hasNext()) {
-			String next = it.next();
-			if (!next.isEmpty() && !"<?>".equals(next)) {
+			String next = it.next().replace("<?>", "");
+			if (!next.isEmpty()) {
 				released = next;
 			}
 		}
@@ -50,7 +50,7 @@ public enum TextToSpeechType {
 				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
 				+ (author != null ? "<s>by " + replaceSpecials(replaceAliasName(author)) + "</s>" : "")
 				+ (released != null
-						? "<s>released in " + replaceUnknownDate(replaceDateRange(replaceSpecials(released))) + "</s>"
+						? "<s>released in " + replaceSpecials(replaceUnknownDate(replaceDateRange(released))) + "</s>"
 						: "")
 				+ "  </p>" + "</pitch></volume>";
 		return new String[] { "pico2wave", "-l", "en-US", "-w=" + wavFile, text };
@@ -60,18 +60,18 @@ public enum TextToSpeechType {
 		String title = null, author = null, released = null;
 		Iterator<String> it = info.getInfoString().iterator();
 		if (it.hasNext()) {
-			String next = it.next();
-			title = next.isEmpty() || next.equals("<?>") ? "Unknown Title" : next;
+			String next = it.next().replace("<?>", "");
+			title = next.isEmpty() ? "Unknown Title" : next;
 		}
 		if (it.hasNext()) {
-			String next = it.next();
-			if (!next.isEmpty() && !"<?>".equals(next)) {
+			String next = it.next().replace("<?>", "");
+			if (!next.isEmpty()) {
 				author = next;
 			}
 		}
 		if (it.hasNext()) {
-			String next = it.next();
-			if (!next.isEmpty() && !"<?>".equals(next)) {
+			String next = it.next().replace("<?>", "");
+			if (!next.isEmpty()) {
 				released = next;
 			}
 		}
@@ -79,7 +79,7 @@ public enum TextToSpeechType {
 				+ (title != null ? "<s>Now playing: " + toLower(replaceSpecials(title)) + "</s>" : "")
 				+ (author != null ? "<s>by " + toLower(replaceSpecials(replaceAliasName(author))) + "</s>" : "")
 				+ (released != null
-						? "<s>released in " + replaceUnknownDate(replaceDateRange(toLower(replaceSpecials(released))))
+						? "<s>released in " + toLower(replaceSpecials(replaceUnknownDate(replaceDateRange(released))))
 								+ "</s>"
 						: "")
 				+ "  </p>" + "<voice>" + "</speak>";
@@ -87,7 +87,7 @@ public enum TextToSpeechType {
 	}
 
 	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\()]", "<break time=\"500ms\"/>");
+		return Junidecode.unidecode(string).replaceAll("[\\\\()]", "<break time=\"500ms\"/>").replace("-", " ");
 	}
 
 	private static String toLower(String string) {
