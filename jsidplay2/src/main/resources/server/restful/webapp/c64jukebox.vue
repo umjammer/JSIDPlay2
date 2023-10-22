@@ -1451,6 +1451,7 @@
                                     <b-form-radio value="NONE" id="textToSpeechType">{{
                                       $t("textToSpeechTypeOff")
                                     }}</b-form-radio>
+                                    <b-form-radio value="PICO2WAVE">PICO2WAVE</b-form-radio>
                                     <b-form-radio value="ESPEAK">ESPEAK</b-form-radio>
                                   </b-form-radio-group>
                                 </b-form-group>

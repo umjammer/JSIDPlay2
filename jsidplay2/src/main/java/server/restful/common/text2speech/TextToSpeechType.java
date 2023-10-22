@@ -10,7 +10,8 @@ import libsidplay.sidtune.SidTuneInfo;
 import net.gcardone.junidecode.Junidecode;
 
 public enum TextToSpeechType {
-	NONE(TextToSpeechType::createNoArgumentsFunction), ESPEAK(TextToSpeechType::createEspeakArgumentsFunction);
+	NONE(TextToSpeechType::createNoArgumentsFunction), ESPEAK(TextToSpeechType::createEspeakArgumentsFunction),
+	PICO2WAVE(TextToSpeechType::createPico2WaveArgumentsFunction);
 
 	private BiFunction<SidTuneInfo, String, String[]> processArgumentsFunction;
 
@@ -24,6 +25,35 @@ public enum TextToSpeechType {
 
 	private static String[] createNoArgumentsFunction(SidTuneInfo info, String wavFile) {
 		return new String[0];
+	}
+
+	private static String[] createPico2WaveArgumentsFunction(SidTuneInfo info, String wavFile) {
+		String title = null, author = null, released = null;
+		Iterator<String> it = info.getInfoString().iterator();
+		if (it.hasNext()) {
+			String next = it.next();
+			title = next.isEmpty() || next.equals("<?>") ? "Unknown Title" : next;
+		}
+		if (it.hasNext()) {
+			String next = it.next();
+			if (!next.isEmpty() && !"<?>".equals(next)) {
+				author = next;
+			}
+		}
+		if (it.hasNext()) {
+			String next = it.next();
+			if (!next.isEmpty() && !"<?>".equals(next)) {
+				released = next;
+			}
+		}
+		String text = "<volume level=\"50\"> <pitch level=\"140\">" + "<p>"
+				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
+				+ (author != null ? "<s>by " + replaceSpecials(replaceAliasName(author)) + "</s>" : "")
+				+ (released != null
+						? "<s>released in " + replaceUnknownDate(replaceDateRange(replaceSpecials(released))) + "</s>"
+						: "")
+				+ "  </p>" + "</pitch></volume>";
+		return new String[] { "pico2wave", "-l", "en-US", "-w=" + wavFile, text };
 	}
 
 	private static String[] createEspeakArgumentsFunction(SidTuneInfo info, String wavFile) {

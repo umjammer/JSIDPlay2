@@ -134,8 +134,8 @@ public class TextToSpeech implements Consumer<Player> {
 			}
 			wavFile.delete();
 		} catch (IOException | InterruptedException | UnsupportedAudioFileException e) {
-			System.err
-					.println("Error during Text2Speech! Install or deactivate it!? (https://espeak.sourceforge.net/)\n"
+			System.err.println(
+					"Error during Text2Speech! Install or deactivate it!? (apt-get install espeak or sudo apt install libttspico-utils)\n"
 							+ e.getMessage());
 		}
 	}

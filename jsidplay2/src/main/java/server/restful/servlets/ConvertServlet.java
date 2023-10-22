@@ -138,7 +138,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.startSong = startSong;
 		}
 
-		private TextToSpeechType textToSpeechType = TextToSpeechType.ESPEAK;
+		private TextToSpeechType textToSpeechType = TextToSpeechType.PICO2WAVE;
 
 		public TextToSpeechType getTextToSpeechType() {
 			return textToSpeechType;
