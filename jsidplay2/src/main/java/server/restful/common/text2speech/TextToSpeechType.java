@@ -49,8 +49,8 @@ public enum TextToSpeechType {
 		String text = "<volume level=\"75\"> <pitch level=\"140\">" + "<p>"
 				+ (title != null ? "<s>Now playing: " + replaceSpecials(title) + "</s>" : "")
 				+ (author != null ? "<s>by " + replaceSpecials(replaceAliasName(author)) + "</s>" : "")
-				+ (released != null
-						? "<s>released in " + replaceSpecials(replaceUnknownDate(replaceDateRange(released))) + "</s>"
+				+ (released != null ? "<s>released in "
+						+ replaceSpecials(replaceUnknownDecade(replaceUnknownDate(replaceDateRange(released)))) + "</s>"
 						: "")
 				+ "  </p>" + "</pitch></volume>";
 		return new String[] { "pico2wave", "-l", "en-US", "-w=" + wavFile, text };
@@ -78,16 +78,15 @@ public enum TextToSpeechType {
 		String ssml = "<speak>" + "<voice language=\"en-GB\" gender=\"female\">" + "<p>"
 				+ (title != null ? "<s>Now playing: " + toLower(replaceSpecials(title)) + "</s>" : "")
 				+ (author != null ? "<s>by " + toLower(replaceSpecials(replaceAliasName(author))) + "</s>" : "")
-				+ (released != null
-						? "<s>released in " + toLower(replaceSpecials(replaceUnknownDate(replaceDateRange(released))))
-								+ "</s>"
-						: "")
+				+ (released != null ? "<s>released in "
+						+ toLower(replaceSpecials(replaceUnknownDecade(replaceUnknownDate(replaceDateRange(released)))))
+						+ "</s>" : "")
 				+ "  </p>" + "<voice>" + "</speak>";
 		return new String[] { "espeak", ssml, "-m", "-w", wavFile };
 	}
 
 	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[\\\\()]", "<break time=\"500ms\"/>").replace("-", " ");
+		return Junidecode.unidecode(string).replaceAll("[/\\\\()-]", "<break time=\"250ms\"/>");
 	}
 
 	private static String toLower(String string) {
@@ -104,10 +103,19 @@ public enum TextToSpeechType {
 	}
 
 	private static String replaceUnknownDate(String string) {
+		Pattern pattern = Pattern.compile("19[?][?](.*)");
+		Matcher matcher = pattern.matcher(string);
+		if (matcher.matches()) {
+			return "the 80s or 90" + " / " + matcher.group(1);
+		}
+		return string;
+	}
+
+	private static String replaceUnknownDecade(String string) {
 		Pattern pattern = Pattern.compile("19([89])[?](.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return "the " + matcher.group(1) + "0s" + "<break time=\"250ms\"/>" + matcher.group(2);
+			return "the " + matcher.group(1) + "0s" + " / " + matcher.group(2);
 		}
 		return string;
 	}
