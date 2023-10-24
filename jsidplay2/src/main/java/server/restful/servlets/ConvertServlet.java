@@ -110,7 +110,7 @@ import ui.common.util.InternetUtil;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "ConvertServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/convert/*")
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = {})) // Chrome ignores basic auth in audio src attribute!
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = { /* Chrome ignores basic auth in audio src attribute! */ }))
 public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")
@@ -320,6 +320,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				parser.usage();
 				return;
 			}
+			if ("HEAD".equals(request.getMethod())) {
+				response.setContentLengthLong(-1);
+				return;
+			}
 
 			if (AUDIO_TUNE_FILE_FILTER.accept(file)
 					|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file))) {
@@ -331,11 +335,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 				}
 				response.setContentType(getMimeType(driver.getExtension()).toString());
-				if ("HEAD".equals(request.getMethod())) {
-					response.setContentLengthLong(-1);
-				} else {
-					convert2audio(file, driver, servletParameters);
-				}
+				convert2audio(file, driver, servletParameters);
 
 			} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
 					|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
