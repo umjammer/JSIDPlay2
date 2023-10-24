@@ -223,6 +223,13 @@ public class IOUtils {
 		return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + units[digitGroups];
 	}
 
+	/**
+	 * Fast file channel based copy.
+	 * 
+	 * @param is input
+	 * @param os output
+	 * @throws IOException I/O error
+	 */
 	public static void copy(InputStream is, OutputStream os) throws IOException {
 		final ReadableByteChannel inputChannel = Channels.newChannel(is);
 		final WritableByteChannel outputChannel = Channels.newChannel(os);
@@ -239,10 +246,25 @@ public class IOUtils {
 		}
 	}
 
+	/**
+	 * Convert InputStream to String using charset.
+	 * 
+	 * @param is          input
+	 * @param charsetName charset name
+	 * @return read string
+	 */
 	public static String convertStreamToString(InputStream is, String charsetName) {
 		return convertStreamToString(is, charsetName, new HashMap<>());
 	}
 
+	/**
+	 * Convert InputStream to String using charset and replace strings on demand.
+	 * 
+	 * @param is           input
+	 * @param charsetName  charset name
+	 * @param replacements replacement strings
+	 * @return read string
+	 */
 	public static String convertStreamToString(InputStream is, String charsetName, Map<String, String> replacements) {
 		try (java.util.Scanner s = new java.util.Scanner(is, charsetName)) {
 			s.useDelimiter("\\A");
@@ -257,6 +279,13 @@ public class IOUtils {
 		}
 	}
 
+	/**
+	 * Read complete InputStream contents into byte array
+	 * 
+	 * @param is input
+	 * @return byte array
+	 * @throws IOException I/O error
+	 */
 	public static byte[] readAllBytes(InputStream is) throws IOException {
 		if (is == null)
 			throw new IOException("no InputStream");
@@ -269,6 +298,16 @@ public class IOUtils {
 		return buffer.toByteArray();
 	}
 
+	/**
+	 * Read specific amount of InputStream contents into byte array
+	 * 
+	 * @param is  input
+	 * @param b   byte array
+	 * @param off offset in byte array
+	 * @param len number of bytes to read from input
+	 * @return byte array
+	 * @throws IOException I/O error
+	 */
 	public static int readNBytes(InputStream is, byte[] b, int off, int len) throws IOException {
 		if (off < 0 || len < 0 || len > b.length - off)
 			throw new IndexOutOfBoundsException();
@@ -282,26 +321,35 @@ public class IOUtils {
 		return nRead;
 	}
 
-	public static File extract(File baseDir, File inputfile) throws IOException {
-		if (inputfile != null) {
-			TFile file = new TFile(inputfile);
+	/**
+	 * Eventually extract file, if compressed (ZIP, GZIP, TAR, etc.), otherwise
+	 * return same file.
+	 * 
+	 * @param baseDir   base directory to extract into a newly created sub-directory
+	 * @param inputFile input to extract
+	 * @return extracted file or same file (if it was uncompressed)
+	 * @throws IOException I/O error
+	 */
+	public static File extract(File baseDir, File inputFile) throws IOException {
+		if (inputFile != null) {
+			TFile file = new TFile(inputFile);
 			if (file.isEntry()) {
 				File tmpDir = new File(baseDir, UUID.randomUUID().toString());
 				tmpDir.mkdirs();
 
 				File tmpFile;
-				if (inputfile.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
-					tmpFile = new File(tmpDir, getFilenameWithoutSuffix(inputfile.getName()));
-					try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(inputfile))) {
+				if (inputFile.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
+					tmpFile = new File(tmpDir, getFilenameWithoutSuffix(inputFile.getName()));
+					try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(inputFile))) {
 						TFile.cp(is, tmpFile);
 					}
 				} else {
-					tmpFile = new File(tmpDir, inputfile.getName());
-					TFile.cp_rp(inputfile, tmpFile, TArchiveDetector.ALL);
+					tmpFile = new File(tmpDir, inputFile.getName());
+					TFile.cp_rp(inputFile, tmpFile, TArchiveDetector.ALL);
 				}
 				return tmpFile;
 			}
 		}
-		return inputfile;
+		return inputFile;
 	}
 }
