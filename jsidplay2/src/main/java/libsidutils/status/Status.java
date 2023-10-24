@@ -1,7 +1,7 @@
 package libsidutils.status;
 
 import static libsidplay.sidtune.SidTune.RESET;
-import static libsidutils.IOUtils.getFileSize;
+import static libsidutils.IOUtils.getPhysicalSize;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -185,9 +185,9 @@ public class Status {
 		Runtime runtime = Runtime.getRuntime();
 		result.append(resourceBundle.getString("MEMORY"));
 		result.append(": ");
-		result.append(getFileSize(runtime.totalMemory() - runtime.freeMemory()));
+		result.append(getPhysicalSize(runtime.totalMemory() - runtime.freeMemory()));
 		result.append("/");
-		result.append(getFileSize(runtime.maxMemory()));
+		result.append(getPhysicalSize(runtime.maxMemory()));
 		return result.toString();
 	}
 
@@ -220,7 +220,7 @@ public class Status {
 	public String determineRecording() {
 		if (player.getAudioDriver().isRecording()) {
 			return String.format("%s: %s (%s)", resourceBundle.getString("RECORDING_FILENAME"),
-					player.getRecordingFilename(), getFileSize(new File(player.getRecordingFilename()).length()));
+					player.getRecordingFilename(), getPhysicalSize(new File(player.getRecordingFilename()).length()));
 		}
 		return "";
 	}

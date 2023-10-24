@@ -214,7 +214,7 @@ public class IOUtils {
 	 * @param size size to calculate physical size for
 	 * @return physical size
 	 */
-	public static String getFileSize(long size) {
+	public static String getPhysicalSize(long size) {
 		if (size <= 0) {
 			return "0b";
 		}

@@ -1,6 +1,6 @@
 package server.restful.common.filters;
 
-import static libsidutils.IOUtils.getFileSize;
+import static libsidutils.IOUtils.getPhysicalSize;
 import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
@@ -117,7 +117,7 @@ public final class RequestLogFilter extends HttpFilter {
 				result.append(", ");
 				result.append(CONTENT_LENGTH);
 				result.append("=");
-				result.append(getFileSize(request.getContentLengthLong()));
+				result.append(getPhysicalSize(request.getContentLengthLong()));
 			}
 		}
 		result.append(", ");
@@ -149,9 +149,9 @@ public final class RequestLogFilter extends HttpFilter {
 	private String memory() {
 		StringBuilder result = new StringBuilder();
 		Runtime runtime = Runtime.getRuntime();
-		result.append(getFileSize(runtime.totalMemory() - runtime.freeMemory()));
+		result.append(getPhysicalSize(runtime.totalMemory() - runtime.freeMemory()));
 		result.append("/");
-		result.append(getFileSize(runtime.maxMemory()));
+		result.append(getPhysicalSize(runtime.maxMemory()));
 		return result.toString();
 	}
 

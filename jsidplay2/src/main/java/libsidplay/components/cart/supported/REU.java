@@ -1,6 +1,6 @@
 package libsidplay.components.cart.supported;
 
-import static libsidutils.IOUtils.getFileSize;
+import static libsidutils.IOUtils.getPhysicalSize;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -469,7 +469,7 @@ public class REU extends Cartridge {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " " + getModelName() + " (" + getFileSize(ram.length) + ")";
+		return getClass().getSimpleName() + " " + getModelName() + " (" + getPhysicalSize(ram.length) + ")";
 	}
 
 	private String getModelName() {
