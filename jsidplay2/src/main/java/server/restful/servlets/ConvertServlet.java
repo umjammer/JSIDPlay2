@@ -82,6 +82,7 @@ import libsidplay.sidtune.SidTuneError;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
+import server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter;
 import server.restful.common.filters.RTMPBasedRateLimiterFilter;
 import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
@@ -281,8 +282,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter(), new CounterBasedRateLimiterFilter(),
-				new RTMPBasedRateLimiterFilter());
+		return Arrays.asList(new RequestLogFilter(), new HeadRequestRespondsWithUnknownContentLengthFilter(),
+				new CounterBasedRateLimiterFilter(), new RTMPBasedRateLimiterFilter());
 	}
 
 	@Override
@@ -320,11 +321,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				parser.usage();
 				return;
 			}
-			if ("HEAD".equals(request.getMethod())) {
-				response.setContentLengthLong(-1);
-				return;
-			}
-
 			if (AUDIO_TUNE_FILE_FILTER.accept(file)
 					|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file))) {
 
