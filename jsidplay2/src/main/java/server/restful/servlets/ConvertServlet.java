@@ -17,6 +17,7 @@ import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISP
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
+import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_MPEG;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_UNCACHED;
@@ -35,6 +36,7 @@ import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAI
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
+import static server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter.FILTER_PARAMETER_CONTENT_TYPE;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 import static sidplay.audio.Audio.FLV;
 import static sidplay.audio.Audio.MP3;
@@ -289,6 +291,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
+		result.put(FILTER_PARAMETER_CONTENT_TYPE, MIME_TYPE_MPEG.getMimeType());
 		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		return result;

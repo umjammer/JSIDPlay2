@@ -20,7 +20,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebFilter(filterName = "HeadRequestRespondsWithUnknownContentLengthFilter")
 public final class HeadRequestRespondsWithUnknownContentLengthFilter extends HttpFilter {
 
+	public static final String FILTER_PARAMETER_CONTENT_TYPE = "contentType";
+
+	private String contentType;
+
 	public void init(FilterConfig filterConfig) {
+		contentType = filterConfig.getInitParameter(FILTER_PARAMETER_CONTENT_TYPE);
 	}
 
 	@Override
@@ -28,7 +33,7 @@ public final class HeadRequestRespondsWithUnknownContentLengthFilter extends Htt
 			throws IOException, ServletException {
 		if ("HEAD".equals(request.getMethod())) {
 			response.setContentLengthLong(-1);
-			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType(contentType);
 		} else {
 			// let the request through and process as usual
 			chain.doFilter(request, response);
