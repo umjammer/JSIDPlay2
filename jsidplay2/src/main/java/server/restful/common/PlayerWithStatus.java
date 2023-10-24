@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import libsidplay.common.ChipModel;
@@ -22,8 +21,7 @@ import libsidplay.common.Event;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.sidtune.SidTune;
-import net.java.truevfs.access.TArchiveDetector;
-import net.java.truevfs.access.TFile;
+import libsidutils.IOUtils;
 import sidplay.Player;
 import sidplay.audio.SleepDriver;
 import sidplay.player.State;
@@ -106,7 +104,7 @@ public final class PlayerWithStatus {
 	public File insertNextDisk() throws IOException {
 		diskImage = determineNextImage(diskImage, DISK_FILE_FILTER);
 		if (diskImage != null && DISK_FILE_FILTER.accept(diskImage)) {
-			player.insertDisk(extract(diskImage));
+			player.insertDisk(IOUtils.extract(player.getConfig().getSidplay2Section().getTmpDir(), diskImage));
 		}
 		return diskImage;
 	}
@@ -114,7 +112,8 @@ public final class PlayerWithStatus {
 	public File insertNextCart() throws IOException {
 		attachedCartridge = determineNextImage(attachedCartridge, CART_FILE_FILTER);
 		if (attachedCartridge != null && CART_FILE_FILTER.accept(attachedCartridge)) {
-			player.insertCartridge(attachedCartridgeType, extract(attachedCartridge));
+			player.insertCartridge(attachedCartridgeType,
+					IOUtils.extract(player.getConfig().getSidplay2Section().getTmpDir(), attachedCartridge));
 		}
 		return attachedCartridge;
 	}
@@ -198,21 +197,6 @@ public final class PlayerWithStatus {
 			return filesList.stream().sorted().findFirst().orElse(imageFile);
 		}
 		return imageFile;
-	}
-
-	private File extract(File diskImage) throws IOException {
-		if (diskImage != null) {
-			TFile file = new TFile(diskImage);
-			if (file.isEntry()) {
-				File tmpDir = new File(player.getConfig().getSidplay2Section().getTmpDir(),
-						UUID.randomUUID().toString());
-				File tmpFile = new File(tmpDir, file.getName());
-				tmpDir.mkdirs();
-				TFile.cp_rp(file, tmpFile, TArchiveDetector.ALL);
-				return tmpFile;
-			}
-		}
-		return diskImage;
 	}
 
 	private void addPressSpaceListener() {

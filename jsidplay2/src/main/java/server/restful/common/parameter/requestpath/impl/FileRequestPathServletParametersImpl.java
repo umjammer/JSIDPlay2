@@ -33,7 +33,7 @@ import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 import ui.entities.config.SidPlay2Section;
 
-public abstract class FileRequestPathServletParametersImpl implements IFileRequestPathServletParameters {
+public abstract class FileRequestPathServletParametersImpl {
 
 	private static final String ASSEMBLY64_CSDB_REU_ID = "25";
 
@@ -139,4 +139,9 @@ public abstract class FileRequestPathServletParametersImpl implements IFileReque
 		}
 	}
 
+	public abstract String getFilePath();
+
+	public abstract String getItemId();
+
+	public abstract String getCategoryId();
 }

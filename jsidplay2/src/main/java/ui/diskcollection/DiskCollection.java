@@ -9,8 +9,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
-import java.util.zip.GZIPInputStream;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -28,7 +26,6 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.DirectoryChooser;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.IOUtils;
-import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import net.java.truevfs.access.TFileInputStream;
 import net.java.truevfs.access.TVFS;
@@ -122,7 +119,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 				File file = newValue.getValue();
 				showScreenshot(file);
 				try {
-					directory.loadPreview(extract(file));
+					directory.loadPreview(IOUtils.extract(util.getConfig().getSidplay2Section().getTmpDir(), file));
 				} catch (Exception e) {
 					System.err.println(String.format("Cannot insert media file '%s'.", file.getAbsolutePath()));
 				}
@@ -223,7 +220,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 	private void attachDisk() {
 		File file = fileBrowser.getSelectionModel().getSelectedItem().getValue();
 		try {
-			File extractedFile = extract(file);
+			File extractedFile = IOUtils.extract(util.getConfig().getSidplay2Section().getTmpDir(), file);
 			util.getPlayer().insertDisk(extractedFile);
 		} catch (IOException e) {
 			System.err.println(String.format("Cannot insert media file '%s'.", file.getAbsolutePath()));
@@ -266,7 +263,7 @@ public class DiskCollection extends C64VBox implements UIPart {
 
 	protected void attachAndRunDemo(File file, final String dirEntry) {
 		try {
-			File extractedFile = extract(file);
+			File extractedFile = IOUtils.extract(util.getConfig().getSidplay2Section().getTmpDir(), file);
 			if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".pdf")) {
 				DesktopUtil.open(extractedFile);
 			} else {
@@ -321,22 +318,6 @@ public class DiskCollection extends C64VBox implements UIPart {
 			}
 		}
 		return null;
-	}
-
-	private File extract(File file) throws IOException {
-		File tmpDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
-		tmpDir.mkdirs();
-		File dst;
-		if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
-			dst = new File(tmpDir, IOUtils.getFilenameWithoutSuffix(file.getName()));
-			try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
-				TFile.cp(is, dst);
-			}
-		} else {
-			dst = new File(tmpDir, file.getName());
-			TFile.cp(file, dst);
-		}
-		return dst;
 	}
 
 }

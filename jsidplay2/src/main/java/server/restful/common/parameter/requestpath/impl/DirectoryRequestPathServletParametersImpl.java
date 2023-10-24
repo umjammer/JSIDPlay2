@@ -23,7 +23,7 @@ import ui.common.comparator.FileComparator;
 import ui.common.filefilter.FilteredFileFilter;
 import ui.entities.config.SidPlay2Section;
 
-public abstract class DirectoryRequestPathServletParametersImpl implements IDirectoryRequestPathServletParameters {
+public abstract class DirectoryRequestPathServletParametersImpl {
 
 	public List<String> fetchDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
@@ -103,4 +103,7 @@ public abstract class DirectoryRequestPathServletParametersImpl implements IDire
 				.collect(Collectors.toList());
 	}
 
+	public abstract String getDirectoryPath();
+
+	public abstract String getFilter();	
 }

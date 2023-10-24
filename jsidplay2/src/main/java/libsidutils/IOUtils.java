@@ -26,8 +26,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
+
+import net.java.truevfs.access.TArchiveDetector;
+import net.java.truevfs.access.TFile;
 
 /**
  * This class provides general IO utility functions.
@@ -277,4 +282,26 @@ public class IOUtils {
 		return nRead;
 	}
 
+	public static File extract(File baseDir, File inputfile) throws IOException {
+		if (inputfile != null) {
+			TFile file = new TFile(inputfile);
+			if (file.isEntry()) {
+				File tmpDir = new File(baseDir, UUID.randomUUID().toString());
+				tmpDir.mkdirs();
+
+				File tmpFile;
+				if (inputfile.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
+					tmpFile = new File(tmpDir, getFilenameWithoutSuffix(inputfile.getName()));
+					try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(inputfile))) {
+						TFile.cp(is, tmpFile);
+					}
+				} else {
+					tmpFile = new File(tmpDir, inputfile.getName());
+					TFile.cp_rp(inputfile, tmpFile, TArchiveDetector.ALL);
+				}
+				return tmpFile;
+			}
+		}
+		return inputfile;
+	}
 }

@@ -1,6 +1,5 @@
 package server.restful.servlets;
 
-import static libsidutils.ZipFileUtils.newFileInputStream;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
@@ -9,13 +8,11 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.beust.jcommander.Parameters;
 
@@ -87,20 +84,10 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 	}
 
 	private Directory createDiskDirectory(final File file) throws IOException, FileNotFoundException {
-		File extractedFile = extract(file);
+		File extractedFile = IOUtils.extract(configuration.getSidplay2Section().getTmpDir(), file);
 		Directory directory = new DiskDirectory(extractedFile);
 		IOUtils.deleteDirectory(extractedFile.getParentFile());
 		return directory;
-	}
-
-	protected File extract(final File file) throws IOException, FileNotFoundException {
-		File targetDir = new File(configuration.getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
-		File targetFile = new File(targetDir, file.getName());
-		targetDir.mkdirs();
-		try (FileOutputStream out = new FileOutputStream(targetFile)) {
-			IOUtils.copy(newFileInputStream(file), out);
-		}
-		return targetFile;
 	}
 
 }
