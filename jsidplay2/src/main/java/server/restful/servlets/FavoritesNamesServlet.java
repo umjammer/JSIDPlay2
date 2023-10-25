@@ -25,7 +25,7 @@ import server.restful.common.filters.RequestLogFilter;
 import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "FavoritesNamesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/favorites_names")
+@WebServlet(name = "FavoritesNamesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/favorite_names")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 

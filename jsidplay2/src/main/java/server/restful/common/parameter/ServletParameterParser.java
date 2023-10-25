@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -32,6 +33,8 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ServletParameterParser {
 
+	private final static List<String> VALUE_ABSENT = asList("null", "undefined");
+
 	private final JCommander commander;
 	private final ServletUsageFormatter usageFormatter;
 
@@ -51,7 +54,7 @@ public class ServletParameterParser {
 
 	public ServletParameterParser(HttpServletRequest request, HttpServletResponse response, Object parameterObject,
 			WebServlet webServlet, boolean acceptUnknownOptions) throws IOException {
-		commander = JCommander.newBuilder().addObject(parameterObject).programName(webServlet.urlPatterns()[0])
+		commander = JCommander.newBuilder().addObject(parameterObject).programName(createProgramName(webServlet))
 				.columnSize(Integer.MAX_VALUE)
 				.console(new PrintStreamConsole(
 						new PrintStream(response.getOutputStream(), true, StandardCharsets.UTF_8.toString())))
@@ -81,10 +84,15 @@ public class ServletParameterParser {
 		return concat(
 				Collections.list(request.getParameterNames()).stream()
 						.flatMap(name -> asList(request.getParameterValues(name)).stream()
-								.filter(v -> !"null".equals(v) && !"undefined".equals(v))
+								.filter(v -> VALUE_ABSENT.stream().noneMatch(v::equals))
 								.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
 						.flatMap(Function.identity()),
 				ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
+	}
+
+	private String createProgramName(WebServlet webServlet) {
+		return asList(webServlet.urlPatterns()).stream().findFirst().map(str -> str.replaceAll("/[*]$", ""))
+				.orElse("/???");
 	}
 
 }

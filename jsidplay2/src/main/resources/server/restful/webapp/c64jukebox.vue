@@ -4270,7 +4270,7 @@
             this.loadingPl = true; //the loading begin
             axios({
               method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/favorites_names",
+              url: "/jsidplay2service/JSIDPlay2REST/favorite_names",
               auth: {
                 username: this.username,
                 password: this.password,
