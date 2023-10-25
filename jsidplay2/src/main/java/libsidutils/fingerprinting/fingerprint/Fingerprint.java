@@ -64,7 +64,7 @@ import libsidutils.fingerprinting.spectrogram.Window;
  */
 public class Fingerprint {
 
-	static final float SAMPLE_RATE = 8000;
+	private static final float SAMPLE_RATE = 8000;
 
 	private int dataLen;
 	private int nPeaks, fftSize, overlap, c, peakRange;
