@@ -58,7 +58,8 @@ public class AudioUtils {
 			ByteBuffer monoBuffer = ByteBuffer.allocate(bytes.length >> 1).order(ByteOrder.LITTLE_ENDIAN);
 			ShortBuffer monoSamples = monoBuffer.asShortBuffer();
 			while (stereoSamples.hasRemaining()) {
-				monoSamples.put((short) ((stereoSamples.get() + stereoSamples.get()) / 2));
+				int val = (stereoSamples.get() + stereoSamples.get()) / 2;
+				monoSamples.put((short) Math.max(Math.min(val, Short.MAX_VALUE), Short.MIN_VALUE));
 			}
 			bytes = monoBuffer.array();
 		} else if (stream.getFormat().getChannels() != 1) {
