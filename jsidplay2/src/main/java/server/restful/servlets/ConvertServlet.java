@@ -83,6 +83,7 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.converter.WebResourceConverter;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
 import server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter;
 import server.restful.common.filters.RTMPBasedRateLimiterFilter;
@@ -361,8 +362,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
 
 					Map<String, String> replacements = createReplacements(servletParameters, request, file, uuid);
-					try (InputStream is = ConvertServlet.class
-							.getResourceAsStream("/server/restful/webapp/convert.html")) {
+					try (InputStream is = new WebResourceConverter("<internal>").convert("/convert.html")) {
 						setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 					}
 				} else {

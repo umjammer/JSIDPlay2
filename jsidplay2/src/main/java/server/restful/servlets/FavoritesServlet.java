@@ -123,7 +123,7 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	private String getSpecialFavorites(final Integer favoritesNumber) throws JsonProcessingException, IOException {
 		String resource = String.format("/favorites/jsidplay2-%d.json",
 				(favoritesNumber - configuration.getFavorites().size()));
-		try (InputStream source = new WebResourceConverter("favoritesNumber").convert(resource)) {
+		try (InputStream source = new WebResourceConverter("<internal>").convert(resource)) {
 			return IOUtils.convertStreamToString(source, "UTF-8");
 		}
 	}
