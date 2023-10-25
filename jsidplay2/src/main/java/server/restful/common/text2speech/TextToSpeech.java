@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import libsidplay.common.SamplingRate;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.ISidPlay2Section;
 import libsidutils.AudioUtils;
@@ -31,13 +30,12 @@ public class TextToSpeech implements Consumer<Player> {
 
 	@Override
 	public void accept(Player player) {
+		File wavFile = null;
 		try {
 			ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
 			IAudioSection audioSection = player.getConfig().getAudioSection();
-			SamplingRate sampleRate = audioSection.getSamplingRate();
 
-			File wavFile = File.createTempFile("text2speech", ".wav", sidplay2Section.getTmpDir());
-			wavFile.deleteOnExit();
+			wavFile = File.createTempFile("text2speech", ".wav", sidplay2Section.getTmpDir());
 
 			String[] processArguments = textToSpeechType.getProcessArgumentsFunction().apply(player.getTune().getInfo(),
 					wavFile.getAbsolutePath());
@@ -49,8 +47,10 @@ public class TextToSpeech implements Consumer<Player> {
 			if (waitFlag == 0) {
 				int returnVal = process.exitValue();
 				if (returnVal == 0) {
+
 					try (InputStream is = new FileInputStream(wavFile)) {
-						short[] samples = new AudioUtils().convertToMonoAndRate(is, Integer.MAX_VALUE, sampleRate);
+						short[] samples = new AudioUtils().convertToMonoAndRate(is, Integer.MAX_VALUE,
+								audioSection.getSamplingRate());
 						for (short sample : samples) {
 							player.getAudioDriver().buffer().putShort(sample);
 							if (!player.getAudioDriver().buffer().putShort(sample).hasRemaining()) {
@@ -63,11 +63,14 @@ public class TextToSpeech implements Consumer<Player> {
 					}
 				}
 			}
-			wavFile.delete();
 		} catch (IOException | InterruptedException e) {
 			System.err.println(
 					"Error during Text2Speech! Install or deactivate it!? (apt-get install espeak or sudo apt install libttspico-utils)\n"
 							+ e.getMessage());
+		} finally {
+			if (wavFile != null) {
+				wavFile.delete();
+			}
 		}
 	}
 
