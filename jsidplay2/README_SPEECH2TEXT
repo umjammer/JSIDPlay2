@@ -1,6 +1,7 @@
 Ubuntu 22;
 ==========
 dpkg-architecture | grep DEB_BUILD_ARCH=
+Download: https://github.com/synesthesiam/voice2json/releases/download/v2.1/voice2json_2.1_amd64.deb
 sudo apt install ./Downloads/voice2json_2.1_amd64.deb 
 
 wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
