@@ -54,11 +54,10 @@ public class AudioUtils {
 
 		// 1. stereo to mono conversion
 		if (stream.getFormat().getChannels() == 2) {
-			ShortBuffer stereoSamples = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
+			ByteBuffer stereoBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
 			ByteBuffer monoBuffer = ByteBuffer.allocate(bytes.length >> 1).order(ByteOrder.LITTLE_ENDIAN);
-			ShortBuffer monoSamples = monoBuffer.asShortBuffer();
-			while (stereoSamples.hasRemaining()) {
-				monoSamples.put((short) ((stereoSamples.get() + stereoSamples.get()) / 2));
+			while (stereoBuffer.hasRemaining()) {
+				monoBuffer.putShort((short) ((stereoBuffer.getShort() + stereoBuffer.getShort()) >> 1));
 			}
 			bytes = monoBuffer.array();
 		} else if (stream.getFormat().getChannels() != 1) {
@@ -76,41 +75,42 @@ public class AudioUtils {
 
 		// 3. down sampling to target frequency
 		if (srcSampleRate > targetSampleRate) {
+			ByteBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+			ByteBuffer resampledBuffer = ByteBuffer.allocateDirect(factor * bytes.length)
+					.order(ByteOrder.LITTLE_ENDIAN);
+
 			Resampler downSampler = Resampler.createResampler(srcSampleRate, SamplingMethod.RESAMPLE, targetSampleRate,
 					sampleRate.getMiddleFrequency());
 
-			ByteBuffer result = ByteBuffer.allocateDirect(factor * bytes.length).order(ByteOrder.LITTLE_ENDIAN);
-			ShortBuffer sb = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-			while (sb.hasRemaining()) {
-				short val = sb.get();
+			while (sourceBuffer.hasRemaining()) {
+				short val = sourceBuffer.getShort();
 
 				for (int i = 0; i < factor; i++) {
-					int downSamplerDither = triangularDithering();
+					int dither = triangularDithering();
 					if (downSampler.input(val)) {
-						if (!result.putShort(
-								(short) Math.max(Math.min(downSampler.output() + downSamplerDither, Short.MAX_VALUE),
-										Short.MIN_VALUE))
+						if (!resampledBuffer.putShort((short) Math
+								.max(Math.min(downSampler.output() + dither, Short.MAX_VALUE), Short.MIN_VALUE))
 								.hasRemaining()) {
-							((Buffer) result).flip();
+							((Buffer) resampledBuffer).flip();
 						}
 					}
 				}
 			}
-			bytes = new byte[result.position()];
-			((Buffer) result).rewind();
-			result.get(bytes);
+			bytes = new byte[resampledBuffer.position()];
+			((Buffer) resampledBuffer).rewind();
+			resampledBuffer.get(bytes);
 			factor = 1;
 		}
-		ShortBuffer sb = java.nio.ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-		ShortBuffer result = ShortBuffer.allocate(sb.capacity() * factor);
-		while (sb.hasRemaining()) {
-			short val = sb.get();
+		ByteBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+		ShortBuffer resultBuffer = ShortBuffer.allocate(sourceBuffer.capacity() * factor);
+		while (sourceBuffer.hasRemaining()) {
+			short val = sourceBuffer.getShort();
 
 			for (int i = 0; i < factor; i++) {
-				result.put(val);
+				resultBuffer.put(val);
 			}
 		}
-		return result.array();
+		return resultBuffer.array();
 	}
 
 	private int triangularDithering() {
