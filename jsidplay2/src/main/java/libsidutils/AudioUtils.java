@@ -67,10 +67,10 @@ public class AudioUtils {
 
 		// 2. Sample Frequencies lower than target frequency? Duplicate samples.
 		int factor = 1;
-		int srcSampleRate = (int) stream.getFormat().getSampleRate();
+		float srcSampleRate = stream.getFormat().getSampleRate();
 		int targetSampleRate = sampleRate.getFrequency();
 		while (srcSampleRate < targetSampleRate) {
-			srcSampleRate <<= 1;
+			srcSampleRate *= 2;
 			factor <<= 1;
 		}
 
