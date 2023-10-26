@@ -79,7 +79,7 @@ public class AudioUtils {
 			Resampler downSampler = Resampler.createResampler(srcSampleRate, SamplingMethod.RESAMPLE, targetSampleRate,
 					sampleRate.getMiddleFrequency());
 
-			ByteBuffer result = ByteBuffer.allocate(factor * bytes.length).order(ByteOrder.LITTLE_ENDIAN);
+			ByteBuffer result = ByteBuffer.allocateDirect(factor * bytes.length).order(ByteOrder.LITTLE_ENDIAN);
 			ShortBuffer sb = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
 			while (sb.hasRemaining()) {
 				short val = sb.get();
