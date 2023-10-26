@@ -76,8 +76,8 @@ public class Fingerprint {
 	private final ArrayList<Link> linkList = new ArrayList<>();
 	private final float[] freq, time;
 
-	public Fingerprint(IFingerprintConfig config, float[] data) {
-		dataLen = data.length;
+	public Fingerprint(IFingerprintConfig config, short[] samples) {
+		dataLen = samples.length;
 		IFingerprintSection fingerPrintSection = config.getFingerPrintSection();
 		nPeaks = fingerPrintSection.getNPeaks();
 		fftSize = fingerPrintSection.getFftSize();
@@ -91,7 +91,7 @@ public class Fingerprint {
 		maxFreq = fingerPrintSection.getMaxFreq();
 		minPower = fingerPrintSection.getMinPower();
 
-		Spectrogram spectrogram = new Spectrogram(data, Window.HANN, fftSize, overlap, SAMPLE_RATE);
+		Spectrogram spectrogram = new Spectrogram(samples, Window.HANN, fftSize, overlap, SAMPLE_RATE);
 		ArrayList<float[]> stft = spectrogram.stft;
 		freq = spectrogram.freq;
 		time = spectrogram.time;

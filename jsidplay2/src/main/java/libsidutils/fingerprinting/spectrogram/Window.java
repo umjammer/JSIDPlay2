@@ -24,14 +24,15 @@ public class Window {
 		}
 	}
 
-	public float[] window(float[] data, int pos) {
+	public float[] window(short[] data, int pos) {
 		int size = windowSize;
 		if (pos + size > data.length) {
 			size = data.length - pos;
 		}
 		float[] win = new float[windowSize];
-		System.arraycopy(data, pos, win, 0, size);
-
+		for (int i = 0; i < size; i++) {
+			win[pos] = data[pos + i] / 32768f;
+		}
 		for (int i = 0; i < win.length; i++) {
 			win[i] = win[i] * window[i];
 		}

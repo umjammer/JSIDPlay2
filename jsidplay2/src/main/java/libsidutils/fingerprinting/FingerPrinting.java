@@ -1,9 +1,14 @@
 package libsidutils.fingerprinting;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import libsidplay.common.SamplingRate;
+import libsidutils.AudioUtils;
 import libsidutils.fingerprinting.fingerprint.Fingerprint;
-import libsidutils.fingerprinting.fingerprint.FingerprintCreator;
 import libsidutils.fingerprinting.ini.IFingerprintConfig;
 import libsidutils.fingerprinting.model.SongMatch;
 import libsidutils.fingerprinting.rest.FingerPrintingDataSource;
@@ -16,6 +21,8 @@ import libsidutils.fingerprinting.rest.beans.WAVBean;
 public class FingerPrinting implements IFingerprintMatcher, IFingerprintInserter {
 
 	private static final int MIN_HIT = 15;
+
+	private AudioUtils audioUtils = new AudioUtils();
 
 	private IFingerprintConfig config;
 
@@ -31,11 +38,18 @@ public class FingerPrinting implements IFingerprintMatcher, IFingerprintInserter
 		if (wavBean != null && wavBean.getWav().length > 0) {
 
 			if (!fingerPrintingDataSource.tuneExists(musicInfoBean)) {
-				Fingerprint fingerprint = new FingerprintCreator().createFingerprint(config, wavBean);
-				musicInfoBean.setAudioLength(fingerprint.getAudioLength());
 
-				IdBean id = fingerPrintingDataSource.insertTune(musicInfoBean);
-				fingerPrintingDataSource.insertHashes(fingerprint.toHashBeans(id));
+				try (InputStream is = new ByteArrayInputStream(wavBean.getWav())) {
+					Fingerprint fingerprint = new Fingerprint(config,
+							audioUtils.convertToMonoAndRate(is, wavBean.getFrameMaxLength(), SamplingRate.VERY_LOW));
+
+					musicInfoBean.setAudioLength(fingerprint.getAudioLength());
+
+					IdBean id = fingerPrintingDataSource.insertTune(musicInfoBean);
+					fingerPrintingDataSource.insertHashes(fingerprint.toHashBeans(id));
+				} catch (UnsupportedAudioFileException e) {
+					throw new IOException(e);
+				}
 			}
 		}
 	}
@@ -43,28 +57,34 @@ public class FingerPrinting implements IFingerprintMatcher, IFingerprintInserter
 	@Override
 	public MusicInfoWithConfidenceBean match(WAVBean wavBean) throws IOException {
 		if (wavBean != null && wavBean.getWav().length > 0) {
-			Fingerprint fingerprint = new FingerprintCreator().createFingerprint(config, wavBean);
 
-			Index index = new Index();
-			index.setFingerPrintingClient(fingerPrintingDataSource);
-			SongMatch songMatch = index.search(fingerprint, MIN_HIT);
+			try (InputStream is = new ByteArrayInputStream(wavBean.getWav())) {
+				Fingerprint fingerprint = new Fingerprint(config,
+						audioUtils.convertToMonoAndRate(is, wavBean.getFrameMaxLength(), SamplingRate.VERY_LOW));
 
-			if (songMatch != null && songMatch.getIdSong() != -1) {
-				SongNoBean songNoBean = new SongNoBean();
-				songNoBean.setSongNo(songMatch.getIdSong());
-				MusicInfoBean musicInfoBean = fingerPrintingDataSource.findTune(songNoBean);
+				Index index = new Index();
+				index.setFingerPrintingClient(fingerPrintingDataSource);
+				SongMatch songMatch = index.search(fingerprint, MIN_HIT);
 
-				if (musicInfoBean != null) {
-					MusicInfoWithConfidenceBean result = new MusicInfoWithConfidenceBean();
-					result.setMusicInfo(musicInfoBean);
-					result.setConfidence(songMatch.getCount());
-					result.setRelativeConfidence(
-							((double) songMatch.getCount() / fingerprint.getLinkList().size()) * 100);
-					result.setOffset(songMatch.getTime());
-					result.setOffsetSeconds(songMatch.getTime() * 0.03225806451612903);
+				if (songMatch != null && songMatch.getIdSong() != -1) {
+					SongNoBean songNoBean = new SongNoBean();
+					songNoBean.setSongNo(songMatch.getIdSong());
+					MusicInfoBean musicInfoBean = fingerPrintingDataSource.findTune(songNoBean);
 
-					return result;
+					if (musicInfoBean != null) {
+						MusicInfoWithConfidenceBean result = new MusicInfoWithConfidenceBean();
+						result.setMusicInfo(musicInfoBean);
+						result.setConfidence(songMatch.getCount());
+						result.setRelativeConfidence(
+								((double) songMatch.getCount() / fingerprint.getLinkList().size()) * 100);
+						result.setOffset(songMatch.getTime());
+						result.setOffsetSeconds(songMatch.getTime() * 0.03225806451612903);
+
+						return result;
+					}
 				}
+			} catch (UnsupportedAudioFileException e) {
+				throw new IOException(e);
 			}
 		}
 		return null;
