@@ -31,7 +31,7 @@ public class Window {
 		}
 		float[] win = new float[windowSize];
 		for (int i = 0; i < size; i++) {
-			win[pos] = data[pos + i] / 32768f;
+			win[i] = data[pos + i] / 32768f;
 		}
 		for (int i = 0; i < win.length; i++) {
 			win[i] = win[i] * window[i];
