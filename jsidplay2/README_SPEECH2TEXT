@@ -1,0 +1,24 @@
+Ubuntu 22;
+==========
+dpkg-architecture | grep DEB_BUILD_ARCH=
+sudo apt install ./Downloads/voice2json_2.1_amd64.deb 
+
+wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+  
+Download https://ftp.uni-hannover.de/ubuntu/pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb
+sudo apt install ./Downloads/libffi6_3.2.1-8_amd64.deb
+
+Download https://github.com/synesthesiam/voice2json-profiles
+English	en-us	kaldi
+
+entpacken nach /home/ken/.config/voice2json/
+(flach ohne Unterordner)
+
+Sprach samples zum Testen:
+https://www.signalogic.com/index.pl?page=speech_codec_wav_samples
+
+Optional: Mit Audacity nach 16KHz upscalen:
+
+Aufruf:
+voice2json transcribe-wav --open < test.wav
