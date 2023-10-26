@@ -1,35 +1,36 @@
 package server.restful.common.text2speech;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import libsidplay.sidtune.SidTuneInfo;
+import libsidplay.sidtune.SidTune;
 import net.gcardone.junidecode.Junidecode;
 
 public enum TextToSpeechType {
 	NONE(TextToSpeechType::createNoArgumentsFunction), PICO2WAVE(TextToSpeechType::createPico2WaveArgumentsFunction),
 	ESPEAK(TextToSpeechType::createEspeakArgumentsFunction);
 
-	private BiFunction<SidTuneInfo, String, String[]> processArgumentsFunction;
+	private BiFunction<SidTune, File, String[]> processArgumentsFunction;
 
-	private TextToSpeechType(BiFunction<SidTuneInfo, String, String[]> processArgumentsFunction) {
+	private TextToSpeechType(BiFunction<SidTune, File, String[]> processArgumentsFunction) {
 		this.processArgumentsFunction = processArgumentsFunction;
 	}
 
-	public BiFunction<SidTuneInfo, String, String[]> getProcessArgumentsFunction() {
+	public BiFunction<SidTune, File, String[]> getProcessArgumentsFunction() {
 		return processArgumentsFunction;
 	}
 
-	private static String[] createNoArgumentsFunction(SidTuneInfo info, String wavFile) {
+	private static String[] createNoArgumentsFunction(SidTune tune, File wavFile) {
 		return new String[0];
 	}
 
-	private static String[] createPico2WaveArgumentsFunction(SidTuneInfo info, String wavFile) {
+	private static String[] createPico2WaveArgumentsFunction(SidTune tune, File wavFile) {
 		String title = null, author = null, released = null;
-		Iterator<String> it = info.getInfoString().iterator();
+		Iterator<String> it = tune.getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
 			title = next.isEmpty() ? "Unknown Title" : next;
@@ -53,12 +54,12 @@ public enum TextToSpeechType {
 						+ replaceSpecials(replaceUnknownDecade(replaceUnknownDate(replaceDateRange(released)))) + "</s>"
 						: "")
 				+ "  </p>" + "</pitch></volume>";
-		return new String[] { "pico2wave", "-l", "en-US", "-w=" + wavFile, text };
+		return new String[] { "pico2wave", "-l", "en-US", "-w=" + wavFile.getAbsolutePath(), text };
 	}
 
-	private static String[] createEspeakArgumentsFunction(SidTuneInfo info, String wavFile) {
+	private static String[] createEspeakArgumentsFunction(SidTune tune, File wavFile) {
 		String title = null, author = null, released = null;
-		Iterator<String> it = info.getInfoString().iterator();
+		Iterator<String> it = tune.getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
 			title = next.isEmpty() ? "Unknown Title" : next;
@@ -82,11 +83,11 @@ public enum TextToSpeechType {
 						+ toLower(replaceSpecials(replaceUnknownDecade(replaceUnknownDate(replaceDateRange(released)))))
 						+ "</s>" : "")
 				+ "  </p>" + "<voice>" + "</speak>";
-		return new String[] { "espeak", ssml, "-m", "-w", wavFile };
+		return new String[] { "espeak", ssml, "-m", "-w", wavFile.getAbsolutePath() };
 	}
 
 	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\()-]", "<break time=\"250ms\"/>");
+		return Junidecode.unidecode(string).replaceAll("[/\\\\()-_]", "<break time=\"250ms\"/>");
 	}
 
 	private static String toLower(String string) {

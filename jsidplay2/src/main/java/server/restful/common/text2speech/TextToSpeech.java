@@ -39,8 +39,7 @@ public class TextToSpeech implements Consumer<Player> {
 
 			wavFile = File.createTempFile("text2speech", ".wav", sidplay2Section.getTmpDir());
 
-			String[] processArguments = textToSpeechType.getProcessArgumentsFunction().apply(player.getTune().getInfo(),
-					wavFile.getAbsolutePath());
+			String[] processArguments = textToSpeechType.getProcessArgumentsFunction().apply(player.getTune(), wavFile);
 			if (LOG.isLoggable(Level.FINE)) {
 				LOG.fine(Arrays.asList(processArguments).stream().collect(Collectors.joining(" ")));
 			}
@@ -51,7 +50,7 @@ public class TextToSpeech implements Consumer<Player> {
 				if (returnVal == 0) {
 
 					try (InputStream is = new FileInputStream(wavFile)) {
-						short[] samples = audioUtils.convertToMonoAndRate(is, Integer.MAX_VALUE,
+						short[] samples = audioUtils.convertToMonoWithSampleRate(is, Integer.MAX_VALUE,
 								audioSection.getSamplingRate());
 						for (short sample : samples) {
 							player.getAudioDriver().buffer().putShort(sample);

@@ -25,7 +25,7 @@ public class AudioUtils {
 	private final Random RANDOM = new Random();
 	private int oldRandomValue;
 
-	public short[] convertToMonoAndRate(InputStream is, long frameMaxLength, SamplingRate sampleRate)
+	public short[] convertToMonoWithSampleRate(InputStream is, long frameMaxLength, SamplingRate sampleRate)
 			throws IOException, UnsupportedAudioFileException {
 		AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
 		if (stream.getFormat().getSampleSizeInBits() != Short.SIZE) {
