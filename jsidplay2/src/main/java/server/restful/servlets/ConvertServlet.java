@@ -362,7 +362,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
 
 					Map<String, String> replacements = createReplacements(servletParameters, request, file, uuid);
-					try (InputStream is = new WebResourceConverter("<internal>").convert("/convert.html")) {
+					try (InputStream is = new WebResourceConverter("<ServletPath>").convert("/convert.html")) {
 						setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
 					}
 				} else {
