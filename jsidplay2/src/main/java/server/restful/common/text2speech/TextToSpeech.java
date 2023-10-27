@@ -22,8 +22,6 @@ public class TextToSpeech implements Consumer<Player> {
 
 	private static final Logger LOG = Logger.getLogger(TextToSpeech.class.getName());
 
-	private AudioUtils audioUtils = new AudioUtils();
-
 	private TextToSpeechType textToSpeechType;
 
 	public TextToSpeech(TextToSpeechType textToSpeechType) {
@@ -50,7 +48,7 @@ public class TextToSpeech implements Consumer<Player> {
 				if (returnVal == 0) {
 
 					try (InputStream is = new FileInputStream(wavFile)) {
-						short[] samples = audioUtils.convertToMonoWithSampleRate(is, Integer.MAX_VALUE,
+						short[] samples = AudioUtils.convertToMonoWithSampleRate(is, Integer.MAX_VALUE,
 								audioSection.getSamplingRate());
 						for (short sample : samples) {
 							player.getAudioDriver().buffer().putShort(sample);

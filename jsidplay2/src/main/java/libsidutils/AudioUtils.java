@@ -22,10 +22,38 @@ import libsidplay.common.SamplingRate;
 
 public class AudioUtils {
 
-	private final Random RANDOM = new Random();
-	private int oldRandomValue;
+	private static class ResamplingState {
+		private final Random RANDOM = new Random();
+		private int oldRandomValue;
 
-	public short[] convertToMonoWithSampleRate(InputStream is, long frameMaxLength, SamplingRate sampleRate)
+		private int triangularDithering() {
+			int prevValue = oldRandomValue;
+			oldRandomValue = RANDOM.nextInt() & 0x1;
+			return oldRandomValue - prevValue;
+		}
+
+	}
+
+	/**
+	 * Convert an audio input stream into mono using the target sample rate. Sample
+	 * size must be 16-bit signed and little-endian.
+	 * 
+	 * <OL>
+	 * <LI>Stereo is converted to mono.
+	 * <LI>If the audio does not match the target sample rate, resampling takes
+	 * place (downward or upward). Upward resampling is just a simple duplication of
+	 * sample data.
+	 * </OL>
+	 * 
+	 * @param is             audio input stream
+	 * @param maxFrameLength maximum number of sample frames to use (rest of the
+	 *                       available audio input samples are discarded)
+	 * @param sampleRate     target sample rate
+	 * @return samples in the resulting format
+	 * @throws IOException                   I/O error
+	 * @throws UnsupportedAudioFileException audio input format not supported
+	 */
+	public static short[] convertToMonoWithSampleRate(InputStream is, long maxFrameLength, SamplingRate sampleRate)
 			throws IOException, UnsupportedAudioFileException {
 		AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
 		if (stream.getFormat().getSampleSizeInBits() != Short.SIZE) {
@@ -37,7 +65,7 @@ public class AudioUtils {
 		if (stream.getFormat().isBigEndian()) {
 			throw new IOException("LittleEndian expected");
 		}
-		byte[] bytes = new byte[(int) (Math.min(stream.getFrameLength(), frameMaxLength)
+		byte[] bytes = new byte[(int) (Math.min(stream.getFrameLength(), maxFrameLength)
 				* stream.getFormat().getChannels() * Short.BYTES)];
 
 		int read = readNBytes(stream, bytes, 0, bytes.length);
@@ -46,8 +74,8 @@ public class AudioUtils {
 		}
 
 		// remove wasted audio (exceeding frameMaxLength)
-		if (stream.getFrameLength() > frameMaxLength) {
-			int length = (int) ((stream.getFrameLength() - frameMaxLength) * stream.getFormat().getChannels()
+		if (stream.getFrameLength() > maxFrameLength) {
+			int length = (int) ((stream.getFrameLength() - maxFrameLength) * stream.getFormat().getChannels()
 					* Short.BYTES);
 			readNBytes(stream, new byte[length], 0, length);
 		}
@@ -79,6 +107,7 @@ public class AudioUtils {
 			ByteBuffer resampledBuffer = ByteBuffer.allocateDirect(factor * bytes.length)
 					.order(ByteOrder.LITTLE_ENDIAN);
 
+			ResamplingState resamplingState = new ResamplingState();
 			Resampler downSampler = Resampler.createResampler(srcSampleRate, SamplingMethod.RESAMPLE, targetSampleRate,
 					sampleRate.getMiddleFrequency());
 
@@ -86,7 +115,7 @@ public class AudioUtils {
 				short val = sourceBuffer.getShort();
 
 				for (int i = 0; i < factor; i++) {
-					int dither = triangularDithering();
+					int dither = resamplingState.triangularDithering();
 					if (downSampler.input(val)) {
 						if (!resampledBuffer.putShort((short) Math
 								.max(Math.min(downSampler.output() + dither, Short.MAX_VALUE), Short.MIN_VALUE))
@@ -111,12 +140,6 @@ public class AudioUtils {
 			}
 		}
 		return resultBuffer.array();
-	}
-
-	private int triangularDithering() {
-		int prevValue = oldRandomValue;
-		oldRandomValue = RANDOM.nextInt() & 0x1;
-		return oldRandomValue - prevValue;
 	}
 
 }
