@@ -175,7 +175,7 @@ public enum TextToSpeechType {
 	}
 
 	private static String replaceDateRange(String string) {
-		Pattern pattern = Pattern.compile("([0-9]{4})-([0-9]{2})(.*)");
+		Pattern pattern = Pattern.compile("([0-9]{4})-([0-9]{2})(?!-)(.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
 			return matcher.group(1) + " to " + matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
