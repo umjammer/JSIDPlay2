@@ -87,7 +87,7 @@ public enum TextToSpeechType {
 	}
 
 	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\()-]", "<break time=\"250ms\"/>");
+		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>");
 	}
 
 	private static String toLower(String string) {
