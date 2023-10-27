@@ -61,6 +61,8 @@ public class TextToSpeech implements Consumer<Player> {
 						throw new IOException(e);
 					}
 				}
+			} else {
+				throw new IOException("Process failed with exit code: " + waitFlag);
 			}
 		} catch (IOException | InterruptedException e) {
 			System.err.println(
