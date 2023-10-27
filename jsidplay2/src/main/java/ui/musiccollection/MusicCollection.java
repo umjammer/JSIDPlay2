@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -71,7 +70,6 @@ import libsidutils.psid64.Psid64;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import net.java.truevfs.access.TFile;
-import net.java.truevfs.access.TFileInputStream;
 import net.java.truevfs.access.TVFS;
 import net.java.truevfs.kernel.spec.FsSyncException;
 import sidplay.Player;
@@ -544,7 +542,7 @@ public class MusicCollection extends C64VBox implements UIPart {
 
 					if (getType() == MusicCollectionType.HVSC) {
 						util.getPlayer().setSidDatabase(new SidDatabase(theRootFile));
-						setSTIL(theRootFile);
+						util.getPlayer().setSTIL(new STIL(theRootFile));
 						sidPlay2Section.setHvsc(theRootFile);
 						setViewRoot(sidPlay2Section.getHvsc());
 					} else if (getType() == MusicCollectionType.CGSC) {
@@ -593,12 +591,6 @@ public class MusicCollection extends C64VBox implements UIPart {
 			collectionDir.setText(theRootFile.getAbsolutePath());
 			doResetSearch();
 		});
-	}
-
-	private void setSTIL(File rootFile) throws IOException, NoSuchFieldException, IllegalAccessException {
-		try (InputStream input = new TFileInputStream(new TFile(rootFile, STIL.STIL_FILE))) {
-			util.getPlayer().setSTIL(new STIL(input));
-		}
 	}
 
 	private void startSearch(boolean forceRecreate) {

@@ -13,7 +13,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -37,7 +36,6 @@ import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
-import net.java.truevfs.access.TFileInputStream;
 import net.java.truevfs.access.TVFS;
 import server.restful.common.parameter.ServletParameterHelper;
 import sidplay.Player;
@@ -280,8 +278,8 @@ public class OnlineContent {
 	}
 
 	private void setSTIL(Player player, File zipFile) throws NoSuchFieldException, IllegalAccessException {
-		try (InputStream input = new TFileInputStream(new TFile(zipFile, STIL.STIL_FILE))) {
-			player.setSTIL(new STIL(input));
+		try {
+			player.setSTIL(new STIL(zipFile));
 		} catch (IOException e) {
 			System.err.println("WARNING: STIL can not be read: " + e.getMessage());
 		}

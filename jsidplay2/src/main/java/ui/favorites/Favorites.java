@@ -8,7 +8,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,8 +31,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import libsidutils.IOUtils;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
-import net.java.truevfs.access.TFile;
-import net.java.truevfs.access.TFileInputStream;
 import sidplay.Player;
 import sidplay.player.State;
 import ui.common.C64VBox;
@@ -361,8 +358,8 @@ public class Favorites extends C64VBox implements UIPart {
 	}
 
 	private void setSTIL(File hvscRoot) {
-		try (InputStream input = new TFileInputStream(new TFile(hvscRoot, STIL.STIL_FILE))) {
-			util.getPlayer().setSTIL(new STIL(input));
+		try {
+			util.getPlayer().setSTIL(new STIL(hvscRoot));
 		} catch (FileNotFoundException e) {
 			System.err.println(String.format(util.getBundle().getString("ERR_FILE_NOT_FOUND"), e.getMessage()));
 		} catch (NoSuchFieldException | IllegalAccessException | IOException e) {

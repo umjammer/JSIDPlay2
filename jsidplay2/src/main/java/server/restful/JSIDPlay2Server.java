@@ -63,8 +63,6 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebServlet;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
-import net.java.truevfs.access.TFile;
-import net.java.truevfs.access.TFileInputStream;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.PlayerCleanupTimerTask;
@@ -270,11 +268,7 @@ public final class JSIDPlay2Server {
 		if (hvsc != null) {
 			try {
 				result.sidDatabase = new SidDatabase(hvsc);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try (InputStream input = new TFileInputStream(new TFile(hvsc, STIL.STIL_FILE))) {
-				result.stil = new STIL(input);
+				result.stil = new STIL(hvsc);
 			} catch (IOException | NoSuchFieldException | IllegalAccessException e) {
 				e.printStackTrace();
 			}

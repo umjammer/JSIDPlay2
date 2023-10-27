@@ -1,6 +1,7 @@
 package libsidutils.stil;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,9 +12,16 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class STIL {
-	public static final String STIL_FILE = "DOCUMENTS/STIL.txt";
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import libsidutils.ZipFileUtils;
+
+@JsonInclude(value = Include.NON_EMPTY)
+public class STIL {
+	private static final String STIL_FILE = "DOCUMENTS/STIL.txt";
+
+	@JsonInclude(value = Include.NON_EMPTY)
 	public static class Info {
 		public String name;
 		public String author;
@@ -27,6 +35,7 @@ public class STIL {
 		}
 	}
 
+	@JsonInclude(value = Include.NON_EMPTY)
 	public static class TuneEntry {
 		public int tuneNo = -1;
 		public ArrayList<Info> infos = new ArrayList<>();
@@ -37,6 +46,7 @@ public class STIL {
 		}
 	}
 
+	@JsonInclude(value = Include.NON_EMPTY)
 	public static class STILEntry {
 		public String comment;
 		public String filename;
@@ -55,7 +65,11 @@ public class STIL {
 
 	private final HashMap<String, STILEntry> fastMap = new HashMap<>();
 
-	public STIL(InputStream input) throws IOException, NoSuchFieldException, IllegalAccessException {
+	public STIL(File hvscRoot) throws IOException, NoSuchFieldException, IllegalAccessException {
+		this(ZipFileUtils.newFileInputStream(ZipFileUtils.newFile(hvscRoot, STIL_FILE)));
+	}
+	
+	private STIL(InputStream input) throws IOException, NoSuchFieldException, IllegalAccessException {
 		fastMap.clear();
 
 		Pattern p = Pattern.compile("(NAME|AUTHOR|TITLE|ARTIST|COMMENT): *(.*)");
