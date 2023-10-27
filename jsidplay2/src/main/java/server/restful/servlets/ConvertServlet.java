@@ -418,15 +418,17 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 
 		whatsSidSection.setEnable(false);
+		sidplay2Section.setHvsc(configuration.getSidplay2Section().getHvsc());
 
 		Player player = new Player(servletParameters.config);
 		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 		player.setSidDatabase(sidDatabase);
+		player.setSTIL(stil);
 		if (Boolean.TRUE.equals(servletParameters.download)) {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
 		}
 		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
-			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType));
+			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType, file));
 		}
 		Thread[] parentThreads = of(currentThread()).toArray(Thread[]::new);
 

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -24,8 +25,11 @@ public class TextToSpeech implements Consumer<Player> {
 
 	private TextToSpeechType textToSpeechType;
 
-	public TextToSpeech(TextToSpeechType textToSpeechType) {
+	private File file;
+
+	public TextToSpeech(TextToSpeechType textToSpeechType, File file) {
 		this.textToSpeechType = textToSpeechType;
+		this.file = file;
 	}
 
 	@Override
@@ -37,7 +41,8 @@ public class TextToSpeech implements Consumer<Player> {
 
 			wavFile = File.createTempFile("text2speech", ".wav", sidplay2Section.getTmpDir());
 
-			String[] processArguments = textToSpeechType.getProcessArgumentsFunction().apply(player.getTune(), wavFile);
+			String[] processArguments = textToSpeechType.getProcessArgumentsFunction()
+					.apply(new SimpleImmutableEntry<>(player, file), wavFile);
 			if (LOG.isLoggable(Level.FINE)) {
 				LOG.fine(Arrays.asList(processArguments).stream().collect(Collectors.joining(" ")));
 			}
@@ -60,9 +65,11 @@ public class TextToSpeech implements Consumer<Player> {
 					} catch (UnsupportedAudioFileException | IOException e) {
 						throw new IOException(e);
 					}
+				} else {
+					throw new IOException("Process failed with exit code: " + returnVal);
 				}
 			} else {
-				throw new IOException("Process failed with exit code: " + waitFlag);
+				throw new IOException("Process failed with waitFlag: " + waitFlag);
 			}
 		} catch (IOException | InterruptedException e) {
 			System.err.println(

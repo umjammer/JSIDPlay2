@@ -333,16 +333,16 @@ public class Psid64 {
 
 	private String writeSTILEntry(STILEntry stilEntry) {
 		StringBuffer result = new StringBuffer();
-		if (stilEntry.filename != null) {
+		if (stilEntry.getFilename() != null) {
 			result.append("Filename: ");
-			result.append(stilEntry.filename);
+			result.append(stilEntry.getFilename());
 			result.append(" - ");
 		}
-		for (Info info : stilEntry.infos) {
+		for (Info info : stilEntry.getInfos()) {
 			writeSTILEntry(result, info);
 		}
 		int subTuneNo = 1;
-		for (TuneEntry entry : stilEntry.subtunes) {
+		for (TuneEntry entry : stilEntry.getSubTunes()) {
 			for (Info info : entry.infos) {
 				result.append(" SubTune #" + subTuneNo + ": ");
 				writeSTILEntry(result, info);

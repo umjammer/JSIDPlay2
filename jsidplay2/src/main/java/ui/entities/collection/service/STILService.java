@@ -23,9 +23,9 @@ public class STILService {
 		STILEntry stilEntry = stilFnct.apply(hvscEntry.getPath());
 		if (stilEntry != null) {
 			// add tune infos
-			addSTILInfo(hvscEntry, stilEntry.infos);
+			addSTILInfo(hvscEntry, stilEntry.getInfos());
 			// go through subsongs & add them as well
-			for (final TuneEntry entry : stilEntry.subtunes) {
+			for (final TuneEntry entry : stilEntry.getSubTunes()) {
 				addSTILInfo(hvscEntry, entry.infos);
 			}
 		}

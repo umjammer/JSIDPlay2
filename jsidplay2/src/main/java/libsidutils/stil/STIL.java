@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import libsidutils.ZipFileUtils;
 
@@ -48,13 +49,30 @@ public class STIL {
 
 	@JsonInclude(value = Include.NON_EMPTY)
 	public static class STILEntry {
-		public String comment;
-		public String filename;
-		public ArrayList<TuneEntry> subtunes = new ArrayList<>();
-		public ArrayList<Info> infos = new ArrayList<>();
+		private String comment;
+		private String filename;
+		private ArrayList<TuneEntry> subTunes = new ArrayList<>();
+		private ArrayList<Info> infos = new ArrayList<>();
 
 		public STILEntry(String name) {
 			filename = name;
+		}
+
+		public String getComment() {
+			return comment;
+		}
+
+		public String getFilename() {
+			return filename;
+		}
+
+		@JsonProperty(value = "subtunes")
+		public ArrayList<TuneEntry> getSubTunes() {
+			return subTunes;
+		}
+
+		public ArrayList<Info> getInfos() {
+			return infos;
 		}
 
 		@Override
@@ -68,7 +86,7 @@ public class STIL {
 	public STIL(File hvscRoot) throws IOException, NoSuchFieldException, IllegalAccessException {
 		this(ZipFileUtils.newFileInputStream(ZipFileUtils.newFile(hvscRoot, STIL_FILE)));
 	}
-	
+
 	private STIL(InputStream input) throws IOException, NoSuchFieldException, IllegalAccessException {
 		fastMap.clear();
 
@@ -116,7 +134,7 @@ public class STIL {
 					// subtune number
 					tuneEntry = new TuneEntry();
 					tuneEntry.tuneNo = tuneNo;
-					entry.subtunes.add(tuneEntry);
+					entry.subTunes.add(tuneEntry);
 
 					lastInfo = new Info();
 					tuneEntry.infos.add(lastInfo);

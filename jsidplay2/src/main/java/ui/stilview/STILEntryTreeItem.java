@@ -19,7 +19,7 @@ public class STILEntryTreeItem extends TreeItem<Object> {
 	@Override
 	public boolean isLeaf() {
 		STILEntry stilEntry = (STILEntry) getValue();
-		return stilEntry.subtunes.size() == 0;
+		return stilEntry.getSubTunes().size() == 0;
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class STILEntryTreeItem extends TreeItem<Object> {
 			hasLoadedChildren = true;
 			Collection<TuneEntryTreeItem> children = new ArrayList<>();
 			STILEntry stilEntry = (STILEntry) getValue();
-			for (TuneEntry tuneEntry : stilEntry.subtunes) {
+			for (TuneEntry tuneEntry : stilEntry.getSubTunes()) {
 				children.add(new TuneEntryTreeItem(tuneEntry));
 			}
 			super.getChildren().setAll(children);

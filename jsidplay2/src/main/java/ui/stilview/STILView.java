@@ -62,11 +62,11 @@ public class STILView extends C64Window {
 		if (comp instanceof STILEntry) {
 			final STILEntry entry = (STILEntry) comp;
 			writeEntry(entry);
-			for (int i = 0; i < entry.infos.size(); i++) {
-				writeSTIL(entry.infos.get(i));
+			for (int i = 0; i < entry.getInfos().size(); i++) {
+				writeSTIL(entry.getInfos().get(i));
 			}
-			for (int i = 0; i < entry.subtunes.size(); i++) {
-				writeSTIL(entry.subtunes.get(i));
+			for (int i = 0; i < entry.getSubTunes().size(); i++) {
+				writeSTIL(entry.getSubTunes().get(i));
 			}
 		} else if (comp instanceof TuneEntry) {
 			final TuneEntry tuneEntry = (TuneEntry) comp;
@@ -81,7 +81,7 @@ public class STILView extends C64Window {
 	}
 
 	private void writeEntry(final STILEntry entry) {
-		addText(util.getBundle().getString("FILENAME"), entry.filename, STYLE_FILENAME);
+		addText(util.getBundle().getString("FILENAME"), entry.getFilename(), STYLE_FILENAME);
 	}
 
 	private void writeSubTune(final TuneEntry tuneEntry) {
