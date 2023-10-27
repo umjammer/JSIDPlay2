@@ -10,7 +10,6 @@ import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import libsidplay.config.ISidPlay2Section;
 import libsidutils.IOUtils;
 import libsidutils.stil.STIL.Info;
 import libsidutils.stil.STIL.STILEntry;
@@ -39,8 +38,6 @@ public enum TextToSpeechType {
 		Player player = playerAndTuneFile.getKey();
 		File file = playerAndTuneFile.getValue();
 
-		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
-
 		String title = null, author = null, released = null;
 		Iterator<String> it = player.getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
@@ -61,7 +58,7 @@ public enum TextToSpeechType {
 		}
 
 		String basedOnTitle = null, basedOnAuthor = null;
-		STILEntry stilEntry = player.getStilEntry(IOUtils.getCollectionName(sidplay2Section.getHvsc(), file));
+		STILEntry stilEntry = player.getStilEntry(getCollectionName(player, file));
 		Iterator<Info> infoIt = Optional.ofNullable(stilEntry).map(STILEntry::getInfos).orElse(new ArrayList<Info>())
 				.iterator();
 		if (infoIt.hasNext()) {
@@ -86,8 +83,6 @@ public enum TextToSpeechType {
 		Player player = playerAndTuneFile.getKey();
 		File file = playerAndTuneFile.getValue();
 
-		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
-
 		String title = null, author = null, released = null;
 		Iterator<String> it = player.getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
@@ -108,7 +103,7 @@ public enum TextToSpeechType {
 		}
 
 		String basedOnTitle = null, basedOnAuthor = null;
-		STILEntry stilEntry = player.getStilEntry(IOUtils.getCollectionName(sidplay2Section.getHvsc(), file));
+		STILEntry stilEntry = player.getStilEntry(getCollectionName(player, file));
 		Iterator<Info> infoIt = Optional.ofNullable(stilEntry).map(STILEntry::getInfos).orElse(new ArrayList<Info>())
 				.iterator();
 		if (infoIt.hasNext()) {
@@ -127,6 +122,21 @@ public enum TextToSpeechType {
 				+ (basedOnAuthor != null ? "<s>by " + replaceSpecials(basedOnAuthor) + "</s>" : "") + "  </p>"
 				+ "<voice>" + "</speak>";
 		return new String[] { "espeak", ssml, "-m", "-w", wavFile.getAbsolutePath() };
+	}
+
+	private static String getCollectionName(Player player, File file) {
+		String result = "";
+
+		File hvscRoot = player.getConfig().getSidplay2Section().getHvsc();
+		if (hvscRoot != null) {
+			// 1st Try from full path name...
+			result = IOUtils.getCollectionName(hvscRoot, file);
+			if (result.isEmpty()) {
+				// ... then try from MD5
+				result = player.getSidDatabaseInfo(sidDatabase -> sidDatabase.getPath(player.getTune()), "");
+			}
+		}
+		return result;
 	}
 
 	private static String replaceSpecials(String string) {
