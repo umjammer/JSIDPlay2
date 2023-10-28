@@ -1457,6 +1457,23 @@
                                 </b-form-group>
                               </span>
                             </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <b-form-group
+                                  class="right"
+                                  :label="$t('convertMessages.textToSpeechLocale')"
+                                  label-for="textToSpeechLocale"
+                                >
+                                  <b-form-radio-group v-model="convertOptions.textToSpeechLocale">
+                                    <b-form-radio value="null" id="textToSpeechLocale">{{
+                                      $t("textToSpeechLocaleAuto")
+                                    }}</b-form-radio>
+                                    <b-form-radio value="en">English</b-form-radio>
+                                    <b-form-radio value="de">Deutsch</b-form-radio>
+                                  </b-form-radio-group>
+                                </b-form-group>
+                              </span>
+                            </div>
                           </b-card-text>
                         </b-tab>
 
@@ -2983,6 +3000,7 @@
           streamingCfgHeader: "Streaming",
           audioStreamingCfgHeader: "Audio",
           textToSpeechTypeOff: "Off",
+          textToSpeechLocaleAuto: "Auto",
           videoStreamingCfgHeader: "Video",
           playbackCfgHeader: "Playback",
           emulationCfgHeader: "Emulation",
@@ -3132,6 +3150,7 @@
           streamingCfgHeader: "Streaming",
           audioStreamingCfgHeader: "Audio",
           textToSpeechTypeOff: "Aus",
+          textToSpeechLocaleAuto: "Auto",
           videoStreamingCfgHeader: "Video",
           playbackCfgHeader: "Wiedergabe",
           emulationCfgHeader: "Emulation",
@@ -4038,6 +4057,8 @@
               this.convertOptions.reuSize +
               "&textToSpeechType=" +
               this.convertOptions.textToSpeechType +
+              "&textToSpeechLocale=" +
+              this.convertOptions.textToSpeechLocale +
               "&locale=" +
               this.$i18n.locale +
               "&itemId=" +

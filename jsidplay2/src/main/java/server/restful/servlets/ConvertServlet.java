@@ -129,7 +129,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -16)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -17)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
 		}
@@ -140,11 +140,22 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -15)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -16)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
 
+		private Locale locale = Locale.ENGLISH;
+		
+		public Locale getLocale() {
+			return locale;
+		}
+		
+		@Parameter(names = "--locale", descriptionKey = "LOCALE", converter = LocaleConverter.class, order = -15)
+		public void setLocale(Locale locale) {
+			this.locale = locale;
+		}
+		
 		private TextToSpeechType textToSpeechType = TextToSpeechType.PICO2WAVE;
 
 		public TextToSpeechType getTextToSpeechType() {
@@ -156,15 +167,15 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			this.textToSpeechType = textToSpeechType;
 		}
 
-		private Locale locale = Locale.ENGLISH;
+		private Locale textToSpeechLocale;
 
-		public Locale getLocale() {
-			return locale;
+		public Locale getTextToSpeechLocale() {
+			return textToSpeechLocale;
 		}
 
-		@Parameter(names = "--locale", descriptionKey = "LOCALE", converter = LocaleConverter.class, order = -13)
-		public void setLocale(Locale locale) {
-			this.locale = locale;
+		@Parameter(names = "--textToSpeechLocale", descriptionKey = "TEXT_TO_SPEECH_LOCALE", converter = LocaleConverter.class, order = -13)
+		public void setTextToSpeechLocale(Locale textToSpeechLocale) {
+			this.textToSpeechLocale = textToSpeechLocale;
 		}
 
 		private Boolean download = Boolean.FALSE;
@@ -444,7 +455,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
 			TextToSpeechBean textToSpeechBean = new TextToSpeechBean();
 			textToSpeechBean.setTextToSpeechType(servletParameters.textToSpeechType);
-			textToSpeechBean.setTextToSpeechLocale(servletParameters.locale);
+			textToSpeechBean.setTextToSpeechLocale(getTextToSpeechLocale(servletParameters));
 			textToSpeechBean.setTuneFile(file);
 			textToSpeechBean.setPlayer(player);
 			player.setMenuHook(new TextToSpeech(textToSpeechBean));
@@ -522,6 +533,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 		player.stopC64(false);
 		return videoFile;
+	}
+
+	private Locale getTextToSpeechLocale(ConvertServletParameters servletParameters) {
+		return servletParameters.textToSpeechLocale != null ? servletParameters.textToSpeechLocale
+				: servletParameters.locale;
 	}
 
 	private void insertCartridge(ConvertServletParameters servletParameters, Player player) throws IOException {
