@@ -3849,6 +3849,7 @@
             this.convertOptions.config.audioSection.sampling = "RESAMPLE";
             this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
             this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
+            this.convertOptions.textToSpeechLocale = "en";
             this.mobileProfile();
           },
           setDefaultUser: function () {
@@ -4591,6 +4592,13 @@
           if (localStorage.convertOptions) {
             // restore configuration from last run
             this.convertOptions = JSON.parse(localStorage.convertOptions);
+            // migration:
+            if (typeof this.convertOptions.textToSpeechType === "undefined") {
+              this.convertOptions.textToSpeechType = "PICO2WAVE";
+            }
+            if (typeof this.convertOptions.textToSpeechLocale === "undefined") {
+              this.convertOptions.textToSpeechLocale = "en";
+            }
           } else {
             // initialize configuration (if they differ from the default settings)
             this.convertOptions.useHls = true;
@@ -4604,6 +4612,7 @@
             this.convertOptions.config.audioSection.sampling = "RESAMPLE";
             this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
             this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
+            this.convertOptions.textToSpeechLocale = "en";
             this.mobileProfile();
           }
           if (localStorage.random) {

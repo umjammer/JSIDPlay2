@@ -42,7 +42,7 @@ public enum TextToSpeechType {
 		Iterator<String> it = textToSpeechBean.getPlayer().getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
-			title = next.isEmpty() ? "Unknown Title" : next;
+			title = next.isEmpty() ? RESOURCE_BUNDLE.getString("UNKNOWN_TITLE") : next;
 		}
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
@@ -74,18 +74,20 @@ public enum TextToSpeechType {
 						: "")
 				+ (author != null
 						? "<s>" + RESOURCE_BUNDLE.getString("AUTHOR") + " "
-								+ replaceSpecials(replaceAliasName(RESOURCE_BUNDLE, author)) + "</s>"
+								+ replaceSpecials(replaceAliasName(author, RESOURCE_BUNDLE)) + "</s>"
 						: "")
-				+ (released != null ? "<s>" + RESOURCE_BUNDLE.getString("RELEASED") + " "
-						+ replaceSpecials(replaceUnknownDecade(replaceUnknownDate(replaceDateRange(released)))) + "</s>"
+				+ (released != null
+						? "<s>" + RESOURCE_BUNDLE.getString("RELEASED") + " <preproccontext name=\"date\">"
+								+ replaceSpecials(replaceUnknownDecade(replaceUnknownDate(
+										replaceDateRange(released, RESOURCE_BUNDLE), RESOURCE_BUNDLE), RESOURCE_BUNDLE))
+								+ "</preproccontext> </s>"
 						: "")
 				+ (basedOnTitle != null
-						? "<s>" + RESOURCE_BUNDLE.getString("ARTIST") + " "
+						? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_ARTIST") + " "
 								+ replaceSpecials(removeBraces(basedOnTitle)) + "</s>"
 						: "")
-				+ (basedOnAuthor != null
-						? "<s>" + RESOURCE_BUNDLE.getString("AUTHOR") + " " + replaceSpecials(basedOnAuthor) + "</s>"
-						: "")
+				+ (basedOnAuthor != null ? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_AUTHOR") + " "
+						+ replaceSpecials(basedOnAuthor) + "</s>" : "")
 				+ "  </p>" + "</pitch></volume>";
 		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
 				"-w=" + wavFile.getAbsolutePath(), text };
@@ -108,7 +110,7 @@ public enum TextToSpeechType {
 		Iterator<String> it = textToSpeechBean.getPlayer().getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
-			title = next.isEmpty() ? "Unknown Title" : next;
+			title = next.isEmpty() ? RESOURCE_BUNDLE.getString("UNKNOWN_TITLE") : next;
 		}
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
@@ -142,23 +144,23 @@ public enum TextToSpeechType {
 						: "")
 				+ (author != null
 						? "<s>" + RESOURCE_BUNDLE.getString("AUTHOR") + " "
-								+ toLower(replaceSpecials(replaceAliasName(RESOURCE_BUNDLE, author))) + "</s>"
+								+ toLower(replaceSpecials(replaceAliasName(author, RESOURCE_BUNDLE))) + "</s>"
 						: "")
-				+ (released != null
-						? "<s>" + RESOURCE_BUNDLE.getString("RELEASED") + " "
-								+ toLower(replaceSpecials(
-										replaceUnknownDecade(replaceUnknownDate(replaceDateRange(released)))))
-								+ "</s>"
-						: "")
+				+ (released != null ? "<s>" + RESOURCE_BUNDLE.getString("RELEASED") + " "
+						+ toLower(replaceSpecials(replaceUnknownDecade(
+								replaceUnknownDate(replaceDateRange(released, RESOURCE_BUNDLE), RESOURCE_BUNDLE),
+								RESOURCE_BUNDLE)))
+						+ "</s>" : "")
 				+ (basedOnTitle != null
-						? "<s>" + RESOURCE_BUNDLE.getString("ARTIST") + " "
+						? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_ARTIST") + " "
 								+ replaceSpecials(removeBraces(basedOnTitle)) + "</s>"
 						: "")
 				+ (basedOnAuthor != null
-						? "<s>" + RESOURCE_BUNDLE.getString("AUTHOR") + " " + replaceSpecials(basedOnAuthor) + "</s>"
+						? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_AUTHOR") + " " + replaceSpecials(basedOnAuthor)
+								+ "</s>"
 						: "")
 				+ "  </p>" + "<voice>" + "</speak>";
-		return new String[] { "espeak", ssml, "-m", "-k40", "-a50", "-w", wavFile.getAbsolutePath() };
+		return new String[] { "espeak", ssml, "-m", "-k20", "-a50", "-w", wavFile.getAbsolutePath() };
 	}
 
 	private static String getCollectionName(Player player, File file) {
@@ -184,7 +186,7 @@ public enum TextToSpeechType {
 		return string.toLowerCase(Locale.US);
 	}
 
-	private static String replaceAliasName(ResourceBundle resourceBundle, String string) {
+	private static String replaceAliasName(String string, ResourceBundle resourceBundle) {
 		Pattern pattern = Pattern.compile("([^(]*)[(]([^)]*)[)]");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
@@ -193,29 +195,31 @@ public enum TextToSpeechType {
 		return string;
 	}
 
-	private static String replaceUnknownDate(String string) {
+	private static String replaceUnknownDate(String string, ResourceBundle resourceBundle) {
 		Pattern pattern = Pattern.compile("19[?][?](.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return "the 80s or 90" + " / " + matcher.group(1);
+			return resourceBundle.getString("IN_80_90") + " / " + matcher.group(1);
 		}
 		return string;
 	}
 
-	private static String replaceUnknownDecade(String string) {
+	private static String replaceUnknownDecade(String string, ResourceBundle resourceBundle) {
 		Pattern pattern = Pattern.compile("19([89])[?](.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return "the " + matcher.group(1) + "0s" + " / " + matcher.group(2);
+			return resourceBundle.getString("IN_DECADE") + " " + matcher.group(1) + "0"
+					+ resourceBundle.getString("IN_DECADE_POSTFIX") + " / " + matcher.group(2);
 		}
 		return string;
 	}
 
-	private static String replaceDateRange(String string) {
+	private static String replaceDateRange(String string, ResourceBundle resourceBundle) {
 		Pattern pattern = Pattern.compile("([0-9]{4})-([0-9]{2})(?!-)(.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return matcher.group(1) + " to " + matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
+			return resourceBundle.getString("IN") + " " + matcher.group(1) + " " + resourceBundle.getString("TO") + " "
+					+ matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
 		}
 		return string;
 	}
