@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.UUID;
@@ -352,4 +353,18 @@ public class IOUtils {
 		}
 		return inputFile;
 	}
+
+	/**
+	 * Get resource bundle. <B>Note:</B>This method prevents to use the default
+	 * locale of the platform, instead it uses ROOT locale.locale.
+	 * 
+	 * @param baseName resource bundle base name
+	 * @param locale   locale
+	 * @return resource bundle
+	 */
+	public static ResourceBundle getResourceBundle(String baseName, Locale locale) {
+		locale = Locale.ENGLISH.getLanguage().equals(locale.getLanguage()) ? Locale.ROOT : locale;
+		return ResourceBundle.getBundle(baseName, locale);
+	}
+
 }

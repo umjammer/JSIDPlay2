@@ -54,6 +54,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -83,6 +84,7 @@ import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import server.restful.common.HlsType;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.converter.LocaleConverter;
 import server.restful.common.converter.WebResourceConverter;
 import server.restful.common.filters.CounterBasedRateLimiterFilter;
 import server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter;
@@ -91,6 +93,7 @@ import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import server.restful.common.text2speech.TextToSpeech;
+import server.restful.common.text2speech.TextToSpeechBean;
 import server.restful.common.text2speech.TextToSpeechType;
 import sidplay.Player;
 import sidplay.audio.AACDriver.AACStreamDriver;
@@ -126,7 +129,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -15)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -16)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
 		}
@@ -137,7 +140,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -14)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -15)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
@@ -148,9 +151,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return textToSpeechType;
 		}
 
-		@Parameter(names = "--textToSpeechType", arity = 1, descriptionKey = "TEXT_TO_SPEECH_TYPE", order = -13)
+		@Parameter(names = "--textToSpeechType", arity = 1, descriptionKey = "TEXT_TO_SPEECH_TYPE", order = -14)
 		public void setTextToSpeechType(TextToSpeechType textToSpeechType) {
 			this.textToSpeechType = textToSpeechType;
+		}
+
+		private Locale locale = Locale.ENGLISH;
+
+		public Locale getLocale() {
+			return locale;
+		}
+
+		@Parameter(names = "--locale", descriptionKey = "LOCALE", converter = LocaleConverter.class, order = -13)
+		public void setLocale(Locale locale) {
+			this.locale = locale;
 		}
 
 		private Boolean download = Boolean.FALSE;
@@ -428,7 +442,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
 		}
 		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
-			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType, file));
+			TextToSpeechBean textToSpeechBean = new TextToSpeechBean();
+			textToSpeechBean.setTextToSpeechType(servletParameters.textToSpeechType);
+			textToSpeechBean.setTextToSpeechLocale(servletParameters.locale);
+			textToSpeechBean.setTuneFile(file);
+			textToSpeechBean.setPlayer(player);
+			player.setMenuHook(new TextToSpeech(textToSpeechBean));
 		}
 		Thread[] parentThreads = of(currentThread()).toArray(Thread[]::new);
 

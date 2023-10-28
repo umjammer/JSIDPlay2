@@ -22,6 +22,7 @@ import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.sidtune.SidTune;
 import libsidutils.IOUtils;
+import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import sidplay.Player;
 import sidplay.audio.SleepDriver;
 import sidplay.player.State;
@@ -53,14 +54,14 @@ public final class PlayerWithStatus {
 
 	private int playCounter;
 
-	public PlayerWithStatus(Player player, File diskImage, ConvenienceResult convenienceResult, boolean showStatus,
-			int pressSpaceInterval) {
+	public PlayerWithStatus(Player player, File diskImage, ConvenienceResult convenienceResult,
+			ConvertServletParameters servletParameters) {
 		this.player = player;
 		this.diskImage = diskImage;
 		this.attachedCartridge = convenienceResult.getAttatchedCartridge();
 		this.attachedCartridgeType = convenienceResult.getAttachedCartridgeType();
-		this.pressSpaceInterval = pressSpaceInterval;
-		statusText = new StatusText(player, showStatus);
+		this.pressSpaceInterval = servletParameters.getPressSpaceInterval();
+		statusText = new StatusText(player, servletParameters.getShowStatus(), servletParameters.getLocale());
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
 		addPressSpaceListener();

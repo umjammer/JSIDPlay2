@@ -50,8 +50,7 @@ public final class PlayerCleanupTimerTask extends TimerTask {
 
 	public static final void create(UUID uuid, Player player, File diskImage, ConvenienceResult convenienceResult,
 			ConvertServletParameters servletParameters) {
-		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, convenienceResult,
-				servletParameters.getShowStatus(), servletParameters.getPressSpaceInterval()));
+		PLAYER_MAP.put(uuid, new PlayerWithStatus(player, diskImage, convenienceResult, servletParameters));
 	}
 
 	public static final void update(UUID uuid, Consumer<PlayerWithStatus> playerWithStatusConsumer) {

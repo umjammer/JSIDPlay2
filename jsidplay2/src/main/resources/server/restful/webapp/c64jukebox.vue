@@ -4038,6 +4038,8 @@
               this.convertOptions.reuSize +
               "&textToSpeechType=" +
               this.convertOptions.textToSpeechType +
+              "&locale=" +
+              this.$i18n.locale +
               "&itemId=" +
               itemId +
               "&categoryId=" +

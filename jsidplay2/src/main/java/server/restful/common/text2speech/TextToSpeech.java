@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -23,13 +22,10 @@ public class TextToSpeech implements Consumer<Player> {
 
 	private static final Logger LOG = Logger.getLogger(TextToSpeech.class.getName());
 
-	private TextToSpeechType textToSpeechType;
+	private TextToSpeechBean textToSpeechBean;
 
-	private File file;
-
-	public TextToSpeech(TextToSpeechType textToSpeechType, File file) {
-		this.textToSpeechType = textToSpeechType;
-		this.file = file;
+	public TextToSpeech(TextToSpeechBean textToSpeechBean) {
+		this.textToSpeechBean = textToSpeechBean;
 	}
 
 	@Override
@@ -41,8 +37,8 @@ public class TextToSpeech implements Consumer<Player> {
 
 			wavFile = File.createTempFile("text2speech", ".wav", sidplay2Section.getTmpDir());
 
-			String[] processArguments = textToSpeechType.getProcessArgumentsFunction()
-					.apply(new SimpleImmutableEntry<>(player, file), wavFile);
+			String[] processArguments = textToSpeechBean.getTextToSpeechType().getProcessArgumentsFunction()
+					.apply(textToSpeechBean, wavFile);
 			if (LOG.isLoggable(Level.FINE)) {
 				LOG.fine(Arrays.asList(processArguments).stream().collect(Collectors.joining(" ")));
 			}

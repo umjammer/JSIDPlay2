@@ -1,16 +1,15 @@
 package server.restful.common;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
+import libsidutils.IOUtils;
 import libsidutils.status.Status;
 import sidplay.Player;
 import sidplay.audio.xuggle.XuggleVideoDriver;
 
 public class StatusText {
-
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(StatusText.class.getName());
 
 	private static final int WAIT_FOR_SCROLL_IN_SECONDS = 10;
 
@@ -29,10 +28,10 @@ public class StatusText {
 	private String lastStatusText;
 	private int lastStatusTextX, statusScrollCounter;
 
-	public StatusText(Player player, boolean showStatus) {
+	public StatusText(Player player, boolean showStatus, Locale locale) {
 		this.player = player;
 		this.showStatus = showStatus;
-		status = new Status(player, RESOURCE_BUNDLE);
+		status = new Status(player, IOUtils.getResourceBundle(StatusText.class.getName(), locale));
 		waitForScrollInFrames = WAIT_FOR_SCROLL_IN_SECONDS * player.getC64().getClock().getScreenRefresh();
 	}
 
