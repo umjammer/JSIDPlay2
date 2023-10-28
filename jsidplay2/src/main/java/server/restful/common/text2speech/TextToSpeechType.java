@@ -35,14 +35,14 @@ public enum TextToSpeechType {
 	}
 
 	private static String[] createPico2WaveArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		ResourceBundle RESOURCE_BUNDLE = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
+		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
 				textToSpeechBean.getTextToSpeechLocale());
 
 		String title = null, author = null, released = null;
 		Iterator<String> it = textToSpeechBean.getPlayer().getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
-			title = next.isEmpty() ? RESOURCE_BUNDLE.getString("UNKNOWN_TITLE") : next;
+			title = next.isEmpty() ? resourceBundle.getString("UNKNOWN_TITLE") : next;
 		}
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
@@ -70,23 +70,22 @@ public enum TextToSpeechType {
 
 		String text = "<volume level=\"75\"> <pitch level=\"140\">" + "<p>"
 				+ (title != null
-						? "<s>" + RESOURCE_BUNDLE.getString("NOW_PLAYING") + ": " + replaceSpecials(title) + "</s>"
+						? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": " + replaceSpecials(title) + "</s>"
 						: "")
 				+ (author != null
-						? "<s>" + RESOURCE_BUNDLE.getString("AUTHOR") + " "
-								+ replaceSpecials(replaceAliasName(author, RESOURCE_BUNDLE)) + "</s>"
+						? "<s>" + resourceBundle.getString("AUTHOR") + " "
+								+ replaceSpecials(replaceAliasName(author, resourceBundle)) + "</s>"
 						: "")
-				+ (released != null
-						? "<s>" + RESOURCE_BUNDLE.getString("RELEASED") + " <preproccontext name=\"date\">"
-								+ replaceSpecials(replaceUnknownDecade(replaceUnknownDate(
-										replaceDateRange(released, RESOURCE_BUNDLE), RESOURCE_BUNDLE), RESOURCE_BUNDLE))
-								+ "</preproccontext> </s>"
-						: "")
+				+ (released != null ? "<s>" + resourceBundle.getString("RELEASED") + " "
+						+ replaceSpecials(replaceUnknownDecade(
+								replaceUnknownDate(replaceDateRange(released, resourceBundle), resourceBundle),
+								resourceBundle))
+						+ "</s>" : "")
 				+ (basedOnTitle != null
-						? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_ARTIST") + " "
+						? "<s>" + resourceBundle.getString("BASED_ON_ARTIST") + " "
 								+ replaceSpecials(removeBraces(basedOnTitle)) + "</s>"
 						: "")
-				+ (basedOnAuthor != null ? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_AUTHOR") + " "
+				+ (basedOnAuthor != null ? "<s>" + resourceBundle.getString("BASED_ON_AUTHOR") + " "
 						+ replaceSpecials(basedOnAuthor) + "</s>" : "")
 				+ "  </p>" + "</pitch></volume>";
 		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
@@ -103,14 +102,14 @@ public enum TextToSpeechType {
 	}
 
 	private static String[] createEspeakArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		ResourceBundle RESOURCE_BUNDLE = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
+		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
 				textToSpeechBean.getTextToSpeechLocale());
 
 		String title = null, author = null, released = null;
 		Iterator<String> it = textToSpeechBean.getPlayer().getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
-			title = next.isEmpty() ? RESOURCE_BUNDLE.getString("UNKNOWN_TITLE") : next;
+			title = next.isEmpty() ? resourceBundle.getString("UNKNOWN_TITLE") : next;
 		}
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
@@ -139,24 +138,24 @@ public enum TextToSpeechType {
 		String ssml = "<speak>" + "<voice language=\"" + textToSpeechBean.getTextToSpeechLocale().getLanguage()
 				+ "\" gender=\"female\">" + "<p>"
 				+ (title != null
-						? "<s>" + RESOURCE_BUNDLE.getString("NOW_PLAYING") + ": " + toLower(replaceSpecials(title))
+						? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": " + toLower(replaceSpecials(title))
 								+ "</s>"
 						: "")
 				+ (author != null
-						? "<s>" + RESOURCE_BUNDLE.getString("AUTHOR") + " "
-								+ toLower(replaceSpecials(replaceAliasName(author, RESOURCE_BUNDLE))) + "</s>"
+						? "<s>" + resourceBundle.getString("AUTHOR") + " "
+								+ toLower(replaceSpecials(replaceAliasName(author, resourceBundle))) + "</s>"
 						: "")
-				+ (released != null ? "<s>" + RESOURCE_BUNDLE.getString("RELEASED") + " "
+				+ (released != null ? "<s>" + resourceBundle.getString("RELEASED") + " "
 						+ toLower(replaceSpecials(replaceUnknownDecade(
-								replaceUnknownDate(replaceDateRange(released, RESOURCE_BUNDLE), RESOURCE_BUNDLE),
-								RESOURCE_BUNDLE)))
+								replaceUnknownDate(replaceDateRange(released, resourceBundle), resourceBundle),
+								resourceBundle)))
 						+ "</s>" : "")
 				+ (basedOnTitle != null
-						? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_ARTIST") + " "
+						? "<s>" + resourceBundle.getString("BASED_ON_ARTIST") + " "
 								+ replaceSpecials(removeBraces(basedOnTitle)) + "</s>"
 						: "")
 				+ (basedOnAuthor != null
-						? "<s>" + RESOURCE_BUNDLE.getString("BASED_ON_AUTHOR") + " " + replaceSpecials(basedOnAuthor)
+						? "<s>" + resourceBundle.getString("BASED_ON_AUTHOR") + " " + replaceSpecials(basedOnAuthor)
 								+ "</s>"
 						: "")
 				+ "  </p>" + "<voice>" + "</speak>";

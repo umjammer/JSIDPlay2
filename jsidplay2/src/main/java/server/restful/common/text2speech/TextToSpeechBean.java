@@ -46,12 +46,5 @@ public class TextToSpeechBean {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
-//
-//	public static void main(String[] args) {
-//		// en-US
-//		// en-GB
-//		System.err.println(new Locale("en-US").toString());
-//		System.err.println(new Locale("de").toString());
-//		System.err.println(Locale.ENGLISH.toString());
-//	}
+
 }

@@ -146,16 +146,16 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 
 		private Locale locale = Locale.ENGLISH;
-		
+
 		public Locale getLocale() {
 			return locale;
 		}
-		
+
 		@Parameter(names = "--locale", descriptionKey = "LOCALE", converter = LocaleConverter.class, order = -15)
 		public void setLocale(Locale locale) {
 			this.locale = locale;
 		}
-		
+
 		private TextToSpeechType textToSpeechType = TextToSpeechType.PICO2WAVE;
 
 		public TextToSpeechType getTextToSpeechType() {
@@ -543,10 +543,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	private void insertCartridge(ConvertServletParameters servletParameters, Player player) throws IOException {
 		if (servletParameters.sfxSoundExpander) {
 			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
-		} else if (servletParameters.reuSize != null) {
-			player.insertCartridge(CartridgeType.REU, servletParameters.reuSize);
-		} else if (servletParameters.isREU()) {
-			player.insertCartridge(CartridgeType.REU, 16384);
+		} else if (servletParameters.reuSize != null || servletParameters.isREU()) {
+			player.insertCartridge(CartridgeType.REU,
+					servletParameters.reuSize != null ? servletParameters.reuSize : 16384);
 		}
 	}
 
