@@ -263,6 +263,11 @@ public interface IServletSystemProperties {
 	boolean TEXT_TO_SPEECH = Boolean.valueOf(getProperty("jsidplay2.audio.text2speech", "true"));
 
 	/**
+	 * SpeechToText? Maximum number of requests in parallel.
+	 */
+	int MAX_SPEECH_TO_TEXT = valueOf(getProperty("jsidplay2.speech2text.max.parallel", "7"));
+
+	/**
 	 * Maximum upload request size in bytes (content-length).
 	 */
 	long UPLOAD_SIZE_MAX = Long.valueOf(getProperty("jsidplay2.upload.size.max", String.valueOf((10 << 10 << 10))));

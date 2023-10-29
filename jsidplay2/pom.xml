@@ -867,6 +867,7 @@
 			                    <package>axios@1.5.1</package>
 			                    <package>hls.js@1.4.12</package>
 			                    <package>video.js@8.5.2</package>
+			                    <package>web-audio-recorder-js@0.0.2</package>
 			                </packages>
 			            </configuration>
 			        </execution>
