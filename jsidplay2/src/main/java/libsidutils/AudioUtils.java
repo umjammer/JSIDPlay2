@@ -136,14 +136,14 @@ public class AudioUtils {
 			((Buffer) resampledBuffer).rewind();
 			resampledBuffer.get(bytes);
 			factor = 1;
-
-//			wavHeader = new WAVHeader(1, sampleRate.getFrequency());
-//			wavHeader.advance(bytes.length);
-//			try (OutputStream os = new FileOutputStream("/home/ken/inter2.wav")) {
-//				os.write(wavHeader.getBytes());
-//				os.write(bytes);
-//			}
 		}
+//		wavHeader = new WAVHeader(1, sampleRate.getFrequency());
+//		wavHeader.advance(bytes.length);
+//		try (OutputStream os = new FileOutputStream("/home/ken/inter2.wav")) {
+//			os.write(wavHeader.getBytes());
+//			os.write(bytes);
+//		}
+
 		ByteBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
 		ShortBuffer resultBuffer = ShortBuffer.allocate(bytes.length * factor);
 		while (sourceBuffer.hasRemaining()) {

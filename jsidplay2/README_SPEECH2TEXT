@@ -1,25 +1,32 @@
-Ubuntu 22;
-==========
+voice2json.org
+
+Installation for Ubuntu 20;
+===========================
 dpkg-architecture | grep DEB_BUILD_ARCH=
 Download: https://github.com/synesthesiam/voice2json/releases/download/v2.1/voice2json_2.1_amd64.deb
 sudo apt install ./Downloads/voice2json_2.1_amd64.deb 
 
+Installation for Ubuntu 22;
+===========================
+additionally install:
 wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
 sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
   
+additionally install:
 Download https://ftp.uni-hannover.de/ubuntu/pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb
 sudo apt install ./Downloads/libffi6_3.2.1-8_amd64.deb
 
-Download https://github.com/synesthesiam/voice2json-profiles
-English	en-us	kaldi
 
-entpacken nach /home/ken/.config/voice2json/
-(flach ohne Unterordner)
+Profile installation:
+=====================
+voice2json -p en download-profile
+cp -r /home/ken/.local/share/voice2json/en-us_kaldi-zamia/* /home/ken/.config/voice2json/
 
-Sprach samples zum Testen:
-https://www.signalogic.com/index.pl?page=speech_codec_wav_samples
+Configure Intents and train profile:
+====================================
+vi sentences.ini
+voice2json -p en train-profile
 
-Optional: Mit Audacity nach 16KHz upscalen:
-
-Aufruf:
-voice2json transcribe-wav --open < test.wav
+Start recognition:
+==================
+voice2json -p en transcribe-wav --open < input.wav

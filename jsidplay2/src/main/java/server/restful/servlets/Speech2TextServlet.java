@@ -70,7 +70,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 
 			info("Got: " + request.getContentLengthLong());
 
-			SamplingRate targetSampleRate = SamplingRate.VERY_LOW;
+			SamplingRate targetSampleRate = SamplingRate.MEDIUM;
 			short[] samples = AudioUtils.convertToMonoWithSampleRate(request.getInputStream(), Integer.MAX_VALUE,
 					targetSampleRate);
 
@@ -91,7 +91,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 				}
 				os.write(sampleBuffer.array(), 0, sampleBuffer.position());
 			}
-			Process process = new ProcessBuilder("voice2json", "transcribe-wav", "--open", wavFile.getAbsolutePath())
+			Process process = new ProcessBuilder("voice2json", "-p", "en", "transcribe-wav", "--open", wavFile.getAbsolutePath())
 					.start();
 			int waitFlag = process.waitFor();
 			if (waitFlag == 0) {
@@ -112,7 +112,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 			setOutput(response, MIME_TYPE_TEXT, t);
 		} finally {
 			if (wavFile != null) {
-//				wavFile.delete();
+				wavFile.delete();
 			}
 		}
 	}
@@ -120,7 +120,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 	public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
 
 		try (InputStream is = new FileInputStream("/home/ken/input.wav")) {
-			SamplingRate targetSampleRate = SamplingRate.VERY_LOW;
+			SamplingRate targetSampleRate = SamplingRate.MEDIUM;
 			short[] samples = AudioUtils.convertToMonoWithSampleRate(is, Integer.MAX_VALUE, targetSampleRate);
 
 			ByteBuffer sampleBuffer = ByteBuffer.allocate(targetSampleRate.getFrequency() * Short.BYTES)
