@@ -93,7 +93,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);
 				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
 				replacements.put("$year", String.valueOf(LocalDate.now().getYear()));
-				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
+				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? ".min" : "");
 				replacements.put("$lib", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib-minified" : "lib");
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 				if (mimeType.isCacheable()) {

@@ -3427,17 +3427,14 @@
         },
         methods: {
           startRecording: function () {
-            var constraints = {
-              audio: true,
-              video: false,
-            };
-            /* We're using the standard promise based getUserMedia() https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
             navigator.mediaDevices
-              .getUserMedia(constraints)
+              .getUserMedia({
+                audio: true,
+                video: false,
+              })
               .then(function (stream) {
                 var AudioContext = window.AudioContext || window.webkitAudioContext;
-                var audioContext; //new audio context to help us record
-                audioContext = new AudioContext();
+                var audioContext = new AudioContext();
 
                 //assign to gumStream for later use
                 gumStream = stream;
@@ -3445,20 +3442,12 @@
                 var input = audioContext.createMediaStreamSource(stream);
                 //stop the input from playing back through the speakers
                 input.connect(audioContext.destination);
-                //get the encoding
-                //disable the encoding selector
+
                 recorder = new WebAudioRecorder(input, {
                   workerDir: "../webjars/web-audio-recorder-js/0.0.2/$lib/",
                   encoding: "wav",
-                  onEncoderLoading: function (recorder, encoding) {
-                    console.log("loading encoder...");
-                  },
-                  onEncoderLoaded: function (recorder, encoding) {
-                    console.log("encoder loaded...");
-                  },
                 });
                 recorder.onComplete = function (recorder, blob) {
-                  // use Blob
                   axios({
                     method: "post",
                     url: "/jsidplay2service/JSIDPlay2REST/speech2text",
@@ -3472,18 +3461,11 @@
                 recorder.setOptions({
                   timeLimit: 10,
                   encodeAfterRecord: true,
-                  ogg: {
-                    quality: 0.5,
-                  },
-                  mp3: {
-                    bitRate: 160,
-                  },
                 });
-                //start the recording process
                 recorder.startRecording();
               })
               .catch(function (err) {
-                //enable the record button if getUSerMedia() fails
+                console.log(err);
               });
           },
           stopRecording: function () {
