@@ -115,7 +115,7 @@ public class AudioUtils {
 					.order(ByteOrder.LITTLE_ENDIAN);
 
 			ResamplingState resamplingState = new ResamplingState();
-			Resampler downSampler = Resampler.createResampler(stream.getFormat().getSampleRate(),
+			Resampler downSampler = Resampler.createResampler(srcSampleRate,
 					SamplingMethod.RESAMPLE, targetSampleRate, sampleRate.getMiddleFrequency());
 
 			while (sourceBuffer.hasRemaining()) {
