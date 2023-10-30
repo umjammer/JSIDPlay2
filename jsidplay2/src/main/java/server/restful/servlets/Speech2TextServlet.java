@@ -3,7 +3,6 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
-import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.MAX_SPEECH_TO_TEXT;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
@@ -53,55 +52,49 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 	}
 
 	/**
-	 * WhatsSID? (SID tune recognition).
+	 * Speech recognition.
 	 *
-	 * http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/whatssid
+	 * http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/speech2text
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		File wavFile = null;
 		try {
+			wavFile = File.createTempFile("text2speech", ".wav", configuration.getSidplay2Section().getTmpDir());
+
 			info("Got: " + request.getContentLengthLong());
-			short[] result = AudioUtils.convertToMonoWithSampleRate(request.getInputStream(), Integer.MAX_VALUE,
-					SamplingRate.MEDIUM);
 
-			ByteBuffer sampleBuffer = ByteBuffer.allocate(1024 * Short.BYTES * 1).order(ByteOrder.LITTLE_ENDIAN);
+			SamplingRate targetSampleRate = SamplingRate.VERY_LOW;
+			short[] samples = AudioUtils.convertToMonoWithSampleRate(request.getInputStream(), Integer.MAX_VALUE,
+					targetSampleRate);
 
-			WAVHeader wavHeader = new WAVHeader(1, SamplingRate.MEDIUM.getFrequency());
-			wavHeader.advance(result.length << 1);
+			ByteBuffer sampleBuffer = ByteBuffer.allocate(targetSampleRate.getFrequency() * Short.BYTES)
+					.order(ByteOrder.LITTLE_ENDIAN);
 
-			File wavFile = File.createTempFile("text2speech", ".wav", configuration.getSidplay2Section().getTmpDir());
+			WAVHeader wavHeader = new WAVHeader(1, targetSampleRate.getFrequency());
+			wavHeader.advance(samples.length / Short.BYTES);
 
 			try (OutputStream os = new FileOutputStream(wavFile)) {
 				os.write(wavHeader.getBytes());
 
-				for (short shrt : result) {
-					if (!sampleBuffer.putShort(shrt).hasRemaining()) {
-						try {
-							os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-							((Buffer) sampleBuffer).clear();
-						} catch (final IOException e) {
-							throw new RuntimeException("Error writing WAV audio stream", e);
-						}
+				for (short sample : samples) {
+					if (!sampleBuffer.putShort(sample).hasRemaining()) {
+						os.write(sampleBuffer.array(), 0, sampleBuffer.position());
+						((Buffer) sampleBuffer).clear();
 					}
 				}
-				try {
-					os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-				} catch (final IOException e) {
-					throw new RuntimeException("Error writing WAV audio stream", e);
-				}
-
+				os.write(sampleBuffer.array(), 0, sampleBuffer.position());
 			}
-			info("Result: " + result.length);
+			info("Result: " + samples.length);
 
-			Process process = new ProcessBuilder("voice2json", "transcribe-wav", "--open", wavFile.getAbsolutePath()).start();
+			Process process = new ProcessBuilder("voice2json", "transcribe-wav", "--open", wavFile.getAbsolutePath())
+					.start();
 			int waitFlag = process.waitFor();
 			if (waitFlag == 0) {
 				int returnVal = process.exitValue();
 				if (returnVal == 0) {
 					IOUtils.copy(process.getInputStream(), System.err);
-					System.err.println("OK!");
-					info("Result: OK");
 				} else {
 					throw new IOException("Process failed with exit code: " + returnVal);
 				}
@@ -114,7 +107,9 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 			error(t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		} finally {
-			freeEntityManager();
+			if (wavFile != null) {
+//				wavFile.delete();
+			}
 		}
 	}
 
