@@ -177,6 +177,7 @@
                 </div>
                 <b-button variant="success" v-on:click="startRecording()"> start recording </b-button>
                 <b-button variant="success" v-on:click="stopRecording()"> stop recording </b-button>
+                <p>{{ msg }}</p>
               </b-card-text>
             </b-tab>
             <b-tab active style="position: relative" :disabled="theaterMode">
@@ -3208,6 +3209,7 @@
         el: "#app",
         i18n, //import multi-lang
         data: {
+          msg: "",
           timeoutId: undefined,
           theaterMode: false,
           carouselImageHeight:
@@ -3427,6 +3429,7 @@
         },
         methods: {
           startRecording: function () {
+            let outer = this;
             navigator.mediaDevices
               .getUserMedia({
                 audio: true,
@@ -3453,9 +3456,13 @@
                     url: "/jsidplay2service/JSIDPlay2REST/speech2text",
                     data: blob,
                     auth: {
-                      username: "jsidplay2",
-                      password: "jsidplay2!",
+                      username: outer.username,
+                      password: outer.password,
                     },
+                  }).then((response) => {
+                    let result = response.data;
+                    console.log(result);
+                    outer.msg = result.text;
                   });
                 };
                 recorder.setOptions({

@@ -92,6 +92,13 @@ public class AudioUtils {
 			throw new IOException("Number of channels must be one or two");
 		}
 
+//		WAVHeader wavHeader = new WAVHeader(1, (int) stream.getFormat().getSampleRate());
+//		wavHeader.advance(bytes.length);
+//		try (OutputStream os = new FileOutputStream("/home/ken/inter.wav")) {
+//			os.write(wavHeader.getBytes());
+//			os.write(bytes);
+//		}
+
 		// 2. Sample Frequencies lower than target frequency? Duplicate samples.
 		int factor = 1;
 		float srcSampleRate = stream.getFormat().getSampleRate();
@@ -103,16 +110,16 @@ public class AudioUtils {
 
 		// 3. down sampling to target frequency
 		if (srcSampleRate > targetSampleRate) {
-			ByteBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+			ShortBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
 			ByteBuffer resampledBuffer = ByteBuffer.allocateDirect(factor * bytes.length)
 					.order(ByteOrder.LITTLE_ENDIAN);
 
 			ResamplingState resamplingState = new ResamplingState();
-			Resampler downSampler = Resampler.createResampler(srcSampleRate, SamplingMethod.RESAMPLE, targetSampleRate,
-					sampleRate.getMiddleFrequency());
+			Resampler downSampler = Resampler.createResampler(stream.getFormat().getSampleRate(),
+					SamplingMethod.RESAMPLE, targetSampleRate, sampleRate.getMiddleFrequency());
 
 			while (sourceBuffer.hasRemaining()) {
-				short val = sourceBuffer.getShort();
+				short val = sourceBuffer.get();
 
 				for (int i = 0; i < factor; i++) {
 					int dither = resamplingState.triangularDithering();
@@ -129,9 +136,16 @@ public class AudioUtils {
 			((Buffer) resampledBuffer).rewind();
 			resampledBuffer.get(bytes);
 			factor = 1;
+
+//			wavHeader = new WAVHeader(1, sampleRate.getFrequency());
+//			wavHeader.advance(bytes.length);
+//			try (OutputStream os = new FileOutputStream("/home/ken/inter2.wav")) {
+//				os.write(wavHeader.getBytes());
+//				os.write(bytes);
+//			}
 		}
 		ByteBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
-		ShortBuffer resultBuffer = ShortBuffer.allocate(bytes.length * factor >> 1);
+		ShortBuffer resultBuffer = ShortBuffer.allocate(bytes.length * factor);
 		while (sourceBuffer.hasRemaining()) {
 			short val = sourceBuffer.getShort();
 
