@@ -74,7 +74,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 					.order(ByteOrder.LITTLE_ENDIAN);
 
 			WAVHeader wavHeader = new WAVHeader(1, targetSampleRate.getFrequency());
-			wavHeader.advance(samples.length);
+			wavHeader.advance(samples.length << 1);
 
 			try (OutputStream os = new FileOutputStream(wavFile)) {
 				os.write(wavHeader.getBytes());
