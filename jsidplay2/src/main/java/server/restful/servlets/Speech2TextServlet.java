@@ -66,6 +66,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 
 			info("Got: " + request.getContentLengthLong());
 
+			// XXX Test to use LOW instead!
 			SamplingRate targetSampleRate = SamplingRate.MEDIUM;
 			short[] samples = AudioUtils.convertToMonoWithSampleRate(request.getInputStream(), Integer.MAX_VALUE,
 					targetSampleRate);
