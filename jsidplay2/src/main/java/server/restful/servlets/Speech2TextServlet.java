@@ -91,8 +91,8 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 				}
 				os.write(sampleBuffer.array(), 0, sampleBuffer.position());
 			}
-			Process process = new ProcessBuilder("voice2json", "-p", "en", "transcribe-wav", "--open", wavFile.getAbsolutePath())
-					.start();
+			Process process = new ProcessBuilder("voice2json", "-p", "en", "transcribe-wav", "--open",
+					wavFile.getAbsolutePath()).start();
 			int waitFlag = process.waitFor();
 			if (waitFlag == 0) {
 				int returnVal = process.exitValue();
@@ -127,7 +127,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 					.order(ByteOrder.LITTLE_ENDIAN);
 
 			WAVHeader wavHeader = new WAVHeader(1, targetSampleRate.getFrequency());
-			wavHeader.advance(samples.length);
+			wavHeader.advance(samples.length << 1);
 
 			try (OutputStream os = new FileOutputStream("/home/ken/output.wav")) {
 				os.write(wavHeader.getBytes());
