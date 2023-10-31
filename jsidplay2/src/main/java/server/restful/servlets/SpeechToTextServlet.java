@@ -36,9 +36,9 @@ import server.restful.common.filters.RequestLogFilter;
 import sidplay.audio.wav.WAVHeader;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "Speech2TextServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/speech2text")
+@WebServlet(name = "SpeechToTextServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/speech2text")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
-public class Speech2TextServlet extends JSIDPlay2Servlet {
+public class SpeechToTextServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
@@ -66,7 +66,7 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 
 			info("Got: " + request.getContentLengthLong());
 
-			SamplingRate targetSampleRate = SamplingRate.MEDIUM;
+			SamplingRate targetSampleRate = SamplingRate.LOW;
 			short[] samples = AudioUtils.convertToMonoWithSampleRate(request.getInputStream(), Integer.MAX_VALUE,
 					targetSampleRate);
 
@@ -112,30 +112,4 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 			}
 		}
 	}
-
-//	public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
-//
-//		try (InputStream is = new FileInputStream("/home/ken/input.wav")) {
-//			SamplingRate targetSampleRate = SamplingRate.MEDIUM;
-//			short[] samples = AudioUtils.convertToMonoWithSampleRate(is, Integer.MAX_VALUE, targetSampleRate);
-//
-//			ByteBuffer sampleBuffer = ByteBuffer.allocate(targetSampleRate.getFrequency() * Short.BYTES)
-//					.order(ByteOrder.LITTLE_ENDIAN);
-//
-//			WAVHeader wavHeader = new WAVHeader(1, targetSampleRate.getFrequency());
-//			wavHeader.advance(samples.length << 1);
-//
-//			try (OutputStream os = new FileOutputStream("/home/ken/output.wav")) {
-//				os.write(wavHeader.getBytes());
-//
-//				for (short sample : samples) {
-//					if (!sampleBuffer.putShort(sample).hasRemaining()) {
-//						os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-//						((Buffer) sampleBuffer).flip();
-//					}
-//				}
-//				os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-//			}
-//		}
-//	}
 }

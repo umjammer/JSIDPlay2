@@ -11,8 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import libsidplay.config.IAudioSection;
 import libsidplay.config.ISidPlay2Section;
 import libsidutils.AudioUtils;
@@ -58,8 +56,6 @@ public class TextToSpeech implements Consumer<Player> {
 								((Buffer) player.getAudioDriver().buffer()).clear();
 							}
 						}
-					} catch (UnsupportedAudioFileException | IOException e) {
-						throw new IOException(e);
 					}
 				} else {
 					throw new IOException("Process failed with exit code: " + returnVal);
@@ -67,7 +63,7 @@ public class TextToSpeech implements Consumer<Player> {
 			} else {
 				throw new IOException("Process failed with waitFlag: " + waitFlag);
 			}
-		} catch (IOException | InterruptedException e) {
+		} catch (Throwable e) {
 			System.err.println(
 					"Error during Text2Speech! Install or deactivate it!? (apt-get install espeak or sudo apt install libttspico-utils)\n"
 							+ e.getMessage());

@@ -92,20 +92,13 @@ public class AudioUtils {
 			throw new IOException("Number of channels must be one or two");
 		}
 
-//		WAVHeader wavHeader = new WAVHeader(1, (int) stream.getFormat().getSampleRate());
-//		wavHeader.advance(bytes.length);
-//		try (OutputStream os = new FileOutputStream("/home/ken/inter.wav")) {
-//			os.write(wavHeader.getBytes());
-//			os.write(bytes);
-//		}
-
 		// 2. Sample Frequencies lower than target frequency? Duplicate samples.
 		int factor = 1;
 		float srcSampleRate = stream.getFormat().getSampleRate();
 		int targetSampleRate = sampleRate.getFrequency();
-		if (srcSampleRate < targetSampleRate) {
-			// difference must be big enough to work with out SincResampler!?
-			while (srcSampleRate - targetSampleRate <= 32000 ) {
+		// difference must be big enough to work with our SincResampler!
+		if (srcSampleRate != targetSampleRate) {
+			while (srcSampleRate / targetSampleRate < 2) {
 				srcSampleRate *= 2;
 				factor <<= 1;
 			}
@@ -140,13 +133,6 @@ public class AudioUtils {
 			resampledBuffer.get(bytes);
 			factor = 1;
 		}
-//		wavHeader = new WAVHeader(1, targetSampleRate);
-//		wavHeader.advance(bytes.length);
-//		try (OutputStream os = new FileOutputStream("/home/ken/inter2.wav")) {
-//			os.write(wavHeader.getBytes());
-//			os.write(bytes);
-//		}
-
 		ByteBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
 		ShortBuffer resultBuffer = ShortBuffer.allocate(bytes.length * factor);
 		while (sourceBuffer.hasRemaining()) {
@@ -156,27 +142,6 @@ public class AudioUtils {
 				resultBuffer.put(val);
 			}
 		}
-
-//		ByteBuffer sampleBuffer = ByteBuffer.allocate(targetSampleRate * Short.BYTES)
-//				.order(ByteOrder.LITTLE_ENDIAN);
-//
-//		wavHeader = new WAVHeader(1, targetSampleRate);
-//		wavHeader.advance(resultBuffer.limit()<<1);
-//
-//		try (OutputStream os = new FileOutputStream("/home/ken/inter3.wav")) {
-//			os.write(wavHeader.getBytes());
-//
-//			((Buffer)resultBuffer).flip();
-//			while (resultBuffer.hasRemaining()) {
-//				short val = resultBuffer.get();
-//
-//				if (!sampleBuffer.putShort(val).hasRemaining()) {
-//					os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-//					((Buffer) sampleBuffer).flip();
-//				}
-//			}
-//			os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-//		}
 		short[] shorts = new short[resultBuffer.position()];
 		((Buffer) resultBuffer).rewind();
 		resultBuffer.get(shorts);

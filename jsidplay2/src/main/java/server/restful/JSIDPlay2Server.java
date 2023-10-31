@@ -76,7 +76,7 @@ import server.restful.servlets.FiltersServlet;
 import server.restful.servlets.PhotoServlet;
 import server.restful.servlets.RandomHVSCServlet;
 import server.restful.servlets.STILServlet;
-import server.restful.servlets.Speech2TextServlet;
+import server.restful.servlets.SpeechToTextServlet;
 import server.restful.servlets.StartPageServlet;
 import server.restful.servlets.StaticServlet;
 import server.restful.servlets.TuneInfoServlet;
@@ -231,7 +231,7 @@ public final class JSIDPlay2Server {
 			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
 			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
 			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class, SIDBlasterMappingServlet.class,
-			RandomHVSCServlet.class, Speech2TextServlet.class);
+			RandomHVSCServlet.class, SpeechToTextServlet.class);
 
 	private static EntityManagerFactory entityManagerFactory;
 
