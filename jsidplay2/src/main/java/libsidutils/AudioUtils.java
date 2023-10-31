@@ -103,9 +103,12 @@ public class AudioUtils {
 		int factor = 1;
 		float srcSampleRate = stream.getFormat().getSampleRate();
 		int targetSampleRate = sampleRate.getFrequency();
-		while (srcSampleRate < targetSampleRate) {
-			srcSampleRate *= 2;
-			factor <<= 1;
+		if (srcSampleRate < targetSampleRate) {
+			// difference must be big enough to work with out SincResampler!?
+			while (srcSampleRate - targetSampleRate <= 32000 ) {
+				srcSampleRate *= 2;
+				factor <<= 1;
+			}
 		}
 
 		// 3. down sampling to target frequency
