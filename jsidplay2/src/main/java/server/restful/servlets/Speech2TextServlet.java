@@ -9,10 +9,8 @@ import static server.restful.common.IServletSystemProperties.MAX_SPEECH_TO_TEXT;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -21,8 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
@@ -117,29 +113,29 @@ public class Speech2TextServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
-
-		try (InputStream is = new FileInputStream("/home/ken/input.wav")) {
-			SamplingRate targetSampleRate = SamplingRate.MEDIUM;
-			short[] samples = AudioUtils.convertToMonoWithSampleRate(is, Integer.MAX_VALUE, targetSampleRate);
-
-			ByteBuffer sampleBuffer = ByteBuffer.allocate(targetSampleRate.getFrequency() * Short.BYTES)
-					.order(ByteOrder.LITTLE_ENDIAN);
-
-			WAVHeader wavHeader = new WAVHeader(1, targetSampleRate.getFrequency());
-			wavHeader.advance(samples.length << 1);
-
-			try (OutputStream os = new FileOutputStream("/home/ken/output.wav")) {
-				os.write(wavHeader.getBytes());
-
-				for (short sample : samples) {
-					if (!sampleBuffer.putShort(sample).hasRemaining()) {
-						os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-						((Buffer) sampleBuffer).flip();
-					}
-				}
-				os.write(sampleBuffer.array(), 0, sampleBuffer.position());
-			}
-		}
-	}
+//	public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
+//
+//		try (InputStream is = new FileInputStream("/home/ken/input.wav")) {
+//			SamplingRate targetSampleRate = SamplingRate.MEDIUM;
+//			short[] samples = AudioUtils.convertToMonoWithSampleRate(is, Integer.MAX_VALUE, targetSampleRate);
+//
+//			ByteBuffer sampleBuffer = ByteBuffer.allocate(targetSampleRate.getFrequency() * Short.BYTES)
+//					.order(ByteOrder.LITTLE_ENDIAN);
+//
+//			WAVHeader wavHeader = new WAVHeader(1, targetSampleRate.getFrequency());
+//			wavHeader.advance(samples.length << 1);
+//
+//			try (OutputStream os = new FileOutputStream("/home/ken/output.wav")) {
+//				os.write(wavHeader.getBytes());
+//
+//				for (short sample : samples) {
+//					if (!sampleBuffer.putShort(sample).hasRemaining()) {
+//						os.write(sampleBuffer.array(), 0, sampleBuffer.position());
+//						((Buffer) sampleBuffer).flip();
+//					}
+//				}
+//				os.write(sampleBuffer.array(), 0, sampleBuffer.position());
+//			}
+//		}
+//	}
 }
