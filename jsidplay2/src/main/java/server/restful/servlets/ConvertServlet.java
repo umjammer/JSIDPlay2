@@ -453,11 +453,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
 		}
 		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
-			Locale textToSpeechLocale = servletParameters.textToSpeechLocale != null
-					? servletParameters.textToSpeechLocale
-					: servletParameters.locale;
 			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType,
-					new TextToSpeechBean(file, player, textToSpeechLocale)));
+					new TextToSpeechBean(file, player, getTextToSpeechLocale(servletParameters))));
 		}
 		Thread[] parentThreads = of(currentThread()).toArray(Thread[]::new);
 
@@ -532,6 +529,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 		player.stopC64(false);
 		return videoFile;
+	}
+
+	private Locale getTextToSpeechLocale(ConvertServletParameters servletParameters) {
+		return servletParameters.textToSpeechLocale != null ? servletParameters.textToSpeechLocale
+				: servletParameters.locale;
 	}
 
 	private void insertCartridge(ConvertServletParameters servletParameters, Player player) throws IOException {
