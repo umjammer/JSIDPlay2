@@ -140,7 +140,7 @@ public enum TextToSpeechType {
 		Pattern pattern = Pattern.compile("([0-9]{4})-([0-9]{2})(?!-)(.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return resourceBundle.getString("IN") + " " + matcher.group(1) + " " + resourceBundle.getString("TO") + " "
+			return resourceBundle.getString("FROM") + " " + matcher.group(1) + " " + resourceBundle.getString("TO") + " "
 					+ matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
 		}
 		return string;

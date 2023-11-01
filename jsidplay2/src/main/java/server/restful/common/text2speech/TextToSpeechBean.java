@@ -94,7 +94,7 @@ public class TextToSpeechBean {
 					{
 						String next = ofNullable(nextSubTuneInfo.title).map(title -> title.replace("<?>", ""))
 								.orElse("");
-						basedOnTitle = next.isEmpty() ? resourceBundle.getString("UNKNOWN_TITLE") : next;
+						basedOnTitle = next.isEmpty() ? null : next;
 					}
 					{
 						String next = ofNullable(nextSubTuneInfo.artist).map(artist -> artist.replace("<?>", ""))
