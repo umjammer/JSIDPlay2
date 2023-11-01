@@ -175,8 +175,8 @@
                     /></label>
                   </span>
                 </div>
-                <b-button variant="success" v-on:click="startRecording()"> start recording </b-button>
-                <b-button variant="success" v-on:click="stopRecording()"> stop recording </b-button>
+                <b-button variant="success" v-on:click="startRecording()"> Start Speech Recognition </b-button>
+                <b-button variant="success" v-on:click="stopRecording()"> Stop Speech Recognition </b-button>
                 <p>{{ msg }}</p>
               </b-card-text>
             </b-tab>
