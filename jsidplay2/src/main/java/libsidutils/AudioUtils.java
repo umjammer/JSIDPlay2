@@ -134,7 +134,7 @@ public class AudioUtils {
 			factor = 1;
 		}
 		ByteBuffer sourceBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
-		ShortBuffer resultBuffer = ShortBuffer.allocate(bytes.length * factor);
+		ShortBuffer resultBuffer = ShortBuffer.allocate(bytes.length * factor); // XXX <<1?
 		while (sourceBuffer.hasRemaining()) {
 			short val = sourceBuffer.getShort();
 
