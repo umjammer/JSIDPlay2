@@ -85,7 +85,8 @@ public class TextToSpeechBean {
 			basedOnArtist = ofNullable(next.artist).map(artist -> artist.replace("<?>", "")).orElse(null);
 		}
 		if ((basedOnTitle == null || basedOnTitle.isEmpty()) && (basedOnArtist == null || basedOnArtist.isEmpty())) {
-			Optional<TuneEntry> subTune = stilEntry.getSubTunes().stream().findFirst();
+			Optional<TuneEntry> subTune = ofNullable(stilEntry).map(STILEntry::getSubTunes)
+					.orElse(new ArrayList<TuneEntry>()).stream().findFirst();
 			if (subTune.isPresent()) {
 				Iterator<Info> subTuneInfoIt = subTune.get().infos.iterator();
 				if (subTuneInfoIt.hasNext()) {
