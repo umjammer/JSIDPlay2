@@ -20,9 +20,12 @@ public class TextToSpeech implements Consumer<Player> {
 
 	private static final Logger LOG = Logger.getLogger(TextToSpeech.class.getName());
 
+	private TextToSpeechType textToSpeechType;
+
 	private TextToSpeechBean textToSpeechBean;
 
-	public TextToSpeech(TextToSpeechBean textToSpeechBean) {
+	public TextToSpeech(TextToSpeechType textToSpeechType, TextToSpeechBean textToSpeechBean) {
+		this.textToSpeechType = textToSpeechType;
 		this.textToSpeechBean = textToSpeechBean;
 	}
 
@@ -35,8 +38,7 @@ public class TextToSpeech implements Consumer<Player> {
 
 			wavFile = File.createTempFile("text2speech", ".wav", sidplay2Section.getTmpDir());
 
-			String[] processArguments = textToSpeechBean.getTextToSpeechType().getProcessArgumentsFunction()
-					.apply(textToSpeechBean, wavFile);
+			String[] processArguments = textToSpeechType.getProcessArgumentsFunction().apply(textToSpeechBean, wavFile);
 			if (LOG.isLoggable(Level.FINE)) {
 				LOG.fine(Arrays.asList(processArguments).stream().collect(Collectors.joining(" ")));
 			}

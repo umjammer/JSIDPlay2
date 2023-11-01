@@ -1,20 +1,14 @@
 package server.restful.common.text2speech;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import libsidutils.IOUtils;
-import libsidutils.stil.STIL.Info;
-import libsidutils.stil.STIL.STILEntry;
 import net.gcardone.junidecode.Junidecode;
-import sidplay.Player;
 
 public enum TextToSpeechType {
 	NONE(TextToSpeechType::createNoArgumentsFunction), PICO2WAVE(TextToSpeechType::createPico2WaveArgumentsFunction),
@@ -38,55 +32,26 @@ public enum TextToSpeechType {
 		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
 				textToSpeechBean.getTextToSpeechLocale());
 
-		String title = null, author = null, released = null;
-		Iterator<String> it = textToSpeechBean.getPlayer().getTune().getInfo().getInfoString().iterator();
-		if (it.hasNext()) {
-			String next = it.next().replace("<?>", "");
-			title = next.isEmpty() ? resourceBundle.getString("UNKNOWN_TITLE") : next;
-		}
-		if (it.hasNext()) {
-			String next = it.next().replace("<?>", "");
-			if (!next.isEmpty()) {
-				author = next;
-			}
-		}
-		if (it.hasNext()) {
-			String next = it.next().replace("<?>", "");
-			if (!next.isEmpty()) {
-				released = next;
-			}
-		}
-
-		String basedOnTitle = null, basedOnAuthor = null;
-		String collectionName = getCollectionName(textToSpeechBean.getPlayer(), textToSpeechBean.getTuneFile());
-		STILEntry stilEntry = textToSpeechBean.getPlayer().getStilEntry(collectionName);
-		Iterator<Info> infoIt = Optional.ofNullable(stilEntry).map(STILEntry::getInfos).orElse(new ArrayList<Info>())
-				.iterator();
-		if (infoIt.hasNext()) {
-			Info next = infoIt.next();
-			basedOnTitle = next.title;
-			basedOnAuthor = next.artist;
-		}
-
 		String text = "<volume level=\"75\"> <pitch level=\"140\">" + "<p>"
-				+ (title != null
-						? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": " + replaceSpecials(title) + "</s>"
+				+ (textToSpeechBean.getTitle() != null ? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": "
+						+ replaceSpecials(textToSpeechBean.getTitle()) + "</s>" : "")
+				+ (textToSpeechBean
+						.getAuthor() != null ? "<s>"
+								+ resourceBundle.getString("AUTHOR") + " "
+								+ replaceSpecials(replaceAliasName(textToSpeechBean.getAuthor(),
+										resourceBundle))
+								+ "</s>" : "")
+				+ (textToSpeechBean.getReleased() != null
+						? "<s>" + resourceBundle.getString("RELEASED") + " "
+								+ replaceSpecials(replaceUnknownDecade(replaceUnknownDate(
+										replaceDateRange(textToSpeechBean.getReleased(), resourceBundle),
+										resourceBundle), resourceBundle))
+								+ "</s>"
 						: "")
-				+ (author != null
-						? "<s>" + resourceBundle.getString("AUTHOR") + " "
-								+ replaceSpecials(replaceAliasName(author, resourceBundle)) + "</s>"
-						: "")
-				+ (released != null ? "<s>" + resourceBundle.getString("RELEASED") + " "
-						+ replaceSpecials(replaceUnknownDecade(
-								replaceUnknownDate(replaceDateRange(released, resourceBundle), resourceBundle),
-								resourceBundle))
-						+ "</s>" : "")
-				+ (basedOnTitle != null
-						? "<s>" + resourceBundle.getString("BASED_ON_ARTIST") + " "
-								+ replaceSpecials(removeBraces(basedOnTitle)) + "</s>"
-						: "")
-				+ (basedOnAuthor != null ? "<s>" + resourceBundle.getString("BASED_ON_AUTHOR") + " "
-						+ replaceSpecials(basedOnAuthor) + "</s>" : "")
+				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE")
+						+ " " + replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
+				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
+						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist()) + "</s>" : "")
 				+ "  </p>" + "</pitch></volume>";
 		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
 				"-w=" + wavFile.getAbsolutePath(), text };
@@ -105,76 +70,32 @@ public enum TextToSpeechType {
 		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
 				textToSpeechBean.getTextToSpeechLocale());
 
-		String title = null, author = null, released = null;
-		Iterator<String> it = textToSpeechBean.getPlayer().getTune().getInfo().getInfoString().iterator();
-		if (it.hasNext()) {
-			String next = it.next().replace("<?>", "");
-			title = next.isEmpty() ? resourceBundle.getString("UNKNOWN_TITLE") : next;
-		}
-		if (it.hasNext()) {
-			String next = it.next().replace("<?>", "");
-			if (!next.isEmpty()) {
-				author = next;
-			}
-		}
-		if (it.hasNext()) {
-			String next = it.next().replace("<?>", "");
-			if (!next.isEmpty()) {
-				released = next;
-			}
-		}
-
-		String basedOnTitle = null, basedOnAuthor = null;
-		String collectionName = getCollectionName(textToSpeechBean.getPlayer(), textToSpeechBean.getTuneFile());
-		STILEntry stilEntry = textToSpeechBean.getPlayer().getStilEntry(collectionName);
-		Iterator<Info> infoIt = Optional.ofNullable(stilEntry).map(STILEntry::getInfos).orElse(new ArrayList<Info>())
-				.iterator();
-		if (infoIt.hasNext()) {
-			Info next = infoIt.next();
-			basedOnTitle = next.title;
-			basedOnAuthor = next.artist;
-		}
-
 		String ssml = "<speak>" + "<voice language=\"" + textToSpeechBean.getTextToSpeechLocale().getLanguage()
 				+ "\" gender=\"female\">" + "<p>"
-				+ (title != null
-						? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": " + toLower(replaceSpecials(title))
+				+ (textToSpeechBean
+						.getTitle() != null
+								? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": " + toLower(replaceSpecials(
+										textToSpeechBean.getTitle())) + "</s>"
+								: "")
+				+ (textToSpeechBean
+						.getAuthor() != null ? "<s>"
+								+ resourceBundle.getString("AUTHOR") + " "
+								+ toLower(replaceSpecials(replaceAliasName(textToSpeechBean.getAuthor(),
+										resourceBundle)))
+								+ "</s>" : "")
+				+ (textToSpeechBean.getReleased() != null
+						? "<s>" + resourceBundle.getString("RELEASED") + " "
+								+ toLower(replaceSpecials(replaceUnknownDecade(replaceUnknownDate(
+										replaceDateRange(textToSpeechBean.getReleased(), resourceBundle),
+										resourceBundle), resourceBundle)))
 								+ "</s>"
 						: "")
-				+ (author != null
-						? "<s>" + resourceBundle.getString("AUTHOR") + " "
-								+ toLower(replaceSpecials(replaceAliasName(author, resourceBundle))) + "</s>"
-						: "")
-				+ (released != null ? "<s>" + resourceBundle.getString("RELEASED") + " "
-						+ toLower(replaceSpecials(replaceUnknownDecade(
-								replaceUnknownDate(replaceDateRange(released, resourceBundle), resourceBundle),
-								resourceBundle)))
-						+ "</s>" : "")
-				+ (basedOnTitle != null
-						? "<s>" + resourceBundle.getString("BASED_ON_ARTIST") + " "
-								+ replaceSpecials(removeBraces(basedOnTitle)) + "</s>"
-						: "")
-				+ (basedOnAuthor != null
-						? "<s>" + resourceBundle.getString("BASED_ON_AUTHOR") + " " + replaceSpecials(basedOnAuthor)
-								+ "</s>"
-						: "")
+				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE")
+						+ " " + replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
+				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
+						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist()) + "</s>" : "")
 				+ "  </p>" + "<voice>" + "</speak>";
 		return new String[] { "espeak", ssml, "-m", "-k20", "-a50", "-w", wavFile.getAbsolutePath() };
-	}
-
-	private static String getCollectionName(Player player, File file) {
-		String result = "";
-
-		File hvscRoot = player.getConfig().getSidplay2Section().getHvsc();
-		if (hvscRoot != null) {
-			// 1st Try from full path name...
-			result = IOUtils.getCollectionName(hvscRoot, file);
-			if (result.isEmpty()) {
-				// ... then try from MD5
-				result = player.getSidDatabaseInfo(sidDatabase -> sidDatabase.getPath(player.getTune()), "");
-			}
-		}
-		return result;
 	}
 
 	private static String replaceSpecials(String string) {

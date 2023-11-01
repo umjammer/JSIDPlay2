@@ -453,7 +453,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
 		}
 		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
-			player.setMenuHook(new TextToSpeech(createTextToSpeechBean(servletParameters, file, player)));
+			Locale textToSpeechLocale = servletParameters.textToSpeechLocale != null
+					? servletParameters.textToSpeechLocale
+					: servletParameters.locale;
+			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType,
+					new TextToSpeechBean(file, player, textToSpeechLocale)));
 		}
 		Thread[] parentThreads = of(currentThread()).toArray(Thread[]::new);
 
@@ -537,21 +541,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			player.insertCartridge(CartridgeType.REU,
 					servletParameters.reuSize != null ? servletParameters.reuSize : 16384);
 		}
-	}
-
-	private TextToSpeechBean createTextToSpeechBean(ConvertServletParameters servletParameters, File file,
-			Player player) {
-		TextToSpeechBean textToSpeechBean = new TextToSpeechBean();
-		textToSpeechBean.setTextToSpeechType(servletParameters.textToSpeechType);
-		textToSpeechBean.setTextToSpeechLocale(getTextToSpeechLocale(servletParameters));
-		textToSpeechBean.setTuneFile(file);
-		textToSpeechBean.setPlayer(player);
-		return textToSpeechBean;
-	}
-
-	private Locale getTextToSpeechLocale(ConvertServletParameters servletParameters) {
-		return servletParameters.textToSpeechLocale != null ? servletParameters.textToSpeechLocale
-				: servletParameters.locale;
 	}
 
 	private File createVideoFile(Player player, AudioDriver driver) throws IOException {
