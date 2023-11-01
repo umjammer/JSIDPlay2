@@ -1,5 +1,7 @@
 package server.restful.common.text2speech;
 
+import static java.util.Optional.ofNullable;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,9 +12,14 @@ import java.util.ResourceBundle;
 import libsidutils.IOUtils;
 import libsidutils.stil.STIL.Info;
 import libsidutils.stil.STIL.STILEntry;
+import libsidutils.stil.STIL.TuneEntry;
 import sidplay.Player;
 
 public class TextToSpeechBean {
+
+	private File tuneFile;
+	private Player player;
+	private Locale textToSpeechLocale;
 
 	private String title;
 	private String author;
@@ -20,8 +27,6 @@ public class TextToSpeechBean {
 
 	private String basedOnTitle;
 	private String basedOnArtist;
-
-	private Locale textToSpeechLocale;
 
 	public String getTitle() {
 		return title;
@@ -48,9 +53,12 @@ public class TextToSpeechBean {
 	}
 
 	public TextToSpeechBean(File tuneFile, Player player, Locale textToSpeechLocale) {
+		this.tuneFile = tuneFile;
+		this.player = player;
 		this.textToSpeechLocale = textToSpeechLocale;
-		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(), textToSpeechLocale);
+	}
 
+	public void determineText2Speek(ResourceBundle resourceBundle) {
 		Iterator<String> it = player.getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
@@ -68,17 +76,36 @@ public class TextToSpeechBean {
 				released = next;
 			}
 		}
+
 		STILEntry stilEntry = player.getStilEntry(getCollectionName(player, tuneFile));
-		Iterator<Info> infoIt = Optional.ofNullable(stilEntry).map(STILEntry::getInfos).orElse(new ArrayList<Info>())
-				.iterator();
+		Iterator<Info> infoIt = ofNullable(stilEntry).map(STILEntry::getInfos).orElse(new ArrayList<Info>()).iterator();
 		if (infoIt.hasNext()) {
 			Info next = infoIt.next();
-			basedOnTitle = Optional.ofNullable(next.title).map(title -> title.replace("<?>", "")).orElse(null);
-			basedOnArtist = Optional.ofNullable(next.artist).map(artist -> artist.replace("<?>", "")).orElse(null);
+			basedOnTitle = ofNullable(next.title).map(title -> title.replace("<?>", "")).orElse(null);
+			basedOnArtist = ofNullable(next.artist).map(artist -> artist.replace("<?>", "")).orElse(null);
+		}
+		if ((basedOnTitle == null || basedOnTitle.isEmpty()) && (basedOnArtist == null || basedOnArtist.isEmpty())) {
+			Optional<TuneEntry> subTune = stilEntry.getSubTunes().stream().findFirst();
+			if (subTune.isPresent()) {
+				Iterator<Info> subTuneInfoIt = subTune.get().infos.iterator();
+				if (subTuneInfoIt.hasNext()) {
+					Info nextSubTuneInfo = subTuneInfoIt.next();
+					{
+						String next = ofNullable(nextSubTuneInfo.title).map(title -> title.replace("<?>", ""))
+								.orElse("");
+						basedOnTitle = next.isEmpty() ? resourceBundle.getString("UNKNOWN_TITLE") : next;
+					}
+					{
+						String next = ofNullable(nextSubTuneInfo.artist).map(artist -> artist.replace("<?>", ""))
+								.orElse("");
+						basedOnArtist = next.isEmpty() ? null : next;
+					}
+				}
+			}
 		}
 	}
 
-	private static String getCollectionName(Player player, File file) {
+	private String getCollectionName(Player player, File file) {
 		String result = "";
 
 		File hvscRoot = player.getConfig().getSidplay2Section().getHvsc();

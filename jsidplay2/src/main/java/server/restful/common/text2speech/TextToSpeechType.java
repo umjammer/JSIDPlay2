@@ -31,6 +31,7 @@ public enum TextToSpeechType {
 	private static String[] createPico2WaveArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
 		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
 				textToSpeechBean.getTextToSpeechLocale());
+		textToSpeechBean.determineText2Speek(resourceBundle);
 
 		String text = "<volume level=\"75\"> <pitch level=\"140\">" + "<p>"
 				+ (textToSpeechBean.getTitle() != null ? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": "
@@ -48,8 +49,8 @@ public enum TextToSpeechType {
 										resourceBundle), resourceBundle))
 								+ "</s>"
 						: "")
-				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE")
-						+ " " + replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
+				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE") + " "
+						+ replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
 				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
 						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist()) + "</s>" : "")
 				+ "  </p>" + "</pitch></volume>";
@@ -69,6 +70,7 @@ public enum TextToSpeechType {
 	private static String[] createEspeakArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
 		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
 				textToSpeechBean.getTextToSpeechLocale());
+		textToSpeechBean.determineText2Speek(resourceBundle);
 
 		String ssml = "<speak>" + "<voice language=\"" + textToSpeechBean.getTextToSpeechLocale().getLanguage()
 				+ "\" gender=\"female\">" + "<p>"
@@ -90,8 +92,8 @@ public enum TextToSpeechType {
 										resourceBundle), resourceBundle)))
 								+ "</s>"
 						: "")
-				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE")
-						+ " " + replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
+				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE") + " "
+						+ replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
 				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
 						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist()) + "</s>" : "")
 				+ "  </p>" + "<voice>" + "</speak>";
