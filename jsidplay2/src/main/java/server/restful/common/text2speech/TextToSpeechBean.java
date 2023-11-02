@@ -58,7 +58,7 @@ public class TextToSpeechBean {
 		this.textToSpeechLocale = textToSpeechLocale;
 	}
 
-	public void determineText2Speek(ResourceBundle resourceBundle) {
+	public void determineText2Speak(ResourceBundle resourceBundle) {
 		Iterator<String> it = player.getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");
