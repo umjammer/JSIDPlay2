@@ -30,7 +30,7 @@ public interface IWhatsSidSystemProperties {
 	 * prevent blocking database connections during database startup.
 	 */
 	int QUERY_TIMEOUT = Integer
-			.valueOf(System.getProperty("jsidplay2.whatssid.query.timeout", valueOf(30/* s */ * 1000)));
+			.valueOf(System.getProperty("jsidplay2.whatssid.query.timeout", valueOf(120/* s */ * 1000)));
 
 	/**
 	 * RecordingTool: maximum number of days to wait for all threads to complete

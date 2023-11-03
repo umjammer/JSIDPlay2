@@ -4,6 +4,7 @@ import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.apache.catalina.startup.Tomcat.addServlet;
+import static server.restful.common.IServletSystemProperties.ASYNC_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.COMPRESSION;
 import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_KEEP_ALIVE_TIMEOUT;
@@ -391,6 +392,7 @@ public final class JSIDPlay2Server {
 		httpConnector.setURIEncoding(UTF_8.name());
 		httpConnector.setScheme(Connectors.HTTP.getPreferredProtocol());
 		httpConnector.setPort(emulationSection.getAppServerPort());
+		httpConnector.setAsyncTimeout(ASYNC_TIMEOUT);
 
 		Http11Nio2Protocol protocol = (Http11Nio2Protocol) httpConnector.getProtocolHandler();
 		protocol.setConnectionTimeout(CONNECTION_TIMEOUT);
@@ -404,6 +406,7 @@ public final class JSIDPlay2Server {
 		httpsConnector.setURIEncoding(UTF_8.name());
 		httpsConnector.setScheme(Connectors.HTTPS.getPreferredProtocol());
 		httpsConnector.setPort(emulationSection.getAppServerSecurePort());
+		httpsConnector.setAsyncTimeout(ASYNC_TIMEOUT);
 		httpsConnector.setSecure(true);
 		if (USE_HTTP2) {
 			Http2Protocol h2 = new Http2Protocol();
@@ -454,6 +457,7 @@ public final class JSIDPlay2Server {
 
 			WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
 			Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
+			wrapper.setAsyncSupported(webServlet.asyncSupported());
 			Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
 
 			result.add(servlet);

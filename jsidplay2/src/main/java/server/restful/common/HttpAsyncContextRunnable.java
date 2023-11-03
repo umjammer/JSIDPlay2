@@ -1,0 +1,62 @@
+package server.restful.common;
+
+import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+
+import java.io.IOException;
+
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public abstract class HttpAsyncContextRunnable implements Runnable {
+
+	private AsyncContext asyncContext;
+	private JSIDPlay2Servlet servlet;
+	private Thread[] parentThreads;
+
+	public HttpAsyncContextRunnable(AsyncContext asyncContext, JSIDPlay2Servlet servlet, Thread... parentThreads) {
+		this.asyncContext = asyncContext;
+		this.servlet = servlet;
+		this.parentThreads = parentThreads;
+
+		asyncContext.addListener(new DefaultAsyncListener() {
+
+			public void onTimeout(AsyncEvent event) throws IOException {
+				servlet.warn("Asynchronous servlet timeout", parentThreads);
+				getResponse().sendError(SC_SERVICE_UNAVAILABLE, "Asynchronous servlet timeout");
+				asyncContext.complete();
+			}
+
+			@Override
+			public void onError(AsyncEvent event) throws IOException {
+				asyncContext.complete();
+			}
+		});
+	}
+
+	protected HttpServletRequest getRequest() {
+		return (HttpServletRequest) asyncContext.getRequest();
+	}
+
+	protected HttpServletResponse getResponse() {
+		return (HttpServletResponse) asyncContext.getResponse();
+	}
+
+	@Override
+	public final void run() {
+		try {
+			execute();
+		} catch (Throwable t) {
+			servlet.warn(t.getMessage(), parentThreads);
+		} finally {
+			try {
+				asyncContext.complete();
+			} catch (Throwable t) {
+				servlet.warn(t.getMessage(), parentThreads);
+			}
+		}
+	}
+
+	protected abstract void execute() throws IOException;
+}

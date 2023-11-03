@@ -54,6 +54,9 @@ public final class RequestLogFilter extends HttpFilter {
 	private String thread(Thread thread) {
 		StringBuilder result = new StringBuilder();
 		result.append(thread.getName());
+		result.append(" (");
+		result.append(thread.getId());
+		result.append(")");
 		result.append(": ");
 		return result.toString();
 	}

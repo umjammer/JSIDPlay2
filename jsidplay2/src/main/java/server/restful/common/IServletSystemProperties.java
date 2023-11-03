@@ -20,6 +20,11 @@ public interface IServletSystemProperties {
 	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
 
 	/**
+	 * Asynchronous servlets default timeout in ms.
+	 */
+	int ASYNC_TIMEOUT = valueOf(getProperty("jsidplay2.async.timeout", "60000"));
+	
+	/**
 	 * Time in s to check for obsolete directories to delete
 	 */
 	int CLEANUP_DIRECTORY_PERIOD = valueOf(getProperty("jsidplay2.cleanup.directory.period", "300"));
@@ -239,11 +244,6 @@ public interface IServletSystemProperties {
 	 * WhatsSID? First serve RTMP requests, disable WhatsSID requests meanwhile.
 	 */
 	boolean WHATSID_LOW_PRIO = Boolean.valueOf(getProperty("jsidplay2.whatssid.low_prio", "true"));
-
-	/**
-	 * WhatsSID? Maximum number of requests in parallel.
-	 */
-	int MAX_WHATSIDS_IN_PARALLEL = valueOf(getProperty("jsidplay2.whatssid.max.parallel", "7"));
 
 	/**
 	 * WhatsSID? Cache size. Recognized audio is cached for repeated requests for
