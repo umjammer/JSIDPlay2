@@ -77,7 +77,8 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 
 		final Thread parentThread = currentThread();
-		final AsyncContext asyncContext = request.startAsync();
+		//final AsyncContext asyncContext = request.startAsync(); XXX !?
+		final AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.start(new HttpAsyncContextRunnable(asyncContext, this, parentThread) {
 
 			public void execute() throws IOException {
