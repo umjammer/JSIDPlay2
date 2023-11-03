@@ -23,7 +23,7 @@ public interface IWhatsSidSystemProperties {
 	 * WhatsSID? Maximum number of audio frames used to recognize an uploaded tune.
 	 */
 	long UPLOAD_FRAME_MAXIMUM_LENGTH = Long.valueOf(
-			getProperty("jsidplay2.whatssid.upload.frame.max.length", valueOf(120/* s */ * VERY_LOW.getFrequency())));
+			getProperty("jsidplay2.whatssid.upload.frame.max.length", valueOf(45/* s */ * VERY_LOW.getFrequency())));
 
 	/**
 	 * WhatsSID? Query timeout in ms of tune recognition's findHashes query to
