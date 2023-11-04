@@ -54,6 +54,8 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			asyncContext.complete();
 		} catch (Throwable t) {
 			if (LOG.isLoggable(Level.FINEST)) {
+				servlet.error(t, parentThreads);
+			} else {
 				servlet.warn(t.getMessage(), parentThreads);
 			}
 		}
@@ -64,7 +66,11 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 		try {
 			execute();
 		} catch (Throwable t) {
-			servlet.warn(t.getMessage(), parentThreads);
+			if (LOG.isLoggable(Level.FINEST)) {
+				servlet.error(t, parentThreads);
+			} else {
+				servlet.warn(t.getMessage(), parentThreads);
+			}
 		} finally {
 			complete();
 		}

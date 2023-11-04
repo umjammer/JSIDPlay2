@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.persistence.EntityManager;
@@ -55,10 +55,20 @@ import ui.entities.whatssid.service.WhatsSidService;
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class WhatsSidServlet extends JSIDPlay2Servlet {
 
-	private static final Executor EXECUTOR = Executors.newFixedThreadPool(MAX_WHATSIDS_IN_PARALLEL);
-
 	private static final Map<Integer, MusicInfoWithConfidenceBean> MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP = Collections
 			.synchronizedMap(new LRUCache<Integer, MusicInfoWithConfidenceBean>(CACHE_SIZE));
+
+	private ExecutorService executor;
+
+	@Override
+	public void init() throws ServletException {
+		executor = Executors.newFixedThreadPool(MAX_WHATSIDS_IN_PARALLEL);
+	}
+
+	@Override
+	public void destroy() {
+		executor.shutdown();
+	}
 
 	@Override
 	public List<Filter> getServletFilters() {
@@ -83,7 +93,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 
-		EXECUTOR.execute(new HttpAsyncContextRunnable(asyncContext, this, currentThread()) {
+		executor.execute(new HttpAsyncContextRunnable(asyncContext, this, currentThread()) {
 
 			public void execute() throws IOException {
 				try {
