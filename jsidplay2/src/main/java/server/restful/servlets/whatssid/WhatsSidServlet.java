@@ -100,14 +100,21 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 						MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
 						info(valueOf(musicInfoWithConfidence), parentThread);
 					}
-					setOutput(getRequest(), getResponse(), musicInfoWithConfidence, MusicInfoWithConfidenceBean.class);
+					if (getResponse() != null) {
+						setOutput(getRequest(), getResponse(), musicInfoWithConfidence,
+								MusicInfoWithConfidenceBean.class);
+					}
 				} catch (QueryTimeoutException qte) {
 					warn(qte.getClass().getName(), parentThread);
-					getResponse().sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
+					if (getResponse() != null) {
+						getResponse().sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
+					}
 				} catch (Throwable t) {
 					warn(t.getMessage(), parentThread);
-					getResponse().setStatus(SC_INTERNAL_SERVER_ERROR);
-					setOutput(getResponse(), MIME_TYPE_TEXT, t);
+					if (getResponse() != null) {
+						getResponse().setStatus(SC_INTERNAL_SERVER_ERROR);
+						setOutput(getResponse(), MIME_TYPE_TEXT, t);
+					}
 				} finally {
 					freeEntityManager();
 				}

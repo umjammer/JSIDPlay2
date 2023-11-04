@@ -199,23 +199,21 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected <T> void setOutput(HttpServletRequest request, HttpServletResponse response, T result, Class<T> tClass) {
-		if (response != null) {
-			try (ServletOutputStream out = response.getOutputStream()) {
-				if (result == null) {
-					return;
-				}
-				Optional<String> optionalContentType = ofNullable(request.getHeader(ACCEPT))
-						.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
-				if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
-					response.setContentType(MIME_TYPE_JSON.toString());
-					OBJECT_MAPPER.writeValue(out, result);
-				} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
-					response.setContentType(MIME_TYPE_XML.toString());
-					JAXBContext.newInstance(tClass).createMarshaller().marshal(result, out);
-				}
-			} catch (Exception e) {
-				error(e);
+		try (ServletOutputStream out = response.getOutputStream()) {
+			if (result == null) {
+				return;
 			}
+			Optional<String> optionalContentType = ofNullable(request.getHeader(ACCEPT))
+					.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
+			if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
+				response.setContentType(MIME_TYPE_JSON.toString());
+				OBJECT_MAPPER.writeValue(out, result);
+			} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
+				response.setContentType(MIME_TYPE_XML.toString());
+				JAXBContext.newInstance(tClass).createMarshaller().marshal(result, out);
+			}
+		} catch (Exception e) {
+			error(e);
 		}
 	}
 
@@ -226,12 +224,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String message)
 			throws JsonProcessingException, IOException {
-		if (response != null) {
-			response.setContentType(ct.toString());
-			try (PrintStream out = new PrintStream(response.getOutputStream(), true,
-					ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
-				out.print(message);
-			}
+		response.setContentType(ct.toString());
+		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
+				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
+			out.print(message);
 		}
 	}
 
