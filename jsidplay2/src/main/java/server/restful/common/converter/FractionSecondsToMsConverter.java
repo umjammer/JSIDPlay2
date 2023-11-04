@@ -16,6 +16,9 @@ public final class FractionSecondsToMsConverter extends BaseConverter<Long> {
 	@Override
 	public Long convert(String value) {
 		try {
+			if ("NaN".equals(value)) {
+				return null;
+			}
 			return Optional.ofNullable(value).map(BigDecimal::new)
 					.map(seconds -> seconds.setScale(3, RoundingMode.DOWN).movePointRight(3).longValue()).orElse(0L);
 		} catch (NumberFormatException e) {
