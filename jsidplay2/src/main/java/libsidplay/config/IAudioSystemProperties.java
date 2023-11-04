@@ -19,5 +19,5 @@ public interface IAudioSystemProperties {
 	 * Video streaming: To slow down video production, if client viewer is far
 	 * behind. Sleep time of the SleepDriver in ms.
 	 */
-	long SLEEP_DRIVER_SLEEP_TIME = Long.valueOf(System.getProperty("jsidplay2.sleep_driver.sleep_time", "1000"));
+	long SLEEP_DRIVER_SLEEP_TIME = Long.valueOf(System.getProperty("jsidplay2.sleep_driver.sleep_time", "250"));
 }
