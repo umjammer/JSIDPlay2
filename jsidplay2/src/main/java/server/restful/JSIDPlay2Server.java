@@ -233,7 +233,9 @@ public final class JSIDPlay2Server {
 			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class, SIDBlasterMappingServlet.class,
 			RandomHVSCServlet.class, SpeechToTextServlet.class);
 
-	private static EntityManagerFactory entityManagerFactory;
+	private static JSIDPlay2Server INSTANCE;
+	
+	private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
 
 	private static final ThreadLocal<EntityManager> THREAD_LOCAL_ENTITY_MANAGER = new ThreadLocal<>();
 
@@ -249,16 +251,14 @@ public final class JSIDPlay2Server {
 
 	private STIL stil;
 
-	private static JSIDPlay2Server instance;
-
 	private JSIDPlay2Server() {
 	}
 
 	public static synchronized JSIDPlay2Server getInstance(Configuration configuration) {
-		if (instance == null) {
-			instance = create(configuration);
+		if (INSTANCE == null) {
+			INSTANCE = create(configuration);
 		}
-		return instance;
+		return INSTANCE;
 	}
 
 	private static JSIDPlay2Server create(Configuration configuration) {
@@ -509,8 +509,8 @@ public final class JSIDPlay2Server {
 
 	private static void exit(int rc) {
 		try {
-			if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-				entityManagerFactory.close();
+			if (ENTITY_MANAGER_FACTORY != null && ENTITY_MANAGER_FACTORY.isOpen()) {
+				ENTITY_MANAGER_FACTORY.close();
 			}
 			System.out.println("Press <enter> to exit the player!");
 			System.in.read();
@@ -531,8 +531,8 @@ public final class JSIDPlay2Server {
 				commander.usage();
 				exit(0);
 			}
-			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && entityManagerFactory == null) {
-				entityManagerFactory = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
+			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && ENTITY_MANAGER_FACTORY == null) {
+				ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
 						new PersistenceProperties(jsidplay2Server.parameters.whatsSidDatabaseDriver,
 								jsidplay2Server.parameters.whatsSidDatabaseUrl,
 								jsidplay2Server.parameters.whatsSidDatabaseUsername,
@@ -549,13 +549,13 @@ public final class JSIDPlay2Server {
 	}
 
 	public static EntityManager getEntityManager() throws IOException {
-		if (entityManagerFactory == null) {
+		if (ENTITY_MANAGER_FACTORY == null) {
 			throw new IOException("Database required, please specify command line parameters!");
 		}
 		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
 
 		if (em == null) {
-			em = entityManagerFactory.createEntityManager();
+			em = ENTITY_MANAGER_FACTORY.createEntityManager();
 			THREAD_LOCAL_ENTITY_MANAGER.set(em);
 		}
 		return em;
