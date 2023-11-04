@@ -246,6 +246,11 @@ public interface IServletSystemProperties {
 	boolean WHATSID_LOW_PRIO = Boolean.valueOf(getProperty("jsidplay2.whatssid.low_prio", "true"));
 
 	/**
+	 * WhatsSID? Maximum number of requests in parallel.
+	 */
+	int MAX_WHATSIDS_IN_PARALLEL = valueOf(getProperty("jsidplay2.whatssid.max.parallel", "7"));
+
+	/**
 	 * WhatsSID? Cache size. Recognized audio is cached for repeated requests for
 	 * performance reasons.
 	 */

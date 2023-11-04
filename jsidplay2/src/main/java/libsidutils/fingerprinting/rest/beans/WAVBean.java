@@ -13,7 +13,7 @@ public class WAVBean {
 
 	private byte[] wav;
 
-	private long frameMaxLength;
+	private long maxSeconds;
 
 	public WAVBean() {
 		this(null);
@@ -32,14 +32,14 @@ public class WAVBean {
 		this.wav = wav;
 	}
 
-	public long getFrameMaxLength() {
-		return frameMaxLength;
+	public long getMaxSeconds() {
+		return maxSeconds;
 	}
 
 	@XmlTransient
 	@JsonIgnore
-	public void setFrameMaxLength(long frameMaxLength) {
-		this.frameMaxLength = frameMaxLength;
+	public void setMaxSeconds(long maxLength) {
+		this.maxSeconds = maxLength;
 	}
 
 	@Override

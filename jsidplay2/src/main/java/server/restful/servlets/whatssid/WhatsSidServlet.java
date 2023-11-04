@@ -4,8 +4,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.String.valueOf;
 import static java.lang.Thread.currentThread;
-import static libsidplay.config.IWhatsSidSystemProperties.FRAME_MAX_LENGTH;
-import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_FRAME_MAXIMUM_LENGTH;
+import static libsidplay.config.IWhatsSidSystemProperties.MAX_SECONDS;
+import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_MAXIMUM_SECONDS;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
@@ -13,6 +13,7 @@ import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
+import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 
@@ -22,6 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.QueryTimeoutException;
@@ -52,6 +55,8 @@ import ui.entities.whatssid.service.WhatsSidService;
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class WhatsSidServlet extends JSIDPlay2Servlet {
 
+	private static final Executor EXECUTOR = Executors.newFixedThreadPool(MAX_WHATSIDS_IN_PARALLEL);
+
 	private static final Map<Integer, MusicInfoWithConfidenceBean> MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP = Collections
 			.synchronizedMap(new LRUCache<Integer, MusicInfoWithConfidenceBean>(CACHE_SIZE));
 
@@ -77,8 +82,9 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 
 		final Thread parentThread = currentThread();
-		final AsyncContext asyncContext = request.startAsync();
-		asyncContext.start(new HttpAsyncContextRunnable(asyncContext, this, parentThread) {
+		AsyncContext asyncContext = request.startAsync(request, response);
+
+		EXECUTOR.execute(new HttpAsyncContextRunnable(asyncContext, this, parentThread) {
 
 			public void execute() throws IOException {
 				try {
@@ -114,8 +120,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			throws IOException {
 		WhatsSidService whatsSidService = new WhatsSidService(entityManager);
 		FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
-		wavBean.setFrameMaxLength(
-				ServletFileUpload.isMultipartContent(request) ? UPLOAD_FRAME_MAXIMUM_LENGTH : FRAME_MAX_LENGTH);
+		wavBean.setMaxSeconds(ServletFileUpload.isMultipartContent(request) ? UPLOAD_MAXIMUM_SECONDS : MAX_SECONDS);
 		return fingerPrinting.match(wavBean);
 	}
 

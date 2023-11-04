@@ -38,8 +38,8 @@ public class FingerPrinting implements IFingerprintMatcher, IFingerprintInserter
 			if (!fingerPrintingDataSource.tuneExists(musicInfoBean)) {
 
 				try (InputStream is = new ByteArrayInputStream(wavBean.getWav())) {
-					Fingerprint fingerprint = new Fingerprint(config, AudioUtils.convertToMonoWithSampleRate(is,
-							wavBean.getFrameMaxLength(), SamplingRate.VERY_LOW));
+					Fingerprint fingerprint = new Fingerprint(config,
+							AudioUtils.convertToMonoWithSampleRate(is, wavBean.getMaxSeconds(), SamplingRate.VERY_LOW));
 
 					musicInfoBean.setAudioLength(fingerprint.getAudioLength());
 
@@ -58,7 +58,7 @@ public class FingerPrinting implements IFingerprintMatcher, IFingerprintInserter
 
 			try (InputStream is = new ByteArrayInputStream(wavBean.getWav())) {
 				Fingerprint fingerprint = new Fingerprint(config,
-						AudioUtils.convertToMonoWithSampleRate(is, wavBean.getFrameMaxLength(), SamplingRate.VERY_LOW));
+						AudioUtils.convertToMonoWithSampleRate(is, wavBean.getMaxSeconds(), SamplingRate.VERY_LOW));
 
 				Index index = new Index();
 				index.setFingerPrintingClient(fingerPrintingDataSource);

@@ -2,7 +2,6 @@ package libsidplay.config;
 
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperty;
-import static libsidplay.common.SamplingRate.VERY_LOW;
 
 /**
  * Some system properties to fine tune JSIDPlay2 without touching the
@@ -14,16 +13,15 @@ import static libsidplay.common.SamplingRate.VERY_LOW;
 public interface IWhatsSidSystemProperties {
 
 	/**
-	 * WhatsSID? Maximum number of audio frames used to recognize a tune.
+	 * WhatsSID? Maximum number of seconds used to recognize a tune.
 	 */
-	long FRAME_MAX_LENGTH = Long.valueOf(
-			System.getProperty("jsidplay2.whatssid.frame.max.length", valueOf(15/* s */ * VERY_LOW.getFrequency())));
+	long MAX_SECONDS = Long.valueOf(System.getProperty("jsidplay2.whatssid.max.seconds", valueOf(15/* s */)));
 
 	/**
-	 * WhatsSID? Maximum number of audio frames used to recognize an uploaded tune.
+	 * WhatsSID? Maximum number of seconds used to recognize an uploaded tune.
 	 */
-	long UPLOAD_FRAME_MAXIMUM_LENGTH = Long.valueOf(
-			getProperty("jsidplay2.whatssid.upload.frame.max.length", valueOf(45/* s */ * VERY_LOW.getFrequency())));
+	long UPLOAD_MAXIMUM_SECONDS = Long
+			.valueOf(getProperty("jsidplay2.whatssid.upload.max.seconds", valueOf(45/* s */)));
 
 	/**
 	 * WhatsSID? Query timeout in ms of tune recognition's findHashes query to

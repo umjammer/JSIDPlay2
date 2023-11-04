@@ -45,15 +45,15 @@ public class AudioUtils {
 	 * sample data.
 	 * </OL>
 	 * 
-	 * @param is             audio input stream
-	 * @param maxFrameLength maximum number of sample frames to use (rest of the
-	 *                       available audio input samples are discarded)
-	 * @param sampleRate     target sample rate
+	 * @param is         audio input stream
+	 * @param maxSeconds maximum number of seconds to use (rest of the available
+	 *                   audio input samples are discarded)
+	 * @param sampleRate target sample rate
 	 * @return samples in the resulting format
 	 * @throws IOException                   I/O error
 	 * @throws UnsupportedAudioFileException audio input format not supported
 	 */
-	public static short[] convertToMonoWithSampleRate(InputStream is, long maxFrameLength, SamplingRate sampleRate)
+	public static short[] convertToMonoWithSampleRate(InputStream is, long maxSeconds, SamplingRate sampleRate)
 			throws IOException, UnsupportedAudioFileException {
 		AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
 		if (stream.getFormat().getSampleSizeInBits() != Short.SIZE) {
@@ -65,8 +65,9 @@ public class AudioUtils {
 		if (stream.getFormat().isBigEndian()) {
 			throw new IOException("LittleEndian expected");
 		}
-		byte[] bytes = new byte[(int) (Math.min(stream.getFrameLength(), maxFrameLength)
-				* stream.getFormat().getChannels() * Short.BYTES)];
+		byte[] bytes = new byte[(int) (Math.min(
+				stream.getFrameLength() * stream.getFormat().getChannels() * Short.BYTES,
+				maxSeconds * stream.getFormat().getSampleRate() * stream.getFormat().getChannels() * Short.BYTES))];
 
 		int read = readNBytes(stream, bytes, 0, bytes.length);
 		if (read < bytes.length) {
@@ -74,10 +75,9 @@ public class AudioUtils {
 		}
 
 		// remove wasted audio (exceeding frameMaxLength)
-		if (stream.getFrameLength() > maxFrameLength) {
-			int length = (int) ((stream.getFrameLength() - maxFrameLength) * stream.getFormat().getChannels()
-					* Short.BYTES);
-			readNBytes(stream, new byte[length], 0, length);
+		int wasted = (int) (stream.getFrameLength() * stream.getFormat().getChannels() * Short.BYTES) - read;
+		if (wasted > 0) {
+			readNBytes(stream, new byte[wasted], 0, wasted);
 		}
 
 		// 1. stereo to mono conversion
