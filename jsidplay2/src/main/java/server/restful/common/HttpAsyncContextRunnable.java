@@ -17,7 +17,7 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 
 	private AsyncContext asyncContext;
 	private JSIDPlay2Servlet servlet;
-	private Thread[] parentThreads;
+	protected Thread[] parentThreads;
 
 	public HttpAsyncContextRunnable(AsyncContext asyncContext, JSIDPlay2Servlet servlet, Thread... parentThreads) {
 		this.asyncContext = asyncContext;
@@ -28,7 +28,9 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 
 			public void onTimeout(AsyncEvent event) throws IOException {
 				servlet.warn("Asynchronous servlet timeout", parentThreads);
-				getResponse().sendError(SC_SERVICE_UNAVAILABLE, "Asynchronous servlet timeout");
+				if (getResponse() != null) {
+					getResponse().sendError(SC_SERVICE_UNAVAILABLE, "Asynchronous servlet timeout");
+				}
 				complete();
 			}
 
@@ -47,6 +49,16 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 		return (HttpServletResponse) asyncContext.getResponse();
 	}
 
+	private void complete() {
+		try {
+			asyncContext.complete();
+		} catch (Throwable t) {
+			if (LOG.isLoggable(Level.FINEST)) {
+				servlet.warn(t.getMessage(), parentThreads);
+			}
+		}
+	}
+
 	@Override
 	public final void run() {
 		try {
@@ -55,16 +67,6 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			servlet.warn(t.getMessage(), parentThreads);
 		} finally {
 			complete();
-		}
-	}
-
-	private void complete() {
-		try {
-			asyncContext.complete();
-		} catch (Throwable t) {
-			if (LOG.isLoggable(Level.FINEST)) {
-				servlet.warn(t.getMessage(), parentThreads);
-			}
 		}
 	}
 

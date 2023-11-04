@@ -81,10 +81,9 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		final Thread parentThread = currentThread();
 		AsyncContext asyncContext = request.startAsync(request, response);
 
-		EXECUTOR.execute(new HttpAsyncContextRunnable(asyncContext, this, parentThread) {
+		EXECUTOR.execute(new HttpAsyncContextRunnable(asyncContext, this, currentThread()) {
 
 			public void execute() throws IOException {
 				try {
@@ -94,23 +93,23 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 					MusicInfoWithConfidenceBean musicInfoWithConfidence;
 					if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
 						musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
-						info(valueOf(musicInfoWithConfidence) + " (cached)", parentThread);
+						info(valueOf(musicInfoWithConfidence) + " (cached)", parentThreads);
 					} else {
 						musicInfoWithConfidence = match(getRequest(), getEntityManager(), wavBean);
 						MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-						info(valueOf(musicInfoWithConfidence), parentThread);
+						info(valueOf(musicInfoWithConfidence), parentThreads);
 					}
 					if (getResponse() != null) {
 						setOutput(getRequest(), getResponse(), musicInfoWithConfidence,
 								MusicInfoWithConfidenceBean.class);
 					}
 				} catch (QueryTimeoutException qte) {
-					warn(qte.getClass().getName(), parentThread);
+					warn(qte.getClass().getName(), parentThreads);
 					if (getResponse() != null) {
 						getResponse().sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
 					}
 				} catch (Throwable t) {
-					warn(t.getMessage(), parentThread);
+					warn(t.getMessage(), parentThreads);
 					if (getResponse() != null) {
 						getResponse().setStatus(SC_INTERNAL_SERVER_ERROR);
 						setOutput(getResponse(), MIME_TYPE_TEXT, t);
