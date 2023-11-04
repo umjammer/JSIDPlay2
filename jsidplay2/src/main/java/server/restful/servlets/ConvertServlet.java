@@ -35,7 +35,6 @@ import static server.restful.common.IServletSystemProperties.TEXT_TO_SPEECH;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
-import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
 import static server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter.FILTER_PARAMETER_CONTENT_TYPE;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 import static sidplay.audio.Audio.FLV;
@@ -58,6 +57,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
@@ -68,6 +69,7 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 import com.google.zxing.WriterException;
 
+import jakarta.servlet.AsyncContext;
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
@@ -83,10 +85,10 @@ import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import server.restful.common.HlsType;
+import server.restful.common.HttpAsyncContextRunnable;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.converter.LocaleConverter;
 import server.restful.common.converter.WebResourceConverter;
-import server.restful.common.filters.CounterBasedRateLimiterFilter;
 import server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter;
 import server.restful.common.filters.RTMPBasedRateLimiterFilter;
 import server.restful.common.filters.RequestLogFilter;
@@ -116,7 +118,7 @@ import ui.common.ConvenienceResult;
 import ui.common.util.InternetUtil;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "ConvertServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/convert/*")
+@WebServlet(name = "ConvertServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/convert/*")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { /* Chrome ignores basic auth in audio src attribute! */ }))
 public class ConvertServlet extends JSIDPlay2Servlet {
 
@@ -308,17 +310,28 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	}
 
+	private ExecutorService executor;
+
+	@Override
+	public void init() throws ServletException {
+		executor = Executors.newFixedThreadPool(MAX_CONVERT_IN_PARALLEL);
+	}
+
+	@Override
+	public void destroy() {
+		executor.shutdown();
+	}
+
 	@Override
 	public List<Filter> getServletFilters() {
 		return Arrays.asList(new RequestLogFilter(), new HeadRequestRespondsWithUnknownContentLengthFilter(),
-				new CounterBasedRateLimiterFilter(), new RTMPBasedRateLimiterFilter());
+				new RTMPBasedRateLimiterFilter());
 	}
 
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
 		result.put(FILTER_PARAMETER_CONTENT_TYPE, MIME_TYPE_MPEG.getMimeType());
-		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
 		return result;
 	}
@@ -339,79 +352,91 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		try {
-			final ConvertServletParameters servletParameters = new ConvertServletParameters();
 
-			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getClass().getAnnotation(WebServlet.class));
+		AsyncContext asyncContext = request.startAsync(request, response);
+		asyncContext.setTimeout(0);
 
-			final File file = servletParameters.fetchFile(this, parser, request.isUserInRole(ROLE_ADMIN));
-			if (file == null || parser.hasException()) {
-				parser.usage();
-				return;
-			}
-			if (AUDIO_TUNE_FILE_FILTER.accept(file)
-					|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file))) {
+		executor.execute(new HttpAsyncContextRunnable(asyncContext, this, currentThread()) {
 
-				AudioDriver driver = getAudioDriverOfAudioFormat(response.getOutputStream(), servletParameters);
+			public void execute() throws IOException {
+				try {
+					final ConvertServletParameters servletParameters = new ConvertServletParameters();
 
-				if (Boolean.TRUE.equals(servletParameters.download)) {
-					response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-							+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
-				}
-				response.setContentType(getMimeType(driver.getExtension()).toString());
-				convert2audio(file, driver, servletParameters);
+					ServletParameterParser parser = new ServletParameterParser(getRequest(), getResponse(),
+							servletParameters, ConvertServlet.class.getAnnotation(WebServlet.class));
 
-			} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
-					|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
+					final File file = servletParameters.fetchFile(ConvertServlet.this, parser,
+							getRequest().isUserInRole(ROLE_ADMIN));
+					if (file == null || parser.hasException()) {
+						parser.usage();
+						return;
+					}
+					if (AUDIO_TUNE_FILE_FILTER.accept(file)
+							|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file))) {
 
-				UUID uuid = UUID.randomUUID();
+						AudioDriver driver = getAudioDriverOfAudioFormat(getResponse().getOutputStream(),
+								servletParameters);
 
-				AudioDriver driver = getAudioDriverOfVideoFormat(uuid, servletParameters);
-
-				if (Boolean.FALSE.equals(servletParameters.download)
-						&& driver.lookup(FLVStreamDriver.class).isPresent()) {
-
-					Thread parentThread = currentThread();
-					new Thread(() -> {
-						try {
-							info(String.format("START uuid=%s", uuid), parentThread);
-							convert2video(file, driver, servletParameters, uuid, parentThread);
-							info(String.format("END uuid=%s", uuid), parentThread);
-						} catch (IOException | SidTuneError e) {
-							error(e, parentThread);
+						if (Boolean.TRUE.equals(servletParameters.download)) {
+							getResponse().addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
+									+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 						}
-					}, "RTMP").start();
-					waitUntilVideoIsAvailable(uuid);
+						getResponse().setContentType(getMimeType(driver.getExtension()).toString());
+						convert2audio(file, driver, servletParameters, parentThreads);
 
-					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
+					} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
+							|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
 
-					Map<String, String> replacements = createReplacements(servletParameters, request, file, uuid);
-					try (InputStream is = new WebResourceConverter("<ServletPath>").convert("/convert.html")) {
-						setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
+						UUID uuid = UUID.randomUUID();
+
+						AudioDriver driver = getAudioDriverOfVideoFormat(uuid, servletParameters);
+
+						if (Boolean.FALSE.equals(servletParameters.download)
+								&& driver.lookup(FLVStreamDriver.class).isPresent()) {
+
+							new Thread(() -> {
+								try {
+									info(String.format("START uuid=%s", uuid), parentThreads);
+									convert2video(file, driver, servletParameters, uuid, parentThreads);
+									info(String.format("END uuid=%s", uuid), parentThreads);
+								} catch (IOException | SidTuneError e) {
+									error(e, parentThreads);
+								}
+							}, "RTMP").start();
+							waitUntilVideoIsAvailable(uuid);
+
+							getResponse().setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
+
+							Map<String, String> replacements = createReplacements(servletParameters, getRequest(), file,
+									uuid);
+							try (InputStream is = new WebResourceConverter("<ServletPath>").convert("/convert.html")) {
+								setOutput(getResponse(), MIME_TYPE_HTML,
+										convertStreamToString(is, UTF_8.name(), replacements));
+							}
+						} else {
+
+							if (Boolean.TRUE.equals(servletParameters.download)) {
+								getResponse().addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
+										+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
+							}
+							getResponse().setContentType(getMimeType(driver.getExtension()).toString());
+							File videoFile = convert2video(file, driver, servletParameters, null);
+							copy(newFileInputStream(videoFile), getResponse().getOutputStream());
+							videoFile.delete();
+						}
+					} else {
+						getResponse().setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
+						getResponse().addHeader(CONTENT_DISPOSITION,
+								ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
+						copy(newFileInputStream(file), getResponse().getOutputStream());
 					}
-				} else {
-
-					if (Boolean.TRUE.equals(servletParameters.download)) {
-						response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
-								+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
-					}
-					response.setContentType(getMimeType(driver.getExtension()).toString());
-					File videoFile = convert2video(file, driver, servletParameters, null);
-					copy(newFileInputStream(videoFile), response.getOutputStream());
-					videoFile.delete();
+				} catch (Throwable t) {
+					error(t);
+					getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					setOutput(getResponse(), MIME_TYPE_TEXT, t);
 				}
-			} else {
-				response.setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
-				response.addHeader(CONTENT_DISPOSITION,
-						ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
-				copy(newFileInputStream(file), response.getOutputStream());
 			}
-		} catch (Throwable t) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
-			setOutput(response, MIME_TYPE_TEXT, t);
-		}
+		});
 	}
 
 	private String getAttachmentFilename(final File file, AudioDriver driver) {
@@ -437,8 +462,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters)
-			throws IOException, SidTuneError {
+	private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters,
+			Thread... parentThread) throws IOException, SidTuneError {
 		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 		IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 
@@ -456,7 +481,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType,
 					new TextToSpeechBean(file, player, getTextToSpeechLocale(servletParameters))));
 		}
-		Thread[] parentThreads = of(currentThread()).toArray(Thread[]::new);
+		Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
 
 		player.setAudioDriver(driver);
 		player.setUncaughtExceptionHandler(
