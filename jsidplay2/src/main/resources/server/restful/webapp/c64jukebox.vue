@@ -1315,17 +1315,51 @@
                       </b-col-->
                   </b-row>
                 </b-container>
-
                 <p style="margin-top: 16px">
                   {{ $t("USE_REAL_HARDWARE") }}
                 </p>
-                <p>
-                  {{ $t("HARDWARE_PREPARATION_1") }}
-                  <a href="https://zadig.akeo.ie/" target="_blank">
-                    {{ $t("HERE") }}
-                  </a>
-                  {{ $t("HARDWARE_PREPARATION_2") }}
-                </p>
+                <ul>
+                  <li>
+                    {{ $t("HARDWARE_PREPARATION_1") }}
+                  </li>
+                  <li>
+                    {{ $t("HARDWARE_PREPARATION_2") }}
+                    <a href="https://zadig.akeo.ie/" target="_blank">
+                      {{ $t("HERE") }}
+                    </a>
+                  </li>
+                  <li>
+                    {{ $t("HARDWARE_PREPARATION_3") }}
+                  </li>
+                  <li>
+                    Ubuntu with {{ $t("HARDSID") }} devices:
+                    <pre>$ sudo vi /etc/udev/rules.d/92-hardsid4u.rules</pre>
+                    <pre>with contents:</pre>
+                    <pre>
+SUBSYSTEM=="usb",ATTR{idVendor}=="6581",ATTR{idProduct}=="8580",MODE="0660",GROUP="plugdev"</pre
+                    >
+                    <pre>$ sudo udevadm trigger</pre>
+                    <pre>now reboot</pre>
+                  </li>
+                  <li>
+                    Ubuntu with {{ $t("EXSID") }} devices:
+                    <pre>$ sudo vi /etc/udev/rules.d/92-exsid.rules</pre>
+                    <pre>with contents:</pre>
+                    <pre>
+ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'"</pre
+                    >
+                    <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
+                    <pre>now reboot</pre>
+                    Fedora Linux with {{ $t("EXSID") }} devices:
+                    <pre>$ sudo vi /etc/udev/rules.d/92-exsid.rules</pre>
+                    <pre>with contents:</pre>
+                    <pre>
+ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'"</pre
+                    >
+                    <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
+                    <pre>now reboot</pre>
+                  </li>
+                </ul>
                 <p>
                   <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
 
@@ -2917,8 +2951,9 @@
           HARDWARE: "Hardware",
           USE_REAL_HARDWARE:
             "You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device.",
-          HARDWARE_PREPARATION_1: "Only on a Windows-PC WinUSB is required, download from",
-          HARDWARE_PREPARATION_2: ", but on Linux and MacOSX it works out-of-the-box.",
+          HARDWARE_PREPARATION_1: "On MacOSX it works out-of-the-box.",
+          HARDWARE_PREPARATION_2: "On a Windows-PC WinUSB is required, download from",
+          HARDWARE_PREPARATION_3: "On Linux proper permission is required",
           HERE: "here",
           HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
           EXSID: "ExSID, ExSID+",
@@ -3064,12 +3099,13 @@
           PL: "Favoriten",
           CFG: "Konfiguration",
           HARDWARE: "Hardware",
+
           USE_REAL_HARDWARE:
             "Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy.",
-          HARDWARE_PREPARATION_1:
-            "Auf Linux und MacOSX funktioniert es auf Anhieb, nur auf einem Windows-PC ist WinUSB erforderlich, bitte",
-          HARDWARE_PREPARATION_2: " herunterladen.",
-          HERE: "hier",
+          HARDWARE_PREPARATION_1: "Auf MacOSX funktioniert es einfach so.",
+          HARDWARE_PREPARATION_2: "Auf einem Windows-PC ist WinUSB erforderlich",
+          HARDWARE_PREPARATION_3: "Auf Linux sind Berechtigungen erforderlich",
+          HERE: "download",
           HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
           EXSID: "ExSID, ExSID+",
           SIDBLASTER: "SIDBlaster",
@@ -3614,7 +3650,7 @@
                     "&audio=SID_REG&sidRegFormat=C64_JUKEBOX",
                   cancelToken: ajaxRequest.token,
                   onDownloadProgress: (progressEvent) => {
-                    const dataChunk = progressEvent.currentTarget.response;
+                    const dataChunk = progressEvent.event.currentTarget.response;
 
                     var i = start;
                     while ((i = dataChunk.indexOf("\n", start)) != -1) {
