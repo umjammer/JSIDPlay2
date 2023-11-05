@@ -20,9 +20,14 @@ public interface IServletSystemProperties {
 	int CONNECTION_TIMEOUT = valueOf(getProperty("jsidplay2.connection.timeout", "20000"));
 
 	/**
-	 * Whatssid Servlet: Asynchronous servlets default timeout in ms.
+	 * WhatsSidServlet: Asynchronous servlets default timeout in ms (0 means disable).
 	 */
-	int WHATSSID_ASYNC_TIMEOUT = valueOf(getProperty("jsidplay2.async.timeout", "60000"));
+	int WHATSSID_ASYNC_TIMEOUT = valueOf(getProperty("jsidplay2.whatssid.async.timeout", "60000"));
+	
+	/**
+	 * ConvertServlet: Asynchronous servlets default timeout in ms (0 means disable).
+	 */
+	int CONVERT_ASYNC_TIMEOUT = valueOf(getProperty("jsidplay2.convert.async.timeout", "0"));
 	
 	/**
 	 * Time in s to check for obsolete directories to delete

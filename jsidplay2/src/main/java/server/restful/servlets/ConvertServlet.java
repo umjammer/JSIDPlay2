@@ -21,6 +21,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_MPEG;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_UNCACHED;
+import static server.restful.common.IServletSystemProperties.CONVERT_ASYNC_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.MAX_AUD_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
@@ -35,7 +36,7 @@ import static server.restful.common.IServletSystemProperties.TEXT_TO_SPEECH;
 import static server.restful.common.IServletSystemProperties.WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT;
 import static server.restful.common.PlayerCleanupTimerTask.create;
 import static server.restful.common.QrCode.createBarCodeImage;
-import static server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter.FILTER_PARAMETER_CONTENT_TYPE;
+import static server.restful.common.filters.HeadRequestFilter.FILTER_PARAMETER_CONTENT_TYPE;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 import static sidplay.audio.Audio.FLV;
 import static sidplay.audio.Audio.MP3;
@@ -84,12 +85,13 @@ import libsidplay.config.ISidPlay2Section;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
+import server.restful.common.DefaultThreadFactory;
 import server.restful.common.HlsType;
 import server.restful.common.HttpAsyncContextRunnable;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.converter.LocaleConverter;
 import server.restful.common.converter.WebResourceConverter;
-import server.restful.common.filters.HeadRequestRespondsWithUnknownContentLengthFilter;
+import server.restful.common.filters.HeadRequestFilter;
 import server.restful.common.filters.RTMPBasedRateLimiterFilter;
 import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
@@ -314,7 +316,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public void init() throws ServletException {
-		executor = Executors.newFixedThreadPool(MAX_CONVERT_IN_PARALLEL);
+		executor = Executors.newFixedThreadPool(MAX_CONVERT_IN_PARALLEL, new DefaultThreadFactory("/convert"));
 	}
 
 	@Override
@@ -324,8 +326,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter(), new HeadRequestRespondsWithUnknownContentLengthFilter(),
-				new RTMPBasedRateLimiterFilter());
+		return Arrays.asList(new RequestLogFilter(), new HeadRequestFilter(), new RTMPBasedRateLimiterFilter());
 	}
 
 	@Override
@@ -354,7 +355,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 
 		AsyncContext asyncContext = request.startAsync(request, response);
-		asyncContext.setTimeout(0);
+		asyncContext.setTimeout(CONVERT_ASYNC_TIMEOUT);
 
 		executor.execute(new HttpAsyncContextRunnable(asyncContext, this, currentThread()) {
 

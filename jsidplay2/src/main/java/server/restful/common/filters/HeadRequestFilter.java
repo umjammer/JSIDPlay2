@@ -17,8 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "HeadRequestRespondsWithUnknownContentLengthFilter")
-public final class HeadRequestRespondsWithUnknownContentLengthFilter extends HttpFilter {
+@WebFilter(filterName = "HeadRequestFilter")
+public final class HeadRequestFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_CONTENT_TYPE = "contentType";
 

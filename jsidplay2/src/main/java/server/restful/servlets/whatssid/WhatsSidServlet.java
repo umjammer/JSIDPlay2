@@ -44,6 +44,7 @@ import libsidutils.fingerprinting.FingerPrinting;
 import libsidutils.fingerprinting.ini.IniFingerprintConfig;
 import libsidutils.fingerprinting.rest.beans.MusicInfoWithConfidenceBean;
 import libsidutils.fingerprinting.rest.beans.WAVBean;
+import server.restful.common.DefaultThreadFactory;
 import server.restful.common.HttpAsyncContextRunnable;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
@@ -63,7 +64,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 	@Override
 	public void init() throws ServletException {
-		executor = Executors.newFixedThreadPool(MAX_WHATSIDS_IN_PARALLEL);
+		executor = Executors.newFixedThreadPool(MAX_WHATSIDS_IN_PARALLEL, new DefaultThreadFactory("/whatssid"));
 	}
 
 	@Override
