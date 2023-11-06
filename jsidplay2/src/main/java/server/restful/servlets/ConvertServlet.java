@@ -397,9 +397,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 							new Thread(() -> {
 								try {
-									info(String.format("START uuid=%s", uuid), parentThread);
 									convert2video(file, driver, servletParameters, uuid);
-									info(String.format("END uuid=%s", uuid), parentThread);
 								} catch (IOException | SidTuneError e) {
 									error(e, parentThread);
 								}
@@ -463,6 +461,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 			private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters)
 					throws IOException, SidTuneError {
+				info(String.format("START file=%s", file.getAbsolutePath()), parentThread);
+
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 
@@ -496,6 +496,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				tune.getInfo().setSelectedSong(servletParameters.startSong);
 				player.play(tune);
 				player.stopC64(false);
+
+				info(String.format("END file=%s", file.getAbsolutePath()), parentThread);
 			}
 
 			private AudioDriver getAudioDriverOfVideoFormat(UUID uuid, ConvertServletParameters servletParameters) {
@@ -516,6 +518,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 			private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters,
 					UUID uuid) throws IOException, SidTuneError {
+				info(String.format("START uuid=%s", uuid), parentThread);
+
 				File videoFile = null;
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
@@ -554,6 +558,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					create(uuid, player, file, convenienceResult, servletParameters);
 				}
 				player.stopC64(false);
+
+				info(String.format("END uuid=%s", uuid), parentThread);
 				return videoFile;
 			}
 
