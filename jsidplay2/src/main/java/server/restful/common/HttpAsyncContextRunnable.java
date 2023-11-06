@@ -20,6 +20,12 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 	private JSIDPlay2Servlet servlet;
 	protected Thread parentThread;
 
+	// Prevent usage of servlet method parameters, use getter/setter, instead!
+	@Deprecated
+	protected HttpServletRequest request;
+	@Deprecated
+	protected HttpServletResponse response;
+
 	public HttpAsyncContextRunnable(AsyncContext asyncContext, JSIDPlay2Servlet servlet) {
 		this.asyncContext = asyncContext;
 		this.servlet = servlet;
