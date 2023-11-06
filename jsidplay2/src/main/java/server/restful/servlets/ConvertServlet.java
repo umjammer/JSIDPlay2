@@ -312,16 +312,16 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 	}
 
-	private ExecutorService executor;
+	private ExecutorService executorService;
 
 	@Override
 	public void init() throws ServletException {
-		executor = Executors.newFixedThreadPool(MAX_CONVERT_IN_PARALLEL, new DefaultThreadFactory("/convert"));
+		executorService = Executors.newFixedThreadPool(MAX_CONVERT_IN_PARALLEL, new DefaultThreadFactory("/convert"));
 	}
 
 	@Override
 	public void destroy() {
-		executor.shutdown();
+		executorService.shutdown();
 	}
 
 	@Override
@@ -357,7 +357,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(CONVERT_ASYNC_TIMEOUT);
 
-		executor.execute(new HttpAsyncContextRunnable(asyncContext, this, currentThread()) {
+		executorService.execute(new HttpAsyncContextRunnable(asyncContext, this) {
 
 			public void execute() throws IOException {
 				try {
@@ -383,7 +383,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 									+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 						}
 						getResponse().setContentType(getMimeType(driver.getExtension()).toString());
-						convert2audio(file, driver, servletParameters, parentThreads);
+						convert2audio(file, driver, servletParameters);
 
 					} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
 							|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
@@ -397,11 +397,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 							new Thread(() -> {
 								try {
-									info(String.format("START uuid=%s", uuid), parentThreads);
-									convert2video(file, driver, servletParameters, uuid, parentThreads);
-									info(String.format("END uuid=%s", uuid), parentThreads);
+									info(String.format("START uuid=%s", uuid), parentThread);
+									convert2video(file, driver, servletParameters, uuid);
+									info(String.format("END uuid=%s", uuid), parentThread);
 								} catch (IOException | SidTuneError e) {
-									error(e, parentThreads);
+									error(e, parentThread);
 								}
 							}, "RTMP").start();
 							waitUntilVideoIsAvailable(uuid);
@@ -437,213 +437,219 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					setOutput(getResponse(), MIME_TYPE_TEXT, t);
 				}
 			}
+
+			private String getAttachmentFilename(final File file, AudioDriver driver) {
+				return getFilenameWithoutSuffix(file.getName()) + driver.getExtension();
+			}
+
+			private AudioDriver getAudioDriverOfAudioFormat(OutputStream outputstream,
+					ConvertServletParameters servletParameters) {
+				switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
+				case WAV:
+					return new WAVStreamDriver(outputstream);
+				case FLAC:
+					return new FLACStreamDriver(outputstream);
+				case AAC:
+					return new AACStreamDriver(outputstream);
+				case MP3:
+				default:
+					return new MP3StreamDriver(outputstream);
+				case SID_DUMP:
+					return new SIDDumpStreamDriver(outputstream);
+				case SID_REG:
+					return new SIDRegStreamDriver(outputstream, servletParameters.getSidRegFormat());
+				}
+			}
+
+			private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters)
+					throws IOException, SidTuneError {
+				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
+				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
+
+				whatsSidSection.setEnable(false);
+				sidplay2Section.setHvsc(configuration.getSidplay2Section().getHvsc());
+
+				Player player = new Player(servletParameters.config);
+				player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
+				player.setSidDatabase(sidDatabase);
+				player.setSTIL(stil);
+				if (Boolean.TRUE.equals(servletParameters.download)) {
+					sidplay2Section
+							.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
+				}
+				if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
+					player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType,
+							new TextToSpeechBean(file, player, getTextToSpeechLocale(servletParameters))));
+				}
+				Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
+
+				player.setAudioDriver(driver);
+				player.setUncaughtExceptionHandler(
+						(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
+				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
+				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
+				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
+
+				insertCartridge(servletParameters, player);
+
+				SidTune tune = SidTune.load(file);
+				tune.getInfo().setSelectedSong(servletParameters.startSong);
+				player.play(tune);
+				player.stopC64(false);
+			}
+
+			private AudioDriver getAudioDriverOfVideoFormat(UUID uuid, ConvertServletParameters servletParameters) {
+				switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(FLV)) {
+				case FLV:
+				default:
+					if (Boolean.TRUE.equals(servletParameters.download)) {
+						return new FLVFileDriver();
+					} else {
+						return new ProxyDriver(new SleepDriver(), new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid));
+					}
+				case AVI:
+					return new AVIFileDriver();
+				case MP4:
+					return new MP4FileDriver();
+				}
+			}
+
+			private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters,
+					UUID uuid) throws IOException, SidTuneError {
+				File videoFile = null;
+				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
+				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
+				IC1541Section c1541Section = servletParameters.config.getC1541Section();
+
+				whatsSidSection.setEnable(false);
+				if (TAPE_FILE_FILTER.accept(file)) {
+					c1541Section.setJiffyDosInstalled(false);
+				}
+
+				Player player = new Player(servletParameters.config);
+				if (Boolean.TRUE.equals(servletParameters.download)) {
+					sidplay2Section
+							.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_VID_DOWNLOAD_LENGTH));
+					videoFile = createVideoFile(player, driver);
+				} else {
+					sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
+				}
+				Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
+
+				player.setAudioDriver(driver);
+				player.setUncaughtExceptionHandler(
+						(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
+				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
+				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
+				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
+
+				ConvenienceResult convenienceResult = new Convenience(player).autostart(file,
+						Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart, true);
+
+				if (!player.getC64().isCartridge()) {
+					insertCartridge(servletParameters, player);
+				}
+
+				if (uuid != null) {
+					create(uuid, player, file, convenienceResult, servletParameters);
+				}
+				player.stopC64(false);
+				return videoFile;
+			}
+
+			private Locale getTextToSpeechLocale(ConvertServletParameters servletParameters) {
+				return servletParameters.textToSpeechLocale != null ? servletParameters.textToSpeechLocale
+						: servletParameters.locale;
+			}
+
+			private void insertCartridge(ConvertServletParameters servletParameters, Player player) throws IOException {
+				if (servletParameters.sfxSoundExpander) {
+					player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
+				} else if (servletParameters.reuSize != null || servletParameters.isREU()) {
+					player.insertCartridge(CartridgeType.REU,
+							servletParameters.reuSize != null ? servletParameters.reuSize : 16384);
+				}
+			}
+
+			private File createVideoFile(Player player, AudioDriver driver) throws IOException {
+				ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
+
+				File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(),
+						sidplay2Section.getTmpDir());
+				videoFile.deleteOnExit();
+				player.setRecordingFilenameProvider(tune -> getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
+				return videoFile;
+			}
+
+			private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
+					HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
+				String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
+				String qrCodeImgTag = createQrCodeImgTag(createShareWithURL(request), "UTF-8", "png", 320, 320);
+
+				Map<String, String> replacements = new HashMap<>();
+				replacements.put("$uuid", uuid.toString());
+				replacements.put("$qrCodeImgTag", qrCodeImgTag);
+				replacements.put("$videoUrl", videoUrl);
+				replacements.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
+				replacements.put("$hlsType", servletParameters.getHlsType().name());
+				replacements.put("$hlsScript", servletParameters.getHlsType().getScript());
+				replacements.put("$hlsStyle", servletParameters.getHlsType().getStyle());
+				replacements.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
+				replacements.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
+				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
+				replacements.put("$lib",
+						Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib" : "lib-minified");
+				return replacements;
+			}
+
+			private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)
+					throws IOException, WriterException {
+				ByteArrayOutputStream qrCodeImgData = new ByteArrayOutputStream();
+				ImageIO.write(createBarCodeImage(data, charset, width, height), imgFormat, qrCodeImgData);
+				return format("<img src='data:image/%s;base64,%s'>", imgFormat,
+						printBase64Binary(qrCodeImgData.toByteArray()));
+			}
+
+			private String getVideoUrl(boolean useHls, UUID uuid) {
+				if (useHls) {
+					// HLS protocol
+					return HLS_DOWNLOAD_URL + "/" + uuid + ".m3u8";
+				} else {
+					// RTMP protocol
+					return RTMP_DOWNLOAD_URL + "/" + uuid;
+				}
+			}
+
+			private String createShareWithURL(HttpServletRequest request) {
+				StringBuilder result = new StringBuilder();
+				result.append(request.getRequestURL());
+				if (request.getQueryString() != null) {
+					result.append("?");
+					result.append(request.getQueryString());
+				}
+				return result.toString();
+			}
+
+			private void waitUntilVideoIsAvailable(UUID uuid)
+					throws InterruptedException, URISyntaxException, IOException {
+				URL url = new URI(getVideoUrl(true, uuid)).toURL();
+				int retryCount = 0;
+				while (retryCount++ < WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT) {
+					try {
+						InternetUtil.openConnection(url, configuration.getSidplay2Section());
+						// Give video production a jump start
+						Thread.sleep(1000);
+						return;
+					} catch (InterruptedException | SocketTimeoutException e) {
+						throw e;
+					} catch (IOException e) {
+						// connection not yet established, retry!
+						Thread.sleep(500);
+					}
+				}
+				throw new IOException("Video is still not available, please retry later!");
+			}
+
 		});
 	}
-
-	private String getAttachmentFilename(final File file, AudioDriver driver) {
-		return getFilenameWithoutSuffix(file.getName()) + driver.getExtension();
-	}
-
-	private AudioDriver getAudioDriverOfAudioFormat(OutputStream outputstream,
-			ConvertServletParameters servletParameters) {
-		switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
-		case WAV:
-			return new WAVStreamDriver(outputstream);
-		case FLAC:
-			return new FLACStreamDriver(outputstream);
-		case AAC:
-			return new AACStreamDriver(outputstream);
-		case MP3:
-		default:
-			return new MP3StreamDriver(outputstream);
-		case SID_DUMP:
-			return new SIDDumpStreamDriver(outputstream);
-		case SID_REG:
-			return new SIDRegStreamDriver(outputstream, servletParameters.getSidRegFormat());
-		}
-	}
-
-	private void convert2audio(File file, AudioDriver driver, ConvertServletParameters servletParameters,
-			Thread... parentThread) throws IOException, SidTuneError {
-		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
-		IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
-
-		whatsSidSection.setEnable(false);
-		sidplay2Section.setHvsc(configuration.getSidplay2Section().getHvsc());
-
-		Player player = new Player(servletParameters.config);
-		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
-		player.setSidDatabase(sidDatabase);
-		player.setSTIL(stil);
-		if (Boolean.TRUE.equals(servletParameters.download)) {
-			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_AUD_DOWNLOAD_LENGTH));
-		}
-		if (TEXT_TO_SPEECH && servletParameters.textToSpeechType != TextToSpeechType.NONE) {
-			player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType,
-					new TextToSpeechBean(file, player, getTextToSpeechLocale(servletParameters))));
-		}
-		Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
-
-		player.setAudioDriver(driver);
-		player.setUncaughtExceptionHandler(
-				(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
-		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
-		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
-		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
-
-		insertCartridge(servletParameters, player);
-
-		SidTune tune = SidTune.load(file);
-		tune.getInfo().setSelectedSong(servletParameters.startSong);
-		player.play(tune);
-		player.stopC64(false);
-	}
-
-	private AudioDriver getAudioDriverOfVideoFormat(UUID uuid, ConvertServletParameters servletParameters) {
-		switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(FLV)) {
-		case FLV:
-		default:
-			if (Boolean.TRUE.equals(servletParameters.download)) {
-				return new FLVFileDriver();
-			} else {
-				return new ProxyDriver(new SleepDriver(), new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid));
-			}
-		case AVI:
-			return new AVIFileDriver();
-		case MP4:
-			return new MP4FileDriver();
-		}
-	}
-
-	private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters, UUID uuid,
-			Thread... parentThread) throws IOException, SidTuneError {
-		File videoFile = null;
-		ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
-		IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
-		IC1541Section c1541Section = servletParameters.config.getC1541Section();
-
-		whatsSidSection.setEnable(false);
-		if (TAPE_FILE_FILTER.accept(file)) {
-			c1541Section.setJiffyDosInstalled(false);
-		}
-
-		Player player = new Player(servletParameters.config);
-		if (Boolean.TRUE.equals(servletParameters.download)) {
-			sidplay2Section.setDefaultPlayLength(min(sidplay2Section.getDefaultPlayLength(), MAX_VID_DOWNLOAD_LENGTH));
-			videoFile = createVideoFile(player, driver);
-		} else {
-			sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
-		}
-		Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
-
-		player.setAudioDriver(driver);
-		player.setUncaughtExceptionHandler(
-				(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
-		player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
-		player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
-		player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
-
-		ConvenienceResult convenienceResult = new Convenience(player).autostart(file, Convenience.LEXICALLY_FIRST_MEDIA,
-				servletParameters.autostart, true);
-
-		if (!player.getC64().isCartridge()) {
-			insertCartridge(servletParameters, player);
-		}
-
-		if (uuid != null) {
-			create(uuid, player, file, convenienceResult, servletParameters);
-		}
-		player.stopC64(false);
-		return videoFile;
-	}
-
-	private Locale getTextToSpeechLocale(ConvertServletParameters servletParameters) {
-		return servletParameters.textToSpeechLocale != null ? servletParameters.textToSpeechLocale
-				: servletParameters.locale;
-	}
-
-	private void insertCartridge(ConvertServletParameters servletParameters, Player player) throws IOException {
-		if (servletParameters.sfxSoundExpander) {
-			player.insertCartridge(CartridgeType.SOUNDEXPANDER, servletParameters.sfxSoundExpanderType);
-		} else if (servletParameters.reuSize != null || servletParameters.isREU()) {
-			player.insertCartridge(CartridgeType.REU,
-					servletParameters.reuSize != null ? servletParameters.reuSize : 16384);
-		}
-	}
-
-	private File createVideoFile(Player player, AudioDriver driver) throws IOException {
-		ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
-
-		File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), sidplay2Section.getTmpDir());
-		videoFile.deleteOnExit();
-		player.setRecordingFilenameProvider(tune -> getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
-		return videoFile;
-	}
-
-	private Map<String, String> createReplacements(ConvertServletParameters servletParameters,
-			HttpServletRequest request, File file, UUID uuid) throws IOException, WriterException {
-		String videoUrl = getVideoUrl(Boolean.TRUE.equals(servletParameters.useHls), uuid);
-		String qrCodeImgTag = createQrCodeImgTag(createShareWithURL(request), "UTF-8", "png", 320, 320);
-
-		Map<String, String> replacements = new HashMap<>();
-		replacements.put("$uuid", uuid.toString());
-		replacements.put("$qrCodeImgTag", qrCodeImgTag);
-		replacements.put("$videoUrl", videoUrl);
-		replacements.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
-		replacements.put("$hlsType", servletParameters.getHlsType().name());
-		replacements.put("$hlsScript", servletParameters.getHlsType().getScript());
-		replacements.put("$hlsStyle", servletParameters.getHlsType().getStyle());
-		replacements.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
-		replacements.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
-		replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
-		replacements.put("$lib", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib" : "lib-minified");
-		return replacements;
-	}
-
-	private String createQrCodeImgTag(String data, String charset, String imgFormat, int width, int height)
-			throws IOException, WriterException {
-		ByteArrayOutputStream qrCodeImgData = new ByteArrayOutputStream();
-		ImageIO.write(createBarCodeImage(data, charset, width, height), imgFormat, qrCodeImgData);
-		return format("<img src='data:image/%s;base64,%s'>", imgFormat, printBase64Binary(qrCodeImgData.toByteArray()));
-	}
-
-	private String getVideoUrl(boolean useHls, UUID uuid) {
-		if (useHls) {
-			// HLS protocol
-			return HLS_DOWNLOAD_URL + "/" + uuid + ".m3u8";
-		} else {
-			// RTMP protocol
-			return RTMP_DOWNLOAD_URL + "/" + uuid;
-		}
-	}
-
-	private String createShareWithURL(HttpServletRequest request) {
-		StringBuilder result = new StringBuilder();
-		result.append(request.getRequestURL());
-		if (request.getQueryString() != null) {
-			result.append("?");
-			result.append(request.getQueryString());
-		}
-		return result.toString();
-	}
-
-	private void waitUntilVideoIsAvailable(UUID uuid) throws InterruptedException, URISyntaxException, IOException {
-		URL url = new URI(getVideoUrl(true, uuid)).toURL();
-		int retryCount = 0;
-		while (retryCount++ < WAIT_FOR_VIDEO_AVAILABLE_RETRY_COUNT) {
-			try {
-				InternetUtil.openConnection(url, configuration.getSidplay2Section());
-				// Give video production a jump start
-				Thread.sleep(1000);
-				return;
-			} catch (InterruptedException | SocketTimeoutException e) {
-				throw e;
-			} catch (IOException e) {
-				// connection not yet established, retry!
-				Thread.sleep(500);
-			}
-		}
-		throw new IOException("Video is still not available, please retry later!");
-	}
-
 }

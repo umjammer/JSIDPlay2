@@ -1,6 +1,7 @@
 package server.restful.common;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+import static java.lang.Thread.currentThread;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,17 +18,17 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 
 	private AsyncContext asyncContext;
 	private JSIDPlay2Servlet servlet;
-	protected Thread[] parentThreads;
+	protected Thread parentThread;
 
-	public HttpAsyncContextRunnable(AsyncContext asyncContext, JSIDPlay2Servlet servlet, Thread... parentThreads) {
+	public HttpAsyncContextRunnable(AsyncContext asyncContext, JSIDPlay2Servlet servlet) {
 		this.asyncContext = asyncContext;
 		this.servlet = servlet;
-		this.parentThreads = parentThreads;
+		this.parentThread = currentThread();
 
 		asyncContext.addListener(new DefaultAsyncListener() {
 
 			public void onTimeout(AsyncEvent event) throws IOException {
-				servlet.warn("Asynchronous servlet timeout", parentThreads);
+				servlet.warn("Asynchronous servlet timeout", parentThread);
 				if (getResponse() != null) {
 					getResponse().sendError(SC_SERVICE_UNAVAILABLE, "Asynchronous servlet timeout");
 				}
@@ -54,9 +55,9 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			asyncContext.complete();
 		} catch (Throwable t) {
 			if (LOG.isLoggable(Level.FINEST)) {
-				servlet.error(t, parentThreads);
+				servlet.error(t, parentThread);
 			} else {
-				servlet.warn(t.getMessage(), parentThreads);
+				servlet.warn(t.getMessage(), parentThread);
 			}
 		}
 	}
@@ -67,9 +68,9 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			execute();
 		} catch (Throwable t) {
 			if (LOG.isLoggable(Level.FINEST)) {
-				servlet.error(t, parentThreads);
+				servlet.error(t, parentThread);
 			} else {
-				servlet.warn(t.getMessage(), parentThreads);
+				servlet.warn(t.getMessage(), parentThread);
 			}
 		} finally {
 			complete();

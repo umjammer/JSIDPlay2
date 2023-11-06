@@ -3,7 +3,6 @@ package server.restful.servlets.whatssid;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.String.valueOf;
-import static java.lang.Thread.currentThread;
 import static libsidplay.config.IWhatsSidSystemProperties.MAX_SECONDS;
 import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_MAXIMUM_SECONDS;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
@@ -12,10 +11,10 @@ import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static server.restful.common.IServletSystemProperties.WHATSSID_ASYNC_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
+import static server.restful.common.IServletSystemProperties.WHATSSID_ASYNC_TIMEOUT;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 
 import java.io.IOException;
@@ -60,16 +59,16 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	private static final Map<Integer, MusicInfoWithConfidenceBean> MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP = Collections
 			.synchronizedMap(new LRUCache<Integer, MusicInfoWithConfidenceBean>(CACHE_SIZE));
 
-	private ExecutorService executor;
+	private ExecutorService executorService;
 
 	@Override
 	public void init() throws ServletException {
-		executor = Executors.newFixedThreadPool(MAX_WHATSIDS_IN_PARALLEL, new DefaultThreadFactory("/whatssid"));
+		executorService = Executors.newFixedThreadPool(MAX_WHATSIDS_IN_PARALLEL, new DefaultThreadFactory("/whatssid"));
 	}
 
 	@Override
 	public void destroy() {
-		executor.shutdown();
+		executorService.shutdown();
 	}
 
 	@Override
@@ -96,7 +95,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(WHATSSID_ASYNC_TIMEOUT);
 
-		executor.execute(new HttpAsyncContextRunnable(asyncContext, this, currentThread()) {
+		executorService.execute(new HttpAsyncContextRunnable(asyncContext, this) {
 
 			public void execute() throws IOException {
 				try {
@@ -106,23 +105,23 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 					MusicInfoWithConfidenceBean musicInfoWithConfidence;
 					if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
 						musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
-						info(valueOf(musicInfoWithConfidence) + " (cached)", parentThreads);
+						info(valueOf(musicInfoWithConfidence) + " (cached)", parentThread);
 					} else {
 						musicInfoWithConfidence = match(getRequest(), getEntityManager(), wavBean);
 						MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-						info(valueOf(musicInfoWithConfidence), parentThreads);
+						info(valueOf(musicInfoWithConfidence), parentThread);
 					}
 					if (getResponse() != null) {
 						setOutput(getRequest(), getResponse(), musicInfoWithConfidence,
 								MusicInfoWithConfidenceBean.class);
 					}
 				} catch (QueryTimeoutException qte) {
-					warn(qte.getClass().getName(), parentThreads);
+					warn(qte.getClass().getName(), parentThread);
 					if (getResponse() != null) {
 						getResponse().sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
 					}
 				} catch (Throwable t) {
-					warn(t.getMessage(), parentThreads);
+					warn(t.getMessage(), parentThread);
 					if (getResponse() != null) {
 						getResponse().setStatus(SC_INTERNAL_SERVER_ERROR);
 						setOutput(getResponse(), MIME_TYPE_TEXT, t);
