@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -31,7 +32,11 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 		this.servlet = servlet;
 		this.parentThread = currentThread();
 
-		asyncContext.addListener(new DefaultAsyncListener() {
+		asyncContext.addListener(new AsyncListener() {
+
+			@Override
+			public void onComplete(AsyncEvent event) throws IOException {
+			}
 
 			public void onTimeout(AsyncEvent event) throws IOException {
 				servlet.warn("Asynchronous servlet timeout", parentThread);
@@ -45,6 +50,11 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			public void onError(AsyncEvent event) throws IOException {
 				complete();
 			}
+
+			@Override
+			public void onStartAsync(AsyncEvent event) throws IOException {
+			}
+
 		});
 	}
 
