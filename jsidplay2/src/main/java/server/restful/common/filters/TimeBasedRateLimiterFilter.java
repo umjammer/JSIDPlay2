@@ -60,7 +60,7 @@ public class TimeBasedRateLimiterFilter extends HttpFilter {
 		private int count;
 
 		private RequestTimer(String clientIp) {
-			this.timer = new Timer(TimeBasedRateLimiterFilter.class.getSimpleName() + "-Timer-" + clientIp, false);
+			timer = new Timer(TimeBasedRateLimiterFilter.class.getSimpleName() + "-Timer-" + clientIp, false);
 			timer.schedule(new TimerTask() {
 
 				@Override

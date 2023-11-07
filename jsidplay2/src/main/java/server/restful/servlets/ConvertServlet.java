@@ -4,8 +4,6 @@ import static java.lang.Math.min;
 import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Stream.concat;
-import static java.util.stream.Stream.of;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static libsidutils.IOUtils.convertStreamToString;
 import static libsidutils.IOUtils.copy;
@@ -481,11 +479,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					player.setMenuHook(new TextToSpeech(servletParameters.textToSpeechType,
 							new TextToSpeechBean(file, player, getTextToSpeechLocale(servletParameters))));
 				}
-				Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
 
 				player.setAudioDriver(driver);
-				player.setUncaughtExceptionHandler(
-						(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
+				player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(throwable, thread,
+						parentThread, currentThread()));
 				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
@@ -518,7 +515,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 			private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters,
 					UUID uuid) throws IOException, SidTuneError {
-				info(String.format("START uuid=%s", uuid), parentThread);
+				info(String.format("START file=%s, uuid=%s", file.getAbsolutePath(), uuid), parentThread);
 
 				File videoFile = null;
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
@@ -538,11 +535,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				} else {
 					sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
 				}
-				Thread[] parentThreads = concat(of(parentThread), of(currentThread())).toArray(Thread[]::new);
 
 				player.setAudioDriver(driver);
-				player.setUncaughtExceptionHandler(
-						(thread, throwable) -> uncaughtExceptionHandler(throwable, thread, parentThreads));
+				player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(throwable, thread,
+						parentThread, currentThread()));
 				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
@@ -559,7 +555,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				}
 				player.stopC64(false);
 
-				info(String.format("END uuid=%s", uuid), parentThread);
+				info(String.format("END file=%s, uuid=%s", file.getAbsolutePath(), uuid), parentThread);
 				return videoFile;
 			}
 

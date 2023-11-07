@@ -100,6 +100,8 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			public void execute() throws IOException {
 				try {
 					WAVBean wavBean = getInput(getRequest(), WAVBean.class);
+					wavBean.setMaxSeconds(
+							ServletFileUpload.isMultipartContent(getRequest()) ? UPLOAD_MAXIMUM_SECONDS : MAX_SECONDS);
 
 					int hashCode = getRequest().getRemoteAddr().hashCode() ^ wavBean.hashCode();
 					MusicInfoWithConfidenceBean musicInfoWithConfidence;
@@ -107,7 +109,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 						musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
 						info(valueOf(musicInfoWithConfidence) + " (cached)", parentThread);
 					} else {
-						musicInfoWithConfidence = match(getRequest(), getEntityManager(), wavBean);
+						musicInfoWithConfidence = match(getEntityManager(), wavBean);
 						MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
 						info(valueOf(musicInfoWithConfidence), parentThread);
 					}
@@ -131,15 +133,13 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 				}
 			}
 
-		});
-	}
+			private MusicInfoWithConfidenceBean match(EntityManager entityManager, WAVBean wavBean) throws IOException {
+				WhatsSidService whatsSidService = new WhatsSidService(entityManager);
+				FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
+				return fingerPrinting.match(wavBean);
+			}
 
-	private MusicInfoWithConfidenceBean match(HttpServletRequest request, EntityManager entityManager, WAVBean wavBean)
-			throws IOException {
-		WhatsSidService whatsSidService = new WhatsSidService(entityManager);
-		FingerPrinting fingerPrinting = new FingerPrinting(new IniFingerprintConfig(), whatsSidService);
-		wavBean.setMaxSeconds(ServletFileUpload.isMultipartContent(request) ? UPLOAD_MAXIMUM_SECONDS : MAX_SECONDS);
-		return fingerPrinting.match(wavBean);
+		});
 	}
 
 }
