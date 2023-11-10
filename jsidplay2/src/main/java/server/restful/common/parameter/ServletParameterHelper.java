@@ -107,7 +107,7 @@ public class ServletParameterHelper {
 	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(OnKeepAliveServletParameters.class,
 			ProxyServletParameters.class,
 			//
-			InsertNextDiskServletParameters.class, InsertNextCartServletParameters.class,
+			InsertNextCartServletParameters.class, InsertNextDiskServletParameters.class,
 			JoystickServletParameters.class, OnPlayDoneServletParameters.class, OnPlayServletParameters.class,
 			PressKeyServletParameters.class, SetDefaultEmulationReSidFpServletParameters.class,
 			SetDefaultEmulationReSidServletParameters.class, SetSidModel6581ServletParameters.class,
@@ -118,8 +118,8 @@ public class ServletParameterHelper {
 			//
 			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
 			DownloadServletParameters.class, FavoritesServletParameters.class, PhotoServletParameters.class,
-			WebJarsServletParameters.class, StaticServletParameters.class, STILServletParameters.class,
-			TuneInfoServletParameters.class);
+			StaticServletParameters.class, STILServletParameters.class, TuneInfoServletParameters.class,
+			WebJarsServletParameters.class);
 
 	public static void check() {
 		MAIN_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);

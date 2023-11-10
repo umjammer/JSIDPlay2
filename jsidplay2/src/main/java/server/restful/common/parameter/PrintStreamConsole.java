@@ -2,24 +2,12 @@ package server.restful.common.parameter;
 
 import java.io.PrintStream;
 
-import com.beust.jcommander.internal.Console;
+import com.beust.jcommander.internal.DefaultConsole;
 
-public class PrintStreamConsole implements Console {
-
-	private final PrintStream out;
+public class PrintStreamConsole extends DefaultConsole {
 
 	public PrintStreamConsole(PrintStream out) {
-		this.out = out;
-	}
-
-	@Override
-	public void print(String msg) {
-		out.print(msg);
-	}
-
-	@Override
-	public void println(String msg) {
-		out.println(msg);
+		super(out);
 	}
 
 	@Override

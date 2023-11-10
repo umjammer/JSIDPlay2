@@ -29,11 +29,26 @@ public enum TextToSpeechType {
 	}
 
 	private static String[] createPico2WaveArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
+		String ssml = "<volume level=\"75\">" + "<pitch level=\"140\">" + createSsmlParagraph(textToSpeechBean)
+				+ "</pitch>" + "</volume>";
+
+		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
+				"-w=" + wavFile.getAbsolutePath(), ssml };
+	}
+
+	private static String[] createEspeakArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
+		String ssml = "<speak>" + "<voice language=\"" + textToSpeechBean.getTextToSpeechLocale().getLanguage()
+				+ "\" gender=\"female\">" + createSsmlParagraph(textToSpeechBean) + "<voice>" + "</speak>";
+
+		return new String[] { "espeak", ssml, "-m", "-k20", "-a50", "-w", wavFile.getAbsolutePath() };
+	}
+
+	private static String createSsmlParagraph(TextToSpeechBean textToSpeechBean) {
 		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
 				textToSpeechBean.getTextToSpeechLocale());
 		textToSpeechBean.determineText2Speak(resourceBundle);
 
-		String text = "<volume level=\"75\"> <pitch level=\"140\">" + "<p>"
+		String text = "<p>"
 				+ (textToSpeechBean.getTitle() != null ? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": "
 						+ replaceSpecials(textToSpeechBean.getTitle()) + "</s>" : "")
 				+ (textToSpeechBean
@@ -53,9 +68,8 @@ public enum TextToSpeechType {
 						+ replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
 				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
 						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist()) + "</s>" : "")
-				+ "  </p>" + "</pitch></volume>";
-		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
-				"-w=" + wavFile.getAbsolutePath(), text };
+				+ "</p>";
+		return text;
 	}
 
 	private static String createPicoToWaveLanguage(TextToSpeechBean textToSpeechBean) {
@@ -67,45 +81,8 @@ public enum TextToSpeechType {
 		return Locale.ENGLISH.getLanguage() + "-GB";
 	}
 
-	private static String[] createEspeakArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		ResourceBundle resourceBundle = IOUtils.getResourceBundle(TextToSpeechType.class.getName(),
-				textToSpeechBean.getTextToSpeechLocale());
-		textToSpeechBean.determineText2Speak(resourceBundle);
-
-		String ssml = "<speak>" + "<voice language=\"" + textToSpeechBean.getTextToSpeechLocale().getLanguage()
-				+ "\" gender=\"female\">" + "<p>"
-				+ (textToSpeechBean
-						.getTitle() != null
-								? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": " + toLower(replaceSpecials(
-										textToSpeechBean.getTitle())) + "</s>"
-								: "")
-				+ (textToSpeechBean
-						.getAuthor() != null ? "<s>"
-								+ resourceBundle.getString("AUTHOR") + " "
-								+ toLower(replaceSpecials(replaceAliasName(textToSpeechBean.getAuthor(),
-										resourceBundle)))
-								+ "</s>" : "")
-				+ (textToSpeechBean.getReleased() != null
-						? "<s>" + resourceBundle.getString("RELEASED") + " "
-								+ toLower(replaceSpecials(replaceUnknownDecade(replaceUnknownDate(
-										replaceDateRange(textToSpeechBean.getReleased(), resourceBundle),
-										resourceBundle), resourceBundle)))
-								+ "</s>"
-						: "")
-				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE") + " "
-						+ replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
-				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
-						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist()) + "</s>" : "")
-				+ "  </p>" + "<voice>" + "</speak>";
-		return new String[] { "espeak", ssml, "-m", "-k20", "-a50", "-w", wavFile.getAbsolutePath() };
-	}
-
 	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>");
-	}
-
-	private static String toLower(String string) {
-		return string.toLowerCase(Locale.US);
+		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>").toLowerCase(Locale.US);
 	}
 
 	private static String replaceAliasName(String string, ResourceBundle resourceBundle) {
@@ -140,8 +117,8 @@ public enum TextToSpeechType {
 		Pattern pattern = Pattern.compile("([0-9]{4})-([0-9]{2})(?!-)(.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return resourceBundle.getString("FROM") + " " + matcher.group(1) + " " + resourceBundle.getString("TO") + " "
-					+ matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
+			return resourceBundle.getString("FROM") + " " + matcher.group(1) + " " + resourceBundle.getString("TO")
+					+ " " + matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
 		}
 		return string;
 	}
