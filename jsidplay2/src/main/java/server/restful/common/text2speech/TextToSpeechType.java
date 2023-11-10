@@ -98,7 +98,7 @@ public enum TextToSpeechType {
 		Pattern pattern = Pattern.compile("19[?][?](.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return resourceBundle.getString("IN_80_90") + " / " + matcher.group(1);
+			return resourceBundle.getString("IN_80_OR_90") + " / " + matcher.group(1);
 		}
 		return string;
 	}
@@ -107,8 +107,8 @@ public enum TextToSpeechType {
 		Pattern pattern = Pattern.compile("19([89])[?](.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return resourceBundle.getString("IN_DECADE") + " " + matcher.group(1) + "0"
-					+ resourceBundle.getString("IN_DECADE_POSTFIX") + " / " + matcher.group(2);
+			return String.format(resourceBundle.getString("IN_DECADE"), matcher.group(1) + "0") + " / "
+					+ matcher.group(2);
 		}
 		return string;
 	}
@@ -117,8 +117,8 @@ public enum TextToSpeechType {
 		Pattern pattern = Pattern.compile("([0-9]{4})-([0-9]{2})(?!-)(.*)");
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.matches()) {
-			return resourceBundle.getString("FROM") + " " + matcher.group(1) + " " + resourceBundle.getString("TO")
-					+ " " + matcher.group(1).substring(0, 2) + matcher.group(2) + matcher.group(3);
+			return String.format(resourceBundle.getString("FROM_TO"), matcher.group(1),
+					matcher.group(1).substring(0, 2) + matcher.group(2)) + " / " + matcher.group(3);
 		}
 		return string;
 	}
