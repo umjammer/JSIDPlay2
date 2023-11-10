@@ -39,6 +39,8 @@ import ui.entities.config.FavoritesSection;
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class FavoritesServlet extends JSIDPlay2Servlet {
 
+	public static final String BUILT_IN_FAVORITES_PATH = "/favorites/jsidplay2-%d.json";
+
 	@Parameters(resourceBundle = "server.restful.servlets.FavoritesServletParameters")
 	public static class FavoritesServletParameters {
 
@@ -121,7 +123,7 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	}
 
 	private String getSpecialFavorites(final Integer favoritesNumber) throws JsonProcessingException, IOException {
-		String resource = String.format("/favorites/jsidplay2-%d.json",
+		String resource = String.format(BUILT_IN_FAVORITES_PATH,
 				(favoritesNumber - configuration.getFavorites().size()));
 		try (InputStream source = new WebResourceConverter("<ServletPath>").convert(resource)) {
 			return IOUtils.convertStreamToString(source, "UTF-8");
