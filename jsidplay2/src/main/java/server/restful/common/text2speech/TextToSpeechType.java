@@ -82,7 +82,7 @@ public enum TextToSpeechType {
 	}
 
 	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>").toLowerCase(Locale.US);
+		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>");
 	}
 
 	private static String replaceAliasName(String string, ResourceBundle resourceBundle) {
