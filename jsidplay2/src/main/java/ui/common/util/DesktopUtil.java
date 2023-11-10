@@ -21,6 +21,7 @@ public class DesktopUtil {
 					desktop.browse(new URI(link));
 				} else {
 					System.err.println("Awt Desktop action BROWSE is not supported!");
+					System.err.println(link);
 				}
 			} catch (final IOException | URISyntaxException e) {
 				e.printStackTrace();
@@ -40,6 +41,7 @@ public class DesktopUtil {
 					desktop.open(file);
 				} else {
 					System.err.println("Awt Desktop action OPEN is not supported!");
+					System.err.println(file.getAbsolutePath());
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
