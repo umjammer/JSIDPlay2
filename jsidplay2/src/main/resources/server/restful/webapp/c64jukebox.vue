@@ -1066,12 +1066,12 @@
                   <b-input-group size="sm" class="mb-2">
                     <b-form-file
                       v-model="importFile"
-                      accept=".js2,.json"
+                      accept=".js2,.json,.sid,.dat,.mus,.str,.c64,.prg,.p00,.d64,.g64,.nib,.tap,.t64,.reu,.ima,.crt,.img,.zip,.gz,.7z"
                       :state="Boolean(importFile)"
                       ref="file-input"
                       label-size="sm"
-                      :placeholder="$t('importPlaylistPlaceholder')"
-                      :drop-placeholder="$t('importPlaylistDropPlaceholder')"
+                      :placeholder="$t('importPlaceholder')"
+                      :drop-placeholder="$t('importDropPlaceholder')"
                       :browse-text="$t('browse')"
                     >
                     </b-form-file>
@@ -3032,8 +3032,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           removePlaylistReally: "Do you really want to remove ALL playlist entries?",
           browse: "Import...",
           exportPlaylist: "Export",
-          importPlaylistPlaceholder: "",
-          importPlaylistDropPlaceholder: "Drop favorites here...",
+          importPlaceholder: "",
+          importDropPlaceholder: "Drop here...",
           searchPlaceholder: "Quick search",
           random: "Random Playback",
           mobileProfile: "Mobile profile",
@@ -3183,8 +3183,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
           browse: "Importieren...",
           exportPlaylist: "Exportieren",
-          importPlaylistPlaceholder: "",
-          importPlaylistDropPlaceholder: "DnD Favoriten hier...",
+          importPlaceholder: "",
+          importDropPlaceholder: "DnD hier...",
           searchPlaceholder: "Schnellsuche",
           random: "Zuf\u00e4llige Wiedergabe",
           mobileProfile: "Mobiles Profil",
@@ -3893,6 +3893,28 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 this.showAudio = true;
               };
               reader.readAsText(this.importFile);
+            } else {
+              let files = new FormData();
+              files.append("file", this.importFile, this.importFile.name);
+              axios({
+                method: "post",
+                url: "/jsidplay2service/JSIDPlay2REST/upload/" + this.importFile.name,
+                data: files,
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  if (response.data != "null") {
+                    this.importFile = null;
+                    this.pause();
+                    this.openiframe(this.createConvertUrl(undefined, response.data) + "&audioTuneAsVideo=true");
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             }
           },
           exportPlaylist: function () {

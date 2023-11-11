@@ -63,6 +63,11 @@ public abstract class FileRequestPathServletParametersImpl {
 			if (file.exists() && file.getAbsolutePath().startsWith(sidplay2Section.getCgsc().getAbsolutePath())) {
 				return file;
 			}
+		} else if (new File(path).getAbsolutePath().startsWith(sidplay2Section.getTmpDir().getAbsolutePath())) {
+			File file = new File(path);
+			if (file.exists()) {
+				return file;
+			}
 		} else {
 			for (String directoryLogicalName : servlet.getDirectoryProperties().stringPropertyNames()) {
 				String[] splitted = servlet.getDirectoryProperties().getProperty(directoryLogicalName).split(",");

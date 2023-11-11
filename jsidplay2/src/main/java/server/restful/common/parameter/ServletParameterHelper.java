@@ -51,6 +51,7 @@ import server.restful.servlets.PhotoServlet.PhotoServletParameters;
 import server.restful.servlets.STILServlet.STILServletParameters;
 import server.restful.servlets.StaticServlet.StaticServletParameters;
 import server.restful.servlets.TuneInfoServlet.TuneInfoServletParameters;
+import server.restful.servlets.UploadServlet.UploadServletParameters;
 import server.restful.servlets.WebJarsServlet.WebJarsServletParameters;
 import server.restful.servlets.hls.OnKeepAliveServlet.OnKeepAliveServletParameters;
 import server.restful.servlets.hls.ProxyServlet.ProxyServletParameters;
@@ -104,22 +105,23 @@ public class ServletParameterHelper {
 			JSIDPlay2ServerParameters.class, JSIDPlay2MainParameters.class, ConsolePlayer.class, RecordingTool.class,
 			SIDBlasterTool.class);
 
-	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(OnKeepAliveServletParameters.class,
-			ProxyServletParameters.class,
-			//
+	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(
+			// hls
+			OnKeepAliveServletParameters.class, ProxyServletParameters.class,
+			// rtmp
 			InsertNextCartServletParameters.class, InsertNextDiskServletParameters.class,
 			JoystickServletParameters.class, OnPlayDoneServletParameters.class, OnPlayServletParameters.class,
 			PressKeyServletParameters.class, SetDefaultEmulationReSidFpServletParameters.class,
 			SetDefaultEmulationReSidServletParameters.class, SetSidModel6581ServletParameters.class,
 			SetSidModel8580ServletParameters.class,
-			//
+			// sidmapping
 			ExSIDMappingServletParameters.class, HardSIDMappingServletParameters.class,
 			SIDBlasterMappingServletParameters.class,
 			//
 			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
 			DownloadServletParameters.class, FavoritesServletParameters.class, PhotoServletParameters.class,
 			StaticServletParameters.class, STILServletParameters.class, TuneInfoServletParameters.class,
-			WebJarsServletParameters.class);
+			UploadServletParameters.class, WebJarsServletParameters.class);
 
 	public static void check() {
 		MAIN_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);

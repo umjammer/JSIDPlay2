@@ -30,6 +30,11 @@ public interface IServletSystemProperties {
 	int CONVERT_ASYNC_TIMEOUT = valueOf(getProperty("jsidplay2.convert.async.timeout", "0"));
 	
 	/**
+	 * Upload: Asynchronous servlets default timeout in ms (0 means disable).
+	 */
+	int UPLOAD_ASYNC_TIMEOUT = valueOf(getProperty("jsidplay2.upload.async.timeout", "0"));
+	
+	/**
 	 * Time in s to check for obsolete directories to delete
 	 */
 	int CLEANUP_DIRECTORY_PERIOD = valueOf(getProperty("jsidplay2.cleanup.directory.period", "300"));
@@ -254,6 +259,11 @@ public interface IServletSystemProperties {
 	 * WhatsSID? Maximum number of requests in parallel.
 	 */
 	int MAX_WHATSIDS_IN_PARALLEL = valueOf(getProperty("jsidplay2.whatssid.max.parallel", "3"));
+
+	/**
+	 * Uploads? Maximum number of requests in parallel.
+	 */
+	int MAX_UPLOADS_IN_PARALLEL = valueOf(getProperty("jsidplay2.upload.max.parallel", "7"));
 
 	/**
 	 * WhatsSID? Cache size. Recognized audio is cached for repeated requests for

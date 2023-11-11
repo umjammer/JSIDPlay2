@@ -131,7 +131,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -17)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -18)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
 		}
@@ -142,7 +142,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return startSong;
 		}
 
-		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -16)
+		@Parameter(names = { "--startSong" }, descriptionKey = "START_SONG", order = -17)
 		public void setStartSong(Integer startSong) {
 			this.startSong = startSong;
 		}
@@ -153,7 +153,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return locale;
 		}
 
-		@Parameter(names = "--locale", descriptionKey = "LOCALE", converter = LocaleConverter.class, order = -15)
+		@Parameter(names = "--locale", descriptionKey = "LOCALE", converter = LocaleConverter.class, order = -16)
 		public void setLocale(Locale locale) {
 			this.locale = locale;
 		}
@@ -164,7 +164,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return textToSpeechType;
 		}
 
-		@Parameter(names = "--textToSpeechType", arity = 1, descriptionKey = "TEXT_TO_SPEECH_TYPE", order = -14)
+		@Parameter(names = "--textToSpeechType", arity = 1, descriptionKey = "TEXT_TO_SPEECH_TYPE", order = -15)
 		public void setTextToSpeechType(TextToSpeechType textToSpeechType) {
 			this.textToSpeechType = textToSpeechType;
 		}
@@ -175,7 +175,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return textToSpeechLocale;
 		}
 
-		@Parameter(names = "--textToSpeechLocale", descriptionKey = "TEXT_TO_SPEECH_LOCALE", converter = LocaleConverter.class, order = -13)
+		@Parameter(names = "--textToSpeechLocale", descriptionKey = "TEXT_TO_SPEECH_LOCALE", converter = LocaleConverter.class, order = -14)
 		public void setTextToSpeechLocale(Locale textToSpeechLocale) {
 			this.textToSpeechLocale = textToSpeechLocale;
 		}
@@ -186,7 +186,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return download;
 		}
 
-		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -12)
+		@Parameter(names = "--download", arity = 1, descriptionKey = "DOWNLOAD", order = -13)
 		public void setDownload(Boolean download) {
 			this.download = download;
 		}
@@ -197,7 +197,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return reuSize;
 		}
 
-		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -11)
+		@Parameter(names = { "--reuSize" }, descriptionKey = "REU_SIZE", order = -12)
 		public void setReuSize(Integer reuSize) {
 			this.reuSize = reuSize;
 		}
@@ -208,7 +208,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return sfxSoundExpander;
 		}
 
-		@Parameter(names = "--sfxSoundExpander", arity = 1, descriptionKey = "SFX_SOUND_EXPANDER", order = -10)
+		@Parameter(names = "--sfxSoundExpander", arity = 1, descriptionKey = "SFX_SOUND_EXPANDER", order = -11)
 		public void setSfxSoundExpander(Boolean sfxSoundExpander) {
 			this.sfxSoundExpander = sfxSoundExpander;
 		}
@@ -219,7 +219,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return sfxSoundExpanderType;
 		}
 
-		@Parameter(names = { "--sfxSoundExpanderType" }, descriptionKey = "SFX_SOUND_EXPANDER_TYPE", order = -9)
+		@Parameter(names = { "--sfxSoundExpanderType" }, descriptionKey = "SFX_SOUND_EXPANDER_TYPE", order = -10)
 		public void setSfxSoundExpanderType(Integer sfxSoundExpanderType) {
 			this.sfxSoundExpanderType = sfxSoundExpanderType;
 		}
@@ -230,7 +230,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return pressSpaceInterval;
 		}
 
-		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -8)
+		@Parameter(names = { "--pressSpaceInterval" }, descriptionKey = "PRESS_SPACE_INTERVAL", order = -9)
 		public void setPressSpaceInterval(Integer pressSpaceInterval) {
 			this.pressSpaceInterval = pressSpaceInterval;
 		}
@@ -241,7 +241,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return showStatus;
 		}
 
-		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -7)
+		@Parameter(names = "--status", arity = 1, descriptionKey = "STATUS", order = -8)
 		public void setShowStatus(Boolean showStatus) {
 			this.showStatus = showStatus;
 		}
@@ -252,7 +252,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return useHls;
 		}
 
-		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -6)
+		@Parameter(names = "--hls", arity = 1, descriptionKey = "HLS", order = -7)
 		public void setUseHls(Boolean useHls) {
 			this.useHls = useHls;
 		}
@@ -263,7 +263,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return hlsType;
 		}
 
-		@Parameter(names = { "--hlsType" }, descriptionKey = "HLS_TYPE", order = -5)
+		@Parameter(names = { "--hlsType" }, descriptionKey = "HLS_TYPE", order = -6)
 		public void setHlsType(HlsType hlsType) {
 			this.hlsType = hlsType;
 		}
@@ -274,7 +274,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return sidRegFormat;
 		}
 
-		@Parameter(names = "--sidRegFormat", descriptionKey = "SID_REG_FORMAT", order = -4)
+		@Parameter(names = "--sidRegFormat", descriptionKey = "SID_REG_FORMAT", order = -5)
 		public void setSidRegFormat(Format sidRegFormat) {
 			this.sidRegFormat = sidRegFormat;
 		}
@@ -285,7 +285,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return autostart;
 		}
 
-		@Parameter(names = { "--autostart" }, descriptionKey = "AUTOSTART", order = -3)
+		@Parameter(names = { "--autostart" }, descriptionKey = "AUTOSTART", order = -4)
 		public void setAutostart(String autostart) {
 			this.autostart = autostart;
 		}
@@ -296,9 +296,20 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			return videoTuneAsAudio;
 		}
 
-		@Parameter(names = "--videoTuneAsAudio", arity = 1, descriptionKey = "VIDEO_TUNE_AS_AUDIO", order = -2)
+		@Parameter(names = "--videoTuneAsAudio", arity = 1, descriptionKey = "VIDEO_TUNE_AS_AUDIO", order = -3)
 		public void setVideoTuneAsAudio(Boolean videoTuneAsAudio) {
 			this.videoTuneAsAudio = videoTuneAsAudio;
+		}
+
+		private Boolean audioTuneAsVideo = Boolean.FALSE;
+
+		public Boolean getAudioTuneAsVideo() {
+			return audioTuneAsVideo;
+		}
+
+		@Parameter(names = "--audioTuneAsVideo", arity = 1, descriptionKey = "AUDIO_TUNE_AS_VIDEO", order = -2)
+		public void setAudioTuneAsVideo(Boolean audioTuneAsVideo) {
+			this.audioTuneAsVideo = audioTuneAsVideo;
 		}
 
 		@ParametersDelegate
@@ -370,8 +381,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						parser.usage();
 						return;
 					}
-					if (AUDIO_TUNE_FILE_FILTER.accept(file)
-							|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file))) {
+					if ((AUDIO_TUNE_FILE_FILTER.accept(file)
+							|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file)))
+							&& !servletParameters.audioTuneAsVideo) {
 
 						AudioDriver driver = getAudioDriverOfAudioFormat(getResponse().getOutputStream(),
 								servletParameters);
@@ -384,7 +396,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						convert2audio(file, driver, servletParameters);
 
 					} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
-							|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)) {
+							|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file)
+							|| AUDIO_TUNE_FILE_FILTER.accept(file)) {
 
 						UUID uuid = UUID.randomUUID();
 

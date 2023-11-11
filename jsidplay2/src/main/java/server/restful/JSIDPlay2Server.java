@@ -80,6 +80,7 @@ import server.restful.servlets.SpeechToTextServlet;
 import server.restful.servlets.StartPageServlet;
 import server.restful.servlets.StaticServlet;
 import server.restful.servlets.TuneInfoServlet;
+import server.restful.servlets.UploadServlet;
 import server.restful.servlets.WebJarsServlet;
 import server.restful.servlets.hls.OnKeepAliveServlet;
 import server.restful.servlets.hls.ProxyServlet;
@@ -221,20 +222,29 @@ public final class JSIDPlay2Server {
 	/**
 	 * Our servlets to serve
 	 */
-	private static final List<Class<? extends JSIDPlay2Servlet>> SERVLETS = asList(FiltersServlet.class,
-			DirectoryServlet.class, DiskDirectoryServlet.class, TuneInfoServlet.class, PhotoServlet.class,
-			ConvertServlet.class, DownloadServlet.class, FavoritesServlet.class, FavoritesNamesServlet.class,
-			WebJarsServlet.class, StaticServlet.class, StartPageServlet.class, InsertTuneServlet.class,
-			InsertHashesServlet.class, FindTuneServlet.class, FindHashServlet.class, WhatsSidServlet.class,
-			TuneExistsServlet.class, OnKeepAliveServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class,
-			InsertNextDiskServlet.class, InsertNextCartServlet.class, SetSidModel6581Servlet.class,
-			SetSidModel8580Servlet.class, SetDefaultEmulationReSidServlet.class,
-			SetDefaultEmulationReSidFpServlet.class, PressKeyServlet.class, JoystickServlet.class, ProxyServlet.class,
-			STILServlet.class, HardSIDMappingServlet.class, ExSIDMappingServlet.class, SIDBlasterMappingServlet.class,
-			RandomHVSCServlet.class, SpeechToTextServlet.class);
+	private static final List<Class<? extends JSIDPlay2Servlet>> SERVLETS = asList(OnKeepAliveServlet.class,
+			ProxyServlet.class,
+			// hls
+			InsertNextCartServlet.class, InsertNextDiskServlet.class,
+			// rtmp
+			JoystickServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class, PressKeyServlet.class,
+			SetDefaultEmulationReSidFpServlet.class, SetDefaultEmulationReSidServlet.class,
+			SetSidModel6581Servlet.class, SetSidModel8580Servlet.class,
+			// sidmapping
+			ExSIDMappingServlet.class, HardSIDMappingServlet.class, SIDBlasterMappingServlet.class,
+			// whatssid
+			FindHashServlet.class, FindTuneServlet.class, InsertHashesServlet.class, InsertTuneServlet.class,
+			TuneExistsServlet.class, WhatsSidServlet.class,
+			//
+			ConvertServlet.class, DirectoryServlet.class, DiskDirectoryServlet.class, DownloadServlet.class,
+			FavoritesNamesServlet.class, FavoritesServlet.class, FiltersServlet.class, PhotoServlet.class,
+			RandomHVSCServlet.class, SpeechToTextServlet.class, StartPageServlet.class, StaticServlet.class,
+			STILServlet.class, TuneInfoServlet.class, UploadServlet.class, WebJarsServlet.class
+
+	);
 
 	private static JSIDPlay2Server INSTANCE;
-	
+
 	private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
 
 	private static final ThreadLocal<EntityManager> THREAD_LOCAL_ENTITY_MANAGER = new ThreadLocal<>();
@@ -499,7 +509,7 @@ public final class JSIDPlay2Server {
 				Stream.of(servletSecurity.value().rolesAllowed()).forEach(securityConstraint::addAuthRole);
 				securityConstraint.setAuthConstraint(true);
 				securityConstraint.addCollection(securityCollection);
-				
+
 				context.addConstraint(securityConstraint);
 			}
 		});

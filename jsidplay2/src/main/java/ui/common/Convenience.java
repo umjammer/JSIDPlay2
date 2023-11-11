@@ -44,7 +44,7 @@ import ui.menubar.MenuBar;
  */
 public class Convenience {
 
-	private static final Comparator<? super File> TOP_LEVEL_FIRST_COMPARATOR = (f1, f2) -> {
+	public static final Comparator<? super File> TOP_LEVEL_FIRST_COMPARATOR = (f1, f2) -> {
 		if (f1.isDirectory() && !f2.isDirectory()) {
 			return 1;
 		}
@@ -82,7 +82,7 @@ public class Convenience {
 	/**
 	 * Useless Apple directory.
 	 */
-	private static final String MACOSX = "__MACOSX";
+	public static final String MACOSX = "__MACOSX";
 
 	private static final UUIDFileFilter UUID_FILE_FILTER = new UUIDFileFilter();
 	private static final TuneFileFilter TUNE_FILE_FILTER = new TuneFileFilter();
