@@ -290,12 +290,12 @@ public interface IServletSystemProperties {
 	/**
 	 * Maximum upload request size in bytes (content-length).
 	 */
-	long UPLOAD_SIZE_MAX = Long.valueOf(getProperty("jsidplay2.upload.size.max", String.valueOf((10 << 10 << 10))));
+	long UPLOAD_SIZE_MAX = Long.valueOf(getProperty("jsidplay2.upload.size.max", String.valueOf((17 << 10 << 10))));
 
 	/**
 	 * Maximum single file upload size in bytes.
 	 */
 	long UPLOAD_FILE_SIZE_MAX = Long
-			.valueOf(getProperty("jsidplay2.upload.file.size.max", String.valueOf((10 << 10 << 10))));
+			.valueOf(getProperty("jsidplay2.upload.file.size.max", String.valueOf((17 << 10 << 10))));
 
 }
