@@ -424,10 +424,7 @@
                         <b-list-group-item
                           button
                           :variant="getVariant(entry)"
-                          v-on:click="
-                            pause();
-                            openiframe(createConvertUrl(undefined, entry.filename));
-                          "
+                          v-on:click="openiframe(createConvertUrl(undefined, entry.filename))"
                         >
                           <div style="white-space: pre-line; display: flex; justify-content: space-between">
                             <div style="flex-grow: 4; word-break: break-all">
@@ -463,10 +460,7 @@
                               </div>
                               <div v-for="(program, index) in entry.diskDirectory" :key="index">
                                 <b-link
-                                  v-on:click.stop="
-                                    pause();
-                                    openiframe(createConvertUrl(program.directoryLine, entry.filename));
-                                  "
+                                  v-on:click.stop="openiframe(createConvertUrl(program.directoryLine, entry.filename))"
                                 >
                                   <span class="c64-font">{{ program.formatted }}</span>
                                 </b-link>
@@ -479,10 +473,7 @@
                         <b-list-group-item
                           button
                           :variant="getVariant(entry)"
-                          v-on:click="
-                            pause();
-                            openiframe(createConvertUrl(undefined, entry.filename));
-                          "
+                          v-on:click="openiframe(createConvertUrl(undefined, entry.filename))"
                         >
                           <div style="white-space: pre-line; display: flex; justify-content: space-between">
                             <div style="flex-grow: 4; word-break: break-all">
@@ -728,7 +719,6 @@
                                     ></b-spinner>
                                     <b-link
                                       v-on:click="
-                                        pause();
                                         openiframe(
                                           createConvertUrl(
                                             undefined,
@@ -736,7 +726,7 @@
                                             row.item.id,
                                             row.item.categoryId
                                           )
-                                        );
+                                        )
                                       "
                                     >
                                       <b-icon-camera-video-fill> </b-icon-camera-video-fill>
@@ -771,7 +761,6 @@
                                       <div v-for="(program, index) in innerRow.item.diskDirectory" :key="index">
                                         <b-link
                                           v-on:click="
-                                            pause();
                                             openiframe(
                                               createConvertUrl(
                                                 program.directoryLine,
@@ -779,7 +768,7 @@
                                                 row.item.id,
                                                 row.item.categoryId
                                               )
-                                            );
+                                            )
                                           "
                                         >
                                           <span class="c64-font">{{ program.formatted }}</span>
@@ -794,7 +783,6 @@
                                   <div style="flex-grow: 4; word-break: break-all">
                                     <b-link
                                       v-on:click="
-                                        pause();
                                         openiframe(
                                           createConvertUrl(
                                             undefined,
@@ -802,7 +790,7 @@
                                             row.item.id,
                                             row.item.categoryId
                                           )
-                                        );
+                                        )
                                       "
                                     >
                                       <b-icon-camera-video-fill> </b-icon-camera-video-fill>
@@ -1091,7 +1079,21 @@
                       variant="success"
                       size="sm"
                       v-b-modal.modal-import-playlist
-                      v-if="importFile != null"
+                      v-if="
+                        importFile != null && (importFile.name.endsWith('.js2') || importFile.name.endsWith('.json'))
+                      "
+                      class="mr-2"
+                    >
+                      <b-icon-file-arrow-up-fill> </b-icon-file-arrow-up-fill>
+                      <span>{{ $t("startImport") }}</span>
+                    </b-button>
+                    <b-button
+                      variant="success"
+                      size="sm"
+                      v-on:click="importPlaylist"
+                      v-if="
+                        importFile != null && !(importFile.name.endsWith('.js2') || importFile.name.endsWith('.json'))
+                      "
                       class="mr-2"
                     >
                       <b-icon-file-arrow-up-fill> </b-icon-file-arrow-up-fill>
@@ -3519,6 +3521,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             recorder.finishRecording();
           },
           openiframe: function (url) {
+            this.pause();
             closeiframe();
             document.getElementById("main").classList.add("hide");
 
@@ -3908,8 +3911,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 .then((response) => {
                   if (response.data != "null") {
                     this.importFile = null;
-                    this.pause();
-                    this.openiframe(this.createConvertUrl(undefined, response.data) + "&audioTuneAsVideo=true");
+                    let entry = {
+                      filename: response.data,
+                    };
+                    if (this.isMusic(entry)) {
+                      this.currentSid = this.shortEntry(entry.filename);
+                      this.updateSid(entry.filename);
+                      this.play(undefined, entry.filename);
+                    } else if (this.isVideo(entry)) {
+                      this.openiframe(this.createConvertUrl(undefined, entry.filename) + "&audioTuneAsVideo=true");
+                    }
                   }
                 })
                 .catch((error) => {

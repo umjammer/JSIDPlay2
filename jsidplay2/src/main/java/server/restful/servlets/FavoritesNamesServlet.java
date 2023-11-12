@@ -72,11 +72,10 @@ public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 		do {
 			String resource = String.format(BUILT_IN_FAVORITES_PATH, i);
 			try (InputStream source = new WebResourceConverter("<ServletPath>").convert(resource)) {
-				filters.add(String.format("Playlist-%d", (i + 1)));
+				filters.add(String.format("Playlist-%d", ++i));
 			} catch (IOException | ParameterException e) {
 				break;
 			}
-			i++;
 		} while (true);
 		return filters;
 	}
