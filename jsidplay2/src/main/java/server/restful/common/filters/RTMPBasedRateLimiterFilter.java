@@ -1,7 +1,7 @@
 package server.restful.common.filters;
 
 import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
-import static server.restful.common.PlayerCleanupTimerTask.count;
+import static server.restful.common.rtmp.PlayerCleanupTimerTask.count;
 
 import java.io.IOException;
 

@@ -117,15 +117,15 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return Collections.emptyMap();
 	}
 
-	protected void info(String msg, Thread... parentThreads) {
+	public void info(String msg, Thread... parentThreads) {
 		log(threads(parentThreads) + thread() + msg);
 	}
 
-	protected void warn(String msg, Thread... parentThreads) {
+	public void warn(String msg, Thread... parentThreads) {
 		log(threads(parentThreads) + thread() + msg, null);
 	}
 
-	protected void error(Throwable t, Thread... parentThreads) {
+	public void error(Throwable t, Thread... parentThreads) {
 		log(threads(parentThreads) + thread() + t.getMessage(), t);
 	}
 

@@ -65,7 +65,7 @@ import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.PlayerCleanupTimerTask;
+import server.restful.common.rtmp.PlayerCleanupTimerTask;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.DirectoryServlet;
 import server.restful.servlets.DiskDirectoryServlet;

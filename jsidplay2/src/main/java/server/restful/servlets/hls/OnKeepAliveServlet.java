@@ -2,7 +2,7 @@ package server.restful.servlets.hls;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static server.restful.common.PlayerCleanupTimerTask.update;
+import static server.restful.common.rtmp.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
 import java.util.UUID;

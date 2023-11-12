@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.rtmp;
 
 import static java.util.Optional.ofNullable;
 import static libsidutils.IOUtils.deleteDirectory;

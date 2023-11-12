@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.rtmp;
 
 import static libsidplay.components.keyboard.KeyTableEntry.SPACE;
 import static server.restful.common.IServletSystemProperties.HLS_NOT_YET_PLAYED_TIMEOUT;

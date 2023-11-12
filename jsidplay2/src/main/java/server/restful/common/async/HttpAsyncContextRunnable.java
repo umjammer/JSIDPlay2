@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.async;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.Thread.currentThread;
@@ -12,6 +12,7 @@ import jakarta.servlet.AsyncEvent;
 import jakarta.servlet.AsyncListener;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import server.restful.common.JSIDPlay2Servlet;
 
 public abstract class HttpAsyncContextRunnable implements Runnable {
 

@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.rtmp;
 
 import java.io.File;
 import java.util.Locale;

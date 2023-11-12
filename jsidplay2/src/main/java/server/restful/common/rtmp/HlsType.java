@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.rtmp;
 
 public enum HlsType {
 	VIDEO_JS("/webjars/video.js/8.5.2/dist/video$min.js", "/webjars/video.js/8.5.2/dist/video-js$min.css"),

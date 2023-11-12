@@ -864,7 +864,7 @@
 			            </goals>
 						<!-- Check for newest version here: -->
 						<!-- https://www.npmjs.com -->
-						<!-- Note: Change server.restful.common.HlsType as well! -->
+						<!-- Note: Change server.restful.common.rtmp.HlsType as well! -->
 			            <configuration>
 			                <packages>
 			                    <package>vue@2.7.14</package>
