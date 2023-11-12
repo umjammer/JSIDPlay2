@@ -49,9 +49,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +67,6 @@ import com.beust.jcommander.ParametersDelegate;
 import com.google.zxing.WriterException;
 
 import jakarta.servlet.AsyncContext;
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -88,9 +85,6 @@ import server.restful.common.async.DefaultThreadFactory;
 import server.restful.common.async.HttpAsyncContextRunnable;
 import server.restful.common.converter.LocaleConverter;
 import server.restful.common.converter.WebResourceConverter;
-import server.restful.common.filters.HeadRequestFilter;
-import server.restful.common.filters.RTMPBasedRateLimiterFilter;
-import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import server.restful.common.rtmp.HlsType;
@@ -331,11 +325,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Override
 	public void destroy() {
 		executorService.shutdown();
-	}
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter(), new HeadRequestFilter(), new RTMPBasedRateLimiterFilter());
 	}
 
 	@Override

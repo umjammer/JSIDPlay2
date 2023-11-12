@@ -8,7 +8,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ import java.util.stream.IntStream;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -30,7 +28,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
 import libsidplay.sidtune.SidTune;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import ui.entities.collection.HVSCEntry;
@@ -47,17 +44,6 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 		@Parameter(names = "--list", arity = 1, descriptionKey = "LIST", order = -2)
 		private Boolean list = Boolean.FALSE;
 
-	}
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter());
-	}
-
-	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		return result;
 	}
 
 	/**

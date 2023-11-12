@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
@@ -61,10 +62,17 @@ import com.beust.jcommander.ParametersDelegate;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpFilter;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.filters.CounterBasedRateLimiterFilter;
+import server.restful.common.filters.HeadRequestFilter;
+import server.restful.common.filters.RTMPBasedRateLimiterFilter;
+import server.restful.common.filters.RequestLogFilter;
+import server.restful.common.filters.TimeBasedRateLimiterFilter;
+import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 import server.restful.common.rtmp.PlayerCleanupTimerTask;
 import server.restful.servlets.ConvertServlet;
 import server.restful.servlets.DirectoryServlet;
@@ -242,6 +250,13 @@ public final class JSIDPlay2Server {
 			STILServlet.class, TuneInfoServlet.class, UploadServlet.class, WebJarsServlet.class
 
 	);
+
+	/**
+	 * Our servlet filters to use
+	 */
+	private static final List<Class<? extends HttpFilter>> SERVLET_FILTERS = asList(CounterBasedRateLimiterFilter.class,
+			HeadRequestFilter.class, RequestLogFilter.class, RTMPBasedRateLimiterFilter.class,
+			TimeBasedRateLimiterFilter.class, TimeDistanceBasedRateLimiterFilter.class);
 
 	private static JSIDPlay2Server INSTANCE;
 
@@ -472,24 +487,33 @@ public final class JSIDPlay2Server {
 		return result;
 	}
 
-	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets) {
-		servlets.forEach(servlet -> servlet.getServletFilters().forEach(servletFilter -> {
-			WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
-			WebFilter webFilter = servletFilter.getClass().getAnnotation(WebFilter.class);
+	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets)
+			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException {
+		for (Class<? extends HttpFilter> servletFilterCls : SERVLET_FILTERS) {
+			WebFilter webFilter = servletFilterCls.getAnnotation(WebFilter.class);
 
-			String filterName = webServlet.name() + "_" + webFilter.filterName();
+			for (JSIDPlay2Servlet servlet : servlets) {
+				WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
 
-			FilterDef filterDefinition = new FilterDef();
-			filterDefinition.setFilterName(filterName);
-			filterDefinition.setFilter(servletFilter);
-			filterDefinition.getParameterMap().putAll(servlet.getServletFiltersParameterMap());
-			context.addFilterDef(filterDefinition);
+				if (Arrays.asList(webFilter.servletNames()).contains(webServlet.name())) {
+					HttpFilter servletFilter = servletFilterCls.getDeclaredConstructor().newInstance();
 
-			FilterMap filterMapping = new FilterMap();
-			filterMapping.setFilterName(filterName);
-			filterMapping.addServletName(webServlet.name());
-			context.addFilterMap(filterMapping);
-		}));
+					String filterName = webServlet.name() + "_" + webFilter.filterName();
+
+					FilterDef filterDefinition = new FilterDef();
+					filterDefinition.setFilterName(filterName);
+					filterDefinition.setFilter(servletFilter);
+					filterDefinition.getParameterMap().putAll(servlet.getServletFiltersParameterMap());
+					context.addFilterDef(filterDefinition);
+
+					FilterMap filterMapping = new FilterMap();
+					filterMapping.setFilterName(filterName);
+					filterMapping.addServletName(webServlet.name());
+					context.addFilterMap(filterMapping);
+				}
+			}
+		}
 	}
 
 	private void addSecurity(Context context, List<JSIDPlay2Servlet> servlets) {

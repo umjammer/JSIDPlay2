@@ -19,7 +19,6 @@ import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -34,7 +33,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
@@ -107,10 +105,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 		return httpConstraint != null
 				&& (httpConstraint.rolesAllowed().length > 0 || EmptyRoleSemantic.DENY.equals(httpConstraint.value()));
-	}
-
-	public List<Filter> getServletFilters() {
-		return Collections.emptyList();
 	}
 
 	public Map<String, String> getServletFiltersParameterMap() {

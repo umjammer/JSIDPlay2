@@ -9,10 +9,8 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +18,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -31,7 +28,6 @@ import libsidplay.common.ChipModel;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import sidplay.ini.IniConfig;
@@ -58,17 +54,6 @@ public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 		@ParametersDelegate
 		private IEmulationSection emulationSection = new IniConfig().getEmulationSection();
 
-	}
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter());
-	}
-
-	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		return result;
 	}
 
 	@Override

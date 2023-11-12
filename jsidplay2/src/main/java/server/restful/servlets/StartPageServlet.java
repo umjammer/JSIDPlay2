@@ -13,30 +13,18 @@ import static server.restful.common.filters.TimeDistanceBasedRateLimiterFilter.F
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.RequestLogFilter;
-import server.restful.common.filters.TimeBasedRateLimiterFilter;
-import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "StartPageServlet", urlPatterns = CONTEXT_ROOT_START_PAGE)
 public class StartPageServlet extends JSIDPlay2Servlet {
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter(), new TimeDistanceBasedRateLimiterFilter(),
-				new TimeBasedRateLimiterFilter());
-	}
 
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {

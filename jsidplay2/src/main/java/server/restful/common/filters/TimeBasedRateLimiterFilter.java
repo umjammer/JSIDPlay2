@@ -3,6 +3,7 @@ package server.restful.common.filters;
 import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "TimeBasedRateLimiterFilter")
+@WebFilter(filterName = "TimeBasedRateLimiterFilter", servletNames = { "StartPageServlet" })
 public class TimeBasedRateLimiterFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE = "maxRequestsPerMinute";
@@ -32,9 +34,10 @@ public class TimeBasedRateLimiterFilter extends HttpFilter {
 	private int maxRequestsPerMinute;
 
 	@Override
-	public void init(FilterConfig filterConfig) {
+	public void init(FilterConfig filterConfig) throws ServletException {
 		maxRequestsPerMinute = Integer
-				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE));
+				.parseInt(Optional.ofNullable(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE))
+						.orElseThrow(() -> new UnavailableException(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE)));
 	}
 
 	@Override

@@ -15,12 +15,9 @@ import java.io.OutputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -31,19 +28,12 @@ import libsidplay.common.SamplingRate;
 import libsidutils.AudioUtils;
 import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.CounterBasedRateLimiterFilter;
-import server.restful.common.filters.RequestLogFilter;
 import sidplay.audio.wav.WAVHeader;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "SpeechToTextServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/speech2text")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class SpeechToTextServlet extends JSIDPlay2Servlet {
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter(), new CounterBasedRateLimiterFilter());
-	}
 
 	@Override
 	public Map<String, String> getServletFiltersParameterMap() {

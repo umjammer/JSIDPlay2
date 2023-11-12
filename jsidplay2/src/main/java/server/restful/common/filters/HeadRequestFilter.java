@@ -1,10 +1,12 @@
 package server.restful.common.filters;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,15 +19,16 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "HeadRequestFilter")
+@WebFilter(filterName = "HeadRequestFilter", servletNames = { "ConvertServlet" })
 public final class HeadRequestFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_CONTENT_TYPE = "contentType";
 
 	private String contentType;
 
-	public void init(FilterConfig filterConfig) {
-		contentType = filterConfig.getInitParameter(FILTER_PARAMETER_CONTENT_TYPE);
+	public void init(FilterConfig filterConfig) throws ServletException {
+		contentType = Optional.ofNullable(filterConfig.getInitParameter(FILTER_PARAMETER_CONTENT_TYPE))
+				.orElseThrow(() -> new UnavailableException(FILTER_PARAMETER_CONTENT_TYPE));
 	}
 
 	@Override

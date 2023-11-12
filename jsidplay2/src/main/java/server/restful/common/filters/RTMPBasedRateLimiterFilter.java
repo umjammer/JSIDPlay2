@@ -4,10 +4,12 @@ import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 import static server.restful.common.rtmp.PlayerCleanupTimerTask.count;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "RTMPBasedRateLimiterFilter")
+@WebFilter(filterName = "RTMPBasedRateLimiterFilter", servletNames = { "ConvertServlet", "WhatsSidServlet" })
 public final class RTMPBasedRateLimiterFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_MAX_RTMP_PER_SERVLET = "maxRtmpPerServlet";
@@ -29,8 +31,10 @@ public final class RTMPBasedRateLimiterFilter extends HttpFilter {
 	private int maxRtmpPerServlet;
 
 	@Override
-	public void init(FilterConfig filterConfig) {
-		maxRtmpPerServlet = Integer.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET));
+	public void init(FilterConfig filterConfig) throws ServletException {
+		maxRtmpPerServlet = Integer
+				.parseInt(Optional.ofNullable(filterConfig.getInitParameter(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET))
+						.orElseThrow(() -> new UnavailableException(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET)));
 	}
 
 	@Override

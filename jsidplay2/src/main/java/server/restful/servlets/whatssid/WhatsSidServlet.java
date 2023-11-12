@@ -18,10 +18,8 @@ import static server.restful.common.IServletSystemProperties.WHATSSID_ASYNC_TIME
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +30,6 @@ import javax.persistence.QueryTimeoutException;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import jakarta.servlet.AsyncContext;
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -47,8 +44,6 @@ import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
 import server.restful.common.async.DefaultThreadFactory;
 import server.restful.common.async.HttpAsyncContextRunnable;
-import server.restful.common.filters.RTMPBasedRateLimiterFilter;
-import server.restful.common.filters.RequestLogFilter;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
@@ -69,11 +64,6 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	@Override
 	public void destroy() {
 		executorService.shutdown();
-	}
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter(), new RTMPBasedRateLimiterFilter());
 	}
 
 	@Override

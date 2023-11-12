@@ -21,7 +21,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebFilter(filterName = "RequestLogFilter")
+@WebFilter(filterName = "RequestLogFilter", servletNames = {
+		// rtmp
+		"InsertNextCartServlet", "InsertNextDiskServlet", "JoystickServlet", "OnPlayDoneServlet", "OnPlayServlet",
+		"PressKeyServlet", "SetDefaultEmulationReSidFpServlet", "SetDefaultEmulationReSidServlet",
+		"SetSidModel6581Servlet", "SetSidModel8580Servlet",
+		// sidmapping
+		"ExSIDMappingServlet", "HardSIDMappingServlet", "SIDBlasterMappingServlet",
+		// whatssid
+		"FindHashServlet", "FindTuneServlet", "InsertHashesServlet", "InsertTuneServlet", "TuneExistsServlet",
+		"WhatsSidServlet",
+		//
+		"ConvertServlet", "DirectoryServlet", "DiskDirectoryServlet", "DownloadServlet", "FavoritesNamesServlet",
+		"FavoritesServlet", "FiltersServlet", "PhotoServlet", "RandomHVSCServlet", "SpeechToTextServlet",
+		"StartPageServlet", "StaticServlet", "STILServlet", "TuneInfoServlet", "UploadServlet", "WebJarsServlet" })
 public final class RequestLogFilter extends HttpFilter {
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());

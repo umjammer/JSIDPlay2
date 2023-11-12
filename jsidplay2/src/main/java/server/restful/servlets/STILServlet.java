@@ -8,14 +8,9 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.beust.jcommander.Parameters;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -25,7 +20,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.stil.STIL.STILEntry;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 
@@ -37,17 +31,6 @@ public class STILServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.STILServletParameters")
 	public static class STILServletParameters extends FileRequestPathServletParameters {
 
-	}
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter());
-	}
-
-	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		return result;
 	}
 
 	/**

@@ -13,9 +13,7 @@ import static server.restful.common.parameter.ServletParameterHelper.CONVERT_OPT
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpHeaders;
@@ -23,7 +21,6 @@ import org.apache.http.HttpHeaders;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +28,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
 
@@ -53,17 +49,6 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			this.useDevTools = useDevTools;
 		}
 
-	}
-
-	@Override
-	public List<Filter> getServletFilters() {
-		return Arrays.asList(new RequestLogFilter());
-	}
-
-	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		return result;
 	}
 
 	/**
@@ -94,7 +79,8 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
 				replacements.put("$year", String.valueOf(LocalDate.now().getYear()));
 				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
-				replacements.put("$lib", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib" : "lib-minified");
+				replacements.put("$lib",
+						Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib" : "lib-minified");
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 				if (mimeType.isCacheable()) {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_CACHED);

@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "TimeDistanceBasedRateLimiterFilter")
+@WebFilter(filterName = "TimeDistanceBasedRateLimiterFilter", servletNames = { "StartPageServlet" })
 public final class TimeDistanceBasedRateLimiterFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS = "minTimeBetweenRequests";
@@ -31,16 +32,17 @@ public final class TimeDistanceBasedRateLimiterFilter extends HttpFilter {
 	private int minTimeBetweenRequests;
 
 	@Override
-	public void init(FilterConfig filterConfig) {
+	public void init(FilterConfig filterConfig) throws ServletException {
 		minTimeBetweenRequests = Integer
-				.parseInt(filterConfig.getInitParameter(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS));
+				.parseInt(Optional.ofNullable(filterConfig.getInitParameter(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS))
+						.orElseThrow(() -> new UnavailableException(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS)));
 	}
 
 	@Override
 	public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		final Long lastTime = Optional.ofNullable(remoteAddrMap.put(request.getRemoteAddr(), System.currentTimeMillis()))
-				.orElse(0L);
+		final Long lastTime = Optional
+				.ofNullable(remoteAddrMap.put(request.getRemoteAddr(), System.currentTimeMillis())).orElse(0L);
 		if (System.currentTimeMillis() - lastTime > minTimeBetweenRequests) {
 			// let the request through and process as usual
 			chain.doFilter(request, response);
