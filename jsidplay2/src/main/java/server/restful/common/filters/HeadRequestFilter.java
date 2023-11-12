@@ -19,7 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "HeadRequestFilter", servletNames = { "ConvertServlet" })
+@WebFilter(filterName = "HeadRequestFilter", displayName = "HeadRequestFilter", description = "Ensure a maximum number of requests in parallel (server overload protection)", servletNames = {
+		"ConvertServlet" })
 public final class HeadRequestFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_CONTENT_TYPE = "contentType";

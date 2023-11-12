@@ -15,13 +15,20 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Log request and response.
+ * 
+ * @author ken
+ *
+ */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "RequestLogFilter", servletNames = {
+@WebFilter(filterName = "RequestLogFilter", displayName = "RequestLogFilter", description = "Log request and response", servletNames = {
 		// rtmp
 		"InsertNextCartServlet", "InsertNextDiskServlet", "JoystickServlet", "OnPlayDoneServlet", "OnPlayServlet",
 		"PressKeyServlet", "SetDefaultEmulationReSidFpServlet", "SetDefaultEmulationReSidServlet",
@@ -39,13 +46,16 @@ public final class RequestLogFilter extends HttpFilter {
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());
 
+	public static final String FILTER_PARAMETER_SERVLET_NAME = "servletName";
+
 	private ServletContext servletContext;
-	private String filterName;
+	private String servletName;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		servletContext = filterConfig.getServletContext();
-		filterName = filterConfig.getFilterName();
+		servletName = Optional.ofNullable(filterConfig.getInitParameter(FILTER_PARAMETER_SERVLET_NAME))
+				.orElseThrow(() -> new UnavailableException(FILTER_PARAMETER_SERVLET_NAME));
 	}
 
 	@Override
@@ -172,7 +182,7 @@ public final class RequestLogFilter extends HttpFilter {
 	}
 
 	public void log(String message) {
-		servletContext.log(filterName + ": " + message);
+		servletContext.log(servletName + ": " + message);
 	}
 
 }

@@ -23,7 +23,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "RTMPBasedRateLimiterFilter", servletNames = { "ConvertServlet", "WhatsSidServlet" })
+@WebFilter(filterName = "RTMPBasedRateLimiterFilter", displayName = "RTMPBasedRateLimiterFilter", description = "Ensure a maximum number of RTMP video creations in parallel (server overload protection)", servletNames = {
+		"ConvertServlet", "WhatsSidServlet" })
 public final class RTMPBasedRateLimiterFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_MAX_RTMP_PER_SERVLET = "maxRtmpPerServlet";

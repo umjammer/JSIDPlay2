@@ -22,7 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "CounterBasedRateLimiterFilter", servletNames = { "SpeechToTextServlet" })
+@WebFilter(filterName = "CounterBasedRateLimiterFilter", displayName = "CounterBasedRateLimiterFilter", description = "Ensure a maximum number of requests in parallel (server overload protection)", servletNames = {
+		"SpeechToTextServlet" })
 public final class CounterBasedRateLimiterFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET = "maxRequestsPerServlet";

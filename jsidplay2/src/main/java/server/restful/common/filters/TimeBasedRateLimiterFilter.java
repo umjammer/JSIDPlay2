@@ -25,7 +25,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "TimeBasedRateLimiterFilter", servletNames = { "StartPageServlet" })
+@WebFilter(filterName = "TimeBasedRateLimiterFilter", displayName = "TimeBasedRateLimiterFilter", description = "Ensure a maximum number of requests per minute (server overload protection)", servletNames = {
+		"StartPageServlet" })
 public class TimeBasedRateLimiterFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE = "maxRequestsPerMinute";

@@ -1,5 +1,6 @@
 package server.restful;
 
+import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
@@ -505,6 +506,9 @@ public final class JSIDPlay2Server {
 					filterDefinition.setFilterName(filterName);
 					filterDefinition.setFilter(servletFilter);
 					filterDefinition.getParameterMap().putAll(servlet.getServletFiltersParameterMap());
+					if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
+						filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME, webServlet.name());
+					}
 					context.addFilterDef(filterDefinition);
 
 					FilterMap filterMapping = new FilterMap();
