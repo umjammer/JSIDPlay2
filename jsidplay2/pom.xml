@@ -612,6 +612,13 @@
 							<failOnError>true</failOnError>
 							<failOnWarnings>true</failOnWarnings>
 							<show>private</show>
+							<tags>
+							    <tag>
+							        <name>jsidplay2.systemProperty</name>
+							        <placement>a</placement>
+							        <head>System Property:</head>
+							    </tag> 
+							</tags>
 						</configuration>
 					</execution>
 				</executions>
