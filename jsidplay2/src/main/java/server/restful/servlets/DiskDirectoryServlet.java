@@ -85,9 +85,7 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 
 	private Directory createDiskDirectory(final File file) throws IOException, FileNotFoundException {
 		File extractedFile = IOUtils.extract(configuration.getSidplay2Section().getTmpDir(), file);
-		Directory directory = new DiskDirectory(extractedFile);
-		IOUtils.deleteDirectory(extractedFile.getParentFile());
-		return directory;
+		return new DiskDirectory(extractedFile);
 	}
 
 }
