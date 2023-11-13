@@ -13,13 +13,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Ensure a maximum number of requests in parallel (server overload protection).
+ * Fake HEAD request to return unknown content-length.
  * 
  * @author ken
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "HeadRequestFilter", displayName = "HeadRequestFilter", description = "Ensure a maximum number of requests in parallel (server overload protection)", servletNames = {
+@WebFilter(filterName = "HeadRequestFilter", displayName = "HeadRequestFilter", description = "Fake HEAD request to return unknown content-length", servletNames = {
 		"ConvertServlet" })
 public final class HeadRequestFilter extends HttpFilter {
 

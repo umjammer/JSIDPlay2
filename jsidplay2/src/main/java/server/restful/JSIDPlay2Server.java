@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
@@ -516,6 +517,14 @@ public final class JSIDPlay2Server {
 					filterMapping.addServletName(webServlet.name());
 					context.addFilterMap(filterMapping);
 				}
+			}
+			if (!Arrays.asList(webFilter.servletNames()).stream()
+					.allMatch(servletName -> servlets.stream()
+							.map(servlet -> servlet.getClass().getAnnotation(WebServlet.class).name())
+							.anyMatch(servletName::equals))) {
+				throw new RuntimeException(
+						String.format("Unknown servlet name in filter name=%s, servletNames=%s", webFilter.filterName(),
+								Arrays.asList(webFilter.servletNames()).stream().collect(Collectors.joining(","))));
 			}
 		}
 	}
