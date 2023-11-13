@@ -493,6 +493,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				SidTune tune = SidTune.load(file);
 				tune.getInfo().setSelectedSong(servletParameters.startSong);
+
 				player.play(tune);
 				player.stopC64(false);
 
@@ -545,17 +546,22 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
 
-				ConvenienceResult convenienceResult = new Convenience(player).autostart(file,
-						Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart, true);
+				try {
+					ConvenienceResult convenienceResult = new Convenience(player).autostart(file,
+							Convenience.LEXICALLY_FIRST_MEDIA, servletParameters.autostart, true);
 
-				if (!player.getC64().isCartridge()) {
-					insertCartridge(servletParameters, player);
+					if (!player.getC64().isCartridge()) {
+						insertCartridge(servletParameters, player);
+					}
+					if (uuid != null) {
+						create(uuid, player, file, convenienceResult, servletParameters);
+					}
+					player.stopC64(false);
+					
+				} catch (Throwable t) {
+					player.stopC64(true);
+					throw t;
 				}
-
-				if (uuid != null) {
-					create(uuid, player, file, convenienceResult, servletParameters);
-				}
-				player.stopC64(false);
 
 				info(String.format("END file=%s, uuid=%s", file.getAbsolutePath(), uuid), parentThread);
 				return videoFile;
