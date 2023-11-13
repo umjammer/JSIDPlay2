@@ -242,6 +242,8 @@ public interface IServletSystemProperties {
 	/**
 	 * Time span to wait between HLS keep alive notifications in milliseconds
 	 * (default: 3s)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.hls.notify.for
 	 */
 	int NOTIFY_FOR_HLS = valueOf(getProperty("jsidplay2.hls.notify.for", "3000"));
 
