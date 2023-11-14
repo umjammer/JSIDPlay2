@@ -473,13 +473,14 @@ public final class JSIDPlay2Server {
 		List<JSIDPlay2Servlet> result = new ArrayList<>();
 
 		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
+			WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
+
 			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor().newInstance();
 			servlet.setConfiguration(parameters.configuration);
 			servlet.setDirectoryProperties(servletUtilProperties);
 			servlet.setSidDatabase(sidDatabase);
 			servlet.setStil(stil);
 
-			WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
 			Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
 			wrapper.setAsyncSupported(webServlet.asyncSupported());
 			Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
@@ -519,12 +520,11 @@ public final class JSIDPlay2Server {
 				}
 			}
 			if (!Arrays.asList(webFilter.servletNames()).stream()
-					.allMatch(servletName -> servlets.stream()
-							.map(servlet -> servlet.getClass().getAnnotation(WebServlet.class).name())
-							.anyMatch(servletName::equals))) {
-				throw new RuntimeException(
-						String.format("Unknown servlet name in filter name=%s, servletNames=%s", webFilter.filterName(),
-								Arrays.asList(webFilter.servletNames()).stream().collect(Collectors.joining(","))));
+					.allMatch(servletName -> Arrays.asList(context.findFilterMaps()).stream()
+							.anyMatch(map -> Arrays.asList(map.getServletNames()).contains(servletName)))) {
+				throw new RuntimeException(String.format(
+						"Unknown servlet name in filter! filterName=%s, servletNames=%s", webFilter.filterName(),
+						Arrays.asList(webFilter.servletNames()).stream().collect(Collectors.joining(","))));
 			}
 		}
 	}
@@ -548,6 +548,14 @@ public final class JSIDPlay2Server {
 				securityConstraint.addCollection(securityCollection);
 
 				context.addConstraint(securityConstraint);
+
+				if (!Arrays.asList(servletSecurity.value().rolesAllowed()).stream()
+						.allMatch(context::findSecurityRole)) {
+					throw new RuntimeException(
+							String.format("Unknown role name in servlet! servletName=%s, roleNames=%s",
+									webServlet.name(), Arrays.asList(servletSecurity.value().rolesAllowed()).stream()
+											.collect(Collectors.joining(","))));
+				}
 			}
 		});
 		context.getPipeline().addValve(new BasicAuthenticator());
