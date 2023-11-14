@@ -250,7 +250,6 @@ public final class JSIDPlay2Server {
 			FavoritesNamesServlet.class, FavoritesServlet.class, FiltersServlet.class, PhotoServlet.class,
 			RandomHVSCServlet.class, SpeechToTextServlet.class, StartPageServlet.class, StaticServlet.class,
 			STILServlet.class, TuneInfoServlet.class, UploadServlet.class, WebJarsServlet.class
-
 	);
 
 	/**
