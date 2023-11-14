@@ -81,6 +81,13 @@ public class UploadServlet extends JSIDPlay2Servlet {
 		executorService.shutdown();
 	}
 
+	/**
+	 * Upload any C64 content to a temporary server location to play back (can be
+	 * any C64 resource even packed contents).
+	 *
+	 * E.g.
+	 * http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/upload/Outro.sid
+	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
