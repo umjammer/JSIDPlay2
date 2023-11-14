@@ -11,7 +11,6 @@ public class UploadContents {
 	private byte[] contents;
 
 	public UploadContents() {
-		this(null);
 	}
 
 	public UploadContents(byte[] contents) {
@@ -23,7 +22,7 @@ public class UploadContents {
 	}
 
 	@XmlElement(name = "contents")
-	public void setWav(byte[] contents) {
+	public void setContents(byte[] contents) {
 		this.contents = contents;
 	}
 

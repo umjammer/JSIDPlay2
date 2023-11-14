@@ -16,7 +16,6 @@ public class WAVBean {
 	private long maxSeconds;
 
 	public WAVBean() {
-		this(null);
 	}
 
 	public WAVBean(byte[] wav) {
