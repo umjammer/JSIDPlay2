@@ -363,7 +363,7 @@ public class IOUtils {
 	 * @return resource bundle
 	 */
 	public static ResourceBundle getResourceBundle(String baseName, Locale locale) {
-		locale = Locale.ENGLISH.getLanguage().equals(locale.getLanguage()) ? Locale.ROOT : locale;
+		locale = locale == null || Locale.ENGLISH.getLanguage().equals(locale.getLanguage()) ? Locale.ROOT : locale;
 		return ResourceBundle.getBundle(baseName, locale);
 	}
 
