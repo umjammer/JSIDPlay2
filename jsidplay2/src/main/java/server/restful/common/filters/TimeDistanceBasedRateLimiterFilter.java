@@ -23,8 +23,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "TimeDistanceBasedRateLimiterFilter", displayName = "TimeDistanceBasedRateLimiterFilter", description = "Ensure a minimum time between requests (kind of DDOS protection)", servletNames = {
-		"StartPageServlet" })
+@WebFilter(filterName = "TimeDistanceBasedRateLimiterFilter", displayName = "TimeDistanceBasedRateLimiterFilter", servletNames = {
+		"StartPageServlet" }, description = "Ensure a minimum time between requests (kind of DDOS protection)")
 public final class TimeDistanceBasedRateLimiterFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS = "minTimeBetweenRequests";

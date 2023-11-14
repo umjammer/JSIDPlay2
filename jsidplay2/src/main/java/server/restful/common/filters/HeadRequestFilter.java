@@ -19,8 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @SuppressWarnings("serial")
-@WebFilter(filterName = "HeadRequestFilter", displayName = "HeadRequestFilter", description = "Fake HEAD request to return unknown content-length", servletNames = {
-		"ConvertServlet" })
+@WebFilter(filterName = "HeadRequestFilter", displayName = "HeadRequestFilter", servletNames = {
+		"ConvertServlet" }, description = "Fake HEAD request to return unknown content-length")
 public final class HeadRequestFilter extends HttpFilter {
 
 	public static final String FILTER_PARAMETER_CONTENT_TYPE = "contentType";
