@@ -384,7 +384,7 @@ public class SIDMixer implements Mixer {
 	 * @param decibel decibel value
 	 * @return centibel value
 	 */
-	private int decibelsToCentibels(float decibel) {
+	public static  int decibelsToCentibels(float decibel) {
 		return (int) (decibel * 10);
 	}
 

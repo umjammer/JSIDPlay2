@@ -20,6 +20,7 @@ public class TextToSpeechBean {
 	private File tuneFile;
 	private Player player;
 	private Locale textToSpeechLocale;
+	private double volume;
 
 	private String title;
 	private String author;
@@ -52,6 +53,14 @@ public class TextToSpeechBean {
 		return textToSpeechLocale;
 	}
 
+	public void setVolume(double volume) {
+		this.volume = volume;
+	}
+	
+	public double getVolume() {
+		return volume;
+	}
+	
 	public TextToSpeechBean(File tuneFile, Player player, Locale textToSpeechLocale) {
 		this.tuneFile = tuneFile;
 		this.player = player;

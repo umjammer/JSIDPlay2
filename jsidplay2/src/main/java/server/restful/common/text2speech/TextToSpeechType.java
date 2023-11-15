@@ -29,8 +29,8 @@ public enum TextToSpeechType {
 	}
 
 	private static String[] createPico2WaveArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		String ssml = "<volume level=\"75\">" + "<pitch level=\"140\">" + createSsmlParagraph(textToSpeechBean)
-				+ "</pitch>" + "</volume>";
+		String ssml = "<volume level=\"" + (50 * (1 + textToSpeechBean.getVolume())) + "\">" + "<pitch level=\"140\">"
+				+ createSsmlParagraph(textToSpeechBean) + "</pitch>" + "</volume>";
 
 		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
 				"-w=" + wavFile.getAbsolutePath(), ssml };
@@ -40,7 +40,8 @@ public enum TextToSpeechType {
 		String ssml = "<speak>" + "<voice language=\"" + textToSpeechBean.getTextToSpeechLocale().getLanguage()
 				+ "\" gender=\"female\">" + createSsmlParagraph(textToSpeechBean) + "<voice>" + "</speak>";
 
-		return new String[] { "espeak", ssml, "-m", "-k20", "-a50", "-w", wavFile.getAbsolutePath() };
+		return new String[] { "espeak", ssml, "-m", "-k20", "-a" + (50 * (1 + textToSpeechBean.getVolume())), "-w",
+				wavFile.getAbsolutePath() };
 	}
 
 	private static String createSsmlParagraph(TextToSpeechBean textToSpeechBean) {
