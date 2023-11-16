@@ -1,6 +1,5 @@
 package server.restful;
 
-import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
@@ -15,6 +14,7 @@ import static server.restful.common.IServletSystemProperties.HTTP2_READ_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_USE_SENDFILE;
 import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.USE_HTTP2;
+import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,6 +61,8 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebServlet;
@@ -249,8 +251,7 @@ public final class JSIDPlay2Server {
 			ConvertServlet.class, DirectoryServlet.class, DiskDirectoryServlet.class, DownloadServlet.class,
 			FavoritesNamesServlet.class, FavoritesServlet.class, FiltersServlet.class, PhotoServlet.class,
 			RandomHVSCServlet.class, SpeechToTextServlet.class, StartPageServlet.class, StaticServlet.class,
-			STILServlet.class, TuneInfoServlet.class, UploadServlet.class, WebJarsServlet.class
-	);
+			STILServlet.class, TuneInfoServlet.class, UploadServlet.class, WebJarsServlet.class);
 
 	/**
 	 * Our servlet filters to use
@@ -473,6 +474,7 @@ public final class JSIDPlay2Server {
 
 		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
 			WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
+			MultipartConfig multipartConfig = servletCls.getAnnotation(MultipartConfig.class);
 
 			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor().newInstance();
 			servlet.setConfiguration(parameters.configuration);
@@ -481,6 +483,12 @@ public final class JSIDPlay2Server {
 			servlet.setStil(stil);
 
 			Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
+
+			if (multipartConfig != null) {
+				wrapper.setMultipartConfigElement(
+						new MultipartConfigElement(multipartConfig.location(), multipartConfig.maxFileSize(),
+								multipartConfig.maxRequestSize(), multipartConfig.fileSizeThreshold()));
+			}
 			wrapper.setAsyncSupported(webServlet.asyncSupported());
 			Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
 

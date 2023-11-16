@@ -347,8 +347,8 @@ public interface IServletSystemProperties {
 	int MAX_UPLOADS_IN_PARALLEL = valueOf(getProperty("jsidplay2.upload.max.parallel", "7"));
 
 	/**
-	 * WhatsSID cache size (default: 60000). Recognized audio is cached for
-	 * repeated requests for performance reasons
+	 * WhatsSID cache size (default: 60000). Recognized audio is cached for repeated
+	 * requests for performance reasons
 	 * 
 	 * @jsidplay2.systemProperty jsidplay2.whatssid.cache.size
 	 */
@@ -378,17 +378,12 @@ public interface IServletSystemProperties {
 
 	/**
 	 * Maximum upload request size in bytes (default: 17mb)
-	 * 
-	 * @jsidplay2.systemProperty jsidplay2.upload.size.max
 	 */
-	long UPLOAD_SIZE_MAX = Long.valueOf(getProperty("jsidplay2.upload.size.max", String.valueOf((17 << 10 << 10))));
+	long MAX_REQUEST_SIZE = 17 << 10 << 10;
 
 	/**
 	 * Maximum single file upload size in bytes (default: 17mb)
-	 * 
-	 * @jsidplay2.systemProperty jsidplay2.upload.file.size.max
 	 */
-	long UPLOAD_FILE_SIZE_MAX = Long
-			.valueOf(getProperty("jsidplay2.upload.file.size.max", String.valueOf((17 << 10 << 10))));
+	long MAX_FILE_SIZE = 17 << 10 << 10;
 
 }

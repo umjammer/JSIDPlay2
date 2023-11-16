@@ -5,6 +5,8 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.IServletSystemProperties.MAX_FILE_SIZE;
+import static server.restful.common.IServletSystemProperties.MAX_REQUEST_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_UPLOADS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.UPLOAD_ASYNC_TIMEOUT;
 import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
@@ -32,6 +34,7 @@ import com.beust.jcommander.Parameters;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,6 +54,7 @@ import ui.common.util.Extract7ZipUtil;
 @SuppressWarnings("serial")
 @WebServlet(name = "UploadServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/upload/*")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
+@MultipartConfig(maxFileSize = MAX_FILE_SIZE, maxRequestSize = MAX_REQUEST_SIZE)
 public class UploadServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.UploadServletParameters")

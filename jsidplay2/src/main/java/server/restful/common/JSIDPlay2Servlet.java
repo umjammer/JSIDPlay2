@@ -7,8 +7,6 @@ import static org.apache.http.HttpHeaders.ACCEPT;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
-import static server.restful.common.IServletSystemProperties.UPLOAD_FILE_SIZE_MAX;
-import static server.restful.common.IServletSystemProperties.UPLOAD_SIZE_MAX;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,7 +23,6 @@ import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
 
-import org.apache.tomcat.util.http.fileupload.FileItemIterator;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,6 +38,7 @@ import jakarta.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidutils.IOUtils;
@@ -171,12 +169,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			} else if (ServletFileUpload.isMultipartContent(request)) {
 				// file upload (multipart/mixed)
 				ByteArrayOutputStream result = new ByteArrayOutputStream();
-				ServletFileUpload servletFileUpload = new ServletFileUpload();
-				servletFileUpload.setSizeMax(UPLOAD_SIZE_MAX);
-				servletFileUpload.setFileSizeMax(UPLOAD_FILE_SIZE_MAX);
-				FileItemIterator itemIterator = servletFileUpload.getItemIterator(request);
-				while (itemIterator.hasNext()) {
-					try (InputStream itemInputStream = itemIterator.next().openStream()) {
+				for (Part part : request.getParts()) {
+					try (InputStream itemInputStream = part.getInputStream()) {
 						IOUtils.copy(itemInputStream, result);
 					}
 					// just the first file
