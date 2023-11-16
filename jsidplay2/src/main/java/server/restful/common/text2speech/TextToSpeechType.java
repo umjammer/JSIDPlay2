@@ -29,19 +29,21 @@ public enum TextToSpeechType {
 	}
 
 	private static String[] createPico2WaveArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		String ssml = "<volume level=\"" + (50 * (1 + textToSpeechBean.getVolume())) + "\">" + "<pitch level=\"140\">"
-				+ createSsmlParagraph(textToSpeechBean) + "</pitch>" + "</volume>";
+		int volume = (int) (50 * (1 + textToSpeechBean.getVolume()));
+		String ssml = String.format("<volume level=\"%d\"><pitch level=\"140\">%s</pitch></volume>", volume,
+				createSsmlParagraph(textToSpeechBean));
 
 		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
 				"-w=" + wavFile.getAbsolutePath(), ssml };
 	}
 
 	private static String[] createEspeakArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		String ssml = "<speak>" + "<voice language=\"" + textToSpeechBean.getTextToSpeechLocale().getLanguage()
-				+ "\" gender=\"female\">" + createSsmlParagraph(textToSpeechBean) + "<voice>" + "</speak>";
+		double volume = 50 * (1 + textToSpeechBean.getVolume());
+		String locale = textToSpeechBean.getTextToSpeechLocale().getLanguage();
+		String ssml = String.format("<speak><voice language=\"%s\" gender=\"female\">%s</voice></speak>", locale,
+				createSsmlParagraph(textToSpeechBean));
 
-		return new String[] { "espeak", ssml, "-m", "-k20", "-a" + (50 * (1 + textToSpeechBean.getVolume())), "-w",
-				wavFile.getAbsolutePath() };
+		return new String[] { "espeak", ssml, "-m", "-k20", "-a" + volume, "-w", wavFile.getAbsolutePath() };
 	}
 
 	private static String createSsmlParagraph(TextToSpeechBean textToSpeechBean) {
@@ -50,25 +52,28 @@ public enum TextToSpeechType {
 		textToSpeechBean.determineText2Speak(resourceBundle);
 
 		String text = "<p>"
-				+ (textToSpeechBean.getTitle() != null ? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": "
-						+ replaceSpecials(textToSpeechBean.getTitle()) + "</s>" : "")
+				+ (textToSpeechBean.getTitle() != null ? "<s>"
+						+ resourceBundle.getString("NOW_PLAYING") + ": " + replaceSpecials(textToSpeechBean.getTitle(),
+								resourceBundle)
+						+ "</s>" : "")
 				+ (textToSpeechBean
 						.getAuthor() != null ? "<s>"
 								+ resourceBundle.getString("AUTHOR") + " "
 								+ replaceSpecials(replaceAliasName(textToSpeechBean.getAuthor(),
-										resourceBundle))
+										resourceBundle), resourceBundle)
 								+ "</s>" : "")
 				+ (textToSpeechBean.getReleased() != null
 						? "<s>" + resourceBundle.getString("RELEASED") + " "
 								+ replaceSpecials(replaceUnknownDecade(replaceUnknownDate(
 										replaceDateRange(textToSpeechBean.getReleased(), resourceBundle),
-										resourceBundle), resourceBundle))
+										resourceBundle), resourceBundle), resourceBundle)
 								+ "</s>"
 						: "")
 				+ (textToSpeechBean.getBasedOnTitle() != null ? "<s>" + resourceBundle.getString("BASED_ON_TITLE") + " "
-						+ replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle())) + "</s>" : "")
+						+ replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle()), resourceBundle) + "</s>"
+						: "")
 				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
-						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist()) + "</s>" : "")
+						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist(), resourceBundle) + "</s>" : "")
 				+ "</p>";
 		return text;
 	}
@@ -82,8 +87,9 @@ public enum TextToSpeechType {
 		return Locale.ENGLISH.getLanguage() + "-GB";
 	}
 
-	private static String replaceSpecials(String string) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>");
+	private static String replaceSpecials(String string, ResourceBundle resourceBundle) {
+		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>").replace("&",
+				" " + resourceBundle.getString("AND") + " ");
 	}
 
 	private static String replaceAliasName(String string, ResourceBundle resourceBundle) {
