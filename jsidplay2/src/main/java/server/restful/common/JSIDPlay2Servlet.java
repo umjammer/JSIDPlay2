@@ -23,8 +23,6 @@ import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
 
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -166,19 +164,15 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				return OBJECT_MAPPER.readValue(inputStream, tClass);
 			} else if (MIME_TYPE_XML.isCompatible(contentType)) {
 				return (T) JAXBContext.newInstance(tClass).createUnmarshaller().unmarshal(inputStream);
-			} else if (ServletFileUpload.isMultipartContent(request)) {
-				// file upload (multipart/mixed)
+			} else { // file upload (multipart/mixed)
 				ByteArrayOutputStream result = new ByteArrayOutputStream();
 				for (Part part : request.getParts()) {
 					try (InputStream itemInputStream = part.getInputStream()) {
 						IOUtils.copy(itemInputStream, result);
 					}
-					// just the first file
-					break;
+					Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class });
+					return constructor.newInstance(result.toByteArray());
 				}
-				Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class });
-				return constructor.newInstance(result.toByteArray());
-			} else {
 				throw new IOException("Unsupported content type: " + contentType);
 			}
 		} catch (Exception e) {
