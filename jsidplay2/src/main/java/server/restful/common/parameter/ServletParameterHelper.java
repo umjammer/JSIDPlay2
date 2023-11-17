@@ -1,9 +1,9 @@
 package server.restful.common.parameter;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static java.util.Arrays.asList;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -12,7 +12,6 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,13 +37,8 @@ import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
-import build.OnlineContent;
 import libsidutils.IOUtils;
 import server.restful.servlets.ConvertServlet;
-import sidplay.ConsolePlayer;
-import ui.JSidPlay2Main.JSIDPlay2MainParameters;
-import ui.tools.RecordingTool;
-import ui.tools.SIDBlasterTool;
 
 /**
  * Provides parameter default values and localization of ConvertServlet as well
@@ -74,24 +68,15 @@ public class ServletParameterHelper {
 		}
 	}
 
-	private static final List<Class<?>> MAIN_PARAMETER_CLASSES = asList(OnlineContent.class,
-			JSIDPlay2MainParameters.class, ConsolePlayer.class, RecordingTool.class, SIDBlasterTool.class);
-
-	public static void check() {
-		MAIN_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);
-	}
-
-	private static void check(Class<?> servletParameterClass) {
-		check(servletParameterClass, false);
-	}
-
 	public static void check(Class<?> servletParameterClass, boolean servletParameter)
 			throws ExceptionInInitializerError {
 		try {
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
+			Constructor<?> declaredConstructor = servletParameterClass.getDeclaredConstructor();
+			declaredConstructor.setAccessible(true);
 			createObjectMapper(new BeanParameterChecker(servletParameter)).writerWithDefaultPrettyPrinter()
-					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
+					.writeValueAsString(declaredConstructor.newInstance());
 		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			throw new ExceptionInInitializerError(e);

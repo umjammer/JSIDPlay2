@@ -162,11 +162,11 @@ public class OnlineContent {
 		createCRC(demosZipFile, new File(deployDir, "online/demos/Demos.crc"));
 	}
 
-	private void createServerClzListAndCheck() throws IOException {
+	private void createServerClzListAndCheck() throws IOException, SecurityException, ClassNotFoundException {
 		File root = new File(baseDir, "target/classes");
 
 		Collection<String> clzList = new ArrayList<>();
-		Files.walkFileTree(Paths.get(new File(root, "server/restful").toURI()), new SimpleFileVisitor<Path>() {
+		Files.walkFileTree(Paths.get(root.toURI()), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
 				File file = path.toFile();
@@ -184,25 +184,28 @@ public class OnlineContent {
 				FileWriter filters = new FileWriter(new File(root, "tomcat-filters.list"));) {
 			for (String clzName : clzList) {
 				Class<?> clz = getClass().getClassLoader().loadClass(clzName);
-				WebServlet webServlet = clz.getAnnotation(WebServlet.class);
-				if (webServlet != null) {
+				if (clz.getAnnotation(WebServlet.class) != null) {
 					servlets.write(clzName + ",");
 				}
-				WebFilter webFilter = clz.getAnnotation(WebFilter.class);
-				if (webFilter != null) {
+				if (clz.getAnnotation(WebFilter.class) != null) {
 					filters.write(clzName + ",");
 				}
-				Parameters parameters = clz.getAnnotation(Parameters.class);
-				if (parameters != null) {
+				if (clz.getAnnotation(Parameters.class) != null) {
 					// Parameter classes are being checked for development errors at build time
-					ServletParameterHelper.check(clz, clzName.startsWith("server.restful"));
+					if (clzName.startsWith("server.restful")) {
+						// ... check server parameters
+						ServletParameterHelper.check(clz, true);
+					} else {
+						try {
+							// ... check main parameters
+							clz.getMethod("main", String[].class);
+							ServletParameterHelper.check(clz, false);
+						} catch (NoSuchMethodException e) {
+						}
+					}
 				}
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
-		// Parameter classes are being checked for development errors at build time
-		ServletParameterHelper.check();
 	}
 
 	private void gb64() throws IOException {
