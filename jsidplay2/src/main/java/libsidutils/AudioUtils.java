@@ -74,12 +74,6 @@ public class AudioUtils {
 			throw new IOException("Unexpected end of audio stream");
 		}
 
-		// remove wasted audio (exceeding frameMaxLength)
-		int wasted = (int) (stream.getFrameLength() * stream.getFormat().getChannels() * Short.BYTES) - read;
-		if (wasted > 0) {
-			readNBytes(stream, new byte[wasted], 0, wasted);
-		}
-
 		// 1. stereo to mono conversion
 		if (stream.getFormat().getChannels() == 2) {
 			ByteBuffer stereoBuffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
