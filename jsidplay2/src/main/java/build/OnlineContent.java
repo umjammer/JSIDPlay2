@@ -12,14 +12,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.function.Consumer;
 
@@ -31,6 +38,8 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.annotation.WebServlet;
 import libsidutils.IOUtils;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
@@ -97,9 +106,6 @@ public class OnlineContent {
 	private volatile boolean ready;
 
 	private void execute(String[] args) throws Exception {
-		// Parameter classes are being checked for development errors at build time
-		ServletParameterHelper.check();
-
 		JCommander commander = JCommander.newBuilder().addObject(this).programName(getClass().getName()).build();
 		commander.parse(Arrays.asList(args).stream().map(arg -> arg == null ? "" : arg).toArray(String[]::new));
 		if (help) {
@@ -114,6 +120,8 @@ public class OnlineContent {
 		}
 
 		createDemos();
+
+		createServerClzListAndCheck();
 
 		if (gb64 != null) {
 			gb64();
@@ -152,6 +160,49 @@ public class OnlineContent {
 		Files.copy(Paths.get(source.toURI()), Paths.get(demosZipFile.toURI()), REPLACE_EXISTING);
 
 		createCRC(demosZipFile, new File(deployDir, "online/demos/Demos.crc"));
+	}
+
+	private void createServerClzListAndCheck() throws IOException {
+		File root = new File(baseDir, "target/classes");
+
+		Collection<String> clzList = new ArrayList<>();
+		Files.walkFileTree(Paths.get(new File(root, "server/restful").toURI()), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+				File file = path.toFile();
+				if (file.getAbsolutePath().endsWith(".class")) {
+					String clzName = file.getAbsolutePath();
+					clzName = clzName.substring(root.getAbsolutePath().length() + 1);
+					clzName = clzName.replace("/", ".");
+					clzName = clzName.substring(0, clzName.length() - ".class".length());
+					clzList.add(clzName);
+				}
+				return FileVisitResult.CONTINUE;
+			}
+		});
+		try (FileWriter servlets = new FileWriter(new File(root, "tomcat-servlets.list"));
+				FileWriter filters = new FileWriter(new File(root, "tomcat-filters.list"));) {
+			for (String clzName : clzList) {
+				Class<?> clz = getClass().getClassLoader().loadClass(clzName);
+				WebServlet webServlet = clz.getAnnotation(WebServlet.class);
+				if (webServlet != null) {
+					servlets.write(clzName + ",");
+				}
+				WebFilter webFilter = clz.getAnnotation(WebFilter.class);
+				if (webFilter != null) {
+					filters.write(clzName + ",");
+				}
+				Parameters parameters = clz.getAnnotation(Parameters.class);
+				if (parameters != null) {
+					// Parameter classes are being checked for development errors at build time
+					ServletParameterHelper.check(clz, clzName.startsWith("server.restful"));
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		// Parameter classes are being checked for development errors at build time
+		ServletParameterHelper.check();
 	}
 
 	private void gb64() throws IOException {

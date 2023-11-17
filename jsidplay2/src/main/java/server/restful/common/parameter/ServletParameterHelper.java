@@ -40,34 +40,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import build.OnlineContent;
 import libsidutils.IOUtils;
-import server.restful.JSIDPlay2Server.JSIDPlay2ServerParameters;
 import server.restful.servlets.ConvertServlet;
-import server.restful.servlets.ConvertServlet.ConvertServletParameters;
-import server.restful.servlets.DirectoryServlet.DirectoryServletParameters;
-import server.restful.servlets.DiskDirectoryServlet.DiskDirectoryServletParameters;
-import server.restful.servlets.DownloadServlet.DownloadServletParameters;
-import server.restful.servlets.FavoritesServlet.FavoritesServletParameters;
-import server.restful.servlets.PhotoServlet.PhotoServletParameters;
-import server.restful.servlets.STILServlet.STILServletParameters;
-import server.restful.servlets.StaticServlet.StaticServletParameters;
-import server.restful.servlets.TuneInfoServlet.TuneInfoServletParameters;
-import server.restful.servlets.UploadServlet.UploadServletParameters;
-import server.restful.servlets.WebJarsServlet.WebJarsServletParameters;
-import server.restful.servlets.hls.OnKeepAliveServlet.OnKeepAliveServletParameters;
-import server.restful.servlets.hls.ProxyServlet.ProxyServletParameters;
-import server.restful.servlets.rtmp.InsertNextCartServlet.InsertNextCartServletParameters;
-import server.restful.servlets.rtmp.InsertNextDiskServlet.InsertNextDiskServletParameters;
-import server.restful.servlets.rtmp.JoystickServlet.JoystickServletParameters;
-import server.restful.servlets.rtmp.OnPlayDoneServlet.OnPlayDoneServletParameters;
-import server.restful.servlets.rtmp.OnPlayServlet.OnPlayServletParameters;
-import server.restful.servlets.rtmp.PressKeyServlet.PressKeyServletParameters;
-import server.restful.servlets.rtmp.SetDefaultEmulationReSidFpServlet.SetDefaultEmulationReSidFpServletParameters;
-import server.restful.servlets.rtmp.SetDefaultEmulationReSidServlet.SetDefaultEmulationReSidServletParameters;
-import server.restful.servlets.rtmp.SetSidModel6581Servlet.SetSidModel6581ServletParameters;
-import server.restful.servlets.rtmp.SetSidModel8580Servlet.SetSidModel8580ServletParameters;
-import server.restful.servlets.sidmapping.ExSIDMappingServlet.ExSIDMappingServletParameters;
-import server.restful.servlets.sidmapping.HardSIDMappingServlet.HardSIDMappingServletParameters;
-import server.restful.servlets.sidmapping.SIDBlasterMappingServlet.SIDBlasterMappingServletParameters;
 import sidplay.ConsolePlayer;
 import ui.JSidPlay2Main.JSIDPlay2MainParameters;
 import ui.tools.RecordingTool;
@@ -102,38 +75,22 @@ public class ServletParameterHelper {
 	}
 
 	private static final List<Class<?>> MAIN_PARAMETER_CLASSES = asList(OnlineContent.class,
-			JSIDPlay2ServerParameters.class, JSIDPlay2MainParameters.class, ConsolePlayer.class, RecordingTool.class,
-			SIDBlasterTool.class);
-
-	private static final List<Class<?>> SERVLET_PARAMETER_CLASSES = asList(
-			// hls
-			OnKeepAliveServletParameters.class, ProxyServletParameters.class,
-			// rtmp
-			InsertNextCartServletParameters.class, InsertNextDiskServletParameters.class,
-			JoystickServletParameters.class, OnPlayDoneServletParameters.class, OnPlayServletParameters.class,
-			PressKeyServletParameters.class, SetDefaultEmulationReSidFpServletParameters.class,
-			SetDefaultEmulationReSidServletParameters.class, SetSidModel6581ServletParameters.class,
-			SetSidModel8580ServletParameters.class,
-			// sidmapping
-			ExSIDMappingServletParameters.class, HardSIDMappingServletParameters.class,
-			SIDBlasterMappingServletParameters.class,
-			//
-			ConvertServletParameters.class, DirectoryServletParameters.class, DiskDirectoryServletParameters.class,
-			DownloadServletParameters.class, FavoritesServletParameters.class, PhotoServletParameters.class,
-			StaticServletParameters.class, STILServletParameters.class, TuneInfoServletParameters.class,
-			UploadServletParameters.class, WebJarsServletParameters.class);
+			JSIDPlay2MainParameters.class, ConsolePlayer.class, RecordingTool.class, SIDBlasterTool.class);
 
 	public static void check() {
 		MAIN_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);
-		SERVLET_PARAMETER_CLASSES.forEach(ServletParameterHelper::check);
 	}
 
-	private static void check(Class<?> servletParameterClass) throws ExceptionInInitializerError {
+	private static void check(Class<?> servletParameterClass) {
+		check(servletParameterClass, false);
+	}
+
+	public static void check(Class<?> servletParameterClass, boolean servletParameter)
+			throws ExceptionInInitializerError {
 		try {
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
-			createObjectMapper(new BeanParameterChecker(SERVLET_PARAMETER_CLASSES.contains(servletParameterClass)))
-					.writerWithDefaultPrettyPrinter()
+			createObjectMapper(new BeanParameterChecker(servletParameter)).writerWithDefaultPrettyPrinter()
 					.writeValueAsString(servletParameterClass.getDeclaredConstructor().newInstance());
 		} catch (JsonProcessingException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {

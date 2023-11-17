@@ -3,7 +3,6 @@ package server.restful;
 import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 import static java.lang.System.getProperty;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
 import static org.apache.catalina.startup.Tomcat.addServlet;
 import static server.restful.common.IServletSystemProperties.COMPRESSION;
 import static server.restful.common.IServletSystemProperties.CONNECTION_TIMEOUT;
@@ -17,10 +16,12 @@ import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT
 import static server.restful.common.IServletSystemProperties.USE_HTTP2;
 import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,50 +74,8 @@ import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.filters.CounterBasedRateLimiterFilter;
-import server.restful.common.filters.HeadRequestFilter;
-import server.restful.common.filters.RTMPBasedRateLimiterFilter;
 import server.restful.common.filters.RequestLogFilter;
-import server.restful.common.filters.TimeBasedRateLimiterFilter;
-import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 import server.restful.common.rtmp.PlayerCleanupTimerTask;
-import server.restful.servlets.ConvertServlet;
-import server.restful.servlets.DirectoryServlet;
-import server.restful.servlets.DiskDirectoryServlet;
-import server.restful.servlets.DownloadServlet;
-import server.restful.servlets.FavoritesNamesServlet;
-import server.restful.servlets.FavoritesServlet;
-import server.restful.servlets.FiltersServlet;
-import server.restful.servlets.PhotoServlet;
-import server.restful.servlets.RandomHVSCServlet;
-import server.restful.servlets.STILServlet;
-import server.restful.servlets.SpeechToTextServlet;
-import server.restful.servlets.StartPageServlet;
-import server.restful.servlets.StaticServlet;
-import server.restful.servlets.TuneInfoServlet;
-import server.restful.servlets.UploadServlet;
-import server.restful.servlets.WebJarsServlet;
-import server.restful.servlets.hls.OnKeepAliveServlet;
-import server.restful.servlets.hls.ProxyServlet;
-import server.restful.servlets.rtmp.InsertNextCartServlet;
-import server.restful.servlets.rtmp.InsertNextDiskServlet;
-import server.restful.servlets.rtmp.JoystickServlet;
-import server.restful.servlets.rtmp.OnPlayDoneServlet;
-import server.restful.servlets.rtmp.OnPlayServlet;
-import server.restful.servlets.rtmp.PressKeyServlet;
-import server.restful.servlets.rtmp.SetDefaultEmulationReSidFpServlet;
-import server.restful.servlets.rtmp.SetDefaultEmulationReSidServlet;
-import server.restful.servlets.rtmp.SetSidModel6581Servlet;
-import server.restful.servlets.rtmp.SetSidModel8580Servlet;
-import server.restful.servlets.sidmapping.ExSIDMappingServlet;
-import server.restful.servlets.sidmapping.HardSIDMappingServlet;
-import server.restful.servlets.sidmapping.SIDBlasterMappingServlet;
-import server.restful.servlets.whatssid.FindHashServlet;
-import server.restful.servlets.whatssid.FindTuneServlet;
-import server.restful.servlets.whatssid.InsertHashesServlet;
-import server.restful.servlets.whatssid.InsertTuneServlet;
-import server.restful.servlets.whatssid.TuneExistsServlet;
-import server.restful.servlets.whatssid.WhatsSidServlet;
 import sidplay.Player;
 import sidplay.player.DebugUtil;
 import ui.entities.PersistenceProperties;
@@ -149,7 +108,7 @@ public final class JSIDPlay2Server {
 	@Parameters(resourceBundle = "server.restful.JSIDPlay2ServerParameters")
 	public static class JSIDPlay2ServerParameters {
 
-		@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 10000)
+		@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, arity = 1, order = 10000)
 		private Boolean help = Boolean.FALSE;
 
 		@Parameter(names = { "--whatsSIDDatabaseDriver" }, descriptionKey = "WHATSSID_DATABASE_DRIVER", order = 10001)
@@ -233,34 +192,9 @@ public final class JSIDPlay2Server {
 	 */
 	private static final URL INTERNAL_REALM_CONFIG = JSIDPlay2Server.class.getResource("/" + REALM_CONFIG);
 
-	/**
-	 * Our servlets to serve
-	 */
-	private static final List<Class<? extends JSIDPlay2Servlet>> SERVLETS = asList(OnKeepAliveServlet.class,
-			ProxyServlet.class,
-			// hls
-			InsertNextCartServlet.class, InsertNextDiskServlet.class,
-			// rtmp
-			JoystickServlet.class, OnPlayDoneServlet.class, OnPlayServlet.class, PressKeyServlet.class,
-			SetDefaultEmulationReSidFpServlet.class, SetDefaultEmulationReSidServlet.class,
-			SetSidModel6581Servlet.class, SetSidModel8580Servlet.class,
-			// sidmapping
-			ExSIDMappingServlet.class, HardSIDMappingServlet.class, SIDBlasterMappingServlet.class,
-			// whatssid
-			FindHashServlet.class, FindTuneServlet.class, InsertHashesServlet.class, InsertTuneServlet.class,
-			TuneExistsServlet.class, WhatsSidServlet.class,
-			//
-			ConvertServlet.class, DirectoryServlet.class, DiskDirectoryServlet.class, DownloadServlet.class,
-			FavoritesNamesServlet.class, FavoritesServlet.class, FiltersServlet.class, PhotoServlet.class,
-			RandomHVSCServlet.class, SpeechToTextServlet.class, StartPageServlet.class, StaticServlet.class,
-			STILServlet.class, TuneInfoServlet.class, UploadServlet.class, WebJarsServlet.class);
+	private static final URL SERVLET_CLASSES_LIST = JSIDPlay2Server.class.getResource("/tomcat-servlets.list");
 
-	/**
-	 * Our servlet filters to use
-	 */
-	private static final List<Class<? extends HttpFilter>> SERVLET_FILTERS = asList(CounterBasedRateLimiterFilter.class,
-			HeadRequestFilter.class, RequestLogFilter.class, RTMPBasedRateLimiterFilter.class,
-			TimeBasedRateLimiterFilter.class, TimeDistanceBasedRateLimiterFilter.class);
+	private static final URL FILTER_CLASSES_LIST = JSIDPlay2Server.class.getResource("/tomcat-filters.list");
 
 	private static JSIDPlay2Server INSTANCE;
 
@@ -308,8 +242,8 @@ public final class JSIDPlay2Server {
 	}
 
 	public synchronized void start()
-			throws MalformedURLException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException, LifecycleException {
+			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException, LifecycleException, ClassNotFoundException, IOException {
 
 		if (tomcat == null) {
 			tomcat = createTomcat();
@@ -349,8 +283,8 @@ public final class JSIDPlay2Server {
 		return result;
 	}
 
-	private Tomcat createTomcat() throws MalformedURLException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	private Tomcat createTomcat() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, IOException {
 		Tomcat tomcat = new Tomcat();
 		tomcat.setBaseDir(parameters.configuration.getSidplay2Section().getTmpDir().getAbsolutePath());
 
@@ -470,28 +404,36 @@ public final class JSIDPlay2Server {
 				tomcat.getServer().getCatalinaBase().getAbsolutePath());
 	}
 
-	private List<JSIDPlay2Servlet> addServlets(Context context) throws InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	private List<JSIDPlay2Servlet> addServlets(Context context)
+			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException, IOException, ClassNotFoundException {
 		List<JSIDPlay2Servlet> result = new ArrayList<>();
 
-		for (Class<? extends JSIDPlay2Servlet> servletCls : SERVLETS) {
-			WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
-			MultipartConfig multipartConfig = servletCls.getAnnotation(MultipartConfig.class);
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(SERVLET_CLASSES_LIST.openStream()))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				for (String clzName : line.split(",")) {
+					Class<?> servletCls = Class.forName(clzName);
 
-			JSIDPlay2Servlet servlet = servletCls.getDeclaredConstructor().newInstance();
-			servlet.setConfiguration(parameters.configuration);
-			servlet.setDirectoryProperties(servletUtilProperties);
-			servlet.setSidDatabase(sidDatabase);
-			servlet.setStil(stil);
+					WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
+					MultipartConfig multipartConfig = servletCls.getAnnotation(MultipartConfig.class);
 
-			Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
+					JSIDPlay2Servlet servlet = (JSIDPlay2Servlet) servletCls.getDeclaredConstructor().newInstance();
+					servlet.setConfiguration(parameters.configuration);
+					servlet.setDirectoryProperties(servletUtilProperties);
+					servlet.setSidDatabase(sidDatabase);
+					servlet.setStil(stil);
 
-			wrapper.setMultipartConfigElement(
-					multipartConfig != null ? createMultipartConfigElement(webServlet, multipartConfig) : null);
-			wrapper.setAsyncSupported(webServlet.asyncSupported());
-			Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
+					Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
 
-			result.add(servlet);
+					wrapper.setMultipartConfigElement(
+							multipartConfig != null ? createMultipartConfigElement(webServlet, multipartConfig) : null);
+					wrapper.setAsyncSupported(webServlet.asyncSupported());
+					Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
+
+					result.add(servlet);
+				}
+			}
 		}
 		return result;
 	}
@@ -510,39 +452,49 @@ public final class JSIDPlay2Server {
 
 	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException {
-		for (Class<? extends HttpFilter> servletFilterCls : SERVLET_FILTERS) {
-			WebFilter webFilter = servletFilterCls.getAnnotation(WebFilter.class);
+			NoSuchMethodException, SecurityException, IOException, ClassNotFoundException {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(FILTER_CLASSES_LIST.openStream()))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				for (String clzName : line.split(",")) {
+					Class<?> servletFilterCls = Class.forName(clzName);
 
-			for (JSIDPlay2Servlet servlet : servlets) {
-				WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
+					WebFilter webFilter = servletFilterCls.getAnnotation(WebFilter.class);
 
-				if (Arrays.asList(webFilter.servletNames()).contains(webServlet.name())) {
-					HttpFilter servletFilter = servletFilterCls.getDeclaredConstructor().newInstance();
+					for (JSIDPlay2Servlet servlet : servlets) {
+						WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
 
-					String filterName = webServlet.name() + "_" + webFilter.filterName();
+						if (Arrays.asList(webFilter.servletNames()).contains(webServlet.name())) {
+							HttpFilter servletFilter = (HttpFilter) servletFilterCls.getDeclaredConstructor()
+									.newInstance();
 
-					FilterDef filterDefinition = new FilterDef();
-					filterDefinition.setFilterName(filterName);
-					filterDefinition.setFilter(servletFilter);
-					filterDefinition.getParameterMap().putAll(servlet.getServletFiltersParameterMap());
-					if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
-						filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME, webServlet.name());
+							String filterName = webServlet.name() + "_" + webFilter.filterName();
+
+							FilterDef filterDefinition = new FilterDef();
+							filterDefinition.setFilterName(filterName);
+							filterDefinition.setFilter(servletFilter);
+							filterDefinition.getParameterMap().putAll(servlet.getServletFiltersParameterMap());
+							if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
+								filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME,
+										webServlet.name());
+							}
+							context.addFilterDef(filterDefinition);
+
+							FilterMap filterMapping = new FilterMap();
+							filterMapping.setFilterName(filterName);
+							filterMapping.addServletName(webServlet.name());
+							context.addFilterMap(filterMapping);
+						}
 					}
-					context.addFilterDef(filterDefinition);
-
-					FilterMap filterMapping = new FilterMap();
-					filterMapping.setFilterName(filterName);
-					filterMapping.addServletName(webServlet.name());
-					context.addFilterMap(filterMapping);
+					if (!Arrays.asList(webFilter.servletNames()).stream()
+							.allMatch(servletName -> Arrays.asList(context.findFilterMaps()).stream()
+									.anyMatch(map -> Arrays.asList(map.getServletNames()).contains(servletName)))) {
+						throw new RuntimeException(String.format(
+								"Unknown servlet name in filter! filterName=%s, servletNames=%s",
+								webFilter.filterName(),
+								Arrays.asList(webFilter.servletNames()).stream().collect(Collectors.joining(","))));
+					}
 				}
-			}
-			if (!Arrays.asList(webFilter.servletNames()).stream()
-					.allMatch(servletName -> Arrays.asList(context.findFilterMaps()).stream()
-							.anyMatch(map -> Arrays.asList(map.getServletNames()).contains(servletName)))) {
-				throw new RuntimeException(String.format(
-						"Unknown servlet name in filter! filterName=%s, servletNames=%s", webFilter.filterName(),
-						Arrays.asList(webFilter.servletNames()).stream().collect(Collectors.joining(","))));
 			}
 		}
 	}
@@ -615,7 +567,7 @@ public final class JSIDPlay2Server {
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
-				| LifecycleException e) {
+				| LifecycleException | ClassNotFoundException e) {
 			System.err.println(e.getMessage());
 			exit(1);
 		}
