@@ -131,7 +131,7 @@ public class MenuBar extends C64VBox implements UIPart {
 
 	@FXML
 	protected MenuItem previousSong, nextSong, stop, video, oscilloscope, favorites, hvsc, cgsc, hvmec, demos, mags,
-			sidDump, sidRegisters, asm, disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, c64Sk, soasc,
+			sidDump, sidRegisters, asm, disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, soasc,
 			codebase64, gamebase, jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc, videoPlayer,
 			saveTune;
 
@@ -261,9 +261,8 @@ public class MenuBar extends C64VBox implements UIPart {
 
 	private void updateMenuItems() {
 		for (MenuItem menuItem : Arrays.asList(video, oscilloscope, favorites, hvsc, cgsc, hvmec, demos, mags, sidDump,
-				sidRegisters, asm, disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, c64Sk, soasc,
-				codebase64, gamebase, jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc,
-				videoPlayer)) {
+				sidRegisters, asm, disassembler, assembly64, csdb, remixKwedOrg, lemon64, forum64, soasc, codebase64,
+				gamebase, jsidplay2Src, printer, console, jsidplay2userGuide, jsidplay2Javadoc, videoPlayer)) {
 			menuItem.setDisable(false);
 		}
 		util.getConfig().getViews().stream().map(ViewEntity::getFxId).forEach(fxId -> {
