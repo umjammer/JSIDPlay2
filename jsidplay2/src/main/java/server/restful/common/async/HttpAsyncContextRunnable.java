@@ -70,12 +70,9 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 	private void complete() {
 		try {
 			asyncContext.complete();
-		} catch (Throwable t) {
-			if (LOG.isLoggable(Level.FINEST)) {
-				servlet.error(t, parentThread);
-			} else {
-				servlet.warn(t.getMessage(), parentThread);
-			}
+		} catch (IllegalStateException e) {
+			// The request associated with the AsyncContext has already completed processing
+			// we ignore that here!
 		}
 	}
 
