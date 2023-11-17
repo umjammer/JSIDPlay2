@@ -259,10 +259,6 @@ public class JSidPlay2 extends C64Window implements IExtendImageListener {
 				WebView collection = new WebView(window, player);
 				collection.setType(WebViewType.FORUM64_DE);
 				addTab(new Tab(bundle.getString(fxId), collection), fxId);
-			} else if (WebViewType.C64_SK.name().equals(fxId)) {
-				WebView collection = new WebView(window, player);
-				collection.setType(WebViewType.C64_SK);
-				addTab(new Tab(bundle.getString(fxId), collection), fxId);
 			} else if (WebViewType.SOASC.name().equals(fxId)) {
 				WebView collection = new WebView(window, player);
 				collection.setType(WebViewType.SOASC);

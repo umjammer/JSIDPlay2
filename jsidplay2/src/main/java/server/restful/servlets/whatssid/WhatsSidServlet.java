@@ -1,5 +1,7 @@
 package server.restful.servlets.whatssid;
 
+import static server.restful.common.IServletSystemProperties.*;
+import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_MAX_REQUEST_SIZE;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.String.valueOf;
@@ -12,8 +14,6 @@ import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
-import static server.restful.common.IServletSystemProperties.MAX_FILE_SIZE;
-import static server.restful.common.IServletSystemProperties.MAX_REQUEST_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
 import static server.restful.common.IServletSystemProperties.WHATSSID_ASYNC_TIMEOUT;
@@ -52,7 +52,7 @@ import ui.entities.whatssid.service.WhatsSidService;
 @SuppressWarnings("serial")
 @WebServlet(name = "WhatsSidServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/whatssid")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
-@MultipartConfig(maxFileSize = MAX_FILE_SIZE, maxRequestSize = MAX_REQUEST_SIZE)
+@MultipartConfig(maxFileSize = WHATSSIDSERVLET_MAX_FILE_SIZE, maxRequestSize = WHATSSIDSERVLET_MAX_REQUEST_SIZE, fileSizeThreshold = WHATSSIDSERVLET_FILE_SIZE_THRESHOLD)
 public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 	private static final Map<Integer, MusicInfoWithConfidenceBean> MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP = Collections

@@ -377,13 +377,47 @@ public interface IServletSystemProperties {
 	int MAX_SPEECH_TO_TEXT = valueOf(getProperty("jsidplay2.speech2text.max.parallel", "7"));
 
 	/**
-	 * Maximum upload request size in bytes (default: 17mb)
+	 * Upload servlet: Maximum request size in bytes (default: 17mb)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.uploadservlet.max.request.size
 	 */
-	long MAX_REQUEST_SIZE = 17 << 10 << 10;
+	long UPLOADSERVLET_MAX_REQUEST_SIZE = 17 << 10 << 10;
 
 	/**
-	 * Maximum single file upload size in bytes (default: 17mb)
+	 * Upload servlet: Maximum file size in bytes (default: 17mb)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.uploadservlet.max.file.size
 	 */
-	long MAX_FILE_SIZE = 17 << 10 << 10;
+	long UPLOADSERVLET_MAX_FILE_SIZE = 17 << 10 << 10;
+
+	/**
+	 * Upload servlet: File size threshold at which the file will be written to the
+	 * disk (default: 0)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.uploadservlet.file.size.threshold
+	 */
+	int UPLOADSERVLET_FILE_SIZE_THRESHOLD = 0;
+
+	/**
+	 * WhatsSID servlet: Maximum request size in bytes (default: unlimited)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.whatssidservlet.max.request.size
+	 */
+	long WHATSSIDSERVLET_MAX_REQUEST_SIZE = -1L;
+
+	/**
+	 * WhatsSID servlet: Maximum file size in bytes (default: unlimited)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.whatssidservlet.max.file.size
+	 */
+	long WHATSSIDSERVLET_MAX_FILE_SIZE = -1L;
+
+	/**
+	 * WhatsSID servlet: File size threshold at which the file will be written to
+	 * the disk (default: 0)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.whatssidservlet.file.size.threshold
+	 */
+	int WHATSSIDSERVLET_FILE_SIZE_THRESHOLD = 0;
 
 }

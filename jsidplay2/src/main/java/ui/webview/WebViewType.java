@@ -21,10 +21,6 @@ public enum WebViewType {
 	 */
 	REMIX_KWED_ORG("https://remix.kwed.org/"),
 	/**
-	 * C-64 Portal
-	 */
-	C64_SK("http://www.c64.sk/"),
-	/**
 	 * Forum 64
 	 */
 	FORUM64_DE("https://www.forum64.de/"),

@@ -1,6 +1,7 @@
 package server.restful;
 
 import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
+import static java.lang.System.getProperty;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.apache.catalina.startup.Tomcat.addServlet;
@@ -27,6 +28,7 @@ import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.stream.Collectors;
@@ -484,17 +486,26 @@ public final class JSIDPlay2Server {
 
 			Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
 
-			if (multipartConfig != null) {
-				wrapper.setMultipartConfigElement(
-						new MultipartConfigElement(multipartConfig.location(), multipartConfig.maxFileSize(),
-								multipartConfig.maxRequestSize(), multipartConfig.fileSizeThreshold()));
-			}
+			wrapper.setMultipartConfigElement(
+					multipartConfig != null ? createMultipartConfigElement(webServlet, multipartConfig) : null);
 			wrapper.setAsyncSupported(webServlet.asyncSupported());
 			Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
 
 			result.add(servlet);
 		}
 		return result;
+	}
+
+	private MultipartConfigElement createMultipartConfigElement(WebServlet webServlet,
+			MultipartConfig multipartConfig) {
+		String servletName = webServlet.name().toLowerCase(Locale.US);
+		long maxRequestSize = Long.valueOf(getProperty("jsidplay2." + servletName + ".max.request.size",
+				String.valueOf(multipartConfig.maxRequestSize())));
+		long maxFileSize = Long.valueOf(getProperty("jsidplay2." + servletName + ".max.file.size",
+				String.valueOf(multipartConfig.maxFileSize())));
+		int fileSizeThreshold = Integer.valueOf(getProperty("jsidplay2." + servletName + ".file.size.threshold",
+				String.valueOf(multipartConfig.fileSizeThreshold())));
+		return new MultipartConfigElement(multipartConfig.location(), maxFileSize, maxRequestSize, fileSizeThreshold);
 	}
 
 	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets)

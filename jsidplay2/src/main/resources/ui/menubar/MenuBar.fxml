@@ -104,7 +104,6 @@
 								onAction="#codebase64" />
 							<MenuItem fx:id="lemon64" text="%LEMON64_COM" onAction="#lemon64" />
 							<MenuItem fx:id="forum64" text="%FORUM64_DE" onAction="#forum64" />
-							<MenuItem fx:id="c64Sk" text="%C64_SK" onAction="#c64Sk" />
 							<MenuItem fx:id="jsidplay2Src" text="%JSIDPLAY2_SRC"
 								onAction="#jsidplay2Src" />
 						</Menu>

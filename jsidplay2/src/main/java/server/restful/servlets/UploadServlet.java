@@ -5,9 +5,9 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
-import static server.restful.common.IServletSystemProperties.MAX_FILE_SIZE;
-import static server.restful.common.IServletSystemProperties.MAX_REQUEST_SIZE;
-import static server.restful.common.IServletSystemProperties.MAX_UPLOADS_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_MAX_FILE_SIZE;
+import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_MAX_REQUEST_SIZE;
+import static server.restful.common.IServletSystemProperties.*;
 import static server.restful.common.IServletSystemProperties.UPLOAD_ASYNC_TIMEOUT;
 import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 import static ui.common.Convenience.MACOSX;
@@ -54,7 +54,7 @@ import ui.common.util.Extract7ZipUtil;
 @SuppressWarnings("serial")
 @WebServlet(name = "UploadServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/upload/*")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
-@MultipartConfig(maxFileSize = MAX_FILE_SIZE, maxRequestSize = MAX_REQUEST_SIZE)
+@MultipartConfig(maxFileSize = UPLOADSERVLET_MAX_FILE_SIZE, maxRequestSize = UPLOADSERVLET_MAX_REQUEST_SIZE, fileSizeThreshold = UPLOADSERVLET_FILE_SIZE_THRESHOLD)
 public class UploadServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.UploadServletParameters")

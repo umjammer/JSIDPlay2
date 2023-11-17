@@ -301,8 +301,6 @@ public class MenuBar extends C64VBox implements UIPart {
 				lemon64.setDisable(true);
 			} else if (WebViewType.FORUM64_DE.name().equals(fxId)) {
 				forum64.setDisable(true);
-			} else if (WebViewType.C64_SK.name().equals(fxId)) {
-				c64Sk.setDisable(true);
 			} else if (WebViewType.SOASC.name().equals(fxId)) {
 				soasc.setDisable(true);
 			} else if (WebViewType.CODEBASE64.name().equals(fxId)) {
@@ -882,11 +880,6 @@ public class MenuBar extends C64VBox implements UIPart {
 	@FXML
 	private void remixKweqOrg() {
 		addView(WebViewType.REMIX_KWED_ORG.name());
-	}
-
-	@FXML
-	private void c64Sk() {
-		addView(WebViewType.C64_SK.name());
 	}
 
 	@FXML
