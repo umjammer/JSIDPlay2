@@ -168,52 +168,6 @@ public class OnlineContent {
 		createCRC(demosZipFile, new File(deployDir, "online/demos/Demos.crc"));
 	}
 
-	private void createServerClzListAndCheck() throws IOException, SecurityException, ClassNotFoundException {
-		File root = new File(baseDir, "target/classes");
-
-		Collection<String> clzList = new ArrayList<>();
-		Files.walkFileTree(Paths.get(root.toURI()), new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-				File file = path.toFile();
-				if (file.getAbsolutePath().endsWith(".class")) {
-					String clzName = file.getAbsolutePath();
-					clzName = clzName.substring(root.getAbsolutePath().length() + 1);
-					clzName = clzName.replace("/", ".");
-					clzName = clzName.substring(0, clzName.length() - ".class".length());
-					clzList.add(clzName);
-				}
-				return FileVisitResult.CONTINUE;
-			}
-		});
-		try (FileWriter servlets = new FileWriter(new File(root, "tomcat-servlets.list"));
-				FileWriter filters = new FileWriter(new File(root, "tomcat-filters.list"));) {
-			for (String clzName : clzList) {
-				Class<?> clz = getClass().getClassLoader().loadClass(clzName);
-				if (clz.getAnnotation(WebServlet.class) != null) {
-					servlets.write(clzName + ",");
-				}
-				if (clz.getAnnotation(WebFilter.class) != null) {
-					filters.write(clzName + ",");
-				}
-				if (clz.getAnnotation(Parameters.class) != null) {
-					// Parameter classes are being checked for development errors at build time
-					if (clzName.startsWith("server.restful")) {
-						// ... check server parameters
-						ServletParameterHelper.check(clz, true);
-					} else {
-						try {
-							// ... check main parameters
-							clz.getMethod("main", String[].class);
-							ServletParameterHelper.check(clz, false);
-						} catch (NoSuchMethodException e) {
-						}
-					}
-				}
-			}
-		}
-	}
-
 	private void gb64() throws IOException {
 		File mdbFile = new File(gb64);
 		if (mdbFile.exists()) {
@@ -402,6 +356,52 @@ public class OnlineContent {
 			properties.setProperty("size", String.valueOf(demosZipFile.length()));
 			properties.setProperty("crc32", DownloadThread.calculateCRC32(demosZipFile));
 			properties.store(writer, null);
+		}
+	}
+
+	private void createServerClzListAndCheck() throws IOException, SecurityException, ClassNotFoundException {
+		File root = new File(baseDir, "target/classes");
+	
+		Collection<String> clzList = new ArrayList<>();
+		Files.walkFileTree(Paths.get(root.toURI()), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+				File file = path.toFile();
+				if (file.getAbsolutePath().endsWith(".class")) {
+					String clzName = file.getAbsolutePath();
+					clzName = clzName.substring(root.getAbsolutePath().length() + 1);
+					clzName = clzName.replace("/", ".");
+					clzName = clzName.substring(0, clzName.length() - ".class".length());
+					clzList.add(clzName);
+				}
+				return FileVisitResult.CONTINUE;
+			}
+		});
+		try (FileWriter servlets = new FileWriter(new File(root, "tomcat-servlets.list"));
+				FileWriter filters = new FileWriter(new File(root, "tomcat-filters.list"));) {
+			for (String clzName : clzList) {
+				Class<?> clz = getClass().getClassLoader().loadClass(clzName);
+				if (clz.getAnnotation(WebServlet.class) != null) {
+					servlets.write(clzName + ",");
+				}
+				if (clz.getAnnotation(WebFilter.class) != null) {
+					filters.write(clzName + ",");
+				}
+				if (clz.getAnnotation(Parameters.class) != null) {
+					// Parameter classes are being checked for development errors at build time
+					if (clzName.startsWith("server.restful")) {
+						// ... check server parameters
+						ServletParameterHelper.check(clz, true);
+					} else {
+						try {
+							// ... check main parameters
+							clz.getMethod("main", String[].class);
+							ServletParameterHelper.check(clz, false);
+						} catch (NoSuchMethodException e) {
+						}
+					}
+				}
+			}
 		}
 	}
 
