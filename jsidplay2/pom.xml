@@ -886,6 +886,23 @@
 				<version>3.1.0</version>
 				<executions>
 					<execution>
+						<id>online-content-package</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>build.OnlineContent</mainClass>
+							<arguments>
+								<argument>--phase</argument>
+								<argument>prepare-package</argument>
+								<argument>--baseDir</argument>
+								<argument>${basedir}</argument>
+							</arguments>
+							<classpathScope>runtime</classpathScope>
+						</configuration>
+					</execution>
+					<execution>
 						<id>online-content</id>
 						<phase>install</phase>
 						<goals>
@@ -894,6 +911,8 @@
 						<configuration>
 							<mainClass>build.OnlineContent</mainClass>
 							<arguments>
+								<argument>--phase</argument>
+								<argument>install</argument>
 								<argument>--deployDir</argument>
 								<argument>${project.build.directory}/deploy</argument>
 								<argument>--projectVersion</argument>

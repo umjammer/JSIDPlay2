@@ -79,6 +79,9 @@ public class OnlineContent {
 	@Parameter(names = { "--help", "-h" }, descriptionKey = "USAGE", help = true, order = 0)
 	private Boolean help = Boolean.FALSE;
 
+	@Parameter(names = { "--phase" }, descriptionKey = "PHASE")
+	private String phase;
+
 	@Parameter(names = { "--deployDir" }, descriptionKey = "DEPLOY_DIR", order = 1)
 	private String deployDir;
 
@@ -115,27 +118,30 @@ public class OnlineContent {
 			System.exit(0);
 		}
 
-		if (upxExe != null) {
-			upx();
-		}
+		if ("install".equals(phase)) {
 
-		createDemos();
+			if (upxExe != null) {
+				upx();
+			}
+			createDemos();
 
-		createServerClzListAndCheck();
+			if (gb64 != null) {
+				gb64();
+			}
+			if (hvmec != null) {
+				hvmec();
+			}
+			if (cgsc != null) {
+				cgsc();
+			}
+			if (hvsc != null) {
+				hvsc();
+			}
+			latestVersion();
+		} else {
 
-		if (gb64 != null) {
-			gb64();
+			createServerClzListAndCheck();
 		}
-		if (hvmec != null) {
-			hvmec();
-		}
-		if (cgsc != null) {
-			cgsc();
-		}
-		if (hvsc != null) {
-			hvsc();
-		}
-		latestVersion();
 	}
 
 	private void upx() throws IOException, InterruptedException {
