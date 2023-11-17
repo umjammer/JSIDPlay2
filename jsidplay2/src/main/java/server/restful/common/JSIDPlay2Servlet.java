@@ -164,7 +164,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				return OBJECT_MAPPER.readValue(inputStream, tClass);
 			} else if (MIME_TYPE_XML.isCompatible(contentType)) {
 				return (T) JAXBContext.newInstance(tClass).createUnmarshaller().unmarshal(inputStream);
-			} else { // file upload (multipart/mixed)
+			} else /* file upload */ {
 				ByteArrayOutputStream result = new ByteArrayOutputStream();
 				for (Part part : request.getParts()) {
 					try (InputStream itemInputStream = part.getInputStream()) {
@@ -173,8 +173,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class });
 					return constructor.newInstance(result.toByteArray());
 				}
-				throw new IOException("Unsupported content type: " + contentType);
 			}
+			return null;
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
