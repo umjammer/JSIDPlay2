@@ -5,6 +5,8 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 import static server.restful.common.rtmp.PlayerCleanupTimerTask.update;
 
 import java.io.File;
@@ -60,14 +62,14 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 
 			StringBuilder diskImageName = new StringBuilder();
 
-			info(String.format("insertNextDisk: RTMP stream of: %s", uuid));
+			info(getServletContext(), String.format("insertNextDisk: RTMP stream of: %s", uuid));
 			update(uuid, rtmpPlayerWithStatus -> insertNextDisk(rtmpPlayerWithStatus, diskImageName));
 
 			setOutput(response, MIME_TYPE_JSON, diskImageName.toString());
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}
@@ -77,7 +79,7 @@ public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 			diskImageName
 					.append(Optional.ofNullable(rtmpPlayerWithStatus.insertNextDisk()).map(File::getName).orElse(""));
 		} catch (IOException e) {
-			error(e);
+			error(getServletContext(), e);
 		}
 	}
 

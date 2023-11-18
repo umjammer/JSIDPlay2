@@ -3,6 +3,7 @@ package server.restful.common.filters;
 import static libsidutils.IOUtils.getPhysicalSize;
 import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static server.restful.common.ServletUtil.thread;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -69,20 +70,6 @@ public final class RequestLogFilter extends HttpFilter {
 		chain.doFilter(request, response);
 
 		log(thread() + response(response) + memory());
-	}
-
-	private String thread() {
-		return thread(Thread.currentThread());
-	}
-
-	private String thread(Thread thread) {
-		StringBuilder result = new StringBuilder();
-		result.append(thread.getName());
-		result.append(" (");
-		result.append(thread.getId());
-		result.append(")");
-		result.append(": ");
-		return result.toString();
 	}
 
 	private String remoteAddr(HttpServletRequest request) {

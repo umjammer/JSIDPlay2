@@ -5,6 +5,7 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.ServletUtil.error;
 import static server.restful.servlets.FavoritesServlet.BUILT_IN_FAVORITES_PATH;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}

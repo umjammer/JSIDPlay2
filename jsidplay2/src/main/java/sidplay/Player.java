@@ -1009,9 +1009,6 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 					&& (getAudioDriver().isRecording() || stateProperty.get() != QUIT)) {
 				getAudioDriver().write();
 			}
-			if (sidBuilder != null) {
-				sidBuilder.destroy();
-			}
 		} catch (Throwable e) {
 			if (LOG.isLoggable(Level.FINEST)) {
 				LOG.log(Level.FINEST, String.format("Exception near close: fn=%s", getRecordingFilename()), e);
@@ -1019,6 +1016,9 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 				LOG.log(Level.FINE, String.format("Exception near close: %s", e.getMessage()));
 			}
 		} finally {
+			if (sidBuilder != null) {
+				sidBuilder.destroy();
+			}
 			if (whatsSidEvent != null) {
 				whatsSidEvent.setAbort(true);
 			}

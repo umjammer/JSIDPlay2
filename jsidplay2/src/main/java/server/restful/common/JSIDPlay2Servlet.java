@@ -2,11 +2,9 @@ package server.restful.common;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Stream.of;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
-import static server.restful.common.IServletSystemProperties.UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -96,40 +94,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return Collections.emptyMap();
 	}
 
-	public void info(String msg, Thread... parentThreads) {
-		log(threads(parentThreads) + thread() + msg);
-	}
-
-	public void warn(String msg, Thread... parentThreads) {
-		log(threads(parentThreads) + thread() + msg, null);
-	}
-
-	public void error(Throwable t, Thread... parentThreads) {
-		log(threads(parentThreads) + thread() + t.getMessage(), t);
-	}
-
-	protected void uncaughtExceptionHandler(Throwable t, Thread thread, Thread... parentThreads) {
-		log(threads(parentThreads) + thread(thread) + t.getMessage(), UNCAUGHT_EXCEPTION_HANDLER_EXCEPTIONS ? t : null);
-	}
-
-	private StringBuilder threads(Thread... threads) {
-		return of(threads).map(this::thread).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
-	}
-
-	private String thread() {
-		return thread(Thread.currentThread());
-	}
-
-	private String thread(Thread thread) {
-		StringBuilder result = new StringBuilder();
-		result.append(thread.getName());
-		result.append(" (");
-		result.append(thread.getId());
-		result.append(")");
-		result.append(": ");
-		return result.toString();
-	}
-
 	protected String getCollectionName(File file) throws IOException, SidTuneError {
 		String result = "";
 
@@ -184,7 +148,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				JAXBContext.newInstance(tClass).createMarshaller().marshal(result, out);
 			}
 		} catch (Exception e) {
-			error(e);
+			ServletUtil.error(getServletContext(), e);
 		}
 	}
 

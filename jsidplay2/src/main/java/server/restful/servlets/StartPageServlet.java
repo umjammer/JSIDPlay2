@@ -8,6 +8,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.MAX_REQUESTS_PER_MINUTE;
 import static server.restful.common.IServletSystemProperties.MIN_TIME_BETWEEN_REQUESTS;
+import static server.restful.common.ServletUtil.error;
 import static server.restful.common.filters.TimeBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE;
 import static server.restful.common.filters.TimeDistanceBasedRateLimiterFilter.FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS;
 
@@ -46,7 +47,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 			}
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}

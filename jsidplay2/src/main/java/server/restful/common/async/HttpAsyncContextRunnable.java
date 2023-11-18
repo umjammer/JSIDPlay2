@@ -2,6 +2,8 @@ package server.restful.common.async;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.Thread.currentThread;
+import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.warn;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -10,16 +12,16 @@ import java.util.logging.Logger;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;
 import jakarta.servlet.AsyncListener;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import server.restful.common.JSIDPlay2Servlet;
 
 public abstract class HttpAsyncContextRunnable implements Runnable {
 
 	private static final Logger LOG = Logger.getLogger(HttpAsyncContextRunnable.class.getName());
 
 	private AsyncContext asyncContext;
-	private JSIDPlay2Servlet servlet;
+	private ServletContext servletContext;
 	protected Thread parentThread;
 
 	// Prevent usage of servlet method parameters, use getter/setter, instead!
@@ -28,9 +30,9 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 	@Deprecated
 	protected HttpServletResponse response;
 
-	public HttpAsyncContextRunnable(AsyncContext asyncContext, JSIDPlay2Servlet servlet) {
+	public HttpAsyncContextRunnable(AsyncContext asyncContext, ServletContext servletContext) {
 		this.asyncContext = asyncContext;
-		this.servlet = servlet;
+		this.servletContext = servletContext;
 		this.parentThread = currentThread();
 
 		asyncContext.addListener(new AsyncListener() {
@@ -40,7 +42,7 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			}
 
 			public void onTimeout(AsyncEvent event) throws IOException {
-				servlet.warn("Asynchronous servlet timeout", parentThread);
+				warn(servletContext, "Asynchronous servlet timeout", parentThread);
 				if (getResponse() != null) {
 					getResponse().sendError(SC_SERVICE_UNAVAILABLE, "Asynchronous servlet timeout");
 				}
@@ -82,9 +84,9 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			execute();
 		} catch (Throwable t) {
 			if (LOG.isLoggable(Level.FINEST)) {
-				servlet.error(t, parentThread);
+				error(servletContext, t, parentThread);
 			} else {
-				servlet.warn(t.getMessage(), parentThread);
+				warn(servletContext, t.getMessage(), parentThread);
 			}
 		} finally {
 			complete();

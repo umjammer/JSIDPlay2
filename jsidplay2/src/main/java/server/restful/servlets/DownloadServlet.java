@@ -9,6 +9,7 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
+import static server.restful.common.ServletUtil.error;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}

@@ -3,6 +3,8 @@ package server.restful.servlets.hls;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
+import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -58,7 +60,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 				throw new IOException();
 			}
 			if (LOG.isLoggable(Level.FINEST)) {
-				info(String.format("proxy: URL: %s", url));
+				info(getServletContext(), String.format("proxy: URL: %s", url));
 			}
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -74,7 +76,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}

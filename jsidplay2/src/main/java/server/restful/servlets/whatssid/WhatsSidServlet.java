@@ -1,7 +1,5 @@
 package server.restful.servlets.whatssid;
 
-import static server.restful.common.IServletSystemProperties.*;
-import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_MAX_REQUEST_SIZE;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.String.valueOf;
@@ -16,7 +14,12 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
+import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_FILE_SIZE_THRESHOLD;
+import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_MAX_FILE_SIZE;
+import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_MAX_REQUEST_SIZE;
 import static server.restful.common.IServletSystemProperties.WHATSSID_ASYNC_TIMEOUT;
+import static server.restful.common.ServletUtil.info;
+import static server.restful.common.ServletUtil.warn;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
 
 import java.io.IOException;
@@ -89,7 +92,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(WHATSSID_ASYNC_TIMEOUT);
 
-		executorService.execute(new HttpAsyncContextRunnable(asyncContext, this) {
+		executorService.execute(new HttpAsyncContextRunnable(asyncContext, getServletContext()) {
 
 			public void execute() throws IOException {
 				try {
@@ -101,23 +104,23 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 					MusicInfoWithConfidenceBean musicInfoWithConfidence;
 					if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
 						musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
-						info(valueOf(musicInfoWithConfidence) + " (cached)", parentThread);
+						info(getServletContext(), valueOf(musicInfoWithConfidence) + " (cached)", parentThread);
 					} else {
 						musicInfoWithConfidence = match(getEntityManager(), wavBean);
 						MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
-						info(valueOf(musicInfoWithConfidence), parentThread);
+						info(getServletContext(), valueOf(musicInfoWithConfidence), parentThread);
 					}
 					if (getResponse() != null) {
 						setOutput(getRequest(), getResponse(), musicInfoWithConfidence,
 								MusicInfoWithConfidenceBean.class);
 					}
 				} catch (QueryTimeoutException qte) {
-					warn(qte.getClass().getName(), parentThread);
+					warn(getServletContext(), qte.getClass().getName(), parentThread);
 					if (getResponse() != null) {
 						getResponse().sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
 					}
 				} catch (Throwable t) {
-					warn(t.getMessage(), parentThread);
+					warn(getServletContext(), t.getMessage(), parentThread);
 					if (getResponse() != null) {
 						getResponse().setStatus(SC_INTERNAL_SERVER_ERROR);
 						setOutput(getResponse(), MIME_TYPE_TEXT, t);

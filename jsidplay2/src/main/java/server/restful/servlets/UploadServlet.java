@@ -5,10 +5,12 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.IServletSystemProperties.MAX_UPLOADS_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_FILE_SIZE_THRESHOLD;
 import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_MAX_FILE_SIZE;
 import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_MAX_REQUEST_SIZE;
-import static server.restful.common.IServletSystemProperties.*;
 import static server.restful.common.IServletSystemProperties.UPLOAD_ASYNC_TIMEOUT;
+import static server.restful.common.ServletUtil.error;
 import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 import static ui.common.Convenience.MACOSX;
 import static ui.common.Convenience.TOP_LEVEL_FIRST_COMPARATOR;
@@ -99,7 +101,7 @@ public class UploadServlet extends JSIDPlay2Servlet {
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(UPLOAD_ASYNC_TIMEOUT);
 
-		executorService.execute(new HttpAsyncContextRunnable(asyncContext, this) {
+		executorService.execute(new HttpAsyncContextRunnable(asyncContext, getServletContext()) {
 
 			public void execute() throws IOException {
 				try {
@@ -121,7 +123,7 @@ public class UploadServlet extends JSIDPlay2Servlet {
 					setOutput(getResponse(), MIME_TYPE_TEXT, String.valueOf(uploadFile).replace("\\", "/"));
 
 				} catch (Throwable t) {
-					error(t);
+					error(getServletContext(), t);
 					getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					setOutput(getResponse(), MIME_TYPE_TEXT, t);
 				}

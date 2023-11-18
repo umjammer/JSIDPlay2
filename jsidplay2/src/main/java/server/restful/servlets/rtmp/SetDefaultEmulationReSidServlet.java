@@ -4,6 +4,8 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 import static server.restful.common.rtmp.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
@@ -57,12 +59,12 @@ public class SetDefaultEmulationReSidServlet extends JSIDPlay2Servlet {
 			}
 			UUID uuid = servletParameters.getUuid();
 
-			info(String.format("setDefaultEmulationReSid: RTMP stream of: %s", uuid));
+			info(getServletContext(), String.format("setDefaultEmulationReSid: RTMP stream of: %s", uuid));
 			update(uuid, PlayerWithStatus::setDefaultEmulationReSid);
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}

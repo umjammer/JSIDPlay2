@@ -2,6 +2,8 @@ package server.restful.servlets.hls;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
+import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 import static server.restful.common.rtmp.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
@@ -87,13 +89,13 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			Long bufferedEnd = servletParameters.getBufferedEnd();
 
 			if (LOG.isLoggable(Level.FINEST)) {
-				info(String.format("onKeepAlive: HLS stream of: %s", uuid));
+				info(getServletContext(), String.format("onKeepAlive: HLS stream of: %s", uuid));
 			}
 			update(uuid, playerWithStatus -> playerWithStatus.onKeepAlive(currentTime, bufferedEnd));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		}
 	}

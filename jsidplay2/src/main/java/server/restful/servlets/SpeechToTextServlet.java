@@ -6,6 +6,8 @@ import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.MAX_SPEECH_TO_TEXT;
+import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 import static server.restful.common.filters.CounterBasedRateLimiterFilter.FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET;
 
 import java.io.File;
@@ -54,7 +56,7 @@ public class SpeechToTextServlet extends JSIDPlay2Servlet {
 		try {
 			wavFile = File.createTempFile("speech2text", ".wav", configuration.getSidplay2Section().getTmpDir());
 
-			info("Got: " + request.getContentLengthLong());
+			info(getServletContext(), "Got: " + request.getContentLengthLong());
 
 			SamplingRate targetSampleRate = SamplingRate.LOW;
 			short[] samples = AudioUtils.convertToMonoWithSampleRate(request.getInputStream(), Integer.MAX_VALUE,
@@ -94,7 +96,7 @@ public class SpeechToTextServlet extends JSIDPlay2Servlet {
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			error(t);
+			error(getServletContext(), t);
 			setOutput(response, MIME_TYPE_TEXT, t);
 		} finally {
 			if (wavFile != null) {
