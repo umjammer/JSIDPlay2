@@ -896,8 +896,8 @@
 							<arguments>
 								<argument>--phase</argument>
 								<argument>prepare-package</argument>
-								<argument>--baseDir</argument>
-								<argument>${basedir}</argument>
+								<argument>--classesDir</argument>
+								<argument>${project.build.directory}/classes</argument>
 							</arguments>
 							<classpathScope>runtime</classpathScope>
 						</configuration>
