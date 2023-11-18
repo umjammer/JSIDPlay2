@@ -23,9 +23,11 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.servlet.annotation.ServletSecurity;
 import libsidutils.IOUtils;
 import net.java.truevfs.access.TFile;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.ServletUtil;
 import server.restful.common.parameter.ServletParameterParser;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
@@ -40,8 +42,9 @@ public abstract class FileRequestPathServletParametersImpl {
 	public File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin)
 			throws IOException, URISyntaxException {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
+		ServletSecurity servletSecurity = servlet.getClass().getAnnotation(ServletSecurity.class);
 
-		boolean adminRole = !servlet.isSecured() || isAdmin;
+		boolean adminRole = !ServletUtil.isSecured(servletSecurity) || isAdmin;
 
 		String path = getFilePath();
 		if (path == null) {

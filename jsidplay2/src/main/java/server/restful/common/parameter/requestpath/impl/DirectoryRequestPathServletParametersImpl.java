@@ -14,10 +14,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import jakarta.servlet.annotation.ServletSecurity;
 import libsidutils.IOUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.ServletUtil;
 import server.restful.common.parameter.ServletParameterParser;
 import ui.common.comparator.FileComparator;
 import ui.common.filefilter.FilteredFileFilter;
@@ -27,8 +29,9 @@ public abstract class DirectoryRequestPathServletParametersImpl {
 
 	public List<String> fetchDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
+		ServletSecurity servletSecurity = servlet.getClass().getAnnotation(ServletSecurity.class);
 
-		boolean adminRole = !servlet.isSecured() || isAdmin;
+		boolean adminRole = !ServletUtil.isSecured(servletSecurity) || isAdmin;
 
 		String path = getDirectoryPath();
 		if (path == null) {
@@ -105,5 +108,5 @@ public abstract class DirectoryRequestPathServletParametersImpl {
 
 	public abstract String getDirectoryPath();
 
-	public abstract String getFilter();	
+	public abstract String getFilter();
 }

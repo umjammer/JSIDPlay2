@@ -65,6 +65,7 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
 import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.Servlet;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebFilter;
@@ -74,6 +75,7 @@ import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import server.restful.common.Connectors;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.ServletUtil;
 import server.restful.common.filters.RequestLogFilter;
 import server.restful.common.rtmp.PlayerCleanupTimerTask;
 import sidplay.Player;
@@ -293,7 +295,7 @@ public final class JSIDPlay2Server {
 
 		Context context = addContext(tomcat);
 
-		List<JSIDPlay2Servlet> servlets = addServlets(context);
+		List<Servlet> servlets = addServlets(context);
 
 		addServletFilters(context, servlets);
 		addSecurity(context, servlets);
@@ -404,10 +406,10 @@ public final class JSIDPlay2Server {
 				tomcat.getServer().getCatalinaBase().getAbsolutePath());
 	}
 
-	private List<JSIDPlay2Servlet> addServlets(Context context)
+	private List<Servlet> addServlets(Context context)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException, IOException, ClassNotFoundException {
-		List<JSIDPlay2Servlet> result = new ArrayList<>();
+		List<Servlet> result = new ArrayList<>();
 
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(SERVLET_CLASSES_LIST.openStream()))) {
 			String line;
@@ -418,12 +420,14 @@ public final class JSIDPlay2Server {
 					WebServlet webServlet = servletCls.getAnnotation(WebServlet.class);
 					MultipartConfig multipartConfig = servletCls.getAnnotation(MultipartConfig.class);
 
-					JSIDPlay2Servlet servlet = (JSIDPlay2Servlet) servletCls.getDeclaredConstructor().newInstance();
-					servlet.setConfiguration(parameters.configuration);
-					servlet.setDirectoryProperties(servletUtilProperties);
-					servlet.setSidDatabase(sidDatabase);
-					servlet.setStil(stil);
-
+					Servlet servlet = (Servlet) servletCls.getDeclaredConstructor().newInstance();
+					if (servlet instanceof JSIDPlay2Servlet) {
+						JSIDPlay2Servlet jsServlet = (JSIDPlay2Servlet) servlet;
+						jsServlet.setConfiguration(parameters.configuration);
+						jsServlet.setDirectoryProperties(servletUtilProperties);
+						jsServlet.setSidDatabase(sidDatabase);
+						jsServlet.setStil(stil);
+					}
 					Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
 
 					wrapper.setMultipartConfigElement(
@@ -450,7 +454,7 @@ public final class JSIDPlay2Server {
 		return new MultipartConfigElement(multipartConfig.location(), maxFileSize, maxRequestSize, fileSizeThreshold);
 	}
 
-	private void addServletFilters(Context context, List<JSIDPlay2Servlet> servlets)
+	private void addServletFilters(Context context, List<Servlet> servlets)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException, IOException, ClassNotFoundException {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(FILTER_CLASSES_LIST.openStream()))) {
@@ -461,7 +465,7 @@ public final class JSIDPlay2Server {
 
 					WebFilter webFilter = servletFilterCls.getAnnotation(WebFilter.class);
 
-					for (JSIDPlay2Servlet servlet : servlets) {
+					for (Servlet servlet : servlets) {
 						WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
 
 						if (Arrays.asList(webFilter.servletNames()).contains(webServlet.name())) {
@@ -473,7 +477,11 @@ public final class JSIDPlay2Server {
 							FilterDef filterDefinition = new FilterDef();
 							filterDefinition.setFilterName(filterName);
 							filterDefinition.setFilter(servletFilter);
-							filterDefinition.getParameterMap().putAll(servlet.getServletFiltersParameterMap());
+
+							if (servlet instanceof JSIDPlay2Servlet) {
+								JSIDPlay2Servlet jsServlet = (JSIDPlay2Servlet) servlet;
+								filterDefinition.getParameterMap().putAll(jsServlet.getServletFiltersParameterMap());
+							}
 							if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
 								filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME,
 										webServlet.name());
@@ -499,7 +507,7 @@ public final class JSIDPlay2Server {
 		}
 	}
 
-	private void addSecurity(Context context, List<JSIDPlay2Servlet> servlets) {
+	private void addSecurity(Context context, List<Servlet> servlets) {
 		// roles must be defined before being used in a security constraint, therefore:
 		context.addSecurityRole(ROLE_ADMIN);
 		context.addSecurityRole(ROLE_USER);
@@ -507,8 +515,8 @@ public final class JSIDPlay2Server {
 		servlets.forEach(servlet -> {
 			WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
 			ServletSecurity servletSecurity = servlet.getClass().getAnnotation(ServletSecurity.class);
-
-			if (servlet.isSecured()) {
+			
+			if (ServletUtil.isSecured(servletSecurity)) {
 				SecurityCollection securityCollection = new SecurityCollection();
 				Stream.of(webServlet.urlPatterns()).forEach(securityCollection::addPattern);
 

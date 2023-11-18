@@ -30,9 +30,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.annotation.HttpConstraint;
-import jakarta.servlet.annotation.ServletSecurity;
-import jakarta.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -93,14 +90,6 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 
 	public void setStil(STIL stil) {
 		this.stil = stil;
-	}
-
-	public boolean isSecured() {
-		ServletSecurity servletSecurity = getClass().getAnnotation(ServletSecurity.class);
-		HttpConstraint httpConstraint = servletSecurity != null ? servletSecurity.value() : null;
-
-		return httpConstraint != null
-				&& (httpConstraint.rolesAllowed().length > 0 || EmptyRoleSemantic.DENY.equals(httpConstraint.value()));
 	}
 
 	public Map<String, String> getServletFiltersParameterMap() {
