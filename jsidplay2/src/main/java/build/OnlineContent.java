@@ -70,6 +70,7 @@ public class OnlineContent {
 
 	static {
 		DebugUtil.init();
+		System.setProperty("com.mysql.cj.disableAbandonedConnectionCleanup", "true");
 	}
 
 	private static final int MAX_ZIP_FILESIZE = 37748736;
