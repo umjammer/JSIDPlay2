@@ -27,8 +27,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -394,11 +396,14 @@ public class OnlineContent {
 						// ... check server parameters
 						ServletParameterHelper.check(clz, true);
 					} else {
-						try {
-							// ... check main parameters
-							clz.getMethod("main", String[].class);
-							ServletParameterHelper.check(clz, false);
-						} catch (NoSuchMethodException e) {
+						for (Class<?> cls : Arrays.asList(clz, clz.getEnclosingClass()).stream()
+								.filter(Objects::nonNull).collect(Collectors.toList())) {
+							try {
+								// ... check main parameters
+								cls.getMethod("main", String[].class);
+								ServletParameterHelper.check(clz, false);
+							} catch (NoSuchMethodException e) {
+							}
 						}
 					}
 				}
