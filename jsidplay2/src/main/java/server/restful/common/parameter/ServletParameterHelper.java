@@ -71,6 +71,7 @@ public class ServletParameterHelper {
 	public static void check(Class<?> servletParameterClass, boolean servletParameter)
 			throws ExceptionInInitializerError {
 		try {
+			LOG.info(servletParameterClass.getName());
 			Optional.ofNullable(servletParameterClass.getAnnotation(Parameters.class))
 					.orElseThrow(() -> new IllegalAccessException("Checked class must be annotated with @Parameters"));
 			Constructor<?> declaredConstructor = servletParameterClass.getDeclaredConstructor();
@@ -226,7 +227,7 @@ public class ServletParameterHelper {
 			String resourceName = "/" + resourceBundleName.replace('.', '/')
 					+ (Locale.ROOT.equals(locale) ? "" : "_" + locale) + ".properties";
 			if (checkedResourceBundles.add(resourceName)) {
-				LOG.info(String.format("Check encoding of %s", resourceName));
+				LOG.fine(String.format("Check encoding of %s", resourceName));
 
 				ByteBuffer byteBuffer = null;
 				byte[] byteArray = null;
