@@ -365,25 +365,21 @@ public class OnlineContent {
 	}
 
 	private void createServerClzListAndCheck() throws IOException, SecurityException, ClassNotFoundException {
-		File root = new File(classesDir);
+		Path root = new File(classesDir).toPath();
 
 		Collection<String> clzList = new ArrayList<>();
-		Files.walkFileTree(Paths.get(root.toURI()), new SimpleFileVisitor<Path>() {
+		Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-				File file = path.toFile();
-				if (file.getAbsolutePath().endsWith(".class")) {
-					String clzName = file.getAbsolutePath();
-					clzName = clzName.substring(root.getAbsolutePath().length() + 1);
-					clzName = clzName.replace("/", ".");
-					clzName = clzName.substring(0, clzName.length() - ".class".length());
-					clzList.add(clzName);
+				String relPath = root.relativize(path).toFile().getPath();
+				if (relPath.endsWith(".class")) {
+					clzList.add(IOUtils.getFilenameWithoutSuffix(relPath.replace(File.separatorChar, '.')));
 				}
 				return FileVisitResult.CONTINUE;
 			}
 		});
-		try (FileWriter servlets = new FileWriter(new File(root, "tomcat-servlets.list"));
-				FileWriter filters = new FileWriter(new File(root, "tomcat-filters.list"));) {
+		try (FileWriter servlets = new FileWriter(root.resolve("tomcat-servlets.list").toFile());
+				FileWriter filters = new FileWriter(root.resolve("tomcat-filters.list").toFile());) {
 			for (String clzName : clzList) {
 				Class<?> clz = getClass().getClassLoader().loadClass(clzName);
 				if (clz.getAnnotation(WebServlet.class) != null) {
