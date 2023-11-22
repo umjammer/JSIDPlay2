@@ -125,7 +125,7 @@ public class UploadServlet extends JSIDPlay2Servlet {
 				} catch (Throwable t) {
 					error(getServletContext(), t);
 					getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					setOutput(getResponse(), MIME_TYPE_TEXT, t);
+					setOutput(getResponse(), t);
 				}
 			}
 

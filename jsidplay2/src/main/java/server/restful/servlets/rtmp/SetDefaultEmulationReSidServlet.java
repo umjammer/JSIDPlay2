@@ -3,7 +3,6 @@ package server.restful.servlets.rtmp;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
-import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ServletUtil.error;
 import static server.restful.common.ServletUtil.info;
 import static server.restful.common.rtmp.PlayerCleanupTimerTask.update;
@@ -65,7 +64,7 @@ public class SetDefaultEmulationReSidServlet extends JSIDPlay2Servlet {
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(getServletContext(), t);
-			setOutput(response, MIME_TYPE_TEXT, t);
+			setOutput(response, t);
 		}
 	}
 

@@ -1,7 +1,6 @@
 package server.restful.servlets;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_WEBJARS;
-import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_CACHED;
 import static server.restful.common.ServletUtil.error;
@@ -59,7 +58,7 @@ public class WebJarsServlet extends JSIDPlay2Servlet {
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(getServletContext(), t);
-			setOutput(response, MIME_TYPE_TEXT, t);
+			setOutput(response, t);
 		}
 	}
 

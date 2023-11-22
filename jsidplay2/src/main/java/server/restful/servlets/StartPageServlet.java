@@ -4,7 +4,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static libsidutils.IOUtils.convertStreamToString;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_START_PAGE;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
-import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.BASE_URL;
 import static server.restful.common.IServletSystemProperties.MAX_REQUESTS_PER_MINUTE;
 import static server.restful.common.IServletSystemProperties.MIN_TIME_BETWEEN_REQUESTS;
@@ -48,7 +47,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(getServletContext(), t);
-			setOutput(response, MIME_TYPE_TEXT, t);
+			setOutput(response, t);
 		}
 	}
 

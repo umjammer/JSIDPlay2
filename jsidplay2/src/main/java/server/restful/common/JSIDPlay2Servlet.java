@@ -5,6 +5,7 @@ import static java.util.Optional.ofNullable;
 import static libsidutils.IOUtils.copy;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
+import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
 
 import java.io.ByteArrayOutputStream;
@@ -170,8 +171,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable t) {
-		setOutput(response, ct, t.getClass().getSimpleName() + ": " + t.getMessage());
+	protected void setOutput(HttpServletResponse response, Throwable t) {
+		setOutput(response, MIME_TYPE_TEXT, t.getClass().getSimpleName() + ": " + t.getMessage());
 	}
 
 	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String message) {

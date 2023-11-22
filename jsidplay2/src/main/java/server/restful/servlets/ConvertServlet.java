@@ -15,7 +15,6 @@ import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_HTML;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_MPEG;
-import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ContentTypeAndFileExtensions.getMimeType;
 import static server.restful.common.IServletSystemProperties.CACHE_CONTROL_RESPONSE_HEADER_UNCACHED;
 import static server.restful.common.IServletSystemProperties.CONVERT_ASYNC_TIMEOUT;
@@ -436,7 +435,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				} catch (Throwable t) {
 					error(getServletContext(), t);
 					getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					setOutput(getResponse(), MIME_TYPE_TEXT, t);
+					setOutput(getResponse(), t);
 				}
 			}
 

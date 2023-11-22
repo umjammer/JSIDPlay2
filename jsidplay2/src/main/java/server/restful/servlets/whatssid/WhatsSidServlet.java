@@ -10,7 +10,6 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.JSIDPlay2Server.freeEntityManager;
 import static server.restful.JSIDPlay2Server.getEntityManager;
-import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.IServletSystemProperties.CACHE_SIZE;
 import static server.restful.common.IServletSystemProperties.MAX_WHATSIDS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.WHATSID_LOW_PRIO;
@@ -123,7 +122,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 					warn(getServletContext(), t.getMessage(), parentThread);
 					if (getResponse() != null) {
 						getResponse().setStatus(SC_INTERNAL_SERVER_ERROR);
-						setOutput(getResponse(), MIME_TYPE_TEXT, t);
+						setOutput(getResponse(), t);
 					}
 				} finally {
 					freeEntityManager();
