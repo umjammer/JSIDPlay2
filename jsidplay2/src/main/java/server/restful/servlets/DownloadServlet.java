@@ -24,7 +24,7 @@ import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidutils.IOUtils;
+import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
@@ -59,10 +59,10 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 				parser.usage();
 				return;
 			}
-			response.setContentType(getMimeType(getFilenameSuffix(servletParameters.getFilePath())).toString());
 			response.addHeader(CONTENT_DISPOSITION,
 					ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.name()));
-			IOUtils.copy(newFileInputStream(file), response.getOutputStream());
+			ContentTypeAndFileExtensions mimeType = getMimeType(getFilenameSuffix(servletParameters.getFilePath()));
+			setOutput(response, mimeType, newFileInputStream(file));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

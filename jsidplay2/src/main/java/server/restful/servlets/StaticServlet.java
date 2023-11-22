@@ -91,8 +91,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				if (mimeType.isText()) {
 					setOutput(response, mimeType, IOUtils.convertStreamToString(source, "UTF-8", replacements));
 				} else {
-					response.setContentType(mimeType.toString());
-					IOUtils.copy(source, response.getOutputStream());
+					setOutput(response, mimeType, source);
 				}
 			}
 		} catch (Throwable t) {

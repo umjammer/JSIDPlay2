@@ -6,7 +6,6 @@ import static java.lang.Thread.currentThread;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static libsidutils.IOUtils.convertStreamToString;
-import static libsidutils.IOUtils.copy;
 import static libsidutils.IOUtils.getFilenameSuffix;
 import static libsidutils.IOUtils.getFilenameWithoutSuffix;
 import static libsidutils.ZipFileUtils.newFileInputStream;
@@ -83,6 +82,7 @@ import libsidplay.config.ISidPlay2Section;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
+import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.async.DefaultThreadFactory;
 import server.restful.common.async.HttpAsyncContextRunnable;
@@ -421,16 +421,17 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								getResponse().addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 										+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 							}
-							getResponse().setContentType(getMimeType(driver.getExtension()).toString());
 							File videoFile = convert2video(file, driver, servletParameters, null);
-							copy(newFileInputStream(videoFile), getResponse().getOutputStream());
+
+							ContentTypeAndFileExtensions mimeType = getMimeType(driver.getExtension());
+							setOutput(getResponse(), mimeType, newFileInputStream(videoFile));
 							videoFile.delete();
 						}
 					} else {
-						getResponse().setContentType(getMimeType(getFilenameSuffix(file.getName())).toString());
 						getResponse().addHeader(CONTENT_DISPOSITION,
 								ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
-						copy(newFileInputStream(file), getResponse().getOutputStream());
+						ContentTypeAndFileExtensions mimeType = getMimeType(getFilenameSuffix(file.getName()));
+						setOutput(getResponse(), mimeType, newFileInputStream(file));
 					}
 				} catch (Throwable t) {
 					error(getServletContext(), t);

@@ -52,10 +52,9 @@ public class WebJarsServlet extends JSIDPlay2Servlet {
 			}
 			try (InputStream source = servletParameters.getResource()) {
 
-				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 				response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_CACHED);
-				response.setContentType(mimeType.toString());
-				IOUtils.copy(source, response.getOutputStream());
+				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
+				setOutput(response, mimeType, source);
 			}
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

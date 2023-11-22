@@ -4,7 +4,6 @@ import static libsidplay.components.pla.PLA.MAX_SIDS;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
-import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ServletUtil.error;
 
@@ -90,7 +89,7 @@ public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 					alreadyInUse.add(chipNum);
 				}
 			}
-			setOutput(response, MIME_TYPE_JSON, OBJECT_MAPPER.writer().writeValueAsString(result));
+			setOutput(response, result);
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

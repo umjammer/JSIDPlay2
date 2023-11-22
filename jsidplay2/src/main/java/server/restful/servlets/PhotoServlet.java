@@ -7,6 +7,7 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JPG;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_TEXT;
 import static server.restful.common.ServletUtil.error;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -61,8 +62,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			byte[] photo = getPhoto(file);
 
 			response.setContentLength(photo.length);
-			response.setContentType(MIME_TYPE_JPG.toString());
-			response.getOutputStream().write(photo);
+			setOutput(response, MIME_TYPE_JPG, new ByteArrayInputStream(photo));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

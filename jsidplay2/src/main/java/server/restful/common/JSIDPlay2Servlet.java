@@ -2,6 +2,7 @@ package server.restful.common;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+import static libsidutils.IOUtils.copy;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_XML;
@@ -21,7 +22,6 @@ import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -118,8 +118,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			} else if (MIME_TYPE_XML.isCompatible(contentType)) {
 				return (T) JAXBContext.newInstance(tClass).createUnmarshaller().unmarshal(inputStream);
 			} else /* file upload */ {
-				ByteArrayOutputStream result = new ByteArrayOutputStream();
 				for (Part part : request.getParts()) {
+					ByteArrayOutputStream result = new ByteArrayOutputStream();
 					try (InputStream itemInputStream = part.getInputStream()) {
 						IOUtils.copy(itemInputStream, result);
 					}
@@ -152,17 +152,35 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable e)
-			throws IOException {
-		setOutput(response, ct, e.getClass().getSimpleName() + ": " + e.getMessage());
+	protected void setOutput(HttpServletResponse response, Object result) {
+		try (ServletOutputStream out = response.getOutputStream()) {
+			response.setContentType(MIME_TYPE_JSON.toString());
+			OBJECT_MAPPER.writeValue(out, result);
+		} catch (Exception e) {
+			ServletUtil.error(getServletContext(), e);
+		}
 	}
 
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String message)
-			throws JsonProcessingException, IOException {
+	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, InputStream is) {
+		try (ServletOutputStream out = response.getOutputStream()) {
+			response.setContentType(ct.toString());
+			copy(is, out);
+		} catch (Exception e) {
+			ServletUtil.error(getServletContext(), e);
+		}
+	}
+
+	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, Throwable t) {
+		setOutput(response, ct, t.getClass().getSimpleName() + ": " + t.getMessage());
+	}
+
+	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String message) {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
 				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			out.print(message);
+		} catch (Exception e) {
+			ServletUtil.error(getServletContext(), e);
 		}
 	}
 
