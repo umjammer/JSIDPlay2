@@ -134,29 +134,28 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected <T> void setOutput(HttpServletRequest request, HttpServletResponse response, T result, Class<T> tClass) {
-		try (ServletOutputStream out = response.getOutputStream()) {
-			if (result == null) {
-				return;
-			}
-			Optional<String> optionalContentType = ofNullable(request.getHeader(ACCEPT))
-					.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
-			if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
-				response.setContentType(MIME_TYPE_JSON.toString());
-				OBJECT_MAPPER.writeValue(out, result);
-			} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
-				response.setContentType(MIME_TYPE_XML.toString());
-				JAXBContext.newInstance(tClass).createMarshaller().marshal(result, out);
-			}
-		} catch (Exception e) {
-			ServletUtil.error(getServletContext(), e);
+	protected void setOutput(HttpServletRequest request, HttpServletResponse response, Object result) {
+		Optional<String> optionalContentType = ofNullable(request.getHeader(ACCEPT))
+				.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
+		if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
+			setOutput(MIME_TYPE_JSON, response, result);
+		} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
+			setOutput(MIME_TYPE_XML, response, result);
 		}
 	}
 
-	protected void setOutput(HttpServletResponse response, Object result) {
+	protected void setOutput(ContentTypeAndFileExtensions ct, HttpServletResponse response, Object result) {
+		if (result == null) {
+			return;
+		}
 		try (ServletOutputStream out = response.getOutputStream()) {
-			response.setContentType(MIME_TYPE_JSON.toString());
-			OBJECT_MAPPER.writeValue(out, result);
+			if (MIME_TYPE_JSON.isCompatible(ct.toString())) {
+				response.setContentType(MIME_TYPE_JSON.toString());
+				OBJECT_MAPPER.writeValue(out, result);
+			} else if (MIME_TYPE_XML.isCompatible(ct.toString())) {
+				response.setContentType(MIME_TYPE_XML.toString());
+				JAXBContext.newInstance(result.getClass()).createMarshaller().marshal(result, out);
+			}
 		} catch (Exception e) {
 			ServletUtil.error(getServletContext(), e);
 		}

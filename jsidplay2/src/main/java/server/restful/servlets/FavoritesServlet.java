@@ -3,6 +3,7 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
+import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ServletUtil.error;
 
 import java.io.IOException;
@@ -74,11 +75,11 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 			if (favoritesNumber < configuration.getFavorites().size()) {
 				List<String> favorites = getFavoritesByNumber(favoritesNumber);
 
-				setOutput(response, favorites);
+				setOutput(MIME_TYPE_JSON, response, favorites);
 			} else {
 				String favorites = getSpecialFavorites(favoritesNumber);
 
-				setOutput(response, favorites);
+				setOutput(MIME_TYPE_JSON, response, favorites);
 			}
 
 		} catch (Throwable t) {

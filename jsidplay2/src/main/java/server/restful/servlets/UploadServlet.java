@@ -4,6 +4,7 @@ import static libsidutils.IOUtils.copy;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
+import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.IServletSystemProperties.MAX_UPLOADS_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_FILE_SIZE_THRESHOLD;
 import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_MAX_FILE_SIZE;
@@ -119,7 +120,7 @@ public class UploadServlet extends JSIDPlay2Servlet {
 
 					File uploadFile = createUploadFile(uploadContents, filePath);
 
-					setOutput(getResponse(), String.valueOf(uploadFile).replace("\\", "/"));
+					setOutput(MIME_TYPE_JSON, getResponse(), String.valueOf(uploadFile).replace("\\", "/"));
 
 				} catch (Throwable t) {
 					error(getServletContext(), t);

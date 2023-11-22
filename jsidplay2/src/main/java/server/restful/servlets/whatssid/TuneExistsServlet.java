@@ -33,7 +33,7 @@ public class TuneExistsServlet extends JSIDPlay2Servlet {
 			final WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
 			Boolean exists = whatsSidService.tuneExists(musicInfoBean);
 
-			setOutput(request, response, exists, Boolean.class);
+			setOutput(request, response, exists);
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

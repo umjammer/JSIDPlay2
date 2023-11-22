@@ -33,7 +33,7 @@ public class InsertTuneServlet extends JSIDPlay2Servlet {
 			final WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
 			IdBean idBean = whatsSidService.insertTune(musicInfoBean);
 
-			setOutput(request, response, idBean, IdBean.class);
+			setOutput(request, response, idBean);
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

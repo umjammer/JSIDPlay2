@@ -3,6 +3,7 @@ package server.restful.servlets;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
+import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ServletUtil.error;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class STILServlet extends JSIDPlay2Servlet {
 			}
 			STILEntry stilEntry = createSTIL(file);
 
-			setOutput(response, stilEntry);
+			setOutput(MIME_TYPE_JSON, response, stilEntry);
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -110,8 +110,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 						info(getServletContext(), valueOf(musicInfoWithConfidence), parentThread);
 					}
 					if (getResponse() != null) {
-						setOutput(getRequest(), getResponse(), musicInfoWithConfidence,
-								MusicInfoWithConfidenceBean.class);
+						setOutput(getRequest(), getResponse(), musicInfoWithConfidence);
 					}
 				} catch (QueryTimeoutException qte) {
 					warn(getServletContext(), qte.getClass().getName(), parentThread);

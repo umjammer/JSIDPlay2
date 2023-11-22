@@ -34,7 +34,7 @@ public class FindHashServlet extends JSIDPlay2Servlet {
 			final WhatsSidService whatsSidService = new WhatsSidService(getEntityManager());
 			HashBeans result = whatsSidService.findHashes(intArrayBean);
 
-			setOutput(request, response, result, HashBeans.class);
+			setOutput(request, response, result);
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

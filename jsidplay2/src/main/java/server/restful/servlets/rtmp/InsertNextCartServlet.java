@@ -3,6 +3,7 @@ package server.restful.servlets.rtmp;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
+import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ServletUtil.error;
 import static server.restful.common.ServletUtil.info;
 import static server.restful.common.rtmp.PlayerCleanupTimerTask.update;
@@ -63,7 +64,7 @@ public class InsertNextCartServlet extends JSIDPlay2Servlet {
 			info(getServletContext(), String.format("insertNextCart: RTMP stream of: %s", uuid));
 			update(uuid, rtmpPlayerWithStatus -> insertNextCart(rtmpPlayerWithStatus, cartImageName));
 
-			setOutput(response, cartImageName);
+			setOutput(MIME_TYPE_JSON, response, cartImageName);
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
