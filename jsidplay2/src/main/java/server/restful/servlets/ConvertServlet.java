@@ -74,9 +74,11 @@ import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import libsidplay.common.Engine;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IC1541Section;
+import libsidplay.config.IEmulationSection;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
@@ -467,10 +469,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				info(getServletContext(), String.format("START file=%s", file.getAbsolutePath()), parentThread);
 
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
+				IEmulationSection emulationSection = servletParameters.config.getEmulationSection();
 				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 
-				whatsSidSection.setEnable(false);
 				sidplay2Section.setHvsc(configuration.getSidplay2Section().getHvsc());
+				emulationSection.setEngine(Engine.EMULATION);
+				whatsSidSection.setEnable(false);
 
 				Player player = new Player(servletParameters.config);
 				player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
@@ -526,9 +530,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				File videoFile = null;
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
+				IEmulationSection emulationSection = servletParameters.config.getEmulationSection();
 				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 				IC1541Section c1541Section = servletParameters.config.getC1541Section();
 
+				emulationSection.setEngine(Engine.EMULATION);
 				whatsSidSection.setEnable(false);
 				if (TAPE_FILE_FILTER.accept(file)) {
 					c1541Section.setJiffyDosInstalled(false);
