@@ -129,7 +129,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					return tClass.getConstructor(new Class[] { byte[].class }).newInstance(result.toByteArray());
 				}
 			}
-			return null;
+			throw new IOException("Upload without content!");
 		} catch (IOException | JAXBException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
 				| ServletException e) {
@@ -146,7 +146,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
 				setOutput(MIME_TYPE_XML, response, result);
 			} else {
-				throw new IOException("Unsupported content type: " + optionalContentType.get());
+				throw new IOException(String.format("Unsupported content type: $s!", optionalContentType.get()));
 			}
 		} catch (IOException e) {
 			ServletUtil.error(getServletContext(), e);
@@ -165,7 +165,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				response.setContentType(MIME_TYPE_XML.toString());
 				JAXBContext.newInstance(result.getClass()).createMarshaller().marshal(result, out);
 			} else {
-				throw new IOException("Unsupported content type: " + ct);
+				throw new IOException(String.format("Unsupported content type: $s!", ct));
 			}
 		} catch (IOException | JAXBException e) {
 			ServletUtil.error(getServletContext(), e);
