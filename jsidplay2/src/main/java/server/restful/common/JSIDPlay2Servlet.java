@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -22,11 +22,13 @@ import java.util.Optional;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
@@ -124,23 +126,30 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					try (InputStream itemInputStream = part.getInputStream()) {
 						IOUtils.copy(itemInputStream, result);
 					}
-					Constructor<T> constructor = tClass.getConstructor(new Class[] { byte[].class });
-					return constructor.newInstance(result.toByteArray());
+					return tClass.getConstructor(new Class[] { byte[].class }).newInstance(result.toByteArray());
 				}
 			}
 			return null;
-		} catch (Exception e) {
+		} catch (IOException | JAXBException | InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
+				| ServletException e) {
 			throw new IOException(e);
 		}
 	}
 
 	protected void setOutput(HttpServletRequest request, HttpServletResponse response, Object result) {
-		Optional<String> optionalContentType = ofNullable(request.getHeader(ACCEPT))
-				.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
-		if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
-			setOutput(MIME_TYPE_JSON, response, result);
-		} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
-			setOutput(MIME_TYPE_XML, response, result);
+		try {
+			Optional<String> optionalContentType = ofNullable(request.getHeader(ACCEPT))
+					.map(accept -> asList(accept.split(","))).orElse(Collections.emptyList()).stream().findFirst();
+			if (!optionalContentType.isPresent() || MIME_TYPE_JSON.isCompatible(optionalContentType.get())) {
+				setOutput(MIME_TYPE_JSON, response, result);
+			} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
+				setOutput(MIME_TYPE_XML, response, result);
+			} else {
+				throw new IOException("Unsupported content type: " + optionalContentType.get());
+			}
+		} catch (IOException e) {
+			ServletUtil.error(getServletContext(), e);
 		}
 	}
 
@@ -155,8 +164,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			} else if (MIME_TYPE_XML.isCompatible(ct.toString())) {
 				response.setContentType(MIME_TYPE_XML.toString());
 				JAXBContext.newInstance(result.getClass()).createMarshaller().marshal(result, out);
+			} else {
+				throw new IOException("Unsupported content type: " + ct);
 			}
-		} catch (Exception e) {
+		} catch (IOException | JAXBException e) {
 			ServletUtil.error(getServletContext(), e);
 		}
 	}
@@ -165,7 +176,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		try (ServletOutputStream out = response.getOutputStream()) {
 			response.setContentType(ct.toString());
 			copy(is, out);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			ServletUtil.error(getServletContext(), e);
 		}
 	}
@@ -179,7 +190,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
 				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {
 			out.print(message);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			ServletUtil.error(getServletContext(), e);
 		}
 	}
