@@ -402,7 +402,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								try {
 									convert2video(file, driver, servletParameters, uuid, parentThread, currentThread());
 								} catch (IOException | SidTuneError e) {
-									error(getServletContext(), e, parentThread);
+									error(getServletContext(), e, parentThread, currentThread());
 								}
 							}, "RTMP").start();
 							waitUntilVideoIsAvailable(uuid);
