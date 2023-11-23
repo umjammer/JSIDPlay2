@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -356,7 +356,7 @@ public class IOUtils {
 
 	/**
 	 * Get resource bundle. <B>Note:</B>This method prevents to use the default
-	 * locale of the platform, instead it uses ROOT locale.locale.
+	 * locale of the platform, instead it uses ROOT locale.
 	 * 
 	 * @param baseName resource bundle base name
 	 * @param locale   locale
