@@ -2,7 +2,6 @@ package server.restful.servlets;
 
 import static java.lang.Math.min;
 import static java.lang.String.format;
-import static java.lang.Thread.currentThread;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static libsidutils.IOUtils.convertStreamToString;
@@ -400,9 +399,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 							new Thread(() -> {
 								try {
-									convert2video(file, driver, servletParameters, uuid, parentThread, currentThread());
+									convert2video(file, driver, servletParameters, uuid);
 								} catch (IOException | SidTuneError e) {
-									error(getServletContext(), e, parentThread, currentThread());
+									error(getServletContext(), e, parentThread);
 								}
 							}, "RTMP").start();
 							waitUntilVideoIsAvailable(uuid);
@@ -423,7 +422,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 										+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 							}
-							File videoFile = convert2video(file, driver, servletParameters, null, parentThread);
+							File videoFile = convert2video(file, driver, servletParameters, null);
 
 							ContentTypeAndFileExtensions mimeType = getMimeType(driver.getExtension());
 							if (!isComplete()) {
@@ -531,9 +530,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			}
 
 			private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters,
-					UUID uuid, Thread... parentThreads) throws IOException, SidTuneError {
+					UUID uuid) throws IOException, SidTuneError {
 				info(getServletContext(), String.format("START file=%s, uuid=%s", file.getAbsolutePath(), uuid),
-						parentThreads);
+						parentThread);
 
 				File videoFile = null;
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
@@ -558,7 +557,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				player.setAudioDriver(driver);
 				player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(getServletContext(),
-						throwable, thread, parentThreads));
+						throwable, thread, parentThread));
 				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
@@ -575,7 +574,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				player.stopC64(false);
 
 				info(getServletContext(), String.format("END file=%s, uuid=%s", file.getAbsolutePath(), uuid),
-						parentThreads);
+						parentThread);
 				return videoFile;
 			}
 
