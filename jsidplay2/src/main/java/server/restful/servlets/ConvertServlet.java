@@ -400,7 +400,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 							new Thread(() -> {
 								try {
-									convert2video(file, driver, servletParameters, uuid);
+									convert2video(file, driver, servletParameters, uuid, parentThread, currentThread());
 								} catch (IOException | SidTuneError e) {
 									error(getServletContext(), e, parentThread);
 								}
@@ -423,7 +423,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 										+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 							}
-							File videoFile = convert2video(file, driver, servletParameters, null);
+							File videoFile = convert2video(file, driver, servletParameters, null, parentThread);
 
 							ContentTypeAndFileExtensions mimeType = getMimeType(driver.getExtension());
 							if (!isComplete()) {
@@ -531,7 +531,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			}
 
 			private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters,
-					UUID uuid) throws IOException, SidTuneError {
+					UUID uuid, Thread... parentThreads) throws IOException, SidTuneError {
 				info(getServletContext(), String.format("START file=%s, uuid=%s", file.getAbsolutePath(), uuid),
 						parentThread);
 
@@ -556,10 +556,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
 				}
 
-				Thread rtmpThread = currentThread();
 				player.setAudioDriver(driver);
 				player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(getServletContext(),
-						throwable, thread, parentThread, rtmpThread));
+						throwable, thread, parentThreads));
 				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
