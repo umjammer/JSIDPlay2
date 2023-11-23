@@ -412,8 +412,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							Map<String, String> replacements = createReplacements(servletParameters, request, file,
 									uuid);
 							try (InputStream is = new WebResourceConverter("<ServletPath>").convert("/convert.html")) {
-								setOutput(response, MIME_TYPE_HTML,
-										convertStreamToString(is, UTF_8.name(), replacements));
+								if (!isComplete()) {
+									setOutput(response, MIME_TYPE_HTML,
+											convertStreamToString(is, UTF_8.name(), replacements));
+								}
 							}
 						} else {
 
@@ -424,19 +426,25 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							File videoFile = convert2video(file, driver, servletParameters, null);
 
 							ContentTypeAndFileExtensions mimeType = getMimeType(driver.getExtension());
-							setOutput(response, mimeType, newFileInputStream(videoFile));
+							if (!isComplete()) {
+								setOutput(response, mimeType, newFileInputStream(videoFile));
+							}
 							videoFile.delete();
 						}
 					} else {
 						response.addHeader(CONTENT_DISPOSITION,
 								ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
 						ContentTypeAndFileExtensions mimeType = getMimeType(getFilenameSuffix(file.getName()));
-						setOutput(response, mimeType, newFileInputStream(file));
+						if (!isComplete()) {
+							setOutput(response, mimeType, newFileInputStream(file));
+						}
 					}
 				} catch (Throwable t) {
 					error(getServletContext(), t);
-					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					setOutput(response, t);
+					if (!isComplete()) {
+						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						setOutput(response, t);
+					}
 				}
 			}
 

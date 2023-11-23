@@ -120,12 +120,16 @@ public class UploadServlet extends JSIDPlay2Servlet {
 
 					File uploadFile = createUploadFile(uploadContents, filePath);
 
-					setOutput(MIME_TYPE_JSON, response, String.valueOf(uploadFile).replace("\\", "/"));
+					if (!isComplete()) {
+						setOutput(MIME_TYPE_JSON, response, String.valueOf(uploadFile).replace("\\", "/"));
+					}
 
 				} catch (Throwable t) {
 					error(getServletContext(), t);
-					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					setOutput(response, t);
+					if (!isComplete()) {
+						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						setOutput(response, t);
+					}
 				}
 			}
 

@@ -1,11 +1,11 @@
 package server.restful.common.async;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.Thread.currentThread;
 import static server.restful.common.ServletUtil.error;
 import static server.restful.common.ServletUtil.warn;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +22,8 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 
 	private AsyncContext asyncContext;
 	private ServletContext servletContext;
+	private AtomicBoolean completed = new AtomicBoolean();
+
 	protected Thread parentThread;
 
 	public HttpAsyncContextRunnable(AsyncContext asyncContext, ServletContext servletContext) {
@@ -33,19 +35,25 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 
 			@Override
 			public void onComplete(AsyncEvent event) throws IOException {
+				completed.set(true);
 			}
 
 			public void onTimeout(AsyncEvent event) throws IOException {
 				warn(servletContext, "Asynchronous servlet timeout", parentThread);
-				if (getResponse() != null) {
-					getResponse().sendError(SC_SERVICE_UNAVAILABLE, "Asynchronous servlet timeout");
-				}
-				complete();
+				getResponse().setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+				getResponse().getOutputStream().flush();
 			}
 
 			@Override
 			public void onError(AsyncEvent event) throws IOException {
-				complete();
+				if (LOG.isLoggable(Level.FINEST)) {
+					error(servletContext, event.getThrowable());
+				} else {
+					warn(servletContext, event.getThrowable().getMessage());
+				}
+				if (!completed.getAndSet(true)) {
+					asyncContext.complete();
+				}
 			}
 
 			@Override
@@ -53,6 +61,10 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 			}
 
 		});
+	}
+
+	protected boolean isComplete() {
+		return completed.get();
 	}
 
 	private HttpServletRequest getRequest() {
@@ -63,19 +75,12 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 		return (HttpServletResponse) asyncContext.getResponse();
 	}
 
-	private void complete() {
-		try {
-			asyncContext.complete();
-		} catch (IllegalStateException e) {
-			// The request associated with the AsyncContext has already completed processing
-			// we ignore that here!
-		}
-	}
-
 	@Override
 	public final void run() {
 		try {
-			run(getRequest(), getResponse());
+			if (!completed.get()) {
+				run(getRequest(), getResponse());
+			}
 		} catch (Throwable t) {
 			if (LOG.isLoggable(Level.FINEST)) {
 				error(servletContext, t, parentThread);
@@ -83,7 +88,9 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 				warn(servletContext, t.getMessage(), parentThread);
 			}
 		} finally {
-			complete();
+			if (!completed.getAndSet(true)) {
+				asyncContext.complete();
+			}
 		}
 	}
 
