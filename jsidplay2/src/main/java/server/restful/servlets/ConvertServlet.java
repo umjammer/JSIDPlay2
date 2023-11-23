@@ -361,15 +361,15 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 		executorService.execute(new HttpAsyncContextRunnable(asyncContext, getServletContext()) {
 
-			public void execute() throws IOException {
+			public void run(HttpServletRequest request, HttpServletResponse response) throws IOException {
 				try {
 					final ConvertServletParameters servletParameters = new ConvertServletParameters();
 
-					ServletParameterParser parser = new ServletParameterParser(getRequest(), getResponse(),
-							servletParameters, ConvertServlet.class.getAnnotation(WebServlet.class));
+					ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+							ConvertServlet.class.getAnnotation(WebServlet.class));
 
 					final File file = servletParameters.fetchFile(ConvertServlet.this, parser,
-							getRequest().isUserInRole(ROLE_ADMIN));
+							request.isUserInRole(ROLE_ADMIN));
 					if (file == null || parser.hasException()) {
 						parser.usage();
 						return;
@@ -378,14 +378,13 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file)))
 							&& !servletParameters.audioTuneAsVideo) {
 
-						AudioDriver driver = getAudioDriverOfAudioFormat(getResponse().getOutputStream(),
-								servletParameters);
+						AudioDriver driver = getAudioDriverOfAudioFormat(response.getOutputStream(), servletParameters);
 
 						if (Boolean.TRUE.equals(servletParameters.download)) {
-							getResponse().addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
+							response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 									+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 						}
-						getResponse().setContentType(getMimeType(driver.getExtension()).toString());
+						response.setContentType(getMimeType(driver.getExtension()).toString());
 						convert2audio(file, driver, servletParameters);
 
 					} else if (VIDEO_TUNE_FILE_FILTER.accept(file) || DISK_FILE_FILTER.accept(file)
@@ -408,36 +407,36 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							}, "RTMP").start();
 							waitUntilVideoIsAvailable(uuid);
 
-							getResponse().setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
+							response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
 
-							Map<String, String> replacements = createReplacements(servletParameters, getRequest(), file,
+							Map<String, String> replacements = createReplacements(servletParameters, request, file,
 									uuid);
 							try (InputStream is = new WebResourceConverter("<ServletPath>").convert("/convert.html")) {
-								setOutput(getResponse(), MIME_TYPE_HTML,
+								setOutput(response, MIME_TYPE_HTML,
 										convertStreamToString(is, UTF_8.name(), replacements));
 							}
 						} else {
 
 							if (Boolean.TRUE.equals(servletParameters.download)) {
-								getResponse().addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
+								response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
 										+ URLEncoder.encode(getAttachmentFilename(file, driver), UTF_8.name()));
 							}
 							File videoFile = convert2video(file, driver, servletParameters, null);
 
 							ContentTypeAndFileExtensions mimeType = getMimeType(driver.getExtension());
-							setOutput(getResponse(), mimeType, newFileInputStream(videoFile));
+							setOutput(response, mimeType, newFileInputStream(videoFile));
 							videoFile.delete();
 						}
 					} else {
-						getResponse().addHeader(CONTENT_DISPOSITION,
+						response.addHeader(CONTENT_DISPOSITION,
 								ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
 						ContentTypeAndFileExtensions mimeType = getMimeType(getFilenameSuffix(file.getName()));
-						setOutput(getResponse(), mimeType, newFileInputStream(file));
+						setOutput(response, mimeType, newFileInputStream(file));
 					}
 				} catch (Throwable t) {
 					error(getServletContext(), t);
-					getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					setOutput(getResponse(), t);
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					setOutput(response, t);
 				}
 			}
 

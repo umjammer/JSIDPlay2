@@ -93,13 +93,13 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 
 		executorService.execute(new HttpAsyncContextRunnable(asyncContext, getServletContext()) {
 
-			public void execute() throws IOException {
+			public void run(HttpServletRequest request, HttpServletResponse response) throws IOException {
 				try {
-					WAVBean wavBean = getInput(getRequest(), WAVBean.class);
+					WAVBean wavBean = getInput(request, WAVBean.class);
 					wavBean.setMaxSeconds(
-							ServletFileUpload.isMultipartContent(getRequest()) ? UPLOAD_MAXIMUM_SECONDS : MAX_SECONDS);
+							ServletFileUpload.isMultipartContent(request) ? UPLOAD_MAXIMUM_SECONDS : MAX_SECONDS);
 
-					int hashCode = getRequest().getRemoteAddr().hashCode() ^ wavBean.hashCode();
+					int hashCode = request.getRemoteAddr().hashCode() ^ wavBean.hashCode();
 					MusicInfoWithConfidenceBean musicInfoWithConfidence;
 					if (MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.containsKey(hashCode)) {
 						musicInfoWithConfidence = MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.get(hashCode);
@@ -109,19 +109,19 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 						MUSIC_INFO_WITH_CONFIDENCE_BEAN_MAP.put(hashCode, musicInfoWithConfidence);
 						info(getServletContext(), valueOf(musicInfoWithConfidence), parentThread);
 					}
-					if (getResponse() != null) {
-						setOutput(getRequest(), getResponse(), musicInfoWithConfidence);
+					if (response != null) {
+						setOutput(request, response, musicInfoWithConfidence);
 					}
 				} catch (QueryTimeoutException qte) {
 					warn(getServletContext(), qte.getClass().getName(), parentThread);
-					if (getResponse() != null) {
-						getResponse().sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
+					if (response != null) {
+						response.sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
 					}
 				} catch (Throwable t) {
 					warn(getServletContext(), t.getMessage(), parentThread);
-					if (getResponse() != null) {
-						getResponse().setStatus(SC_INTERNAL_SERVER_ERROR);
-						setOutput(getResponse(), t);
+					if (response != null) {
+						response.setStatus(SC_INTERNAL_SERVER_ERROR);
+						setOutput(response, t);
 					}
 				} finally {
 					freeEntityManager();

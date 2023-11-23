@@ -24,12 +24,6 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 	private ServletContext servletContext;
 	protected Thread parentThread;
 
-	// Prevent usage of servlet method parameters, use getter/setter, instead!
-	@Deprecated
-	protected HttpServletRequest request;
-	@Deprecated
-	protected HttpServletResponse response;
-
 	public HttpAsyncContextRunnable(AsyncContext asyncContext, ServletContext servletContext) {
 		this.asyncContext = asyncContext;
 		this.servletContext = servletContext;
@@ -61,11 +55,11 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 		});
 	}
 
-	protected HttpServletRequest getRequest() {
+	private HttpServletRequest getRequest() {
 		return (HttpServletRequest) asyncContext.getRequest();
 	}
 
-	protected HttpServletResponse getResponse() {
+	private HttpServletResponse getResponse() {
 		return (HttpServletResponse) asyncContext.getResponse();
 	}
 
@@ -81,7 +75,7 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 	@Override
 	public final void run() {
 		try {
-			execute();
+			run(getRequest(), getResponse());
 		} catch (Throwable t) {
 			if (LOG.isLoggable(Level.FINEST)) {
 				error(servletContext, t, parentThread);
@@ -93,5 +87,5 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 		}
 	}
 
-	protected abstract void execute() throws IOException;
+	protected abstract void run(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

@@ -103,12 +103,12 @@ public class UploadServlet extends JSIDPlay2Servlet {
 
 		executorService.execute(new HttpAsyncContextRunnable(asyncContext, getServletContext()) {
 
-			public void execute() throws IOException {
+			public void run(HttpServletRequest request, HttpServletResponse response) throws IOException {
 				try {
 					final UploadServletParameters servletParameters = new UploadServletParameters();
 
-					ServletParameterParser parser = new ServletParameterParser(getRequest(), getResponse(),
-							servletParameters, UploadServlet.class.getAnnotation(WebServlet.class));
+					ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
+							UploadServlet.class.getAnnotation(WebServlet.class));
 
 					final String filePath = servletParameters.getFilePath();
 					if (filePath == null || parser.hasException()) {
@@ -116,16 +116,16 @@ public class UploadServlet extends JSIDPlay2Servlet {
 						return;
 					}
 
-					UploadContents uploadContents = getInput(getRequest(), UploadContents.class);
+					UploadContents uploadContents = getInput(request, UploadContents.class);
 
 					File uploadFile = createUploadFile(uploadContents, filePath);
 
-					setOutput(MIME_TYPE_JSON, getResponse(), String.valueOf(uploadFile).replace("\\", "/"));
+					setOutput(MIME_TYPE_JSON, response, String.valueOf(uploadFile).replace("\\", "/"));
 
 				} catch (Throwable t) {
 					error(getServletContext(), t);
-					getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					setOutput(getResponse(), t);
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					setOutput(response, t);
 				}
 			}
 
