@@ -440,7 +440,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 						}
 					}
 				} catch (Throwable t) {
-					error(getServletContext(), t);
+					error(getServletContext(), t, parentThread);
 					if (!isComplete()) {
 						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 						setOutput(response, t);
@@ -533,7 +533,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			private File convert2video(File file, AudioDriver driver, ConvertServletParameters servletParameters,
 					UUID uuid, Thread... parentThreads) throws IOException, SidTuneError {
 				info(getServletContext(), String.format("START file=%s, uuid=%s", file.getAbsolutePath(), uuid),
-						parentThread);
+						parentThreads);
 
 				File videoFile = null;
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
@@ -575,7 +575,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				player.stopC64(false);
 
 				info(getServletContext(), String.format("END file=%s, uuid=%s", file.getAbsolutePath(), uuid),
-						parentThread);
+						parentThreads);
 				return videoFile;
 			}
 
