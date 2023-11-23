@@ -498,7 +498,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				player.setAudioDriver(driver);
 				player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(getServletContext(),
-						throwable, thread, parentThread, currentThread()));
+						throwable, thread, parentThread));
 				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
@@ -556,9 +556,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					sidplay2Section.setDefaultPlayLength(RTMP_EXCEEDS_MAXIMUM_DURATION);
 				}
 
+				Thread rtmpThread = currentThread();
 				player.setAudioDriver(driver);
 				player.setUncaughtExceptionHandler((thread, throwable) -> uncaughtExceptionHandler(getServletContext(),
-						throwable, thread, parentThread, currentThread()));
+						throwable, thread, parentThread, rtmpThread));
 				player.setCheckDefaultLengthInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setCheckLoopOffInRecordMode(Boolean.TRUE.equals(servletParameters.download));
 				player.setForceCheckSongLength(Boolean.TRUE.equals(servletParameters.download));
