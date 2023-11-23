@@ -128,8 +128,8 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 					}
 					return tClass.getConstructor(new Class[] { byte[].class }).newInstance(result.toByteArray());
 				}
+				throw new IOException("Upload without content!");
 			}
-			throw new IOException("Upload without content!");
 		} catch (IOException | JAXBException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
 				| ServletException e) {
