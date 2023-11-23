@@ -25,7 +25,7 @@ public interface IWhatsSidSystemProperties {
 	 * 
 	 * @jsidplay2.systemProperty jsidplay2.whatssid.upload.max.seconds
 	 */
-	long UPLOAD_MAXIMUM_SECONDS = Long
+	long UPLOAD_MAX_SECONDS = Long
 			.valueOf(getProperty("jsidplay2.whatssid.upload.max.seconds", valueOf(45/* s */)));
 
 	/**

@@ -4,7 +4,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 import static java.lang.String.valueOf;
 import static libsidplay.config.IWhatsSidSystemProperties.MAX_SECONDS;
-import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_MAXIMUM_SECONDS;
+import static libsidplay.config.IWhatsSidSystemProperties.UPLOAD_MAX_SECONDS;
+import static org.apache.tomcat.util.http.fileupload.FileUploadBase.MULTIPART;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
@@ -24,14 +25,13 @@ import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PA
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.QueryTimeoutException;
-
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
@@ -96,8 +96,8 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 			public void run(HttpServletRequest request, HttpServletResponse response) throws IOException {
 				try {
 					WAVBean wavBean = getInput(request, WAVBean.class);
-					wavBean.setMaxSeconds(
-							ServletFileUpload.isMultipartContent(request) ? UPLOAD_MAXIMUM_SECONDS : MAX_SECONDS);
+					boolean isMultipart = request.getContentType().toLowerCase(Locale.US).startsWith(MULTIPART);
+					wavBean.setMaxSeconds(isMultipart ? UPLOAD_MAX_SECONDS : MAX_SECONDS);
 
 					int hashCode = request.getRemoteAddr().hashCode() ^ wavBean.hashCode();
 					MusicInfoWithConfidenceBean musicInfoWithConfidence;
