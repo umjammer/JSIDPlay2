@@ -297,8 +297,8 @@ Prepare database configuration:
 ----
 sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 
-max_allowed_packet      = 64M # <1>
-innodb_buffer_pool_size = 16G # <2>
+max_allowed_packet      = 128M # <1>
+innodb_buffer_pool_size = 32G # <2>
 sql-mode                = "ANSI_QUOTES" # <3>
 ----
 <1> increase packet size (because adding a song requires sending
