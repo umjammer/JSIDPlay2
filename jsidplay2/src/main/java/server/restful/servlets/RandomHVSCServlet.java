@@ -5,6 +5,7 @@ import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 
 import java.io.IOException;
 
@@ -31,6 +32,8 @@ public class RandomHVSCServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		try {
 			String randomHVSC = getRandomHVSC();
+
+			info(getServletContext(), String.format("randomHVSC: %s", randomHVSC));
 
 			setOutput(MIME_TYPE_JSON, response, randomHVSC);
 

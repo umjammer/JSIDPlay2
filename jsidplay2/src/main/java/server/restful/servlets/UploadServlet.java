@@ -11,6 +11,7 @@ import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_MAX_F
 import static server.restful.common.IServletSystemProperties.UPLOADSERVLET_MAX_REQUEST_SIZE;
 import static server.restful.common.IServletSystemProperties.UPLOAD_ASYNC_TIMEOUT;
 import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 import static ui.common.Convenience.LEXICALLY_FIRST_MEDIA;
 import static ui.common.Convenience.MACOSX;
 import static ui.common.Convenience.TOP_LEVEL_FIRST_COMPARATOR;
@@ -119,6 +120,8 @@ public class UploadServlet extends JSIDPlay2Servlet {
 					UploadContents uploadContents = getInput(request, UploadContents.class);
 
 					File uploadFile = createUploadFile(uploadContents, filePath);
+
+					info(getServletContext(), String.format("upload: %s", uploadFile));
 
 					if (!isComplete()) {
 						setOutput(MIME_TYPE_JSON, response, String.valueOf(uploadFile).replace("\\", "/"));
