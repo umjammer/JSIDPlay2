@@ -82,8 +82,8 @@ public enum TextToSpeechType {
 
 	private static int getVolume(TextToSpeechBean textToSpeechBean) {
 		// -6db..6db (volume)
-		// 20..140 (speech)
-		return (int) (80 + 10 * textToSpeechBean.getVolume());
+		// 10..70 (speech)
+		return (int) (40 + 5 * textToSpeechBean.getVolume());
 	}
 
 	private static String createPicoToWaveLanguage(TextToSpeechBean textToSpeechBean) {
