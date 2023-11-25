@@ -22,6 +22,8 @@ public class TextToSpeechBean {
 	private Locale textToSpeechLocale;
 	private double volume;
 
+	private Integer songNo;
+	
 	private String title;
 	private String author;
 	private String released;
@@ -29,6 +31,10 @@ public class TextToSpeechBean {
 	private String basedOnTitle;
 	private String basedOnArtist;
 
+	public Integer getSongNo() {
+		return songNo;
+	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -68,6 +74,9 @@ public class TextToSpeechBean {
 	}
 
 	public void determineText2Speak(ResourceBundle resourceBundle) {
+		if (player.getTune().getInfo().getSongs() > 1) {
+			songNo = player.getTune().getInfo().getCurrentSong();
+		}
 		Iterator<String> it = player.getTune().getInfo().getInfoString().iterator();
 		if (it.hasNext()) {
 			String next = it.next().replace("<?>", "");

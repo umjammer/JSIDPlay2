@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import builder.resid.SIDMixer;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.ISidPlay2Section;
 import libsidutils.AudioUtils;
@@ -39,9 +38,7 @@ public class TextToSpeech implements Consumer<Player> {
 
 			wavFile = File.createTempFile("text2speech", ".wav", sidplay2Section.getTmpDir());
 
-			float volume = (audioSection.getMainVolume() + audioSection.getSecondVolume()
-					+ audioSection.getThirdVolume()) / 3;
-			textToSpeechBean.setVolume((int) (Math.pow(10., SIDMixer.decibelsToCentibels(volume) / 100.)));
+			textToSpeechBean.setVolume(audioSection.getMainVolume());
 
 			String[] processArguments = textToSpeechType.getProcessArgumentsFunction().apply(textToSpeechBean, wavFile);
 			if (LOG.isLoggable(Level.FINE)) {

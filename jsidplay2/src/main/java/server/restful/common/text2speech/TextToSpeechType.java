@@ -29,21 +29,20 @@ public enum TextToSpeechType {
 	}
 
 	private static String[] createPico2WaveArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		int volume = (int) (50 * (1 + textToSpeechBean.getVolume()));
-		String ssml = String.format("<volume level=\"%d\"><pitch level=\"140\">%s</pitch></volume>", volume,
-				createSsmlParagraph(textToSpeechBean));
+		String ssml = String.format("<volume level=\"%d\"><pitch level=\"140\">%s</pitch></volume>",
+				getVolume(textToSpeechBean), createSsmlParagraph(textToSpeechBean));
 
 		return new String[] { "pico2wave", "-l", createPicoToWaveLanguage(textToSpeechBean),
 				"-w=" + wavFile.getAbsolutePath(), ssml };
 	}
 
 	private static String[] createEspeakArgumentsFunction(TextToSpeechBean textToSpeechBean, File wavFile) {
-		double volume = 50 * (1 + textToSpeechBean.getVolume());
 		String locale = textToSpeechBean.getTextToSpeechLocale().getLanguage();
 		String ssml = String.format("<speak><voice language=\"%s\" gender=\"female\">%s</voice></speak>", locale,
 				createSsmlParagraph(textToSpeechBean));
 
-		return new String[] { "espeak", ssml, "-m", "-k20", "-a" + volume, "-w", wavFile.getAbsolutePath() };
+		return new String[] { "espeak", ssml, "-m", "-k20", "-a" + getVolume(textToSpeechBean), "-w",
+				wavFile.getAbsolutePath() };
 	}
 
 	private static String createSsmlParagraph(TextToSpeechBean textToSpeechBean) {
@@ -52,9 +51,12 @@ public enum TextToSpeechType {
 		textToSpeechBean.determineText2Speak(resourceBundle);
 
 		String text = "<p>"
-				+ (textToSpeechBean.getTitle() != null ? "<s>"
-						+ resourceBundle.getString("NOW_PLAYING") + ": " + replaceSpecials(textToSpeechBean.getTitle(),
-								resourceBundle)
+				+ (textToSpeechBean.getTitle() != null ? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": "
+						+ replaceSpecials(textToSpeechBean.getTitle(), resourceBundle)
+						+ (textToSpeechBean.getSongNo() != null
+								? "<break time=\"250ms\"/>" + resourceBundle.getString("SONG_NO") + " "
+										+ textToSpeechBean.getSongNo()
+								: "")
 						+ "</s>" : "")
 				+ (textToSpeechBean
 						.getAuthor() != null ? "<s>"
@@ -78,6 +80,12 @@ public enum TextToSpeechType {
 		return text;
 	}
 
+	private static int getVolume(TextToSpeechBean textToSpeechBean) {
+		// -6db..6db (volume)
+		// 20..140 (speech)
+		return (int) (80 + 10 * textToSpeechBean.getVolume());
+	}
+
 	private static String createPicoToWaveLanguage(TextToSpeechBean textToSpeechBean) {
 		if (Locale.ENGLISH.getLanguage().equals(textToSpeechBean.getTextToSpeechLocale().getLanguage())) {
 			return Locale.ENGLISH.getLanguage() + "-GB";
@@ -88,7 +96,7 @@ public enum TextToSpeechType {
 	}
 
 	private static String replaceSpecials(String string, ResourceBundle resourceBundle) {
-		return Junidecode.unidecode(string).replaceAll("[/\\\\-_()]", "<break time=\"250ms\"/>").replace("&",
+		return Junidecode.unidecode(string).replaceAll("[/\\\\-\\\\-+_()]", "<break time=\"250ms\"/>").replace("&",
 				" " + resourceBundle.getString("AND") + " ");
 	}
 
