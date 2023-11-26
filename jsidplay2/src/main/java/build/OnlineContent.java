@@ -396,19 +396,14 @@ public class OnlineContent {
 						// ... check server parameters
 						ServletParameterHelper.check(clz, true);
 					} else {
-						boolean checked = false;
 						for (Class<?> cls : Arrays.asList(clz, clz.getEnclosingClass()).stream()
 								.filter(Objects::nonNull).collect(Collectors.toList())) {
 							try {
 								// ... check main parameters
 								cls.getMethod("main", String[].class);
-								checked = true;
 								ServletParameterHelper.check(clz, false);
 							} catch (NoSuchMethodException e) {
 							}
-						}
-						if (!checked) {
-							throw new RuntimeException("Unchecked parameter class: " + clz.getName());
 						}
 					}
 				}
