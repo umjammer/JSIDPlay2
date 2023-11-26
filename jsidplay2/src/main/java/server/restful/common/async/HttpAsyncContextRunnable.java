@@ -35,7 +35,7 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 
 			@Override
 			public void onComplete(AsyncEvent event) throws IOException {
-				completed.set(true);
+				getAndSetComplete();
 			}
 
 			public void onTimeout(AsyncEvent event) throws IOException {
@@ -51,7 +51,7 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 				} else {
 					warn(servletContext, event.getThrowable().getMessage());
 				}
-				if (!completed.getAndSet(true)) {
+				if (!getAndSetComplete()) {
 					asyncContext.complete();
 				}
 			}
@@ -67,6 +67,10 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 		return completed.get();
 	}
 
+	private boolean getAndSetComplete() {
+		return completed.getAndSet(true);
+	}
+
 	private HttpServletRequest getRequest() {
 		return (HttpServletRequest) asyncContext.getRequest();
 	}
@@ -78,7 +82,7 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 	@Override
 	public final void run() {
 		try {
-			if (!completed.get()) {
+			if (!isComplete()) {
 				run(getRequest(), getResponse());
 			}
 		} catch (Throwable t) {
@@ -88,7 +92,7 @@ public abstract class HttpAsyncContextRunnable implements Runnable {
 				warn(servletContext, t.getMessage(), parentThread);
 			}
 		} finally {
-			if (!completed.getAndSet(true)) {
+			if (!getAndSetComplete()) {
 				asyncContext.complete();
 			}
 		}

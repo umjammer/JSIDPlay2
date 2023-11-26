@@ -298,7 +298,7 @@ public final class JSIDPlay2Server {
 		List<Servlet> servlets = addServlets(context);
 
 		addServletFilters(context, servlets);
-		addSecurity(context, servlets);
+		addServletSecurity(context, servlets);
 
 		new Timer().schedule(new PlayerCleanupTimerTask(context), 0, 1000L);
 
@@ -507,7 +507,7 @@ public final class JSIDPlay2Server {
 		}
 	}
 
-	private void addSecurity(Context context, List<Servlet> servlets) {
+	private void addServletSecurity(Context context, List<Servlet> servlets) {
 		// roles must be defined before being used in a security constraint, therefore:
 		context.addSecurityRole(ROLE_ADMIN);
 		context.addSecurityRole(ROLE_USER);
@@ -515,7 +515,7 @@ public final class JSIDPlay2Server {
 		servlets.forEach(servlet -> {
 			WebServlet webServlet = servlet.getClass().getAnnotation(WebServlet.class);
 			ServletSecurity servletSecurity = servlet.getClass().getAnnotation(ServletSecurity.class);
-			
+
 			if (ServletUtil.isSecured(servletSecurity)) {
 				SecurityCollection securityCollection = new SecurityCollection();
 				Stream.of(webServlet.urlPatterns()).forEach(securityCollection::addPattern);
