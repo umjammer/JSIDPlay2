@@ -18,6 +18,7 @@ import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_FIL
 import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_MAX_FILE_SIZE;
 import static server.restful.common.IServletSystemProperties.WHATSSIDSERVLET_MAX_REQUEST_SIZE;
 import static server.restful.common.IServletSystemProperties.WHATSSID_ASYNC_TIMEOUT;
+import static server.restful.common.ServletUtil.error;
 import static server.restful.common.ServletUtil.info;
 import static server.restful.common.ServletUtil.warn;
 import static server.restful.common.filters.RTMPBasedRateLimiterFilter.FILTER_PARAMETER_MAX_RTMP_PER_SERVLET;
@@ -86,7 +87,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(WHATSSID_ASYNC_TIMEOUT);
@@ -118,7 +119,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 						response.sendError(SC_SERVICE_UNAVAILABLE, qte.getClass().getName());
 					}
 				} catch (Throwable t) {
-					warn(getServletContext(), t.getMessage(), parentThread);
+					error(getServletContext(), t, parentThread);
 					if (!isComplete()) {
 						response.setStatus(SC_INTERNAL_SERVER_ERROR);
 						setOutput(response, t);
