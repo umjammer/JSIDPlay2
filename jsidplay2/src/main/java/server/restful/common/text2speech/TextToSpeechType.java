@@ -53,9 +53,11 @@ public enum TextToSpeechType {
 		String text = "<p>"
 				+ (textToSpeechBean.getTitle() != null ? "<s>" + resourceBundle.getString("NOW_PLAYING") + ": "
 						+ replaceSpecials(textToSpeechBean.getTitle(), resourceBundle)
-						+ (textToSpeechBean.getSongNo() != null
-								? "<break time=\"250ms\"/>" + resourceBundle.getString("SONG_NO") + " "
-										+ textToSpeechBean.getSongNo()
+						+ (textToSpeechBean.getSongNo() != null ? "<break time=\"250ms\"/>"
+								+ resourceBundle.getString("SONG_NO") + " " + textToSpeechBean.getSongNo() : "")
+						+ (textToSpeechBean.getName() != null
+								? "<break time=\"250ms\"/>" + resourceBundle.getString("NAME") + " "
+										+ replaceSpecials(removeBraces(textToSpeechBean.getName()), resourceBundle)
 								: "")
 						+ "</s>" : "")
 				+ (textToSpeechBean
@@ -75,7 +77,11 @@ public enum TextToSpeechType {
 						+ replaceSpecials(removeBraces(textToSpeechBean.getBasedOnTitle()), resourceBundle) + "</s>"
 						: "")
 				+ (textToSpeechBean.getBasedOnArtist() != null ? "<s>" + resourceBundle.getString("BASED_ON_ARTIST")
-						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist(), resourceBundle) + "</s>" : "")
+						+ " " + replaceSpecials(textToSpeechBean.getBasedOnArtist(), resourceBundle)
+						+ (textToSpeechBean.isAndMore()
+								? "<break time=\"250ms\"/>" + resourceBundle.getString("AND_MORE") + " "
+								: "")
+						+ "</s>" : "")
 				+ "</p>";
 		return text;
 	}

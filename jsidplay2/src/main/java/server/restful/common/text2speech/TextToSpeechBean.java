@@ -23,18 +23,20 @@ public class TextToSpeechBean {
 	private double volume;
 
 	private Integer songNo;
-	
+
 	private String title;
 	private String author;
 	private String released;
 
+	private String songName;
 	private String basedOnTitle;
 	private String basedOnArtist;
+	private boolean andMore;
 
 	public Integer getSongNo() {
 		return songNo;
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -47,6 +49,10 @@ public class TextToSpeechBean {
 		return released;
 	}
 
+	public String getName() {
+		return songName;
+	}
+
 	public String getBasedOnTitle() {
 		return basedOnTitle;
 	}
@@ -55,6 +61,10 @@ public class TextToSpeechBean {
 		return basedOnArtist;
 	}
 
+	public boolean isAndMore() {
+		return andMore;
+	}
+	
 	public Locale getTextToSpeechLocale() {
 		return textToSpeechLocale;
 	}
@@ -62,11 +72,11 @@ public class TextToSpeechBean {
 	public void setVolume(double volume) {
 		this.volume = volume;
 	}
-	
+
 	public double getVolume() {
 		return volume;
 	}
-	
+
 	public TextToSpeechBean(File tuneFile, Player player, Locale textToSpeechLocale) {
 		this.tuneFile = tuneFile;
 		this.player = player;
@@ -102,13 +112,23 @@ public class TextToSpeechBean {
 			basedOnTitle = ofNullable(next.title).map(title -> title.replace("<?>", "")).orElse(null);
 			basedOnArtist = ofNullable(next.artist).map(artist -> artist.replace("<?>", "")).orElse(null);
 		}
-		if ((basedOnTitle == null || basedOnTitle.isEmpty()) && (basedOnArtist == null || basedOnArtist.isEmpty())) {
+		if ((basedOnTitle == null || basedOnTitle.isEmpty()) && (basedOnArtist == null || basedOnArtist.isEmpty())
+				&& songNo != null) {
 			Optional<TuneEntry> subTune = ofNullable(stilEntry).map(STILEntry::getSubTunes)
-					.orElse(new ArrayList<TuneEntry>()).stream().findFirst();
+					.orElse(new ArrayList<TuneEntry>()).stream().filter(e -> songNo.equals(e.tuneNo)).findFirst();
 			if (subTune.isPresent()) {
 				Iterator<Info> subTuneInfoIt = subTune.get().infos.iterator();
 				if (subTuneInfoIt.hasNext()) {
 					Info nextSubTuneInfo = subTuneInfoIt.next();
+					{
+						String next = ofNullable(nextSubTuneInfo.name).map(name -> name.replace("<?>", "")).orElse("");
+						songName = next.isEmpty() ? null : next;
+					}
+					{
+						String next = ofNullable(nextSubTuneInfo.author).map(author -> author.replace("<?>", ""))
+								.orElse("");
+						author = next.isEmpty() ? author : next;
+					}
 					{
 						String next = ofNullable(nextSubTuneInfo.title).map(title -> title.replace("<?>", ""))
 								.orElse("");
@@ -119,6 +139,7 @@ public class TextToSpeechBean {
 								.orElse("");
 						basedOnArtist = next.isEmpty() ? null : next;
 					}
+					andMore = subTuneInfoIt.hasNext();
 				}
 			}
 		}
