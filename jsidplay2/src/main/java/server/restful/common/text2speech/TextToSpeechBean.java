@@ -64,7 +64,7 @@ public class TextToSpeechBean {
 	public boolean isAndMore() {
 		return andMore;
 	}
-	
+
 	public Locale getTextToSpeechLocale() {
 		return textToSpeechLocale;
 	}
@@ -83,7 +83,7 @@ public class TextToSpeechBean {
 		this.textToSpeechLocale = textToSpeechLocale;
 	}
 
-	public void determineText2Speak(ResourceBundle resourceBundle) {
+	protected void determineText2Speak(ResourceBundle resourceBundle) {
 		if (player.getTune().getInfo().getSongs() > 1) {
 			songNo = player.getTune().getInfo().getCurrentSong();
 		}

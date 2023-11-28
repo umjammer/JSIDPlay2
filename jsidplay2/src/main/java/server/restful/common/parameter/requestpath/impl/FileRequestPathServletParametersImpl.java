@@ -40,7 +40,7 @@ public abstract class FileRequestPathServletParametersImpl {
 	private static final String ASSEMBLY64_CSDB_REU_ID = "25";
 
 	public File fetchFile(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin)
-			throws IOException, URISyntaxException {
+		throws IOException, URISyntaxException {
 		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
 		ServletSecurity servletSecurity = servlet.getClass().getAnnotation(ServletSecurity.class);
 
@@ -67,6 +67,7 @@ public abstract class FileRequestPathServletParametersImpl {
 				return file;
 			}
 		} else if (new File(path).getAbsolutePath().startsWith(sidplay2Section.getTmpDir().getAbsolutePath())) {
+			// XXX getCanonicalPath ???
 			File file = new File(path);
 			if (file.exists()) {
 				return file;
@@ -94,7 +95,7 @@ public abstract class FileRequestPathServletParametersImpl {
 	}
 
 	private File fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId)
-			throws IOException, URISyntaxException {
+		throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
 		URL url = new URI(assembly64Url + "/leet/search/v2/contententries/" + encodedItemId + "/" + categoryId).toURL();
@@ -134,7 +135,7 @@ public abstract class FileRequestPathServletParametersImpl {
 	}
 
 	private void fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId,
-			File contentEntryFile) throws IOException, URISyntaxException {
+		File contentEntryFile) throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
 		String encodedContentEntryId = new String(Base64.getEncoder().encode(fileId.getBytes()));

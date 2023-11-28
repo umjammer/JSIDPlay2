@@ -46,24 +46,24 @@ public final class PlayerWithStatus {
 
 	private final int pressSpaceInterval;
 
-	private final StatusText statusText;
-
 	private final LocalDateTime created;
 
 	private LocalDateTime validUntil;
 
+	private final StatusText statusText;
+
 	private int playCounter;
 
 	public PlayerWithStatus(Player player, File diskImage, ConvenienceResult convenienceResult,
-			ConvertServletParameters servletParameters) {
+		ConvertServletParameters servletParameters) {
 		this.player = player;
 		this.diskImage = diskImage;
-		this.attachedCartridge = convenienceResult.getAttatchedCartridge();
-		this.attachedCartridgeType = convenienceResult.getAttachedCartridgeType();
-		this.pressSpaceInterval = servletParameters.getPressSpaceInterval();
-		statusText = new StatusText(player, servletParameters.getShowStatus(), servletParameters.getLocale());
+		attachedCartridge = convenienceResult.getAttatchedCartridge();
+		attachedCartridgeType = convenienceResult.getAttachedCartridgeType();
+		pressSpaceInterval = servletParameters.getPressSpaceInterval();
 		created = LocalDateTime.now();
 		validUntil = created.plusSeconds(RTMP_NOT_YET_PLAYED_TIMEOUT);
+		statusText = new StatusText(player, servletParameters.getShowStatus(), servletParameters.getLocale());
 		addPressSpaceListener();
 		addStatusTextListener();
 	}
