@@ -222,7 +222,7 @@ public interface IServletSystemProperties {
 	 * 
 	 * @jsidplay2.systemProperty jsidplay2.convert.max.parallel
 	 */
-	int MAX_CONVERT_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.max.parallel", "7"));
+	int MAX_CONVERT_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.max.parallel", "15"));
 
 	/**
 	 * Video streaming: Interval between simulated key presses of the space key in s

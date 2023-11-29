@@ -3,17 +3,12 @@ package sidplay.audio;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.LineUnavailableException;
+import com.xuggle.xuggler.IStreamCoder;
+import com.xuggle.xuggler.ICodec.ID;
 
-import libsidplay.common.CPUClock;
-import libsidplay.common.EventScheduler;
 import libsidplay.config.IAudioSection;
-import lowlevel.LameEncoder;
-import mp3.MPEGMode;
+import sidplay.audio.xuggle.XuggleAudioDriver;
 
 /**
  * Abstract base class to output an MP3 encoded tune to an output stream.
@@ -21,7 +16,20 @@ import mp3.MPEGMode;
  * @author Ken Händel
  *
  */
-public abstract class MP3Driver implements AudioDriver {
+public abstract class MP3Driver extends XuggleAudioDriver {
+
+	/**
+	 * Kbs
+	 */
+	private static final int KBS = 1000;
+	/**
+	 * CBR Default bit rate
+	 */
+	private static final int DEFAULT_BITRATE = 128 * KBS;
+	/**
+	 * VBR quality factor
+	 */
+	private static final int FF_QP2LAMBDA = 118;
 
 	/**
 	 * File based driver to create a MP3 file.
@@ -30,6 +38,7 @@ public abstract class MP3Driver implements AudioDriver {
 	 *
 	 */
 	public static class MP3FileDriver extends MP3Driver {
+
 		@Override
 		protected OutputStream getOut(String recordingFilename) throws IOException {
 			System.out.println("Recording, file=" + recordingFilename);
@@ -77,66 +86,29 @@ public abstract class MP3Driver implements AudioDriver {
 
 	}
 
-	/**
-	 * Jump3r encoder.
-	 */
-	private LameEncoder jump3r;
-	/**
-	 * Output stream to write the encoded MP3 to.
-	 */
-	protected OutputStream out;
-	/**
-	 * Sample buffer to be encoded as MP3.
-	 */
-	protected ByteBuffer sampleBuffer;
-
 	@Override
-	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
-			throws IOException, LineUnavailableException, InterruptedException {
-		AudioConfig cfg = new AudioConfig(audioSection);
-		boolean signed = true;
-		boolean bigEndian = false;
-		AudioFormat audioFormat = new AudioFormat(cfg.getFrameRate(), Short.SIZE, cfg.getChannels(), signed, bigEndian);
-		jump3r = new LameEncoder(audioFormat, audioSection.getCbr(), MPEGMode.STEREO, audioSection.getVbrQuality(),
-				audioSection.isVbr());
-		out = getOut(recordingFilename);
+	protected void configureStreamCoder(IStreamCoder streamCoder, IAudioSection audioSection) {
+		int bitRate = audioSection.getCbr() == -1 ? DEFAULT_BITRATE : audioSection.getCbr() * KBS;
+		boolean isVbr = audioSection.isVbr();
+		int vbrQuality = audioSection.getVbrQuality() * FF_QP2LAMBDA;
 
-		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
-				.order(ByteOrder.LITTLE_ENDIAN);
+		streamCoder.setFlag(IStreamCoder.Flags.FLAG_QSCALE, isVbr);
+		streamCoder.setBitRate(bitRate);
+		streamCoder.setGlobalQuality(vbrQuality);
 	}
 
 	@Override
-	public void write() throws InterruptedException {
-		try {
-			byte[] encoded = new byte[jump3r.getMP3BufferSize()];
-			int bytesWritten = jump3r.encodeBuffer(sampleBuffer.array(), 0, sampleBuffer.position(), encoded);
-			out.write(encoded, 0, bytesWritten);
-		} catch (ArrayIndexOutOfBoundsException | IOException e) {
-			throw new RuntimeException("Error writing MP3 audio stream", e);
-		}
+	protected String getOutputFormatName() {
+		return "mp3";
 	}
 
 	@Override
-	public void close() {
-		if (jump3r != null) {
-			jump3r.close();
-		}
-	}
-
-	@Override
-	public ByteBuffer buffer() {
-		return sampleBuffer;
-	}
-
-	@Override
-	public boolean isRecording() {
-		return true;
+	protected ID getAudioCodec() {
+		return ID.CODEC_ID_MP3;
 	}
 
 	@Override
 	public String getExtension() {
 		return ".mp3";
 	}
-
-	protected abstract OutputStream getOut(String recordingFilename) throws IOException;
 }

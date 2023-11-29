@@ -13,6 +13,7 @@ import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec.ID;
 import com.xuggle.xuggler.IContainerFormat;
+import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.io.XugglerIO;
 
 import libsidplay.common.CPUClock;
@@ -48,6 +49,8 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 		writer.getContainer().setFormat(containerFormat);
 		throwExceptionOnError(writer.addAudioStream(0, 0, getAudioCodec(), cfg.getChannels(), cfg.getFrameRate()));
+
+		configureStreamCoder(writer.getContainer().getStream(0).getStreamCoder(), audioSection);
 
 		firstTimeStamp = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
@@ -91,6 +94,9 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 			firstTimeStamp = now;
 		}
 		return (long) ((now - firstTimeStamp) / ticksPerMicrosecond);
+	}
+
+	protected void configureStreamCoder(IStreamCoder streamCoder, IAudioSection audioSection) {
 	}
 
 	protected abstract String getOutputFormatName();

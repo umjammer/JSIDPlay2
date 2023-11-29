@@ -3686,6 +3686,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             } else {
               // Software PLAY
               this.showAudio = true;
+
               this.$refs.audioElm.src = this.createConvertUrl(autostart, entry, itemId, categoryId);
               this.$refs.audioElm.play();
             }
@@ -3934,31 +3935,36 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           setNextPlaylistEntry: function () {
             this.stop();
 
-            if (this.theaterMode) {
-              this.playRandomHVSC();
-              return;
-            }
-            if (this.playlist.length === 0) {
-              return;
-            }
-            if (this.random) {
-              this.playlistIndex = getRandomInt(0, this.playlist.length - 1);
+            if (deviceCount <= 0 && this.convertOptions.config.sidplay2Section.loop) {
+              this.$refs.audioElm.currentTime = 0;
+              this.$refs.audioElm.play();
             } else {
-              if (this.playlistIndex === this.playlist.length - 1) {
-                this.playlistIndex = 0;
-              } else {
-                this.playlistIndex++;
+              if (this.theaterMode) {
+                this.playRandomHVSC();
+                return;
               }
+              if (this.playlist.length === 0) {
+                return;
+              }
+              if (this.random) {
+                this.playlistIndex = getRandomInt(0, this.playlist.length - 1);
+              } else {
+                if (this.playlistIndex === this.playlist.length - 1) {
+                  this.playlistIndex = 0;
+                } else {
+                  this.playlistIndex++;
+                }
+              }
+              if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+                return;
+              }
+              this.play(
+                "",
+                this.playlist[this.playlistIndex].filename,
+                this.playlist[this.playlistIndex].itemId,
+                this.playlist[this.playlistIndex].categoryId
+              );
             }
-            if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-              return;
-            }
-            this.play(
-              "",
-              this.playlist[this.playlistIndex].filename,
-              this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
-            );
             this.currentSid =
               this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
             this.updateSid(
@@ -4052,7 +4058,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               "&fadeOut=" +
               this.convertOptions.config.sidplay2Section.fadeOutTime +
               "&loop=" +
-              this.convertOptions.config.sidplay2Section.loop +
+              "false" + // this.convertOptions.config.sidplay2Section.loop +
               "&single=" +
               this.convertOptions.config.sidplay2Section.single +
               "&frequency=" +
