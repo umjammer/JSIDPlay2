@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -19,9 +20,11 @@ import com.xuggle.xuggler.io.XugglerIO;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event.Phase;
 import libsidplay.common.EventScheduler;
+import libsidplay.common.SamplingRate;
 import libsidplay.config.IAudioSection;
 import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
+import sidplay.audio.exceptions.IniConfigException;
 
 public abstract class XuggleAudioDriver extends XuggleBase implements AudioDriver {
 
@@ -37,10 +40,15 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
-			throws IOException, LineUnavailableException, InterruptedException {
+		throws IOException, LineUnavailableException, InterruptedException {
 		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
 		out = getOut(recordingFilename);
+
+		if (!getSupportedSamplingRates().contains(audioSection.getSamplingRate())) {
+			throw new IniConfigException("Sampling rate is not supported by encoder, switch to default",
+					() -> audioSection.setSamplingRate(getDefaultSamplingRate()));
+		}
 
 		writer = ToolFactory.makeWriter(XugglerIO.map(out));
 
@@ -99,7 +107,11 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 	protected void configureStreamCoder(IStreamCoder streamCoder, IAudioSection audioSection) {
 	}
 
+	protected abstract List<SamplingRate> getSupportedSamplingRates();
+
 	protected abstract String getOutputFormatName();
+
+	protected abstract SamplingRate getDefaultSamplingRate();
 
 	protected abstract ID getAudioCodec();
 
