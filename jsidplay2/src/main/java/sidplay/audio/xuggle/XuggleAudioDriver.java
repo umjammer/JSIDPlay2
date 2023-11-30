@@ -1,5 +1,7 @@
 package sidplay.audio.xuggle;
 
+import static com.xuggle.mediatool.ToolFactory.makeWriter;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.Buffer;
@@ -11,10 +13,10 @@ import java.util.concurrent.TimeUnit;
 import javax.sound.sampled.LineUnavailableException;
 
 import com.xuggle.mediatool.IMediaWriter;
-import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec.ID;
 import com.xuggle.xuggler.IContainerFormat;
 import com.xuggle.xuggler.IStreamCoder;
+import com.xuggle.xuggler.io.InputOutputStreamHandler;
 import com.xuggle.xuggler.io.XugglerIO;
 
 import libsidplay.common.CPUClock;
@@ -28,6 +30,27 @@ import sidplay.audio.exceptions.IniConfigException;
 
 public abstract class XuggleAudioDriver extends XuggleBase implements AudioDriver {
 
+	private class AbortingOutputStreamHandler extends InputOutputStreamHandler {
+		public AbortingOutputStreamHandler(OutputStream out) {
+			super(null, out, true);
+		}
+
+		public int write(byte[] buf, int size) {
+			try {
+				if (getOpenStream() == null || !(getOpenStream() instanceof OutputStream)) {
+					return -1;
+				}
+				OutputStream stream = (OutputStream) getOpenStream();
+				stream.write(buf, 0, size);
+				return size;
+			} catch (IOException e) {
+				// close driver to abort recording immediately next call of write
+				XuggleAudioDriver.this.close();
+				return -1;
+			}
+		};
+	}
+
 	protected OutputStream out;
 
 	private EventScheduler context;
@@ -40,7 +63,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
-		throws IOException, LineUnavailableException, InterruptedException {
+			throws IOException, LineUnavailableException, InterruptedException {
 		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
 		out = getOut(recordingFilename);
@@ -50,7 +73,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 					() -> audioSection.setSamplingRate(getDefaultSamplingRate()));
 		}
 
-		writer = ToolFactory.makeWriter(XugglerIO.map(out));
+		writer = makeWriter(XugglerIO.map(XugglerIO.generateUniqueName(out), new AbortingOutputStreamHandler(out)));
 
 		IContainerFormat containerFormat = IContainerFormat.make();
 		containerFormat.setOutputFormat(getOutputFormatName(), null, null);
@@ -69,6 +92,9 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	@Override
 	public void write() throws InterruptedException {
+		if (writer == null) {
+			throw new RuntimeException("Error writing MP3 audio stream");
+		}
 		long timeStamp = getTimeStamp();
 
 		short[] shortArray = new short[sampleBuffer.position() >> 1];
@@ -80,10 +106,13 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	@Override
 	public void close() {
-		if (writer != null && writer.isOpen()) {
-			writer.close();
+		try {
+			if (writer != null && writer.isOpen()) {
+				writer.close();
+			}
+		} finally {
+			writer = null;
 		}
-		writer = null;
 	}
 
 	@Override

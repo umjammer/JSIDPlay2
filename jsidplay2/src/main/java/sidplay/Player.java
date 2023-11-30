@@ -83,7 +83,7 @@ import libsidutils.stil.STIL;
 import libsidutils.stil.STIL.STILEntry;
 import sidplay.audio.Audio;
 import sidplay.audio.AudioDriver;
-import sidplay.audio.JMP3Driver.MP3StreamDriver;
+import sidplay.audio.MP3Driver.MP3StreamDriver;
 import sidplay.audio.SIDDumpDriver;
 import sidplay.audio.VideoDriver;
 import sidplay.audio.exceptions.IniConfigException;
