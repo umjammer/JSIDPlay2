@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -23,7 +24,9 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.stream.StreamSource;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -93,14 +96,14 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected <T> T getInput(HttpServletRequest request, Class<T> tClass) throws IOException {
 		try (ServletInputStream inputStream = request.getInputStream()) {
 			String contentType = request.getContentType();
 			if (contentType == null || MIME_TYPE_JSON.isCompatible(contentType)) {
 				return OBJECT_MAPPER.readValue(inputStream, tClass);
 			} else if (MIME_TYPE_XML.isCompatible(contentType)) {
-				return (T) JAXBContext.newInstance(tClass).createUnmarshaller().unmarshal(inputStream);
+				return ((JAXBElement<T>) JAXBContext.newInstance(tClass).createUnmarshaller()
+						.unmarshal(new StreamSource(new InputStreamReader(inputStream)), tClass)).getValue();
 			} else /* file upload */ {
 				for (Part part : request.getParts()) {
 					ByteArrayOutputStream result = new ByteArrayOutputStream();
