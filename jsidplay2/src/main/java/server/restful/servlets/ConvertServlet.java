@@ -367,7 +367,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 							ConvertServlet.class.getAnnotation(WebServlet.class));
 
-					final File file = servletParameters.fetchFile(ConvertServlet.this, parser,
+					final File file = servletParameters.fetchFile(configuration, directoryProperties, parser,
+							ConvertServlet.this.getClass().getAnnotation(ServletSecurity.class),
 							request.isUserInRole(ROLE_ADMIN));
 					if (file == null || parser.hasException()) {
 						parser.usage();

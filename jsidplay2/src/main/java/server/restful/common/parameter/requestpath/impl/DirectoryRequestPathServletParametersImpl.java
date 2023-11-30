@@ -18,18 +18,18 @@ import jakarta.servlet.annotation.ServletSecurity;
 import libsidutils.IOUtils;
 import libsidutils.ZipFileUtils;
 import net.java.truevfs.access.TFile;
-import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.ServletUtil;
 import server.restful.common.parameter.ServletParameterParser;
 import ui.common.comparator.FileComparator;
 import ui.common.filefilter.FilteredFileFilter;
+import ui.entities.config.Configuration;
 import ui.entities.config.SidPlay2Section;
 
 public abstract class DirectoryRequestPathServletParametersImpl {
 
-	public List<String> fetchDirectory(JSIDPlay2Servlet servlet, ServletParameterParser parser, boolean isAdmin) {
-		SidPlay2Section sidplay2Section = servlet.getConfiguration().getSidplay2Section();
-		ServletSecurity servletSecurity = servlet.getClass().getAnnotation(ServletSecurity.class);
+	public List<String> fetchDirectory(Configuration configuration, Properties directoryProperties,
+			ServletParameterParser parser, ServletSecurity servletSecurity, boolean isAdmin) {
+		SidPlay2Section sidplay2Section = configuration.getSidplay2Section();
 
 		boolean adminRole = !ServletUtil.isSecured(servletSecurity) || isAdmin;
 
@@ -39,7 +39,7 @@ public abstract class DirectoryRequestPathServletParametersImpl {
 		}
 		File filePath = new File(path);
 		if (path.equals("/")) {
-			List<String> files = fetchRoot(servlet.getDirectoryProperties(), adminRole, sidplay2Section.getHvsc(),
+			List<String> files = fetchRoot(directoryProperties, adminRole, sidplay2Section.getHvsc(),
 					sidplay2Section.getCgsc());
 			if (files != null) {
 				return files;
@@ -55,8 +55,8 @@ public abstract class DirectoryRequestPathServletParametersImpl {
 				return files;
 			}
 		} else {
-			for (String directoryLogicalName : servlet.getDirectoryProperties().stringPropertyNames()) {
-				String[] splitted = servlet.getDirectoryProperties().getProperty(directoryLogicalName).split(",");
+			for (String directoryLogicalName : directoryProperties.stringPropertyNames()) {
+				String[] splitted = directoryProperties.getProperty(directoryLogicalName).split(",");
 				String directoryValue = splitted.length > 0 ? splitted[0] : null;
 				boolean needToBeAdmin = splitted.length > 1 ? Boolean.parseBoolean(splitted[1]) : false;
 				if ((!needToBeAdmin || adminRole) && path.startsWith(directoryLogicalName) && directoryValue != null) {

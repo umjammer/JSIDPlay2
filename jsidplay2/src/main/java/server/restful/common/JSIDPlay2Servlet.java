@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
@@ -61,37 +62,17 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	public static final String C64_MUSIC = "/C64Music";
 	public static final String CGSC = "/CGSC";
 
+	@Inject
 	protected Configuration configuration;
 
+	@Inject
 	protected SidDatabase sidDatabase;
 
+	@Inject
 	protected STIL stil;
 
+	@Inject
 	protected Properties directoryProperties;
-
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-
-	public Properties getDirectoryProperties() {
-		return directoryProperties;
-	}
-
-	public void setDirectoryProperties(Properties directoryProperties) {
-		this.directoryProperties = directoryProperties;
-	}
-
-	public void setSidDatabase(SidDatabase sidDatabase) {
-		this.sidDatabase = sidDatabase;
-	}
-
-	public void setStil(STIL stil) {
-		this.stil = stil;
-	}
 
 	public Map<String, String> getServletFiltersParameterMap() {
 		return Collections.emptyMap();

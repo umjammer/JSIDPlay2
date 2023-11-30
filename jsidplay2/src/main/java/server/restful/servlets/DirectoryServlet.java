@@ -46,7 +46,8 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					getClass().getAnnotation(WebServlet.class));
 
-			final List<String> files = servletParameters.fetchDirectory(this, parser, request.isUserInRole(ROLE_ADMIN));
+			final List<String> files = servletParameters.fetchDirectory(configuration, directoryProperties, parser,
+					getClass().getAnnotation(ServletSecurity.class), request.isUserInRole(ROLE_ADMIN));
 			if (files == null || parser.hasException()) {
 				parser.usage();
 				return;

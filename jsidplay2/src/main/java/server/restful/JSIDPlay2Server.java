@@ -22,19 +22,23 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -202,6 +206,8 @@ public final class JSIDPlay2Server {
 
 	private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
 
+	private static final Map<Class<?>, Object> CDI = new HashMap<>();
+
 	private static final ThreadLocal<EntityManager> THREAD_LOCAL_ENTITY_MANAGER = new ThreadLocal<>();
 
 	private static final ConfigurationType CONFIGURATION_TYPE = ConfigurationType.XML;
@@ -209,12 +215,6 @@ public final class JSIDPlay2Server {
 	private JSIDPlay2ServerParameters parameters = new JSIDPlay2ServerParameters();
 
 	private Tomcat tomcat;
-
-	private Properties servletUtilProperties;
-
-	private SidDatabase sidDatabase;
-
-	private STIL stil;
 
 	private JSIDPlay2Server() {
 	}
@@ -229,12 +229,13 @@ public final class JSIDPlay2Server {
 	private static JSIDPlay2Server create(Configuration configuration) {
 		JSIDPlay2Server result = new JSIDPlay2Server();
 		result.parameters.configuration = configuration;
-		result.servletUtilProperties = result.getServletUtilProperties();
+		CDI.put(Configuration.class, configuration);
+		CDI.put(Properties.class, result.getServletUtilProperties());
 		File hvsc = configuration.getSidplay2Section().getHvsc();
 		if (hvsc != null) {
 			try {
-				result.sidDatabase = new SidDatabase(hvsc);
-				result.stil = new STIL(hvsc);
+				CDI.put(SidDatabase.class, new SidDatabase(hvsc));
+				CDI.put(STIL.class, new STIL(hvsc));
 			} catch (IOException | NoSuchFieldException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -421,13 +422,7 @@ public final class JSIDPlay2Server {
 					MultipartConfig multipartConfig = servletCls.getAnnotation(MultipartConfig.class);
 
 					Servlet servlet = (Servlet) servletCls.getDeclaredConstructor().newInstance();
-					if (servlet instanceof JSIDPlay2Servlet) {
-						JSIDPlay2Servlet jsServlet = (JSIDPlay2Servlet) servlet;
-						jsServlet.setConfiguration(parameters.configuration);
-						jsServlet.setDirectoryProperties(servletUtilProperties);
-						jsServlet.setSidDatabase(sidDatabase);
-						jsServlet.setStil(stil);
-					}
+					inject(servletCls, servlet);
 					Wrapper wrapper = addServlet(context, webServlet.name(), servlet);
 
 					wrapper.setMultipartConfigElement(
@@ -440,6 +435,29 @@ public final class JSIDPlay2Server {
 			}
 		}
 		return result;
+	}
+
+	private void inject(Class<?> servletCls, Servlet servlet) throws IllegalAccessException {
+		List<Field> fields = new ArrayList<>();
+		Class<?> clazz = servletCls;
+		while (clazz != Object.class) {
+			fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+			clazz = clazz.getSuperclass();
+		}
+		for (Field field : fields) {
+			if (field.getAnnotation(Inject.class) != null) {
+				Object toInject = CDI.get(field.getType());
+				if (toInject != null) {
+					if (!field.isAccessible()) {
+						field.setAccessible(true);
+					}
+					field.set(servlet, toInject);
+				} else {
+					throw new RuntimeException(String.format(
+							"Inject failed for: servletCls=%s, no instance of %s found", servletCls, field.getType()));
+				}
+			}
+		}
 	}
 
 	private MultipartConfigElement createMultipartConfigElement(WebServlet webServlet,
