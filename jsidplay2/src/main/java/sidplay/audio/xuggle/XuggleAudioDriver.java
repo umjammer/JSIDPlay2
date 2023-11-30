@@ -44,8 +44,8 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 				stream.write(buf, 0, size);
 				return size;
 			} catch (IOException e) {
-				// close driver to abort recording immediately next call of write
-				XuggleAudioDriver.this.close();
+				// signal to abort recording immediately next call of write
+				writer = null;
 				return -1;
 			}
 		};
