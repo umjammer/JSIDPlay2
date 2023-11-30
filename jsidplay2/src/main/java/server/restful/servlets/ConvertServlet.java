@@ -101,7 +101,7 @@ import sidplay.audio.AudioDriver;
 import sidplay.audio.FLACDriver.FLACStreamDriver;
 import sidplay.audio.FLVDriver.FLVFileDriver;
 import sidplay.audio.FLVDriver.FLVStreamDriver;
-import sidplay.audio.MP3Driver.MP3StreamDriver;
+import sidplay.audio.JMP3Driver.MP3StreamDriver;
 import sidplay.audio.MP4Driver.MP4FileDriver;
 import sidplay.audio.ProxyDriver;
 import sidplay.audio.SIDDumpDriver.SIDDumpStreamDriver;
