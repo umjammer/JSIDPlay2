@@ -61,10 +61,12 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+
 			final FavoritesServletParameters servletParameters = new FavoritesServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getClass().getAnnotation(WebServlet.class));
+					webServlet);
 
 			if (parser.hasException()) {
 				parser.usage();

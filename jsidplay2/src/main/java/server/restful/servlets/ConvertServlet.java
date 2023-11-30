@@ -354,6 +354,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+		ServletSecurity servletSecurity = getClass().getAnnotation(ServletSecurity.class);
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(CONVERT_ASYNC_TIMEOUT);
@@ -365,11 +367,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					final ConvertServletParameters servletParameters = new ConvertServletParameters();
 
 					ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-							ConvertServlet.class.getAnnotation(WebServlet.class));
+							webServlet);
 
 					final File file = servletParameters.fetchFile(configuration, directoryProperties, parser,
-							ConvertServlet.this.getClass().getAnnotation(ServletSecurity.class),
-							request.isUserInRole(ROLE_ADMIN));
+							servletSecurity, request.isUserInRole(ROLE_ADMIN));
 					if (file == null || parser.hasException()) {
 						parser.usage();
 						return;

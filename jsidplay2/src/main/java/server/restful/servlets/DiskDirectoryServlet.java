@@ -45,13 +45,16 @@ public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+			ServletSecurity servletSecurity = getClass().getAnnotation(ServletSecurity.class);
+
 			final DiskDirectoryServletParameters servletParameters = new DiskDirectoryServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getClass().getAnnotation(WebServlet.class));
+					webServlet);
 
-			final File file = servletParameters.fetchFile(configuration, directoryProperties, parser,
-					getClass().getAnnotation(ServletSecurity.class), request.isUserInRole(ROLE_ADMIN));
+			final File file = servletParameters.fetchFile(configuration, directoryProperties, parser, servletSecurity,
+					request.isUserInRole(ROLE_ADMIN));
 			if (file == null || parser.hasException()) {
 				parser.usage();
 				return;

@@ -46,10 +46,12 @@ public class SetSidModel6581Servlet extends JSIDPlay2Servlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+
 			final SetSidModel6581ServletParameters servletParameters = new SetSidModel6581ServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getClass().getAnnotation(WebServlet.class));
+					webServlet);
 
 			if (parser.hasException()) {
 				parser.usage();

@@ -446,16 +446,8 @@ public final class JSIDPlay2Server {
 		}
 		for (Field field : fields) {
 			if (field.getAnnotation(Inject.class) != null) {
-				Object toInject = CDI.get(field.getType());
-				if (toInject != null) {
-					if (!field.isAccessible()) {
-						field.setAccessible(true);
-					}
-					field.set(servlet, toInject);
-				} else {
-					throw new RuntimeException(String.format(
-							"Inject failed for: servletCls=%s, no instance of %s found", servletCls, field.getType()));
-				}
+				field.setAccessible(true);
+				field.set(servlet, CDI.get(field.getType()));
 			}
 		}
 	}

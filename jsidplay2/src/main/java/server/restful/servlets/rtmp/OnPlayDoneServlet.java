@@ -56,10 +56,12 @@ public class OnPlayDoneServlet extends JSIDPlay2Servlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+
 			final OnPlayDoneServletParameters servletParameters = new OnPlayDoneServletParameters();
 
 			/* ServletParameterParser parser = */new ServletParameterParser(request, response, servletParameters,
-					getClass().getAnnotation(WebServlet.class), true);
+					webServlet, true);
 
 			if (servletParameters.getUuid() == null /* || parser.hasException() */) {
 				// Not every video has a valid UUID as it's name! e.g.

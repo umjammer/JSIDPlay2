@@ -41,13 +41,16 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+			ServletSecurity servletSecurity = getClass().getAnnotation(ServletSecurity.class);
+
 			final DirectoryServletParameters servletParameters = new DirectoryServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getClass().getAnnotation(WebServlet.class));
+					webServlet);
 
 			final List<String> files = servletParameters.fetchDirectory(configuration, directoryProperties, parser,
-					getClass().getAnnotation(ServletSecurity.class), request.isUserInRole(ROLE_ADMIN));
+					servletSecurity, request.isUserInRole(ROLE_ADMIN));
 			if (files == null || parser.hasException()) {
 				parser.usage();
 				return;

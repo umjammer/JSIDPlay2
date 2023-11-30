@@ -106,10 +106,12 @@ public class UploadServlet extends JSIDPlay2Servlet {
 
 			public void run(HttpServletRequest request, HttpServletResponse response) throws IOException {
 				try {
+					WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+
 					final UploadServletParameters servletParameters = new UploadServletParameters();
 
 					ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-							UploadServlet.class.getAnnotation(WebServlet.class));
+							webServlet);
 
 					final String filePath = servletParameters.getFilePath();
 					if (filePath == null || parser.hasException()) {

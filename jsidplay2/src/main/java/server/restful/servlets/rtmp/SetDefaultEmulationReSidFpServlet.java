@@ -47,10 +47,12 @@ public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
+
 			final SetDefaultEmulationReSidFpServletParameters servletParameters = new SetDefaultEmulationReSidFpServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
-					getClass().getAnnotation(WebServlet.class));
+					webServlet);
 
 			if (parser.hasException()) {
 				parser.usage();
