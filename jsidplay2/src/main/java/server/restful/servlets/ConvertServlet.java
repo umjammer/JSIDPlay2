@@ -116,7 +116,7 @@ import ui.common.util.InternetUtil;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "ConvertServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/convert/*")
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = { /* Chrome ignores basic auth in audio src attribute! */ }))
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = { /* mobile Chrome ignores basic auth in audio src! */ }))
 public class ConvertServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.ConvertServletParameters")

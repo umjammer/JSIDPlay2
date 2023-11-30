@@ -1,6 +1,8 @@
 package sidplay.audio.xuggle;
 
 import static com.xuggle.mediatool.ToolFactory.makeWriter;
+import static com.xuggle.xuggler.io.XugglerIO.generateUniqueName;
+import static com.xuggle.xuggler.io.XugglerIO.map;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,7 +19,6 @@ import com.xuggle.xuggler.ICodec.ID;
 import com.xuggle.xuggler.IContainerFormat;
 import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.io.InputOutputStreamHandler;
-import com.xuggle.xuggler.io.XugglerIO;
 
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event.Phase;
@@ -73,7 +74,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 					() -> audioSection.setSamplingRate(getDefaultSamplingRate()));
 		}
 
-		writer = makeWriter(XugglerIO.map(XugglerIO.generateUniqueName(out), new AbortingOutputStreamHandler(out)));
+		writer = makeWriter(map(generateUniqueName(out), new AbortingOutputStreamHandler(out)));
 
 		IContainerFormat containerFormat = IContainerFormat.make();
 		containerFormat.setOutputFormat(getOutputFormatName(), null, null);
