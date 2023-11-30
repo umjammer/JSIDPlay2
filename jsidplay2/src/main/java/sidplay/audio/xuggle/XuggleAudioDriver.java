@@ -46,7 +46,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 				return size;
 			} catch (IOException e) {
 				// signal to abort recording immediately next call of write
-				writer = null;
+				aborted = true;
 				return -1;
 			}
 		};
@@ -59,12 +59,13 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 	private IMediaWriter writer;
 	private long firstTimeStamp;
 	private double ticksPerMicrosecond;
+	boolean aborted;
 
 	private ByteBuffer sampleBuffer;
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
-			throws IOException, LineUnavailableException, InterruptedException {
+		throws IOException, LineUnavailableException, InterruptedException {
 		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
 		out = getOut(recordingFilename);
@@ -84,6 +85,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 		configureStreamCoder(writer.getContainer().getStream(0).getStreamCoder(), audioSection);
 
+		aborted = false;
 		firstTimeStamp = 0;
 		ticksPerMicrosecond = cpuClock.getCpuFrequency() / 1000000;
 
@@ -93,7 +95,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	@Override
 	public void write() throws InterruptedException {
-		if (writer == null) {
+		if (aborted) {
 			throw new RuntimeException("Error writing MP3 audio stream");
 		}
 		long timeStamp = getTimeStamp();
