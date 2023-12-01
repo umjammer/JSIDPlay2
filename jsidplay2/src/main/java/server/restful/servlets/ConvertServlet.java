@@ -460,14 +460,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					ConvertServletParameters servletParameters) {
 				switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
 				case WAV:
-					return getThrottledAudioDriver(new WAVStreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new WAVStreamDriver(outputstream), servletParameters);
 				case FLAC:
-					return getThrottledAudioDriver(new FLACStreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new FLACStreamDriver(outputstream), servletParameters);
 				case AAC:
-					return getThrottledAudioDriver(new AACStreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new AACStreamDriver(outputstream), servletParameters);
 				case MP3:
 				default:
-					return getThrottledAudioDriver(new MP3StreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new MP3StreamDriver(outputstream), servletParameters);
 				case SID_DUMP:
 					return new SIDDumpStreamDriver(outputstream);
 				case SID_REG:
@@ -526,7 +526,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					if (Boolean.TRUE.equals(servletParameters.download)) {
 						return new FLVFileDriver();
 					} else {
-						return getThrottledAudioDriver(new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid),
+						return getThrottlingDriver(new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid),
 								servletParameters);
 					}
 				case AVI:
@@ -585,7 +585,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				return videoFile;
 			}
 
-			private AudioDriver getThrottledAudioDriver(AudioDriver streamDriver,
+			private AudioDriver getThrottlingDriver(AudioDriver streamDriver,
 					ConvertServletParameters servletParameters) {
 				if (Boolean.TRUE.equals(servletParameters.download)) {
 					return streamDriver;
