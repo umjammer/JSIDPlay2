@@ -415,7 +415,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 									uuid);
 							try (InputStream is = new WebResourceConverter("<ServletPath>").convert("/convert.html")) {
 								if (!isComplete()) {
-									setOutput(response, MIME_TYPE_HTML,
+									setOutput(MIME_TYPE_HTML, response,
 											convertStreamToString(is, UTF_8.name(), replacements));
 								}
 							}
@@ -429,7 +429,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 							ContentTypeAndFileExtensions mimeType = getMimeType(driver.getExtension());
 							if (!isComplete()) {
-								setOutput(response, mimeType, newFileInputStream(videoFile));
+								setOutput(mimeType, response, newFileInputStream(videoFile));
 							}
 							videoFile.delete();
 						}
@@ -438,7 +438,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
 						ContentTypeAndFileExtensions mimeType = getMimeType(getFilenameSuffix(file.getName()));
 						if (!isComplete()) {
-							setOutput(response, mimeType, newFileInputStream(file));
+							setOutput(mimeType, response, newFileInputStream(file));
 						}
 					}
 				} catch (Throwable t) {

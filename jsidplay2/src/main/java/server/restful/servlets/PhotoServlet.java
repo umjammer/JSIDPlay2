@@ -65,7 +65,7 @@ public class PhotoServlet extends JSIDPlay2Servlet {
 			byte[] photo = getPhoto(file);
 
 			response.setContentLength(photo.length);
-			setOutput(response, MIME_TYPE_JPG, new ByteArrayInputStream(photo));
+			setOutput(MIME_TYPE_JPG, response, new ByteArrayInputStream(photo));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

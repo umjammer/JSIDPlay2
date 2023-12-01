@@ -22,7 +22,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -91,9 +90,9 @@ public class StaticServlet extends JSIDPlay2Servlet {
 					response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_UNCACHED);
 				}
 				if (mimeType.isText()) {
-					setOutput(response, mimeType, IOUtils.convertStreamToString(source, "UTF-8", replacements));
+					setOutput(mimeType, response, IOUtils.convertStreamToString(source, "UTF-8", replacements));
 				} else {
-					setOutput(response, mimeType, source);
+					setOutput(mimeType, response, source);
 				}
 			}
 		} catch (Throwable t) {

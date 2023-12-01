@@ -482,7 +482,7 @@ public final class JSIDPlay2Server {
 							HttpFilter servletFilter = (HttpFilter) servletFilterCls.getDeclaredConstructor()
 									.newInstance();
 
-							String filterName = webServlet.name() + "_" + webFilter.filterName();
+							String filterName = webFilter.filterName() + "_" + webServlet.name();
 
 							FilterDef filterDefinition = new FilterDef();
 							filterDefinition.setFilterName(filterName);

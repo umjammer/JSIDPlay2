@@ -53,7 +53,7 @@ public class WebJarsServlet extends JSIDPlay2Servlet {
 
 				response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL_RESPONSE_HEADER_CACHED);
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
-				setOutput(response, mimeType, source);
+				setOutput(mimeType, response, source);
 			}
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

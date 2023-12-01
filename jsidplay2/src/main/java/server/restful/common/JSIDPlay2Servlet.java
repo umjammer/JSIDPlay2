@@ -156,7 +156,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 		}
 	}
 
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, InputStream is) {
+	protected void setOutput(ContentTypeAndFileExtensions ct, HttpServletResponse response, InputStream is) {
+		if (is == null) {
+			return;
+		}
 		try (ServletOutputStream out = response.getOutputStream()) {
 			response.setContentType(ct.toString());
 			copy(is, out);
@@ -166,10 +169,10 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	}
 
 	protected void setOutput(HttpServletResponse response, Throwable t) {
-		setOutput(response, MIME_TYPE_TEXT, t.getClass().getSimpleName() + ": " + t.getMessage());
+		setOutput(MIME_TYPE_TEXT, response, t.getClass().getSimpleName() + ": " + t.getMessage());
 	}
 
-	protected void setOutput(HttpServletResponse response, ContentTypeAndFileExtensions ct, String message) {
+	protected void setOutput(ContentTypeAndFileExtensions ct, HttpServletResponse response, String message) {
 		response.setContentType(ct.toString());
 		try (PrintStream out = new PrintStream(response.getOutputStream(), true,
 				ofNullable(ct.getCharset()).map(Charset::toString).orElse(StandardCharsets.UTF_8.name()))) {

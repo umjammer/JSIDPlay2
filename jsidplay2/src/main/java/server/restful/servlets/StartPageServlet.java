@@ -42,7 +42,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 			replacements.put("https://haendel.ddns.net:8443", BASE_URL);
 
 			try (InputStream is = StartPageServlet.class.getResourceAsStream("/doc/restful.html")) {
-				setOutput(response, MIME_TYPE_HTML, convertStreamToString(is, UTF_8.name(), replacements));
+				setOutput(MIME_TYPE_HTML, response, convertStreamToString(is, UTF_8.name(), replacements));
 			}
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
