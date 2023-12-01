@@ -218,11 +218,18 @@ public interface IServletSystemProperties {
 	int MAX_REQUESTS_PER_MINUTE = valueOf(getProperty("jsidplay2.start_page.max.requests.per.minute", "30"));
 
 	/**
-	 * Maximum number of ConvertServlet requests in parallel (default: 7)
+	 * Maximum number of ConvertServlet requests in parallel (default: 20)
 	 * 
 	 * @jsidplay2.systemProperty jsidplay2.convert.max.parallel
 	 */
-	int MAX_CONVERT_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.max.parallel", "7"));
+	int MAX_CONVERT_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.max.parallel", "20"));
+
+	/**
+	 * Maximum number of ConvertServlet video requests in parallel (default: 10)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.convert.rtmp.max.parallel
+	 */
+	int MAX_CONVERT_RTMP_IN_PARALLEL = valueOf(getProperty("jsidplay2.convert.rtmp.max.parallel", "10"));
 
 	/**
 	 * Video streaming: Interval between simulated key presses of the space key in s

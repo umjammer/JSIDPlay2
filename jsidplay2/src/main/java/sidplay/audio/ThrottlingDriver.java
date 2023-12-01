@@ -20,14 +20,14 @@ import libsidplay.common.EventScheduler;
 import libsidplay.config.IAudioSection;
 
 /**
- * No sound output at all, but sleeps to slow down video production.
+ * No sound output at all, but sleeps regularly to slow down audio/video production.
  * 
  * @author ken
  *
  */
-public class SleepDriver implements AudioDriver {
+public class ThrottlingDriver implements AudioDriver {
 
-	private static final Logger SLEEP_DRIVER = Logger.getLogger(SleepDriver.class.getName());
+	private static final Logger SLEEP_DRIVER = Logger.getLogger(ThrottlingDriver.class.getName());
 
 	private CPUClock cpuClock;
 	private EventScheduler context;
@@ -79,7 +79,7 @@ public class SleepDriver implements AudioDriver {
 
 		long gap = clientTime != null && bufferedEnd != null ? bufferedEnd - clientTime : c64Time - time;
 		if (gap > MAX_TIME_GAP) {
-			// slow down video production, that a client-side fastForward after a key press
+			// slow down audio/video production, that a client-side fastForward after a key press
 			// jumps not too far, but not long enough to block a fast forward
 			final long sleepTime = Math.min(gap - MAX_TIME_GAP, SLEEP_DRIVER_SLEEP_TIME);
 

@@ -20,6 +20,7 @@ import static server.restful.common.IServletSystemProperties.CONVERT_ASYNC_TIMEO
 import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
 import static server.restful.common.IServletSystemProperties.MAX_AUD_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.MAX_CONVERT_IN_PARALLEL;
+import static server.restful.common.IServletSystemProperties.MAX_CONVERT_RTMP_IN_PARALLEL;
 import static server.restful.common.IServletSystemProperties.MAX_VID_DOWNLOAD_LENGTH;
 import static server.restful.common.IServletSystemProperties.NOTIFY_FOR_HLS;
 import static server.restful.common.IServletSystemProperties.PRESS_SPACE_INTERVALL;
@@ -107,7 +108,7 @@ import sidplay.audio.ProxyDriver;
 import sidplay.audio.SIDDumpDriver.SIDDumpStreamDriver;
 import sidplay.audio.SIDRegDriver.Format;
 import sidplay.audio.SIDRegDriver.SIDRegStreamDriver;
-import sidplay.audio.SleepDriver;
+import sidplay.audio.ThrottlingDriver;
 import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
 import ui.common.Convenience;
@@ -334,7 +335,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	public Map<String, String> getServletFiltersParameterMap() {
 		Map<String, String> result = new HashMap<>();
 		result.put(FILTER_PARAMETER_CONTENT_TYPE, MIME_TYPE_MPEG.getMimeType());
-		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_IN_PARALLEL));
+		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_RTMP_IN_PARALLEL));
 		return result;
 	}
 
@@ -458,14 +459,14 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					ConvertServletParameters servletParameters) {
 				switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
 				case WAV:
-					return new WAVStreamDriver(outputstream);
+					return getThrottledAudioDriver(new WAVStreamDriver(outputstream), servletParameters);
 				case FLAC:
-					return new FLACStreamDriver(outputstream);
+					return getThrottledAudioDriver(new FLACStreamDriver(outputstream), servletParameters);
 				case AAC:
-					return new AACStreamDriver(outputstream);
+					return getThrottledAudioDriver(new AACStreamDriver(outputstream), servletParameters);
 				case MP3:
 				default:
-					return new MP3StreamDriver(outputstream);
+					return getThrottledAudioDriver(new MP3StreamDriver(outputstream), servletParameters);
 				case SID_DUMP:
 					return new SIDDumpStreamDriver(outputstream);
 				case SID_REG:
@@ -524,7 +525,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 					if (Boolean.TRUE.equals(servletParameters.download)) {
 						return new FLVFileDriver();
 					} else {
-						return new ProxyDriver(new SleepDriver(), new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid));
+						return getThrottledAudioDriver(new FLVStreamDriver(RTMP_UPLOAD_URL + "/" + uuid),
+								servletParameters);
 					}
 				case AVI:
 					return new AVIFileDriver();
@@ -580,6 +582,15 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				info(getServletContext(), String.format("END file=%s, uuid=%s", file.getAbsolutePath(), uuid),
 						parentThreads);
 				return videoFile;
+			}
+
+			private AudioDriver getThrottledAudioDriver(AudioDriver streamDriver,
+					ConvertServletParameters servletParameters) {
+				if (Boolean.TRUE.equals(servletParameters.download)) {
+					return streamDriver;
+				} else {
+					return new ProxyDriver(new ThrottlingDriver(), streamDriver);
+				}
 			}
 
 			private Locale getTextToSpeechLocale(ConvertServletParameters servletParameters) {

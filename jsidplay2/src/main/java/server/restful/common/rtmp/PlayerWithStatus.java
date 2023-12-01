@@ -24,7 +24,7 @@ import libsidplay.sidtune.SidTune;
 import libsidutils.IOUtils;
 import server.restful.servlets.ConvertServlet.ConvertServletParameters;
 import sidplay.Player;
-import sidplay.audio.SleepDriver;
+import sidplay.audio.ThrottlingDriver;
 import sidplay.player.State;
 import ui.common.ConvenienceResult;
 import ui.common.filefilter.CartFileFilter;
@@ -86,7 +86,7 @@ public final class PlayerWithStatus {
 		} else {
 			validUntil = maxDuration;
 		}
-		player.getAudioDriver().lookup(SleepDriver.class)
+		player.getAudioDriver().lookup(ThrottlingDriver.class)
 				.ifPresent(sleepDriver -> sleepDriver.setClientTime(currentTime, bufferedEnd));
 	}
 
