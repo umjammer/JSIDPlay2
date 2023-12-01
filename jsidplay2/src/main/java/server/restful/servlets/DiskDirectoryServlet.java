@@ -26,7 +26,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "DiskDirectoryServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/disk-directory/*")
+@WebServlet(name = "DiskDirectoryServlet", displayName = "DiskDirectoryServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/disk-directory/*", description = "Get Directory of Disk")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class DiskDirectoryServlet extends JSIDPlay2Servlet {
 

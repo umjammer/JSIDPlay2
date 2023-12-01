@@ -24,8 +24,8 @@ import server.restful.common.parameter.requestparam.VideoRequestParamServletPara
 import server.restful.common.rtmp.PlayerWithStatus;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "SetDefaultEmulationReSidFpServlet", urlPatterns = CONTEXT_ROOT_STATIC
-		+ "/set_default_emulation_residfp")
+@WebServlet(name = "SetDefaultEmulationReSidFpServlet", displayName = "SetDefaultEmulationReSidFpServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/set_default_emulation_residfp", description = "Set default emulation to RESIDFP for Player running as a RTMP live video stream")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class SetDefaultEmulationReSidFpServlet extends JSIDPlay2Servlet {
 

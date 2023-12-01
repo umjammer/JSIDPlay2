@@ -26,7 +26,8 @@ import server.restful.common.validator.JoystickNumberValidator;
 import server.restful.common.validator.JoystickValueValidator;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "JoystickServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/joystick")
+@WebServlet(name = "JoystickServlet", displayName = "JoystickServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/joystick", description = "Press joystick 1/2 for Player running as a RTMP live video stream")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class JoystickServlet extends JSIDPlay2Servlet {
 

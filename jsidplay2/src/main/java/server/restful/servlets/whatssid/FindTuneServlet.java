@@ -21,7 +21,8 @@ import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "FindTuneServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/tune")
+@WebServlet(name = "FindTuneServlet", displayName = "FindTuneServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/tune", description = "WhatsSID tune recognition. Find tunes")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class FindTuneServlet extends JSIDPlay2Servlet {
 

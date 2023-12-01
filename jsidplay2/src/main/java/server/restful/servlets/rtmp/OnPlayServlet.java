@@ -20,7 +20,8 @@ import server.restful.common.parameter.requestparam.VideoRequestParamServletPara
 import server.restful.common.rtmp.PlayerWithStatus;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "OnPlayServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/on_play")
+@WebServlet(name = "OnPlayServlet", displayName = "OnPlayServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/on_play", description = "Play video stream. Implements RTMP directive on_play configured in nginx.conf")
 public class OnPlayServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.rtmp.OnPlayServletParameters")

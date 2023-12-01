@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "StartPageServlet", urlPatterns = CONTEXT_ROOT_START_PAGE)
+@WebServlet(name = "StartPageServlet", displayName = "StartPageServlet", urlPatterns = CONTEXT_ROOT_START_PAGE, description = "Start page")
 public class StartPageServlet extends JSIDPlay2Servlet {
 
 	@Override

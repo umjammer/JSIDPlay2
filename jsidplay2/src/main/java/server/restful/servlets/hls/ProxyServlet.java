@@ -26,7 +26,8 @@ import server.restful.common.parameter.requestpath.URLRequestPathServletParamete
 import ui.common.util.InternetUtil;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "ProxyServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/proxy/*")
+@WebServlet(name = "ProxyServlet", displayName = "ProxyServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/proxy/*", description = "This class serves as kind of a proxy to make internal HTTP requests of HLS protocol through HTTPS to avoid mixed content in the browser")
 public class ProxyServlet extends JSIDPlay2Servlet {
 
 	private static final Logger LOG = Logger.getLogger(ProxyServlet.class.getName());

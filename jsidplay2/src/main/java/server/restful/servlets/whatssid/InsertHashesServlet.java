@@ -19,7 +19,8 @@ import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "InsertHashesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/insert-hashes")
+@WebServlet(name = "InsertHashesServlet", displayName = "displayName", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/insert-hashes", description = "WhatsSID tune recognition. Insert hashes")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_ADMIN }))
 public class InsertHashesServlet extends JSIDPlay2Servlet {
 

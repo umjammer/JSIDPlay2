@@ -18,7 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "RandomHVSCServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/random-hvsc")
+@WebServlet(name = "RandomHVSCServlet", displayName = "RandomHVSCServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/random-hvsc", description = "Get random HVSC SID tune")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class RandomHVSCServlet extends JSIDPlay2Servlet {
 

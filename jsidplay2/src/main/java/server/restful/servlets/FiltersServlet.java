@@ -20,7 +20,8 @@ import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.config.FilterSection;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "FiltersServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/filters")
+@WebServlet(name = "FiltersServlet", displayName = "FiltersServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/filters", description = "Get SID filter definitions")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class FiltersServlet extends JSIDPlay2Servlet {
 

@@ -53,7 +53,8 @@ import server.restful.common.async.HttpAsyncContextRunnable;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "WhatsSidServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/whatssid")
+@WebServlet(name = "WhatsSidServlet", displayName = "WhatsSidServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/whatssid", description = "WhatsSID tune recognition. What's this tune?")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 @MultipartConfig(maxFileSize = WHATSSIDSERVLET_MAX_FILE_SIZE, maxRequestSize = WHATSSIDSERVLET_MAX_REQUEST_SIZE, fileSizeThreshold = WHATSSIDSERVLET_FILE_SIZE_THRESHOLD)
 public class WhatsSidServlet extends JSIDPlay2Servlet {
@@ -87,7 +88,7 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(WHATSSID_ASYNC_TIMEOUT);

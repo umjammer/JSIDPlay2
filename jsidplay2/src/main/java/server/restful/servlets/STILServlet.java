@@ -24,7 +24,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "STILServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/stil/*")
+@WebServlet(name = "STILServlet", displayName = "STILServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/stil/*", description = "Get SID tune information list (STIL)")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class STILServlet extends JSIDPlay2Servlet {
 

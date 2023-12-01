@@ -24,7 +24,8 @@ import server.restful.common.parameter.requestparam.VideoRequestParamServletPara
 import server.restful.common.rtmp.PlayerWithStatus;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "SetSidModel8580Servlet", urlPatterns = CONTEXT_ROOT_STATIC + "/set_default_sid_model_8580")
+@WebServlet(name = "SetSidModel8580Servlet", displayName = "SetSidModel8580Servlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/set_default_sid_model_8580", description = "Set default chip model to MOS8580 for Player running as a RTMP live video stream")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class SetSidModel8580Servlet extends JSIDPlay2Servlet {
 

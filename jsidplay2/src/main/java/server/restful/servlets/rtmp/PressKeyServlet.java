@@ -25,7 +25,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "PressKeyServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/press_key")
+@WebServlet(name = "PressKeyServlet", displayName = "PressKeyServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/press_key", description = "Press key for Player running as a RTMP live video stream")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class PressKeyServlet extends JSIDPlay2Servlet {
 

@@ -23,7 +23,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestparam.VideoRequestParamServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "OnKeepAliveServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/on_keep_alive")
+@WebServlet(name = "OnKeepAliveServlet", displayName = "OnKeepAliveServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/on_keep_alive", description = "Keep alive video stream")
 public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 
 	private static final Logger LOG = Logger.getLogger(OnKeepAliveServlet.class.getName());

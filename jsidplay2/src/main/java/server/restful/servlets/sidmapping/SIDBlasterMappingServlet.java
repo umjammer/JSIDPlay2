@@ -29,7 +29,8 @@ import server.restful.common.parameter.requestpath.FileRequestPathServletParamet
 import sidplay.ini.IniConfig;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "SIDBlasterMappingServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/sidblaster-mapping/*")
+@WebServlet(name = "SIDBlasterMappingServlet", displayName = "SIDBlasterMappingServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/sidblaster-mapping/*", description = "Get SIDBlaster SID mapping information")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class SIDBlasterMappingServlet extends JSIDPlay2Servlet {
 

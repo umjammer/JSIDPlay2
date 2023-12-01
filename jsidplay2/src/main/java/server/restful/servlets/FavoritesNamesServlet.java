@@ -25,7 +25,8 @@ import server.restful.common.converter.WebResourceConverter;
 import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "FavoritesNamesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/favorite_names")
+@WebServlet(name = "FavoritesNamesServlet", displayName = "FavoritesNamesServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/favorite_names", description = "Get contents of the first SID favorites tab")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class FavoritesNamesServlet extends JSIDPlay2Servlet {
 

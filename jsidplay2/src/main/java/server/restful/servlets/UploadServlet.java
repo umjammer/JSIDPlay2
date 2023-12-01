@@ -55,7 +55,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import ui.common.util.Extract7ZipUtil;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "UploadServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/upload/*")
+@WebServlet(name = "UploadServlet", displayName = "UploadServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/upload/*", description = "Upload any C64 content to a temporary server location to play back")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 @MultipartConfig(maxFileSize = UPLOADSERVLET_MAX_FILE_SIZE, maxRequestSize = UPLOADSERVLET_MAX_REQUEST_SIZE, fileSizeThreshold = UPLOADSERVLET_FILE_SIZE_THRESHOLD)
 public class UploadServlet extends JSIDPlay2Servlet {

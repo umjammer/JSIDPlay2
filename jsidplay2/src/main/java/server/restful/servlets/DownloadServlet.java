@@ -29,7 +29,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "DownloadServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/download/*")
+@WebServlet(name = "DownloadServlet", displayName = "DownloadServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/download/*", description = "Download SID")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class DownloadServlet extends JSIDPlay2Servlet {
 

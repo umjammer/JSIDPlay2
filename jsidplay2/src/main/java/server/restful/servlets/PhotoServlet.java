@@ -29,7 +29,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "PhotoServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/photo/*")
+@WebServlet(name = "PhotoServlet", displayName = "PhotoServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/photo/*", description = "Get photo of composer")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class PhotoServlet extends JSIDPlay2Servlet {
 

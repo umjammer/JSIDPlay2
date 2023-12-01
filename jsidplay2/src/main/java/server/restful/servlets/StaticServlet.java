@@ -32,7 +32,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "StaticServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/*")
+@WebServlet(name = "StaticServlet", displayName = "StaticServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/*", description = "Get VUE demo pages or web resources")
 public class StaticServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
@@ -52,7 +53,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	}
 
 	/**
-	 * Get VUE web page.
+	 * Get VUE demo page or web resources.
 	 *
 	 * E.g. http://haendel.ddns.net:8080/static/c64jukebox.vue
 	 */

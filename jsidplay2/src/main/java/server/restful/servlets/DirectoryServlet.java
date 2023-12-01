@@ -22,7 +22,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.DirectoryRequestPathServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "DirectoryServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/directory/*")
+@WebServlet(name = "DirectoryServlet", displayName = "DirectoryServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/directory/*", description = "Get directory contents containing music collections")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class DirectoryServlet extends JSIDPlay2Servlet {
 

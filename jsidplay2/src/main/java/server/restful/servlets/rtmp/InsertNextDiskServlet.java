@@ -27,7 +27,8 @@ import server.restful.common.parameter.requestparam.VideoRequestParamServletPara
 import server.restful.common.rtmp.PlayerWithStatus;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "InsertNextDiskServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/insert_next_disk")
+@WebServlet(name = "InsertNextDiskServlet", displayName = "InsertNextDiskServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/insert_next_disk", description = "Insert next disk for Player running as a RTMP live video stream")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class InsertNextDiskServlet extends JSIDPlay2Servlet {
 

@@ -33,7 +33,8 @@ import server.restful.common.parameter.requestpath.FileRequestPathServletParamet
 import sidplay.ini.IniConfig;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "ExSIDMappingServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/exsid-mapping/*")
+@WebServlet(name = "ExSIDMappingServlet", displayName = "ExSIDMappingServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/exsid-mapping/*", description = "Get ExSID(+) SID mapping information")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class ExSIDMappingServlet extends JSIDPlay2Servlet {
 

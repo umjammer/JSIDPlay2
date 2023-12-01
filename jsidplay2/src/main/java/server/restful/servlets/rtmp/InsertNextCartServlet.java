@@ -27,7 +27,8 @@ import server.restful.common.parameter.requestparam.VideoRequestParamServletPara
 import server.restful.common.rtmp.PlayerWithStatus;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "InsertNextCartServlet", urlPatterns = CONTEXT_ROOT_STATIC + "/insert_next_cart")
+@WebServlet(name = "InsertNextCartServlet", displayName = "InsertNextCartServlet", urlPatterns = CONTEXT_ROOT_STATIC
+		+ "/insert_next_cart", description = "Insert next cart for Player running as a RTMP live video stream")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class InsertNextCartServlet extends JSIDPlay2Servlet {
 

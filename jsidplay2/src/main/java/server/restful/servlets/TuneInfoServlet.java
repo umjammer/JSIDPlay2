@@ -34,7 +34,8 @@ import ui.entities.collection.HVSCEntry;
 import ui.musiccollection.SearchCriteria;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "TuneInfoServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/info/*")
+@WebServlet(name = "TuneInfoServlet", displayName = "TuneInfoServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/info/*", description = "Get SID tune infos")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class TuneInfoServlet extends JSIDPlay2Servlet {
 

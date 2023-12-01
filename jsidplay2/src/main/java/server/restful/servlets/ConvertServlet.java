@@ -116,7 +116,8 @@ import ui.common.ConvenienceResult;
 import ui.common.util.InternetUtil;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "ConvertServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET + "/convert/*")
+@WebServlet(name = "ConvertServlet", displayName = "ConvertServlet", asyncSupported = true, urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/convert/*", description = "Stream e.g. SID as MP3 or D64 as RTMP video stream")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { /* mobile Chrome ignores basic auth in audio src! */ }))
 public class ConvertServlet extends JSIDPlay2Servlet {
 

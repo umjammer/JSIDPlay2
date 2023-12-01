@@ -30,7 +30,8 @@ import ui.entities.collection.HVSCEntry;
 import ui.entities.config.FavoritesSection;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "FavoritesServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/favorites")
+@WebServlet(name = "FavoritesServlet", displayName = "FavoritesServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/favorites", description = "Get contents of the first SID favorites tab")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class FavoritesServlet extends JSIDPlay2Servlet {
 

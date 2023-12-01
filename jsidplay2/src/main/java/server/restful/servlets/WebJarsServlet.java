@@ -23,7 +23,8 @@ import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebJarsResourceRequestPathServletParameters;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "WebJarsServlet", urlPatterns = CONTEXT_ROOT_WEBJARS + "/*")
+@WebServlet(name = "WebJarsServlet", displayName = "WebJarsServlet", urlPatterns = CONTEXT_ROOT_WEBJARS
+		+ "/*", description = "Get web jars")
 public class WebJarsServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.WebJarsServletParameters")
@@ -32,7 +33,7 @@ public class WebJarsServlet extends JSIDPlay2Servlet {
 	}
 
 	/**
-	 * Get VUE web page.
+	 * Get web jars.
 	 *
 	 * E.g. http://haendel.ddns.net:8080/static/c64jukebox.vue
 	 */

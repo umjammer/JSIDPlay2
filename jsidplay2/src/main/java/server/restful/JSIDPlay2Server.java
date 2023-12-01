@@ -427,7 +427,6 @@ public final class JSIDPlay2Server {
 
 					wrapper.setMultipartConfigElement(
 							multipartConfig != null ? createMultipartConfigElement(webServlet, multipartConfig) : null);
-					wrapper.setAsyncSupported(webServlet.asyncSupported());
 					Stream.of(webServlet.urlPatterns()).forEach(wrapper::addMapping);
 
 					result.add(servlet);
@@ -485,6 +484,7 @@ public final class JSIDPlay2Server {
 							String filterName = webFilter.filterName() + "_" + webServlet.name();
 
 							FilterDef filterDefinition = new FilterDef();
+							filterDefinition.setFilterClass(servletFilterCls.getName());
 							filterDefinition.setFilterName(filterName);
 							filterDefinition.setFilter(servletFilter);
 

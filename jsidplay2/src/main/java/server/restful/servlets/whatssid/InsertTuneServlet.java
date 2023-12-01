@@ -20,7 +20,8 @@ import server.restful.common.JSIDPlay2Servlet;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "InsertTuneServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/insert-tune")
+@WebServlet(name = "InsertTuneServlet", displayName = "InsertTuneServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/insert-tune", description = "WhatsSID tune recognition. Insert tunes")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_ADMIN }))
 public class InsertTuneServlet extends JSIDPlay2Servlet {
 

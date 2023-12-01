@@ -32,7 +32,8 @@ import server.restful.common.JSIDPlay2Servlet;
 import sidplay.audio.wav.WAVHeader;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "SpeechToTextServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/speech2text")
+@WebServlet(name = "SpeechToTextServlet", displayName = "SpeechToTextServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/speech2text", description = "Speech recognition")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class SpeechToTextServlet extends JSIDPlay2Servlet {
 

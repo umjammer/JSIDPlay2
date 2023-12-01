@@ -33,7 +33,8 @@ import server.restful.common.parameter.requestpath.FileRequestPathServletParamet
 import sidplay.ini.IniConfig;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "HardSIDMappingServlet", urlPatterns = CONTEXT_ROOT_SERVLET + "/hardsid-mapping/*")
+@WebServlet(name = "HardSIDMappingServlet", displayName = "HardSIDMappingServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/hardsid-mapping/*", description = "Get HardSID 4U, HardSID UPlay and HardSID Uno SID mapping information")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
 public class HardSIDMappingServlet extends JSIDPlay2Servlet {
 
