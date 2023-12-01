@@ -8,6 +8,7 @@ Emulation: GMod2 cartridge support added (RAM expansion works fine, EEPROM funct
 C64Jukebox: Theater mode added (random HVSC playback)
 C64Jukebox: Text2Speech added (executing external program espeak - https://espeak.sourceforge.net/)
 C64Jukebox: Upload for C64 contents added.
+C64Jukebox: better server performance by throttling live audio/video and using asynchronous servlets
 Bugfix: Prevent JSIDPlay2 to hang and scan whole directory tree, if called with a SID as command line argument
 Bugfix: Thread safety issues fixed, when several recordings are done in parallel in the same Java virtual machine (e.g. recordingtool.sh)
 Bugfix: automated tests repaired
