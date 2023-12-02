@@ -66,6 +66,7 @@ public class DownloadServlet extends JSIDPlay2Servlet {
 			response.addHeader(CONTENT_DISPOSITION,
 					ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.name()));
 			ContentTypeAndFileExtensions mimeType = getMimeType(getFilenameSuffix(servletParameters.getFilePath()));
+			response.setContentLength((int) file.length());
 			setOutput(mimeType, response, newFileInputStream(file));
 
 		} catch (Throwable t) {

@@ -430,6 +430,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 							ContentTypeAndFileExtensions mimeType = getMimeType(driver.getExtension());
 							if (!isComplete()) {
+								response.setContentLength((int) videoFile.length());
 								setOutput(mimeType, response, newFileInputStream(videoFile));
 							}
 							videoFile.delete();
@@ -439,6 +440,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 								ATTACHMENT + "; filename=" + URLEncoder.encode(file.getName(), UTF_8.name()));
 						ContentTypeAndFileExtensions mimeType = getMimeType(getFilenameSuffix(file.getName()));
 						if (!isComplete()) {
+							response.setContentLength((int) file.length());
 							setOutput(mimeType, response, newFileInputStream(file));
 						}
 					}
