@@ -4392,15 +4392,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               },
             })
               .then((response) => {
-                if (response.data.toString().startsWith("[{")) {
-                  this.playlist = JSON.parse(response.data);
-                } else {
-                  this.playlist = response.data.map((file) => {
-                    return {
-                      filename: file,
-                    };
-                  });
-                }
+                this.playlist = response.data;
                 this.playlistIndex = 0;
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;

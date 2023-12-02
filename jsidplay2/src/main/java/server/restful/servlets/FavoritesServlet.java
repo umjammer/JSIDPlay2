@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
@@ -53,6 +53,15 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 
 	}
 
+	private static class FavoritesWrapper {
+		private FavoritesWrapper(String filename) {
+			this.filename = filename;
+		}
+
+		@JsonProperty
+		private String filename;
+	}
+
 	/**
 	 * Get contents of the first SID favorites tab.
 	 *
@@ -76,13 +85,16 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 			final Integer favoritesNumber = servletParameters.getFavoritesNumber();
 
 			if (favoritesNumber < configuration.getFavorites().size()) {
-				List<String> favorites = getFavoritesByNumber(favoritesNumber);
+				List<FavoritesWrapper> favorites = getFavoritesByNumber(favoritesNumber);
 
 				setOutput(MIME_TYPE_JSON, response, favorites);
 			} else {
-				String favorites = getSpecialFavorites(favoritesNumber);
+				String resource = String.format(BUILT_IN_FAVORITES_PATH,
+						(favoritesNumber - configuration.getFavorites().size()));
 
-				setOutput(MIME_TYPE_JSON, response, favorites);
+				try (InputStream is = new WebResourceConverter("<ServletPath>").convert(resource)) {
+					setOutput(MIME_TYPE_JSON, response, is);
+				}
 			}
 
 		} catch (Throwable t) {
@@ -92,29 +104,20 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 		}
 	}
 
-	private List<String> getFavoritesByNumber(Integer favoritesNumber) {
-		List<String> filters = configuration.getFavorites().stream()
+	private List<FavoritesWrapper> getFavoritesByNumber(Integer favoritesNumber) {
+		return configuration.getFavorites().stream()
 				.filter(favorites -> configuration.getFavorites().indexOf(favorites) == favoritesNumber).findFirst()
-				.map(FavoritesSection::getFavorites).orElseGet(Collections::emptyList).stream()
-				.map(this::getFavoritesFilename).collect(Collectors.toList());
-		return filters;
+				.map(FavoritesSection::getFavorites).orElseGet(Collections::emptyList).stream().map(this::getFavorite)
+				.collect(Collectors.toList());
 	}
 
-	private String getFavoritesFilename(HVSCEntry entry) {
+	private FavoritesWrapper getFavorite(HVSCEntry entry) {
 		if (IOUtils.getFiles(entry.getPath(), configuration.getSidplay2Section().getHvsc(), null).size() > 0) {
-			return C64_MUSIC + entry.getPath();
+			return new FavoritesWrapper(C64_MUSIC + entry.getPath());
 		} else if (IOUtils.getFiles(entry.getPath(), configuration.getSidplay2Section().getCgsc(), null).size() > 0) {
-			return CGSC + entry.getPath();
+			return new FavoritesWrapper(CGSC + entry.getPath());
 		}
 		return null;
-	}
-
-	private String getSpecialFavorites(final Integer favoritesNumber) throws JsonProcessingException, IOException {
-		String resource = String.format(BUILT_IN_FAVORITES_PATH,
-				(favoritesNumber - configuration.getFavorites().size()));
-		try (InputStream source = new WebResourceConverter("<ServletPath>").convert(resource)) {
-			return IOUtils.convertStreamToString(source, "UTF-8");
-		}
 	}
 
 }

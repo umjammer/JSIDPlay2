@@ -99,6 +99,7 @@ public class UploadServlet extends JSIDPlay2Servlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(UPLOAD_ASYNC_TIMEOUT);
@@ -107,8 +108,6 @@ public class UploadServlet extends JSIDPlay2Servlet {
 
 			public void run(HttpServletRequest request, HttpServletResponse response) throws IOException {
 				try {
-					WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
-
 					final UploadServletParameters servletParameters = new UploadServletParameters();
 
 					ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
