@@ -44,7 +44,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -381,7 +380,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 							|| (servletParameters.videoTuneAsAudio && VIDEO_TUNE_FILE_FILTER.accept(file)))
 							&& !servletParameters.audioTuneAsVideo) {
 
-						AudioDriver driver = getAudioDriverOfAudioFormat(response.getOutputStream(), servletParameters);
+						AudioDriver driver = getAudioDriverOfAudioFormat(response, servletParameters);
 
 						if (Boolean.TRUE.equals(servletParameters.download)) {
 							response.addHeader(CONTENT_DISPOSITION, ATTACHMENT + "; filename="
@@ -456,22 +455,22 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				return getFilenameWithoutSuffix(file.getName()) + driver.getExtension();
 			}
 
-			private AudioDriver getAudioDriverOfAudioFormat(OutputStream outputstream,
-					ConvertServletParameters servletParameters) {
+			private AudioDriver getAudioDriverOfAudioFormat(HttpServletResponse response,
+					ConvertServletParameters servletParameters) throws IOException {
 				switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
 				case WAV:
-					return getThrottlingDriver(new WAVStreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new WAVStreamDriver(response.getOutputStream()), servletParameters);
 				case FLAC:
-					return getThrottlingDriver(new FLACStreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new FLACStreamDriver(response.getOutputStream()), servletParameters);
 				case AAC:
-					return getThrottlingDriver(new AACStreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new AACStreamDriver(response.getOutputStream()), servletParameters);
 				case MP3:
 				default:
-					return getThrottlingDriver(new MP3StreamDriver(outputstream), servletParameters);
+					return getThrottlingDriver(new MP3StreamDriver(response.getOutputStream()), servletParameters);
 				case SID_DUMP:
-					return new SIDDumpStreamDriver(outputstream);
+					return new SIDDumpStreamDriver(response.getOutputStream());
 				case SID_REG:
-					return new SIDRegStreamDriver(outputstream, servletParameters.getSidRegFormat());
+					return new SIDRegStreamDriver(response.getOutputStream(), servletParameters.getSidRegFormat());
 				}
 			}
 
