@@ -1350,6 +1350,7 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="6581",ATTR{idProduct}=="8580",MODE="0660",GROU
                     <pre>
 ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'"</pre
                     >
+                    <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
                     <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
                     <pre>now reboot</pre>
                     Fedora Linux with {{ $t("EXSID") }} devices:
@@ -1358,6 +1359,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <pre>
 ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'"</pre
                     >
+                    <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
                     <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
                     <pre>now reboot</pre>
                   </li>
