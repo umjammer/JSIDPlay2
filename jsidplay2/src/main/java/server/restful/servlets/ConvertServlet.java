@@ -586,12 +586,12 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				return videoFile;
 			}
 
-			private AudioDriver getThrottlingDriver(AudioDriver streamDriver,
+			private AudioDriver getThrottlingDriver(AudioDriver audioDriver,
 					ConvertServletParameters servletParameters) {
 				if (Boolean.TRUE.equals(servletParameters.download)) {
-					return streamDriver;
+					return audioDriver;
 				} else {
-					return new ProxyDriver(new ThrottlingDriver(), streamDriver);
+					return new ProxyDriver(new ThrottlingDriver(), audioDriver);
 				}
 			}
 

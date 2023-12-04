@@ -40,11 +40,11 @@ public class ThrottlingDriver implements AudioDriver {
 	 * C64 emulation time (emulation runs much faster than real-time)
 	 */
 	private long startC64Time, c64Time;
+	
 	/**
 	 * Current time of a video player client
 	 */
 	private volatile Long clientTime;
-
 	/**
 	 * Current buffered end of a video player client
 	 */
@@ -75,7 +75,7 @@ public class ThrottlingDriver implements AudioDriver {
 			startC64Time = context.getTime(Phase.PHI2);
 		}
 		time = (System.currentTimeMillis() - startTime) + /* from rolling a dice */ 4000;
-		c64Time = (long) ((context.getTime(Phase.PHI2) - startC64Time) * 1000 / cpuClock.getCpuFrequency());
+		c64Time = (long) ((context.getTime(Phase.PHI2) - startC64Time) / cpuClock.getCpuFrequency() * 1000);
 
 		long gap = clientTime != null && bufferedEnd != null ? bufferedEnd - clientTime : c64Time - time;
 		if (gap > MAX_TIME_GAP) {

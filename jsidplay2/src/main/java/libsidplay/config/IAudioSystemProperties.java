@@ -25,5 +25,5 @@ public interface IAudioSystemProperties {
 	 * 
 	 * @jsidplay2.systemProperty jsidplay2.sleep_driver.sleep_time
 	 */
-	long SLEEP_DRIVER_SLEEP_TIME = Long.valueOf(System.getProperty("jsidplay2.sleep_driver.sleep_time", "250"));
+	long SLEEP_DRIVER_SLEEP_TIME = Long.valueOf(System.getProperty("jsidplay2.sleep_driver.sleep_time", "500"));
 }
