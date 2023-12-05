@@ -53,7 +53,14 @@
             :pressed.sync="theaterMode"
             :variant="theaterMode ? 'success' : 'primary'"
             size="sm"
-            v-on:click="theaterMode ? setNextPlaylistEntry() : pause()"
+            v-on:click="
+              if (theaterMode) {
+                setNextPlaylistEntry();
+                tabIndex = 3;
+              } else {
+                pause();
+              }
+            "
           >
             <span style="white-space: nowrap">
               <b-icon-play-fill v-show="!theaterMode"> </b-icon-play-fill>
@@ -180,7 +187,7 @@
                 <p>{{ msg }}</p>
               </b-card-text>
             </b-tab>
-            <b-tab active style="position: relative" :disabled="theaterMode">
+            <b-tab active style="position: relative">
               <template #title>
                 {{ $t("SIDS") }}
                 <b-spinner
@@ -507,7 +514,7 @@
                 </b-list-group>
               </b-card-text>
             </b-tab>
-            <b-tab style="position: relative" :disabled="theaterMode">
+            <b-tab style="position: relative">
               <template #title>
                 {{ $t("ASSEMBLY64") }}
                 <b-spinner
@@ -1020,7 +1027,7 @@
                 </div>
               </b-card-text>
             </b-tab>
-            <b-tab :disabled="theaterMode">
+            <b-tab>
               <template #title>
                 {{ $t("PL") }}
                 <b-spinner
@@ -1146,7 +1153,10 @@
                     :style="
                       (filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
                         ? 'height: 0; padding: 0px;visibility: hidden;'
-                        : '') + (index == playlistIndex ? ' background-color: rgb(0 255 58 / 50%) !important' : '')
+                        : '') +
+                      (index == playlistIndex && !theaterMode
+                        ? ' background-color: rgb(0 255 58 / 50%) !important'
+                        : '')
                     "
                     v-on:click="
                       playlistIndex = index;
@@ -4451,9 +4461,12 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               },
             })
               .then((response) => {
-                this.tabIndex = 3;
                 this.currentSid = response.data;
                 this.updateSid(response.data);
+                this.fetchDirectory({
+                  filename: response.data.substring(0, response.data.lastIndexOf("/")),
+                  loading: false,
+                });
                 this.play(undefined, response.data);
               })
               .catch((error) => {
