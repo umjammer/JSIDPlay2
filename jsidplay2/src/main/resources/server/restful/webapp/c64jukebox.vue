@@ -80,22 +80,7 @@
             I'm sorry. Your browser doesn't support HTML5 audio
           </audio>
           <div v-show="showHardwarePlayer">
-            <b-button
-              size="sm"
-              variant="success"
-              v-on:click="
-                play(
-                  undefined,
-                  playlist[playlistIndex].filename,
-                  playlist[playlistIndex].itemId,
-                  playlist[playlistIndex].categoryId
-                )
-              "
-            >
-              <b-icon-play-fill> </b-icon-play-fill>
-              <span>Play using Hardware</span>
-            </b-button>
-            <b-button variant="success" size="sm" v-on:click="stop()">
+            <b-button variant="success" size="sm" v-on:click="pause()">
               <b-icon-stop-fill> </b-icon-stop-fill>
               <span>Stop Hardware Player</span>
             </b-button>
@@ -3607,6 +3592,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
 
               if (write.chip == Chip.QUIT) {
                 await HardwareFunctions.quit();
+                if (ajaxRequest) {
+                  ajaxRequest.cancel();
+                }
                 return;
               } else if (write.chip == Chip.RESET) {
                 await HardwareFunctions.reset();
@@ -3703,17 +3691,11 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               this.$refs.audioElm.play();
             }
           },
-          stop: function () {
-            if (ajaxRequest) {
-              ajaxRequest.cancel();
-            }
+          end: function () {
             sidWriteQueue.clear();
             sidWriteQueue.enqueue({
               chip: Chip.RESET,
             });
-          },
-          end: function () {
-            stop();
             sidWriteQueue.enqueue({
               chip: Chip.QUIT,
             });
@@ -3766,7 +3748,18 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             return "secondary";
           },
           pause: function () {
-            this.$refs.audioElm.pause();
+            if (deviceCount > 0) {
+              this.$refs.audioElm.pause();
+              if (ajaxRequest) {
+                ajaxRequest.cancel();
+              }
+              sidWriteQueue.clear();
+              sidWriteQueue.enqueue({
+                chip: Chip.RESET,
+              });
+            } else {
+              this.$refs.audioElm.pause();
+            }
           },
           isDirectory: function (entry) {
             return entry.filename.endsWith("/");
@@ -3945,7 +3938,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             download("jsidplay2.json", "application/json; charset=utf-8; ", JSON.stringify(this.playlist));
           },
           setNextPlaylistEntry: function () {
-            this.stop();
+            this.pause();
 
             if (deviceCount <= 0 && this.convertOptions.config.sidplay2Section.loop) {
               this.$refs.audioElm.currentTime = 0;
@@ -4461,7 +4454,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               },
             })
               .then((response) => {
-                this.currentSid = response.data;
+                this.currentSid = this.shortEntry(response.data);
                 this.updateSid(response.data);
                 this.fetchDirectory({
                   filename: response.data.substring(0, response.data.lastIndexOf("/")),
