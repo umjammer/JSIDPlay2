@@ -3748,17 +3748,11 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             return "secondary";
           },
           pause: function () {
+            this.$refs.audioElm.pause();
             if (deviceCount > 0) {
-              this.$refs.audioElm.pause();
               if (ajaxRequest) {
                 ajaxRequest.cancel();
               }
-              sidWriteQueue.clear();
-              sidWriteQueue.enqueue({
-                chip: Chip.RESET,
-              });
-            } else {
-              this.$refs.audioElm.pause();
             }
           },
           isDirectory: function (entry) {
