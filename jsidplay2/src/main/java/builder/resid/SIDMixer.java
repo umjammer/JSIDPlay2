@@ -291,6 +291,9 @@ public class SIDMixer implements Mixer {
 	public void start() {
 		context.schedule(mixerAudio, 0, Event.Phase.PHI2);
 		cart.mixerStart();
+		for (ReSIDBase sid : sids) {
+			sid.clocksSinceLastAccess();
+		}
 	}
 
 	/**
