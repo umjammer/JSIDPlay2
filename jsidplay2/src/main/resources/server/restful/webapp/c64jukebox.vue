@@ -1053,7 +1053,7 @@
                   v-on:click="importExportVisible = !importExportVisible"
                 >
                   <b-icon-arrows-expand> </b-icon-arrows-expand>
-                  <span>{{ $t('importExport') }}</span>
+                  <span>{{ $t("importExport") }}</span>
                 </b-button>
                 <b-button
                   size="sm"
@@ -3068,7 +3068,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           removeReally: "Do you really want to remove the playlist tune?",
           next: "Next",
           reset: "Reset",
-          importExport: 'Import/Export',
+          importExport: "Import/Export",
           startImport: "Import",
           fetchFavorites: "Examples:",
           removePlaylist: "Remove All",
@@ -3220,7 +3220,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           removeReally: "Wollen sie wirklich den Favoriten l\u00f6schen?",
           next: "N\u00e4chster",
           reset: "Zur\u00fccksetzen",
-          importExport: 'Import/Export',
+          importExport: "Import/Export",
           startImport: "Importieren",
           fetchFavorites: "Beispiele:",
           removePlaylist: "L\u00f6schen",
@@ -3961,7 +3961,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 .then((response) => {
                   if (response.data != "null") {
                     this.importFile = null;
-	                this.importExportVisible = false;
+                    this.importExportVisible = false;
                     let entry = {
                       filename: response.data,
                     };
