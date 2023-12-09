@@ -56,7 +56,6 @@
             v-on:click="
               if (theaterMode) {
                 setNextPlaylistEntry();
-                tabIndex = 3;
               } else {
                 pause();
               }
@@ -261,9 +260,31 @@
 
               <div style="height: 4px"></div>
 
+              <div class="button-box">
+                <b-input-group size="sm" class="mb-2">
+                  <b-input-group-prepend is-text>
+                    <b-icon icon="search"></b-icon>
+                  </b-input-group-prepend>
+                  <b-form-input
+                    type="search"
+                    v-model="filterText2"
+                    :placeholder="$t('searchPlaceholder')"
+                  ></b-form-input>
+                </b-input-group>
+              </div>
               <b-card-text>
                 <b-list-group>
-                  <div v-for="entry in directory" :key="entry.filename">
+                  <div
+                    v-for="entry in directory"
+                    :key="entry.filename"
+                    :style="
+                      filterText2 &&
+                      !isParentDirectory(entry) &&
+                      !entry.filename.toLowerCase().includes(filterText2.toLowerCase())
+                        ? 'height: 0; padding: 0px;visibility: hidden;'
+                        : ''
+                    "
+                  >
                     <template v-if="isParentDirectory(entry)">
                       <b-list-group-item
                         button
@@ -1024,44 +1045,67 @@
               </template>
 
               <b-card-text>
-                <div v-if="!importFile" class="playlist-examples-box">
-                  <span size="sm">{{ $t("fetchFavorites") }}</span>
-                  <b-link
-                    v-for="(favoritesName, index) in favoritesNames"
-                    :key="index"
-                    v-b-modal:[`modal-fetch-favorites-${index}`]
-                    size="sm"
-                  >
-                    <span>{{ favoritesName }}</span>
-                    <b-modal
-                      :id="`modal-fetch-favorites-${index}`"
-                      :title="$t('confirmationTitle')"
-                      @ok="fetchFavorites(index)"
+                <b-button
+                  size="sm"
+                  style="padding: 0px 4px; float: right"
+                  variant="primary"
+                  v-show="!importExportVisible"
+                  v-on:click="importExportVisible = !importExportVisible"
+                >
+                  <b-icon-arrows-expand> </b-icon-arrows-expand>
+                  <span>{{ $t('importExport') }}</span>
+                </b-button>
+                <b-button
+                  size="sm"
+                  style="padding: 0px 4px; float: right"
+                  variant="primary"
+                  v-show="importExportVisible"
+                  v-on:click="importExportVisible = !importExportVisible"
+                >
+                  <b-icon-arrows-collapse> </b-icon-arrows-collapse>
+                </b-button>
+                <b-collapse v-model="importExportVisible">
+                  <div v-if="!importFile && importExportVisible" class="playlist-examples-box">
+                    <span size="sm">{{ $t("fetchFavorites") }}</span>
+                    <b-link
+                      v-for="(favoritesName, index) in favoritesNames"
+                      :key="index"
+                      v-b-modal:[`modal-fetch-favorites-${index}`]
+                      size="sm"
                     >
-                      <p>{{ $t("removePlaylistReally") }}</p>
-                    </b-modal>
-                  </b-link>
-                </div>
-                <div class="button-box">
-                  <b-input-group size="sm" class="mb-2">
-                    <b-form-file
-                      v-model="importFile"
-                      accept=".js2,.json,.sid,.dat,.mus,.str,.c64,.prg,.p00,.d64,.g64,.nib,.tap,.t64,.reu,.ima,.crt,.img,.zip,.gz,.7z"
-                      :state="Boolean(importFile)"
-                      ref="file-input"
-                      label-size="sm"
-                      :placeholder="$t('importPlaceholder')"
-                      :drop-placeholder="$t('importDropPlaceholder')"
-                      :browse-text="$t('browse')"
-                    >
-                    </b-form-file>
-                    <b-input-group-append>
-                      <b-button @click="exportPlaylist" v-if="playlist.length > 0" style="margin-top: 8px !important">
-                        <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
-                        <span>{{ $t("exportPlaylist") }}</span></b-button
+                      <span>{{ favoritesName }}</span>
+                      <b-modal
+                        :id="`modal-fetch-favorites-${index}`"
+                        :title="$t('confirmationTitle')"
+                        @ok="fetchFavorites(index)"
                       >
-                    </b-input-group-append>
-                  </b-input-group>
+                        <p>{{ $t("removePlaylistReally") }}</p>
+                      </b-modal>
+                    </b-link>
+                  </div>
+                  <div class="button-box">
+                    <b-input-group size="sm" class="mb-2">
+                      <b-form-file
+                        v-model="importFile"
+                        accept=".js2,.json,.sid,.dat,.mus,.str,.c64,.prg,.p00,.d64,.g64,.nib,.tap,.t64,.reu,.ima,.crt,.img,.zip,.gz,.7z"
+                        :state="Boolean(importFile)"
+                        ref="file-input"
+                        label-size="sm"
+                        :placeholder="$t('importPlaceholder')"
+                        :drop-placeholder="$t('importDropPlaceholder')"
+                        :browse-text="$t('browse')"
+                      >
+                      </b-form-file>
+                      <b-input-group-append>
+                        <b-button @click="exportPlaylist" v-if="playlist.length > 0" style="margin-top: 8px !important">
+                          <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
+                          <span>{{ $t("exportPlaylist") }}</span></b-button
+                        >
+                      </b-input-group-append>
+                    </b-input-group>
+                  </div>
+                </b-collapse>
+                <div>
                   <div>
                     <b-button size="sm" v-if="importFile != null" @click="importFile = null">
                       <b-icon-backspace> </b-icon-backspace>
@@ -1176,7 +1220,7 @@
                         pill
                         size="sm"
                         variant="danger"
-                        style="height: fit-content; opacity: 0.7"
+                        style="height: fit-content; opacity: 0.5"
                       >
                         <b-icon-trash-fill style="margin: 2px"> </b-icon-trash-fill>
                       </b-button>
@@ -2963,7 +3007,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           STREAMING_NOTES:
             "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
           CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
-          theaterMode: "Theater Mode",
+          theaterMode: "Random Play",
           currentlyPlaying: "Playing: ",
           parentDirectoryHint: "Go up one Level",
           sidInfoKey: "Name",
@@ -3024,6 +3068,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           removeReally: "Do you really want to remove the playlist tune?",
           next: "Next",
           reset: "Reset",
+          importExport: 'Import/Export',
           startImport: "Import",
           fetchFavorites: "Examples:",
           removePlaylist: "Remove All",
@@ -3033,7 +3078,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           exportPlaylist: "Export",
           importPlaceholder: "",
           importDropPlaceholder: "Drop here...",
-          searchPlaceholder: "Quick search",
+          searchPlaceholder: "Quick filter",
           random: "Random Playback",
           mobileProfile: "Mobile profile",
           wifiProfile: "WiFi profile",
@@ -3114,7 +3159,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           STREAMING_NOTES:
             "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
           CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
-          theaterMode: "Theater Modus",
+          theaterMode: "Zufalls-Mix",
           currentlyPlaying: "Es spielt: ",
           parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
           sidInfoKey: "Name",
@@ -3175,6 +3220,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           removeReally: "Wollen sie wirklich den Favoriten l\u00f6schen?",
           next: "N\u00e4chster",
           reset: "Zur\u00fccksetzen",
+          importExport: 'Import/Export',
           startImport: "Importieren",
           fetchFavorites: "Beispiele:",
           removePlaylist: "L\u00f6schen",
@@ -3184,7 +3230,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           exportPlaylist: "Exportieren",
           importPlaceholder: "",
           importDropPlaceholder: "DnD hier...",
-          searchPlaceholder: "Schnellsuche",
+          searchPlaceholder: "Schnellfilter",
           random: "Zuf\u00e4llige Wiedergabe",
           mobileProfile: "Mobiles Profil",
           wifiProfile: "WiFi Profil",
@@ -3348,11 +3394,13 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           handle: "",
           // PL (Playlist)
           importFile: null,
+          importExportVisible: false,
           playlist: [],
           playlistIndex: 0,
           favoritesNames: [],
           random: true,
           filterText: "",
+          filterText2: "",
           // CFG (configuration)
           // pre-fetched filter definitions
           reSIDfilters6581: [],
@@ -3876,6 +3924,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   this.playlist[this.playlistIndex].categoryId
                 );
                 this.showAudio = true;
+                this.importExportVisible = false;
               };
               reader.readAsText(this.importFile);
             } else if (extension === "json") {
@@ -3894,6 +3943,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   this.playlist[this.playlistIndex].categoryId
                 );
                 this.showAudio = true;
+                this.importExportVisible = false;
               };
               reader.readAsText(this.importFile);
             } else {
@@ -3911,6 +3961,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 .then((response) => {
                   if (response.data != "null") {
                     this.importFile = null;
+	                this.importExportVisible = false;
                     let entry = {
                       filename: response.data,
                     };
@@ -3929,6 +3980,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             }
           },
           exportPlaylist: function () {
+            this.importExportVisible = false;
             download("jsidplay2.json", "application/json; charset=utf-8; ", JSON.stringify(this.playlist));
           },
           setNextPlaylistEntry: function () {
@@ -4410,6 +4462,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   this.playlist[this.playlistIndex].categoryId
                 );
                 this.showAudio = true;
+                this.importExportVisible = false;
               })
               .catch((error) => {
                 this.playlist = [];
