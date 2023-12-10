@@ -22,15 +22,15 @@ import sidplay.audio.xuggle.XuggleAudioDriver;
 public abstract class MP3Driver extends XuggleAudioDriver {
 
 	/**
-	 * Kbs
+	 * Factor: Kilo bits per second to bits per second
 	 */
-	private static final int KBS = 1000;
+	private static final int KBPS = 1000;
 	/**
-	 * CBR Default bit rate
+	 * Constant bit rate (CBR) - Default bit rate
 	 */
-	private static final int DEFAULT_BITRATE = 128 * KBS;
+	private static final int DEFAULT_BITRATE = 128 * KBPS;
 	/**
-	 * VBR quality factor
+	 * Variable bit rate (VBR) - quality factor
 	 */
 	private static final int FF_QP2LAMBDA = 118;
 
@@ -92,7 +92,7 @@ public abstract class MP3Driver extends XuggleAudioDriver {
 
 	@Override
 	protected void configureStreamCoder(IStreamCoder streamCoder, IAudioSection audioSection) {
-		int bitRate = audioSection.getCbr() == -1 ? DEFAULT_BITRATE : audioSection.getCbr() * KBS;
+		int bitRate = audioSection.getCbr() == -1 ? DEFAULT_BITRATE : audioSection.getCbr() * KBPS;
 		boolean isVbr = audioSection.isVbr();
 		int vbrQuality = audioSection.getVbrQuality() * FF_QP2LAMBDA;
 

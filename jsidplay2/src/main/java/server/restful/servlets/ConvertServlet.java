@@ -470,9 +470,11 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				default:
 					return getThrottlingDriver(new MP3StreamDriver(response.getOutputStream()), servletParameters);
 				case SID_DUMP:
-					return new SIDDumpStreamDriver(response.getOutputStream());
+					return getThrottlingDriver(new SIDDumpStreamDriver(response.getOutputStream()), servletParameters);
 				case SID_REG:
-					return new SIDRegStreamDriver(response.getOutputStream(), servletParameters.getSidRegFormat());
+					return getThrottlingDriver(
+							new SIDRegStreamDriver(response.getOutputStream(), servletParameters.getSidRegFormat()),
+							servletParameters);
 				}
 			}
 
