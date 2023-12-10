@@ -48,6 +48,7 @@ import libsidutils.stil.STIL;
 import net.java.truevfs.access.TArchiveDetector;
 import net.java.truevfs.access.TFile;
 import net.java.truevfs.access.TVFS;
+import server.restful.JSIDPlay2Server;
 import server.restful.common.parameter.ServletParameterHelper;
 import sidplay.Player;
 import sidplay.ini.IniDefaults;
@@ -392,7 +393,7 @@ public class OnlineContent {
 				}
 				if (clz.getAnnotation(Parameters.class) != null) {
 					// Parameter classes are being checked for development errors at build time
-					if (clzName.startsWith("server.restful")) {
+					if (clzName.startsWith(JSIDPlay2Server.class.getPackage().getName())) {
 						// ... check server parameters
 						ServletParameterHelper.check(clz, true);
 					} else {
