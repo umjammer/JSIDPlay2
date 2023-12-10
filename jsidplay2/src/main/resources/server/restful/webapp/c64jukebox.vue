@@ -3801,6 +3801,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               if (ajaxRequest) {
                 ajaxRequest.cancel();
               }
+              sidWriteQueue.clear();
+              sidWriteQueue.enqueue({
+                chip: Chip.RESET,
+              });
             }
           },
           isDirectory: function (entry) {
