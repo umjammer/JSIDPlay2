@@ -96,7 +96,7 @@ public abstract class FileRequestPathServletParametersImpl {
 			throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
-		URL url = new URI(assembly64Url + "/leet/search/v2/contententries/" + encodedItemId + "/" + categoryId).toURL();
+		URL url = new URI(assembly64Url + "/leet/search/legacy/entries/" + encodedItemId + "/" + categoryId).toURL();
 		URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
 		ContentEntrySearchResult contentEntries = OBJECT_MAPPER.readValue(connection.getInputStream(),
@@ -135,10 +135,9 @@ public abstract class FileRequestPathServletParametersImpl {
 	private void fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId,
 			File contentEntryFile) throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
-		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
-		String encodedContentEntryId = new String(Base64.getEncoder().encode(fileId.getBytes()));
-		URL url = new URI(assembly64Url + "/leet/search/v2/binary/" + encodedItemId + "/" + categoryId + "/"
-				+ encodedContentEntryId).toURL();
+
+		String encodedFileId = new String(Base64.getEncoder().encode(fileId.getBytes()));
+		URL url = new URI(assembly64Url + "/leet/search/legacy/bin/" + itemId + "/" + categoryId + "/" + encodedFileId).toURL();
 		URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 
 		try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {

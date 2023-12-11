@@ -4646,7 +4646,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/v2/aql/presets",
+              url: "$assembly64Url/leet/search/aql/presets",
             })
               .then((response) => {
                 let presets = response.data;
@@ -4680,7 +4680,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/v2/aql/0/200" + url,
+              url: "$assembly64Url/leet/search/aql/0/200" + url,
             })
               .then((response) => {
                 if (response.status === 200) {
@@ -4725,8 +4725,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url:
-                "$assembly64Url/leet/search/v2/contententries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
+              url: "$assembly64Url/leet/search/legacy/entries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
             })
               .then((response) => {
                 if (response.status === 200) {

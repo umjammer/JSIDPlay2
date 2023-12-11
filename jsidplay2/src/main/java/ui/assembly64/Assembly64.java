@@ -1,6 +1,5 @@
 package ui.assembly64;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.stream.IntStream.concat;
 import static java.util.stream.IntStream.of;
@@ -13,14 +12,12 @@ import static ui.assembly64.SearchResult.YES;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -28,8 +25,6 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -95,15 +90,6 @@ import ui.entities.config.Assembly64Column;
 import ui.entities.config.Assembly64ColumnType;
 
 public class Assembly64 extends C64VBox implements UIPart {
-
-	private static final MessageDigest MD5_DIGEST;
-	static {
-		try {
-			MD5_DIGEST = MessageDigest.getInstance("MD5");
-		} catch (final NoSuchAlgorithmException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
 
 	public static final String ID = "ASSEMBLY64";
 
@@ -572,7 +558,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 		URLConnection connection = null;
 		try {
-			URL url = new URI(assembly64Url + "/leet/search/v2/aql/presets").toURL();
+			URL url = new URI(assembly64Url + "/leet/search/aql/presets").toURL();
 			connection = requestURL(url);
 			String responseString = readString(connection);
 			return new ObjectMapper().readValue(responseString, new TypeReference<List<Presets>>() {
@@ -691,7 +677,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 					// avoid to request everything, it would take too much time!
 					return;
 				}
-				URI uri = appendURI(new URI(assembly64Url + "/leet/search/v2/aql/" + searchOffset + "/" + MAX_ROWS),
+				URI uri = appendURI(new URI(assembly64Url + "/leet/search/aql/" + searchOffset + "/" + MAX_ROWS),
 						"query", query.toString());
 
 				connection = requestURL(uri.toURL());
@@ -740,7 +726,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			URLConnection connection = null;
 			try {
-				URL url = new URI(assembly64Url + "/leet/search/v2/contententries" + "/" + itemId + "/" + categoryId)
+				URL url = new URI(assembly64Url + "/leet/search/legacy/entries/" + itemId + "/" + categoryId)
 						.toURL();
 				connection = requestURL(url);
 				String responseString = readString(connection);
@@ -786,46 +772,25 @@ public class Assembly64 extends C64VBox implements UIPart {
 	private File requestContentEntry(ContentEntry contentEntry)
 			throws FileNotFoundException, IOException, URISyntaxException {
 		// name without embedded sub-folder (sid/name.sid -> name.sid):
-
 		File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
 		targetDir.mkdir();
 
 		String name = new File(contentEntry.getId()).getName();
 		File contentEntryFile = new File(targetDir, name);
-		File contentEntryChecksumFile = new File(targetDir, IOUtils.getFilenameWithoutSuffix(name) + ".md5");
 
-		// file already downloaded and checksum ok?
-		if (contentEntryFile.exists() && contentEntryChecksumFile.exists()) {
-			String checksum = getMD5Digest(getContents(contentEntryFile));
-			String checksumToverify = new String(getContents(contentEntryChecksumFile), US_ASCII);
-			if (checksum.equals(checksumToverify)) {
-				return contentEntryFile;
-			}
-		}
 		// request file, create checksum
 		String assembly64Url = util.getConfig().getOnlineSection().getAssembly64Url();
-		final String itemId = Base64.getEncoder().encodeToString(searchResult.getId().getBytes());
 		final String fileId = Base64.getEncoder().encodeToString(contentEntry.getId().getBytes());
 
 		URLConnection connection = null;
-		URL url = new URI(assembly64Url + "/leet/search/v2/binary" + "/" + itemId + "/"
+		URL url = new URI(assembly64Url + "/leet/search/legacy/bin/" + searchResult.getId() + "/"
 				+ searchResult.getCategory().getId() + "/" + fileId).toURL();
 		connection = requestURL(url);
 		byte[] responseBytes = readBytes(connection.getInputStream());
 
-		try (OutputStream outputStream = new FileOutputStream(contentEntryFile);
-				PrintStream checksumPrintStream = new PrintStream(contentEntryChecksumFile)) {
+		try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {
 			outputStream.write(responseBytes);
-			checksumPrintStream.print(connection.getHeaderField("checksum"));
 			return contentEntryFile;
-		}
-	}
-
-	private byte[] getContents(File contentEntryChecksumFile) {
-		try (InputStream is = new FileInputStream(contentEntryChecksumFile)) {
-			return readBytes(is);
-		} catch (IOException e) {
-			return new byte[0];
 		}
 	}
 
@@ -883,16 +848,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 	private URLConnection requestURL(URL url) throws IOException {
 		return InternetUtil.openConnection(url, util.getConfig().getSidplay2Section());
-	}
-
-	private String getMD5Digest(byte[] contents) {
-		StringBuilder md5 = new StringBuilder();
-		final byte[] encryptMsg = MD5_DIGEST.digest(contents);
-		for (final byte anEncryptMsg : encryptMsg) {
-			md5.append(Character.forDigit((anEncryptMsg >> 4) & 0xF, 16));
-			md5.append(Character.forDigit((anEncryptMsg & 0xF), 16));
-		}
-		return md5.toString();
 	}
 
 	public URI appendURI(URI oldUri, String queryParamName, String queryParamValue) throws URISyntaxException {
