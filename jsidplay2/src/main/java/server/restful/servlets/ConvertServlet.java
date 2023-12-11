@@ -79,7 +79,6 @@ import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IEmulationSection;
 import libsidplay.config.ISidPlay2Section;
-import libsidplay.config.IWhatsSidSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import server.restful.common.ContentTypeAndFileExtensions;
@@ -484,11 +483,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 				IEmulationSection emulationSection = servletParameters.config.getEmulationSection();
-				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 
 				sidplay2Section.setHvsc(configuration.getSidplay2Section().getHvsc());
 				emulationSection.setEngine(Engine.EMULATION);
-				whatsSidSection.setEnable(false);
 
 				Player player = new Player(servletParameters.config);
 				player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
@@ -547,11 +544,9 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				File videoFile = null;
 				ISidPlay2Section sidplay2Section = servletParameters.config.getSidplay2Section();
 				IEmulationSection emulationSection = servletParameters.config.getEmulationSection();
-				IWhatsSidSection whatsSidSection = servletParameters.config.getWhatsSidSection();
 				IC1541Section c1541Section = servletParameters.config.getC1541Section();
 
 				emulationSection.setEngine(Engine.EMULATION);
-				whatsSidSection.setEnable(false);
 				if (TAPE_FILE_FILTER.accept(file)) {
 					c1541Section.setJiffyDosInstalled(false);
 				}
