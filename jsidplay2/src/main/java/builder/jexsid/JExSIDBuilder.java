@@ -112,14 +112,14 @@ public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 				.println("If device cannot be used, please use this workaround (we grant access to the USB device)...");
 		System.err.println();
 		System.err.println("... On Ubuntu you do:");
-		System.err.println("$ sudo vi /etc/udev/rules.d/92-exsid.rules");
+		System.err.println("$ sudo vi /etc/udev/rules.d/93-exsid.rules");
 		System.err.println(
 				"ACTION==\"add\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", MODE=\"0666\", RUN+=\"/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'\"");
 		System.err.println("$ sudo udevadm control --reload-rules && udevadm trigger");
 		System.err.println("For ExSID+ you have to replace idProduct 6001 with 6015!");
 		System.err.println();
 		System.err.println("... and on Fedora you do:");
-		System.err.println("$ sudo vi /etc/udev/rules.d/92-exsid.rules");
+		System.err.println("$ sudo vi /etc/udev/rules.d/93-exsid.rules");
 		System.err.println(
 				"ACTION==\"add\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", MODE=\"0666\", RUN+=\"/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'\"");
 		System.err.println("For ExSID+ you have to replace idProduct 6001 with 6015!");

@@ -149,7 +149,7 @@ public class JHardSIDBuilder implements HardwareSIDBuilder, Mixer {
 
 	private static void printLinuxInstallationHint() {
 		System.err.println("\"To give proper permissions, please type the following commands:\"");
-		System.err.println("sudo vi /etc/udev/rules.d/hardsid4u.rules");
+		System.err.println("sudo vi /etc/udev/rules.d/92-hardsid4u.rules");
 		System.err.println("\"Now, add the following single line:\"");
 		System.err.println(
 				"SUBSYSTEM==\"usb\",ATTR{idVendor}==\"6581\",ATTR{idProduct}==\"8580\",MODE=\"0660\",GROUP=\"plugdev\"");

@@ -1384,7 +1384,7 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="6581",ATTR{idProduct}=="8580",MODE="0660",GROU
                   </li>
                   <li>
                     Ubuntu with {{ $t("EXSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/92-exsid.rules</pre>
+                    <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
                     <pre>with contents:</pre>
                     <pre>
 ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'"</pre
@@ -1393,7 +1393,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
                     <pre>now reboot</pre>
                     Fedora Linux with {{ $t("EXSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/92-exsid.rules</pre>
+                    <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
                     <pre>with contents:</pre>
                     <pre>
 ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'"</pre
