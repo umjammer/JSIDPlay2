@@ -193,7 +193,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 		categoryItems = FXCollections.observableArrayList(getCategories(requestPresets()));
 		objectMapper = createObjectMapper();
 
-		searchResultItems = FXCollections.<SearchResult>observableArrayList();
+		searchResultItems = FXCollections.<SearchResult> observableArrayList();
 		SortedList<SearchResult> sortedSearchResultList = new SortedList<>(searchResultItems);
 		sortedSearchResultList.comparatorProperty().bind(assembly64Table.comparatorProperty());
 		assembly64Table.setItems(sortedSearchResultList);
@@ -211,7 +211,7 @@ public class Assembly64 extends C64VBox implements UIPart {
 		assembly64ContextMenu.setOnShown(event -> showAssembly64ContextMenu());
 		restoreColumns();
 
-		contentEntryItems = FXCollections.<ContentEntry>observableArrayList();
+		contentEntryItems = FXCollections.<ContentEntry> observableArrayList();
 		SortedList<ContentEntry> sortedContentEntryList = new SortedList<>(contentEntryItems);
 		sortedContentEntryList.comparatorProperty().bind(contentEntryTable.comparatorProperty());
 		contentEntryTable.setItems(sortedContentEntryList);
@@ -229,12 +229,12 @@ public class Assembly64 extends C64VBox implements UIPart {
 		directory.prefHeightProperty().bind(borderPane.heightProperty().multiply(0.4));
 
 		ratingComboBox.setItems(FXCollections
-				.<Integer>observableArrayList(concat(of(0), rangeClosed(1, 10)).boxed().collect(Collectors.toList())));
+				.<Integer> observableArrayList(concat(of(0), rangeClosed(1, 10)).boxed().collect(Collectors.toList())));
 		ratingComboBox.getSelectionModel().select(0);
 		ratingComboBox.setConverter(new IntegerToStringConverter(util.getBundle(), "ALL_CONTENT"));
 
 		ageComboBox.setConverter(new EnumToStringConverter<Age>(util.getBundle()));
-		ageComboBox.setItems(FXCollections.<Age>observableArrayList(Age.values()));
+		ageComboBox.setItems(FXCollections.<Age> observableArrayList(Age.values()));
 		ageComboBox.getSelectionModel().select(Age.ALL);
 
 		categoryComboBox.setConverter(new CategoryToStringConverter<Category>(util.getBundle()));
@@ -743,12 +743,11 @@ public class Assembly64 extends C64VBox implements UIPart {
 					|| Objects.equals(contentEntryTable.getSelectionModel().getSelectedItem(), this.contentEntry)) {
 				return;
 			}
-			this.contentEntry = contentEntryTable.getSelectionModel().getSelectedItem();
+			contentEntry = contentEntryTable.getSelectionModel().getSelectedItem();
 
-			File requestContentEntry = FileRequestPathServletParametersImpl.fetchAssembly64File(util.getConfig(),
+			contentEntryFile = FileRequestPathServletParametersImpl.fetchAssembly64File(util.getConfig(),
 					searchResult.getId(), String.valueOf(searchResult.getCategory().getId()), contentEntry.getId());
 
-			contentEntryFile = requestContentEntry;
 			directory.loadPreview(contentEntryFile);
 		} catch (IOException | URISyntaxException e) {
 			System.err.println(String.format("Cannot DOWNLOAD file '%s'.", contentEntry.getId()));
