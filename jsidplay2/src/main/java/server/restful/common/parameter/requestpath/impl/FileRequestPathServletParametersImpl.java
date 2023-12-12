@@ -92,7 +92,7 @@ public abstract class FileRequestPathServletParametersImpl {
 		return ASSEMBLY64_CSDB_REU_ID.equals(getCategoryId());
 	}
 
-	private File fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId)
+	public static  File fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId)
 			throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 		String encodedItemId = new String(Base64.getEncoder().encode(itemId.getBytes()));
@@ -110,6 +110,7 @@ public abstract class FileRequestPathServletParametersImpl {
 				|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file);
 
 		List<ContentEntry> contentEntriesToFetch = contentEntries.getContentEntry().stream()
+				.filter(e -> !e.getId().startsWith("__MACOSX"))
 				.filter(contentEntry -> Objects.equals(contentEntry.getId(), fileId)
 						|| (mustFetchAttachments && (DISK_FILE_FILTER.accept(new File(contentEntry.getId()))
 								|| TAPE_FILE_FILTER.accept(new File(contentEntry.getId()))
@@ -132,7 +133,7 @@ public abstract class FileRequestPathServletParametersImpl {
 		return result;
 	}
 
-	private void fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId,
+	public static  void fetchAssembly64File(Configuration configuration, String itemId, String categoryId, String fileId,
 			File contentEntryFile) throws IOException, URISyntaxException {
 		String assembly64Url = configuration.getOnlineSection().getAssembly64Url();
 

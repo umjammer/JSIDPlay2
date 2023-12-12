@@ -1,6 +1,5 @@
 package ui.assembly64;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.stream.IntStream.concat;
 import static java.util.stream.IntStream.of;
 import static java.util.stream.IntStream.rangeClosed;
@@ -10,21 +9,14 @@ import static ui.assembly64.SearchResult.NO;
 import static ui.assembly64.SearchResult.YES;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -36,7 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -73,7 +65,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import libsidplay.sidtune.SidTuneError;
-import libsidutils.IOUtils;
+import server.restful.common.parameter.requestpath.impl.FileRequestPathServletParametersImpl;
 import sidplay.Player;
 import ui.common.C64VBox;
 import ui.common.C64Window;
@@ -726,13 +718,13 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			URLConnection connection = null;
 			try {
-				URL url = new URI(assembly64Url + "/leet/search/legacy/entries/" + itemId + "/" + categoryId)
-						.toURL();
+				URL url = new URI(assembly64Url + "/leet/search/legacy/entries/" + itemId + "/" + categoryId).toURL();
 				connection = requestURL(url);
 				String responseString = readString(connection);
 				ContentEntrySearchResult contentEntry = objectMapper.readValue(responseString,
 						ContentEntrySearchResult.class);
-				contentEntryItems.setAll(contentEntry.getContentEntry());
+				contentEntryItems.setAll(contentEntry.getContentEntry().stream()
+						.filter(e -> !e.getId().startsWith("__MACOSX")).collect(Collectors.toList()));
 				contentEntryTable.getSelectionModel().select(contentEntryItems.stream().findFirst().orElse(null));
 				if (autostart.getAndSet(false)) {
 					autostart(null);
@@ -746,51 +738,24 @@ public class Assembly64 extends C64VBox implements UIPart {
 	}
 
 	private void getContentEntry(boolean doAutostart) {
-		this.contentEntry = contentEntryTable.getSelectionModel().getSelectedItem();
-		if (contentEntry == null) {
-			return;
-		}
 		try {
-			File requestContentEntry = requestContentEntry(contentEntry);
+			if (contentEntryTable.getSelectionModel().getSelectedItem() == null
+					|| Objects.equals(contentEntryTable.getSelectionModel().getSelectedItem(), this.contentEntry)) {
+				return;
+			}
+			this.contentEntry = contentEntryTable.getSelectionModel().getSelectedItem();
 
-			File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
-			File targetFile = new File(targetDir, requestContentEntry.getName());
-			targetDir.mkdirs();
-			Files.move(Paths.get(requestContentEntry.getAbsolutePath()), Paths.get(targetFile.getAbsolutePath()),
-					REPLACE_EXISTING);
+			File requestContentEntry = FileRequestPathServletParametersImpl.fetchAssembly64File(util.getConfig(),
+					searchResult.getId(), String.valueOf(searchResult.getCategory().getId()), contentEntry.getId());
 
-			contentEntryFile = targetFile;
+			contentEntryFile = requestContentEntry;
+			directory.loadPreview(contentEntryFile);
 		} catch (IOException | URISyntaxException e) {
 			System.err.println(String.format("Cannot DOWNLOAD file '%s'.", contentEntry.getId()));
-		}
-		directory.loadPreview(contentEntryFile);
-		if (doAutostart) {
-			autostart(null);
-		}
-	}
-
-	private File requestContentEntry(ContentEntry contentEntry)
-			throws FileNotFoundException, IOException, URISyntaxException {
-		// name without embedded sub-folder (sid/name.sid -> name.sid):
-		File targetDir = new File(util.getConfig().getSidplay2Section().getTmpDir(), UUID.randomUUID().toString());
-		targetDir.mkdir();
-
-		String name = new File(contentEntry.getId()).getName();
-		File contentEntryFile = new File(targetDir, name);
-
-		// request file, create checksum
-		String assembly64Url = util.getConfig().getOnlineSection().getAssembly64Url();
-		final String fileId = Base64.getEncoder().encodeToString(contentEntry.getId().getBytes());
-
-		URLConnection connection = null;
-		URL url = new URI(assembly64Url + "/leet/search/legacy/bin/" + searchResult.getId() + "/"
-				+ searchResult.getCategory().getId() + "/" + fileId).toURL();
-		connection = requestURL(url);
-		byte[] responseBytes = readBytes(connection.getInputStream());
-
-		try (OutputStream outputStream = new FileOutputStream(contentEntryFile)) {
-			outputStream.write(responseBytes);
-			return contentEntryFile;
+		} finally {
+			if (doAutostart) {
+				autostart(null);
+			}
 		}
 	}
 
@@ -865,12 +830,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 			}
 		}
 		return result.toString();
-	}
-
-	private byte[] readBytes(InputStream is) throws IOException {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		IOUtils.copy(is, os);
-		return os.toByteArray();
 	}
 
 }
