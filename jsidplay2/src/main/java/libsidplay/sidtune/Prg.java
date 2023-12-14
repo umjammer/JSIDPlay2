@@ -30,17 +30,15 @@ import libsidutils.sidid.SidIdV2;
 
 class Prg extends SidTune {
 
-	protected static final MessageDigest MD5_DIGEST;
 	private static final SidIdV2 SID_ID = new SidIdV2();
 	private static final SidIdInfo SID_ID_INFO = new SidIdInfo();
 
 	static {
 		try {
-			MD5_DIGEST = MessageDigest.getInstance("MD5");
 			SID_ID.readconfig();
 			SID_ID.setMultiScan(true);
 			SID_ID_INFO.readconfig();
-		} catch (final NoSuchAlgorithmException | IOException e) {
+		} catch (final IOException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 	}
@@ -119,10 +117,14 @@ class Prg extends SidTune {
 	@Override
 	public String getMD5Digest(MD5Method md5Method) {
 		StringBuilder md5 = new StringBuilder();
-		final byte[] encryptMsg = MD5_DIGEST.digest(program);
-		for (final byte anEncryptMsg : encryptMsg) {
-			md5.append(Character.forDigit((anEncryptMsg >> 4) & 0xF, 16));
-			md5.append(Character.forDigit((anEncryptMsg & 0xF), 16));
+		try {
+			final byte[] encryptMsg = MessageDigest.getInstance("MD5").digest(program);
+			for (final byte anEncryptMsg : encryptMsg) {
+				md5.append(Character.forDigit((anEncryptMsg >> 4) & 0xF, 16));
+				md5.append(Character.forDigit((anEncryptMsg & 0xF), 16));
+			}
+		} catch (final NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
 		}
 		return md5.toString();
 	}

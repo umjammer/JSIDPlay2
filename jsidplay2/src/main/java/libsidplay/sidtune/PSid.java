@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -605,10 +607,14 @@ class PSid extends Prg {
 			}
 
 			StringBuilder md5 = new StringBuilder();
-			final byte[] encryptMsg = MD5_DIGEST.digest(myMD5);
-			for (final byte anEncryptMsg : encryptMsg) {
-				md5.append(Character.forDigit((anEncryptMsg >> 4) & 0xF, 16));
-				md5.append(Character.forDigit((anEncryptMsg & 0xF), 16));
+			try {
+				final byte[] encryptMsg = MessageDigest.getInstance("MD5").digest(program);
+				for (final byte anEncryptMsg : encryptMsg) {
+					md5.append(Character.forDigit((anEncryptMsg >> 4) & 0xF, 16));
+					md5.append(Character.forDigit((anEncryptMsg & 0xF), 16));
+				}
+			} catch (final NoSuchAlgorithmException e) {
+				throw new RuntimeException(e);
 			}
 			return md5.toString();
 		} else {

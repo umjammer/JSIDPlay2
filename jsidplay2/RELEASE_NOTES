@@ -3,6 +3,7 @@ Release Notes:
 JSIDPlay2:
 New Java requirements: Use Java 17 or newer (Java 11 is NOT supported) or as an alternative Oracle-Java8 (we are still compatible) 
 New AArch64/ARM64 distributions added (e.g. for Apple M1), and as usual x64 releases
+New WAV and MP3 drivers added using ffmpeg and used by default
 Tools: Recording tool added for whole collections like HVSC using a configurable number of parallel threads
 Emulation: GMod2 cartridge support added (RAM expansion works fine, EEPROM functionality is untested)
 Assembly64: new search API used by Fredrik Åberg

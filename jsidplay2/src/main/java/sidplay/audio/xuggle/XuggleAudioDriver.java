@@ -61,7 +61,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 	private double ticksPerMicrosecond;
 	boolean aborted;
 
-	private ByteBuffer sampleBuffer;
+	protected ByteBuffer sampleBuffer;
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)

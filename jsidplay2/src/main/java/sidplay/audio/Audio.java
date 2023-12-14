@@ -22,6 +22,8 @@ import sidplay.audio.MP4Driver.MP4FileDriver;
 import sidplay.audio.SIDDumpDriver.SIDDumpFileDriver;
 import sidplay.audio.SIDRegDriver.SIDRegFileDriver;
 import sidplay.audio.WAVDriver.WAVFileDriver;
+import sidplay.audio.JWAVDriver.JWAVFileDriver;
+import sidplay.audio.JMP3Driver.JMP3FileDriver;
 
 /**
  * Audio output.
@@ -34,12 +36,16 @@ public enum Audio {
 	SOUNDCARD(JavaSound.class),
 	/** WAV file write. */
 	WAV(WAVFileDriver.class),
+	/** WAV file write (Java version). */
+	JWAV(JWAVFileDriver.class),
 	/** FLAC file write. */
 	FLAC(FLACFileDriver.class),
 	/** AAC file write. */
 	AAC(AACFileDriver.class),
 	/** MP3 file write. */
 	MP3(MP3FileDriver.class),
+	/** MP3 file write (Java version). */
+	JMP3(JMP3FileDriver.class),
 	/** FLV file write */
 	FLV(FLVFileDriver.class),
 	/** AVI file write. */
@@ -52,12 +58,16 @@ public enum Audio {
 	SID_DUMP(SIDDumpFileDriver.class),
 	/** Java Sound API plus WAV file write. */
 	LIVE_WAV(ProxyDriver.class, JavaSound.class, WAVFileDriver.class),
+	/** Java Sound API plus WAV file write (java version). */
+	LIVE_JWAV(ProxyDriver.class, JavaSound.class, JWAVFileDriver.class),
 	/** Java Sound API plus FLAC file write. */
 	LIVE_FLAC(ProxyDriver.class, JavaSound.class, FLACFileDriver.class),
 	/** Java Sound API plus AAC file write. */
 	LIVE_AAC(ProxyDriver.class, JavaSound.class, AACFileDriver.class),
 	/** Java Sound API plus MP3 file write. */
 	LIVE_MP3(ProxyDriver.class, JavaSound.class, MP3FileDriver.class),
+	/** Java Sound API plus MP3 file write (java version). */
+	LIVE_JMP3(ProxyDriver.class, JavaSound.class, JMP3FileDriver.class),
 	/** Java Sound API plus FLV file write. */
 	LIVE_FLV(ProxyDriver.class, JavaSound.class, FLVFileDriver.class),
 	/** Java Sound API plus AVI file write. */

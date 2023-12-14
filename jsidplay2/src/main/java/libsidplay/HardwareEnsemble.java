@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -57,7 +56,6 @@ public class HardwareEnsemble implements Ultimate64 {
 	private static final int JIFFYDOS_C1541_ROM_SIZE = 0x4000;
 	private static final byte[] JIFFYDOS_C64_KERNAL = new byte[JIFFYDOS_C64_ROM_SIZE];
 	private static final byte[] JIFFYDOS_C1541 = new byte[JIFFYDOS_C1541_ROM_SIZE];
-	private static final MessageDigest MD5_DIGEST;
 	private static final byte[] EOD_HACK = new byte[] { (byte) 0xEE, (byte) 0xAD, 0x56, 0x30, (byte) 0x90, 0x46, 0x37,
 			(byte) 0xCD, 0x3D, 0x4C, (byte) 0x85, (byte) 0x8F, 0x50, (byte) 0x86, 0x51, (byte) 0x92, };
 	private static final byte[] EOD_HACK2 = new byte[] { 0x49, (byte) 0xB1, (byte) 0xAD, 0x2D, 0x1A, 0x01, 0x26,
@@ -70,8 +68,7 @@ public class HardwareEnsemble implements Ultimate64 {
 						HardwareEnsemble.class.getResourceAsStream(JIFFYDOS_C1541_ROM))) {
 			isJiffyDosC64.readFully(JIFFYDOS_C64_KERNAL);
 			isJiffyDosC1541.readFully(JIFFYDOS_C1541);
-			MD5_DIGEST = MessageDigest.getInstance("MD5");
-		} catch (final NoSuchAlgorithmException | IOException e) {
+		} catch (final IOException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 	}
@@ -452,14 +449,15 @@ public class HardwareEnsemble implements Ultimate64 {
 
 	private void installHack(File file) {
 		try {
+			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 			try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-					DigestInputStream dis = new DigestInputStream(is, MD5_DIGEST)) {
+					DigestInputStream dis = new DigestInputStream(is, messageDigest)) {
 				// read the file and update the hash calculation
 				while (dis.read() != -1) {
 					;
 				}
 				// get the hash value as byte array
-				byte[] digest = MD5_DIGEST.digest();
+				byte[] digest = messageDigest.digest();
 				boolean hack = Arrays.equals(digest, EOD_HACK) || Arrays.equals(digest, EOD_HACK2);
 				if (hack) {
 					System.err.println("Edge of Disgrace hack has been installed!");

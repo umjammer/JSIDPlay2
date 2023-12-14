@@ -4,19 +4,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import com.xuggle.xuggler.ICodec.ID;
-
 import libsidplay.common.CPUClock;
 import libsidplay.common.EventScheduler;
-import libsidplay.common.SamplingRate;
 import libsidplay.config.IAudioSection;
 import sidplay.audio.wav.WAVHeader;
-import sidplay.audio.xuggle.XuggleAudioDriver;
 
 /**
  * Abstract base class to output a WAV to an output stream.
@@ -24,7 +20,7 @@ import sidplay.audio.xuggle.XuggleAudioDriver;
  * @author Ken Händel
  *
  */
-public abstract class WAVDriver extends XuggleAudioDriver {
+public abstract class JWAVDriver implements AudioDriver {
 
 	/**
 	 * File based driver to create a WAV file.
@@ -32,7 +28,7 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 	 * @author Ken Händel
 	 *
 	 */
-	public static class WAVFileDriver extends WAVDriver {
+	public static class JWAVFileDriver extends JWAVDriver {
 
 		private RandomAccessFile file;
 
@@ -49,7 +45,9 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 				try {
 					file.seek(0);
 					out.write(wavHeader.getBytes());
+					out.close();
 
+					file.close();
 				} catch (IOException e) {
 					throw new RuntimeException("Error closing WAV audio stream", e);
 				} finally {
@@ -69,14 +67,14 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 	 * @author Ken Händel
 	 *
 	 */
-	public static class WAVStreamDriver extends WAVDriver {
+	public static class JWAVStreamDriver extends JWAVDriver {
 
 		/**
 		 * Use several instances for parallel emulator instances, where applicable.
 		 *
 		 * @param out Output stream to write the encoded WAV to
 		 */
-		public WAVStreamDriver(OutputStream out) {
+		public JWAVStreamDriver(OutputStream out) {
 			this.out = out;
 		}
 
@@ -87,7 +85,14 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 
 	}
 
+	/**
+	 * Output stream to write the encoded WAV to.
+	 */
+	protected OutputStream out;
+
 	protected WAVHeader wavHeader;
+
+	private ByteBuffer sampleBuffer;
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
@@ -95,38 +100,44 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 		AudioConfig cfg = new AudioConfig(audioSection);
 		wavHeader = new WAVHeader(cfg.getChannels(), cfg.getFrameRate());
 
-		super.open(audioSection, recordingFilename, cpuClock, context);
+		out = getOut(recordingFilename);
+		out.write(wavHeader.getBytes());
+
+		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
+				.order(ByteOrder.LITTLE_ENDIAN);
 	}
 
 	@Override
 	public void write() throws InterruptedException {
-		wavHeader.advance(sampleBuffer.position());
-
-		super.write();
+		if (out == null) {
+			return;
+		}
+		try {
+			out.write(sampleBuffer.array(), 0, sampleBuffer.position());
+			wavHeader.advance(sampleBuffer.position());
+		} catch (final IOException e) {
+			throw new RuntimeException("Error writing WAV audio stream", e);
+		}
 	}
 
 	@Override
-	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.VERY_LOW, SamplingRate.LOW, SamplingRate.MEDIUM, SamplingRate.HIGH);
+	public void close() {
 	}
 
 	@Override
-	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
+	public ByteBuffer buffer() {
+		return sampleBuffer;
 	}
 
 	@Override
-	protected String getOutputFormatName() {
-		return "wav";
-	}
-
-	@Override
-	protected ID getAudioCodec() {
-		return ID.CODEC_ID_PCM_S16LE;
+	public boolean isRecording() {
+		return true;
 	}
 
 	@Override
 	public String getExtension() {
 		return ".wav";
 	}
+
+	protected abstract OutputStream getOut(String recordingFilename) throws IOException;
 }

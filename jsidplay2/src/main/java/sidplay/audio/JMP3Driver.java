@@ -29,7 +29,7 @@ public abstract class JMP3Driver implements AudioDriver {
 	 * @author Ken Händel
 	 *
 	 */
-	public static class MP3FileDriver extends JMP3Driver {
+	public static class JMP3FileDriver extends JMP3Driver {
 
 		@Override
 		protected OutputStream getOut(String recordingFilename) throws IOException {
@@ -60,14 +60,14 @@ public abstract class JMP3Driver implements AudioDriver {
 	 * @author Ken Händel
 	 *
 	 */
-	public static class MP3StreamDriver extends JMP3Driver {
+	public static class JMP3StreamDriver extends JMP3Driver {
 
 		/**
 		 * Use several instances for parallel emulator instances, where applicable.
 		 *
 		 * @param out Output stream to write the encoded MP3 to
 		 */
-		public MP3StreamDriver(OutputStream out) {
+		public JMP3StreamDriver(OutputStream out) {
 			this.out = out;
 		}
 
