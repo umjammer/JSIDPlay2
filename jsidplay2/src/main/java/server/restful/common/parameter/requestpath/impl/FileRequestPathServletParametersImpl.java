@@ -31,6 +31,7 @@ import server.restful.common.ServletUtil;
 import server.restful.common.parameter.ServletParameterParser;
 import ui.assembly64.ContentEntry;
 import ui.assembly64.ContentEntrySearchResult;
+import ui.common.Convenience;
 import ui.common.util.InternetUtil;
 import ui.entities.config.Configuration;
 import ui.entities.config.SidPlay2Section;
@@ -110,7 +111,7 @@ public abstract class FileRequestPathServletParametersImpl {
 				|| TAPE_FILE_FILTER.accept(file) || CART_FILE_FILTER.accept(file);
 
 		List<ContentEntry> contentEntriesToFetch = contentEntries.getContentEntry().stream()
-				.filter(e -> !e.getId().startsWith("__MACOSX"))
+				.filter(e -> !e.getId().startsWith(Convenience.MACOSX))
 				.filter(contentEntry -> Objects.equals(contentEntry.getId(), fileId)
 						|| (mustFetchAttachments && (DISK_FILE_FILTER.accept(new File(contentEntry.getId()))
 								|| TAPE_FILE_FILTER.accept(new File(contentEntry.getId()))

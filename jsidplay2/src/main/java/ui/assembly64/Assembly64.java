@@ -546,13 +546,11 @@ public class Assembly64 extends C64VBox implements UIPart {
 	}
 
 	private Collection<Presets> requestPresets() {
-		String assembly64Url = util.getConfig().getOnlineSection().getAssembly64Url();
-
-		URLConnection connection = null;
 		try {
+			String assembly64Url = util.getConfig().getOnlineSection().getAssembly64Url();
+
 			URL url = new URI(assembly64Url + "/leet/search/aql/presets").toURL();
-			connection = requestURL(url);
-			String responseString = readString(connection);
+			String responseString = readString(InternetUtil.openConnection(url, util.getConfig().getSidplay2Section()));
 			return new ObjectMapper().readValue(responseString, new TypeReference<List<Presets>>() {
 			});
 		} catch (IOException | URISyntaxException e) {
@@ -597,7 +595,6 @@ public class Assembly64 extends C64VBox implements UIPart {
 
 			String responseString = null;
 
-			URLConnection connection = null;
 			try {
 				Collection<String> searchCriterias = new ArrayList<>();
 				if (name != null) {
@@ -669,12 +666,10 @@ public class Assembly64 extends C64VBox implements UIPart {
 					// avoid to request everything, it would take too much time!
 					return;
 				}
-				URI uri = appendURI(new URI(assembly64Url + "/leet/search/aql/" + searchOffset + "/" + MAX_ROWS),
-						"query", query.toString());
+				URL url = appendURI(new URI(assembly64Url + "/leet/search/aql/" + searchOffset + "/" + MAX_ROWS),
+						query.toString()).toURL();
 
-				connection = requestURL(uri.toURL());
-
-				responseString = readString(connection);
+				responseString = readString(InternetUtil.openConnection(url, util.getConfig().getSidplay2Section()));
 
 				searchResultItems.setAll(objectMapper.readValue(responseString, SearchResult[].class));
 
@@ -716,22 +711,18 @@ public class Assembly64 extends C64VBox implements UIPart {
 			final String itemId = Base64.getEncoder().encodeToString(searchResult.getId().getBytes());
 			final Integer categoryId = searchResult.getCategory().getId();
 
-			URLConnection connection = null;
-			try {
-				URL url = new URI(assembly64Url + "/leet/search/legacy/entries/" + itemId + "/" + categoryId).toURL();
-				connection = requestURL(url);
-				String responseString = readString(connection);
-				ContentEntrySearchResult contentEntry = objectMapper.readValue(responseString,
-						ContentEntrySearchResult.class);
-				contentEntryItems.setAll(contentEntry.getContentEntry().stream()
-						.filter(e -> !e.getId().startsWith("__MACOSX")).collect(Collectors.toList()));
-				contentEntryTable.getSelectionModel().select(contentEntryItems.stream().findFirst().orElse(null));
-				if (autostart.getAndSet(false)) {
-					autostart(null);
-				}
-			} catch (IOException | URISyntaxException e) {
-				System.err.println("Unexpected result: " + e.getMessage());
+			URL url = new URI(assembly64Url + "/leet/search/legacy/entries/" + itemId + "/" + categoryId).toURL();
+			String responseString = readString(InternetUtil.openConnection(url, util.getConfig().getSidplay2Section()));
+			ContentEntrySearchResult contentEntry = objectMapper.readValue(responseString,
+					ContentEntrySearchResult.class);
+			contentEntryItems.setAll(contentEntry.getContentEntry().stream()
+					.filter(e -> !e.getId().startsWith(Convenience.MACOSX)).collect(Collectors.toList()));
+			contentEntryTable.getSelectionModel().select(contentEntryItems.stream().findFirst().orElse(null));
+			if (autostart.getAndSet(false)) {
+				autostart(null);
 			}
+		} catch (IOException | URISyntaxException e) {
+			System.err.println("Unexpected result: " + e.getMessage());
 		} finally {
 			Platform.runLater(() -> util.progressProperty(assembly64Table.getScene()).set(0));
 		}
@@ -810,12 +801,8 @@ public class Assembly64 extends C64VBox implements UIPart {
 		}
 	}
 
-	private URLConnection requestURL(URL url) throws IOException {
-		return InternetUtil.openConnection(url, util.getConfig().getSidplay2Section());
-	}
-
-	public URI appendURI(URI oldUri, String queryParamName, String queryParamValue) throws URISyntaxException {
-		String newQuery = queryParamName + "=" + queryParamValue;
+	public URI appendURI(URI oldUri, String queryParamValue) throws URISyntaxException {
+		String newQuery = "query=" + queryParamValue;
 		return new URI(oldUri.getScheme(), oldUri.getAuthority(), oldUri.getPath(), newQuery, oldUri.getFragment());
 	}
 

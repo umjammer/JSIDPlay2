@@ -113,7 +113,7 @@ public class ThrottlingDriver implements AudioDriver {
 
 	private String millisToDate(Long millis) {
 		if (millis == null) {
-			return "00:00:00.000";
+			return "???";
 		}
 		return new SimpleDateFormat("mm:ss:SSS").format(new Date(millis));
 	}
