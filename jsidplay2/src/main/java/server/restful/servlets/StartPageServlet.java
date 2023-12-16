@@ -18,19 +18,31 @@ import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.filters.TimeBasedRateLimiterFilter;
+import server.restful.common.filters.TimeDistanceBasedRateLimiterFilter;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "StartPageServlet", displayName = "StartPageServlet", urlPatterns = CONTEXT_ROOT_START_PAGE, description = "Start page")
 public class StartPageServlet extends JSIDPlay2Servlet {
 
 	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS, String.valueOf(MIN_TIME_BETWEEN_REQUESTS));
-		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE, String.valueOf(MAX_REQUESTS_PER_MINUTE));
+	public Map<Class<? extends HttpFilter>, Map<String, String>> getServletFiltersParameterMap() {
+		Map<Class<? extends HttpFilter>, Map<String, String>> result = new HashMap<>();
+
+		Map<String, String> timeDistanceBasedRateLimiterFilterParameters = new HashMap<>();
+		timeDistanceBasedRateLimiterFilterParameters.put(FILTER_PARAMETER_MIN_TIME_BETWEEN_REQUESTS,
+				String.valueOf(MIN_TIME_BETWEEN_REQUESTS));
+		result.put(TimeDistanceBasedRateLimiterFilter.class, timeDistanceBasedRateLimiterFilterParameters);
+
+		Map<String, String> timeBasedRateLimiterFilterParameters = new HashMap<>();
+		timeBasedRateLimiterFilterParameters.put(FILTER_PARAMETER_MAX_REQUESTS_PER_MINUTE,
+				String.valueOf(MAX_REQUESTS_PER_MINUTE));
+		result.put(TimeBasedRateLimiterFilter.class, timeBasedRateLimiterFilterParameters);
+
 		return result;
 	}
 

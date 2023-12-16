@@ -71,6 +71,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.common.Engine;
@@ -87,6 +88,8 @@ import server.restful.common.async.DefaultThreadFactory;
 import server.restful.common.async.HttpAsyncContextRunnable;
 import server.restful.common.converter.LocaleConverter;
 import server.restful.common.converter.WebResourceConverter;
+import server.restful.common.filters.HeadRequestFilter;
+import server.restful.common.filters.RTMPBasedRateLimiterFilter;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.FileRequestPathServletParameters;
 import server.restful.common.rtmp.HlsType;
@@ -331,10 +334,18 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_CONTENT_TYPE, MIME_TYPE_MPEG.getMimeType());
-		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(MAX_CONVERT_RTMP_IN_PARALLEL));
+	public Map<Class<? extends HttpFilter>, Map<String, String>> getServletFiltersParameterMap() {
+		Map<Class<? extends HttpFilter>, Map<String, String>> result = new HashMap<>();
+
+		Map<String, String> headRequestFilterParameters = new HashMap<>();
+		headRequestFilterParameters.put(FILTER_PARAMETER_CONTENT_TYPE, MIME_TYPE_MPEG.getMimeType());
+		result.put(HeadRequestFilter.class, headRequestFilterParameters);
+
+		Map<String, String> rtmpBasedRateLimiterFilterParameters = new HashMap<>();
+		rtmpBasedRateLimiterFilterParameters.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET,
+				String.valueOf(MAX_CONVERT_RTMP_IN_PARALLEL));
+		result.put(RTMPBasedRateLimiterFilter.class, rtmpBasedRateLimiterFilterParameters);
+
 		return result;
 	}
 

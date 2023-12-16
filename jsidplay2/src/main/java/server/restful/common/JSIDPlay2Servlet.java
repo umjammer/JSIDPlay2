@@ -35,6 +35,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -77,7 +78,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 	@Inject
 	protected Properties directoryProperties;
 
-	public Map<String, String> getServletFiltersParameterMap() {
+	public Map<Class<? extends HttpFilter>, Map<String, String>> getServletFiltersParameterMap() {
 		return Collections.emptyMap();
 	}
 

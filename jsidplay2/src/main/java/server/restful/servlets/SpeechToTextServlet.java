@@ -23,12 +23,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidplay.common.SamplingRate;
 import libsidutils.AudioUtils;
 import libsidutils.IOUtils;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.filters.CounterBasedRateLimiterFilter;
 import sidplay.audio.wav.WAVHeader;
 
 @SuppressWarnings("serial")
@@ -38,9 +40,14 @@ import sidplay.audio.wav.WAVHeader;
 public class SpeechToTextServlet extends JSIDPlay2Servlet {
 
 	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET, String.valueOf(MAX_SPEECH_TO_TEXT));
+	public Map<Class<? extends HttpFilter>, Map<String, String>> getServletFiltersParameterMap() {
+		Map<Class<? extends HttpFilter>, Map<String, String>> result = new HashMap<>();
+
+		Map<String, String> counterBasedRateLimiterFilterParameters = new HashMap<>();
+		counterBasedRateLimiterFilterParameters.put(FILTER_PARAMETER_MAX_REQUESTS_PER_SERVLET,
+				String.valueOf(MAX_SPEECH_TO_TEXT));
+		result.put(CounterBasedRateLimiterFilter.class, counterBasedRateLimiterFilterParameters);
+
 		return result;
 	}
 

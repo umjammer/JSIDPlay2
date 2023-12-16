@@ -40,6 +40,7 @@ import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.fingerprinting.FingerPrinting;
@@ -50,6 +51,7 @@ import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.LRUCache;
 import server.restful.common.async.DefaultThreadFactory;
 import server.restful.common.async.HttpAsyncContextRunnable;
+import server.restful.common.filters.RTMPBasedRateLimiterFilter;
 import ui.entities.whatssid.service.WhatsSidService;
 
 @SuppressWarnings("serial")
@@ -75,9 +77,14 @@ public class WhatsSidServlet extends JSIDPlay2Servlet {
 	}
 
 	@Override
-	public Map<String, String> getServletFiltersParameterMap() {
-		Map<String, String> result = new HashMap<>();
-		result.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET, String.valueOf(WHATSID_LOW_PRIO ? 1 : Integer.MAX_VALUE));
+	public Map<Class<? extends HttpFilter>, Map<String, String>> getServletFiltersParameterMap() {
+		Map<Class<? extends HttpFilter>, Map<String, String>> result = new HashMap<>();
+
+		Map<String, String> rtmpBasedRateLimiterFilterParameters = new HashMap<>();
+		rtmpBasedRateLimiterFilterParameters.put(FILTER_PARAMETER_MAX_RTMP_PER_SERVLET,
+				String.valueOf(WHATSID_LOW_PRIO ? 1 : Integer.MAX_VALUE));
+		result.put(RTMPBasedRateLimiterFilter.class, rtmpBasedRateLimiterFilterParameters);
+
 		return result;
 	}
 

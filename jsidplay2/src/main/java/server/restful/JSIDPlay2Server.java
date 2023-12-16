@@ -489,8 +489,11 @@ public final class JSIDPlay2Server {
 							filterDefinition.setFilter(servletFilter);
 
 							if (servlet instanceof JSIDPlay2Servlet) {
-								JSIDPlay2Servlet jsServlet = (JSIDPlay2Servlet) servlet;
-								filterDefinition.getParameterMap().putAll(jsServlet.getServletFiltersParameterMap());
+								Map<String, String> filterParameters = ((JSIDPlay2Servlet) servlet)
+										.getServletFiltersParameterMap().get(servletFilterCls);
+								if (filterParameters != null) {
+									filterDefinition.getParameterMap().putAll(filterParameters);
+								}
 							}
 							if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
 								filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME,
