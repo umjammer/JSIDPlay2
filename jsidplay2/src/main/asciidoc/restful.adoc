@@ -493,7 +493,7 @@ attacks from hackers.
 *Note:* I will not take responsability for any risks or damages.
 Do this on your own risk!
 
-=== JSIDPlay2 - RESTful service endpoints
+=== JSIDPlay2Server - RESTful service endpoints
 
 *Info:* Depending on the connection type of JSIDPlay2Server you
 have to use HTTP or HTTPS as protocol and port 8080 (HTTP) or
