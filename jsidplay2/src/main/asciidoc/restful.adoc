@@ -3,7 +3,7 @@
 The emulator can be started in server mode and gives access to various
 functionalities like real-time streaming of SIDs or audio recognition
 and more. You can implement your own client to access this emulator.
-The server mode of JSIDPlay2 is called "JSIDPlay2 AppServer"
+The server mode of JSIDPlay2 is called "JSIDPlay2Server"
 
 The service methods are available running the server as a command-line tool explained in this document
 or as an alternative by clicking start in JSIDPlay2 user interface version.
@@ -17,7 +17,7 @@ a line, this is for better readability and must not be entered for real.
 
 ==== General
 
-All the following RESTful service methods of JSIDPlay2 AppServer are
+All the following RESTful service methods of JSIDPlay2Server are
 using your configured music collections HVSC and CGSC.
 
 To make the following examples to work, first configure HVSC and
@@ -85,7 +85,7 @@ installation on Linux according to my situation here.
 
 If you as well, already have a web-server and want to host
 JSIDPlay2-server on the same machine, then you can use HTTPS using
-the same certificate for both: your web-server and JSIDPlay2 AppServer.
+the same certificate for both: your web-server and JSIDPlay2Server.
 This is a step by step instruction of how it works:
 
 First lets make the Apache2 web-server secure, which is
@@ -180,7 +180,7 @@ sudo -i -u ken /home/ken/jsidplay2-server.sh >> /var/log/jsidplay2cert.log 2>&1 
 ----
 <1> At last our server gets restarted with the renewed certificate,
 please refer to
-<<restful.ad#LaunchHttps,Launch JSIDPlay2 AppServer using HTTPS>>
+<<restful.ad#LaunchHttps,Launch JSIDPlay2Server using HTTPS>>
 
 Now, grant permission to execute that script by our cronjob:
 [source,subs="attributes+"]
@@ -191,9 +191,9 @@ sudo chmod 755 /usr/bin/jsidplay2cert
 As a result we get weekly a fresh new keystore (/etc/jsidplay2.ks).
 A log file for troubleshooting is placed here (/var/log/jsidplay2cert.log)
 
-=== Launch JSIDPlay2 AppServer using HTTP
+=== Launch JSIDPlay2Server using HTTP
 
-First lets explain how to start JSIDPlay2 AppServer in general
+First lets explain how to start JSIDPlay2Server in general
 for unencrypted HTTP connections and without
 the created keystore above.
 
@@ -208,20 +208,20 @@ please use the following command.
 ----
 java -classpath jsidplay2-{version}-ui.jar server.restful.JSIDPlay2Server # <1>
 ----
-<1> Launch the JSIDPlay2 AppServer standalone
+<1> Launch the JSIDPlay2Server standalone
 
 For all supported parameters, please type:
 [source,subs="attributes+"]
 ----
 java -classpath jsidplay2-{version}-ui.jar server.restful.JSIDPlay2Server --help # <1>
 ----
-<1> Show usage of the JSIDPlay2 AppServer standalone
+<1> Show usage of the JSIDPlay2Server standalone
 
-=== Launch JSIDPlay2 AppServer using HTTPS
+=== Launch JSIDPlay2Server using HTTPS
 
 [[LaunchHttps]]
 
-Now lets explain how to start JSIDPlay2 AppServer using
+Now lets explain how to start JSIDPlay2Server using
 encrypted HTTPS connections with the keystore created above.
 
 To start the JSIPlay2 AppServer with HTTPS using the formerly
@@ -240,7 +240,7 @@ java -classpath {artifactId}-{version}-ui.jar server.restful.JSIDPlay2Server \
 	--appServerKeyPassword jsidplay2 \
 	--appServerConnectors HTTPS & # <1>
 ----
-<1> Launch the JSIDPlay2 AppServer using HTTPS standalone
+<1> Launch the JSIDPlay2Server using HTTPS standalone
 
 *Note:* Parameter appServerConnectors controls if we want
 to support HTTP, HTTPS or both!
@@ -259,7 +259,7 @@ Now, we are finished to launch JSIDPlay2 using HTTP or HTTPS
 
 === Create database for WhatsSID? tune recognition
 
-JSIDPlay2 AppServer can optionally serve audio recognition requests
+JSIDPlay2Server can optionally serve audio recognition requests
 to answer the question: What tune is currently played.
 This is similar to what the commercial Shazam app does.
 
@@ -389,9 +389,9 @@ java -Dhibernate.dialect.storage_engine=innodb \
 <3> pathToMusicCollection is the base directory to recursively create
 audio fingerprintings. This can be pathToHVSC or the path for CGSC!
 
-=== Launch JSIDPlay2 AppServer with additional WhatsSID? tune recognition
+=== Launch JSIDPlay2Server with additional WhatsSID? tune recognition
 
-Now lets explain how to start JSIDPlay2 AppServer providing audio
+Now lets explain how to start JSIDPlay2Server providing audio
 recognition.
 
 *Note:* You must create a database beforehand, that was explained
@@ -417,9 +417,9 @@ java -Dhibernate.dialect.storage_engine=innodb \
 	--whatsSIDDatabasePassword <password> \
 	--whatsSIDDatabaseDialect org.hibernate.dialect.MySQL55Dialect & # <1>
 ----
-<1> Launch the JSIDPlay2 AppServer using WhatsSID? tune recognition
+<1> Launch the JSIDPlay2Server using WhatsSID? tune recognition
 
-=== Autostart JSIDPlay2 AppServer on system startup
+=== Autostart JSIDPlay2Server on system startup
 
 To start JSIPlay2 AppServer on system startup, please type
 'vi /etc/systemd/system/jsidplay2.service'.
@@ -493,9 +493,9 @@ attacks from hackers.
 *Note:* I will not take responsability for any risks or damages.
 Do this on your own risk!
 
-=== JSIDPlay2 AppServer Usage of the RESTful services
+=== JSIDPlay2 - RESTful service endpoints
 
-*Info:* Depending on the connection type of JSIDPlay2 AppServer you
+*Info:* Depending on the connection type of JSIDPlay2Server you
 have to use HTTP or HTTPS as protocol and port 8080 (HTTP) or
 8443 (HTTPS). Please refer the command-line parameters
 appServerConnectors, appServerPort and appServerSecurePort!
@@ -504,7 +504,7 @@ appServerConnectors, appServerPort and appServerSecurePort!
 
 link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/filters[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/filters]
 
-Note: SID filter names are prefixed with the emulation engine
+Note: SID filter names are prefixed with the emulation
 (RESID or RESIDFP) and the SID model (MOS6581 or MOS8580) and
 appended by their name, e.g. RESID_MOS8580_FilterAverage8580,
 That way filters can be grouped or sorted on the client side.
@@ -582,13 +582,20 @@ link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/disk-director
 
 Return a list of directory entries of a C64 disk as PETSCII characters.
 
-==== Get contents of the first SID favorites tab
+==== Get favorite names
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorite_names[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorite_names]
 
-Return a list of favorite tune files.
+Return a list of favorite names.
 
-*Note:* If there is more than one favorites list, the first non-empty one is returned
+==== Get favorites
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites?favoritesNumber=0[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites?favoritesNumber=0]
+
+Return favorite tune files.
+
+*Note:* The favorite names endpoint can be used to know hw many favorites exist. And the favorites entpoint will fetch these.
+If this is called without a parameter, just the first favorites are fetched.
 
 ==== Get composer photo
 
@@ -609,6 +616,52 @@ Example:
 link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/download/C64Music/MUSICIANS/D/DRAX/Acid.sid[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/download/C64Music/MUSICIANS/D/DRAX/Acid.sid]
 
 Download a tune file of your music collection.
+
+==== Random HVSC
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/random-hvsc[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/random-hvsc]
+
+Get a random tune file of your HVSC music collection.
+
+==== Upload C64 content
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/upload[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/upload[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/upload/path/to/file.extension]
+
+Upload C64 content to JSIDPlay2Server, to play-back in the next step.
+
+==== Get HardSID 4U, HardSID UPlay and HardSID Uno mapping information
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/hardsid-mapping[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/hardsid-mapping/C64Music/MUSICIANS/D/DRAX/Acid.sid?chipCount=1[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/hardsid-mapping/C64Music/MUSICIANS/D/DRAX/Acid.sid?chipCount=1]
+
+Get HardSID 4U, HardSID UPlay and HardSID Uno SID mapping information.
+
+==== Get ExSID(+) mapping information
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/exsid-mapping[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/exsid-mapping/C64Music/MUSICIANS/D/DRAX/Acid.sid[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/exsid-mapping/C64Music/MUSICIANS/D/DRAX/Acid.sid?chipCount=1]
+
+Get ExSID(+) SID mapping information.
+
+==== Get SIDBlaster mapping information
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/sidblaster-mapping[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/sidblaster-mapping/C64Music/MUSICIANS/D/DRAX/Acid.sid[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/sidblaster-mapping/C64Music/MUSICIANS/D/DRAX/Acid.sid]
+
+Get SIDBlaster SID mapping information.
 
 ==== Stream SID as MP3
 
@@ -764,7 +817,71 @@ Only the first file gets analyzed, though.
 *Note:* The confidence level in the response gives you an idea of
 how certain the tune has been identified. The bigger the better.
 
-=== Example Clients for JSIDPlay2 AppServer
+==== Insert next cartridge
+
+link:{protocol}://{hostname}:{port}/static/insert_next_cart[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/insert_next_cart?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static/insert_next_cart?name=a19f569a-9cc3-11ee-8c90-0242ac120002]
+
+Insert next cart for a Player running as a RTMP live video stream.
+
+==== Insert next disk
+
+link:{protocol}://{hostname}:{port}/static/insert_next_disk[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/insert_next_disk?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static/insert_next_disk?name=a19f569a-9cc3-11ee-8c90-0242ac120002]
+
+Insert next disk for a Player running as a RTMP live video stream.
+
+==== Press joystick button
+
+link:{protocol}://{hostname}:{port}/static/joystick[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/joystick?name=a19f569a-9cc3-11ee-8c90-0242ac120002&number=0&value=16[{protocol}://{hostname}:{port}/static/joystick?name=a19f569a-9cc3-11ee-8c90-0242ac120002&number=0&value=16]
+
+Press joystick 1/2 for Player running as a RTMP live video stream.
+
+==== Press keyboard key
+
+link:{protocol}://{hostname}:{port}/static/press_key[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/press_key?name=a19f569a-9cc3-11ee-8c90-0242ac120002&type=RETURN[{protocol}://{hostname}:{port}/static/press_key?name=a19f569a-9cc3-11ee-8c90-0242ac120002&type=RETURN]
+
+Press key for Player running as a RTMP live video stream.
+
+==== Set default emulation to RESIDfp
+
+link:{protocol}://{hostname}:{port}/static/set_default_emulation_residfp?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_residfp]
+
+Set default emulation to RESIDFP for Player running as a RTMP live video stream.
+
+==== Set default emulation to RESID
+
+link:{protocol}://{hostname}:{port}/static/set_default_emulation_resid?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_resid]
+
+Set default emulation to RESID for Player running as a RTMP live video stream.
+
+==== Set default SID model to 6581
+
+link:{protocol}://{hostname}:{port}/static/set_default_sid_model_6581?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_6581]
+
+Set default chip model to MOS6581 for Player running as a RTMP live video stream.
+
+==== Set default SID model to 8580
+
+link:{protocol}://{hostname}:{port}/static/set_default_sid_model_8580?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_8580]
+
+Set default chip model to MOS8580 for Player running as a RTMP live video stream.
+
+=== Example Clients for JSIDPlay2Server
 
 Source code of the example Android app using the RESTful web-service
 interface can be found link:https://github.com/kenchis/JSIDPlay2[here^].
