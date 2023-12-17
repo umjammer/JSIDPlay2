@@ -1,3 +1,7 @@
+Java requirements:
+==================
+Use Java 17 or newer (Java 11 is NOT supported) or as an alternative Oracle-Java8 (we are still compatible) 
+
 Work with Eclipse:
 ==================
 From the command-line:
