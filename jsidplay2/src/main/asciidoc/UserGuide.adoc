@@ -10,7 +10,7 @@ The most popular collections are:
 
 * High Voltage SID Collection (HVSC) - the biggest SID music collection on earth https://www.hvsc.de/
 * Compute's Gazette SID Collection (CGSC) - A collection of COMPUTE!'s Sidplayer music containing tons of stereo files
-link:https://www.btinternet.com/~pweighill/music/[https://www.btinternet.com/~pweighill/music/^]
+link:http://www.c64music.co.uk/[http://www.c64music.co.uk/^]
 * Stone Oakvalley's Authentic SID Collection (SOASC=) - A recording project containing SID music both in SID and MP3 format.
 link:https://www.6581-8580.com[https://www.6581-8580.com^]
 * HVMEC (High Voltage Music Engine Collection) - A collection of music editors, trackers and other music and sound effect makers
@@ -19,7 +19,7 @@ link:https://www.6581-8580.com[https://www.6581-8580.com^]
 
 .Supported File Formats
 |===
-|  |  
+| Format | Description 
 
 | SID | HVSC format (PSID v1-4, RSID v2,3 or Basic), the old MUS-specific PSIDs are no more supported by this player!
 | MUS | CGSC stereo format (voices 1-3)
@@ -334,6 +334,7 @@ Each tab can be opened exactly once.
 | View/Online/JSIDPlay2 Source Code | Show source code of JSIDPlay2 in a web browser view
 | View/Printer | Open the printer view (as a replacement for paper)
 | View/Console | Show console output and error messages
+| View/Recording | Show recently created recording
 
 
 |===
@@ -350,6 +351,7 @@ The player menu is to control playback of a tune.
 | Player/Normal speed | Play song in normal speed
 | Player/Fast Forward | Play song twice as fast (up to 5x)
 | Player/Stop | Stop emulation, song playback stopped
+| Player/Playlist starts with song 1 | Choose playlists to start with start song or song 1
 
 |===
 
