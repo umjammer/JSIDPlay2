@@ -109,7 +109,7 @@ Remote Debugging:
 
 Internal Testing the build (Java8 and newer):
 =============================================
-cd workspace/jsidplay2
+cd target/standalone
 cp ../deploy/*.sh .
 chmod +x *.sh
 ./jsidplay2-console.sh 
