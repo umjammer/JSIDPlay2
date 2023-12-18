@@ -488,17 +488,9 @@ public final class JSIDPlay2Server {
 							filterDefinition.setFilterName(filterName);
 							filterDefinition.setFilter(servletFilter);
 
-							if (servlet instanceof JSIDPlay2Servlet) {
-								Map<String, String> filterParameters = ((JSIDPlay2Servlet) servlet)
-										.getServletFiltersParameterMap().get(servletFilterCls);
-								if (filterParameters != null) {
-									filterDefinition.getParameterMap().putAll(filterParameters);
-								}
-							}
-							if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
-								filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME,
-										webServlet.name());
-							}
+							addServletFilterParameters(servletFilterCls, servlet, webServlet, webFilter,
+									filterDefinition);
+
 							context.addFilterDef(filterDefinition);
 
 							FilterMap filterMapping = new FilterMap();
@@ -517,6 +509,20 @@ public final class JSIDPlay2Server {
 					}
 				}
 			}
+		}
+	}
+
+	private void addServletFilterParameters(Class<?> servletFilterCls, Servlet servlet, WebServlet webServlet,
+			WebFilter webFilter, FilterDef filterDefinition) {
+		if (servlet instanceof JSIDPlay2Servlet) {
+			Map<String, String> filterParameters = ((JSIDPlay2Servlet) servlet).getServletFiltersParameterMap()
+					.get(servletFilterCls);
+			if (filterParameters != null) {
+				filterDefinition.getParameterMap().putAll(filterParameters);
+			}
+		}
+		if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
+			filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME, webServlet.name());
 		}
 	}
 

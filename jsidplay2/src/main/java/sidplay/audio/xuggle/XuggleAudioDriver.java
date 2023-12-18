@@ -59,7 +59,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 	private IMediaWriter writer;
 	private long firstTimeStamp;
 	private double ticksPerMicrosecond;
-	boolean aborted;
+	private boolean aborted;
 
 	protected ByteBuffer sampleBuffer;
 
