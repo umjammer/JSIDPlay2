@@ -34,7 +34,7 @@ public abstract class FLACDriver extends XuggleAudioDriver {
 			super.close();
 			if (out != null) {
 				try {
-					((FileOutputStream) out).close();
+					out.close();
 				} catch (IOException e) {
 					throw new RuntimeException("Error closing FLAC audio stream", e);
 				} finally {

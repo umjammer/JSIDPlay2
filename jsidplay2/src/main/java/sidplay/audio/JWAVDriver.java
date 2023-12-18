@@ -41,6 +41,7 @@ public abstract class JWAVDriver implements AudioDriver {
 
 		@Override
 		public void close() {
+			super.close();
 			if (out != null && file != null) {
 				try {
 					file.seek(0);
@@ -55,7 +56,6 @@ public abstract class JWAVDriver implements AudioDriver {
 					file = null;
 				}
 			}
-			super.close();
 		}
 	}
 

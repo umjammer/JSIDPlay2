@@ -33,7 +33,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	private class AbortingOutputStreamHandler extends InputOutputStreamHandler {
 		public AbortingOutputStreamHandler(OutputStream out) {
-			super(null, out, true);
+			super(null, out, false);
 		}
 
 		public int write(byte[] buf, int size) {
@@ -96,7 +96,7 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 	@Override
 	public void write() throws InterruptedException {
 		if (aborted) {
-			throw new RuntimeException("Error writing MP3 audio stream");
+			throw new RuntimeException("Error writing audio stream");
 		}
 		long timeStamp = getTimeStamp();
 

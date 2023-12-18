@@ -38,7 +38,7 @@ public abstract class AACDriver extends XuggleAudioDriver {
 			super.close();
 			if (out != null) {
 				try {
-					((FileOutputStream) out).close();
+					out.close();
 				} catch (IOException e) {
 					throw new RuntimeException("Error closing AAC audio stream", e);
 				} finally {

@@ -45,11 +45,14 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 
 		@Override
 		public void close() {
+			super.close();
 			if (out != null && file != null) {
 				try {
 					file.seek(0);
 					out.write(wavHeader.getBytes());
+					out.close();
 
+					file.close();
 				} catch (IOException e) {
 					throw new RuntimeException("Error closing WAV audio stream", e);
 				} finally {
@@ -57,7 +60,6 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 					file = null;
 				}
 			}
-			super.close();
 		}
 	}
 
