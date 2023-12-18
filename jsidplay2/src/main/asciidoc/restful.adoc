@@ -711,6 +711,70 @@ For example defaultLength=180 sets the default song length.
 *Info:* The audio parameter let you choose AVI as an alternative, but
 beware of a much bigger file size.
 
+==== Insert next cartridge
+
+link:{protocol}://{hostname}:{port}/static/insert_next_cart[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/insert_next_cart?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static/insert_next_cart?name=a19f569a-9cc3-11ee-8c90-0242ac120002]
+
+Insert next cart for a Player running as a RTMP live video stream.
+
+==== Insert next disk
+
+link:{protocol}://{hostname}:{port}/static/insert_next_disk[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/insert_next_disk?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static/insert_next_disk?name=a19f569a-9cc3-11ee-8c90-0242ac120002]
+
+Insert next disk for a Player running as a RTMP live video stream.
+
+==== Press joystick button
+
+link:{protocol}://{hostname}:{port}/static/joystick[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/joystick?name=a19f569a-9cc3-11ee-8c90-0242ac120002&number=0&value=16[{protocol}://{hostname}:{port}/static/joystick?name=a19f569a-9cc3-11ee-8c90-0242ac120002&number=0&value=16]
+
+Press joystick 1/2 for Player running as a RTMP live video stream.
+
+==== Press keyboard key
+
+link:{protocol}://{hostname}:{port}/static/press_key[Usage]
+
+Example:
+
+link:{protocol}://{hostname}:{port}/static/press_key?name=a19f569a-9cc3-11ee-8c90-0242ac120002&type=RETURN[{protocol}://{hostname}:{port}/static/press_key?name=a19f569a-9cc3-11ee-8c90-0242ac120002&type=RETURN]
+
+Press key for Player running as a RTMP live video stream.
+
+==== Set default emulation to RESIDfp
+
+link:{protocol}://{hostname}:{port}/static/set_default_emulation_residfp?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_residfp]
+
+Set default emulation to RESIDFP for Player running as a RTMP live video stream.
+
+==== Set default emulation to RESID
+
+link:{protocol}://{hostname}:{port}/static/set_default_emulation_resid?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_resid]
+
+Set default emulation to RESID for Player running as a RTMP live video stream.
+
+==== Set default SID model to 6581
+
+link:{protocol}://{hostname}:{port}/static/set_default_sid_model_6581?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_6581]
+
+Set default chip model to MOS6581 for Player running as a RTMP live video stream.
+
+==== Set default SID model to 8580
+
+link:{protocol}://{hostname}:{port}/static/set_default_sid_model_8580?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_8580]
+
+Set default chip model to MOS8580 for Player running as a RTMP live video stream.
+
 ==== Upload WAV for tune recognition
 
 *Info:* This service method does only work, if server has been started
@@ -816,70 +880,6 @@ Only the first file gets analyzed, though.
 
 *Note:* The confidence level in the response gives you an idea of
 how certain the tune has been identified. The bigger the better.
-
-==== Insert next cartridge
-
-link:{protocol}://{hostname}:{port}/static/insert_next_cart[Usage]
-
-Example:
-
-link:{protocol}://{hostname}:{port}/static/insert_next_cart?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static/insert_next_cart?name=a19f569a-9cc3-11ee-8c90-0242ac120002]
-
-Insert next cart for a Player running as a RTMP live video stream.
-
-==== Insert next disk
-
-link:{protocol}://{hostname}:{port}/static/insert_next_disk[Usage]
-
-Example:
-
-link:{protocol}://{hostname}:{port}/static/insert_next_disk?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static/insert_next_disk?name=a19f569a-9cc3-11ee-8c90-0242ac120002]
-
-Insert next disk for a Player running as a RTMP live video stream.
-
-==== Press joystick button
-
-link:{protocol}://{hostname}:{port}/static/joystick[Usage]
-
-Example:
-
-link:{protocol}://{hostname}:{port}/static/joystick?name=a19f569a-9cc3-11ee-8c90-0242ac120002&number=0&value=16[{protocol}://{hostname}:{port}/static/joystick?name=a19f569a-9cc3-11ee-8c90-0242ac120002&number=0&value=16]
-
-Press joystick 1/2 for Player running as a RTMP live video stream.
-
-==== Press keyboard key
-
-link:{protocol}://{hostname}:{port}/static/press_key[Usage]
-
-Example:
-
-link:{protocol}://{hostname}:{port}/static/press_key?name=a19f569a-9cc3-11ee-8c90-0242ac120002&type=RETURN[{protocol}://{hostname}:{port}/static/press_key?name=a19f569a-9cc3-11ee-8c90-0242ac120002&type=RETURN]
-
-Press key for Player running as a RTMP live video stream.
-
-==== Set default emulation to RESIDfp
-
-link:{protocol}://{hostname}:{port}/static/set_default_emulation_residfp?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_residfp]
-
-Set default emulation to RESIDFP for Player running as a RTMP live video stream.
-
-==== Set default emulation to RESID
-
-link:{protocol}://{hostname}:{port}/static/set_default_emulation_resid?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_resid]
-
-Set default emulation to RESID for Player running as a RTMP live video stream.
-
-==== Set default SID model to 6581
-
-link:{protocol}://{hostname}:{port}/static/set_default_sid_model_6581?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_6581]
-
-Set default chip model to MOS6581 for Player running as a RTMP live video stream.
-
-==== Set default SID model to 8580
-
-link:{protocol}://{hostname}:{port}/static/set_default_sid_model_8580?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_8580]
-
-Set default chip model to MOS8580 for Player running as a RTMP live video stream.
 
 === Example Clients for JSIDPlay2Server
 

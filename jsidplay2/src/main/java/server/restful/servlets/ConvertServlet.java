@@ -110,7 +110,6 @@ import sidplay.audio.SIDDumpDriver.SIDDumpStreamDriver;
 import sidplay.audio.SIDRegDriver.Format;
 import sidplay.audio.SIDRegDriver.SIDRegStreamDriver;
 import sidplay.audio.ThrottlingDriver;
-import sidplay.audio.WAVDriver.WAVStreamDriver;
 import sidplay.ini.IniConfig;
 import ui.common.Convenience;
 import ui.common.ConvenienceResult;
@@ -470,8 +469,6 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			private AudioDriver getAudioDriverOfAudioFormat(HttpServletResponse response,
 					ConvertServletParameters servletParameters) throws IOException {
 				switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
-				case WAV:
-					return getThrottlingDriver(new WAVStreamDriver(response.getOutputStream()), servletParameters);
 				case FLAC:
 					return getThrottlingDriver(new FLACStreamDriver(response.getOutputStream()), servletParameters);
 				case AAC:

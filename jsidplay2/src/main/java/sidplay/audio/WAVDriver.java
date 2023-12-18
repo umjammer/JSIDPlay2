@@ -67,6 +67,8 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 	 * Driver to write into an WAV output stream.<BR>
 	 *
 	 * <B>Note:</B> The caller is responsible of closing the output stream
+	 * <B>Note:</B> WAV header is missing using the XuggleAudioDriver, therefore
+	 * kind of useless
 	 *
 	 * @author Ken Händel
 	 *
