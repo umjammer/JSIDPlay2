@@ -469,6 +469,8 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			private AudioDriver getAudioDriverOfAudioFormat(HttpServletResponse response,
 					ConvertServletParameters servletParameters) throws IOException {
 				switch (Optional.ofNullable(servletParameters.config.getAudioSection().getAudio()).orElse(MP3)) {
+//				case WAV: // WAV header contains length, but is unknown until the end, therefore no chance:
+//					return getThrottlingDriver(new WAVStreamDriver(response.getOutputStream()), servletParameters);
 				case FLAC:
 					return getThrottlingDriver(new FLACStreamDriver(response.getOutputStream()), servletParameters);
 				case AAC:
