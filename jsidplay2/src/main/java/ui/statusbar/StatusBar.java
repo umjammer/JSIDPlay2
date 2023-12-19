@@ -138,7 +138,7 @@ public class StatusBar extends C64VBox implements UIPart {
 		propertyChangeListener = new StateChangeListener();
 		util.getPlayer().stateProperty().addListener(propertyChangeListener);
 
-		final Duration duration = Duration.millis(1000);
+		final Duration duration = Duration.millis(500);
 		final KeyFrame frame = new KeyFrame(duration, evt -> setStatusLine());
 		timer = new Timeline(frame);
 		timer.setCycleCount(Animation.INDEFINITE);
