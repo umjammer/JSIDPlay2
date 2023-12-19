@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.stream.Collectors;
@@ -487,9 +488,7 @@ public final class JSIDPlay2Server {
 							filterDefinition.setFilterClass(servletFilterCls.getName());
 							filterDefinition.setFilterName(filterName);
 							filterDefinition.setFilter(servletFilter);
-
-							addServletFilterParameters(servletFilterCls, servlet, webServlet, webFilter,
-									filterDefinition);
+							filterDefinition.getParameterMap().putAll(getFilterParameters(servletFilter, servlet));
 
 							context.addFilterDef(filterDefinition);
 
@@ -512,18 +511,18 @@ public final class JSIDPlay2Server {
 		}
 	}
 
-	private void addServletFilterParameters(Class<?> servletFilterCls, Servlet servlet, WebServlet webServlet,
-			WebFilter webFilter, FilterDef filterDefinition) {
+	private Map<String, String> getFilterParameters(HttpFilter servletFilter, Servlet servlet) {
+		Map<String, String> result = new HashMap<>();
+
+		Class<? extends HttpFilter> servletFilterClz = servletFilter.getClass();
 		if (servlet instanceof JSIDPlay2Servlet) {
-			Map<String, String> filterParameters = ((JSIDPlay2Servlet) servlet).getServletFiltersParameterMap()
-					.get(servletFilterCls);
-			if (filterParameters != null) {
-				filterDefinition.getParameterMap().putAll(filterParameters);
-			}
+			Optional.ofNullable(((JSIDPlay2Servlet) servlet).getServletFiltersParameterMap().get(servletFilterClz))
+					.ifPresent(result::putAll);
 		}
-		if (RequestLogFilter.class.getSimpleName().equals(webFilter.filterName())) {
-			filterDefinition.getParameterMap().put(FILTER_PARAMETER_SERVLET_NAME, webServlet.name());
+		if (RequestLogFilter.class.equals(servletFilterClz)) {
+			result.put(FILTER_PARAMETER_SERVLET_NAME, servlet.getClass().getSimpleName());
 		}
+		return result;
 	}
 
 	private void addServletSecurity(Context context, List<Servlet> servlets) {
