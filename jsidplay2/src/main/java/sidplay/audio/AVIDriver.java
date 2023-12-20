@@ -1,5 +1,11 @@
 package sidplay.audio;
 
+import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_H264;
+import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_MP3;
+import static libsidplay.common.SamplingRate.LOW;
+import static libsidplay.common.SamplingRate.MEDIUM;
+import static libsidplay.common.SamplingRate.VERY_LOW;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,30 +40,30 @@ public abstract class AVIDriver extends XuggleVideoDriver {
 	}
 
 	@Override
-	protected String getOutputFormatName() {
-		return "avi";
-	}
-
-	@Override
 	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.VERY_LOW, SamplingRate.LOW, SamplingRate.MEDIUM);
+		return Arrays.asList(VERY_LOW, LOW, MEDIUM);
 	}
 
 	@Override
 	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
+		return LOW;
 	}
 
 	@Override
 	protected ID getVideoCodec() {
-		return ID.CODEC_ID_H264;
+		return CODEC_ID_H264;
 	}
 
 	@Override
 	protected ID getAudioCodec() {
-		return ID.CODEC_ID_MP3;
+		return CODEC_ID_MP3;
 	}
 
+	@Override
+	protected String getOutputFormatName() {
+		return "avi";
+	}
+	
 	@Override
 	public String getExtension() {
 		return ".avi";

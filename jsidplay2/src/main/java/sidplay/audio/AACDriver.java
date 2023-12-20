@@ -1,5 +1,11 @@
 package sidplay.audio;
 
+import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_AAC;
+import static libsidplay.common.SamplingRate.HIGH;
+import static libsidplay.common.SamplingRate.LOW;
+import static libsidplay.common.SamplingRate.MEDIUM;
+import static libsidplay.common.SamplingRate.VERY_LOW;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -61,8 +67,7 @@ public abstract class AACDriver extends XuggleAudioDriver {
 		/**
 		 * Use several instances for parallel emulator instances, where applicable.
 		 *
-		 * @param out
-		 *            Output stream to write the encoded AAC to
+		 * @param out Output stream to write the encoded AAC to
 		 */
 		public AACStreamDriver(OutputStream out) {
 			this.out = out;
@@ -77,26 +82,27 @@ public abstract class AACDriver extends XuggleAudioDriver {
 
 	@Override
 	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.VERY_LOW, SamplingRate.LOW, SamplingRate.MEDIUM, SamplingRate.HIGH);
+		return Arrays.asList(VERY_LOW, LOW, MEDIUM, HIGH);
 	}
 
 	@Override
 	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
+		return LOW;
+	}
+
+	@Override
+	protected ID getAudioCodec() {
+		return CODEC_ID_AAC;
 	}
 
 	@Override
 	protected String getOutputFormatName() {
 		return "adts";
 	}
-
-	@Override
-	protected ID getAudioCodec() {
-		return ID.CODEC_ID_AAC;
-	}
-
+	
 	@Override
 	public String getExtension() {
 		return ".aac";
 	}
+
 }

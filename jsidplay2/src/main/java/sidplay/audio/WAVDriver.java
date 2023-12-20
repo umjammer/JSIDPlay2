@@ -1,5 +1,11 @@
 package sidplay.audio;
 
+import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_PCM_S16LE;
+import static libsidplay.common.SamplingRate.HIGH;
+import static libsidplay.common.SamplingRate.LOW;
+import static libsidplay.common.SamplingRate.MEDIUM;
+import static libsidplay.common.SamplingRate.VERY_LOW;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -111,26 +117,27 @@ public abstract class WAVDriver extends XuggleAudioDriver {
 
 	@Override
 	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.VERY_LOW, SamplingRate.LOW, SamplingRate.MEDIUM, SamplingRate.HIGH);
+		return Arrays.asList(VERY_LOW, LOW, MEDIUM, HIGH);
 	}
 
 	@Override
 	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
+		return LOW;
+	}
+
+	@Override
+	protected ID getAudioCodec() {
+		return CODEC_ID_PCM_S16LE;
 	}
 
 	@Override
 	protected String getOutputFormatName() {
 		return "wav";
 	}
-
-	@Override
-	protected ID getAudioCodec() {
-		return ID.CODEC_ID_PCM_S16LE;
-	}
-
+	
 	@Override
 	public String getExtension() {
 		return ".wav";
 	}
+
 }

@@ -2,6 +2,9 @@ package sidplay.audio;
 
 import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_AAC;
 import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_H264;
+import static libsidplay.common.SamplingRate.LOW;
+import static libsidplay.common.SamplingRate.MEDIUM;
+import static libsidplay.common.SamplingRate.VERY_LOW;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,18 +34,13 @@ public abstract class MP4Driver extends XuggleVideoDriver {
 	}
 
 	@Override
-	protected String getOutputFormatName() {
-		return "mpeg4";
-	}
-
-	@Override
 	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.VERY_LOW, SamplingRate.LOW, SamplingRate.MEDIUM);
+		return Arrays.asList(VERY_LOW, LOW, MEDIUM);
 	}
 
 	@Override
 	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
+		return LOW;
 	}
 
 	@Override
@@ -55,6 +53,11 @@ public abstract class MP4Driver extends XuggleVideoDriver {
 		return CODEC_ID_AAC;
 	}
 
+	@Override
+	protected String getOutputFormatName() {
+		return "mpeg4";
+	}
+	
 	@Override
 	public String getExtension() {
 		return ".mp4";

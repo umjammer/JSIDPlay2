@@ -1,5 +1,9 @@
 package sidplay.audio;
 
+import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_MP3;
+import static libsidplay.common.SamplingRate.LOW;
+import static libsidplay.common.SamplingRate.MEDIUM;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -76,8 +80,7 @@ public abstract class MP3Driver extends XuggleAudioDriver {
 		/**
 		 * Use several instances for parallel emulator instances, where applicable.
 		 *
-		 * @param out
-		 *            Output stream to write the encoded MP3 to
+		 * @param out Output stream to write the encoded MP3 to
 		 */
 		public MP3StreamDriver(OutputStream out) {
 			this.out = out;
@@ -103,26 +106,27 @@ public abstract class MP3Driver extends XuggleAudioDriver {
 
 	@Override
 	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.LOW, SamplingRate.MEDIUM);
+		return Arrays.asList(LOW, MEDIUM);
 	}
 
 	@Override
 	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
+		return LOW;
+	}
+
+	@Override
+	protected ID getAudioCodec() {
+		return CODEC_ID_MP3;
 	}
 
 	@Override
 	protected String getOutputFormatName() {
 		return "mp3";
 	}
-
-	@Override
-	protected ID getAudioCodec() {
-		return ID.CODEC_ID_MP3;
-	}
-
+	
 	@Override
 	public String getExtension() {
 		return ".mp3";
 	}
+
 }

@@ -1,6 +1,10 @@
 package sidplay.audio;
 
 import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_FLAC;
+import static libsidplay.common.SamplingRate.HIGH;
+import static libsidplay.common.SamplingRate.LOW;
+import static libsidplay.common.SamplingRate.MEDIUM;
+import static libsidplay.common.SamplingRate.VERY_LOW;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -57,8 +61,7 @@ public abstract class FLACDriver extends XuggleAudioDriver {
 		/**
 		 * Use several instances for parallel emulator instances, where applicable.
 		 *
-		 * @param out
-		 *            Output stream to write the encoded FLAC to
+		 * @param out Output stream to write the encoded FLAC to
 		 */
 		public FLACStreamDriver(OutputStream out) {
 			this.out = out;
@@ -73,17 +76,12 @@ public abstract class FLACDriver extends XuggleAudioDriver {
 
 	@Override
 	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.VERY_LOW, SamplingRate.LOW, SamplingRate.MEDIUM, SamplingRate.HIGH);
+		return Arrays.asList(VERY_LOW, LOW, MEDIUM, HIGH);
 	}
 
 	@Override
 	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
-	}
-
-	@Override
-	protected String getOutputFormatName() {
-		return "flac";
+		return LOW;
 	}
 
 	@Override
@@ -92,7 +90,13 @@ public abstract class FLACDriver extends XuggleAudioDriver {
 	}
 
 	@Override
+	protected String getOutputFormatName() {
+		return "flac";
+	}
+	
+	@Override
 	public String getExtension() {
 		return ".flac";
 	}
+
 }

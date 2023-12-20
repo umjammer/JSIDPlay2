@@ -2,6 +2,7 @@ package sidplay.audio;
 
 import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_AAC;
 import static com.xuggle.xuggler.ICodec.ID.CODEC_ID_H264;
+import static libsidplay.common.SamplingRate.LOW;
 
 import java.util.Arrays;
 import java.util.List;
@@ -88,18 +89,13 @@ public abstract class FLVDriver extends XuggleVideoDriver {
 	}
 
 	@Override
-	protected String getOutputFormatName() {
-		return "flv";
-	}
-
-	@Override
 	protected List<SamplingRate> getSupportedSamplingRates() {
-		return Arrays.asList(SamplingRate.LOW);
+		return Arrays.asList(LOW);
 	}
 
 	@Override
 	protected SamplingRate getDefaultSamplingRate() {
-		return SamplingRate.LOW;
+		return LOW;
 	}
 
 	@Override
@@ -112,6 +108,11 @@ public abstract class FLVDriver extends XuggleVideoDriver {
 		return CODEC_ID_AAC;
 	}
 
+	@Override
+	protected String getOutputFormatName() {
+		return "flv";
+	}
+	
 	@Override
 	public String getExtension() {
 		return ".flv";
