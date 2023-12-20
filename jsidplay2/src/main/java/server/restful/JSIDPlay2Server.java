@@ -489,7 +489,6 @@ public final class JSIDPlay2Server {
 							filterDefinition.setFilterName(filterName);
 							filterDefinition.setFilter(servletFilter);
 							filterDefinition.getParameterMap().putAll(getFilterParameters(servletFilter, servlet));
-
 							context.addFilterDef(filterDefinition);
 
 							FilterMap filterMapping = new FilterMap();
