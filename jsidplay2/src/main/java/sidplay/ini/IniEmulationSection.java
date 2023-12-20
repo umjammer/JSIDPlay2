@@ -432,7 +432,7 @@ public class IniEmulationSection extends IniSection implements IEmulationSection
 	@Override
 	@Parameter(names = { "--sidToRead" }, descriptionKey = "SID_TO_READ", order = 1025)
 	public final void setSidToRead(SidReads sidRead) {
-		iniReader.setProperty(SECTION_ID, "SidNumToRead", sidRead);
+		iniReader.setProperty(SECTION_ID, "SidToRead", sidRead);
 	}
 
 	@Override
