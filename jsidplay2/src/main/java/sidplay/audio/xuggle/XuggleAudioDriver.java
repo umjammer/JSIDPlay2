@@ -141,11 +141,11 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	protected abstract List<SamplingRate> getSupportedSamplingRates();
 
-	protected abstract String getOutputFormatName();
-
 	protected abstract SamplingRate getDefaultSamplingRate();
-
+	
 	protected abstract ID getAudioCodec();
+	
+	protected abstract String getOutputFormatName();
 
 	protected abstract OutputStream getOut(String recordingFilename) throws IOException;
 
