@@ -69,7 +69,7 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 			IOUtils.copy(connection.getInputStream(), bos);
 
 			connection.getHeaderFields().entrySet().stream().filter(entry -> Objects.nonNull(entry.getKey()))
-					.forEach(entry -> entry.getValue().forEach(value -> response.setHeader(entry.getKey(), value)));
+					.forEach(entry -> entry.getValue().forEach(value -> response.addHeader(entry.getKey(), value)));
 
 			response.setContentLength(bos.size());
 			response.getOutputStream().write(bos.toByteArray());
