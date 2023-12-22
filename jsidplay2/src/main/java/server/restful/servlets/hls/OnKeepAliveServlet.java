@@ -32,7 +32,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.hls.OnKeepAliveServletParameters")
 	public static class OnKeepAliveServletParameters extends VideoRequestParamServletParameters {
 
-		private Long currentTime = null;
+		private Long currentTime;
 
 		public Long getCurrentTime() {
 			return currentTime;
@@ -44,7 +44,7 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			this.currentTime = currentTime;
 		}
 
-		private Long bufferedEnd = null;
+		private Long bufferedEnd;
 
 		public Long getBufferedEnd() {
 			return bufferedEnd;

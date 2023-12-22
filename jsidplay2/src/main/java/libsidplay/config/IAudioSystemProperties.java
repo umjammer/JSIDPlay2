@@ -11,8 +11,8 @@ public interface IAudioSystemProperties {
 
 	/**
 	 * Video streaming time gap in ms between emulation time and current client
-	 * viewer time in ms (default: 10s). SleepDriver will sleep, if time gap exceeds
-	 * that value
+	 * viewer time in ms (default: 10s). ThrottlingDriver will sleep, if time gap
+	 * exceeds that value
 	 * 
 	 * @jsidplay2.systemProperty jsidplay2.sleep_driver.max_time_gap
 	 */
@@ -20,8 +20,8 @@ public interface IAudioSystemProperties {
 
 	/**
 	 * Video streaming time to slow down video production in ms (default: 250ms).
-	 * Sleep time of the SleepDriver, if current client viewer is far from video
-	 * (max time gap reached)
+	 * Sleep time of the ThrottlingDriver, if current client viewer is far from
+	 * video (max time gap reached)
 	 * 
 	 * @jsidplay2.systemProperty jsidplay2.sleep_driver.sleep_time
 	 */

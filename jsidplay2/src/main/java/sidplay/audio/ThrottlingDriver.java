@@ -27,7 +27,7 @@ import libsidplay.config.IAudioSection;
  */
 public class ThrottlingDriver implements AudioDriver {
 
-	private static final Logger SLEEP_DRIVER = Logger.getLogger(ThrottlingDriver.class.getName());
+	private static final Logger THROTTLING_DRIVER = Logger.getLogger(ThrottlingDriver.class.getName());
 
 	private CPUClock cpuClock;
 	private EventScheduler context;
@@ -83,8 +83,8 @@ public class ThrottlingDriver implements AudioDriver {
 			// jumps not too far, but not long enough to block a fast forward
 			final long sleepTime = Math.min(gap - MAX_TIME_GAP, SLEEP_DRIVER_SLEEP_TIME);
 
-			if (SLEEP_DRIVER.isLoggable(Level.FINE)) {
-				SLEEP_DRIVER.fine(String.format("time=%s, clientTime=%s, c64Time=%s, gap=%s, sleepTime=%s",
+			if (THROTTLING_DRIVER.isLoggable(Level.FINE)) {
+				THROTTLING_DRIVER.fine(String.format("time=%s, clientTime=%s, c64Time=%s, gap=%s, sleepTime=%s",
 						millisToDate(time), millisToDate(clientTime), millisToDate(c64Time), millisToDate(gap),
 						millisToDate(sleepTime)));
 			}

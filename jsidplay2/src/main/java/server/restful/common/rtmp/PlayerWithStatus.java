@@ -55,7 +55,7 @@ public final class PlayerWithStatus {
 	private int playCounter;
 
 	public PlayerWithStatus(Player player, File diskImage, ConvenienceResult convenienceResult,
-		ConvertServletParameters servletParameters) {
+			ConvertServletParameters servletParameters) {
 		this.player = player;
 		this.diskImage = diskImage;
 		attachedCartridge = convenienceResult.getAttatchedCartridge();
@@ -87,7 +87,7 @@ public final class PlayerWithStatus {
 			validUntil = maxDuration;
 		}
 		player.getAudioDriver().lookup(ThrottlingDriver.class)
-				.ifPresent(sleepDriver -> sleepDriver.setClientTime(currentTime, bufferedEnd));
+				.ifPresent(throttlingDriver -> throttlingDriver.setClientTime(currentTime, bufferedEnd));
 	}
 
 	public boolean isInvalid() {
