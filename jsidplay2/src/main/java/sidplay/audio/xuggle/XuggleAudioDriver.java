@@ -95,9 +95,6 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 
 	@Override
 	public void write() throws InterruptedException {
-		if (aborted) {
-			throw new RuntimeException("Error writing audio stream");
-		}
 		long timeStamp = getTimeStamp();
 
 		short[] shortArray = new short[sampleBuffer.position() >> 1];
@@ -105,6 +102,9 @@ public abstract class XuggleAudioDriver extends XuggleBase implements AudioDrive
 		sampleBuffer.asShortBuffer().get(shortArray);
 
 		writer.encodeAudio(0, shortArray, timeStamp, TimeUnit.MICROSECONDS);
+		if (aborted) {
+			throw new RuntimeException("Error writing audio stream");
+		}
 	}
 
 	@Override
