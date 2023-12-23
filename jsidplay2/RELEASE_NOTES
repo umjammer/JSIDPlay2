@@ -1,19 +1,2 @@
 Release Notes:
 ==============
-JSIDPlay2: New Java requirements: Use Java 17 or newer (Java 11 is NOT supported) or as an alternative Oracle-Java8 (yes, we are still compatible) 
-JSIDPlay2: New architectures added to releases, namely AArch64/ARM64  (e.g. for Apple M1)
-JSIDPlay2: New WAV and MP3 native drivers added using ffmpeg and used by default (Java versions are still available though)
-JSIDPlay2: Hardware Support has been tested using ExSID+. A big thanks to Thibaut Varéne for his Christmas package and his excellent device.
-JSIDPlay2: GMod2 cartridge support added (RAM expansion works fine, EEPROM functionality is untested)
-Bugfix: Prevent JSIDPlay2 to hang and scan whole directory tree, if called with a SID as command line argument
-Bugfix: Thread safety issues fixed, when several recordings are done in parallel in the same Java virtual machine
-Bugfix: automated tests repaired
-Bugfix: ArrayIndexOutOfBoundsException fixed for RSIDs
-Tools: Recording tool added for whole collections like HVSC using a configurable number of parallel threads
-Assembly64: integration of new search API by Fredrik Åberg
-C64Jukebox: Text2Speech added to announce tunes (executing external program pico2wave - https://cstan.io/post/2020/03/pico-tts-unter-raspbian-uebersetzen/ or espeak - https://espeak.sourceforge.net/)
-C64Jukebox: Upload possibility for C64 contents added.
-C64Jukebox: Random HVSC playback mode added
-C64Jukebox: better server performance by throttling live audio/video streams and using asynchronous servlets
-C64Jukebox: Slightly better performance for hardware playback
-C64Jukebox: VUE warnings spotted in development mode and fixed
