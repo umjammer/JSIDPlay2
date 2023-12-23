@@ -124,7 +124,7 @@ export PATH=/home/ken/Downloads/jdk1.8.0_211/bin:$PATH
 ./sidblastertool.sh 
 ./recordingtool.sh 
 cd ../deploy/
-unzip jsiddevice-4.8.zip
-java -jar ./jsidplay2-4.8-libsidplay.jar ~/Downloads/Turrican_2-The_Final_Fight.sid 
-./jsiddevice-4.8/jsiddevice.sh
-./jsiddevice-4.8/jsiddevice-console.sh
+unzip jsiddevice-4.9.zip
+java -jar ./jsidplay2-4.9-libsidplay.jar ~/Downloads/Turrican_2-The_Final_Fight.sid 
+./jsiddevice-4.9/jsiddevice.sh
+./jsiddevice-4.9/jsiddevice-console.sh

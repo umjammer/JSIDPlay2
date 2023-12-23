@@ -5,7 +5,7 @@
 
 	<groupId>jsidplay2</groupId>
 	<artifactId>jsidplay2</artifactId>
-	<version>4.8</version>
+	<version>4.9</version>
 	<packaging>jar</packaging>
 	<organization>
 		<url>https://sourceforge.net/projects/jsidplay2/</url>
@@ -990,8 +990,8 @@
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
 							    <companyName>Open Source</companyName>
-							    <internalName>jsidplay2-4.8</internalName>
-							    <originalFilename>jsidplay2-4.8.exe</originalFilename>
+							    <internalName>jsidplay2-${project.version}</internalName>
+							    <originalFilename>jsidplay2-${project.version}.exe</originalFilename>
 							  </versionInfo>
 						</configuration>
 					</execution>
@@ -1036,8 +1036,8 @@
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
 							    <companyName>Open Source</companyName>
-							    <internalName>jsidplay2-java8-4.8</internalName>
-							    <originalFilename>jsidplay2-java8-4.8.exe</originalFilename>
+							    <internalName>jsidplay2-java8-${project.version}</internalName>
+							    <originalFilename>jsidplay2-java8-${project.version}.exe</originalFilename>
 							  </versionInfo>
 						</configuration>
 					</execution>
@@ -1077,8 +1077,8 @@
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
 							    <companyName>Open Source</companyName>
-							    <internalName>jsidplay2-console-4.8</internalName>
-							    <originalFilename>jsidplay2-console-4.8.exe</originalFilename>
+							    <internalName>jsidplay2-console-${project.version}</internalName>
+							    <originalFilename>jsidplay2-console-${project.version}.exe</originalFilename>
 							  </versionInfo>
 						</configuration>
 					</execution>
@@ -1117,8 +1117,8 @@
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
 							    <companyName>Open Source</companyName>
-							    <internalName>jsiddevice-4.8</internalName>
-							    <originalFilename>jsiddevice-4.8.exe</originalFilename>
+							    <internalName>jsiddevice-${project.version}</internalName>
+							    <originalFilename>jsiddevice-${project.version}.exe</originalFilename>
 							  </versionInfo>
 						</configuration>
 					</execution>
@@ -1158,8 +1158,8 @@
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
 							    <companyName>Open Source</companyName>
-							    <internalName>sidblastertool-4.8</internalName>
-							    <originalFilename>sidblastertool-4.8.exe</originalFilename>
+							    <internalName>sidblastertool-${project.version}</internalName>
+							    <originalFilename>sidblastertool-${project.version}.exe</originalFilename>
 							  </versionInfo>
 						</configuration>
 					</execution>
@@ -1199,8 +1199,8 @@
 							    <txtProductVersion>${project.version}</txtProductVersion>
 							    <productName>JSIDPlay2</productName>
 							    <companyName>Open Source</companyName>
-							    <internalName>recordingtool-4.8</internalName>
-							    <originalFilename>recordingtool-4.8.exe</originalFilename>
+							    <internalName>recordingtool-${project.version}</internalName>
+							    <originalFilename>recordingtool-${project.version}.exe</originalFilename>
 							  </versionInfo>
 						</configuration>
 					</execution>
