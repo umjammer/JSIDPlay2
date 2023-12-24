@@ -10,6 +10,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
@@ -21,6 +23,8 @@ import libsidplay.common.SamplingMethod;
 import libsidplay.common.SamplingRate;
 
 public class AudioUtils {
+
+	private static final Logger LOG = Logger.getLogger(AudioUtils.class.getName());
 
 	private static class ResamplingState {
 		private final Random RANDOM = new Random();
@@ -71,7 +75,9 @@ public class AudioUtils {
 
 		int read = readNBytes(stream, bytes, 0, bytes.length);
 		if (read < bytes.length) {
-			throw new IOException("Unexpected end of audio stream");
+			if (LOG.isLoggable(Level.FINE)) {
+				LOG.fine(String.format("Unexpected end of audio stream: read=%d, expected=%d", read, bytes.length));
+			}
 		}
 
 		// 1. stereo to mono conversion
