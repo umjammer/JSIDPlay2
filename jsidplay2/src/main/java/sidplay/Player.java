@@ -1008,7 +1008,11 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 			// save still unwritten sound data
 			if (getAudioDriver() != null && getAudioDriver().buffer() != null
 					&& (getAudioDriver().isRecording() || stateProperty.get() != QUIT)) {
-				getAudioDriver().write();
+				try {
+					getAudioDriver().write();
+				} catch (SongEndException e) {
+					// ignore natural end
+				}
 			}
 		} catch (Throwable e) {
 			if (LOG.isLoggable(Level.FINEST)) {
