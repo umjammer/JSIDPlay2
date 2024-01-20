@@ -2899,9 +2899,14 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       function uriEncode(entry) {
         // escape is deprecated and cannot handle utf8
         // encodeURI() will not encode: ~!@#$&*()=:/,;?+'
-        // untested characters: !*=,;
-        // tested characters: /~@#$&():+''?
-        return encodeURI(entry).replace(/\+/g, "%2B").replace(/#/g, "%23").replace(/&/g, "%26").replace(/\?/g, "%3F");
+        // untested characters: !*=,
+        // tested characters: /~@#$&():;+''?
+        return encodeURI(entry)
+          .replace(/\+/g, "%2B")
+          .replace(/#/g, "%23")
+          .replace(/&/g, "%26")
+          .replace(/\?/g, "%3F")
+          .replace(/;/g, "%3B");
       }
       function petsciiToFont(str, fontSet) {
         var original = str;
