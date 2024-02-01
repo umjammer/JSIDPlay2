@@ -69,6 +69,11 @@ If microphone is greyed out, type:
 "kmix"
 and change "output device" to "Analog Stereo Duplex".
 
+Grant access to Linux input devices (Joystick support):
+=======================================================
+sudo usermod -a -G input ken	- replace ken with your username	
+Now reboot!
+
 General tips:
 =============
 
