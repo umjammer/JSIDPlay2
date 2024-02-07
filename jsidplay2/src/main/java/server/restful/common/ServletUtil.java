@@ -44,6 +44,7 @@ public class ServletUtil {
 		return thread(Thread.currentThread());
 	}
 
+	@SuppressWarnings("deprecation")
 	private static String thread(Thread thread) {
 		StringBuilder result = new StringBuilder();
 		result.append(thread.getName());

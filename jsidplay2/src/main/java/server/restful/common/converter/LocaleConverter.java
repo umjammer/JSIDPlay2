@@ -14,7 +14,7 @@ public final class LocaleConverter extends BaseConverter<Locale> {
 	@Override
 	public Locale convert(String value) {
 		try {
-			return new Locale(value);
+			return Locale.forLanguageTag(value);
 		} catch (IllegalArgumentException e) {
 			throw new ParameterException(getErrorString(value, "a Locale"));
 		}
