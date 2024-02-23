@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Timer;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -90,6 +92,7 @@ import ui.entities.config.Configuration;
 import ui.entities.config.EmulationSection;
 import ui.entities.config.service.ConfigService;
 import ui.entities.config.service.ConfigService.ConfigurationType;
+import ui.entities.debug.service.DebugService;
 
 /**
  * 
@@ -206,6 +209,8 @@ public final class JSIDPlay2Server {
 	private static JSIDPlay2Server INSTANCE;
 
 	private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
+	
+	private static EntityManagerFactory ENTITY_MANAGER_FACTORY_DEBUG;
 
 	private static final Map<Class<?>, Object> CDI = new HashMap<>();
 
@@ -562,6 +567,9 @@ public final class JSIDPlay2Server {
 			if (ENTITY_MANAGER_FACTORY != null && ENTITY_MANAGER_FACTORY.isOpen()) {
 				ENTITY_MANAGER_FACTORY.close();
 			}
+			if (ENTITY_MANAGER_FACTORY_DEBUG != null && ENTITY_MANAGER_FACTORY_DEBUG.isOpen()) {
+				ENTITY_MANAGER_FACTORY_DEBUG.close();
+			}
 			System.out.println("Press <enter> to exit the player!");
 			System.in.read();
 			System.exit(rc);
@@ -588,6 +596,17 @@ public final class JSIDPlay2Server {
 								jsidplay2Server.parameters.whatsSidDatabaseUsername,
 								jsidplay2Server.parameters.whatsSidDatabasePassword,
 								jsidplay2Server.parameters.whatsSidDatabaseDialect));
+			}
+			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && ENTITY_MANAGER_FACTORY_DEBUG == null) {
+				ENTITY_MANAGER_FACTORY_DEBUG = Persistence.createEntityManagerFactory(PersistenceProperties.DEBUG_DS,
+						new PersistenceProperties(jsidplay2Server.parameters.whatsSidDatabaseDriver,
+								jsidplay2Server.parameters.whatsSidDatabaseUrl,
+								jsidplay2Server.parameters.whatsSidDatabaseUsername,
+								jsidplay2Server.parameters.whatsSidDatabasePassword,
+								jsidplay2Server.parameters.whatsSidDatabaseDialect));
+
+				Logger rootLogger = LogManager.getLogManager().getLogger("");
+				rootLogger.addHandler(new DebugService(ENTITY_MANAGER_FACTORY_DEBUG));
 			}
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException

@@ -10,6 +10,7 @@ public class PersistenceProperties extends HashMap<String, String> {
 	public static final String CGSC_DS = "cgsc-ds";
 	public static final String GAMEBASE_DS = "gamebase-ds";
 	public static final String WHATSSID_DS = "whatssid-ds";
+	public static final String DEBUG_DS = "debug-ds";
 
 	public PersistenceProperties(DatabaseType databaseType, String username, String password, String nameValue) {
 		this(databaseType.getJdbcDriver(), databaseType.getJdbcUrl().replace("${name}", nameValue), username, password,
