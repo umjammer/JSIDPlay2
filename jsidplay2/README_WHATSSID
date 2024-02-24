@@ -68,3 +68,7 @@ Remove old database:
 --------------------
 DROP DATABASE hvsc79;
 sudo rm -rf /var/lib/mysql/hvsc79		# remove remaining (non-database table) files
+
+Check numbers of SIDs:
+======================
+SELECT count(DISTINCT InfoDir) FROM "MusicInfo"
