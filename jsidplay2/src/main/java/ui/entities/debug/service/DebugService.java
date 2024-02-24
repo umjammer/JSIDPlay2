@@ -1,32 +1,22 @@
 package ui.entities.debug.service;
 
-import java.io.IOException;
 import java.time.Instant;
-import java.util.logging.Handler;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import ui.entities.debug.DebugEntry;
 
-public class DebugService extends Handler {
+public class DebugService {
 
-	private static final ThreadLocal<EntityManager> THREAD_LOCAL_ENTITY_MANAGER = new ThreadLocal<>();
+	private EntityManager em;
 
-	private EntityManagerFactory entityManagerFactory;
-
-	public DebugService(EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
+	public DebugService(EntityManager em) {
+		this.em = em;
 	}
 
-	@Override
-	public void publish(LogRecord record) {
-
-		EntityManager em = null;
+	public void save(LogRecord record) {
 		try {
-			em = getEntityManager();
 			if (em.isOpen()) {
 				em.getTransaction().begin();
 
@@ -44,38 +34,7 @@ public class DebugService extends Handler {
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
-			Logger.getAnonymousLogger().severe("Error in DebugService publish: " + e.getMessage());
-		} finally {
-			freeEntityManager();
-		}
-	}
-
-	@Override
-	public void flush() {
-	}
-
-	@Override
-	public void close() throws SecurityException {
-	}
-
-	private EntityManager getEntityManager() throws IOException {
-		if (entityManagerFactory == null) {
-			throw new IOException("Database required, please specify command line parameters!");
-		}
-		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
-
-		if (em == null) {
-			em = entityManagerFactory.createEntityManager();
-			THREAD_LOCAL_ENTITY_MANAGER.set(em);
-		}
-		return em;
-	}
-
-	private void freeEntityManager() {
-		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
-
-		if (em != null) {
-			em.clear();
+			throw e;
 		}
 	}
 

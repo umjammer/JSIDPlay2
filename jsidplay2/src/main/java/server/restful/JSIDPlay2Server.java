@@ -81,6 +81,7 @@ import jakarta.servlet.http.HttpFilter;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import server.restful.common.Connectors;
+import server.restful.common.DBAppender;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.ServletUtil;
 import server.restful.common.filters.RequestLogFilter;
@@ -92,7 +93,6 @@ import ui.entities.config.Configuration;
 import ui.entities.config.EmulationSection;
 import ui.entities.config.service.ConfigService;
 import ui.entities.config.service.ConfigService.ConfigurationType;
-import ui.entities.debug.service.DebugService;
 
 /**
  * 
@@ -209,12 +209,14 @@ public final class JSIDPlay2Server {
 	private static JSIDPlay2Server INSTANCE;
 
 	private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
-	
-	private static EntityManagerFactory ENTITY_MANAGER_FACTORY_DEBUG;
+
+	private static EntityManagerFactory DEBUG_ENTITY_MANAGER_FACTORY;
 
 	private static final Map<Class<?>, Object> CDI = new HashMap<>();
 
 	private static final ThreadLocal<EntityManager> THREAD_LOCAL_ENTITY_MANAGER = new ThreadLocal<>();
+
+	private static final ThreadLocal<EntityManager> THREAD_LOCAL_DEBUG_ENTITY_MANAGER = new ThreadLocal<>();
 
 	private static final ConfigurationType CONFIGURATION_TYPE = ConfigurationType.XML;
 
@@ -567,8 +569,8 @@ public final class JSIDPlay2Server {
 			if (ENTITY_MANAGER_FACTORY != null && ENTITY_MANAGER_FACTORY.isOpen()) {
 				ENTITY_MANAGER_FACTORY.close();
 			}
-			if (ENTITY_MANAGER_FACTORY_DEBUG != null && ENTITY_MANAGER_FACTORY_DEBUG.isOpen()) {
-				ENTITY_MANAGER_FACTORY_DEBUG.close();
+			if (DEBUG_ENTITY_MANAGER_FACTORY != null && DEBUG_ENTITY_MANAGER_FACTORY.isOpen()) {
+				DEBUG_ENTITY_MANAGER_FACTORY.close();
 			}
 			System.out.println("Press <enter> to exit the player!");
 			System.in.read();
@@ -597,8 +599,8 @@ public final class JSIDPlay2Server {
 								jsidplay2Server.parameters.whatsSidDatabasePassword,
 								jsidplay2Server.parameters.whatsSidDatabaseDialect));
 			}
-			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && ENTITY_MANAGER_FACTORY_DEBUG == null) {
-				ENTITY_MANAGER_FACTORY_DEBUG = Persistence.createEntityManagerFactory(PersistenceProperties.DEBUG_DS,
+			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && DEBUG_ENTITY_MANAGER_FACTORY == null) {
+				DEBUG_ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PersistenceProperties.DEBUG_DS,
 						new PersistenceProperties(jsidplay2Server.parameters.whatsSidDatabaseDriver,
 								jsidplay2Server.parameters.whatsSidDatabaseUrl,
 								jsidplay2Server.parameters.whatsSidDatabaseUsername,
@@ -606,7 +608,7 @@ public final class JSIDPlay2Server {
 								jsidplay2Server.parameters.whatsSidDatabaseDialect));
 
 				Logger rootLogger = LogManager.getLogManager().getLogger("");
-				rootLogger.addHandler(new DebugService(ENTITY_MANAGER_FACTORY_DEBUG));
+				rootLogger.addHandler(new DBAppender());
 			}
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException
@@ -618,20 +620,37 @@ public final class JSIDPlay2Server {
 	}
 
 	public static EntityManager getEntityManager() throws IOException {
-		if (ENTITY_MANAGER_FACTORY == null) {
+		return getEntityManager(ENTITY_MANAGER_FACTORY, THREAD_LOCAL_ENTITY_MANAGER);
+	}
+
+	public static void freeEntityManager() {
+		freeEntityManager(THREAD_LOCAL_ENTITY_MANAGER);
+	}
+
+	public static EntityManager getDebugEntityManager() throws IOException {
+		return getEntityManager(DEBUG_ENTITY_MANAGER_FACTORY, THREAD_LOCAL_DEBUG_ENTITY_MANAGER);
+	}
+
+	public static void freeDebugEntityManager() {
+		freeEntityManager(THREAD_LOCAL_DEBUG_ENTITY_MANAGER);
+	}
+
+	private static EntityManager getEntityManager(EntityManagerFactory entityManagerFactory,
+			ThreadLocal<EntityManager> threadLocalEntityManager) throws IOException {
+		if (entityManagerFactory == null) {
 			throw new IOException("Database required, please specify command line parameters!");
 		}
-		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
+		EntityManager em = threadLocalEntityManager.get();
 
 		if (em == null) {
-			em = ENTITY_MANAGER_FACTORY.createEntityManager();
-			THREAD_LOCAL_ENTITY_MANAGER.set(em);
+			em = entityManagerFactory.createEntityManager();
+			threadLocalEntityManager.set(em);
 		}
 		return em;
 	}
 
-	public static void freeEntityManager() {
-		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
+	private static void freeEntityManager(ThreadLocal<EntityManager> threadLocalEntityManager) {
+		EntityManager em = threadLocalEntityManager.get();
 
 		if (em != null) {
 			em.clear();
