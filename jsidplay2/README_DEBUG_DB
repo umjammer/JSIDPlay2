@@ -1,7 +1,12 @@
 Delete Debug from database:
 ===========================
-DELETE FROM "DebugEntry";
+DELETE FROM DebugEntry;
 
 Show Debug from database:
 =========================
-SELECT instant, sourceClassName,sourceMethodName,level,message FROM "DebugEntry" order by instant desc;
+SELECT instant, sourceClassName,sourceMethodName,level,message FROM DebugEntry order by instant desc;
+SELECT instant, sourceClassName,sourceMethodName,level,message FROM DebugEntry WHERE message like 'Convert%' order by instant ASC;
+
+Timezone Conversion:
+====================
+SELECT CONVERT_TZ(Instant, '+00:00',@@global.time_zone) AS DateTime, sourceClassName,sourceMethodName,level,message FROM DebugEntry order by instant desc;
