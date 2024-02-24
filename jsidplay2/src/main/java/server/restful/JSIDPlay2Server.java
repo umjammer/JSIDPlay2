@@ -591,21 +591,18 @@ public final class JSIDPlay2Server {
 				commander.usage();
 				exit(0);
 			}
-			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && ENTITY_MANAGER_FACTORY == null) {
+			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null) {
+				PersistenceProperties persistenceProperties = new PersistenceProperties(
+						jsidplay2Server.parameters.whatsSidDatabaseDriver,
+						jsidplay2Server.parameters.whatsSidDatabaseUrl,
+						jsidplay2Server.parameters.whatsSidDatabaseUsername,
+						jsidplay2Server.parameters.whatsSidDatabasePassword,
+						jsidplay2Server.parameters.whatsSidDatabaseDialect);
+
 				ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PersistenceProperties.WHATSSID_DS,
-						new PersistenceProperties(jsidplay2Server.parameters.whatsSidDatabaseDriver,
-								jsidplay2Server.parameters.whatsSidDatabaseUrl,
-								jsidplay2Server.parameters.whatsSidDatabaseUsername,
-								jsidplay2Server.parameters.whatsSidDatabasePassword,
-								jsidplay2Server.parameters.whatsSidDatabaseDialect));
-			}
-			if (jsidplay2Server.parameters.whatsSidDatabaseDriver != null && DEBUG_ENTITY_MANAGER_FACTORY == null) {
+						persistenceProperties);
 				DEBUG_ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PersistenceProperties.DEBUG_DS,
-						new PersistenceProperties(jsidplay2Server.parameters.whatsSidDatabaseDriver,
-								jsidplay2Server.parameters.whatsSidDatabaseUrl,
-								jsidplay2Server.parameters.whatsSidDatabaseUsername,
-								jsidplay2Server.parameters.whatsSidDatabasePassword,
-								jsidplay2Server.parameters.whatsSidDatabaseDialect));
+						persistenceProperties);
 
 				Logger rootLogger = LogManager.getLogManager().getLogger("");
 				rootLogger.addHandler(new DBAppender());
