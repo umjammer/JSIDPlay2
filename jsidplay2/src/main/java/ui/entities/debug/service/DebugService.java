@@ -58,7 +58,7 @@ public class DebugService extends Handler {
 	public void close() throws SecurityException {
 	}
 
-	public EntityManager getEntityManager() throws IOException {
+	private EntityManager getEntityManager() throws IOException {
 		if (entityManagerFactory == null) {
 			throw new IOException("Database required, please specify command line parameters!");
 		}
@@ -71,7 +71,7 @@ public class DebugService extends Handler {
 		return em;
 	}
 
-	public void freeEntityManager() {
+	private void freeEntityManager() {
 		EntityManager em = THREAD_LOCAL_ENTITY_MANAGER.get();
 
 		if (em != null) {
