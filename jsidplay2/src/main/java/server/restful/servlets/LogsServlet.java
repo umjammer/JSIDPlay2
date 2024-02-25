@@ -20,6 +20,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.Order;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.validator.MaxResultsValidator;
 import ui.entities.debug.DebugEntry;
@@ -101,6 +102,17 @@ public class LogsServlet extends JSIDPlay2Servlet {
 			this.maxResults = maxResults;
 		}
 
+		private Order order = Order.DESC;
+
+		public Order getOrder() {
+			return order;
+		}
+
+		@Parameter(names = { "--order" }, descriptionKey = "ORDER", order = 7)
+		public void setOrder(Order order) {
+			this.order = order;
+		}
+
 	}
 
 	/**
@@ -126,7 +138,8 @@ public class LogsServlet extends JSIDPlay2Servlet {
 			final DebugService debugService = new DebugService(getDebugEntityManager());
 			List<DebugEntry> result = debugService.findDebugEntries(servletParameters.getInstant(),
 					servletParameters.getSourceClassName(), servletParameters.getSourceMethodName(),
-					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getMaxResults());
+					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getMaxResults(),
+					servletParameters.getOrder());
 
 			setOutput(MIME_TYPE_JSON, response, result);
 

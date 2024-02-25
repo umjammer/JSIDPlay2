@@ -2758,8 +2758,20 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         id="maxResults"
                         class="right"
                         v-model.number="maxResults"
+                        @change="fetchLogs"
                       /> </label
                   ></span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting"
+                    ><label for="order">
+                      {{ $t("order") }}
+                      <b-form-select id="order" class="right" v-model="order" @change="fetchLogs">
+                        <option value="ASC">{{ $t("ASC") }}</option>
+                        <option value="DESC">{{ $t("DESC") }}</option>
+                      </b-form-select></label
+                    ></span
+                  >
                 </div>
 
                 <b-button size="sm" variant="success" v-on:click="fetchLogs">
@@ -3182,6 +3194,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           username: "Username",
           password: "Password",
           maxResults: "Max. Results",
+          order: "Order",
+          ASC: "Ascending",
+          DESC: "Descending",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3343,6 +3358,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           username: "Benutzername",
           password: "Passwort",
           maxResults: "Max. Ergebnisse",
+          order: "Reihenfolge",
+          ASC: "Aufsteigend",
+          DESC: "Absteigend",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3474,6 +3492,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           infos: "",
           stil: [],
           maxResults: 100,
+          order: "DESC",
           logs: [],
           hasHardware: false,
           picture: "",
@@ -4539,7 +4558,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 "&message=" +
                 uriEncode(this.Logs.message) +
                 "&maxResults=" +
-                this.maxResults,
+                this.maxResults +
+                "&order=" +
+                this.order,
               auth: {
                 username: this.username,
                 password: this.password,

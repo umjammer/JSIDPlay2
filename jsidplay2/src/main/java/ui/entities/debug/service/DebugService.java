@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import server.restful.common.Order;
 import ui.entities.debug.DebugEntry;
 import ui.entities.debug.DebugEntry_;
 
@@ -45,7 +46,7 @@ public class DebugService {
 	}
 
 	public List<DebugEntry> findDebugEntries(Long instant, String sourceClassName, String sourceMethodName,
-			String level, String message, int maxResults) {
+			String level, String message, int maxResults, Order order) {
 		// SELECT message FROM `DebugEntry` WHERE
 		// message Like message
 		try {
@@ -56,8 +57,14 @@ public class DebugService {
 				CriteriaQuery<DebugEntry> query = cb.createQuery(DebugEntry.class);
 				Root<DebugEntry> root = query.from(DebugEntry.class);
 
-				Predicate instantPredicate = cb.greaterThan(root.<Instant>get(DebugEntry_.instant),
-						Instant.ofEpochMilli(instant));
+				Predicate instantPredicate;
+				if (order == Order.ASC) {
+					instantPredicate = cb.greaterThanOrEqualTo(root.<Instant>get(DebugEntry_.instant),
+							Instant.ofEpochMilli(instant));
+				} else {
+					instantPredicate = cb.lessThan(root.<Instant>get(DebugEntry_.instant),
+							Instant.ofEpochMilli(instant));
+				}
 				Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName),
 						"%" + sourceClassName + "%");
 				Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName),
@@ -66,8 +73,13 @@ public class DebugService {
 				Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), "%" + message + "%");
 
 				query.select(root).where(cb.and(instantPredicate, sourceClassNamePredicate, sourceMethodNamePredicate,
-						levelPredicate, messagePredicate))/* .orderBy(cb.desc(root.get(DebugEntry_.instant))) */;
+						levelPredicate, messagePredicate));
 
+				if (order == Order.ASC) {
+					query.orderBy(cb.asc(root.get(DebugEntry_.instant)));
+				} else {
+					query.orderBy(cb.desc(root.get(DebugEntry_.instant)));
+				}
 				List<DebugEntry> result = em.createQuery(query).setMaxResults(maxResults).getResultList();
 
 				em.getTransaction().commit();
