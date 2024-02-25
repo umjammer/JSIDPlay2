@@ -9,4 +9,9 @@ SELECT instant, sourceClassName,sourceMethodName,level,message FROM DebugEntry W
 
 Timezone Conversion:
 ====================
+
 SELECT CONVERT_TZ(Instant, '+00:00',@@global.time_zone) AS DateTime, sourceClassName,sourceMethodName,level,message FROM DebugEntry order by instant desc;
+
+Show Errors:
+============
+SELECT CONVERT_TZ(Instant, '+00:00',@@global.time_zone) AS DateTime, sourceClassName,sourceMethodName,level,message FROM DebugEntry where level='SEVERE' and not(message like '%xuggl%') order by instant desc
