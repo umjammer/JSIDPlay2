@@ -1,11 +1,17 @@
 package ui.entities.debug.service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.logging.LogRecord;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ui.entities.debug.DebugEntry;
+import ui.entities.debug.DebugEntry_;
 
 public class DebugService {
 
@@ -36,6 +42,42 @@ public class DebugService {
 			}
 			throw e;
 		}
+	}
+
+	public List<DebugEntry> findDebugEntries(Long instant, String sourceClassName, String sourceMethodName,
+			String level, String message, int maxResults) {
+		// SELECT message FROM `DebugEntry` WHERE
+		// message Like message
+		try {
+			if (em.isOpen()) {
+				em.getTransaction().begin();
+
+				CriteriaBuilder cb = em.getCriteriaBuilder();
+				CriteriaQuery<DebugEntry> query = cb.createQuery(DebugEntry.class);
+				Root<DebugEntry> root = query.from(DebugEntry.class);
+
+				Predicate instantPredicate = cb.greaterThan(root.<Instant>get(DebugEntry_.instant),
+						Instant.ofEpochMilli(instant));
+				Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName), sourceClassName);
+				Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName), sourceMethodName);
+				Predicate levelPredicate = cb.like(root.get(DebugEntry_.level), level);
+				Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), message);
+
+				query.select(root).where(cb.and(instantPredicate, sourceClassNamePredicate, sourceMethodNamePredicate,
+						levelPredicate, messagePredicate))/*.orderBy(cb.desc(root.get(DebugEntry_.instant)))*/;
+
+				List<DebugEntry> result = em.createQuery(query).setMaxResults(maxResults).getResultList();
+
+				em.getTransaction().commit();
+				return result;
+			}
+		} catch (Exception e) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			throw e;
+		}
+		return null;
 	}
 
 }

@@ -2735,6 +2735,119 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 </b-tabs>
               </b-card-text>
             </b-tab>
+            <b-tab v-if="username !== 'jsidplay2'">
+              <template #title>
+                {{ $t("LOGS") }}
+                <b-spinner
+                  type="border"
+                  :variant="tabIndex == 8 ? 'light' : 'primary'"
+                  small
+                  v-if="loadingLogs"
+                ></b-spinner>
+              </template>
+
+              <b-card-text>
+                <div class="settings-box">
+                  <span class="setting"
+                    ><label for="maxResults">
+                      {{ $t("maxResults") }}
+                      <b-form-input
+                        type="number"
+                        min="0"
+                        oninput="validity.valid||(value='');"
+                        id="maxResults"
+                        class="right"
+                        v-model.number="maxResults"
+                      /> </label
+                  ></span>
+                </div>
+
+                <b-button size="sm" variant="success" v-on:click="fetchLogs">
+                  <span>Request LOGS</span>
+                </b-button>
+                <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
+                  <template #cell(instant)="row">
+                    <span> {{ toDateTime(row.item.instant) }} </span>
+                  </template>
+                  <template #head(instant)="data">
+                    <label for="instant" style="margin-left: 0px">{{ $t("Logs.instant") }}</label>
+                    <b-form-datepicker
+                      id="instant"
+                      v-model="Logs.date"
+                      class="mb-2"
+                      reset-button
+                      reset-value="'00:00'"
+                      @change="fetchLogs"
+                      style="max-width: 100%; padding: 0.175em 0em"
+                    ></b-form-datepicker>
+                    <b-form-timepicker
+                      v-model="Logs.time"
+                      class="mb-2"
+                      reset-button
+                      reset-value="'00:00'"
+                      @change="fetchLogs"
+                      style="max-width: 100%; padding: 0.175em 0em"
+                    ></b-form-timepicker>
+                  </template>
+                  <template #head(sourceClassName)="data">
+                    <label for="sourceClassName" style="margin-left: 0px">{{ $t("Logs.sourceClassName") }}</label>
+                    <b-form-input
+                      type="text"
+                      id="sourceClassName"
+                      v-model="Logs.sourceClassName"
+                      @change="fetchLogs"
+                      style="max-width: 100%; padding: 0.175em 0em"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                    />
+                  </template>
+                  <template #head(sourceMethodName)="data">
+                    <label for="sourceMethodName" style="margin-left: 0px">{{ $t("Logs.sourceMethodName") }}</label>
+                    <b-form-input
+                      type="text"
+                      id="sourceMethodName"
+                      v-model="Logs.sourceMethodName"
+                      @change="fetchLogs"
+                      style="max-width: 100%; padding: 0.175em 0em"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                    />
+                  </template>
+                  <template #head(level)="data">
+                    <label for="level" style="margin-left: 0px">{{ $t("Logs.level") }}</label>
+                    <b-form-input
+                      type="text"
+                      id="level"
+                      v-model="Logs.level"
+                      @change="fetchLogs"
+                      style="max-width: 100%; padding: 0.175em 0em"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                    />
+                  </template>
+                  <template #head(message)="data">
+                    <label for="message" style="margin-left: 0px">{{ $t("Logs.message") }}</label>
+                    <b-form-input
+                      type="text"
+                      id="message"
+                      v-model="Logs.message"
+                      @change="fetchLogs"
+                      style="max-width: 100%; padding: 0.175em 0em"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                    />
+                  </template>
+                </b-table>
+              </b-card-text>
+            </b-tab>
           </b-tabs>
         </b-card>
       </b-form>
@@ -2982,6 +3095,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       }
       const messages = {
         en: {
+          LOGS: "Logs",
           ABOUT: "About",
           SIDS: "Directory",
           ASSEMBLY64: "Search",
@@ -3058,8 +3172,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             handle: "Handle",
             rating: "Rating",
           },
+          Logs: {
+            instant: "Date Time",
+            sourceClassName: "Source Class Name",
+            sourceMethodName: "Source Method Name",
+            level: "Level",
+            message: "Message",
+          },
           username: "Username",
           password: "Password",
+          maxResults: "Max. Results",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3133,6 +3255,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           convertMessages: $convertMessagesEn,
         },
         de: {
+          LOGS: "Logs",
           ABOUT: "\u00dcber",
           SIDS: "Verzeichnis",
           ASSEMBLY64: "Suche",
@@ -3210,8 +3333,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             handle: "Handle",
             rating: "Wertung",
           },
+          Logs: {
+            instant: "Datum Uhrzeit",
+            sourceClassName: "Quell-Klasse",
+            sourceMethodName: "Quell-Methode",
+            level: "Level",
+            message: "Message",
+          },
           username: "Benutzername",
           password: "Passwort",
+          maxResults: "Max. Ergebnisse",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3342,6 +3473,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           // SID (info + picture)
           infos: "",
           stil: [],
+          maxResults: 100,
+          logs: [],
           hasHardware: false,
           picture: "",
           currentSid: "",
@@ -3384,6 +3517,42 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             },
             { key: "actions" },
           ],
+          logFields: [
+            {
+              key: "instant",
+              label: "Date Time",
+              sortable: true,
+              thStyle: { width: "20%" },
+              class: "field-category",
+            },
+            {
+              key: "sourceClassName",
+              label: "Source Class Name",
+              sortable: true,
+              thStyle: { width: "10%" },
+              class: "field-category",
+            },
+            {
+              key: "sourceMethodName",
+              label: "Source Method Name",
+              sortable: true,
+              thStyle: { width: "10%" },
+              class: "field-category",
+            },
+            {
+              key: "level",
+              label: "Level",
+              sortable: true,
+              thStyle: { width: "10%" },
+              class: "field-category",
+            },
+            {
+              key: "message",
+              label: "Message",
+              sortable: true,
+              class: "field-category",
+            },
+          ],
           contentEntryFields: [
             {
               key: "filename",
@@ -3397,6 +3566,14 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           released: "",
           rating: "",
           handle: "",
+          Logs: {
+            date: "",
+            time: "",
+            sourceClassName: "",
+            sourceMethodName: "",
+            level: "",
+            message: "",
+          },
           // PL (Playlist)
           importFile: null,
           importExportVisible: false,
@@ -3428,6 +3605,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           filter8580SidTabConfigIndex: 0,
           loadingSid: false,
           loadingStil: false,
+          loadingLogs: false,
           loadingAssembly64: false,
           loadingPl: false,
           loadingCfg: false,
@@ -3435,6 +3613,23 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           defaultConvertOptions: $convertOptions,
         },
         computed: {
+          instant: {
+            get: function () {
+              try {
+                var date;
+                if (this.Logs.date && this.Logs.time) {
+                  date = new Date(this.Logs.date + "T" + this.Logs.time);
+                } else if (this.Logs.date) {
+                  date = new Date(this.Logs.date);
+                } else if (this.Logs.time) {
+                  date = new Date("1070-01-01T" + this.Logs.time);
+                }
+                return date.getTime();
+              } catch (e) {
+                return 0;
+              }
+            },
+          },
           stereoMode: {
             set: function (val) {
               if (val === "FORCE_3SID") {
@@ -3516,6 +3711,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           },
         },
         methods: {
+          toDateTime: function (millis) {
+            return new Date(millis * 1000).toString();
+          },
           startRecording: function () {
             let outer = this;
             navigator.mediaDevices
@@ -4323,6 +4521,45 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.timeoutId = setTimeout(function () {
               outer.fetchDirectory(entry);
             }, 1000);
+          },
+          fetchLogs: function () {
+            this.loadingLogs = true; //the loading begin
+            axios({
+              method: "get",
+              url:
+                "/jsidplay2service/JSIDPlay2REST/logs" +
+                "?instant=" +
+                this.instant +
+                "&sourceClassName=%25" +
+                uriEncode(this.Logs.sourceClassName) +
+                "%25" +
+                "&sourceMethodName=%25" +
+                uriEncode(this.Logs.sourceMethodName) +
+                "%25" +
+                "&level=%25" +
+                uriEncode(this.Logs.level) +
+                "%25" +
+                "&message=%25" +
+                uriEncode(this.Logs.message) +
+                "%25" +
+                "&maxResults=" +
+                this.maxResults,
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            })
+              .then((response) => {
+                this.logs = response.data;
+                if (!this.logs) {
+                  this.stil = [];
+                }
+              })
+              .catch((error) => {
+                this.logs = [];
+                console.log(error);
+              })
+              .finally(() => (this.loadingLogs = false));
           },
           fetchDirectory: function (entry) {
             entry.loading = true; //the loading begin
