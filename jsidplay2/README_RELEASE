@@ -25,11 +25,10 @@ cd Downloads/
 rm -rf jsidplay2-4.8-linux
 unzip jsidplay2-4.9.zip
 cd
-Change version in "server.sh" and "fingerprintCreater.sh"
+Change version in "jsidplay2-server.sh" and "fingerprint-creator.sh"
 Change autostart:
 sudo vi /etc/systemd/system/jsidplay2.service
 sudo shutdown -r 0
-rm server.log
 Prüfe ob der Server neu gestartet wurde
 
 Change version in local desktop files "~/Desktop/JSIDPlay2.desktop"

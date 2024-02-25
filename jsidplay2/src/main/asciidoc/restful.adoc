@@ -57,7 +57,7 @@ Example:
 ---- 
 All known roles are user and admin.
 
-The built-in AppServer in JSIDPlay2 supports HTTP and/or HTTPS protocol
+JSIDPlay2Server supports HTTP and/or HTTPS protocol
 for client to server communication.
 
 ==== Use Self-signed certificate
@@ -197,11 +197,11 @@ First lets explain how to start JSIDPlay2Server in general
 for unencrypted HTTP connections and without
 the created keystore above.
 
-*Info:* You can start the built-in AppServer standalone using
+*Info:* You can start JSIDPlay2Server standalone using
 the following command in a console window, instead of starting
 the UI version of JSIDPlay2.
 
-To start the JSIPlay2 AppServer without HTTPS, but only HTTP,
+To start JSIPlay2Server without HTTPS, but only HTTP,
 please use the following command.
 
 [source,subs="attributes+"]
@@ -224,7 +224,7 @@ java -classpath jsidplay2-{version}-ui.jar server.restful.JSIDPlay2Server --help
 Now lets explain how to start JSIDPlay2Server using
 encrypted HTTPS connections with the keystore created above.
 
-To start the JSIPlay2 AppServer with HTTPS using the formerly
+To start the JSIDPlay2Server with HTTPS using the formerly
 created keystore, you can use the following script,
 please type 'vi ~/jsidplay2-server.sh'.
 
@@ -328,6 +328,9 @@ adding the fingerprint. However, it is safe to stop and restart
 the process if required, because it checks if WAV is already present
 and if database already contains the song.
 
+To start the process you can use the following script,
+please type 'vi ~/fingerprint-creator.sh'.
+
 [source,subs="attributes+"]
 ----
 #!/bin/bash -x
@@ -352,6 +355,12 @@ audio fingerprintings. This can be pathToHVSC or the path for CGSC!
 song is converted to a 8KHz WAV recording. You will need about 250GB disk space to store them!
 After every created WAV file an audio fingerprint is created and stored in the database.
 
+Now, grant permission to execute that script:
+[source,subs="attributes+"]
+----
+sudo chmod 755 ~/fingerprint-creator.sh
+----
+
 Now you can use WhatsSID? tune recognition.
 
 === Update of WhatsSID database
@@ -366,6 +375,8 @@ The newly created HVSC folder will get copied recordings from there and
 if tunes were changed or added, only they will be created from scratch.
 
 Keep in mind in the end the update requires another 250GB of disk space for the new WAV recordings.
+
+Please change the script fingerprint-creator.sh to add the previousDirectory parameter:
 
 [source,subs="attributes+"]
 ----
@@ -421,7 +432,7 @@ java -Dhibernate.dialect.storage_engine=innodb \
 
 === Autostart JSIDPlay2Server on system startup
 
-To start JSIPlay2 AppServer on system startup, please type
+To start JSIPlay2Server on system startup, please type
 'vi /etc/systemd/system/jsidplay2.service'.
 
 [source,subs="attributes+"]
@@ -480,7 +491,7 @@ configure dynamic DNS inside your router)
 
 . You will need to configure your router to redirect requests to
 that server: I mean port forwarding. You should forward requests using
-the port, that you configured for the built-in AppServer in JSIDPlay2
+the port, that you configured for the JSIDPlay2Server
 (8080 and 8443). This will make it necessary to configure a fixed
 IP address for your server within your local area network, beforehand.
 Now you can forward all related traffic to your server where
@@ -685,8 +696,8 @@ recommended to use less data volume with less precision
 volume with more precision (higher quality) inside your private
 local network, e.g. WLAN connection.
 
-I have implemented an example android app as a client for the built-in
-AppServer of JSIDPlay2.
+I have implemented an example android app as a client for
+JSIDPlay2Server.
 My android app uses constant bitrate of 64K for the internet
 and variable bitrate and highest quality for my private WLAN.
 This is according to my recommendation above.
