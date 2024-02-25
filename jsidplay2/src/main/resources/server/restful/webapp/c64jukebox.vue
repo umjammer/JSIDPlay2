@@ -2795,6 +2795,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <b-form-timepicker
                       v-model="Logs.time"
                       class="mb-2"
+                      now-button
                       reset-button
                       reset-value="'00:00'"
                       @change="fetchLogs"
