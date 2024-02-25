@@ -2,14 +2,12 @@ package server.restful.servlets;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
-import static server.restful.JSIDPlay2Server.ROLE_USER;
 import static server.restful.JSIDPlay2Server.freeDebugEntityManager;
 import static server.restful.JSIDPlay2Server.getDebugEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ServletUtil.error;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.Parameter;
@@ -22,7 +20,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.ServletUtil;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.validator.MaxResultsValidator;
 import ui.entities.debug.DebugEntry;
@@ -31,7 +28,7 @@ import ui.entities.debug.service.DebugService;
 @SuppressWarnings("serial")
 @WebServlet(name = "LogsServlet", displayName = "LogsServlet", urlPatterns = CONTEXT_ROOT_SERVLET
 		+ "/logs/*", description = "Get log message list")
-@ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_USER, ROLE_ADMIN }))
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_ADMIN }))
 public class LogsServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.LogsServletParameters")
@@ -92,15 +89,15 @@ public class LogsServlet extends JSIDPlay2Servlet {
 			this.message = message;
 		}
 
-		private Integer maxResults = 100;
+		private Integer maxResults;
 
 		public Integer getMaxResults() {
 			return maxResults;
 		}
 
 		@Parameter(names = {
-				"--maxResults" }, descriptionKey = "MAX_RESULTS", validateWith = MaxResultsValidator.class, order = 2)
-		public void setStartSong(Integer maxResults) {
+				"--maxResults" }, descriptionKey = "MAX_RESULTS", required = true, validateWith = MaxResultsValidator.class, order = 6)
+		public void setMaxResults(Integer maxResults) {
 			this.maxResults = maxResults;
 		}
 
@@ -116,7 +113,6 @@ public class LogsServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		try {
 			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
-			ServletSecurity servletSecurity = getClass().getAnnotation(ServletSecurity.class);
 
 			final LogsServletParameters servletParameters = new LogsServletParameters();
 
@@ -127,16 +123,11 @@ public class LogsServlet extends JSIDPlay2Servlet {
 				parser.usage();
 				return;
 			}
-			List<DebugEntry> result = new ArrayList<>();
+			final DebugService debugService = new DebugService(getDebugEntityManager());
+			List<DebugEntry> result = debugService.findDebugEntries(servletParameters.getInstant(),
+					servletParameters.getSourceClassName(), servletParameters.getSourceMethodName(),
+					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getMaxResults());
 
-			boolean adminRole = !ServletUtil.isSecured(servletSecurity) || request.isUserInRole(ROLE_ADMIN);
-			if (adminRole) {
-				final DebugService debugService = new DebugService(getDebugEntityManager());
-				result.addAll(debugService.findDebugEntries(servletParameters.getInstant(),
-						servletParameters.getSourceClassName(), servletParameters.getSourceMethodName(),
-						servletParameters.getLevel(), servletParameters.getMessage(),
-						servletParameters.getMaxResults()));
-			}
 			setOutput(MIME_TYPE_JSON, response, result);
 
 		} catch (Throwable t) {

@@ -58,13 +58,15 @@ public class DebugService {
 
 				Predicate instantPredicate = cb.greaterThan(root.<Instant>get(DebugEntry_.instant),
 						Instant.ofEpochMilli(instant));
-				Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName), sourceClassName);
-				Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName), sourceMethodName);
-				Predicate levelPredicate = cb.like(root.get(DebugEntry_.level), level);
-				Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), message);
+				Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName),
+						"%" + sourceClassName + "%");
+				Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName),
+						"%" + sourceMethodName + "%");
+				Predicate levelPredicate = cb.like(root.get(DebugEntry_.level), "%" + level + "%");
+				Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), "%" + message + "%");
 
 				query.select(root).where(cb.and(instantPredicate, sourceClassNamePredicate, sourceMethodNamePredicate,
-						levelPredicate, messagePredicate))/*.orderBy(cb.desc(root.get(DebugEntry_.instant)))*/;
+						levelPredicate, messagePredicate))/* .orderBy(cb.desc(root.get(DebugEntry_.instant))) */;
 
 				List<DebugEntry> result = em.createQuery(query).setMaxResults(maxResults).getResultList();
 

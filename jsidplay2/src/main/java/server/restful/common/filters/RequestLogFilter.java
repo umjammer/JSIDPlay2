@@ -43,7 +43,7 @@ import jakarta.servlet.http.HttpServletResponse;
 		"ConvertServlet", "DirectoryServlet", "DiskDirectoryServlet", "DownloadServlet", "FavoritesNamesServlet",
 		"FavoritesServlet", "FiltersServlet", "PhotoServlet", "RandomHVSCServlet", "SpeechToTextServlet",
 		"StartPageServlet", "StaticServlet", "STILServlet", "TuneInfoServlet", "UploadServlet",
-		"WebJarsServlet" }, description = "Log request and response")
+		"WebJarsServlet", "LogsServlet" }, description = "Log request and response")
 public final class RequestLogFilter extends HttpFilter {
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());

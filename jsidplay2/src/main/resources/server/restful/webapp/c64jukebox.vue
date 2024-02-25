@@ -4530,18 +4530,14 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 "/jsidplay2service/JSIDPlay2REST/logs" +
                 "?instant=" +
                 this.instant +
-                "&sourceClassName=%25" +
+                "&sourceClassName=" +
                 uriEncode(this.Logs.sourceClassName) +
-                "%25" +
-                "&sourceMethodName=%25" +
+                "&sourceMethodName=" +
                 uriEncode(this.Logs.sourceMethodName) +
-                "%25" +
-                "&level=%25" +
+                "&level=" +
                 uriEncode(this.Logs.level) +
-                "%25" +
-                "&message=%25" +
+                "&message=" +
                 uriEncode(this.Logs.message) +
-                "%25" +
                 "&maxResults=" +
                 this.maxResults,
               auth: {
