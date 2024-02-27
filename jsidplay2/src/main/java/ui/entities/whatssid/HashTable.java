@@ -15,8 +15,7 @@ import sidplay.ini.converter.BeanToStringConverter;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(name = "HashTable", indexes = { @Index(columnList = "idHashTable", unique = true),
-		@Index(columnList = "HASH", name = "hash") })
+@Table(name = "HashTable", indexes = { @Index(columnList = "HASH", name = "hash") })
 public class HashTable {
 
 	private int idHashTable;

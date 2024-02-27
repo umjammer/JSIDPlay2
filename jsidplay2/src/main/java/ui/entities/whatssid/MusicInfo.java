@@ -16,8 +16,7 @@ import sidplay.ini.converter.BeanToStringConverter;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(name = "MusicInfo", indexes = { @Index(columnList = "idMusicInfo", name = "idMusicInfo_UNIQUE", unique = true),
-		@Index(columnList = "songNo", name = "songNo", unique = false) })
+@Table(name = "MusicInfo", indexes = { @Index(columnList = "songNo", name = "songNo", unique = false) })
 public class MusicInfo {
 
 	private int idMusicInfo;

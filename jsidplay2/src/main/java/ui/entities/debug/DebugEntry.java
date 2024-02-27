@@ -9,11 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(name = "DebugEntry")
+@Table(name = "DebugEntry", indexes = { @Index(columnList = "instant", unique = true, name = "hash") })
 public class DebugEntry {
 
 	private int id;
