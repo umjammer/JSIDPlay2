@@ -47,8 +47,10 @@ public class DebugService {
 
 	public List<DebugEntry> findDebugEntries(Long instant, String sourceClassName, String sourceMethodName,
 			String level, String message, int maxResults, Order order) {
-		// SELECT message FROM `DebugEntry` WHERE
-		// message Like message
+		// SELECT instant, sourceClassName, sourceMethodName, level, message FROM
+		// `DebugEntry` WHERE instant >= instant AND sourceClassName LIKE
+		// %sourceClassName% AND sourceMethodName LIKE %sourceMethodName% AND level LIKE
+		// %level% AND message LIKE %message% ORDER BY instant ASC LIMIT maxResults
 		try {
 			if (em.isOpen()) {
 				em.getTransaction().begin();
@@ -67,9 +69,12 @@ public class DebugService {
 				}
 				Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName),
 						"%" + sourceClassName + "%");
+
 				Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName),
 						"%" + sourceMethodName + "%");
+
 				Predicate levelPredicate = cb.like(root.get(DebugEntry_.level), "%" + level + "%");
+
 				Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), "%" + message + "%");
 
 				query.select(root).where(cb.and(instantPredicate, sourceClassNamePredicate, sourceMethodNamePredicate,

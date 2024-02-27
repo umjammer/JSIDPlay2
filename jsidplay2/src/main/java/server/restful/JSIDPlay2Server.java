@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Timer;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -604,8 +606,7 @@ public final class JSIDPlay2Server {
 				DEBUG_ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory(PersistenceProperties.DEBUG_DS,
 						persistenceProperties);
 
-				Logger rootLogger = LogManager.getLogManager().getLogger("");
-				rootLogger.addHandler(new DBAppender());
+				addDatabaseAppender();
 			}
 			jsidplay2Server.start();
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException
@@ -613,6 +614,17 @@ public final class JSIDPlay2Server {
 				| LifecycleException | ClassNotFoundException e) {
 			System.err.println(e.getMessage());
 			exit(1);
+		}
+	}
+
+	private static void addDatabaseAppender() {
+		Logger rootLogger = LogManager.getLogManager().getLogger("");
+		rootLogger.addHandler(new DBAppender());
+
+		Optional<Handler> optionalConsoleHandler = Arrays.asList(rootLogger.getHandlers()).stream()
+				.filter(handler -> handler.getClass().equals(ConsoleHandler.class)).findFirst();
+		if (optionalConsoleHandler.isPresent()) {
+			rootLogger.removeHandler(optionalConsoleHandler.orElse(null));
 		}
 	}
 

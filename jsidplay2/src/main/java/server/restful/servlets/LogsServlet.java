@@ -6,6 +6,7 @@ import static server.restful.JSIDPlay2Server.freeDebugEntityManager;
 import static server.restful.JSIDPlay2Server.getDebugEntityManager;
 import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ServletUtil.error;
+import static server.restful.common.ServletUtil.info;
 
 import java.io.IOException;
 import java.util.List;
@@ -143,6 +144,9 @@ public class LogsServlet extends JSIDPlay2Servlet {
 
 			setOutput(MIME_TYPE_JSON, response, result);
 
+		} catch (IOException e) {
+			// database not available, therefore we cannot answer log requests
+			info(getServletContext(), e.getMessage());
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(getServletContext(), t);
