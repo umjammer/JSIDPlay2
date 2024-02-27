@@ -1742,7 +1742,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="startTime"
-							  locale="de"
+                              locale="de"
                             />
                           </label>
                         </span>
@@ -1757,7 +1757,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="defaultPlayLength"
-							  locale="de"
+                              locale="de"
                             />
                           </label>
                         </span>
@@ -1772,7 +1772,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="fadeInTime"
-							  locale="de"
+                              locale="de"
                             />
                           </label>
                         </span>
@@ -1787,7 +1787,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="fadeOutTime"
-							  locale="de"
+                              locale="de"
                             />
                           </label>
                         </span>
@@ -2751,7 +2751,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               </template>
 
               <b-card-text>
-                <b-button size="sm-2" variant="success" v-on:click="fetchLogs" style="float: left;">
+                <b-button size="sm-2" variant="success" v-on:click="fetchLogs" style="float: left">
                   <span>Request LOGS</span>
                 </b-button>
                 <div class="settings-box">
@@ -2762,8 +2762,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     ><b-form-datepicker
                       id="instant"
                       v-model="Logs.date"
-					  :locale="$i18n.locale"
-					  v-bind="$i18n.messages[$i18n.locale] || {}"
+                      :locale="$i18n.locale"
+                      v-bind="$i18n.messages[$i18n.locale] || {}"
                       class="mb-2"
                       reset-button
                       reset-value="'00:00'"
@@ -2772,8 +2772,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     ></b-form-datepicker>
                     <b-form-timepicker
                       v-model="Logs.time"
-					  :locale="$i18n.locale"
-					  v-bind="$i18n.messages[$i18n.locale] || {}"
+                      :locale="$i18n.locale"
+                      v-bind="$i18n.messages[$i18n.locale] || {}"
                       class="mb-2"
                       now-button
                       reset-button
@@ -3433,28 +3433,28 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           firstCategory: "",
           pleaseWait: "Bitte warten...",
 
-          labelPrevDecade: 'Vorheriges Jahrzehnt',
-          labelPrevYear: 'Vorheriges Jahr',
-          labelPrevMonth: 'Vorheriger Monat',
-          labelCurrentMonth: 'Aktueller Monat',
-          labelNextMonth: 'Nächster Monat',
-          labelNextYear: 'Nächstes Jahr',
-          labelNextDecade: 'Nächstes Jahrzehnt',
-          labelToday: 'Heute',
-          labelSelected: 'Ausgewähltes Datum',
-          labelNoDateSelected: 'Kein Datum gewählt',
-          labelCalendar: 'Kalender',
-          labelNav: 'Kalendernavigation',
-          labelHelp: 'Mit den Pfeiltasten durch den Kalender navigieren',
+          labelPrevDecade: "Vorheriges Jahrzehnt",
+          labelPrevYear: "Vorheriges Jahr",
+          labelPrevMonth: "Vorheriger Monat",
+          labelCurrentMonth: "Aktueller Monat",
+          labelNextMonth: "Nächster Monat",
+          labelNextYear: "Nächstes Jahr",
+          labelNextDecade: "Nächstes Jahrzehnt",
+          labelToday: "Heute",
+          labelSelected: "Ausgewähltes Datum",
+          labelNoDateSelected: "Kein Datum gewählt",
+          labelCalendar: "Kalender",
+          labelNav: "Kalendernavigation",
+          labelHelp: "Mit den Pfeiltasten durch den Kalender navigieren",
 
-          labelHours: 'Stunden',
-          labelMinutes: 'Minuten',
-          labelSeconds: 'Sekunden',
-          labelIncrement: 'Erhöhen',
-          labelDecrement: 'Verringern',
-          labelSelected: 'Ausgewählte Zeit',
-          labelNoTimeSelected: 'Keine Zeit ausgewählt',
-          labelCloseButton: 'Schließen',
+          labelHours: "Stunden",
+          labelMinutes: "Minuten",
+          labelSeconds: "Sekunden",
+          labelIncrement: "Erhöhen",
+          labelDecrement: "Verringern",
+          labelSelected: "Ausgewählte Zeit",
+          labelNoTimeSelected: "Keine Zeit ausgewählt",
+          labelCloseButton: "Schließen",
 
           convertMessages: $convertMessagesDe,
         },
