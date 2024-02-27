@@ -2749,47 +2749,19 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               <b-card-text>
                 <div class="settings-box">
                   <span class="setting"
-                    ><label for="maxResults">
-                      {{ $t("maxResults") }}
-                      <b-form-input
-                        type="number"
-                        min="0"
-                        oninput="validity.valid||(value='');"
-                        id="maxResults"
-                        class="right"
-                        v-model.number="maxResults"
-                        @change="fetchLogs"
-                      /> </label
-                  ></span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting"
-                    ><label for="order">
-                      {{ $t("order") }}
-                      <b-form-select id="order" class="right" v-model="order" @change="fetchLogs">
+                    >
+                      <b-form-select id="order" class="mb-2 right" v-model="order" @change="fetchLogs"
+                      >
                         <option value="ASC">{{ $t("ASC") }}</option>
                         <option value="DESC">{{ $t("DESC") }}</option>
-                      </b-form-select></label
-                    ></span
-                  >
-                </div>
-
-                <b-button size="sm" variant="success" v-on:click="fetchLogs">
-                  <span>Request LOGS</span>
-                </b-button>
-                <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
-                  <template #cell(instant)="row">
-                    <span> {{ toDateTime(row.item.instant) }} </span>
-                  </template>
-                  <template #head(instant)="data">
-                    <label for="instant" style="margin-left: 0px">{{ $t("Logs.instant") }}</label>
-                    <b-form-datepicker
+                      </b-form-select
+                    ><b-form-datepicker
                       id="instant"
                       v-model="Logs.date"
                       class="mb-2"
                       reset-button
                       reset-value="'00:00'"
-                      @change="fetchLogs"
+                      @input="fetchLogs"
                       style="max-width: 100%; padding: 0.175em 0em"
                     ></b-form-datepicker>
                     <b-form-timepicker
@@ -2798,9 +2770,36 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       now-button
                       reset-button
                       reset-value="'00:00'"
-                      @change="fetchLogs"
+                      @input="fetchLogs"
                       style="max-width: 100%; padding: 0.175em 0em"
-                    ></b-form-timepicker>
+                    ></b-form-timepicker
+                    ></span
+                  >
+                </div>
+                <div class="settings-box">
+                  <span class="setting"
+                    ><label for="maxResults">
+                      {{ $t("maxResults") }}
+                      <b-form-input
+                        type="number"
+                        min="0"
+                        oninput="validity.valid||(value='');"
+                        id="maxResults"
+                        class="mb-2 right"
+                        v-model.number="maxResults"
+                        @change="fetchLogs"
+                      /> </label
+                  ></span>
+                </div>
+                <b-button size="sm-2 right" variant="success" v-on:click="fetchLogs">
+                  <span>Request LOGS</span>
+                </b-button>
+                <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
+                  <template #cell(instant)="row">
+                    <span> {{ toDateTime(row.item.instant) }} </span>
+                  </template>
+                  <template #head(instant)="data">
+                    <label for="instant" style="margin-left: 0px">{{ $t("Logs.instant") }}</label>
                   </template>
                   <template #head(sourceClassName)="data">
                     <label for="sourceClassName" style="margin-left: 0px">{{ $t("Logs.sourceClassName") }}</label>
@@ -3187,17 +3186,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           },
           Logs: {
             instant: "Date Time",
-            sourceClassName: "Source Class Name",
-            sourceMethodName: "Source Method Name",
+            sourceClassName: "Class Name",
+            sourceMethodName: "Method Name",
             level: "Level",
             message: "Message",
           },
           username: "Username",
           password: "Password",
           maxResults: "Max. Results",
-          order: "Order",
-          ASC: "Ascending",
-          DESC: "Descending",
+          ASC: "From",
+          DESC: "To",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3351,17 +3349,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           },
           Logs: {
             instant: "Datum Uhrzeit",
-            sourceClassName: "Quell-Klasse",
-            sourceMethodName: "Quell-Methode",
+            sourceClassName: "Klasse",
+            sourceMethodName: "Methode",
             level: "Level",
             message: "Message",
           },
           username: "Benutzername",
           password: "Passwort",
           maxResults: "Max. Ergebnisse",
-          order: "Reihenfolge",
-          ASC: "Aufsteigend",
-          DESC: "Absteigend",
+          ASC: "Ab",
+          DESC: "Bis",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3493,7 +3490,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           infos: "",
           stil: [],
           maxResults: 100,
-          order: "DESC",
+          order: "ASC",
           logs: [],
           hasHardware: false,
           picture: "",
@@ -3640,7 +3637,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 if (this.Logs.date && this.Logs.time) {
                   date = new Date(this.Logs.date + "T" + this.Logs.time);
                 } else if (this.Logs.date) {
-                  date = new Date(this.Logs.date);
+                  date = new Date(this.Logs.date + "T00:00:00");
                 } else if (this.Logs.time) {
                   date = new Date("1070-01-01T" + this.Logs.time);
                 }
