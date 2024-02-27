@@ -2748,13 +2748,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
 
               <b-card-text>
                 <div class="settings-box">
-                  <span class="setting"
-                    >
-                      <b-form-select id="order" class="mb-2 right" v-model="order" @change="fetchLogs"
-                      >
-                        <option value="ASC">{{ $t("ASC") }}</option>
-                        <option value="DESC">{{ $t("DESC") }}</option>
-                      </b-form-select
+                  <span class="setting">
+                    <b-form-select id="order" class="mb-2 right" v-model="order" @change="fetchLogs">
+                      <option value="ASC">{{ $t("ASC") }}</option>
+                      <option value="DESC">{{ $t("DESC") }}</option> </b-form-select
                     ><b-form-datepicker
                       id="instant"
                       v-model="Logs.date"
@@ -2773,8 +2770,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       @input="fetchLogs"
                       style="max-width: 100%; padding: 0.175em 0em"
                     ></b-form-timepicker
-                    ></span
-                  >
+                  ></span>
                 </div>
                 <div class="settings-box">
                   <span class="setting"
