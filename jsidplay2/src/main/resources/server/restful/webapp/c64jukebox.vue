@@ -1742,6 +1742,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="startTime"
+							  locale="de"
                             />
                           </label>
                         </span>
@@ -1756,6 +1757,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="defaultPlayLength"
+							  locale="de"
                             />
                           </label>
                         </span>
@@ -1770,6 +1772,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="fadeInTime"
+							  locale="de"
                             />
                           </label>
                         </span>
@@ -1784,6 +1787,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               reset-value="'00:00'"
                               class="right"
                               v-model="fadeOutTime"
+							  locale="de"
                             />
                           </label>
                         </span>
@@ -2747,6 +2751,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               </template>
 
               <b-card-text>
+                <b-button size="sm-2" variant="success" v-on:click="fetchLogs" style="float: left;">
+                  <span>Request LOGS</span>
+                </b-button>
                 <div class="settings-box">
                   <span class="setting">
                     <b-form-select id="order" class="mb-2 right" v-model="order" @change="fetchLogs">
@@ -2755,6 +2762,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     ><b-form-datepicker
                       id="instant"
                       v-model="Logs.date"
+					  :locale="$i18n.locale"
+					  v-bind="$i18n.messages[$i18n.locale] || {}"
                       class="mb-2"
                       reset-button
                       reset-value="'00:00'"
@@ -2763,6 +2772,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     ></b-form-datepicker>
                     <b-form-timepicker
                       v-model="Logs.time"
+					  :locale="$i18n.locale"
+					  v-bind="$i18n.messages[$i18n.locale] || {}"
                       class="mb-2"
                       now-button
                       reset-button
@@ -2787,9 +2798,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       /> </label
                   ></span>
                 </div>
-                <b-button size="sm-2 right" variant="success" v-on:click="fetchLogs">
-                  <span>Request LOGS</span>
-                </b-button>
                 <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
                   <template #cell(instant)="row">
                     <span> {{ toDateTime(row.item.instant) }} </span>
@@ -3190,8 +3198,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           username: "Username",
           password: "Password",
           maxResults: "Max. Results",
-          ASC: "From",
-          DESC: "To",
+          ASC: "As from",
+          DESC: "Until",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3353,8 +3361,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           username: "Benutzername",
           password: "Passwort",
           maxResults: "Max. Ergebnisse",
-          ASC: "Ab",
-          DESC: "Bis",
+          ASC: "Ab dem",
+          DESC: "Bis zum",
           filter: "Top",
           onefilerTop200: "Onefiler",
           toolsTop100: "Tools",
@@ -3424,6 +3432,29 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           setDefaultUserReally: "Wollen sie wirklich den Standardbenutzer wiederherstellen?",
           firstCategory: "",
           pleaseWait: "Bitte warten...",
+
+          labelPrevDecade: 'Vorheriges Jahrzehnt',
+          labelPrevYear: 'Vorheriges Jahr',
+          labelPrevMonth: 'Vorheriger Monat',
+          labelCurrentMonth: 'Aktueller Monat',
+          labelNextMonth: 'Nächster Monat',
+          labelNextYear: 'Nächstes Jahr',
+          labelNextDecade: 'Nächstes Jahrzehnt',
+          labelToday: 'Heute',
+          labelSelected: 'Ausgewähltes Datum',
+          labelNoDateSelected: 'Kein Datum gewählt',
+          labelCalendar: 'Kalender',
+          labelNav: 'Kalendernavigation',
+          labelHelp: 'Mit den Pfeiltasten durch den Kalender navigieren',
+
+          labelHours: 'Stunden',
+          labelMinutes: 'Minuten',
+          labelSeconds: 'Sekunden',
+          labelIncrement: 'Erhöhen',
+          labelDecrement: 'Verringern',
+          labelSelected: 'Ausgewählte Zeit',
+          labelNoTimeSelected: 'Keine Zeit ausgewählt',
+          labelCloseButton: 'Schließen',
 
           convertMessages: $convertMessagesDe,
         },
@@ -3725,7 +3756,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
         },
         methods: {
           toDateTime: function (millis) {
-            return new Date(millis * 1000).toString();
+            return new Date(millis * 1000).toLocaleString(this.$i18n.locale);
           },
           startRecording: function () {
             let outer = this;
