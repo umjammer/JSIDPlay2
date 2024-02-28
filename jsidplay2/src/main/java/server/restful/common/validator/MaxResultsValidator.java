@@ -5,7 +5,7 @@ import com.beust.jcommander.ParameterException;
 
 public class MaxResultsValidator implements IParameterValidator {
 
-	private static final int MAX_RESULTS = 50000;
+	private static final int MAX_RESULTS = 10000;
 
 	@Override
 	public void validate(String name, String value) throws ParameterException {

@@ -2790,6 +2790,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <b-form-input
                         type="number"
                         min="0"
+                        max="10000"
                         oninput="validity.valid||(value='');"
                         id="maxResults"
                         class="mb-2 right"
@@ -2798,6 +2799,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       /> </label
                   ></span>
                 </div>
+                <label for="logCount" style="width: 100%">
+                <span class="right" style="font-size:small; font-style: italic; color: #6c757d">{{ logs.length }} {{ $t("results") }}</span>
+                </label>
                 <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
                   <template #cell(instant)="row">
                     <span> {{ toDateTime(row.item.instant) }} </span>
@@ -3195,6 +3199,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             level: "Level",
             message: "Message",
           },
+          results: "results",
           username: "Username",
           password: "Password",
           maxResults: "Max. Results",
@@ -3358,6 +3363,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             level: "Level",
             message: "Meldung",
           },
+          results: "Ergebnisse",
           username: "Benutzername",
           password: "Passwort",
           maxResults: "Max. Ergebnisse",
