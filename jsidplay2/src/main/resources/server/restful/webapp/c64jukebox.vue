@@ -2800,7 +2800,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   ></span>
                 </div>
                 <label for="logCount" style="width: 100%">
-                <span class="right" style="font-size:small; font-style: italic; color: #6c757d">{{ logs.length }} {{ $t("results") }}</span>
+                  <span class="right" style="font-size: small; font-style: italic; color: #6c757d"
+                    >{{ logs.length }} {{ $t("results") }}</span
+                  >
                 </label>
                 <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
                   <template #cell(instant)="row">
