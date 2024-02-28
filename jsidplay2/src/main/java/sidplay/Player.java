@@ -1425,6 +1425,10 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 		credits.append("C1541 Floppy Disk Drive Emulation:\n");
 		credits.append("\tCopyright (©) 2010 VICE (the Versatile Commodore Emulator)\n");
 		credits.append("\thttp://www.viceteam.org/\n");
+		credits.append("JiffyDOS ROMs:\n");
+		credits.append("\tCopyright (©) by CMD Software\n");
+		credits.append("\thttp://cmdweb.com\n");
+		credits.append("\tLicense can be obtained at https://restore-store.de\n");
 		credits.append(MOS6510.credits());
 		credits.append(MOS6526.credits());
 		credits.append(VIC.credits());

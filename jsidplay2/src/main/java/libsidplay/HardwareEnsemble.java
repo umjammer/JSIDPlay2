@@ -50,8 +50,9 @@ import libsidutils.prg2tap.PRG2TAPProgram;
  *
  */
 public class HardwareEnsemble implements Ultimate64 {
-	private static final String JIFFYDOS_C64_ROM = "/libsidplay/roms/JiffyDOS C64 Kernal 6.01.bin";
-	private static final String JIFFYDOS_C1541_ROM = "/libsidplay/roms/JiffyDOS 1541 5.0.bin";
+	private static final String JIFFYDOS_C64_ROM = "/libsidplay/roms/JiffyDOS_C64_6.01.bin";
+	private static final String JIFFYDOS_C1541_ROM = "/libsidplay/roms/JiffyDOS_1541-II_6.00.bin";
+	
 	private static final int JIFFYDOS_C64_ROM_SIZE = 0x2000;
 	private static final int JIFFYDOS_C1541_ROM_SIZE = 0x4000;
 	private static final byte[] JIFFYDOS_C64_KERNAL = new byte[JIFFYDOS_C64_ROM_SIZE];
