@@ -3,10 +3,8 @@ package ui.gamebase;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
@@ -76,25 +74,17 @@ public class GameBasePage extends C64VBox implements UIPart {
 		gamebaseTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				if (!newValue.getScreenshotFilename().isEmpty()) {
-					try {
-						URL url = new URI(util.getConfig().getOnlineSection().getGb64ScreenshotUrl()
-								+ newValue.getScreenshotFilename().replace('\\', '/')).toURL();
-						setScreenshot(url);
-					} catch (MalformedURLException | URISyntaxException e) {
-						System.err.println(e.getMessage());
-					}
+					setScreenshot(new Image(util.getConfig().getOnlineSection().getGb64ScreenshotUrl()
+							+ newValue.getScreenshotFilename().replace('\\', '/')));
+				} else {
+					setScreenshot(null);
 				}
-				Image image = new Image(new ByteArrayInputStream(Photos.getPhoto("???", "???")));
 				if (!newValue.getMusicians().getPhotoFilename().isEmpty()) {
-					try {
-						image = new Image(new URI(util.getConfig().getOnlineSection().getGb64PhotosUrl()
-								+ newValue.getMusicians().getPhotoFilename().replace('\\', '/')).toURL()
-								.toExternalForm());
-					} catch (MalformedURLException | URISyntaxException e) {
-						System.err.println(e.getMessage());
-					}
+					setPhoto(new Image(util.getConfig().getOnlineSection().getGb64PhotosUrl()
+							+ newValue.getMusicians().getPhotoFilename().replace('\\', '/')));
+				} else {
+					setPhoto(new Image(new ByteArrayInputStream(Photos.getPhoto("???", "???"))));
 				}
-				setPhoto(image);
 			}
 		});
 	}
@@ -105,12 +95,12 @@ public class GameBasePage extends C64VBox implements UIPart {
 		startGame(game);
 	}
 
-	private void setScreenshot(URL url) {
+	private void setScreenshot(Image image) {
 		if (screenshot == null) {
 			screenshot = (ImageView) gamebaseTable.getScene().lookup("#gamebase_screenshot");
 		}
 		if (screenshot != null) {
-			Platform.runLater(() -> screenshot.setImage(new Image(url.toExternalForm())));
+			Platform.runLater(() -> screenshot.setImage(image));
 		}
 	}
 
