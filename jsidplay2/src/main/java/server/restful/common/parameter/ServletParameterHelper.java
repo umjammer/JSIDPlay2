@@ -2,7 +2,9 @@ package server.restful.common.parameter;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
@@ -232,7 +234,11 @@ public class ServletParameterHelper {
 				ByteBuffer byteBuffer = null;
 				byte[] byteArray = null;
 				try {
-					byteArray = IOUtils.readAllBytes(getClass().getResourceAsStream(resourceName));
+					InputStream resourceAsStream = getClass().getResourceAsStream(resourceName);
+					if (resourceAsStream == null) {
+						throw new FileNotFoundException(resourceName);
+					}
+					byteArray = IOUtils.readAllBytes(resourceAsStream);
 					byteBuffer = ByteBuffer.wrap(byteArray);
 					US_ASCII_DECODER.decode(byteBuffer);
 				} catch (CharacterCodingException e) {

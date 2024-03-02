@@ -2751,12 +2751,28 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               </template>
 
               <b-card-text>
-                <b-button size="sm-2" variant="success" v-on:click="fetchLogs" style="float: left">
+                <b-button
+                  size="sm-2"
+                  variant="success"
+                  v-on:click="
+                    fetchLogs();
+                    countLogs();
+                  "
+                  style="float: left"
+                >
                   <span>Request LOGS</span>
                 </b-button>
                 <div class="settings-box">
                   <span class="setting">
-                    <b-form-select id="order" class="mb-2 right" v-model="order" @change="fetchLogs">
+                    <b-form-select
+                      id="order"
+                      class="mb-2 right"
+                      v-model="order"
+                      @change="
+                        fetchLogs();
+                        countLogs();
+                      "
+                    >
                       <option value="ASC">{{ $t("ASC") }}</option>
                       <option value="DESC">{{ $t("DESC") }}</option> </b-form-select
                     ><b-form-datepicker
@@ -2766,8 +2782,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       v-bind="$i18n.messages[$i18n.locale] || {}"
                       class="mb-2"
                       reset-button
-                      reset-value="'00:00'"
-                      @input="fetchLogs"
+                      @input="
+                        fetchLogs();
+                        countLogs();
+                      "
                       style="max-width: 100%; padding: 0.175em 0em"
                     ></b-form-datepicker>
                     <b-form-timepicker
@@ -2777,8 +2795,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       class="mb-2"
                       now-button
                       reset-button
-                      reset-value="'00:00'"
-                      @input="fetchLogs"
+                      @input="
+                        fetchLogs();
+                        countLogs();
+                      "
                       style="max-width: 100%; padding: 0.175em 0em"
                     ></b-form-timepicker
                   ></span>
@@ -2795,13 +2815,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         id="maxResults"
                         class="mb-2 right"
                         v-model.number="maxResults"
-                        @change="fetchLogs"
+                        @change="
+                          fetchLogs();
+                          countLogs();
+                        "
                       /> </label
                   ></span>
                 </div>
                 <label for="logCount" style="width: 100%">
                   <span class="right" style="font-size: small; font-style: italic; color: #6c757d"
-                    >{{ logs.length }} {{ $t("results") }}</span
+                    >{{ logsCount.toLocaleString() }} {{ $t("results") }}</span
                   >
                 </label>
                 <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
@@ -2817,7 +2840,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       type="text"
                       id="sourceClassName"
                       v-model="Logs.sourceClassName"
-                      @change="fetchLogs"
+                      @change="
+                        fetchLogs();
+                        countLogs();
+                      "
                       style="max-width: 100%; padding: 0.175em 0em"
                       autocomplete="off"
                       autocorrect="off"
@@ -2831,7 +2857,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       type="text"
                       id="sourceMethodName"
                       v-model="Logs.sourceMethodName"
-                      @change="fetchLogs"
+                      @change="
+                        fetchLogs();
+                        countLogs();
+                      "
                       style="max-width: 100%; padding: 0.175em 0em"
                       autocomplete="off"
                       autocorrect="off"
@@ -2845,7 +2874,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       type="text"
                       id="level"
                       v-model="Logs.level"
-                      @change="fetchLogs"
+                      @change="
+                        fetchLogs();
+                        countLogs();
+                      "
                       style="max-width: 100%; padding: 0.175em 0em"
                       autocomplete="off"
                       autocorrect="off"
@@ -2859,7 +2891,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       type="text"
                       id="message"
                       v-model="Logs.message"
-                      @change="fetchLogs"
+                      @change="
+                        fetchLogs();
+                        countLogs();
+                      "
                       style="max-width: 100%; padding: 0.175em 0em"
                       autocomplete="off"
                       autocorrect="off"
@@ -3527,6 +3562,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           maxResults: 100,
           order: "ASC",
           logs: [],
+          logsCount: 0,
           hasHardware: false,
           picture: "",
           currentSid: "",
@@ -3574,7 +3610,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               key: "instant",
               label: "Date Time",
               sortable: false,
-              thStyle: { width: "20%" },
+              thStyle: { "vertical-align": "top", width: "20%" },
               class: "field-category",
             },
             {
@@ -4602,11 +4638,46 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               .then((response) => {
                 this.logs = response.data;
                 if (!this.logs) {
-                  this.stil = [];
+                  this.logs = [];
                 }
               })
               .catch((error) => {
                 this.logs = [];
+                console.log(error);
+              })
+              .finally(() => (this.loadingLogs = false));
+          },
+          countLogs: function () {
+            this.loadingLogs = true; //the loading begin
+            axios({
+              method: "get",
+              url:
+                "/jsidplay2service/JSIDPlay2REST/count-logs" +
+                "?instant=" +
+                this.instant +
+                "&sourceClassName=" +
+                uriEncode(this.Logs.sourceClassName) +
+                "&sourceMethodName=" +
+                uriEncode(this.Logs.sourceMethodName) +
+                "&level=" +
+                uriEncode(this.Logs.level) +
+                "&message=" +
+                uriEncode(this.Logs.message) +
+                "&order=" +
+                this.order,
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            })
+              .then((response) => {
+                this.logsCount = response.data;
+                if (!this.logs) {
+                  this.logsCount = 0;
+                }
+              })
+              .catch((error) => {
+                logsCount = 0;
                 console.log(error);
               })
               .finally(() => (this.loadingLogs = false));

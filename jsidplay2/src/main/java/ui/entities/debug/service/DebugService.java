@@ -59,26 +59,9 @@ public class DebugService {
 				CriteriaQuery<DebugEntry> query = cb.createQuery(DebugEntry.class);
 				Root<DebugEntry> root = query.from(DebugEntry.class);
 
-				Predicate instantPredicate;
-				if (order == Order.ASC) {
-					instantPredicate = cb.greaterThanOrEqualTo(root.<Instant>get(DebugEntry_.instant),
-							Instant.ofEpochMilli(instant));
-				} else {
-					instantPredicate = cb.lessThan(root.<Instant>get(DebugEntry_.instant),
-							Instant.ofEpochMilli(instant));
-				}
-				Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName),
-						"%" + sourceClassName + "%");
-
-				Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName),
-						"%" + sourceMethodName + "%");
-
-				Predicate levelPredicate = cb.like(root.get(DebugEntry_.level), "%" + level + "%");
-
-				Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), "%" + message + "%");
-
-				query.select(root).where(cb.and(instantPredicate, sourceClassNamePredicate, sourceMethodNamePredicate,
-						levelPredicate, messagePredicate));
+				Predicate where = whereClause(instant, sourceClassName, sourceMethodName, level, message, order, cb,
+						root);
+				query.select(root).where(where);
 
 				if (order == Order.ASC) {
 					query.orderBy(cb.asc(root.get(DebugEntry_.instant)));
@@ -97,6 +80,61 @@ public class DebugService {
 			throw e;
 		}
 		return null;
+	}
+
+	public Long countDebugEntries(Long instant, String sourceClassName, String sourceMethodName, String level,
+			String message, Order order) {
+		// SELECT count(*) FROM `DebugEntry` WHERE instant >= instant AND
+		// sourceClassName LIKE %sourceClassName% AND sourceMethodName LIKE
+		// %sourceMethodName% AND level LIKE %level% AND message LIKE %message%
+		try {
+			if (em.isOpen()) {
+				em.getTransaction().begin();
+
+				CriteriaBuilder cb = em.getCriteriaBuilder();
+				CriteriaQuery<Long> query = cb.createQuery(Long.class);
+				Root<DebugEntry> root = query.from(DebugEntry.class);
+
+				Predicate where = whereClause(instant, sourceClassName, sourceMethodName, level, message, order, cb,
+						root);
+				query.select(cb.count(root)).where(where);
+
+				Long result = em.createQuery(query).getSingleResult();
+
+				em.getTransaction().commit();
+				return result;
+			}
+		} catch (Exception e) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			throw e;
+		}
+		return null;
+	}
+
+	private Predicate whereClause(Long instant, String sourceClassName, String sourceMethodName, String level,
+			String message, Order order, CriteriaBuilder cb, Root<DebugEntry> root) {
+		Predicate instantPredicate;
+		if (order == Order.ASC) {
+			instantPredicate = cb.greaterThanOrEqualTo(root.<Instant>get(DebugEntry_.instant),
+					Instant.ofEpochMilli(instant));
+		} else {
+			instantPredicate = cb.lessThan(root.<Instant>get(DebugEntry_.instant), Instant.ofEpochMilli(instant));
+		}
+		Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName),
+				"%" + sourceClassName + "%");
+
+		Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName),
+				"%" + sourceMethodName + "%");
+
+		Predicate levelPredicate = cb.like(root.get(DebugEntry_.level), "%" + level + "%");
+
+		Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), "%" + message + "%");
+
+		Predicate where = cb.and(instantPredicate, sourceClassNamePredicate, sourceMethodNamePredicate, levelPredicate,
+				messagePredicate);
+		return where;
 	}
 
 }

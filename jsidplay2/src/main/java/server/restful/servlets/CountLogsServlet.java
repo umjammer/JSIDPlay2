@@ -8,7 +8,6 @@ import static server.restful.common.ContentTypeAndFileExtensions.MIME_TYPE_JSON;
 import static server.restful.common.ServletUtil.error;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -22,18 +21,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.Order;
 import server.restful.common.parameter.ServletParameterParser;
-import server.restful.common.validator.MaxResultsValidator;
-import ui.entities.debug.DebugEntry;
 import ui.entities.debug.service.DebugService;
 
 @SuppressWarnings("serial")
-@WebServlet(name = "LogsServlet", displayName = "LogsServlet", urlPatterns = CONTEXT_ROOT_SERVLET
-		+ "/logs", description = "Get log message list")
+@WebServlet(name = "CountLogsServlet", displayName = "CountLogsServlet", urlPatterns = CONTEXT_ROOT_SERVLET
+		+ "/count-logs", description = "Get number of log message list entries")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = { ROLE_ADMIN }))
-public class LogsServlet extends JSIDPlay2Servlet {
+public class CountLogsServlet extends JSIDPlay2Servlet {
 
-	@Parameters(resourceBundle = "server.restful.servlets.LogsServletParameters")
-	public static class LogsServletParameters {
+	@Parameters(resourceBundle = "server.restful.servlets.CountLogsServletParameters")
+	public static class CountLogsServletParameters {
 
 		private Long instant = 0L;
 
@@ -90,18 +87,6 @@ public class LogsServlet extends JSIDPlay2Servlet {
 			this.message = message;
 		}
 
-		private Integer maxResults;
-
-		public Integer getMaxResults() {
-			return maxResults;
-		}
-
-		@Parameter(names = {
-				"--maxResults" }, descriptionKey = "MAX_RESULTS", required = true, validateWith = MaxResultsValidator.class, order = 6)
-		public void setMaxResults(Integer maxResults) {
-			this.maxResults = maxResults;
-		}
-
 		private Order order = Order.DESC;
 
 		public Order getOrder() {
@@ -116,9 +101,9 @@ public class LogsServlet extends JSIDPlay2Servlet {
 	}
 
 	/**
-	 * Get log message list.
+	 * Get number of log message list entries.
 	 *
-	 * E.g. http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/logs
+	 * E.g. http://haendel.ddns.net:8080/jsidplay2service/JSIDPlay2REST/count-logs
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -126,7 +111,7 @@ public class LogsServlet extends JSIDPlay2Servlet {
 		try {
 			WebServlet webServlet = getClass().getAnnotation(WebServlet.class);
 
-			final LogsServletParameters servletParameters = new LogsServletParameters();
+			final CountLogsServletParameters servletParameters = new CountLogsServletParameters();
 
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					webServlet);
@@ -136,10 +121,9 @@ public class LogsServlet extends JSIDPlay2Servlet {
 				return;
 			}
 			final DebugService debugService = new DebugService(getDebugEntityManager());
-			List<DebugEntry> result = debugService.findDebugEntries(servletParameters.getInstant(),
+			Long result = debugService.countDebugEntries(servletParameters.getInstant(),
 					servletParameters.getSourceClassName(), servletParameters.getSourceMethodName(),
-					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getMaxResults(),
-					servletParameters.getOrder());
+					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getOrder());
 
 			setOutput(MIME_TYPE_JSON, response, result);
 
