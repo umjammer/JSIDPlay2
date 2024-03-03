@@ -190,10 +190,7 @@
                 ></b-spinner>
               </template>
 
-              <b-button
-                size="sm"
-                variant="success"
-                v-on:click="fetchDirectory(rootDir)">
+              <b-button size="sm" variant="success" v-on:click="fetchDirectory(rootDir)">
                 <b-icon-house-door-fill> </b-icon-house-door-fill>
               </b-button>
 
@@ -536,7 +533,14 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 245px; white-space: nowrap;"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 0px;
+                  right: 245px;
+                  white-space: nowrap;
+                "
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
               >
@@ -546,7 +550,14 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 130px; white-space: nowrap;"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 0px;
+                  right: 130px;
+                  white-space: nowrap;
+                "
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Galway_Martin')"
               >
@@ -556,7 +567,14 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 16px; white-space: nowrap;"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 0px;
+                  right: 16px;
+                  white-space: nowrap;
+                "
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
               >
@@ -566,7 +584,14 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 232px; white-space: nowrap;"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 30px;
+                  right: 232px;
+                  white-space: nowrap;
+                "
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
               >
@@ -576,7 +601,14 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 130px; white-space: nowrap;"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 30px;
+                  right: 130px;
+                  white-space: nowrap;
+                "
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
               >
@@ -586,7 +618,14 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 28px; white-space: nowrap;"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 30px;
+                  right: 28px;
+                  white-space: nowrap;
+                "
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
               >
@@ -2820,7 +2859,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         max="10000"
                         oninput="validity.valid||(value='');"
                         id="maxResults"
-						size="sm"
+                        size="sm"
                         class="mb-2 right"
                         v-model.number="maxResults"
                         @change="
@@ -2843,13 +2882,20 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <div>
                       <b-icon-calendar2-date />
                     </div>
-                    <label for="instant" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.instant") }}</label>
+                    <label for="instant" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
+                      $t("Logs.instant")
+                    }}</label>
                   </template>
                   <template #head(sourceClassName)="data">
                     <div>
                       <b-icon-at />
                     </div>
-                    <label for="sourceClassName" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.sourceClassName") }}</label>
+                    <label
+                      for="sourceClassName"
+                      class="d-none d-sm-block"
+                      style="margin-left: 0px; word-wrap: normal"
+                      >{{ $t("Logs.sourceClassName") }}</label
+                    >
                     <b-form-input
                       type="text"
                       id="sourceClassName"
@@ -2869,7 +2915,12 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <div>
                       <b-icon-hash />
                     </div>
-                    <label for="sourceMethodName" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.sourceMethodName") }}</label>
+                    <label
+                      for="sourceMethodName"
+                      class="d-none d-sm-block"
+                      style="margin-left: 0px; word-wrap: normal"
+                      >{{ $t("Logs.sourceMethodName") }}</label
+                    >
                     <b-form-input
                       type="text"
                       id="sourceMethodName"
@@ -2889,7 +2940,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <div>
                       <b-icon-info-lg />
                     </div>
-                    <label for="level" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.level") }}</label>
+                    <label for="level" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
+                      $t("Logs.level")
+                    }}</label>
                     <b-form-input
                       type="text"
                       id="level"
@@ -2909,7 +2962,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <div>
                       <b-icon-chat-text />
                     </div>
-                    <label for="message" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.message") }}</label>
+                    <label for="message" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
+                      $t("Logs.message")
+                    }}</label>
                     <b-form-input
                       type="text"
                       id="message"
