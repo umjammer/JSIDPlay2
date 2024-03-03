@@ -190,7 +190,10 @@
                 ></b-spinner>
               </template>
 
-              <b-button variant="success" v-on:click="fetchDirectory(rootDir)">
+              <b-button
+                size="sm"
+                variant="success"
+                v-on:click="fetchDirectory(rootDir)">
                 <b-icon-house-door-fill> </b-icon-house-door-fill>
               </b-button>
 
@@ -533,7 +536,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 268px"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 245px; white-space: nowrap;"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
               >
@@ -543,7 +546,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 144px"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 130px; white-space: nowrap;"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Galway_Martin')"
               >
@@ -553,7 +556,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 16px"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 16px; white-space: nowrap;"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
               >
@@ -563,7 +566,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 256px"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 232px; white-space: nowrap;"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
               >
@@ -573,7 +576,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 144px"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 130px; white-space: nowrap;"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
               >
@@ -583,7 +586,7 @@
 
               <b-button
                 size="sm"
-                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 28px"
+                style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 28px; white-space: nowrap;"
                 variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
               >
@@ -2752,7 +2755,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
 
               <b-card-text>
                 <b-button
-                  size="sm-2"
+                  size="sm"
+                  class="mb-2"
                   variant="success"
                   v-on:click="
                     fetchLogs();
@@ -2766,6 +2770,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   <span class="setting">
                     <b-form-select
                       id="order"
+                      size="sm"
                       class="mb-2 right"
                       v-model="order"
                       @change="
@@ -2780,6 +2785,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       v-model="Logs.date"
                       :locale="$i18n.locale"
                       v-bind="$i18n.messages[$i18n.locale] || {}"
+                      size="sm"
                       class="mb-2"
                       reset-button
                       @input="
@@ -2792,6 +2798,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       v-model="Logs.time"
                       :locale="$i18n.locale"
                       v-bind="$i18n.messages[$i18n.locale] || {}"
+                      size="sm"
                       class="mb-2"
                       now-button
                       reset-button
@@ -2813,6 +2820,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         max="10000"
                         oninput="validity.valid||(value='');"
                         id="maxResults"
+						size="sm"
                         class="mb-2 right"
                         v-model.number="maxResults"
                         @change="
@@ -2832,10 +2840,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     <span> {{ toDateTime(row.item.instant) }} </span>
                   </template>
                   <template #head(instant)="data">
-                    <label for="instant" style="margin-left: 0px">{{ $t("Logs.instant") }}</label>
+                    <div>
+                      <b-icon-calendar2-date />
+                    </div>
+                    <label for="instant" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.instant") }}</label>
                   </template>
                   <template #head(sourceClassName)="data">
-                    <label for="sourceClassName" style="margin-left: 0px">{{ $t("Logs.sourceClassName") }}</label>
+                    <div>
+                      <b-icon-at />
+                    </div>
+                    <label for="sourceClassName" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.sourceClassName") }}</label>
                     <b-form-input
                       type="text"
                       id="sourceClassName"
@@ -2852,7 +2866,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     />
                   </template>
                   <template #head(sourceMethodName)="data">
-                    <label for="sourceMethodName" style="margin-left: 0px">{{ $t("Logs.sourceMethodName") }}</label>
+                    <div>
+                      <b-icon-hash />
+                    </div>
+                    <label for="sourceMethodName" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.sourceMethodName") }}</label>
                     <b-form-input
                       type="text"
                       id="sourceMethodName"
@@ -2869,7 +2886,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     />
                   </template>
                   <template #head(level)="data">
-                    <label for="level" style="margin-left: 0px">{{ $t("Logs.level") }}</label>
+                    <div>
+                      <b-icon-info-lg />
+                    </div>
+                    <label for="level" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.level") }}</label>
                     <b-form-input
                       type="text"
                       id="level"
@@ -2886,7 +2906,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                     />
                   </template>
                   <template #head(message)="data">
-                    <label for="message" style="margin-left: 0px">{{ $t("Logs.message") }}</label>
+                    <div>
+                      <b-icon-chat-text />
+                    </div>
+                    <label for="message" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal;">{{ $t("Logs.message") }}</label>
                     <b-form-input
                       type="text"
                       id="message"
@@ -3610,34 +3633,32 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               key: "instant",
               label: "Date Time",
               sortable: false,
-              thStyle: { "vertical-align": "top", width: "20%" },
+              thStyle: { "vertical-align": "top", width: "15%" },
               class: "field-category",
             },
             {
               key: "sourceClassName",
               label: "Source Class Name",
               sortable: false,
-              thStyle: { width: "10%" },
               class: "field-category",
             },
             {
               key: "sourceMethodName",
               label: "Source Method Name",
               sortable: false,
-              thStyle: { width: "10%" },
               class: "field-category",
             },
             {
               key: "level",
               label: "Level",
               sortable: false,
-              thStyle: { width: "10%" },
               class: "field-category",
             },
             {
               key: "message",
               label: "Message",
               sortable: false,
+              thStyle: { width: "50%" },
               class: "field-category",
             },
           ],
