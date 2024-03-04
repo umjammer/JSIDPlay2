@@ -93,7 +93,7 @@ public class CountLogsServlet extends JSIDPlay2Servlet {
 			return order;
 		}
 
-		@Parameter(names = { "--order" }, descriptionKey = "ORDER", order = 7)
+		@Parameter(names = { "--order" }, descriptionKey = "ORDER", order = 6)
 		public void setOrder(Order order) {
 			this.order = order;
 		}
