@@ -270,7 +270,7 @@ public final class JSIDPlay2Server {
 	}
 
 	public synchronized void stop() throws LifecycleException, InterruptedException {
-		timer.cancel();
+		Optional.ofNullable(timer).ifPresent(Timer::cancel);
 		Optional.ofNullable((MonitoringThread) CDI.get(MonitoringThread.class))
 				.ifPresent(MonitoringThread::stopMonitor);
 
