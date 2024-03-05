@@ -2793,18 +2793,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               </template>
 
               <b-card-text>
-                <b-button
-                  size="sm"
-                  class="mb-2"
-                  variant="success"
-                  v-on:click="
-                    fetchLogs();
-                    countLogs();
-                  "
-                  style="float: left"
-                >
-                  <span>Request LOGS</span>
-                </b-button>
                 <div class="settings-box">
                   <span class="setting">
                     <b-form-select
@@ -2869,11 +2857,27 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       /> </label
                   ></span>
                 </div>
-                <label for="logCount" style="width: 100%">
-                  <span class="right" style="font-size: small; font-style: italic; color: #6c757d"
-                    >{{ logsCount.toLocaleString() }} {{ $t("results") }}</span
-                  >
-                </label>
+                <b-button
+                  size="sm"
+                  class="mb-2"
+                  variant="success"
+                  v-on:click="
+                    fetchLogs();
+                    countLogs();
+                  "
+                  style="float: left"
+                >
+                  <span>Request LOGS</span>
+                </b-button>
+                <div class="settings-box">
+                  <span class="setting">
+                    <label for="logCount">
+                      <span class="right" style="font-size: small; font-style: italic; color: #6c757d"
+                        >{{ logsCount.toLocaleString() }} {{ $t("results") }}</span
+                      >
+                    </label>
+                  </span>
+                </div>
                 <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
                   <template #cell(instant)="row">
                     <span> {{ toDateTime(row.item.instant) }} </span>
