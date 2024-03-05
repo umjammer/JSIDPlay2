@@ -3,15 +3,12 @@ package server.restful.servlets.hls;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.common.IServletSystemProperties.HLS_DOWNLOAD_URL;
 import static server.restful.common.ServletUtil.error;
-import static server.restful.common.ServletUtil.info;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.beust.jcommander.Parameters;
 
@@ -29,8 +26,6 @@ import ui.common.util.InternetUtil;
 @WebServlet(name = "ProxyServlet", displayName = "ProxyServlet", urlPatterns = CONTEXT_ROOT_SERVLET
 		+ "/proxy/*", description = "This class serves as kind of a proxy to make internal HTTP requests of HLS protocol through HTTPS to avoid mixed content in the browser")
 public class ProxyServlet extends JSIDPlay2Servlet {
-
-	private static final Logger LOG = Logger.getLogger(ProxyServlet.class.getName());
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.ProxyServletParameters")
 	public static class ProxyServletParameters extends URLRequestPathServletParameters {
@@ -60,9 +55,6 @@ public class ProxyServlet extends JSIDPlay2Servlet {
 
 			if (!url.toExternalForm().startsWith(HLS_DOWNLOAD_URL)) {
 				throw new IOException();
-			}
-			if (LOG.isLoggable(Level.FINEST)) {
-				info(getServletContext(), String.format("proxy: URL: %s", url));
 			}
 			URLConnection connection = InternetUtil.openConnection(url, configuration.getSidplay2Section());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();

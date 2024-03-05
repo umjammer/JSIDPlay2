@@ -2,13 +2,10 @@ package server.restful.servlets.hls;
 
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_STATIC;
 import static server.restful.common.ServletUtil.error;
-import static server.restful.common.ServletUtil.info;
 import static server.restful.common.rtmp.PlayerCleanupTimerTask.update;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -26,8 +23,6 @@ import server.restful.common.parameter.requestparam.VideoRequestParamServletPara
 @WebServlet(name = "OnKeepAliveServlet", displayName = "OnKeepAliveServlet", urlPatterns = CONTEXT_ROOT_STATIC
 		+ "/on_keep_alive", description = "Keep alive video stream")
 public class OnKeepAliveServlet extends JSIDPlay2Servlet {
-
-	private static final Logger LOG = Logger.getLogger(OnKeepAliveServlet.class.getName());
 
 	@Parameters(resourceBundle = "server.restful.servlets.hls.OnKeepAliveServletParameters")
 	public static class OnKeepAliveServletParameters extends VideoRequestParamServletParameters {
@@ -90,9 +85,6 @@ public class OnKeepAliveServlet extends JSIDPlay2Servlet {
 			Long currentTime = servletParameters.getCurrentTime();
 			Long bufferedEnd = servletParameters.getBufferedEnd();
 
-			if (LOG.isLoggable(Level.FINEST)) {
-				info(getServletContext(), String.format("onKeepAlive: HLS stream of: %s", uuid));
-			}
 			update(uuid, playerWithStatus -> playerWithStatus.onKeepAlive(currentTime, bufferedEnd));
 
 		} catch (Throwable t) {

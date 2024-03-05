@@ -33,6 +33,8 @@ import server.restful.common.log.MonitoringThread;
  */
 @SuppressWarnings("serial")
 @WebFilter(filterName = "RequestLogFilter", displayName = "RequestLogFilter", servletNames = {
+		// hls
+		"OnKeepAliveServlet", "ProxyServlet",
 		// rtmp
 		"InsertNextCartServlet", "InsertNextDiskServlet", "JoystickServlet", "OnPlayDoneServlet", "OnPlayServlet",
 		"PressKeyServlet", "SetDefaultEmulationReSidFpServlet", "SetDefaultEmulationReSidServlet",
