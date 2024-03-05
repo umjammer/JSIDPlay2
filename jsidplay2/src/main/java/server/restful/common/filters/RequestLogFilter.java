@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
@@ -21,6 +23,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import server.restful.common.log.MonitoringThread;
 
 /**
  * Log request and response.
@@ -42,13 +45,16 @@ import jakarta.servlet.http.HttpServletResponse;
 		//
 		"ConvertServlet", "DirectoryServlet", "DiskDirectoryServlet", "DownloadServlet", "FavoritesNamesServlet",
 		"FavoritesServlet", "FiltersServlet", "PhotoServlet", "RandomHVSCServlet", "SpeechToTextServlet",
-		"StartPageServlet", "StaticServlet", "STILServlet", "TuneInfoServlet", "UploadServlet",
-		"WebJarsServlet", "LogsServlet" }, description = "Log request and response")
+		"StartPageServlet", "StaticServlet", "STILServlet", "TuneInfoServlet", "UploadServlet", "WebJarsServlet",
+		"LogsServlet" }, description = "Log request and response")
 public final class RequestLogFilter extends HttpFilter {
 
 	private static final Logger LOG = Logger.getLogger(RequestLogFilter.class.getName());
 
 	public static final String FILTER_PARAMETER_SERVLET_NAME = "servletName";
+
+	@Inject
+	protected MonitoringThread monitoringThread;
 
 	private ServletContext servletContext;
 	private String servletName;
@@ -64,12 +70,12 @@ public final class RequestLogFilter extends HttpFilter {
 	public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory());
+		log(thread() + user(request) + remoteAddr(request) + localAddr(request) + request(request) + memory() + cpu());
 
 		// let the request through and process as usual
 		chain.doFilter(request, response);
 
-		log(thread() + response(response) + memory());
+		log(thread() + response(response) + memory() + cpu());
 	}
 
 	private String remoteAddr(HttpServletRequest request) {
@@ -166,6 +172,13 @@ public final class RequestLogFilter extends HttpFilter {
 		result.append(getPhysicalSize(runtime.totalMemory() - runtime.freeMemory()));
 		result.append("/");
 		result.append(getPhysicalSize(runtime.maxMemory()));
+		result.append(", ");
+		return result.toString();
+	}
+
+	private String cpu() {
+		StringBuilder result = new StringBuilder();
+		result.append(String.format("CPU %d%%", (int) (monitoringThread.getAvarageUsagePerCPU() * 100.0) / 100));
 		return result.toString();
 	}
 

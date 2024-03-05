@@ -1,4 +1,4 @@
-package server.restful.common;
+package server.restful.common.log;
 
 import static server.restful.JSIDPlay2Server.freeDebugEntityManager;
 import static server.restful.JSIDPlay2Server.getDebugEntityManager;

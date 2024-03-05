@@ -427,4 +427,15 @@ public interface IServletSystemProperties {
 	 */
 	int WHATSSIDSERVLET_FILE_SIZE_THRESHOLD = 0;
 
+	//
+	// RequestLogFilter
+	//
+
+	/**
+	 * CPU monitoring default refresh interval in ms (0 means disable, default: 1s)
+	 * 
+	 * @jsidplay2.systemProperty jsidplay2.monitoring_refresh_interval
+	 */
+	int MONITORING_THREAD_REFRESH_INTERVAL = valueOf(getProperty("jsidplay2.monitoring_refresh_interval", "1000"));
+
 }

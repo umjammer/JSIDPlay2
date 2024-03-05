@@ -13,6 +13,7 @@ import static server.restful.common.IServletSystemProperties.HTTP2_OVERHEAD_WIND
 import static server.restful.common.IServletSystemProperties.HTTP2_READ_TIMEOUT;
 import static server.restful.common.IServletSystemProperties.HTTP2_USE_SENDFILE;
 import static server.restful.common.IServletSystemProperties.HTTP2_WRITE_TIMEOUT;
+import static server.restful.common.IServletSystemProperties.MONITORING_THREAD_REFRESH_INTERVAL;
 import static server.restful.common.IServletSystemProperties.USE_HTTP2;
 import static server.restful.common.filters.RequestLogFilter.FILTER_PARAMETER_SERVLET_NAME;
 
@@ -83,10 +84,11 @@ import jakarta.servlet.http.HttpFilter;
 import libsidutils.siddatabase.SidDatabase;
 import libsidutils.stil.STIL;
 import server.restful.common.Connectors;
-import server.restful.common.DBAppender;
 import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.ServletUtil;
 import server.restful.common.filters.RequestLogFilter;
+import server.restful.common.log.DBAppender;
+import server.restful.common.log.MonitoringThread;
 import server.restful.common.rtmp.PlayerCleanupTimerTask;
 import sidplay.Player;
 import sidplay.player.DebugUtil;
@@ -226,6 +228,8 @@ public final class JSIDPlay2Server {
 
 	private Tomcat tomcat;
 
+	private Timer timer;
+
 	private JSIDPlay2Server() {
 	}
 
@@ -239,6 +243,7 @@ public final class JSIDPlay2Server {
 	private static JSIDPlay2Server create(Configuration configuration) {
 		JSIDPlay2Server result = new JSIDPlay2Server();
 		result.parameters.configuration = configuration;
+		CDI.put(MonitoringThread.class, new MonitoringThread(MONITORING_THREAD_REFRESH_INTERVAL));
 		CDI.put(Configuration.class, configuration);
 		CDI.put(Properties.class, result.getServletUtilProperties());
 		File hvsc = configuration.getSidplay2Section().getHvsc();
@@ -264,7 +269,11 @@ public final class JSIDPlay2Server {
 		}
 	}
 
-	public synchronized void stop() throws LifecycleException {
+	public synchronized void stop() throws LifecycleException, InterruptedException {
+		timer.cancel();
+		Optional.ofNullable((MonitoringThread) CDI.get(MonitoringThread.class))
+				.ifPresent(MonitoringThread::stopMonitor);
+
 		if (tomcat != null && tomcat.getServer().getState() != LifecycleState.STOPPING_PREP
 				&& tomcat.getServer().getState() != LifecycleState.STOPPING
 				&& tomcat.getServer().getState() != LifecycleState.STOPPED
@@ -276,6 +285,7 @@ public final class JSIDPlay2Server {
 				tomcat.getServer().destroy();
 			} finally {
 				tomcat = null;
+				timer = null;
 			}
 		}
 	}
@@ -311,7 +321,8 @@ public final class JSIDPlay2Server {
 		addServletFilters(context, servlets);
 		addServletSecurity(context, servlets);
 
-		new Timer().schedule(new PlayerCleanupTimerTask(context), 0, 1000L);
+		timer = new Timer();
+		timer.schedule(new PlayerCleanupTimerTask(context), 0, 1000L);
 
 		return tomcat;
 	}
@@ -446,9 +457,9 @@ public final class JSIDPlay2Server {
 		return result;
 	}
 
-	private void inject(Class<?> servletCls, Servlet servlet) throws IllegalAccessException {
+	private void inject(Class<?> cls, Object obj) throws IllegalAccessException {
 		List<Field> fields = new ArrayList<>();
-		Class<?> clazz = servletCls;
+		Class<?> clazz = cls;
 		while (clazz != Object.class) {
 			fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
 			clazz = clazz.getSuperclass();
@@ -456,7 +467,7 @@ public final class JSIDPlay2Server {
 		for (Field field : fields) {
 			if (field.getAnnotation(Inject.class) != null) {
 				field.setAccessible(true);
-				field.set(servlet, CDI.get(field.getType()));
+				field.set(obj, CDI.get(field.getType()));
 			}
 		}
 	}
@@ -490,6 +501,7 @@ public final class JSIDPlay2Server {
 						if (Arrays.asList(webFilter.servletNames()).contains(webServlet.name())) {
 							HttpFilter servletFilter = (HttpFilter) servletFilterCls.getDeclaredConstructor()
 									.newInstance();
+							inject(servletFilterCls, servletFilter);
 
 							String filterName = webFilter.filterName() + "_" + webServlet.name();
 
@@ -578,7 +590,7 @@ public final class JSIDPlay2Server {
 			System.in.read();
 			System.exit(rc);
 		} catch (IllegalStateException | IOException e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -612,7 +624,7 @@ public final class JSIDPlay2Server {
 		} catch (ParameterException | IOException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
 				| LifecycleException | ClassNotFoundException e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			exit(1);
 		}
 	}
