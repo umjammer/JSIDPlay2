@@ -78,4 +78,16 @@ public class LogRequestParamServlet {
 		this.order = order;
 	}
 
+	private Boolean tooMuchLogging = Boolean.FALSE;
+
+	public Boolean getTooMuchLogging() {
+		return tooMuchLogging;
+	}
+
+	@Parameter(names = "--tooMuchLogging", arity = 1, descriptionKey = "TOO_MUCH_LOGGING", order = Integer.MIN_VALUE
+			+ 6)
+	public void setTooMuchLogging(Boolean tooMuchLogging) {
+		this.tooMuchLogging = tooMuchLogging;
+	}
+
 }

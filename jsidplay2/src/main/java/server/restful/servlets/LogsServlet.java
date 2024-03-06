@@ -73,7 +73,7 @@ public class LogsServlet extends JSIDPlay2Servlet {
 			List<DebugEntry> result = debugService.findDebugEntries(servletParameters.getInstant(),
 					servletParameters.getSourceClassName(), servletParameters.getSourceMethodName(),
 					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getMaxResults(),
-					servletParameters.getOrder());
+					servletParameters.getOrder(), servletParameters.getTooMuchLogging());
 
 			setOutput(MIME_TYPE_JSON, response, result);
 

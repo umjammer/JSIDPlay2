@@ -2840,6 +2840,22 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 </div>
                 <div class="settings-box">
                   <span class="setting"
+                    ><label for="tooMuchLogging">
+                      {{ $t("tooMuchLogging") }}
+                      <b-form-checkbox
+                        id="tooMuchLogging"
+                        class="right"
+                        v-model="tooMuchLogging"
+                        @change="
+                          fetchLogs();
+                          countLogs();
+                        "
+                      >
+                      </b-form-checkbox></label
+                  ></span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting"
                     ><label for="maxResults">
                       {{ $t("maxResults") }}
                       <b-form-input
@@ -3323,6 +3339,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           username: "Username",
           password: "Password",
           maxResults: "Max. Results",
+          tooMuchLogging: "Show LOG messages normally filtered",
           ASC: "As from",
           DESC: "Until",
           filter: "Top",
@@ -3487,6 +3504,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           username: "Benutzername",
           password: "Passwort",
           maxResults: "Max. Ergebnisse",
+          tooMuchLogging: "Zeige auch Log Nachrichten, die normalerweise gefiltert werden",
           ASC: "Ab dem",
           DESC: "Bis zum",
           filter: "Top",
@@ -3648,6 +3666,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           infos: "",
           stil: [],
           maxResults: 100,
+          tooMuchLogging: false,
           order: "ASC",
           logs: [],
           logsCount: 0,
@@ -4715,7 +4734,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 "&maxResults=" +
                 this.maxResults +
                 "&order=" +
-                this.order,
+                this.order +
+                "&tooMuchLogging=" +
+                this.tooMuchLogging,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -4750,7 +4771,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 "&message=" +
                 uriEncode(this.Logs.message) +
                 "&order=" +
-                this.order,
+                this.order +
+                "&tooMuchLogging=" +
+                this.tooMuchLogging,
               auth: {
                 username: this.username,
                 password: this.password,

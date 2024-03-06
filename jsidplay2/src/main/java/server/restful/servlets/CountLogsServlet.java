@@ -56,7 +56,8 @@ public class CountLogsServlet extends JSIDPlay2Servlet {
 			final DebugService debugService = new DebugService(getDebugEntityManager());
 			Long result = debugService.countDebugEntries(servletParameters.getInstant(),
 					servletParameters.getSourceClassName(), servletParameters.getSourceMethodName(),
-					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getOrder());
+					servletParameters.getLevel(), servletParameters.getMessage(), servletParameters.getOrder(),
+					servletParameters.getTooMuchLogging());
 
 			setOutput(MIME_TYPE_JSON, response, result);
 

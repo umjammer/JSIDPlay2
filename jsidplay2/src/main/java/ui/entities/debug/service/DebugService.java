@@ -24,7 +24,7 @@ public class DebugService {
 		this.em = em;
 	}
 
-	public void save(LogRecord record) {
+	public void save(LogRecord record, Boolean tooMuchLogging) {
 		try {
 			if (em.isOpen()) {
 				em.getTransaction().begin();
@@ -35,6 +35,7 @@ public class DebugService {
 				debugEntry.setSourceMethodName(record.getSourceMethodName());
 				debugEntry.setLevel(record.getLevel().getName());
 				debugEntry.setMessage(record.getMessage());
+				debugEntry.setTooMuchLogging(tooMuchLogging);
 				em.persist(debugEntry);
 
 				em.getTransaction().commit();
@@ -48,11 +49,12 @@ public class DebugService {
 	}
 
 	public List<DebugEntry> findDebugEntries(Long instant, String sourceClassName, String sourceMethodName,
-			String level, String message, int maxResults, Order order) {
+			String level, String message, int maxResults, Order order, Boolean tooMuchLogging) {
 		// SELECT instant, sourceClassName, sourceMethodName, level, message FROM
 		// `DebugEntry` WHERE instant >= instant AND sourceClassName LIKE
 		// %sourceClassName% AND sourceMethodName LIKE %sourceMethodName% AND level LIKE
-		// %level% AND message LIKE %message% ORDER BY instant ASC LIMIT maxResults
+		// %level% AND message LIKE %message% AND too_much_logging=tooMuchLogging ORDER
+		// BY instant ASC LIMIT maxResults
 		try {
 			if (em.isOpen()) {
 				em.getTransaction().begin();
@@ -61,8 +63,8 @@ public class DebugService {
 				CriteriaQuery<DebugEntry> query = cb.createQuery(DebugEntry.class);
 				Root<DebugEntry> root = query.from(DebugEntry.class);
 
-				Predicate where = whereClause(instant, sourceClassName, sourceMethodName, level, message, order, cb,
-						root);
+				Predicate where = whereClause(instant, sourceClassName, sourceMethodName, level, message, order,
+						tooMuchLogging, cb, root);
 				query.select(root).where(where);
 
 				if (order == Order.ASC) {
@@ -85,7 +87,7 @@ public class DebugService {
 	}
 
 	public Long countDebugEntries(Long instant, String sourceClassName, String sourceMethodName, String level,
-			String message, Order order) {
+			String message, Order order, Boolean tooMuchLogging) {
 		// SELECT count(*) FROM `DebugEntry` WHERE instant >= instant AND
 		// sourceClassName LIKE %sourceClassName% AND sourceMethodName LIKE
 		// %sourceMethodName% AND level LIKE %level% AND message LIKE %message%
@@ -97,8 +99,8 @@ public class DebugService {
 				CriteriaQuery<Long> query = cb.createQuery(Long.class);
 				Root<DebugEntry> root = query.from(DebugEntry.class);
 
-				Predicate where = whereClause(instant, sourceClassName, sourceMethodName, level, message, order, cb,
-						root);
+				Predicate where = whereClause(instant, sourceClassName, sourceMethodName, level, message, order,
+						tooMuchLogging, cb, root);
 				query.select(cb.count(root)).where(where);
 
 				Long result = em.createQuery(query).getSingleResult();
@@ -116,7 +118,7 @@ public class DebugService {
 	}
 
 	private Predicate whereClause(Long instantAsEpochMillis, String sourceClassName, String sourceMethodName,
-			String level, String message, Order order, CriteriaBuilder cb, Root<DebugEntry> root) {
+			String level, String message, Order order, Boolean tooMuchLogging, CriteriaBuilder cb, Root<DebugEntry> root) {
 		Instant instant = Instant.ofEpochMilli(instantAsEpochMillis);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -146,7 +148,9 @@ public class DebugService {
 				? Optional.of(cb.like(root.get(DebugEntry_.message), "%" + message + "%"))
 				: Optional.empty();
 		messagePredicate.ifPresent(predicates::add);
-
+		
+		predicates.add(cb.equal(root.get(DebugEntry_.tooMuchLogging), tooMuchLogging));
+		
 		return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
 

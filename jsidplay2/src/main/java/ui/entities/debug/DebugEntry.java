@@ -85,4 +85,15 @@ public class DebugEntry {
 		this.message = message;
 	}
 
+	private Boolean tooMuchLogging;
+
+	@Column(name = "too_much_logging")
+	public Boolean getTooMuchLogging() {
+		return tooMuchLogging;
+	}
+
+	public void setTooMuchLogging(Boolean tooMuchLogging) {
+		this.tooMuchLogging = tooMuchLogging;
+	}
+
 }

@@ -12,11 +12,13 @@ import ui.entities.debug.service.DebugService;
 
 public class DBAppender extends Handler {
 
+	private TooMuchLoggingFilter tooMuchLoggingFilter = new TooMuchLoggingFilter();
+
 	@Override
 	public void publish(LogRecord record) {
 		try {
 			DebugService debugService = new DebugService(getDebugEntityManager());
-			debugService.save(record);
+			debugService.save(record, !tooMuchLoggingFilter.isLoggable(record));
 		} catch (IOException e) {
 			reportError(null, e, ErrorManager.WRITE_FAILURE);
 		} finally {
