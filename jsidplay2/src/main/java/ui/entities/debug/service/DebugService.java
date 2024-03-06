@@ -149,7 +149,9 @@ public class DebugService {
 				: Optional.empty();
 		messagePredicate.ifPresent(predicates::add);
 		
-		predicates.add(cb.equal(root.get(DebugEntry_.tooMuchLogging), tooMuchLogging));
+		if (!tooMuchLogging) {
+			predicates.add(cb.equal(root.get(DebugEntry_.tooMuchLogging), tooMuchLogging));
+		}
 		
 		return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
