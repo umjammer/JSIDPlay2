@@ -72,3 +72,17 @@ sudo rm -rf /var/lib/mysql/hvsc79		# remove remaining (non-database table) files
 Check numbers of SIDs:
 ======================
 SELECT count(DISTINCT InfoDir) FROM "MusicInfo"
+
+For databases caching execution plans (Oracle and SQLServer):
+=============================================================
+Set hibernate.query.in_clause_parameter_padding to true in persistence.xml
+
+As you can see, this drastically reduces the number of different statements that your database needs to analyze. This improves the effectiveness of the database-internal cache and can improve the performance of your queries.
+When not to use it
+
+Parameter padding might seem like a great feature but there are a few situations in which you should avoid it:
+
+    If your database doesn’t cache execution plans, you will not benefit from reducing the number of different statements. The additional bind parameters then only increase the complexity of the statement and might slow down the query.
+    If your List contains only a very small number of elements, the parameter padding will not have a huge effect and you might consider deactivating it.
+    If your List contains a very large number of elements, parameter padding might drastically increase the number of parameters in your IN clause. A List with 129 elements, for example, gets padded to 256 parameters. In these situations, you should check if the overhead of the padded parameters starts to outweigh the benefits of the more efficient database cache.
+    

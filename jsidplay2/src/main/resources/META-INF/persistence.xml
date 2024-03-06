@@ -104,8 +104,8 @@
 			<!-- Hibernate then no longer generates SQL statements with the exact 
 				number of required bind parameters. It pads the bind parameters to the next 
 				power of 2 -->
-			<property name="hibernate.query.in_clause_parameter_padding"
-				value="true" />
+			<!--property name="hibernate.query.in_clause_parameter_padding"
+				value="true" /-->
 
 			<!-- minimum number of connections it should maintain at any given time. 
 				Initial size -->
