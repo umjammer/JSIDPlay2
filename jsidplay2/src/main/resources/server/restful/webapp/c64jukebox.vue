@@ -2827,6 +2827,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       v-bind="$i18n.messages[$i18n.locale].TimeLabels || {}"
                       size="sm"
                       class="mb-2"
+                      show-seconds
                       now-button
                       reset-button
                       @input="
