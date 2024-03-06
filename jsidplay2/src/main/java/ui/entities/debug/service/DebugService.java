@@ -1,7 +1,9 @@
 package ui.entities.debug.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.LogRecord;
 
 import javax.persistence.EntityManager;
@@ -113,28 +115,39 @@ public class DebugService {
 		return null;
 	}
 
-	private Predicate whereClause(Long instant, String sourceClassName, String sourceMethodName, String level,
-			String message, Order order, CriteriaBuilder cb, Root<DebugEntry> root) {
-		Predicate instantPredicate;
+	private Predicate whereClause(Long instantAsEpochMillis, String sourceClassName, String sourceMethodName,
+			String level, String message, Order order, CriteriaBuilder cb, Root<DebugEntry> root) {
+		Instant instant = Instant.ofEpochMilli(instantAsEpochMillis);
+
+		List<Predicate> predicates = new ArrayList<>();
+
 		if (order == Order.ASC) {
-			instantPredicate = cb.greaterThanOrEqualTo(root.<Instant>get(DebugEntry_.instant),
-					Instant.ofEpochMilli(instant));
+			predicates.add(cb.greaterThanOrEqualTo(root.<Instant>get(DebugEntry_.instant), instant));
 		} else {
-			instantPredicate = cb.lessThan(root.<Instant>get(DebugEntry_.instant), Instant.ofEpochMilli(instant));
+			predicates.add(cb.lessThan(root.<Instant>get(DebugEntry_.instant), instant));
 		}
-		Predicate sourceClassNamePredicate = cb.like(root.get(DebugEntry_.sourceClassName),
-				"%" + sourceClassName + "%");
 
-		Predicate sourceMethodNamePredicate = cb.like(root.get(DebugEntry_.sourceMethodName),
-				"%" + sourceMethodName + "%");
+		Optional<Predicate> sourceClassNamePredicate = !sourceClassName.isEmpty()
+				? Optional.of(cb.like(root.get(DebugEntry_.sourceClassName), "%" + sourceClassName + "%"))
+				: Optional.empty();
+		sourceClassNamePredicate.ifPresent(predicates::add);
 
-		Predicate levelPredicate = cb.like(root.get(DebugEntry_.level), "%" + level + "%");
+		Optional<Predicate> sourceMethodNamePredicate = !sourceMethodName.isEmpty()
+				? Optional.of(cb.like(root.get(DebugEntry_.sourceMethodName), "%" + sourceMethodName + "%"))
+				: Optional.empty();
+		sourceMethodNamePredicate.ifPresent(predicates::add);
 
-		Predicate messagePredicate = cb.like(root.get(DebugEntry_.message), "%" + message + "%");
+		Optional<Predicate> levelPredicate = !level.isEmpty()
+				? Optional.of(cb.like(root.get(DebugEntry_.level), "%" + level + "%"))
+				: Optional.empty();
+		levelPredicate.ifPresent(predicates::add);
 
-		Predicate where = cb.and(instantPredicate, sourceClassNamePredicate, sourceMethodNamePredicate, levelPredicate,
-				messagePredicate);
-		return where;
+		Optional<Predicate> messagePredicate = !message.isEmpty()
+				? Optional.of(cb.like(root.get(DebugEntry_.message), "%" + message + "%"))
+				: Optional.empty();
+		messagePredicate.ifPresent(predicates::add);
+
+		return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
 
 }

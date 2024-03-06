@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(name = "DebugEntry", indexes = { @Index(columnList = "instant", unique = true, name = "hash") })
+@Table(name = "DebugEntry", indexes = { @Index(columnList = "instant", unique = true) })
 public class DebugEntry {
 
 	private int id;

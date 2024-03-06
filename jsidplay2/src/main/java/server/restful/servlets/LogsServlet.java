@@ -20,8 +20,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import server.restful.common.JSIDPlay2Servlet;
-import server.restful.common.Order;
 import server.restful.common.parameter.ServletParameterParser;
+import server.restful.common.parameter.requestparam.LogRequestParamServlet;
 import server.restful.common.validator.MaxResultsValidator;
 import ui.entities.debug.DebugEntry;
 import ui.entities.debug.service.DebugService;
@@ -33,62 +33,7 @@ import ui.entities.debug.service.DebugService;
 public class LogsServlet extends JSIDPlay2Servlet {
 
 	@Parameters(resourceBundle = "server.restful.servlets.LogsServletParameters")
-	public static class LogsServletParameters {
-
-		private Long instant = 0L;
-
-		public Long getInstant() {
-			return instant;
-		}
-
-		@Parameter(names = { "--instant" }, descriptionKey = "INSTANT", order = 1)
-		public void setInstant(Long instant) {
-			this.instant = instant;
-		}
-
-		private String sourceClassName = "";
-
-		public String getSourceClassName() {
-			return sourceClassName;
-		}
-
-		@Parameter(names = { "--sourceClassName" }, descriptionKey = "SOURCE_CLASS_NAME", order = 2)
-		public void setSourceClassName(String sourceClassName) {
-			this.sourceClassName = sourceClassName;
-		}
-
-		private String sourceMethodName = "";
-
-		public String getSourceMethodName() {
-			return sourceMethodName;
-		}
-
-		@Parameter(names = { "--sourceMethodName" }, descriptionKey = "SOURCE_METHOD_NAME", order = 3)
-		public void setSourceMethodName(String sourceMethodName) {
-			this.sourceMethodName = sourceMethodName;
-		}
-
-		private String level = "";
-
-		public String getLevel() {
-			return level;
-		}
-
-		@Parameter(names = { "--level" }, descriptionKey = "LEVEL", order = 4)
-		public void setLevel(String level) {
-			this.level = level;
-		}
-
-		private String message = "";
-
-		public String getMessage() {
-			return message;
-		}
-
-		@Parameter(names = { "--message" }, descriptionKey = "MESSAGE", order = 5)
-		public void setMessage(String message) {
-			this.message = message;
-		}
+	public static class LogsServletParameters extends LogRequestParamServlet {
 
 		private Integer maxResults;
 
@@ -97,20 +42,9 @@ public class LogsServlet extends JSIDPlay2Servlet {
 		}
 
 		@Parameter(names = {
-				"--maxResults" }, descriptionKey = "MAX_RESULTS", required = true, validateWith = MaxResultsValidator.class, order = 6)
+				"--maxResults" }, descriptionKey = "MAX_RESULTS", required = true, validateWith = MaxResultsValidator.class, order = 1)
 		public void setMaxResults(Integer maxResults) {
 			this.maxResults = maxResults;
-		}
-
-		private Order order = Order.DESC;
-
-		public Order getOrder() {
-			return order;
-		}
-
-		@Parameter(names = { "--order" }, descriptionKey = "ORDER", order = 7)
-		public void setOrder(Order order) {
-			this.order = order;
 		}
 
 	}
