@@ -154,9 +154,30 @@
                   ></div>
                 </button>
               </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="search-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#search"
+                  type="button"
+                  role="tab"
+                  aria-controls="search"
+                  aria-selected="false"
+                  @click="tabIndex = 2"
+                >
+                  {{ $t("ASSEMBLY64") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex===2 ? 'text-light': 'text-primary')"
+                    v-if="loadingAssembly64"
+                  ></div>
+                </button>
+              </li>
             </ul>
           </div>
-          <div class="tab-content card-body">
+          <div class="tab-content card-body"
+                        style="position: relative"
+          >
             <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
               <p style="text-align: center; font-size: smaller; padding: 16px">
                 C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
@@ -260,7 +281,6 @@
               id="directory"
               role="tabpanel"
               aria-labelledby="directory-tab"
-              style="position: relative"
             >
               <button type="button" class="btn btn-success btn-sm" v-on:click="fetchDirectory(rootDir)">
                 <i class="bi bi-house-door-fill"></i>
@@ -329,7 +349,7 @@
                 <span>{{ $t("gamesTop200") }}</span>
               </button>
 
-              <div style="height: 24px"></div>
+              <div style="height: 4px"></div>
 
               <div class="button-box">
                 <div class="input-group input-group-sm mb-2">
@@ -613,6 +633,117 @@
                   </template>
                 </div>
               </div>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="search"
+              role="tabpanel"
+              aria-labelledby="search-tab"
+            >
+
+              <button type="button" class="btn btn-secondary btn-sm"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 0px;
+                  right: 245px;
+                  white-space: nowrap;
+                "
+                @click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
+              >
+                <i class="bi bi-filter-circle-fill"></i>
+                <span>R. Hubbard</span>
+              </button>
+            
+             <button type="button" class="btn btn-secondary btn-sm"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 0px;
+                  right: 130px;
+                  white-space: nowrap;
+                "
+                @click="(event) => requestSearchResults(event, 'Galway_Martin')"
+              >
+                <i class="bi bi-filter-circle-fill"></i>
+                <span>M. Galway</span>
+              </button>
+
+             <button type="button" class="btn btn-secondary btn-sm"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 0px;
+                  right: 16px;
+                  white-space: nowrap;
+                "
+                @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
+              >
+                <i class="bi bi-filter-circle-fill"></i>
+                <span>C. H&uuml;lsbeck</span>
+              </button>
+
+             <button type="button" class="btn btn-secondary btn-sm"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 30px;
+                  right: 232px;
+                  white-space: nowrap;
+                "
+                @click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
+              >
+                <i class="bi bi-filter-circle-fill"></i>
+                <span>R. Ouwehand</span>
+              </button>
+
+             <button type="button" class="btn btn-secondary btn-sm"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 30px;
+                  right: 130px;
+                  white-space: nowrap;
+                "
+                @click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
+              >
+                <i class="bi bi-filter-circle-fill"></i>
+                <span>Jeroen Tel</span>
+              </button>
+
+             <button type="button" class="btn btn-secondary btn-sm"
+                style="
+                  font-size: smaller;
+                  padding: 2px 4px;
+                  position: absolute;
+                  top: 30px;
+                  right: 28px;
+                  white-space: nowrap;
+                "
+                @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
+              >
+                <i class="bi bi-filter-circle-fill"></i>
+                <span>B. Daglish</span>
+              </button>
+
+              <div style="height: 40px"></div>
+
+            <div class="table-responsive">
+				<table class="table table-sm table-striped table-bordered"
+				>
+<thead>
+    <tr>
+    <th>xxx</th>
+    </tr>
+    </thead>				
+				</table>
+            </div>
+			
             </div>
           </div>
         </div>
