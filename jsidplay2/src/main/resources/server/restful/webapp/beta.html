@@ -175,9 +175,7 @@
               </li>
             </ul>
           </div>
-          <div class="tab-content card-body"
-                        style="position: relative"
-          >
+          <div class="tab-content card-body" style="position: relative">
             <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
               <p style="text-align: center; font-size: smaller; padding: 16px">
                 C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
@@ -276,12 +274,7 @@
               </div>
             </div>
 
-            <div
-              class="tab-pane fade"
-              id="directory"
-              role="tabpanel"
-              aria-labelledby="directory-tab"
-            >
+            <div class="tab-pane fade" id="directory" role="tabpanel" aria-labelledby="directory-tab">
               <button type="button" class="btn btn-success btn-sm" v-on:click="fetchDirectory(rootDir)">
                 <i class="bi bi-house-door-fill"></i>
               </button>
@@ -634,14 +627,10 @@
                 </div>
               </div>
             </div>
-            <div
-              class="tab-pane fade"
-              id="search"
-              role="tabpanel"
-              aria-labelledby="search-tab"
-            >
-
-              <button type="button" class="btn btn-secondary btn-sm"
+            <div class="tab-pane fade" id="search" role="tabpanel" aria-labelledby="search-tab">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -655,8 +644,10 @@
                 <i class="bi bi-filter-circle-fill"></i>
                 <span>R. Hubbard</span>
               </button>
-            
-             <button type="button" class="btn btn-secondary btn-sm"
+
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -671,7 +662,9 @@
                 <span>M. Galway</span>
               </button>
 
-             <button type="button" class="btn btn-secondary btn-sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -686,7 +679,9 @@
                 <span>C. H&uuml;lsbeck</span>
               </button>
 
-             <button type="button" class="btn btn-secondary btn-sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -701,7 +696,9 @@
                 <span>R. Ouwehand</span>
               </button>
 
-             <button type="button" class="btn btn-secondary btn-sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -716,7 +713,9 @@
                 <span>Jeroen Tel</span>
               </button>
 
-             <button type="button" class="btn btn-secondary btn-sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -733,17 +732,36 @@
 
               <div style="height: 40px"></div>
 
-            <div class="table-responsive">
-				<table class="table table-sm table-striped table-bordered"
-				>
-<thead>
-    <tr>
-    <th>xxx</th>
-    </tr>
-    </thead>				
-				</table>
-            </div>
-			
+              <div class="table-responsive">
+                <table class="table table-sm table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th v-for="(entry,index) in searchFields" :key="entry.key">
+                        <template v-if="index === 0">
+                          <label for="category" style="margin-left: 0px">{{ $t("Search.category") }}</label>
+                          <select
+                            class="form-select form-select-sm mt-1"
+                            id="category"
+                            v-model="category"
+                            @change="requestSearchResults"
+                            value-field="aqlKey"
+                            text-field="name"
+                            :select-size="1"
+                            style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
+                          >
+                            <option v-for="(sfEntry,sfIndex) in categories" :key="sfEntry.key" :value="sfEntry.id">
+                              {{ sfEntry.name }}
+                            </option>
+                            <!--template #first>
+                        <b-form-select-option value="">{{ $t("firstCategory") }}</b-form-select-option>
+                      </template-->
+                          </select>
+                        </template>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
             </div>
           </div>
         </div>
