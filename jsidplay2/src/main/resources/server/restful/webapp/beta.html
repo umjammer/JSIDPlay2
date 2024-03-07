@@ -1,22 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
+    <style lang="scss" scoped>
+      @import "/static/c64jukebox.scss";
+    </style>
+
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vue 3 with Bootstrap 5</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Load required Bootstrap, Icons CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Bootstrap Icons CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Vue 3 -->
+    <!-- Load Vue followed by I18n -->
     <script src="https://unpkg.com/vue@3.2.21"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-i18n@9"></script>
+
+    <!-- USB -->
+    <script src="/static/usb/hardsid.js"></script>
+    <script src="/static/usb/libftdi.js"></script>
+    <script src="/static/usb/exsid.js"></script>
+    <script src="/static/usb/sidblaster.js"></script>
+
+    <!-- disable pull reload -->
+    <style>
+      html,
+      body {
+        overscroll-behavior: none;
+      }
+    </style>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <title>C64 Jukebox</title>
   </head>
   <body>
     <div id="app">
-      <h1>Vue 3 with Bootstrap 5 Example</h1>
+      <form id="main">
+        <div class="locale-changer">
+          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
+          <button
+            :class="theaterMode ? 'btn btn-success btn-sm' : 'btn btn-primary btn-sm'"
+            v-on:click="
+              theaterMode = !theaterMode;
+              if (theaterMode) {
+                setNextPlaylistEntry();
+              } else {
+                pause();
+              }
+            "
+          >
+            <span style="white-space: nowrap">
+              <i class="bi bi-play-fill" v-show="!theaterMode"></i>
+              <i class="bi bi-pause-fill" v-show="theaterMode"></i>
+              {{ $t("theaterMode") }}
+            </span>
+          </button>
+          <select
+            class="form-select form-select-sm"
+            @change="updateLanguage"
+            v-model="$i18n.locale"
+            style="width: auto; margin: 1px"
+          >
+            <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
+          </select>
+        </div>
+        
+        <div class="audio">
+          <audio ref="audioElm" v-show="showAudio" v-on:ended="setNextPlaylistEntry" type="audio/mpeg" controls>
+            I'm sorry. Your browser doesn't support HTML5 audio
+          </audio>
+          <div v-show="showHardwarePlayer">
+            <button class="btn btn-success btn-sm" v-on:click="pause()">
+              <i class="bi bi-stop-fill"></i>
+              <span>Stop Hardware Player</span>
+            </button>
+            <button class="btn btn-danger btn-sm" v-on:click="end()">
+              <span>Quit Hardware Player</span>
+            </button>
+          </div>
+          <div style="position: absolute; bottom: 5px; line-height: 0.7; width: 100%">
+            <span class="current-sid"
+              ><span v-if="currentSid">{{ $t("currentlyPlaying") }}</span> <span>{{ currentSid }}</span></span
+            >
+          </div>
+        </div>
+        
+        
+      </form>
+      <h1>{{ $t("greeting") }} Vue 3 with Bootstrap 5 Example</h1>
       <p>This is a simple Vue 3 application using Bootstrap 5.</p>
 
       <div class="row">
@@ -37,11 +116,35 @@
     <script>
       const { createApp, ref } = Vue;
 
+      const { createI18n } = VueI18n;
+
+      const i18n = createI18n({
+        legacy: false, // You might need to set this option to true if you're using Vue 2 syntax
+        locale: "en", // default locale
+        messages: {
+          de: {
+            theaterMode: "Zufalls-Mix",
+            greeting: "Hallo!",
+            currentlyPlaying: "Es spielt: ",
+          },
+          en: {
+            theaterMode: "Random Play",
+            greeting: "Hello!",
+            currentlyPlaying: "Playing: ",
+          },
+        },
+      });
+
       let app = Vue.createApp({
         data: function () {
           return {
             firstName: "vue",
             lastName: "noob",
+            langs: ["de", "en"],
+            theaterMode: false,
+            showAudio: true,
+            showHardwarePlayer: false,
+            currentSid: "test.sid",
             compatConfig: { MODE: 3 },
           };
         },
@@ -54,11 +157,25 @@
           toDateTime: function (millis) {
             return new Date(millis * 1000).toLocaleString();
           },
+          updateLanguage() {
+            localStorage.locale = this.$i18n.locale;
+          },
           click: function () {
             console.log("Clicked");
           },
+          setNextPlaylistEntry: function () {
+            console.log("setNextPlaylistEntry");
+          },
+          pause: function () {
+            console.log("pause");
+          },
+          end: function () {
+            console.log("end");
+          },
         },
-      }).mount("#app");
+      })
+        .use(i18n)
+        .mount("#app");
     </script>
   </body>
 </html>
