@@ -627,7 +627,7 @@
                 </div>
               </div>
             </div>
-            <div class="tab-pane fade" id="search" role="tabpanel" aria-labelledby="search-tab">
+            <div class="tab-pane fade table-responsive" id="search" role="tabpanel" aria-labelledby="search-tab">
               <button
                 type="button"
                 class="btn btn-secondary btn-sm"
@@ -732,36 +732,106 @@
 
               <div style="height: 40px"></div>
 
-              <div class="table-responsive">
-                <table class="table table-sm table-striped table-bordered">
-                  <thead>
-                    <tr>
-                      <th v-for="(entry,index) in searchFields" :key="entry.key">
-                        <template v-if="index === 0">
-                          <label for="category" style="margin-left: 0px">{{ $t("Search.category") }}</label>
-                          <select
-                            class="form-select form-select-sm mt-1"
-                            id="category"
-                            v-model="category"
-                            @change="requestSearchResults"
-                            value-field="aqlKey"
-                            text-field="name"
-                            :select-size="1"
-                            style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
-                          >
-                            <option v-for="(sfEntry,sfIndex) in categories" :key="sfEntry.key" :value="sfEntry.id">
-                              {{ sfEntry.name }}
-                            </option>
-                            <!--template #first>
-                        <b-form-select-option value="">{{ $t("firstCategory") }}</b-form-select-option>
-                      </template-->
-                          </select>
-                        </template>
-                      </th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
+              <table class="table table-sm table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th v-for="(entry,index) in searchFields" :key="entry.key">
+                      <template v-if="index === 0">
+                        <label for="category" style="margin-left: 0px">{{ $t("Search.category") }}</label>
+                        <select
+                          class="form-select form-select-sm mt-1"
+                          id="category"
+                          v-model="category"
+                          @change="requestSearchResults"
+                          value-field="aqlKey"
+                          text-field="name"
+                          :select-size="1"
+                          style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
+                        >
+                          <option v-for="(sfEntry,sfIndex) in categories" :key="sfEntry.key" :value="sfEntry.id">
+                            {{ sfEntry.name }}
+                          </option>
+                        </select>
+                      </template>
+                      <template v-if="index === 1">
+                        <label for="name" style="margin-left: 0px">{{ $t("Search.name") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="name"
+                          v-model="name"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="index === 2">
+                        <label for="event" style="margin-left: 0px">{{ $t("Search.event") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="event"
+                          v-model="event"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="index === 3" style="padding-right: calc(0.3rem + 0.1em)">
+                        <label for="released" style="margin-left: 0px">{{ $t("Search.release") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="released"
+                          v-model="released"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="index === 4">
+                        <label for="handle" style="margin-left: 0px">{{ $t("Search.handle") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="handle"
+                          v-model="handle"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="index === 5">
+                        <label for="rating" style="margin-left: 0px">{{ $t("Search.rating") }}</label>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="rating"
+                          v-model.number="rating"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                    </th>
+                  </tr>
+                </thead>
+              </table>
             </div>
           </div>
         </div>
