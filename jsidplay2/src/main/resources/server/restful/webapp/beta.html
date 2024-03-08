@@ -581,7 +581,10 @@
                               <span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
                             </div>
                             <div v-for="(program, index) in entry.diskDirectory" :key="index">
-                              <a v-on:click.stop="openiframe(createConvertUrl(program.directoryLine, entry.filename))">
+                              <a
+                                href="#"
+                                v-on:click.stop="openiframe(createConvertUrl(program.directoryLine, entry.filename))"
+                              >
                                 <span class="c64-font">{{ program.formatted }}</span>
                               </a>
                             </div>
@@ -898,8 +901,14 @@
                             @click="requestContentEntries(row)"
                             style="padding: 0"
                           >
-                            <i class="bi bi-caret-down-fill" v-if="row._showDetails" @click="row._showDetails = true;"> </i>
-                            <i class="bi bi-caret-right-fill" v-if="!row._showDetails" @click="row._showDetails = false;"> </i>
+                            <i class="bi bi-caret-down-fill" v-if="row._showDetails" @click="row._showDetails = true;">
+                            </i>
+                            <i
+                              class="bi bi-caret-right-fill"
+                              v-if="!row._showDetails"
+                              @click="row._showDetails = false;"
+                            >
+                            </i>
                           </button>
                         </template>
                       </td>
@@ -909,7 +918,7 @@
                         <div class="card">
                           <table class="table table-sm table-striped table-bordered w-auto">
                             <thead>
-                              <tr v-for="contentEntry in row.contentEntries" :key="contentEntry.filename">
+                              <tr>
                                 <th>
                                   <div>
                                     <span> File </span>
@@ -925,8 +934,9 @@
                                       <div style="flex-grow: 4; word-break: break-all">
                                         <i class="bi bi-music-note"> </i>
                                         <a
+                                          href="#"
                                           style="white-space: pre-line"
-                                          v-on:click="
+                                          @click.prevent="
                                     currentSid = shortEntry(innerRow.filename);
                                     updateSid(innerRow.filename, row.id, row.categoryId);
                                     showAudio = true;
@@ -994,8 +1004,9 @@
                                             ></div>
 
                                             <a
-                                              v-on:click="
-                                        openiframe(
+                                              href="#"
+                                              @click.prevent="
+                                           openiframe(
                                           createConvertUrl(
                                             undefined,
                                             innerRow.filename,
@@ -1039,7 +1050,8 @@
                                               </div>
                                               <div v-for="(program, index) in innerRow.diskDirectory" :key="index">
                                                 <a
-                                                  v-on:click="
+                                                  href="#"
+                                                  @click.prevent="
                                             openiframe(
                                               createConvertUrl(
                                                 program.directoryLine,
@@ -1063,7 +1075,8 @@
                                         >
                                           <div style="flex-grow: 4; word-break: break-all">
                                             <a
-                                              v-on:click="
+                                              href="#"
+                                              @click.prevent="
                                         openiframe(
                                           createConvertUrl(
                                             undefined,
@@ -1099,6 +1112,7 @@
                                     <div>
                                       <i class="bi bi-download"> </i>
                                       <a
+                                        href="#"
                                         style="white-space: pre-line"
                                         v-on:click="openDownloadUrl(innerRow.filename, row.id, row.categoryId)"
                                       >
@@ -2100,7 +2114,7 @@
             };
             iframe.src =
               "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
-              i18n.t("pleaseWait") +
+              this.$t("pleaseWait") +
               "</p><span><i></i><i></i></span></div></body>";
 
             document.getElementById("app").appendChild(iframe);
