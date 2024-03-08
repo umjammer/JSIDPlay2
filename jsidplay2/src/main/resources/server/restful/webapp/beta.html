@@ -174,6 +174,25 @@
                   ></div>
                 </button>
               </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="sid-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#sid"
+                  type="button"
+                  role="tab"
+                  aria-controls="sid"
+                  aria-selected="false"
+                  @click="tabIndex = 3"
+                >
+                  {{ $t("SID") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex===3 ? 'text-light': 'text-primary')"
+                    v-if="loadingSid"
+                  ></div>
+                </button>
+              </li>
             </ul>
           </div>
           <div class="tab-content card-body" style="position: relative">
@@ -1131,6 +1150,31 @@
                 </tbody>
               </table>
             </div>
+            <div class="tab-pane fade show active" id="sid" role="tabpanel" aria-labelledby="sid-sid">
+              <div class="sid">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>{{ $t("sidInfoKey") }}</th>
+                      <th>{{ $t("sidInfoValue") }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="entry in translatedInfos" :key="entry.Name">
+                      <td>
+                        <span :style="entry.opacity ? 'opacity: 0.5; line-break: anywhere;' : 'line-break: anywhere;'"
+                          >{{ entry.Name }}</span
+                        >
+                      </td>
+                      <td style="word-break: break-all">{{ entry.Value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="picture-container">
+                  <img :src="picture" id="img" class="picture img-fluid rounded-circle" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -2013,11 +2057,11 @@
             return [
               {
                 key: "Name",
-                label: i18n.t("sidInfoKey"),
+                label: this.$t("sidInfoKey"),
               },
               {
                 key: "Value",
-                label: i18n.t("sidInfoValue"),
+                label: this.$t("sidInfoValue"),
               },
             ];
           },
@@ -2025,9 +2069,10 @@
             if (!this.infos) {
               return [];
             }
+            let outer = this;
             return this.infos.map(function (obj) {
               return {
-                Name: i18n.t(obj.Name),
+                Name: outer.$t(obj.Name),
                 Value: obj.Value,
                 opacity: obj.Name == "HVSCEntry.path",
               };
