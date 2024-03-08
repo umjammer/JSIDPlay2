@@ -733,7 +733,7 @@
 
               <div style="height: 40px"></div>
 
-              <table class="table table-sm table-striped table-bordered w-auto">
+              <table class="table table-sm w-auto">
                 <thead>
                   <tr>
                     <th
@@ -742,7 +742,7 @@
                       style="word-break: break-all; font-size: small"
                     >
                       <template v-if="entry.key === 'category'">
-                        <label for="category" style="margin-left: 0px"><span>{{ $t("Search.category") }}</span></label>
+                        <label for="category" style="margin: 4px"><span>{{ $t("Search.category") }}</span></label>
                         <select
                           class="form-select form-select-sm mt-1"
                           id="category"
@@ -759,7 +759,7 @@
                         </select>
                       </template>
                       <template v-if="entry.key === 'name'">
-                        <label for="name" style="margin-left: 0px">{{ $t("Search.name") }}</label>
+                        <label for="name" style="margin: 4px">{{ $t("Search.name") }}</label>
                         <input
                           class="form-control"
                           type="text"
@@ -774,7 +774,7 @@
                         />
                       </template>
                       <template v-if="entry.key === 'event'">
-                        <label for="event" style="margin-left: 0px">{{ $t("Search.event") }}</label>
+                        <label for="event" style="margin: 4px">{{ $t("Search.event") }}</label>
                         <input
                           class="form-control"
                           type="text"
@@ -789,7 +789,7 @@
                         />
                       </template>
                       <template v-if="entry.key === 'released'" style="padding-right: calc(0.3rem + 0.1em)">
-                        <label for="released" style="margin-left: 0px">{{ $t("Search.release") }}</label>
+                        <label for="released" style="margin: 4px">{{ $t("Search.release") }}</label>
                         <input
                           class="form-control"
                           type="text"
@@ -804,7 +804,7 @@
                         />
                       </template>
                       <template v-if="entry.key === 'handle'">
-                        <label for="handle" style="margin-left: 0px">{{ $t("Search.handle") }}</label>
+                        <label for="handle" style="margin: 4px">{{ $t("Search.handle") }}</label>
                         <input
                           class="form-control"
                           type="text"
@@ -819,7 +819,7 @@
                         />
                       </template>
                       <template v-if="entry.key === 'rating'">
-                        <label for="rating" style="margin-left: 0px">{{ $t("Search.rating") }}</label>
+                        <label for="rating" style="margin: 4px">{{ $t("Search.rating") }}</label>
                         <input
                           class="form-control"
                           type="number"
@@ -852,13 +852,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <template v-for="row in searchResults" :key="row.id">
+                  <template v-for="(row,rowIndex) in searchResults" :key="row.id">
                     <tr>
                       <td
                         v-for="(searchField,searchFieldIndex) in searchFields"
                         :key="searchField.key"
                         :class="'field-' + searchField.key"
-                        style="word-break: break-all"
+                        :style="rowIndex % 2 === 0 ? 'word-break:break-all;background-color: rgba(0, 0, 0, .05)': 'word-break:break-all;'"
                       >
                         <template v-if="searchField.key === 'category'">
                           <span>{{ row.category }}</span>
@@ -898,13 +898,13 @@
                             @click="requestContentEntries(row)"
                             style="padding: 0"
                           >
-                            <i class="bi bi-caret-down-fill" v-if="row.detailsShowing"> </i>
-                            <i class="bi bi-caret-down-fill" v-if="!row.detailsShowing"> </i>
+                            <i class="bi bi-caret-down-fill" v-if="row._showDetails" @click="row._showDetails = true;"> </i>
+                            <i class="bi bi-caret-right-fill" v-if="!row._showDetails" @click="row._showDetails = false;"> </i>
                           </button>
                         </template>
                       </td>
                     </tr>
-                    <tr>
+                    <tr v-if="row._showDetails">
                       <td colspan="7">
                         <div class="card">
                           <table class="table table-sm table-striped table-bordered w-auto">
@@ -912,20 +912,21 @@
                               <tr v-for="contentEntry in row.contentEntries" :key="contentEntry.filename">
                                 <th>
                                   <div>
-                                    <span> Filename </span>
+                                    <span> File </span>
                                   </div>
                                 </th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="innerRow in row.contentEntries" :key="innerRow.filename">
-                                <template v-if="isMusic(innerRow)">
-                                  <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                                    <div style="flex-grow: 4; word-break: break-all">
-                                      <i class="bi bi-music-note"> </i>
-                                      <a
-                                        style="white-space: pre-line"
-                                        v-on:click="
+                              <tr v-for="(innerRow,index) in row.contentEntries" :key="innerRow.filename">
+                                <td :style="index % 2 === 0 ? 'background-color: var(--bs-table-bg)': ''">
+                                  <template v-if="isMusic(innerRow)">
+                                    <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                                      <div style="flex-grow: 4; word-break: break-all">
+                                        <i class="bi bi-music-note"> </i>
+                                        <a
+                                          style="white-space: pre-line"
+                                          v-on:click="
                                     currentSid = shortEntry(innerRow.filename);
                                     updateSid(innerRow.filename, row.id, row.categoryId);
                                     showAudio = true;
@@ -933,38 +934,38 @@
                                       play(undefined, innerRow.filename, row.id, row.categoryId);
                                     });
                                   "
-                                      >
-                                        <span class="sid-file">{{ shortEntry(innerRow.filename) }}</span>
-                                      </a>
-                                    </div>
+                                        >
+                                          <span class="sid-file">{{ shortEntry(innerRow.filename) }}</span>
+                                        </a>
+                                      </div>
 
-                                    <button
-                                      type="button"
-                                      class="btn btn-secondary"
-                                      style="height: fit-content; padding: 2px 4px; white-space: nowrap"
-                                      v-on:click="
-                                  openDownloadMP3Url(innerRow.filename, row.id, row.categoryId)
-                                "
-                                    >
-                                      <i class="bi bi-download"> </i>
-                                      <span style="font-size: x-small">{{ $t("downloadMP3") }}</span>
-                                    </button>
-                                    <button
-                                      type="button"
-                                      class="btn btn-secondary"
-                                      style="height: fit-content; padding: 2px 4px"
-                                      v-on:click="
-                                  openDownloadSIDUrl(innerRow.filename, row.id, row.categoryId)
-                                "
-                                    >
-                                      <i class="bi bi-download"></i>
-                                    </button>
-                                    <div>
                                       <button
                                         type="button"
-                                        class="btn btn-primary"
+                                        class="btn btn-secondary"
+                                        style="height: fit-content; padding: 2px 4px; white-space: nowrap"
+                                        v-on:click="
+                                  openDownloadMP3Url(innerRow.filename, row.id, row.categoryId)
+                                "
+                                      >
+                                        <i class="bi bi-download"> </i>
+                                        <span style="font-size: x-small">{{ $t("downloadMP3") }}</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="btn btn-secondary"
                                         style="height: fit-content; padding: 2px 4px"
                                         v-on:click="
+                                  openDownloadSIDUrl(innerRow.filename, row.id, row.categoryId)
+                                "
+                                      >
+                                        <i class="bi bi-download"></i>
+                                      </button>
+                                      <div>
+                                        <button
+                                          type="button"
+                                          class="btn btn-primary"
+                                          style="height: fit-content; padding: 2px 4px"
+                                          v-on:click="
                                     playlist.push({
                                       filename: innerRow.filename,
                                       itemId: row.id,
@@ -973,25 +974,27 @@
                                     tabIndex = 5;
                                     playlistIndex = 0;
                                   "
-                                      >
-                                        <i class="bi bi-plus"> </i>
-                                      </button>
+                                        >
+                                          <i class="bi bi-plus"> </i>
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
-                                </template>
+                                  </template>
 
-                                <template v-else-if="isVideo(innerRow)">
-                                  <span>
-                                    <template v-if="canFastload(innerRow)">
-                                      <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                                        <div style="flex-grow: 4; word-break: break-all">
-                                          <div
-                                            class="spinner-border spinner-border-sm text-primary"
-                                            v-if="innerRow.loadingDisk"
-                                          ></div>
+                                  <template v-else-if="isVideo(innerRow)">
+                                    <span>
+                                      <template v-if="canFastload(innerRow)">
+                                        <div
+                                          style="white-space: pre-line; display: flex; justify-content: space-between"
+                                        >
+                                          <div style="flex-grow: 4; word-break: break-all">
+                                            <div
+                                              class="spinner-border spinner-border-sm text-primary"
+                                              v-if="innerRow.loadingDisk"
+                                            ></div>
 
-                                          <a
-                                            v-on:click="
+                                            <a
+                                              v-on:click="
                                         openiframe(
                                           createConvertUrl(
                                             undefined,
@@ -1001,42 +1004,42 @@
                                           )
                                         )
                                       "
-                                          >
-                                            <i class="bi bi-camera-video-fill"> </i>
-                                            <span style="word-break: break-all"
-                                              >{{ shortEntry(innerRow.filename) }}</span
                                             >
-                                          </a>
-                                        </div>
-                                        <button
-                                          type="button"
-                                          class="btn btn-primary btn-sm"
-                                          style="height: fit-content; padding: 2px 4px"
-                                          v-on:click="fetchDiskDirectory(innerRow, row.id, row.categoryId)"
-                                          :disabled="innerRow.loadingDisk"
-                                        >
-                                          <i class="bi bi-journal-text"> </i>
-                                        </button>
-                                        <button
-                                          type="button"
-                                          class="btn btn-primary btn-sm"
-                                          style="height: fit-content; padding: 2px 4px"
-                                          v-on:click="
+                                              <i class="bi bi-camera-video-fill"> </i>
+                                              <span style="word-break: break-all"
+                                                >{{ shortEntry(innerRow.filename) }}</span
+                                              >
+                                            </a>
+                                          </div>
+                                          <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm"
+                                            style="height: fit-content; padding: 2px 4px"
+                                            v-on:click="fetchDiskDirectory(innerRow, row.id, row.categoryId)"
+                                            :disabled="innerRow.loadingDisk"
+                                          >
+                                            <i class="bi bi-journal-text"> </i>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm"
+                                            style="height: fit-content; padding: 2px 4px"
+                                            v-on:click="
                                       openDownloadSIDUrl(innerRow.filename, row.id, row.categoryId)
                                     "
-                                        >
-                                          <i class="bi bi-download"> </i>
-                                        </button>
-                                      </div>
-                                      <div>
-                                        <div v-show="innerRow.directoryMode > 0">
-                                          <div class="disk-directory">
-                                            <div>
-                                              <span class="c64-font">{{ innerRow.diskDirectoryHeader }}</span>
-                                            </div>
-                                            <div v-for="(program, index) in innerRow.diskDirectory" :key="index">
-                                              <a
-                                                v-on:click="
+                                          >
+                                            <i class="bi bi-download"> </i>
+                                          </button>
+                                        </div>
+                                        <div>
+                                          <div v-show="innerRow.directoryMode > 0">
+                                            <div class="disk-directory">
+                                              <div>
+                                                <span class="c64-font">{{ innerRow.diskDirectoryHeader }}</span>
+                                              </div>
+                                              <div v-for="(program, index) in innerRow.diskDirectory" :key="index">
+                                                <a
+                                                  v-on:click="
                                             openiframe(
                                               createConvertUrl(
                                                 program.directoryLine,
@@ -1046,19 +1049,21 @@
                                               )
                                             )
                                           "
-                                              >
-                                                <span class="c64-font">{{ program.formatted }}</span>
-                                              </a>
+                                                >
+                                                  <span class="c64-font">{{ program.formatted }}</span>
+                                                </a>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    </template>
-                                    <template v-else>
-                                      <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                                        <div style="flex-grow: 4; word-break: break-all">
-                                          <a
-                                            v-on:click="
+                                      </template>
+                                      <template v-else>
+                                        <div
+                                          style="white-space: pre-line; display: flex; justify-content: space-between"
+                                        >
+                                          <div style="flex-grow: 4; word-break: break-all">
+                                            <a
+                                              v-on:click="
                                         openiframe(
                                           createConvertUrl(
                                             undefined,
@@ -1068,39 +1073,40 @@
                                           )
                                         )
                                       "
-                                          >
-                                            <i class="bi bi-camera-video-fill"> </i>
-
-                                            <span style="word-break: break-all"
-                                              >{{ shortEntry(innerRow.filename) }}</span
                                             >
-                                          </a>
-                                        </div>
-                                        <button
-                                          type="button"
-                                          class="btn btn-primary btn-sm"
-                                          style="height: fit-content; padding: 2px 4px"
-                                          v-on:click="
+                                              <i class="bi bi-camera-video-fill"> </i>
+
+                                              <span style="word-break: break-all"
+                                                >{{ shortEntry(innerRow.filename) }}</span
+                                              >
+                                            </a>
+                                          </div>
+                                          <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm"
+                                            style="height: fit-content; padding: 2px 4px"
+                                            v-on:click="
                                       openDownloadSIDUrl(innerRow.filename, row.id, row.categoryId)
                                     "
-                                        >
-                                          <i class="bi bi-download"> </i>
-                                        </button>
-                                      </div>
-                                    </template>
-                                  </span>
-                                </template>
-                                <template v-else>
-                                  <div>
-                                    <i class="bi bi-download"> </i>
-                                    <a
-                                      style="white-space: pre-line"
-                                      v-on:click="openDownloadUrl(innerRow.filename, row.id, row.categoryId)"
-                                    >
-                                      <span>{{ shortEntry(innerRow.filename) }}</span>
-                                    </a>
-                                  </div>
-                                </template>
+                                          >
+                                            <i class="bi bi-download"> </i>
+                                          </button>
+                                        </div>
+                                      </template>
+                                    </span>
+                                  </template>
+                                  <template v-else>
+                                    <div>
+                                      <i class="bi bi-download"> </i>
+                                      <a
+                                        style="white-space: pre-line"
+                                        v-on:click="openDownloadUrl(innerRow.filename, row.id, row.categoryId)"
+                                      >
+                                        <span>{{ shortEntry(innerRow.filename) }}</span>
+                                      </a>
+                                    </div>
+                                  </template>
+                                </td>
                               </tr>
                             </tbody>
                           </table>
@@ -1361,7 +1367,7 @@
         }
       }
 
-      const i18n = createI18n({
+      var i18n = createI18n({
         legacy: false, // You might need to set this option to true if you're using Vue 2 syntax
         locale: "en", // default locale
         messages: {
