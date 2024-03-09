@@ -66,7 +66,8 @@
           <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
           <button
             :class="theaterMode ? 'btn btn-success btn-sm' : 'btn btn-primary btn-sm'"
-            v-on:click="
+            :aria-pressed="theaterMode"
+            v-on:click.prevent="
               theaterMode = !theaterMode;
               if (theaterMode) {
                 setNextPlaylistEntry();
@@ -1591,8 +1592,7 @@
                 </div>
               </div>
             </div>
-            <div class="tab-pane fade show" id="hw" role="tabpanel" aria-labelledby="hw-tab">
-            </div>
+            <div class="tab-pane fade show" id="hw" role="tabpanel" aria-labelledby="hw-tab"></div>
           </div>
         </div>
       </form>
@@ -3987,12 +3987,12 @@
       });
       window.addEventListener("message", messageListener, false);
 
-      $("form").keypress(function(e){
-    	    if(e.keyCode == 13) {
-    	        e.preventDefault();
-    	        return false;
-    	    }
-    	})
+      $("form").keypress(function (e) {
+        if (e.keyCode == 13) {
+          e.preventDefault();
+          return false;
+        }
+      });
 
       $(document).ready(function () {
         $(".carousel.lazy-load").bind("slide.bs.carousel", function (e) {
