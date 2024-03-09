@@ -1432,10 +1432,39 @@
                   class="btn btn-danger btn-sm"
                   v-if="!importFile && playlist.length > 0"
                   variant="danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#removeFavoritesModal"
                 >
-                  <i class="bi bi-icon-trash-fill"></i>
+                  <i class="bi bi-trash-fill"></i>
                   <span>{{ $t("removePlaylist") }}</span>
                 </button>
+                <!-- Modal -->
+                <div
+                  class="modal fade"
+                  id="removeFavoritesModal"
+                  tabindex="-1"
+                  aria-labelledby="removeFavoritesModalLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="removeFavoritesModalLabel">{{ $t('confirmationTitle') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>{{ $t("removePlaylistReally") }}</p>
+                        <span> </span>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="removePlaylist">
+                          OK
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <button
                   type="button"
                   class="btn btn-success btn-sm"
@@ -1459,6 +1488,91 @@
                     v-model="filterText"
                     :placeholder="$t('searchPlaceholder')"
                   />
+                </div>
+              </div>
+              <ol class="striped-list">
+                <li
+                  v-for="(entry, index) in playlist"
+                  :key="index"
+                  :style="
+                      (filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
+                        ? 'height: 0; padding: 0px;visibility: hidden;'
+                        : '') +
+                      (index == playlistIndex && !theaterMode
+                        ? ' background-color: rgb(0 255 58 / 50%) !important'
+                        : '')
+                    "
+                  v-on:click="
+                      playlistIndex = index;
+                      $nextTick(function () {
+                        play(
+                          undefined,
+                          playlist[playlistIndex].filename,
+                          playlist[playlistIndex].itemId,
+                          playlist[playlistIndex].categoryId
+                        );
+                      });
+                      currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
+                      updateSid(
+                        playlist[playlistIndex].filename,
+                        playlist[playlistIndex].itemId,
+                        playlist[playlistIndex].categoryId
+                      );
+                    "
+                >
+                  <span style="display: flex; justify-content: space-between">
+                    <div>
+                      <div class="playlist-item">
+                        <span>{{ shortEntry(entry.filename) }}</span>
+                      </div>
+                      <div v-show="pathEntry(entry.filename).length > 1">
+                        <span style="line-break: anywhere">{{ pathEntry(entry.filename) }}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm"
+                      style="height: fit-content; opacity: 0.5"
+                      data-bs-toggle="modal"
+                      data-bs-target="#removeFavoriteModal"
+                      @click.stop="modalFavoriteIndex = index"
+                    >
+                      <i class="bi bi-trash-fill" style="margin: 2px"></i>
+                    </button>
+                  </span>
+                </li>
+              </ol>
+
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="removeFavoriteModal"
+                tabindex="-1"
+                aria-labelledby="removeFavoriteModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="removeFavoriteModalLabel">{{ $t('confirmationTitle') }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>{{ $t("removeReally") }}</p>
+                      <span> </span>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal"
+                        @click="remove(modalFavoriteIndex)"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2080,6 +2194,7 @@
         data: function () {
           return {
             modalIndex: 0,
+            modalFavoriteIndex: 0,
             msg: "",
             timeoutId: undefined,
             theaterMode: false,
