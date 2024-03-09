@@ -248,6 +248,25 @@
                   {{ $t("HARDWARE") }}
                 </button>
               </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="cfg-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#cfg"
+                  type="button"
+                  role="tab"
+                  aria-controls="cfg"
+                  aria-selected="false"
+                  @click="tabIndex = 7"
+                >
+                  {{ $t("CFG") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex===7 ? 'text-light': 'text-primary')"
+                    v-if="loadingCfg"
+                  ></div>
+                </button>
+              </li>
             </ul>
           </div>
           <div class="tab-content card-body" style="position: relative">
@@ -1697,68 +1716,142 @@
                 </div>
               </div>
 
-                <p style="margin-top: 16px">
-                  {{ $t("USE_REAL_HARDWARE") }}
-                </p>
-                <ul>
-                  <li>
-                    {{ $t("HARDWARE_PREPARATION_1") }}
-                  </li>
-                  <li>
-                    {{ $t("HARDWARE_PREPARATION_2") }}
-                    <a href="https://zadig.akeo.ie/" target="_blank">
-                      {{ $t("HERE") }}
-                    </a>
-                  </li>
-                  <li>
-                    {{ $t("HARDWARE_PREPARATION_3") }}
-                  </li>
-                  <li>
-                    Ubuntu with {{ $t("HARDSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/92-hardsid4u.rules</pre>
-                    <pre>with contents:</pre>
-                    <pre>
-SUBSYSTEM=="usb",ATTR{idVendor}=="6581",ATTR{idProduct}=="8580",MODE="0660",GROUP="plugdev"</pre
-                    >
-                    <pre>$ sudo udevadm trigger</pre>
-                    <pre>now reboot</pre>
-                  </li>
-                  <li>
-                    Ubuntu with {{ $t("EXSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
-                    <pre>with contents:</pre>
-                    <pre>
+              <p style="margin-top: 16px">{{ $t("USE_REAL_HARDWARE") }}</p>
+              <ul>
+                <li>{{ $t("HARDWARE_PREPARATION_1") }}</li>
+                <li>
+                  {{ $t("HARDWARE_PREPARATION_2") }}
+                  <a href="https://zadig.akeo.ie/" target="_blank"> {{ $t("HERE") }} </a>
+                </li>
+                <li>{{ $t("HARDWARE_PREPARATION_3") }}</li>
+                <li>
+                  Ubuntu with {{ $t("HARDSID") }} devices:
+                  <pre>$ sudo vi /etc/udev/rules.d/92-hardsid4u.rules</pre>
+                  <pre>with contents:</pre>
+                  <pre>SUBSYSTEM=="usb",ATTR{idVendor}=="6581",ATTR{idProduct}=="8580",MODE="0660",GROUP="plugdev"</pre>
+                  <pre>$ sudo udevadm trigger</pre>
+                  <pre>now reboot</pre>
+                </li>
+                <li>
+                  Ubuntu with {{ $t("EXSID") }} devices:
+                  <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
+                  <pre>with contents:</pre>
+                  <pre>
 ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'"</pre
-                    >
-                    <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
-                    <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
-                    <pre>now reboot</pre>
-                    Fedora Linux with {{ $t("EXSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
-                    <pre>with contents:</pre>
-                    <pre>
-ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'"</pre
-                    >
-                    <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
-                    <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
-                    <pre>now reboot</pre>
-                  </li>
-                </ul>
-                <p>
-                  <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
-
-                  <a
-                    href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
-                    target="_blank"
                   >
-                    <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
-                  >.
-                  <img src="/static/images/usbc.jpg" alt="HardSID4U" class="d-block img-fluid img-thumbnail mx-auto" />
-                </p>
-                <p>
-                  <b> {{ $t("STREAMING_NOTES") }} </b>
-                </p>
-              
+                  <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
+                  <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
+                  <pre>now reboot</pre>
+                  Fedora Linux with {{ $t("EXSID") }} devices:
+                  <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
+                  <pre>with contents:</pre>
+                  <pre>
+ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'"</pre
+                  >
+                  <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
+                  <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
+                  <pre>now reboot</pre>
+                </li>
+              </ul>
+              <p>
+                <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
+
+                <a
+                  href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
+                  target="_blank"
+                >
+                  <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
+                >.
+                <img src="/static/images/usbc.jpg" alt="HardSID4U" class="d-block img-fluid img-thumbnail mx-auto" />
+              </p>
+              <p>
+                <b> {{ $t("STREAMING_NOTES") }} </b>
+              </p>
+            </div>
+            <div class="tab-pane fade show" id="cfg" role="tabpanel" aria-labelledby="cfg-tab">
+              <div class="settings-box">
+                <div class="button-box">
+                  <button
+                    type="button"
+                    class="btn btn-outline-success btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#setDefaultModal"
+                  >
+                    <span>{{ $t("setDefault") }}</span>
+                  </button>
+                  <!-- Modal -->
+                  <div
+                    class="modal fade"
+                    id="setDefaultModal"
+                    tabindex="-1"
+                    aria-labelledby="setDefaultModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="setDefaultModalLabel">{{ $t('confirmationTitle') }}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>{{ $t("setDefaultReally") }}</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="setDefault">
+                            OK
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+            <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab2" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active btn btn-sm"
+                  id="austr-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#austr"
+                  type="button"
+                  role="tab"
+                  aria-controls="austr"
+                  aria-selected="true"
+                  @click="tabConfigIndex = 0"
+                >
+                  {{ $t("streamingCfgHeader") }}
+                </button>
+              </li>
+              </ul>
+                </div>
+                <div class="tab-content card-body" style="position: relative">
+                  <div
+                    class="tab-pane fade show active"
+                    id="audiostreaming"
+                    role="tabpanel"
+                    aria-labelledby="austr-tab"
+                  >
+                      <div class="settings-box">
+                        <div class="button-box">
+                          <button type="button" class="btn btn-outline-success btn-sm"
+                          v-on:click="mobileProfile">
+                                      <i class="bi bi-phone-fill"> </i>
+                            <span>{{ $t("mobileProfile") }}</span></button
+                          >
+                          <button type="button" class="btn btn-outline-success btn-sm"
+                          v-on:click="wifiProfile">
+                                      <i class="bi bi-wifi"> </i>
+                            <span>{{ $t("wifiProfile") }}</span></button
+                          >
+                        </div>
+                      </div>
+                  
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
