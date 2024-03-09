@@ -232,6 +232,21 @@
                   ></div>
                 </button>
               </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="hw-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#hw"
+                  type="button"
+                  role="tab"
+                  aria-controls="hw"
+                  aria-selected="false"
+                  @click="tabIndex = 6"
+                >
+                  {{ $t("HARDWARE") }}
+                </button>
+              </li>
             </ul>
           </div>
           <div class="tab-content card-body" style="position: relative">
@@ -1575,6 +1590,8 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="tab-pane fade show" id="hw" role="tabpanel" aria-labelledby="hw-tab">
             </div>
           </div>
         </div>
