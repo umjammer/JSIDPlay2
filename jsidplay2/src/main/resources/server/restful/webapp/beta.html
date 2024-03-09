@@ -3970,6 +3970,13 @@
       });
       window.addEventListener("message", messageListener, false);
 
+      $("form").keypress(function(e){
+    	    if(e.keyCode == 13) {
+    	        e.preventDefault();
+    	        return false;
+    	    }
+    	})
+
       $(document).ready(function () {
         $(".carousel.lazy-load").bind("slide.bs.carousel", function (e) {
           var image = $(e.relatedTarget).find("img[data-src]");
