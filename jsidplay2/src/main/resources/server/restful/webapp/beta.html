@@ -1809,46 +1809,141 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               </div>
               <div class="card">
                 <div class="card-header">
-            <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab2" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link active btn btn-sm"
-                  id="austr-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#austr"
-                  type="button"
-                  role="tab"
-                  aria-controls="austr"
-                  aria-selected="true"
-                  @click="tabConfigIndex = 0"
-                >
-                  {{ $t("streamingCfgHeader") }}
-                </button>
-              </li>
-              </ul>
+                  <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab2" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link active btn btn-sm"
+                        id="streaming-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#str"
+                        type="button"
+                        role="tab"
+                        aria-controls="str"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 0"
+                      >
+                        {{ $t("streamingCfgHeader") }}
+                      </button>
+                    </li>
+                  </ul>
                 </div>
                 <div class="tab-content card-body" style="position: relative">
-                  <div
-                    class="tab-pane fade show active"
-                    id="audiostreaming"
-                    role="tabpanel"
-                    aria-labelledby="austr-tab"
-                  >
-                      <div class="settings-box">
-                        <div class="button-box">
-                          <button type="button" class="btn btn-outline-success btn-sm"
-                          v-on:click="mobileProfile">
-                                      <i class="bi bi-phone-fill"> </i>
-                            <span>{{ $t("mobileProfile") }}</span></button
-                          >
-                          <button type="button" class="btn btn-outline-success btn-sm"
-                          v-on:click="wifiProfile">
-                                      <i class="bi bi-wifi"> </i>
-                            <span>{{ $t("wifiProfile") }}</span></button
-                          >
+                  <div class="tab-pane fade show active" id="streaming" role="tabpanel" aria-labelledby="streaming-tab">
+                    <div class="settings-box">
+                      <div class="button-box">
+                        <button type="button" class="btn btn-outline-success btn-sm" v-on:click="mobileProfile">
+                          <i class="bi bi-phone-fill"> </i>
+                          <span>{{ $t("mobileProfile") }}</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-success btn-sm" v-on:click="wifiProfile">
+                          <i class="bi bi-wifi"> </i>
+                          <span>{{ $t("wifiProfile") }}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="card">
+                      <div class="card-header">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab3" role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link active btn btn-sm"
+                              id="audiostreaming-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#austr"
+                              type="button"
+                              role="tab"
+                              aria-controls="austr"
+                              aria-selected="true"
+                              @click="tabConfigIndex = 0"
+                            >
+                              {{ $t("audioStreamingCfgHeader") }}
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="tab-content card-body" style="position: relative">
+                        <div
+                          class="tab-pane fade show active"
+                          id="streaming"
+                          role="tabpanel"
+                          aria-labelledby="audiostreaming-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting"
+                              ><label for="cbr">
+                                {{ $t("convertMessages.config.audioSection.cbr") }}
+                                <select
+                                  class="form-select form-select-sm right"
+                                  id="cbr"
+                                  v-model="convertOptions.config.audioSection.cbr"
+                                >
+                                  <option v-for="cbr in cbrs">{{ cbr }}</option>
+                                </select></label
+                              ></span
+                            >
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting"
+                              ><label for="vbrQuality">
+                                {{ $t("convertMessages.config.audioSection.vbrQuality") }}
+                                <select
+                                  class="form-select form-select-sm right"
+                                  id="vbrQuality"
+                                  v-model="convertOptions.config.audioSection.vbrQuality"
+                                >
+                                  <option v-for="vbrQuality in vbrQualities">{{ vbrQuality }}</option>
+                                </select></label
+                              ></span
+                            >
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label class="form-check-label right" for="textToSpeechTypeOff">
+                                {{ $t('convertMessages.textToSpeechType') }}
+                              </label>
+                              <div class="input-group right" style="justify-content: flex-end">
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="textToSpeechType"
+                                    value="NONE"
+                                    id="textToSpeechTypeOff"
+                                    v-model="convertOptions.textToSpeechType"
+                                  />
+                                  <label class="form-check-label" for="textToSpeechTypeOff">
+                                    {{ $t("textToSpeechTypeOff") }}
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="textToSpeechType"
+                                    value="PICO2WAVE"
+                                    id="textToSpeechTypePico2Wave"
+                                    v-model="convertOptions.textToSpeechType"
+                                  />
+                                  <label class="form-check-label" for="textToSpeechTypePico2Wave"> PICO2WAVE </label>
+                                </div>
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="textToSpeechType"
+                                    value="ESPEAK"
+                                    id="textToSpeechTypeESpeak"
+                                    v-model="convertOptions.textToSpeechType"
+                                  />
+                                  <label class="form-check-label" for="textToSpeechTypeESpeak"> ESPEAK </label>
+                                </div>
+                              </div>
+                            </span>
+                          </div>
                         </div>
                       </div>
-                  
+                    </div>
                   </div>
                 </div>
               </div>
