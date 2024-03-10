@@ -1923,7 +1923,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     class="form-check-input"
                                     type="checkbox"
                                     id="vbr"
-                                    style="float: right; margin-left: 8px;"
+                                    style="float: right; margin-left: 8px"
                                     v-model="convertOptions.config.audioSection.vbr"
                                   />
                                 </label>
@@ -2042,15 +2042,15 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     class="form-check-input"
                                     type="checkbox"
                                     id="useHls"
-                                    style="float: right; margin-left: 8px;"
+                                    style="float: right; margin-left: 8px"
                                     v-model="convertOptions.useHls"
                                   />
                                 </label>
                               </div>
                             </span>
                           </div>
-                            <div class="settings-box">
-                              <span class="setting">
+                          <div class="settings-box">
+                            <span class="setting">
                               <label class="form-check-label right" for="hlsTypeVideoJS">
                                 {{ $t('convertMessages.hlsType') }}
                               </label>
@@ -2076,37 +2076,49 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                   <label class="form-check-label" for="hlsTypeHLS"> hls-js </label>
                                 </div>
                               </div>
-                              </span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-								<label for="videoCoderAudioDelay"
-                                  >{{ $t("convertMessages.config.audioSection.videoCoderAudioDelay") }}
-                                  <input class="right"
-								type="number" id="videoCoderAudioDelay" class="form-control"
-								v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay" /></label>
-                              </span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-								<label for="audioCoderBitRate"
-                                  >{{ $t("convertMessages.config.audioSection.audioCoderBitRate") }}
-                                  <input class="right"
-								type="number" id="audioCoderBitRate" class="form-control"
-								min="0"
-								v-model.number="convertOptions.config.audioSection.audioCoderBitRate" /></label>
-                              </span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-								<label for="videoCoderBitRate"
-                                  >{{ $t("convertMessages.config.audioSection.videoCoderBitRate") }}
-                                  <input class="right"
-								type="number" id="videoCoderBitRate" class="form-control"
-								min="0"
-								v-model.number="convertOptions.config.audioSection.videoCoderBitRate" /></label>
-                              </span>
-                            </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="videoCoderAudioDelay"
+                                >{{ $t("convertMessages.config.audioSection.videoCoderAudioDelay") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="videoCoderAudioDelay"
+                                  class="form-control"
+                                  v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay"
+                              /></label>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="audioCoderBitRate"
+                                >{{ $t("convertMessages.config.audioSection.audioCoderBitRate") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="audioCoderBitRate"
+                                  class="form-control"
+                                  min="0"
+                                  v-model.number="convertOptions.config.audioSection.audioCoderBitRate"
+                              /></label>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="videoCoderBitRate"
+                                >{{ $t("convertMessages.config.audioSection.videoCoderBitRate") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="videoCoderBitRate"
+                                  class="form-control"
+                                  min="0"
+                                  v-model.number="convertOptions.config.audioSection.videoCoderBitRate"
+                              /></label>
+                            </span>
+                          </div>
                           <div class="settings-box">
                             <span class="setting">
                               <div class="form-check">
@@ -2116,109 +2128,113 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     class="form-check-input"
                                     type="checkbox"
                                     id="showStatus"
-                                    style="float: right; margin-left: 8px;"
+                                    style="float: right; margin-left: 8px"
                                     v-model="convertOptions.showStatus"
                                   />
                                 </label>
                               </div>
                             </span>
                           </div>
-                            <div class="settings-box">
-                              <span class="setting">
-								<label for="pressSpaceInterval"
-                                  >{{ $t("convertMessages.pressSpaceInterval") }}
-                                  <input class="right"
-								type="number" id="pressSpaceInterval" class="form-control"
-								min="0"
-								v-model.number="convertOptions.pressSpaceInterval" /></label>
-                              </span>
-                            </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="pressSpaceInterval"
+                                >{{ $t("convertMessages.pressSpaceInterval") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="pressSpaceInterval"
+                                  class="form-control"
+                                  min="0"
+                                  v-model.number="convertOptions.pressSpaceInterval"
+                              /></label>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="tab-pane fade show" id="playback" role="tabpanel" aria-labelledby="playback-tab">
-                          <div class="settings-box">
-                            <span class="setting">
-                              <div class="form-check">
-                                <label class="form-check-label" for="videoTuneAsAudio">
-                                  {{ $t("convertMessages.videoTuneAsAudio") }}
-                                  <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    id="videoTuneAsAudio"
-                                    style="float: right; margin-left: 8px;"
-                                    v-model="convertOptions.videoTuneAsAudio"
-                                  />
-                                </label>
-                              </div>
-                            </span>
-                          </div>
-                          <div class="settings-box">
-                            <span class="setting">
-                              <div class="form-check">
-                                <label class="form-check-label" for="random">
-                                  {{ $t("random") }}
-                                  <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    id="random"
-                                    style="float: right; margin-left: 8px;"
-                                    v-model="random"
-                                  />
-                                </label>
-                              </div>
-                            </span>
-                          </div>
-                          <div class="settings-box">
-                            <span class="setting">
-                              <div class="form-check">
-                                <label class="form-check-label" for="enableDatabase">
-                                  {{ $t("convertMessages.config.sidplay2Section.enableDatabase") }}
-                                  <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    id="enableDatabase"
-                                    style="float: right; margin-left: 8px;"
-                                    v-model="convertOptions.config.sidplay2Section.enableDatabase"
-                                  />
-                                </label>
-                              </div>
-                            </span>
-                          </div>
-                          <div class="settings-box">
-                            <span class="setting">
-                              <div class="form-check">
-                                <label class="form-check-label" for="single">
-                                  {{ $t("convertMessages.config.sidplay2Section.single") }}
-                                  <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    id="single"
-                                    style="float: right; margin-left: 8px;"
-                                    v-model="convertOptions.config.sidplay2Section.single"
-                                  />
-                                </label>
-                              </div>
-                            </span>
-                          </div>
-                          <div class="settings-box">
-                            <span class="setting">
-                              <div class="form-check">
-                                <label class="form-check-label" for="loop">
-                                  {{ $t("convertMessages.config.sidplay2Section.loop") }}
-                                  <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    id="loop"
-                                    style="float: right; margin-left: 8px;"
-                                    v-model="convertOptions.config.sidplay2Section.loop"
-                                  />
-                                </label>
-                              </div>
-                            </span>
-                          </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <div class="form-check">
+                        <label class="form-check-label" for="videoTuneAsAudio">
+                          {{ $t("convertMessages.videoTuneAsAudio") }}
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="videoTuneAsAudio"
+                            style="float: right; margin-left: 8px"
+                            v-model="convertOptions.videoTuneAsAudio"
+                          />
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <div class="form-check">
+                        <label class="form-check-label" for="random">
+                          {{ $t("random") }}
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="random"
+                            style="float: right; margin-left: 8px"
+                            v-model="random"
+                          />
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <div class="form-check">
+                        <label class="form-check-label" for="enableDatabase">
+                          {{ $t("convertMessages.config.sidplay2Section.enableDatabase") }}
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="enableDatabase"
+                            style="float: right; margin-left: 8px"
+                            v-model="convertOptions.config.sidplay2Section.enableDatabase"
+                          />
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <div class="form-check">
+                        <label class="form-check-label" for="single">
+                          {{ $t("convertMessages.config.sidplay2Section.single") }}
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="single"
+                            style="float: right; margin-left: 8px"
+                            v-model="convertOptions.config.sidplay2Section.single"
+                          />
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <div class="form-check">
+                        <label class="form-check-label" for="loop">
+                          {{ $t("convertMessages.config.sidplay2Section.loop") }}
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="loop"
+                            style="float: right; margin-left: 8px"
+                            v-model="convertOptions.config.sidplay2Section.loop"
+                          />
+                        </label>
+                      </div>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
