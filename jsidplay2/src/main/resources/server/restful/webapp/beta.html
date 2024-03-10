@@ -2775,6 +2775,37 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         </div>
                       </span>
                     </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="bufferSize"
+                          >{{ $t("convertMessages.config.audioSection.bufferSize") }}
+                          <input
+                            class="right"
+                            type="number"
+                            id="bufferSize"
+                            class="form-control"
+                            v-model.number="convertOptions.config.audioSection.bufferSize"
+                        /></label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="audioBufferSize">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="audioBufferSize"
+                            v-model="convertOptions.config.audioSection.audioBufferSize"
+                          >
+                            <option value="1024">1024</option>
+                            <option value="2048">2048</option>
+                            <option value="4096">4096</option>
+                            <option value="8192">8192</option>
+                            <option value="16384">16384</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.audioSection.audioBufferSize") }}</span>
+                        </label>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
