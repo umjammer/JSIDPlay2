@@ -2315,6 +2315,186 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         </label>
                       </span>
                     </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="mainVolume"
+                          >{{ $t("convertMessages.config.audioSection.mainVolume") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="mainVolume"
+                              class="form-control"
+                              min="-6"
+                              max="6"
+                              v-model.number="convertOptions.config.audioSection.mainVolume"
+                            />
+                            <span class="input-group-text"> db</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="secondVolume"
+                          >{{ $t("convertMessages.config.audioSection.secondVolume") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="secondVolume"
+                              class="form-control"
+                              min="-6"
+                              max="6"
+                              v-model.number="convertOptions.config.audioSection.secondVolume"
+                            />
+                            <span class="input-group-text"> db</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdVolume"
+                          >{{ $t("convertMessages.config.audioSection.thirdVolume") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="thirdVolume"
+                              class="form-control"
+                              min="-6"
+                              max="6"
+                              v-model.number="convertOptions.config.audioSection.thirdVolume"
+                            />
+                            <span class="input-group-text"> db</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="mainBalance"
+                          >{{ $t("convertMessages.config.audioSection.mainBalance") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">l(0) ... </span>
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="mainBalance"
+                              class="form-control"
+                              min="0"
+                              max="1"
+                              step="0.1"
+                              v-model.number="convertOptions.config.audioSection.mainBalance"
+                            />
+                            <span class="input-group-text"> ... r(1)</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="secondBalance"
+                          >{{ $t("convertMessages.config.audioSection.secondBalance") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">l(0) ... </span>
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="secondBalance"
+                              class="form-control"
+                              min="0"
+                              max="1"
+                              step="0.1"
+                              v-model.number="convertOptions.config.audioSection.secondBalance"
+                            />
+                            <span class="input-group-text"> ... r(1)</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdBalance"
+                          >{{ $t("convertMessages.config.audioSection.thirdBalance") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">l(0) ... </span>
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="thirdBalance"
+                              class="form-control"
+                              min="0"
+                              max="1"
+                              step="0.1"
+                              v-model.number="convertOptions.config.audioSection.thirdBalance"
+                            />
+                            <span class="input-group-text"> ... r(1)</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="mainDelay"
+                          >{{ $t("convertMessages.config.audioSection.mainDelay") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="mainDelay"
+                              class="form-control"
+                              min="0"
+                              max="100"
+                              step="10"
+                              v-model.number="convertOptions.config.audioSection.mainDelay"
+                            />
+                            <span class="input-group-text">ms</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="secondDelay"
+                          >{{ $t("convertMessages.config.audioSection.secondDelay") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="secondDelay"
+                              class="form-control"
+                              min="0"
+                              max="100"
+                              step="10"
+                              v-model.number="convertOptions.config.audioSection.secondDelay"
+                            />
+                            <span class="input-group-text">ms</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdDelay"
+                          >{{ $t("convertMessages.config.audioSection.thirdDelay") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="thirdDelay"
+                              class="form-control"
+                              min="0"
+                              max="100"
+                              step="10"
+                              v-model.number="convertOptions.config.audioSection.thirdDelay"
+                            />
+                            <span class="input-group-text">ms</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3489,15 +3669,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               .split("/")
               .slice(filename.endsWith("/") ? -2 : -1)
               .join("/");
-          },
-          volumeFormatter: function (value) {
-            return value.toLocaleString(this.$i18n.locale) + " db";
-          },
-          balanceFormatter: function (value) {
-            return "l(0) ... " + value.toLocaleString(this.$i18n.locale) + " ... r(1)";
-          },
-          delayFormatter: function (value) {
-            return value.toLocaleString(this.$i18n.locale) + " ms";
           },
           pathEntry: function (filename) {
             const files = filename.split("/");
