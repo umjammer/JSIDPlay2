@@ -1635,7 +1635,7 @@
                     </div>
                     <div class="settings-box">
                       <span class="setting">
-                        <label size="sm" for="hardsid6581">
+                        <label for="hardsid6581">
                           <select
                             class="form-select form-select-sm right"
                             id="hardsid6581"
@@ -1653,7 +1653,7 @@
                     </div>
                     <div class="settings-box">
                       <span class="setting">
-                        <label size="sm" for="hardsid8580">
+                        <label for="hardsid8580">
                           <select
                             class="form-select form-select-sm right"
                             id="hardsid8580"
@@ -1853,6 +1853,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         @click="tabConfigIndex = 2"
                       >
                         {{ $t("audioCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="emulation-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#emulation"
+                        type="button"
+                        role="tab"
+                        aria-controls="emulation"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 3"
+                      >
+                        {{ $t("emulationCfgHeader") }}
                       </button>
                     </li>
                   </ul>
@@ -2493,6 +2508,271 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                             <span class="input-group-text">ms</span>
                           </div>
                         </label>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="emulation" role="tabpanel" aria-labelledby="emulation-tab">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="stereoModeAuto"> {{ $t('stereoMode') }} </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="AUTO"
+                              id="stereoModeAuto"
+                              v-model="stereoMode"
+                            />
+                            <label class="form-check-label" for="stereoModeAuto"> Auto </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="FORCE_2SID"
+                              id="stereoMode2Sid"
+                              v-model="stereoMode"
+                            />
+                            <label class="form-check-label" for="stereoMode2Sid"> 2-SID </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="FORCE_3SID"
+                              id="stereoMode3Sid"
+                              v-model="stereoMode"
+                            />
+                            <label class="form-check-label" for="stereoMode3Sid"> 3-SID </label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="dualSidBase">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="dualSidBase"
+                            v-model="convertOptions.config.emulationSection.dualSidBase"
+                          >
+                            <option value="54304">0xd420</option>
+                            <option value="54336">0xd440</option>
+                            <option value="54528">0xd500</option>
+                            <option value="56832">0xde00</option>
+                            <option value="57088">0xdf00</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.dualSidBase") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdSIDBase">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="thirdSIDBase"
+                            v-model="convertOptions.config.emulationSection.thirdSIDBase"
+                          >
+                            <option value="54304">0xd420</option>
+                            <option value="54336">0xd440</option>
+                            <option value="54528">0xd500</option>
+                            <option value="56832">0xde00</option>
+                            <option value="57088">0xdf00</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.thirdSIDBase") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultClockSpeed">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="defaultClockSpeed"
+                            v-model="convertOptions.config.emulationSection.defaultClockSpeed"
+                          >
+                            <option value="PAL">PAL</option>
+                            <option value="NTSC">NTSC</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.defaultClockSpeed") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultEmulation">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="defaultEmulation"
+                            v-model="convertOptions.config.emulationSection.defaultEmulation"
+                          >
+                            <option value="RESIDFP">RESIDFP</option>
+                            <option value="RESID">RESID</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.defaultEmulation") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultSidModel">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="defaultSidModel"
+                            v-model="convertOptions.config.emulationSection.defaultSidModel"
+                          >
+                            <option value="MOS6581">MOS6581</option>
+                            <option value="MOS8580">MOS8580</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.defaultSidModel") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="sampling">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="sampling"
+                            v-model="convertOptions.config.audioSection.sampling"
+                          >
+                            <option value="DECIMATE">DECIMATE</option>
+                            <option value="RESAMPLE">RESAMPLE</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.audioSection.sampling") }}</span>
+                        </label>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="samplingRateLow">
+                          {{ $t('convertMessages.config.audioSection.samplingRate') }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="LOW"
+                              id="samplingRateLow"
+                              v-model="convertOptions.config.audioSection.samplingRate"
+                            />
+                            <label class="form-check-label" for="samplingRateLow"> LOW </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="MEDIUM"
+                              id="samplingRateMedium"
+                              v-model="convertOptions.config.audioSection.samplingRate"
+                            />
+                            <label class="form-check-label" for="samplingRateMedium"> MEDIUM </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="HIGH"
+                              id="samplingRateHigh"
+                              v-model="convertOptions.config.audioSection.samplingRate"
+                            />
+                            <label class="form-check-label" for="samplingRateHigh"> HIGH </label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="digiBoosted8580">
+                            {{ $t("convertMessages.config.emulationSection.digiBoosted8580") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="digiBoosted8580"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.emulationSection.digiBoosted8580"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="detectPSID64ChipModel">
+                            {{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="detectPSID64ChipModel"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="fakeStereo">
+                            {{ $t("convertMessages.config.emulationSection.fakeStereo") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="fakeStereo"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.emulationSection.fakeStereo"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="firstSid">
+                          {{ $t('convertMessages.config.emulationSection.sidToRead') }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="FIRST_SID"
+                              id="firstSid"
+                              v-model="convertOptions.config.emulationSection.sidToRead"
+                            />
+                            <label class="form-check-label" for="firstSid"> {{ $t("firstSid") }} </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="SECOND_SID"
+                              id="secondSid"
+                              v-model="convertOptions.config.emulationSection.sidToRead"
+                            />
+                            <label class="form-check-label" for="secondSid"> {{ $t("secondSid") }} </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="THIRD_SID"
+                              id="thirdSid"
+                              v-model="convertOptions.config.emulationSection.sidToRead"
+                            />
+                            <label class="form-check-label" for="thirdSid"> {{ $t("thirdSid") }}</label>
+                          </div>
+                        </div>
                       </span>
                     </div>
                   </div>
