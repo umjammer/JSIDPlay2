@@ -2250,7 +2250,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       </span>
                     </div>
                   </div>
-                  <div class="tab-pane fade show active" id="audio" role="tabpanel" aria-labelledby="audio-tab">
+                  <div class="tab-pane fade show" id="audio" role="tabpanel" aria-labelledby="audio-tab">
                     <div class="settings-box">
                       <span class="setting">
                         <div class="form-check">
@@ -2287,7 +2287,31 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="startTime">
                           {{ $t("convertMessages.config.sidplay2Section.startTime") }}
-                          <input type="time" v-model="startTime" />
+                          <input type="time" id="startTime" class="right" v-model="startTime" />
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultPlayLength">
+                          {{ $t("convertMessages.config.sidplay2Section.defaultPlayLength") }}
+                          <input type="time" id="defaultPlayLength" class="right" v-model="defaultPlayLength" />
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="fadeInTime">
+                          {{ $t("convertMessages.config.sidplay2Section.fadeInTime") }}
+                          <input type="time" id="fadeInTime" class="right" v-model="fadeInTime" />
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="fadeOutTime">
+                          {{ $t("convertMessages.config.sidplay2Section.fadeOutTime") }}
+                          <input type="time" id="fadeOutTime" class="right" v-model="fadeOutTime" />
                         </label>
                       </span>
                     </div>
