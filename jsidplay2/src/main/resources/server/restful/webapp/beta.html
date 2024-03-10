@@ -845,7 +845,6 @@
                           @change="requestSearchResults"
                           value-field="aqlKey"
                           text-field="name"
-                          :select-size="1"
                           style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
                         >
                           <option v-for="(sfEntry,sfIndex) in categories" :key="sfEntry.key" :value="sfEntry.aqlKey">
@@ -1640,7 +1639,6 @@
                             class="form-select form-select-sm right"
                             id="hardsid6581"
                             v-model="convertOptions.config.emulationSection.hardsid6581"
-                            :select-size="1"
                           >
                             <option :value="0">1</option>
                             <option :value="1">2</option>
@@ -1658,7 +1656,6 @@
                             class="form-select form-select-sm right"
                             id="hardsid8580"
                             v-model="convertOptions.config.emulationSection.hardsid8580"
-                            :select-size="1"
                           >
                             <option :value="0">1</option>
                             <option :value="1">2</option>
@@ -2964,7 +2961,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDfpFiltername6581-tab"
                                     >
-                                      <span>RESIDFP 6581</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpFilter6581"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -2972,7 +2983,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDfpStereoFiltername6581-tab"
                                     >
-                                      <span>Stereo RESIDFP 6581</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpStereoFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpStereoFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpStereoFilter6581"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -2980,7 +3005,22 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDfpThirdSIDFiltername6581-tab"
                                     >
-                                      <span>3rd RESIDFP 6581</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpThirdSIDFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter6581")
+                                            }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpThirdSIDFilter6581"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -3048,7 +3088,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDfpFiltername8580-tab"
                                     >
-                                      <span>RESIDFP 8580</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpFilter8580"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -3056,7 +3110,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDfpStereoFiltername8580-tab"
                                     >
-                                      <span>Stereo RESIDFP 8580</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpStereoFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpStereoFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpStereoFilter8580"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -3064,7 +3132,22 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDfpThirdSIDFiltername8580-tab"
                                     >
-                                      <span>3rd RESIDFP 8580</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpThirdSIDFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter8580")
+                                            }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpThirdSIDFilter8580"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -3177,7 +3260,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDFiltername6581-tab"
                                     >
-                                      <span>RESID 6581</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.filter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDFilter6581"
+                                              v-model="convertOptions.config.emulationSection.filter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -3185,7 +3282,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDStereoFiltername6581-tab"
                                     >
-                                      <span>Stereo RESID 6581</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDStereoFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.stereoFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDStereoFilter6581"
+                                              v-model="convertOptions.config.emulationSection.stereoFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -3193,7 +3304,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDThirdSIDFiltername6581-tab"
                                     >
-                                      <span>3rd RESID 6581</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDThirdSIDFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.thirdSIDFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDThirdSIDFilter6581"
+                                              v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -3261,7 +3386,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDFiltername8580-tab"
                                     >
-                                      <span>RESID 8580</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.filter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDFilter8580"
+                                              v-model="convertOptions.config.emulationSection.filter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -3269,7 +3408,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDStereoFiltername8580-tab"
                                     >
-                                      <span>Stereo RESID 8580</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDStereoFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.stereoFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDStereoFilter8580"
+                                              v-model="convertOptions.config.emulationSection.stereoFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                     <div
                                       class="tab-pane fade show"
@@ -3277,7 +3430,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                       role="tabpanel"
                                       aria-labelledby="reSIDThirdSIDFiltername8580-tab"
                                     >
-                                      <span>3rd RESID 8580</span>
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDThirdSIDFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.thirdSIDFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDThirdSIDFilter8580"
+                                              v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -4070,8 +4237,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             filterText2: "",
             // CFG (configuration)
             // pre-fetched filter definitions
-            reSIDfilters6581: [],
-            reSIDfilters8580: [],
+            reSIDFilters6581: [],
+            reSIDFilters8580: [],
             reSIDfpFilters6581: [],
             reSIDfpFilters8580: [],
             cbrs: [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
@@ -4752,12 +4919,12 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 = this.reSIDfpFilters6581[1];
             this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 = this.reSIDfpFilters8580[1];
 
-            this.convertOptions.config.emulationSection.filter6581 = this.reSIDfilters6581[3];
-            this.convertOptions.config.emulationSection.filter8580 = this.reSIDfilters8580[1];
-            this.convertOptions.config.emulationSection.stereoFilter6581 = this.reSIDfilters6581[3];
-            this.convertOptions.config.emulationSection.stereoFilter8580 = this.reSIDfilters8580[1];
-            this.convertOptions.config.emulationSection.thirdSIDFilter6581 = this.reSIDfilters6581[3];
-            this.convertOptions.config.emulationSection.thirdSIDFilter8580 = this.reSIDfilters8580[1];
+            this.convertOptions.config.emulationSection.filter6581 = this.reSIDFilters6581[3];
+            this.convertOptions.config.emulationSection.filter8580 = this.reSIDFilters8580[1];
+            this.convertOptions.config.emulationSection.stereoFilter6581 = this.reSIDFilters6581[3];
+            this.convertOptions.config.emulationSection.stereoFilter8580 = this.reSIDFilters8580[1];
+            this.convertOptions.config.emulationSection.thirdSIDFilter6581 = this.reSIDFilters6581[3];
+            this.convertOptions.config.emulationSection.thirdSIDFilter8580 = this.reSIDFilters8580[1];
           },
           updateSid: function (entry, itemId, categoryId) {
             if (entry) {
@@ -5290,10 +5457,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             })
               .then((response) => {
                 const filters = response.data;
-                this.reSIDfilters6581 = filters
+                this.reSIDFilters6581 = filters
                   .filter((filter) => filter.startsWith("RESID_MOS6581_"))
                   .map((filter) => filter.substring("RESID_MOS6581_".length));
-                this.reSIDfilters8580 = filters
+                this.reSIDFilters8580 = filters
                   .filter((filter) => filter.startsWith("RESID_MOS8580_"))
                   .map((filter) => filter.substring("RESID_MOS8580_".length));
                 this.reSIDfpFilters6581 = filters
@@ -5306,8 +5473,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 this.updateFilters();
               })
               .catch((error) => {
-                this.reSIDfilters6581 = [];
-                this.reSIDfilters8580 = [];
+                this.reSIDFilters6581 = [];
+                this.reSIDFilters8580 = [];
                 this.reSIDfpFilters6581 = [];
                 this.reSIDfpFilters8580 = [];
                 console.log(error);
