@@ -1882,6 +1882,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         {{ $t("filterCfgHeader") }}
                       </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="mute-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#mute"
+                        type="button"
+                        role="tab"
+                        aria-controls="mute"
+                        aria-selected="true"
+                        @click="muteSidTabConfigIndex = 5"
+                      >
+                        {{ $t("mutingCfgHeader") }}
+                      </button>
+                    </li>
                   </ul>
                 </div>
                 <div class="tab-content card-body" style="position: relative">
@@ -3450,6 +3465,265 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                 </div>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="mute" role="tabpanel" aria-labelledby="mute-tab">
+                    <div class="card">
+                      <div class="card-header">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab11" role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link active"
+                              id="muteSid-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#muteSid"
+                              type="button"
+                              role="tab"
+                              aria-controls="muteSid"
+                              aria-selected="true"
+                              @click="muteSidTabConfigIndex = 0"
+                            >
+                              {{ $t("muteSidHeader") }}
+                            </button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link"
+                              id="muteStereoSid-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#muteStereoSid"
+                              type="button"
+                              role="tab"
+                              aria-controls="muteStereoSid"
+                              aria-selected="true"
+                              @click="muteSidTabConfigIndex = 1"
+                            >
+                              {{ $t("muteStereoSidHeader") }}
+                            </button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link"
+                              id="muteThirdSID-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#muteThirdSID"
+                              type="button"
+                              role="tab"
+                              aria-controls="muteThirdSID"
+                              aria-selected="true"
+                              @click="muteSidTabConfigIndex = 2"
+                            >
+                              {{ $t("muteThirdSidHeader") }}
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="tab-content card-body" style="position: relative">
+                        <div
+                          class="tab-pane fade show active"
+                          id="muteSid"
+                          role="tabpanel"
+                          aria-labelledby="muteSid-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice1">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice1") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice1"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice1"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice2">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice2") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice2"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice2"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice3">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice3") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice3"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice3"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice4">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice4") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice4"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice4"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="tab-pane fade show"
+                          id="muteStereoSid"
+                          role="tabpanel"
+                          aria-labelledby="muteStereoSid-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice1">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice1") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice1"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice1"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice2">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice2") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice2"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice2"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice3">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice3") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice3"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice3"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice4">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }} <input
+                                  class="form-check-input" type="checkbox" id=muteStereoVoice4" style="float: right;
+                                  margin-left: 8px" v-model="convertOptions.config.emulationSection.muteStereoVoice4" />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="tab-pane fade show"
+                          id="muteThirdSID"
+                          role="tabpanel"
+                          aria-labelledby="muteThirdSID-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice1">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice1") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice1"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice1"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice2">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice2") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice2"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice2"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice3">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice3") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice3"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice3"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice4">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }} <input
+                                  class="form-check-input" type="checkbox" id=muteThirdSIDVoice4" style="float: right;
+                                  margin-left: 8px" v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4"
+                                  />
+                                </label>
+                              </div>
+                            </span>
                           </div>
                         </div>
                       </div>
