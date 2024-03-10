@@ -1840,6 +1840,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         {{ $t("playbackCfgHeader") }}
                       </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="audio-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#audio"
+                        type="button"
+                        role="tab"
+                        aria-controls="audio"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 2"
+                      >
+                        {{ $t("audioCfgHeader") }}
+                      </button>
+                    </li>
                   </ul>
                 </div>
                 <div class="tab-content card-body" style="position: relative">
@@ -2153,87 +2168,90 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="tab-pane fade show" id="playback" role="tabpanel" aria-labelledby="playback-tab">
-                  <div class="settings-box">
-                    <span class="setting">
-                      <div class="form-check">
-                        <label class="form-check-label" for="videoTuneAsAudio">
-                          {{ $t("convertMessages.videoTuneAsAudio") }}
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="videoTuneAsAudio"
-                            style="float: right; margin-left: 8px"
-                            v-model="convertOptions.videoTuneAsAudio"
-                          />
-                        </label>
-                      </div>
-                    </span>
+                  <div class="tab-pane fade show" id="playback" role="tabpanel" aria-labelledby="playback-tab">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="videoTuneAsAudio">
+                            {{ $t("convertMessages.videoTuneAsAudio") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="videoTuneAsAudio"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.videoTuneAsAudio"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="random">
+                            {{ $t("random") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="random"
+                              style="float: right; margin-left: 8px"
+                              v-model="random"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="enableDatabase">
+                            {{ $t("convertMessages.config.sidplay2Section.enableDatabase") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="enableDatabase"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.sidplay2Section.enableDatabase"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="single">
+                            {{ $t("convertMessages.config.sidplay2Section.single") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="single"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.sidplay2Section.single"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="loop">
+                            {{ $t("convertMessages.config.sidplay2Section.loop") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="loop"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.sidplay2Section.loop"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
                   </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <div class="form-check">
-                        <label class="form-check-label" for="random">
-                          {{ $t("random") }}
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="random"
-                            style="float: right; margin-left: 8px"
-                            v-model="random"
-                          />
-                        </label>
-                      </div>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <div class="form-check">
-                        <label class="form-check-label" for="enableDatabase">
-                          {{ $t("convertMessages.config.sidplay2Section.enableDatabase") }}
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="enableDatabase"
-                            style="float: right; margin-left: 8px"
-                            v-model="convertOptions.config.sidplay2Section.enableDatabase"
-                          />
-                        </label>
-                      </div>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <div class="form-check">
-                        <label class="form-check-label" for="single">
-                          {{ $t("convertMessages.config.sidplay2Section.single") }}
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="single"
-                            style="float: right; margin-left: 8px"
-                            v-model="convertOptions.config.sidplay2Section.single"
-                          />
-                        </label>
-                      </div>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <div class="form-check">
-                        <label class="form-check-label" for="loop">
-                          {{ $t("convertMessages.config.sidplay2Section.loop") }}
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="loop"
-                            style="float: right; margin-left: 8px"
-                            v-model="convertOptions.config.sidplay2Section.loop"
-                          />
-                        </label>
-                      </div>
-                    </span>
+                  <div class="tab-pane fade show active" id="audio" role="tabpanel" aria-labelledby="audio-tab">
+                    <span>test</span>
                   </div>
                 </div>
               </div>
