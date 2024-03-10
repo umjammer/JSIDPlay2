@@ -1892,9 +1892,24 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="mute"
                         aria-selected="true"
-                        @click="muteSidTabConfigIndex = 5"
+                        @click="tabConfigIndex = 5"
                       >
                         {{ $t("mutingCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="cart-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#cart"
+                        type="button"
+                        role="tab"
+                        aria-controls="cart"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 6"
+                      >
+                        {{ $t("floppyCartCfgHeader") }}
                       </button>
                     </li>
                   </ul>
@@ -3727,6 +3742,151 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="cart" role="tabpanel" aria-labelledby="cart-tab">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="jiffyDosInstalled">
+                            {{ $t("convertMessages.config.c1541Section.jiffyDosInstalled") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="jiffyDosInstalled"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.c1541Section.jiffyDosInstalled"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <b class="right"> {{ $t("CART_NOTES") }} </b>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label right" for="reuSizeAuto">
+                          {{ $t('convertMessages.reuSize') }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="null"
+                              id="reuSizeAuto"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSizeAuto"> Auto </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="128"
+                              id="reuSize128"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize128"> REU 1700 (128KB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="512"
+                              id="reuSize512"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize512"> REU 1750 (512KB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="256"
+                              id="reuSize256"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize256"> REU 1764 (256KB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="2048"
+                              id="reuSize2048"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize2048"> REU 1750 XL (2MB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="16384"
+                              id="reuSize16384"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize16384"> REU (16MB) </label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="sfxSoundExpander">
+                            {{ $t("convertMessages.sfxSoundExpander") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="sfxSoundExpander"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.sfxSoundExpander"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="sfxSoundExpanderType0">
+                          {{ $t('convertMessages.sfxSoundExpanderType') }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="0"
+                              id="sfxSoundExpanderType"
+                              v-model="convertOptions.sfxSoundExpanderType"
+                            />
+                            <label class="form-check-label" for="sfxSoundExpanderType"> OPL1 (YM3526) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="1"
+                              id="sfxSoundExpanderType"
+                              v-model="convertOptions.sfxSoundExpanderType"
+                            />
+                            <label class="form-check-label" for="sfxSoundExpanderType"> OPL2 (YM3812) </label>
+                          </div>
+                        </div>
+                      </span>
                     </div>
                   </div>
                 </div>
