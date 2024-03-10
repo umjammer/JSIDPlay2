@@ -1847,25 +1847,41 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab3" role="tablist">
                           <li class="nav-item" role="presentation">
                             <button
-                              class="nav-link active btn btn-sm"
+                              class="nav-link active"
                               id="audiostreaming-tab"
                               data-bs-toggle="pill"
-                              data-bs-target="#austr"
+                              data-bs-target="#audiostreaming"
                               type="button"
                               role="tab"
-                              aria-controls="austr"
+                              aria-controls="audiostreaming"
                               aria-selected="true"
                               @click="tabConfigIndex = 0"
                             >
                               {{ $t("audioStreamingCfgHeader") }}
                             </button>
                           </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link"
+                              id="videostreaming-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#videostreaming"
+                              type="button"
+                              role="tab"
+                              aria-controls="videostreaming"
+                              aria-selected="true"
+                              @click="tabConfigIndex = 1"
+                            >
+                              {{ $t("videoStreamingCfgHeader") }}
+                            </button>
+                          </li>
                         </ul>
                       </div>
+
                       <div class="tab-content card-body" style="position: relative">
                         <div
                           class="tab-pane fade show active"
-                          id="streaming"
+                          id="audiostreaming"
                           role="tabpanel"
                           aria-labelledby="audiostreaming-tab"
                         >
@@ -1998,6 +2014,29 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                   />
                                   <label class="form-check-label" for="de"> Deutsch </label>
                                 </div>
+                              </div>
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="tab-pane fade show"
+                          id="videostreaming"
+                          role="tabpanel"
+                          aria-labelledby="videostreaming-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="useHls">
+                                  {{ $t("convertMessages.useHls") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="useHls"
+                                    style="float: right"
+                                    v-model="convertOptions.useHls"
+                                  />
+                                </label>
                               </div>
                             </span>
                           </div>
