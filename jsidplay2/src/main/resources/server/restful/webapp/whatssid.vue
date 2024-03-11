@@ -6,7 +6,9 @@
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
-    <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
+    <!-- Load Vue followed by I18n -->
+    <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
+    <!-- helpers -->
     <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
 
     <!-- disable pull reload -->
@@ -32,14 +34,15 @@
         <button type="button" v-on:click="upload()">Upload</button>
       </form>
       <div>
-        <p v-html="match"></p>
+        <p>{{ match }}</p>
       </div>
     </div>
 
     <script>
-      new Vue({
-        el: "#app",
-        data() {
+      const { createApp, ref } = Vue;
+
+      let app = Vue.createApp({
+        data: function () {
           return {
             match: "",
             files: new FormData(),
@@ -78,7 +81,7 @@
             );
           },
         },
-      });
+      }).mount("#app");
     </script>
   </body>
 </html>

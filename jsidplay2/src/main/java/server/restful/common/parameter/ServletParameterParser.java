@@ -33,7 +33,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ServletParameterParser {
 
-	private final static List<String> VALUE_ABSENT = asList("null", "undefined");
+	private final static List<String> VALUE_ABSENT = asList("", "null", "undefined");
 
 	private final JCommander commander;
 	private final ServletUsageFormatter usageFormatter;

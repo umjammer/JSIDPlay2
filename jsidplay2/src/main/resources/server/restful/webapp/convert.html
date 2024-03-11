@@ -10,19 +10,19 @@
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
-    <!-- Load required Bootstrap, BootstrapVue and Icons CSS -->
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.6.2/dist/css/bootstrap$min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.css" />
+    <!-- Load required Bootstrap, Icons CSS -->
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap$min.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons$min.css" />
 
-    <!-- Load Vue followed by BootstrapVue and Icons -->
-    <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.js"></script>
+    <!-- Load Vue followed by I18n -->
+    <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
+    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
+    <script src="/webjars/jquery/3.7.1/dist/jquery$min.js"></script>
 
     <!-- helpers -->
-    <script src="/webjars/vue-i18n/8.28.2/dist/vue-i18n$min.js"></script>
+    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global$prod.js"></script>
     <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
+    <script src="/webjars/web-audio-recorder-js/0.0.2/$lib/WebAudioRecorder$min.js"></script>
     <script src="$hlsScript"></script>
 
     <script type="application/javascript">
@@ -49,78 +49,105 @@
     <div id="app">
       <div class="locale-changer">
         <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
-        <b-button v-if="closeable()" onclick="parent.closeiframe()" pill variant="outline-dark" size="sm"
-          >{{ $t("close") }}</b-button
+        <button type="button" class="btn btn-outline-dark btn-sm" v-if="closeable()" onclick="parent.closeiframe()">
+          {{ $t("close") }}
+        </button>
+        <select
+          v-if="localizeable()"
+          id="localesecector"
+          class="form-select form-select-sm"
+          @change="updateLanguage"
+          v-model="$i18n.locale"
+          style="width: auto; margin: 1px"
         >
-        <b-form-select v-if="localizeable()" v-model="$i18n.locale" size="sm" style="width: auto; margin: 1px">
           <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
-        </b-form-select>
+        </select>
       </div>
 
       <div class="all">
         <div class="left-button-container">
           <div class="button-container">
-            <b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
               v-on:click="setDefaultSidModel6581()"
-              pill
-              variant="outline-dark"
-              size="sm"
               style="font-size: smaller"
-              >6581</b-button
             >
+              6581
+            </button>
           </div>
           <div class="button-container">
-            <b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
               v-on:click="setDefaultSidModel8580()"
-              pill
-              variant="outline-dark"
-              size="sm"
               style="font-size: smaller"
-              >8580</b-button
             >
+              8580
+            </button>
           </div>
           <div class="button-container">
-            <b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
               v-on:click="setDefaultEmulationReSid()"
-              pill
-              variant="outline-dark"
-              size="sm"
               style="font-size: smaller"
-              >RESID</b-button
             >
+              RESID
+            </button>
           </div>
           <div class="button-container">
-            <b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
               v-on:click="setDefaultEmulationReSidFp()"
-              pill
-              variant="outline-dark"
-              size="sm"
               style="font-size: smaller"
-              >RESIDFP</b-button
             >
+              RESIDFP
+            </button>
           </div>
         </div>
 
         <div class="right-button-container">
           <div class="button-container">
-            <b-button v-on:click="insertNextDisk()" pill variant="outline-dark" size="sm" style="font-size: smaller"
-              >{{ $t("insertNextDisk") }}</b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
+              v-on:click="insertNextDisk()"
+              style="font-size: smaller"
             >
+              {{ $t("insertNextDisk") }}
+            </button>
           </div>
           <div class="button-container">
-            <b-button v-on:click="insertNextCart()" pill variant="outline-dark" size="sm" style="font-size: smaller"
-              >{{ $t("insertNextCart") }}</b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
+              v-on:click="insertNextCart()"
+              style="font-size: smaller"
             >
+              {{ $t("insertNextCart") }}
+            </button>
           </div>
           <div class="button-container">
-            <b-button v-on:click="setJoyBtn(0, 16)" pill variant="outline-dark" size="sm" style="font-size: smaller"
-              >Joy1 Btn</b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
+              v-on:click="setJoyBtn(0, 16)"
+              style="font-size: smaller"
             >
+              Joy1 Btn
+            </button>
           </div>
           <div class="button-container">
-            <b-button v-on:click="setJoyBtn(1, 16)" pill variant="outline-dark" size="sm" style="font-size: smaller"
-              >Joy2 Btn</b-button
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
+              v-on:click="setJoyBtn(1, 16)"
+              style="font-size: smaller"
             >
+              Joy2 Btn
+            </button>
           </div>
         </div>
 
@@ -145,28 +172,45 @@
       </div>
 
       <div class="video-bar">
-        <b-button v-b-toggle.collapse-barcode variant="primary" size="sm" style="float: right"
-          >{{ $t("barcode") }}</b-button
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseBarcode"
+          aria-expanded="false"
+          aria-controls="collapseBarcode"
+          style="float: right"
         >
-        <b-button v-b-toggle.collapse-keyboard variant="primary" size="sm">{{ $t("keyboard") }}</b-button>
+          {{ $t("barcode") }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseKeyboard"
+          aria-expanded="false"
+          aria-controls="collapseKeyboard"
+        >
+          {{ $t("keyboard") }}
+        </button>
       </div>
 
       <p>{{ msg }}</p>
 
-      <b-collapse id="collapse-barcode" class="mt-2">
-        <b-card>
-          <b-card-text>
+      <div class="collapse" id="collapseBarcode">
+        <div class="card">
+          <div class="card-body">
             <div class="barcode-container">
               <b-alert v-if="!hls" variant="success" show>{{ $t("mobilePlaybackTip1") }}</b-alert>
               $qrCodeImgTag
             </div>
-          </b-card-text>
-        </b-card>
-      </b-collapse>
+          </div>
+        </div>
+      </div>
 
-      <b-collapse id="collapse-keyboard" class="mt-2">
-        <b-card>
-          <b-card-text>
+      <div class="collapse" id="collapseKeyboard">
+        <div class="card">
+          <div class="card-body">
             <div class="keyboard">
               <div class="logo">C= Commodore &nbsp;&nbsp;&nbsp;&nbsp; 64</div>
 
@@ -294,20 +338,24 @@
               </div>
               <!-- end section-b-->
             </div>
-          </b-card-text>
-        </b-card>
-      </b-collapse>
+          </div>
+        </div>
+      </div>
 
-      <b-container>
+      <div class="container">
         <h3>{{ $t("infosHeader") }}</h3>
         <ul>
           <li>{{ $t("regardingTimeoutsTip1") }}</li>
           <li>{{ $t("regardingTimeoutsTip2") }}</li>
           <li v-if="!hls">{{ $t("regardingTimeoutsTip3") }}</li>
         </ul>
-      </b-container>
+      </div>
     </div>
     <script>
+      const { createApp, ref } = Vue;
+
+      const { createI18n } = VueI18n;
+
       var audio;
 
       axios({
@@ -330,66 +378,65 @@
         audio.play();
       }
 
-      const messages = {
-        en: {
-          close: "Close",
-          barcode: "Barcode",
-          keyboard: "Keyboard",
-          insertNextDisk: "Next Disk",
-          insertNextCart: "Next Cart",
-          mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
-          infosHeader: "Infos",
-          regardingTimeoutsTip1: "Actions and key presses are delayed a few seconds.",
-          regardingTimeoutsTip2: "Maximum play time is 1 hour.",
-          regardingTimeoutsTip3:
-            "If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
-          nextDiskDone: "Next Disk has been inserted!",
-          nextDiskCart: "Next Cartridge has been inserted!",
-          defaultSidModel6581Done: "Default SID model has been set to 6581!",
-          defaultSidModel8580Done: "Default SID model has been set to 8580!",
-          defaultEmulationResidDone: "Default emulation has been set to RESID!",
-          defaultEmulationResidFpDone: "Default emulation has been set to RESIDFP!",
-          joyBtnDone: "Joystick button has been pressed!",
+      var i18n = createI18n({
+        locale: "en", // default locale
+        messages: {
+          en: {
+            close: "Close",
+            barcode: "Barcode",
+            keyboard: "Keyboard",
+            insertNextDisk: "Next Disk",
+            insertNextCart: "Next Cart",
+            mobilePlaybackTip1: "Please install VLC player or MXPlayer on your phone!",
+            infosHeader: "Infos",
+            regardingTimeoutsTip1: "Actions and key presses are delayed a few seconds.",
+            regardingTimeoutsTip2: "Maximum play time is 1 hour.",
+            regardingTimeoutsTip3:
+              "If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
+            nextDiskDone: "Next Disk has been inserted!",
+            nextDiskCart: "Next Cartridge has been inserted!",
+            defaultSidModel6581Done: "Default SID model has been set to 6581!",
+            defaultSidModel8580Done: "Default SID model has been set to 8580!",
+            defaultEmulationResidDone: "Default emulation has been set to RESID!",
+            defaultEmulationResidFpDone: "Default emulation has been set to RESIDFP!",
+            joyBtnDone: "Joystick button has been pressed!",
+          },
+          de: {
+            close: "Schliessen",
+            barcode: "Barcode",
+            keyboard: "Tastatur",
+            insertNextDisk: "N\u00e4chste Disk",
+            insertNextCart: "N\u00e4chstes Modul",
+            mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
+            infosHeader: "Informationen",
+            regardingTimeoutsTip1: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
+            regardingTimeoutsTip2: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
+            regardingTimeoutsTip3:
+              "Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
+            nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
+            nextCartDone: "N\u00e4chstes Modul wurde eingesteckt!",
+            defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
+            defaultSidModel8580Done: "Default SID Chip ist jetzt 8580!",
+            defaultEmulationResidDone: "Default Emulation ist jetzt RESID!",
+            defaultEmulationResidFpDone: "Default Emulation ist jetzt RESIDFP!",
+            joyBtnDone: "Joystick Button wurde gedr\u00fcckt!",
+          },
         },
-        de: {
-          close: "Schliessen",
-          barcode: "Barcode",
-          keyboard: "Tastatur",
-          insertNextDisk: "N\u00e4chste Disk",
-          insertNextCart: "N\u00e4chstes Modul",
-          mobilePlaybackTip1: "Bitte installieren sie den VLC player oder MXPlayer auf ihrem Handy!",
-          infosHeader: "Informationen",
-          regardingTimeoutsTip1: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
-          regardingTimeoutsTip2: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
-          regardingTimeoutsTip3:
-            "Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
-          nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
-          nextCartDone: "N\u00e4chstes Modul wurde eingesteckt!",
-          defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
-          defaultSidModel8580Done: "Default SID Chip ist jetzt 8580!",
-          defaultEmulationResidDone: "Default Emulation ist jetzt RESID!",
-          defaultEmulationResidFpDone: "Default Emulation ist jetzt RESIDFP!",
-          joyBtnDone: "Joystick Button wurde gedr\u00fcckt!",
-        },
-      };
-      const i18n = new VueI18n({
-        locale: "en", // set locale
-        messages, // set locale messages
       });
 
-      new Vue({
-        el: "#app",
-        i18n, //import mutil-lang
-        data: {
-          langs: ["de", "en"],
-          hls: $hls,
-          notifyForHLS: $notifyForHLS,
-          shiftLeftPressed: false,
-          shiftRightPressed: false,
-          ctrlPressed: false,
-          commodorePressed: false,
-          runStopPressed: false,
-          msg: "",
+      let app = Vue.createApp({
+        data: function () {
+          return {
+            langs: ["de", "en"],
+            hls: $hls,
+            notifyForHLS: $notifyForHLS,
+            shiftLeftPressed: false,
+            shiftRightPressed: false,
+            ctrlPressed: false,
+            commodorePressed: false,
+            runStopPressed: false,
+            msg: "",
+          };
         },
         methods: {
           closeable: function () {
@@ -753,7 +800,9 @@
             this.startVideo();
           }
         },
-      });
+      })
+        .use(i18n)
+        .mount("#app");
     </script>
   </body>
 </html>

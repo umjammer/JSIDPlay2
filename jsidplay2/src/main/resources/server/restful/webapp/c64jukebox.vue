@@ -10,18 +10,17 @@
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
-    <!-- Load required Bootstrap, BootstrapVue and Icons CSS -->
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.6.2/dist/css/bootstrap$min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.css" />
-    <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.css" />
+    <!-- Load required Bootstrap, Icons CSS -->
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap$min.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons$min.css" />
 
-    <!-- Load Vue followed by BootstrapVue and Icons -->
-    <script src="/webjars/vue/2.7.14/dist/vue$min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue$min.js"></script>
-    <script src="/webjars/bootstrap-vue/2.23.1/dist/bootstrap-vue-icons$min.js"></script>
+    <!-- Load Vue followed by I18n -->
+    <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
+    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
+    <script src="/webjars/jquery/3.7.1/dist/jquery$min.js"></script>
 
     <!-- helpers -->
-    <script src="/webjars/vue-i18n/8.28.2/dist/vue-i18n$min.js"></script>
+    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global$prod.js"></script>
     <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
     <script src="/webjars/web-audio-recorder-js/0.0.2/$lib/WebAudioRecorder$min.js"></script>
 
@@ -42,18 +41,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title>C64 Jukebox</title>
+    <title>C64 Jukebox (Vue 3 with Bootstrap 5)</title>
   </head>
   <body>
     <div id="app">
-      <b-form id="main">
+      <form id="main">
         <div class="locale-changer">
           <h1 class="c64jukebox" style="width: 100%">C64 Jukebox</h1>
-          <b-button
-            :pressed.sync="theaterMode"
-            :variant="theaterMode ? 'success' : 'primary'"
-            size="sm"
-            v-on:click="
+          <button
+            :class="theaterMode ? 'btn btn-success btn-sm' : 'btn btn-primary btn-sm'"
+            :aria-pressed="theaterMode"
+            v-on:click.prevent="
+              theaterMode = !theaterMode;
               if (theaterMode) {
                 setNextPlaylistEntry();
               } else {
@@ -62,16 +61,20 @@
             "
           >
             <span style="white-space: nowrap">
-              <b-icon-play-fill v-show="!theaterMode"> </b-icon-play-fill>
-              <b-icon-pause-fill v-show="theaterMode"> </b-icon-pause-fill>
+              <i class="bi bi-play-fill" v-show="!theaterMode"></i>
+              <i class="bi bi-pause-fill" v-show="theaterMode"></i>
               {{ $t("theaterMode") }}
             </span>
-          </b-button>
-          <b-form-select @change="updateLanguage" v-model="$i18n.locale" size="sm" style="width: auto; margin: 1px">
-            <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">
-              {{ lang }}
-            </option>
-          </b-form-select>
+          </button>
+          <select
+            id="localesecector"
+            class="form-select form-select-sm"
+            @change="updateLanguage"
+            v-model="$i18n.locale"
+            style="width: auto; margin: 1px"
+          >
+            <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
+          </select>
         </div>
 
         <div class="audio">
@@ -79,13 +82,13 @@
             I'm sorry. Your browser doesn't support HTML5 audio
           </audio>
           <div v-show="showHardwarePlayer">
-            <b-button variant="success" size="sm" v-on:click="pause()">
-              <b-icon-stop-fill> </b-icon-stop-fill>
+            <button class="btn btn-success btn-sm" v-on:click="pause()">
+              <i class="bi bi-stop-fill"></i>
               <span>Stop Hardware Player</span>
-            </b-button>
-            <b-button size="sm" variant="danger" v-on:click="end()">
+            </button>
+            <button class="btn btn-danger btn-sm" v-on:click="end()">
               <span>Quit Hardware Player</span>
-            </b-button>
+            </button>
           </div>
           <div style="position: absolute; bottom: 5px; line-height: 0.7; width: 100%">
             <span class="current-sid"
@@ -93,244 +96,420 @@
             >
           </div>
         </div>
-
-        <b-card no-body>
-          <b-tabs v-model="tabIndex" active-nav-item-class="font-weight-bold text-italic" pills card>
-            <b-tab>
-              <template #title>{{ $t("ABOUT") }}</template>
-
-              <b-card-text>
-                <p style="text-align: center; font-size: smaller; padding: 16px">
-                  C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
-                  JSIDPlay2 is copyrighted to:<br />
-                  2007-$year Ken H&#228;ndel,<br />
-                  Antti S. Lankila and Wilfred Bos<br /><br />
-                  Distortion Simulation and 6581/8580 emulation:<br />
-                  Copyright &#169; 2005-2011 Antti S. Lankila<br />
-                  ReSID engine and 6581/8580 emulation:<br />
-                  Copyright &#169; 1999-2011 Dag Lem<br />
-                  Source code of JSIDPlay2 and the built-in AppServer can be found at:<br />
-                  <a href="https://sourceforge.net/projects/jsidplay2" target="_blank"
-                    >https://sourceforge.net/projects/jsidplay2</a
-                  ><br /><br />
-                  The search function of this web-site is powered by Assembly64 by Fredrik &Aring;berg.<br />
-                  <a href="https://hackerswithstyle.se/assembly/" target="_blank"
-                    >http://hackerswithstyle.ddns.net/assembly/</a
-                  ><br />
-                  Thank you mate!<br /><br />
-                  This program is free software; you can redistribute it and/or modify<br />
-                  it under the terms of the GNU General Public License as published by<br />
-                  the Free Software Foundation; either version 2 of the License, or<br />
-                  (at your option) any later version.
-                </p>
-                <div class="settings-box">
-                  <div class="button-box">
-                    <b-button v-b-modal.modal-set-default-user size="sm" variant="outline-success">
-                      <span>{{ $t("setDefaultUser") }}</span></b-button
-                    >
-                    <b-modal id="modal-set-default-user" :title="$t('confirmationTitle')" @ok="setDefaultUser">
-                      <p>{{ $t("setDefaultUserReally") }}</p>
-                    </b-modal>
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-pills card-header-pills mb-2" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active"
+                  id="about-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#about"
+                  type="button"
+                  role="tab"
+                  aria-controls="about"
+                  aria-selected="true"
+                  @click="tabIndex = 0"
+                >
+                  {{ $t("ABOUT") }}
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="directory-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#directory"
+                  type="button"
+                  role="tab"
+                  aria-controls="directory"
+                  aria-selected="false"
+                  @click="tabIndex = 1"
+                >
+                  {{ $t("SIDS") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 1 ? 'text-light' : 'text-primary')"
+                    v-if="
+                      rootDir.loading ||
+                      top200Dir.loading ||
+                      oneFilerTop200Dir.loading ||
+                      toolsTop200Dir.loading ||
+                      musicTop200Dir.loading ||
+                      graphicsTop200Dir.loading ||
+                      gamesTop200Dir.loading
+                    "
+                  ></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="search-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#search"
+                  type="button"
+                  role="tab"
+                  aria-controls="search"
+                  aria-selected="false"
+                  @click="tabIndex = 2"
+                >
+                  {{ $t("ASSEMBLY64") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 2 ? 'text-light' : 'text-primary')"
+                    v-if="loadingAssembly64"
+                  ></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="sid-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#sid"
+                  type="button"
+                  role="tab"
+                  aria-controls="sid"
+                  aria-selected="false"
+                  @click="tabIndex = 3"
+                >
+                  {{ $t("SID") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 3 ? 'text-light' : 'text-primary')"
+                    v-if="loadingSid"
+                  ></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="stil-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#stil"
+                  type="button"
+                  role="tab"
+                  aria-controls="stil"
+                  aria-selected="false"
+                  :disabled="this.stil.toString() === ''"
+                  @click="tabIndex = 4"
+                >
+                  {{ $t("STIL") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 4 ? 'text-light' : 'text-primary')"
+                    v-if="loadingStil"
+                  ></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="pl-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#pl"
+                  type="button"
+                  role="tab"
+                  aria-controls="pl"
+                  aria-selected="false"
+                  @click="tabIndex = 5"
+                >
+                  {{ $t("PL") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 6 ? 'text-light' : 'text-primary')"
+                    v-if="loadingPl"
+                  ></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="hw-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#hw"
+                  type="button"
+                  role="tab"
+                  aria-controls="hw"
+                  aria-selected="false"
+                  @click="tabIndex = 6"
+                >
+                  {{ $t("HARDWARE") }}
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="cfg-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#cfg"
+                  type="button"
+                  role="tab"
+                  aria-controls="cfg"
+                  aria-selected="false"
+                  @click="tabIndex = 7"
+                >
+                  {{ $t("CFG") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 7 ? 'text-light' : 'text-primary')"
+                    v-if="loadingCfg"
+                  ></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation" v-show="username !== 'jsidplay2'">
+                <button
+                  class="nav-link"
+                  id="logs-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#logs"
+                  type="button"
+                  role="tab"
+                  aria-controls="logs"
+                  aria-selected="false"
+                  @click="tabIndex = 8"
+                >
+                  {{ $t("LOGS") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 8 ? 'text-light' : 'text-primary')"
+                    v-if="loadingLogs"
+                  ></div>
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class="tab-content card-body" style="position: relative">
+            <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
+              <p style="text-align: center; font-size: smaller; padding: 16px">
+                C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
+                JSIDPlay2 is copyrighted to:<br />
+                2007-$year Ken H&#228;ndel,<br />
+                Antti S. Lankila and Wilfred Bos<br /><br />
+                Distortion Simulation and 6581/8580 emulation:<br />
+                Copyright &#169; 2005-2011 Antti S. Lankila<br />
+                ReSID engine and 6581/8580 emulation:<br />
+                Copyright &#169; 1999-2011 Dag Lem<br />
+                Source code of JSIDPlay2 and the built-in AppServer can be found at:<br />
+                <a href="https://sourceforge.net/projects/jsidplay2" target="_blank"
+                  >https://sourceforge.net/projects/jsidplay2</a
+                ><br /><br />
+                The search function of this web-site is powered by Assembly64 by Fredrik &Aring;berg.<br />
+                <a href="https://hackerswithstyle.se/assembly/" target="_blank"
+                  >http://hackerswithstyle.ddns.net/assembly/</a
+                ><br />
+                Thank you mate!<br /><br />
+                This program is free software; you can redistribute it and/or modify<br />
+                it under the terms of the GNU General Public License as published by<br />
+                the Free Software Foundation; either version 2 of the License, or<br />
+                (at your option) any later version.
+              </p>
+              <div class="settings-box">
+                <div class="button-box">
+                  <button
+                    type="button"
+                    class="btn btn-outline-success btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#setDefaultUserModal"
+                  >
+                    <span>{{ $t("setDefaultUser") }}</span>
+                  </button>
+                  <!-- Modal -->
+                  <div
+                    class="modal fade"
+                    id="setDefaultUserModal"
+                    tabindex="-1"
+                    aria-labelledby="setDefaultUserModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="setDefaultUserModalLabel">{{ $t("confirmationTitle") }}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>{{ $t("setDefaultUserReally") }}</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="setDefaultUser">
+                            OK
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="username"
-                      >{{ $t("username") }}
-                      <b-form-input
-                        type="text"
-                        id="username"
-                        class="right"
-                        v-model="username"
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                    /></label>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="password"
-                      >{{ $t("password") }}
-                      <b-form-input
-                        type="password"
-                        id="password"
-                        class="right"
-                        v-model="password"
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                        v-on:blur="delayedFetchDirectory(rootDir)"
-                    /></label>
-                  </span>
-                </div>
-                <!--b-button variant="success" v-on:click="startRecording()"> Start Speech Recognition </b-button>
-                <b-button variant="success" v-on:click="stopRecording()"> Stop Speech Recognition </b-button>
-                <p>{{ msg }}</p-->
-              </b-card-text>
-            </b-tab>
-            <b-tab active style="position: relative">
-              <template #title>
-                {{ $t("SIDS") }}
-                <b-spinner
-                  type="border"
-                  :variant="tabIndex == 1 ? 'light' : 'primary'"
-                  small
-                  v-if="
-                    rootDir.loading ||
-                    top200Dir.loading ||
-                    oneFilerTop200Dir.loading ||
-                    toolsTop200Dir.loading ||
-                    musicTop200Dir.loading ||
-                    graphicsTop200Dir.loading ||
-                    gamesTop200Dir.loading
-                  "
-                ></b-spinner>
-              </template>
+              </div>
+              <div class="settings-box">
+                <span class="setting">
+                  <label for="username" class="form-label"
+                    >{{ $t("username") }}
+                    <input
+                      type="text"
+                      id="username"
+                      class="form-control right"
+                      v-model="username"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                  /></label>
+                </span>
+              </div>
+              <div class="settings-box">
+                <span class="setting">
+                  <label for="password" class="form-label"
+                    >{{ $t("password") }}
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control right"
+                      v-model="password"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      v-on:blur="delayedFetchDirectory(rootDir)"
+                  /></label>
+                </span>
+              </div>
+            </div>
 
-              <b-button size="sm" variant="success" v-on:click="fetchDirectory(rootDir)">
-                <b-icon-house-door-fill> </b-icon-house-door-fill>
-              </b-button>
-
+            <div class="tab-pane fade" id="directory" role="tabpanel" aria-labelledby="directory-tab">
+              <button type="button" class="btn btn-success btn-sm" v-on:click="fetchDirectory(rootDir)">
+                <i class="bi bi-house-door-fill"></i>
+              </button>
               <span style="font-style: italic; padding: 2px 4px; position: absolute; top: 0px; right: 264px">{{
                 $t("filter")
               }}</span>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary"
                 style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 184px"
-                variant="secondary"
                 v-on:click="fetchDirectory(top200Dir)"
               >
-                <b-icon-filter-circle-fill></b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>{{ $t("top200") }}</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 102px"
-                variant="secondary"
                 v-on:click="fetchDirectory(oneFilerTop200Dir)"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>{{ $t("onefilerTop200") }}</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="font-size: smaller; padding: 2px 4px; position: absolute; top: 0px; right: 26px"
-                variant="secondary"
                 v-on:click="fetchDirectory(toolsTop200Dir)"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>{{ $t("toolsTop100") }}</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 190px"
-                variant="secondary"
                 v-on:click="fetchDirectory(musicTop200Dir)"
               >
-                <b-icon-filter-circle-fill></b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>{{ $t("musicTop200") }}</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 96px"
-                variant="secondary"
                 v-on:click="fetchDirectory(graphicsTop200Dir)"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>{{ $t("graphicsTop200") }}</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="font-size: smaller; padding: 2px 4px; position: absolute; top: 30px; right: 16px"
-                variant="secondary"
                 v-on:click="fetchDirectory(gamesTop200Dir)"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>{{ $t("gamesTop200") }}</span>
-              </b-button>
+              </button>
 
               <div style="height: 4px"></div>
 
               <div class="button-box">
-                <b-input-group size="sm" class="mb-2">
-                  <b-input-group-prepend is-text>
-                    <b-icon icon="search"></b-icon>
-                  </b-input-group-prepend>
-                  <b-form-input
+                <div class="input-group input-group-sm mb-2">
+                  <div class="input-group-prepend">
+                    <i class="bi bi-search"></i>
+                  </div>
+                  <input
+                    id="quickfilter"
                     type="search"
+                    class="form-control"
                     v-model="filterText2"
                     :placeholder="$t('searchPlaceholder')"
-                  ></b-form-input>
-                </b-input-group>
+                  />
+                </div>
               </div>
-              <b-card-text>
-                <b-list-group>
-                  <div
-                    v-for="entry in directory"
-                    :key="entry.filename"
-                    :style="
-                      filterText2 &&
-                      !isParentDirectory(entry) &&
-                      !entry.filename.toLowerCase().includes(filterText2.toLowerCase())
-                        ? 'height: 0; padding: 0px;visibility: hidden;'
-                        : ''
-                    "
-                  >
-                    <template v-if="isParentDirectory(entry)">
-                      <b-list-group-item
-                        button
-                        :variant="getVariant(entry)"
-                        style="white-space: pre-line"
-                        v-on:click="fetchDirectory(entry)"
-                      >
-                        <div class="directory parent">
-                          <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                          <b-icon-arrow-up v-if="!entry.loading"> </b-icon-arrow-up> <span>{{ entry.filename }}</span>
-                        </div>
-                        <div class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</div>
-                      </b-list-group-item>
 
-                      <b-carousel
-                        v-show="directory.filter((entry) => isPicture(entry)).length > 0"
-                        id="picture-carousel"
-                        v-model="slide"
-                        :interval="5000"
-                        controls
-                        indicators
-                        fade
-                        no-hover-pause
-                        @sliding-start="onSlideStart"
-                        @sliding-end="onSlideEnd"
-                      >
-                        <b-carousel-slide
-                          v-for="entry in directory.filter((entry) => isPicture(entry))"
+              <div class="list-group">
+                <div
+                  v-for="entry in directory"
+                  :key="entry.filename"
+                  :style="
+                    filterText2 &&
+                    !isParentDirectory(entry) &&
+                    !entry.filename.toLowerCase().includes(filterText2.toLowerCase())
+                      ? 'height: 0; padding: 0px;visibility: hidden;'
+                      : ''
+                  "
+                >
+                  <template v-if="isParentDirectory(entry)">
+                    <button
+                      type="button"
+                      class="list-group-item list-group-item-action"
+                      style="white-space: pre-line"
+                      v-on:click="fetchDirectory(entry)"
+                    >
+                      <div class="directory parent">
+                        <div class="spinner-border text-primary" v-if="entry.loading"></div>
+                        <i class="bi bi-arrow-up" v-if="!entry.loading"></i> <span>{{ entry.filename }}</span>
+                      </div>
+                      <div class="parent-directory-hint">&larr; {{ $t("parentDirectoryHint") }}</div>
+                    </button>
+
+                    <div
+                      id="carouselExampleCaptions"
+                      class="carousel slide carousel-fade lazy-load"
+                      data-bs-ride="carousel"
+                      data-bs-pause="false"
+                      data-bs-wrap="true"
+                      v-show="directory.filter((entry) => isPicture(entry)).length > 0"
+                    >
+                      <div class="carousel-inner">
+                        <div
+                          :class="'carousel-item ' + (index === 0 ? 'active' : '')"
+                          data-bs-interval="5000"
+                          data-bs-ride="carousel"
+                          v-for="(entry, index) in directory.filter((entry) => isPicture(entry))"
                           v-bind:key="entry.filename"
                         >
-                          <template #img>
-                            <b-img-lazy
-                              :src="createDownloadUrl(entry.filename)"
-                              :alt="entry.filename"
-                              block
-                              center
-                              fluid
-                              :style="{
-                                height: carouselImageHeight + 'px',
-                                width: 'auto',
-                              }"
-                            />
-                          </template>
-                          <template #default>
-                            <b-icon-download> </b-icon-download>
-                            <b-link
+                          <img
+                            :data-src="createDownloadUrl(entry.filename)"
+                            :alt="entry.filename"
+                            class="img-fluid mx-auto d-block"
+                            :style="{
+                              height: carouselImageHeight + 'px',
+                              width: 'auto',
+                            }"
+                          />
+                          <div class="carousel-caption d-none d-md-block">
+                            <i class="bi-download"> </i>
+                            <a
                               style="
                                 white-space: pre-line;
                                 text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
@@ -343,196 +522,211 @@
                               v-on:click="openDownloadUrl(entry.filename)"
                             >
                               <span>{{ shortEntry(entry.filename) }}</span>
-                            </b-link>
-                          </template>
-                        </b-carousel-slide>
-                      </b-carousel>
-                      <b-button
-                        size="sm"
-                        style="padding: 2px 4px; float: right"
-                        variant="primary"
-                        v-show="directory.filter((entry) => isMusic(entry)).length > 0"
-                        v-on:click="
-                          directory
-                            .filter((entry) => isMusic(entry))
-                            .forEach((entry) =>
-                              playlist.push({
-                                filename: entry.filename,
-                              })
-                            );
-                          tabIndex = 5;
-                          showAudio = true;
-                        "
-                      >
-                        <b-icon-plus> </b-icon-plus>
-                        <span>{{ $t("addAllToPlaylist") }}</span>
-                      </b-button>
-                    </template>
-                    <template v-else-if="isDirectory(entry)">
-                      <b-list-group-item
-                        button
-                        :variant="getVariant(entry)"
-                        style="white-space: pre-line"
-                        v-on:click="fetchDirectory(entry)"
-                      >
-                        <div :class="directory">
-                          <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                          <b-icon-folder-fill v-if="!entry.loading"> </b-icon-folder-fill>
-                          <span>{{ shortEntry(entry.filename) }}</span>
+                            </a>
+                          </div>
                         </div>
-                      </b-list-group-item>
-                    </template>
-                    <template v-else-if="isMusic(entry)">
-                      <b-list-group-item
-                        button
-                        :variant="getVariant(entry)"
-                        style="white-space: pre-line; display: flex; justify-content: space-between"
-                        v-on:click="
-                          currentSid = shortEntry(entry.filename);
-                          updateSid(entry.filename);
-                          showAudio = true;
-                          $nextTick(function () {
-                            play(undefined, entry.filename);
-                          });
-                        "
+                      </div>
+                      <button
+                        class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#carouselExampleCaptions"
+                        data-bs-slide="prev"
                       >
-                        <div style="flex-grow: 4; word-break: break-all">
-                          <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                          <b-icon-music-note v-if="!entry.loading"> </b-icon-music-note>
-                          <span class="sid-file">{{ shortEntry(entry.filename) }}</span>
-                        </div>
-                        <b-button
-                          style="height: fit-content; padding: 2px 4px; white-space: nowrap"
-                          v-on:click.stop="openDownloadMP3Url(entry.filename)"
-                          v-show="!isMP3(entry)"
-                        >
-                          <b-icon-download> </b-icon-download>
-                          <span style="font-size: x-small">{{ $t("downloadMP3") }}</span></b-button
-                        >
-                        <b-button
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                      </button>
+                      <button
+                        class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#carouselExampleCaptions"
+                        data-bs-slide="next"
+                      >
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm"
+                      style="padding: 2px 4px; float: right"
+                      v-show="directory.filter((entry) => isMusic(entry)).length > 0"
+                      v-on:click="
+                        directory
+                          .filter((entry) => isMusic(entry))
+                          .forEach((entry) =>
+                            playlist.push({
+                              filename: entry.filename,
+                            })
+                          );
+                        tabIndex = 5;
+                        showAudio = true;
+                      "
+                    >
+                      <i class="bi bi-plus"></i>
+                      <span>{{ $t("addAllToPlaylist") }}</span>
+                    </button>
+                  </template>
+                  <template v-else-if="isDirectory(entry)">
+                    <div
+                      type="button"
+                      :class="'list-group-item   list-group-item-' + getVariant(entry)"
+                      style="white-space: pre-line"
+                      v-on:click="fetchDirectory(entry)"
+                    >
+                      <div class="directory">
+                        <div class="spinner-border text-primary" v-if="entry.loading"></div>
+                        <i class="bi bi-folder-fill" v-if="!entry.loading"> </i>
+                        <span>{{ shortEntry(entry.filename) }}</span>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else-if="isMusic(entry)">
+                    <div
+                      type="button"
+                      :class="'list-group-item list-group-item-' + getVariant(entry)"
+                      style="white-space: pre-line; display: flex; justify-content: space-between"
+                      v-on:click="
+                        currentSid = shortEntry(entry.filename);
+                        updateSid(entry.filename);
+                        showAudio = true;
+                        $nextTick(function () {
+                          play(undefined, entry.filename);
+                        });
+                      "
+                    >
+                      <div style="flex-grow: 4; word-break: break-all">
+                        <div class="spinner-border text-primary" v-if="entry.loading"></div>
+                        <i class="bi bi-music-note" v-if="!entry.loading"> </i>
+                        <span class="sid-file">{{ shortEntry(entry.filename) }}</span>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        style="height: fit-content; padding: 2px 4px; white-space: nowrap"
+                        v-on:click.stop="openDownloadMP3Url(entry.filename)"
+                        v-show="!isMP3(entry)"
+                      >
+                        <i class="bi bi-download"> </i>
+                        <span style="font-size: x-small">{{ $t("downloadMP3") }}</span>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        style="height: fit-content; padding: 2px 4px"
+                        v-on:click.stop="openDownloadSIDUrl(entry.filename)"
+                      >
+                        <i class="bi bi-download"> </i>
+                      </button>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
                           style="height: fit-content; padding: 2px 4px"
-                          v-on:click.stop="openDownloadSIDUrl(entry.filename)"
+                          v-on:click.stop="
+                            playlist.push({
+                              filename: entry.filename,
+                            });
+                            tabIndex = 5;
+                            showAudio = true;
+                          "
                         >
-                          <b-icon-download> </b-icon-download>
-                        </b-button>
-                        <div>
-                          <b-button
+                          <i class="bi bi-plus"> </i>
+                        </button>
+                      </div>
+                    </div>
+                  </template>
+
+                  <template v-else-if="isVideo(entry)">
+                    <template v-if="canFastload(entry)">
+                      <div
+                        type="button"
+                        :class="'list-group-item list-group-item-' + getVariant(entry)"
+                        v-on:click="openiframe(createConvertUrl(undefined, entry.filename))"
+                      >
+                        <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                          <div style="flex-grow: 4; word-break: break-all">
+                            <div class="spinner-border text-primary" v-if="entry.loading || entry.loadingDisk"></div>
+                            <i class="bi bi-camera-video-fill" v-if="!(entry.loading || entry.loadingDisk)"> </i>
+                            <span>{{ shortEntry(entry.filename) }}</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="btn btn-primary"
                             style="height: fit-content; padding: 2px 4px"
-                            variant="primary"
-                            v-on:click.stop="
-                              playlist.push({
-                                filename: entry.filename,
-                              });
-                              tabIndex = 5;
-                              showAudio = true;
-                            "
+                            v-on:click.stop="fetchDiskDirectory(entry)"
+                            :disabled="entry.loadingDisk"
                           >
-                            <b-icon-plus> </b-icon-plus>
-                          </b-button>
+                            <i class="bi bi-journal-text"> </i>
+                          </button>
+                          <button
+                            class="btn btn-secondary"
+                            style="height: fit-content; padding: 2px 4px"
+                            v-on:click.stop="openDownloadSIDUrl(entry.filename)"
+                          >
+                            <i class="bi bi-download"> </i>
+                          </button>
                         </div>
-                      </b-list-group-item>
-                    </template>
-                    <template v-else-if="isVideo(entry)">
-                      <template v-if="canFastload(entry)">
-                        <b-list-group-item
-                          button
-                          :variant="getVariant(entry)"
-                          v-on:click="openiframe(createConvertUrl(undefined, entry.filename))"
-                        >
-                          <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                            <div style="flex-grow: 4; word-break: break-all">
-                              <b-spinner
-                                type="border"
-                                variant="primary"
-                                small
-                                v-if="entry.loading || entry.loadingDisk"
-                              ></b-spinner>
-                              <b-icon-camera-video-fill v-if="!(entry.loading || entry.loadingDisk)">
-                              </b-icon-camera-video-fill>
-                              <span>{{ shortEntry(entry.filename) }}</span>
+                        <div>
+                          <div v-show="entry.directoryMode > 0" class="disk-directory">
+                            <div>
+                              <span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
                             </div>
-                            <b-button
-                              style="height: fit-content; padding: 2px 4px"
-                              variant="primary"
-                              v-on:click.stop="fetchDiskDirectory(entry)"
-                              :disabled="entry.loadingDisk"
-                            >
-                              <b-icon-journal-text> </b-icon-journal-text>
-                            </b-button>
-                            <b-button
-                              style="height: fit-content; padding: 2px 4px"
-                              v-on:click.stop="openDownloadSIDUrl(entry.filename)"
-                            >
-                              <b-icon-download> </b-icon-download>
-                            </b-button>
-                          </div>
-                          <div>
-                            <div v-show="entry.directoryMode > 0" class="disk-directory">
-                              <div>
-                                <span class="c64-font">{{ entry.diskDirectoryHeader }}</span>
-                              </div>
-                              <div v-for="(program, index) in entry.diskDirectory" :key="index">
-                                <b-link
-                                  v-on:click.stop="openiframe(createConvertUrl(program.directoryLine, entry.filename))"
-                                >
-                                  <span class="c64-font">{{ program.formatted }}</span>
-                                </b-link>
-                              </div>
+                            <div v-for="(program, index) in entry.diskDirectory" :key="index">
+                              <a
+                                href="#"
+                                v-on:click.stop="openiframe(createConvertUrl(program.directoryLine, entry.filename))"
+                              >
+                                <span class="c64-font">{{ program.formatted }}</span>
+                              </a>
                             </div>
                           </div>
-                        </b-list-group-item>
-                      </template>
-                      <template v-else>
-                        <b-list-group-item
-                          button
-                          :variant="getVariant(entry)"
-                          v-on:click="openiframe(createConvertUrl(undefined, entry.filename))"
-                        >
-                          <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                            <div style="flex-grow: 4; word-break: break-all">
-                              <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                              <b-icon-camera-video-fill v-if="!entry.loading"> </b-icon-camera-video-fill>
-                              <span>{{ shortEntry(entry.filename) }}</span>
-                            </div>
-                            <b-button
-                              style="height: fit-content; padding: 2px 4px"
-                              v-on:click.stop="openDownloadSIDUrl(entry.filename)"
-                            >
-                              <b-icon-download> </b-icon-download>
-                            </b-button>
-                          </div>
-                        </b-list-group-item>
-                      </template>
+                        </div>
+                      </div>
                     </template>
                     <template v-else>
-                      <b-list-group-item
-                        button
-                        :variant="getVariant(entry)"
-                        style="white-space: pre-line"
-                        v-on:click="openDownloadUrl(entry.filename)"
+                      <div
+                        type="button"
+                        :class="'list-group-item list-group-item-' + getVariant(entry)"
+                        v-on:click="openiframe(createConvertUrl(undefined, entry.filename))"
                       >
-                        <b-spinner type="border" variant="primary" small v-if="entry.loading"></b-spinner>
-                        <b-icon-download v-if="!entry.loading"> </b-icon-download>
-                        <span>{{ shortEntry(entry.filename) }}</span>
-                      </b-list-group-item>
+                        <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                          <div style="flex-grow: 4; word-break: break-all">
+                            <div class="spinner-border text-primary" v-if="entry.loading"></div>
+                            <i class="bi bi-camera-video-fill" v-if="!entry.loading"> </i>
+                            <span>{{ shortEntry(entry.filename) }}</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            style="height: fit-content; padding: 2px 4px"
+                            v-on:click.stop="openDownloadSIDUrl(entry.filename)"
+                          >
+                            <i class="bi bi-download"> </i>
+                          </button>
+                        </div>
+                      </div>
                     </template>
-                  </div>
-                </b-list-group>
-              </b-card-text>
-            </b-tab>
-            <b-tab style="position: relative">
-              <template #title>
-                {{ $t("ASSEMBLY64") }}
-                <b-spinner
-                  type="border"
-                  :variant="tabIndex == 2 ? 'light' : 'primary'"
-                  small
-                  v-if="loadingAssembly64"
-                ></b-spinner>
-              </template>
-
-              <b-button
-                size="sm"
+                  </template>
+                  <template v-else>
+                    <div
+                      type="button"
+                      :class="'list-group-item list-group-item-' + getVariant(entry)"
+                      style="white-space: pre-line"
+                      v-on:click="openDownloadUrl(entry.filename)"
+                    >
+                      <div class="spinner-border text-primary" v-if="entry.loading"></div>
+                      <i class="bi bi-download" v-if="!entry.loading"> </i>
+                      <span>{{ shortEntry(entry.filename) }}</span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="search" role="tabpanel" aria-labelledby="search-tab">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -541,15 +735,15 @@
                   right: 245px;
                   white-space: nowrap;
                 "
-                variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Hubbard_Rob')"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>R. Hubbard</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -558,15 +752,15 @@
                   right: 130px;
                   white-space: nowrap;
                 "
-                variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Galway_Martin')"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>M. Galway</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -575,15 +769,15 @@
                   right: 16px;
                   white-space: nowrap;
                 "
-                variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Huelsbeck_Chris')"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>C. H&uuml;lsbeck</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -592,15 +786,15 @@
                   right: 232px;
                   white-space: nowrap;
                 "
-                variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Ouwehand_Reyn')"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>R. Ouwehand</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -609,15 +803,15 @@
                   right: 130px;
                   white-space: nowrap;
                 "
-                variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Tel_Jeroen')"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>Jeroen Tel</span>
-              </b-button>
+              </button>
 
-              <b-button
-                size="sm"
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
                 style="
                   font-size: smaller;
                   padding: 2px 4px;
@@ -626,2179 +820,3094 @@
                   right: 28px;
                   white-space: nowrap;
                 "
-                variant="secondary"
                 @click="(event) => requestSearchResults(event, 'Daglish_Ben')"
               >
-                <b-icon-filter-circle-fill> </b-icon-filter-circle-fill>
+                <i class="bi bi-filter-circle-fill"></i>
                 <span>B. Daglish</span>
-              </b-button>
+              </button>
 
               <div style="height: 40px"></div>
-              <b-card-text>
-                <b-table
-                  striped
-                  bordered
-                  :items="searchResults"
-                  :fields="searchFields"
-                  small
-                  fixed
-                  responsive
-                  :sort-by="sortBy"
-                  :sort-desc="sortDesc"
-                  @sort-changed="sortChanged"
-                >
-                  <template #table-colgroup="scope">
-                    <col
-                      v-for="field in scope.fields"
-                      :key="field.key"
-                      :style="{
-                        width: field.key === 'actions' ? '32px' : '',
-                      }"
-                    />
-                  </template>
-                  <template #cell(name)="row">
-                    <div>
-                      <span>{{ row.item.name }}</span>
-                    </div>
-                    <div>
-                      <span style="font-style: italic; font-size: small">{{ row.item.group }}</span>
-                    </div>
-                  </template>
-                  <template #head(actions)="row">
-                    <b-button
-                      style="padding: 0px"
-                      variant="secondary"
-                      @click="
-                        (event) => {
-                          resetSearchResults(event);
-                          requestSearchResults(event);
-                        }
-                      "
+
+              <table class="table table-sm w-auto">
+                <thead>
+                  <tr>
+                    <th
+                      v-for="(entry, index) in searchFields"
+                      :key="entry.key"
+                      style="word-break: break-all; font-size: small"
                     >
-                      <b-icon-eraser-fill> </b-icon-eraser-fill>
-                    </b-button>
-                  </template>
-                  <template #cell(actions)="row">
-                    <b-button @click="requestContentEntries(row.item)" class="mr-1" style="padding: 0">
-                      <b-icon-caret-down-fill v-if="row.detailsShowing"> </b-icon-caret-down-fill>
-                      <b-icon-caret-right-fill v-if="!row.detailsShowing"> </b-icon-caret-right-fill>
-                    </b-button>
-                  </template>
-                  <template #row-details="row">
-                    <b-card>
-                      <b-table
-                        striped
-                        bordered
-                        :items="row.item.contentEntries"
-                        :fields="contentEntryFields"
-                        small
-                        fixed
-                        responsive
+                      <template v-if="entry.key === 'category'">
+                        <label for="category" style="margin: 4px"
+                          ><span>{{ $t("Search.category") }}</span></label
+                        >
+                        <select
+                          class="form-select form-select-sm mt-1"
+                          id="category"
+                          v-model="category"
+                          @change="requestSearchResults"
+                          value-field="aqlKey"
+                          text-field="name"
+                          style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
+                        >
+                          <option v-for="(sfEntry, sfIndex) in categories" :key="sfEntry.key" :value="sfEntry.aqlKey">
+                            {{ sfEntry.name }}
+                          </option>
+                        </select>
+                      </template>
+                      <template v-if="entry.key === 'name'">
+                        <label for="name" style="margin: 4px">{{ $t("Search.name") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="name"
+                          v-model="name"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="entry.key === 'event'">
+                        <label for="event" style="margin: 4px">{{ $t("Search.event") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="event"
+                          v-model="event"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="entry.key === 'released'" style="padding-right: calc(0.3rem + 0.1em)">
+                        <label for="released" style="margin: 4px">{{ $t("Search.release") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="released"
+                          v-model="released"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="entry.key === 'handle'">
+                        <label for="handle" style="margin: 4px">{{ $t("Search.handle") }}</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="handle"
+                          v-model="handle"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="entry.key === 'rating'">
+                        <label for="rating" style="margin: 4px">{{ $t("Search.rating") }}</label>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="rating"
+                          v-model.number="rating"
+                          @change="requestSearchResults"
+                          style="max-width: 100%; padding: 0.175em 0em"
+                          autocomplete="off"
+                          autocorrect="off"
+                          autocapitalize="off"
+                          spellcheck="false"
+                        />
+                      </template>
+                      <template v-if="entry.key === 'actions'">
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          style="padding: 0px"
+                          @click="
+                            (event) => {
+                              resetSearchResults(event);
+                              requestSearchResults(event);
+                            }
+                          "
+                        >
+                          <i class="bi bi-eraser-fill"> </i>
+                        </button>
+                      </template>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template v-for="(row, rowIndex) in searchResults" :key="row.id">
+                    <tr>
+                      <td
+                        v-for="(searchField, searchFieldIndex) in searchFields"
+                        :key="searchField.key"
+                        :class="'field-' + searchField.key"
+                        :style="
+                          rowIndex % 2 === 0
+                            ? 'word-break:break-all;background-color: rgba(0, 0, 0, .05)'
+                            : 'word-break:break-all;'
+                        "
                       >
-                        <template #table-colgroup="scope">
-                          <col
-                            v-for="field in scope.fields"
-                            :key="field.key"
-                            :style="{
-                              width: field.key === 'actions' ? '54px' : '',
-                            }"
-                          />
+                        <template v-if="searchField.key === 'category'">
+                          <span>{{ row.category }}</span>
                         </template>
-
-                        <template #cell(filename)="innerRow">
-                          <template v-if="isMusic(innerRow.item)">
-                            <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                              <div style="flex-grow: 4; word-break: break-all">
-                                <b-icon-music-note> </b-icon-music-note>
-                                <b-link
-                                  style="white-space: pre-line"
-                                  v-on:click="
-                                    currentSid = shortEntry(innerRow.item.filename);
-                                    updateSid(innerRow.item.filename, row.item.id, row.item.categoryId);
-                                    showAudio = true;
-                                    $nextTick(function () {
-                                      play(undefined, innerRow.item.filename, row.item.id, row.item.categoryId);
-                                    });
-                                  "
-                                >
-                                  <span class="sid-file">{{ shortEntry(innerRow.item.filename) }}</span>
-                                </b-link>
-                              </div>
-
-                              <b-button
-                                style="height: fit-content; padding: 2px 4px; white-space: nowrap"
-                                v-on:click="
-                                  openDownloadMP3Url(innerRow.item.filename, row.item.id, row.item.categoryId)
-                                "
-                              >
-                                <b-icon-download> </b-icon-download>
-                                <span style="font-size: x-small">{{ $t("downloadMP3") }}</span>
-                              </b-button>
-                              <b-button
-                                style="height: fit-content; padding: 2px 4px"
-                                v-on:click="
-                                  openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
-                                "
-                              >
-                                <b-icon-download> </b-icon-download>
-                              </b-button>
-                              <div>
-                                <b-button
-                                  style="height: fit-content; padding: 2px 4px"
-                                  variant="primary"
-                                  v-on:click="
-                                    playlist.push({
-                                      filename: innerRow.item.filename,
-                                      itemId: row.item.id,
-                                      categoryId: row.item.categoryId,
-                                    });
-                                    tabIndex = 5;
-                                    playlistIndex = 0;
-                                  "
-                                >
-                                  <b-icon-plus> </b-icon-plus>
-                                </b-button>
-                              </div>
-                            </div>
-                          </template>
-                          <template v-else-if="isVideo(innerRow.item)">
-                            <span>
-                              <template v-if="canFastload(innerRow.item)">
-                                <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                                  <div style="flex-grow: 4; word-break: break-all">
-                                    <b-spinner
-                                      type="border"
-                                      variant="primary"
-                                      small
-                                      v-if="innerRow.item.loadingDisk"
-                                    ></b-spinner>
-                                    <b-link
-                                      v-on:click="
-                                        openiframe(
-                                          createConvertUrl(
-                                            undefined,
-                                            innerRow.item.filename,
-                                            row.item.id,
-                                            row.item.categoryId
-                                          )
-                                        )
-                                      "
-                                    >
-                                      <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                      <span style="word-break: break-all">{{
-                                        shortEntry(innerRow.item.filename)
-                                      }}</span>
-                                    </b-link>
+                        <template v-if="searchField.key === 'name'">
+                          <div>
+                            <span>{{ row.name }}</span>
+                          </div>
+                          <div>
+                            <span style="font-style: italic; font-size: small">{{ row.group }}</span>
+                          </div>
+                        </template>
+                        <template v-if="searchField.key === 'event'">
+                          <div>
+                            <span>{{ row.event }}</span>
+                          </div>
+                        </template>
+                        <template v-if="searchField.key === 'released'">
+                          <div>
+                            <span>{{ row.released }}</span>
+                          </div>
+                        </template>
+                        <template v-if="searchField.key === 'handle'">
+                          <div>
+                            <span>{{ row.handle }}</span>
+                          </div>
+                        </template>
+                        <template v-if="searchField.key === 'rating'">
+                          <div>
+                            <span>{{ row.rating }}</span>
+                          </div>
+                        </template>
+                        <template v-if="searchField.key === 'actions'">
+                          <button
+                            type="button"
+                            class="btn btn-secondary mr-1"
+                            @click="requestContentEntries(row)"
+                            style="padding: 0"
+                          >
+                            <i class="bi bi-caret-down-fill" v-if="row._showDetails" @click="row._showDetails = true">
+                            </i>
+                            <i
+                              class="bi bi-caret-right-fill"
+                              v-if="!row._showDetails"
+                              @click="row._showDetails = false"
+                            >
+                            </i>
+                          </button>
+                        </template>
+                      </td>
+                    </tr>
+                    <tr v-if="row._showDetails">
+                      <td colspan="7">
+                        <div class="card">
+                          <table class="table table-sm table-striped table-bordered w-auto">
+                            <thead>
+                              <tr>
+                                <th>
+                                  <div>
+                                    <span> File </span>
                                   </div>
-                                  <b-button
-                                    style="height: fit-content; padding: 2px 4px"
-                                    variant="primary"
-                                    v-on:click="fetchDiskDirectory(innerRow.item, row.item.id, row.item.categoryId)"
-                                    :disabled="innerRow.item.loadingDisk"
-                                  >
-                                    <b-icon-journal-text> </b-icon-journal-text>
-                                  </b-button>
-                                  <b-button
-                                    style="height: fit-content; padding: 2px 4px"
-                                    v-on:click="
-                                      openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
-                                    "
-                                  >
-                                    <b-icon-download> </b-icon-download>
-                                  </b-button>
-                                </div>
-                                <div>
-                                  <div v-show="innerRow.item.directoryMode > 0">
-                                    <div class="disk-directory">
-                                      <div>
-                                        <span class="c64-font">{{ innerRow.item.diskDirectoryHeader }}</span>
-                                      </div>
-                                      <div v-for="(program, index) in innerRow.item.diskDirectory" :key="index">
-                                        <b-link
-                                          v-on:click="
-                                            openiframe(
-                                              createConvertUrl(
-                                                program.directoryLine,
-                                                innerRow.item.filename,
-                                                row.item.id,
-                                                row.item.categoryId
-                                              )
-                                            )
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(innerRow, index) in row.contentEntries" :key="innerRow.filename">
+                                <td :style="index % 2 === 0 ? 'background-color: var(--bs-table-bg)' : ''">
+                                  <template v-if="isMusic(innerRow)">
+                                    <div style="white-space: pre-line; display: flex; justify-content: space-between">
+                                      <div style="flex-grow: 4; word-break: break-all">
+                                        <i class="bi bi-music-note"> </i>
+                                        <a
+                                          href="#"
+                                          style="white-space: pre-line"
+                                          @click.prevent="
+                                            currentSid = shortEntry(innerRow.filename);
+                                            updateSid(innerRow.filename, row.id, row.categoryId);
+                                            showAudio = true;
+                                            $nextTick(function () {
+                                              play(undefined, innerRow.filename, row.id, row.categoryId);
+                                            });
                                           "
                                         >
-                                          <span class="c64-font">{{ program.formatted }}</span>
-                                        </b-link>
+                                          <span class="sid-file">{{ shortEntry(innerRow.filename) }}</span>
+                                        </a>
+                                      </div>
+
+                                      <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        style="height: fit-content; padding: 2px 4px; white-space: nowrap"
+                                        v-on:click="openDownloadMP3Url(innerRow.filename, row.id, row.categoryId)"
+                                      >
+                                        <i class="bi bi-download"> </i>
+                                        <span style="font-size: x-small">{{ $t("downloadMP3") }}</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        style="height: fit-content; padding: 2px 4px"
+                                        v-on:click="openDownloadSIDUrl(innerRow.filename, row.id, row.categoryId)"
+                                      >
+                                        <i class="bi bi-download"></i>
+                                      </button>
+                                      <div>
+                                        <button
+                                          type="button"
+                                          class="btn btn-primary"
+                                          style="height: fit-content; padding: 2px 4px"
+                                          v-on:click="
+                                            playlist.push({
+                                              filename: innerRow.filename,
+                                              itemId: row.id,
+                                              categoryId: row.categoryId,
+                                            });
+                                            tabIndex = 5;
+                                            playlistIndex = 0;
+                                          "
+                                        >
+                                          <i class="bi bi-plus"> </i>
+                                        </button>
                                       </div>
                                     </div>
-                                  </div>
-                                </div>
-                              </template>
-                              <template v-else>
-                                <div style="white-space: pre-line; display: flex; justify-content: space-between">
-                                  <div style="flex-grow: 4; word-break: break-all">
-                                    <b-link
-                                      v-on:click="
-                                        openiframe(
-                                          createConvertUrl(
-                                            undefined,
-                                            innerRow.item.filename,
-                                            row.item.id,
-                                            row.item.categoryId
-                                          )
-                                        )
-                                      "
-                                    >
-                                      <b-icon-camera-video-fill> </b-icon-camera-video-fill>
-                                      <span style="word-break: break-all">{{
-                                        shortEntry(innerRow.item.filename)
-                                      }}</span>
-                                    </b-link>
-                                  </div>
-                                  <b-button
-                                    style="height: fit-content; padding: 2px 4px"
-                                    v-on:click="
-                                      openDownloadSIDUrl(innerRow.item.filename, row.item.id, row.item.categoryId)
-                                    "
-                                  >
-                                    <b-icon-download> </b-icon-download>
-                                  </b-button>
-                                </div>
-                              </template>
-                            </span>
-                          </template>
-                          <template v-else>
-                            <div>
-                              <b-icon-download> </b-icon-download>
-                              <b-link
-                                style="white-space: pre-line"
-                                v-on:click="openDownloadUrl(innerRow.item.filename, row.item.id, row.item.categoryId)"
-                              >
-                                <span>{{ shortEntry(innerRow.item.filename) }}</span>
-                              </b-link>
-                            </div>
-                          </template>
-                        </template>
-                      </b-table>
-                    </b-card>
-                  </template>
+                                  </template>
 
-                  <template #head(category)="data">
-                    <label for="category" style="margin-left: 0px">{{ $t("Search.category") }}</label>
-                    <b-form-select
-                      id="category"
-                      v-model="category"
-                      @change="requestSearchResults"
-                      value-field="aqlKey"
-                      text-field="name"
-                      :options="categories"
-                      size="sm"
-                      class="mt-1"
-                      style="margin: 4px; padding: 0.175em 0em"
-                      :select-size="1"
-                      style="margin-left: 0 !important; margin-right: 0 !important; max-width: 100%"
-                    >
-                      <template #first>
-                        <b-form-select-option value="">{{ $t("firstCategory") }}</b-form-select-option>
-                      </template>
-                    </b-form-select>
-                  </template>
-                  <template #head(name)="data">
-                    <label for="name" style="margin-left: 0px">{{ $t("Search.name") }}</label>
-                    <b-form-input
-                      type="text"
-                      id="name"
-                      v-model="name"
-                      @change="requestSearchResults"
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                  <template #head(event)="data">
-                    <label for="event" style="margin-left: 0px">{{ $t("Search.event") }}</label>
-                    <b-form-input
-                      type="text"
-                      id="event"
-                      v-model="event"
-                      @change="requestSearchResults"
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                  <template #head(released)="data" style="padding-right: calc(0.3rem + 0.1em)">
-                    <label for="released" style="margin-left: 0px">{{ $t("Search.release") }}</label>
-                    <b-form-input
-                      type="text"
-                      id="released"
-                      v-model="released"
-                      @change="requestSearchResults"
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                  <template #head(handle)="data">
-                    <label for="handle" style="margin-left: 0px">{{ $t("Search.handle") }}</label>
-                    <b-form-input
-                      type="text"
-                      id="handle"
-                      v-model="handle"
-                      @change="requestSearchResults"
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                  <template #head(rating)="data">
-                    <label for="rating" style="margin-left: 0px">{{ $t("Search.rating") }}</label>
-                    <b-form-input
-                      type="number"
-                      id="rating"
-                      v-model.number="rating"
-                      @change="requestSearchResults"
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                </b-table>
-              </b-card-text>
-            </b-tab>
-            <b-tab :disabled="this.infos.toString() === ''">
-              <template #title>
-                {{ $t("SID") }}
-                <b-spinner
-                  type="border"
-                  :variant="tabIndex == 3 ? 'light' : 'primary'"
-                  small
-                  v-if="loadingSid"
-                ></b-spinner>
-              </template>
+                                  <template v-else-if="isVideo(innerRow)">
+                                    <span>
+                                      <template v-if="canFastload(innerRow)">
+                                        <div
+                                          style="white-space: pre-line; display: flex; justify-content: space-between"
+                                        >
+                                          <div style="flex-grow: 4; word-break: break-all">
+                                            <div
+                                              class="spinner-border spinner-border-sm text-primary"
+                                              v-if="innerRow.loadingDisk"
+                                            ></div>
 
-              <b-card-text>
-                <div class="sid">
-                  <b-table striped bordered :items="translatedInfos" :fields="translatedFields">
-                    <template #cell(Value)="row">
-                      <span
-                        :style="row.item.opacity ? 'opacity: 0.5; line-break: anywhere;' : 'line-break: anywhere;'"
-                        >{{ row.item.Value }}</span
-                      >
-                    </template>
-                  </b-table>
-                  <div class="picture-container">
-                    <b-img :src="picture" id="img" class="picture" rounded="circle" fluid> </b-img>
-                  </div>
-                </div>
-              </b-card-text>
-            </b-tab>
-            <b-tab :disabled="this.stil.toString() === ''">
-              <template #title>
-                {{ $t("STIL") }}
-                <b-spinner
-                  type="border"
-                  :variant="tabIndex == 4 ? 'light' : 'primary'"
-                  small
-                  v-if="loadingStil"
-                ></b-spinner>
-              </template>
+                                            <a
+                                              href="#"
+                                              @click.prevent="
+                                                openiframe(
+                                                  createConvertUrl(undefined, innerRow.filename, row.id, row.categoryId)
+                                                )
+                                              "
+                                            >
+                                              <i class="bi bi-camera-video-fill"> </i>
+                                              <span style="word-break: break-all">{{
+                                                shortEntry(innerRow.filename)
+                                              }}</span>
+                                            </a>
+                                          </div>
+                                          <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm"
+                                            style="height: fit-content; padding: 2px 4px"
+                                            v-on:click="fetchDiskDirectory(innerRow, row.id, row.categoryId)"
+                                            :disabled="innerRow.loadingDisk"
+                                          >
+                                            <i class="bi bi-journal-text"> </i>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm"
+                                            style="height: fit-content; padding: 2px 4px"
+                                            v-on:click="openDownloadSIDUrl(innerRow.filename, row.id, row.categoryId)"
+                                          >
+                                            <i class="bi bi-download"> </i>
+                                          </button>
+                                        </div>
+                                        <div>
+                                          <div v-show="innerRow.directoryMode > 0">
+                                            <div class="disk-directory">
+                                              <div>
+                                                <span class="c64-font">{{ innerRow.diskDirectoryHeader }}</span>
+                                              </div>
+                                              <div v-for="(program, index) in innerRow.diskDirectory" :key="index">
+                                                <a
+                                                  href="#"
+                                                  @click.prevent="
+                                                    openiframe(
+                                                      createConvertUrl(
+                                                        program.directoryLine,
+                                                        innerRow.filename,
+                                                        row.id,
+                                                        row.categoryId
+                                                      )
+                                                    )
+                                                  "
+                                                >
+                                                  <span class="c64-font">{{ program.formatted }}</span>
+                                                </a>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </template>
+                                      <template v-else>
+                                        <div
+                                          style="white-space: pre-line; display: flex; justify-content: space-between"
+                                        >
+                                          <div style="flex-grow: 4; word-break: break-all">
+                                            <a
+                                              href="#"
+                                              @click.prevent="
+                                                openiframe(
+                                                  createConvertUrl(undefined, innerRow.filename, row.id, row.categoryId)
+                                                )
+                                              "
+                                            >
+                                              <i class="bi bi-camera-video-fill"> </i>
 
-              <b-card-text>
-                <div class="stil">
-                  <div class="stil-comment">
-                    <span>{{ stil.comment }}</span>
-                  </div>
-                  <ul>
-                    <li v-for="info in stil.infos" v-show="isValidStil(info)">
-                      <div class="stil-name" v-show="info.name">
-                        <span class="stil-name-header">{{ $t("STILINFO.NAME") }}:</span>
-                        <span>{{ info.name }}</span>
-                      </div>
-                      <div class="stil-author" v-show="info.author">
-                        <span class="stil-author-header">{{ $t("STILINFO.AUTHOR") }}:</span>
-                        <span>{{ info.author }}</span>
-                      </div>
-                      <div class="stil-title" v-show="info.title">
-                        <span class="stil-title-header">{{ $t("STILINFO.TITLE") }}:</span>
-                        <span>{{ info.title }}</span>
-                      </div>
-                      <div class="stil-artist" v-show="info.artist">
-                        <span class="stil-artist-header">{{ $t("STILINFO.ARTIST") }}:</span>
-                        <span>{{ info.artist }}</span>
-                      </div>
-                      <div class="stil-comment" v-show="info.comment">
-                        <span>{{ info.comment }}</span>
-                      </div>
-                    </li>
-                  </ul>
-                  <ul>
-                    <li v-for="subtune in stil.subtunes">
-                      <div class="stil-subtune" v-show="subtune.tuneNo">
-                        <span class="stil-subtune-header">{{ $t("STILINFO.SUBTUNE") }}:</span>
-                        <span>{{ subtune.tuneNo }}</span>
-                      </div>
-                      <ul>
-                        <li v-for="info in subtune.infos" v-show="isValidStil(info)">
-                          <div class="stil-name" v-show="info.name">
-                            <span class="stil-name-header">{{ $t("STILINFO.NAME") }}:</span>
-                            <span>{{ info.name }}</span>
-                          </div>
-                          <div class="stil-author" v-show="info.author">
-                            <span class="stil-author-header">{{ $t("STILINFO.AUTHOR") }}:</span>
-                            <span>{{ info.author }}</span>
-                          </div>
-                          <div class="stil-title" v-show="info.title">
-                            <span class="stil-title-header">{{ $t("STILINFO.TITLE") }}:</span>
-                            <span>{{ info.title }}</span>
-                          </div>
-                          <div class="stil-artist" v-show="info.artist">
-                            <span class="stil-artist-header">{{ $t("STILINFO.ARTIST") }}:</span>
-                            <span>{{ info.artist }}</span>
-                          </div>
-                          <div class="stil-comment" v-show="info.comment">
-                            <span>{{ info.comment }}</span>
-                          </div>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-              </b-card-text>
-            </b-tab>
-            <b-tab>
-              <template #title>
-                {{ $t("PL") }}
-                <b-spinner
-                  type="border"
-                  :variant="tabIndex == 5 ? 'light' : 'primary'"
-                  small
-                  v-if="loadingPl"
-                ></b-spinner>
-              </template>
-
-              <b-card-text>
-                <b-button
-                  size="sm"
-                  style="padding: 0px 4px; float: right"
-                  variant="primary"
-                  v-show="!importExportVisible"
-                  v-on:click="importExportVisible = !importExportVisible"
-                >
-                  <b-icon-arrows-expand> </b-icon-arrows-expand>
-                  <span>{{ $t("importExport") }}</span>
-                </b-button>
-                <b-button
-                  size="sm"
-                  style="padding: 0px 4px; float: right"
-                  variant="primary"
-                  v-show="importExportVisible"
-                  v-on:click="importExportVisible = !importExportVisible"
-                >
-                  <b-icon-arrows-collapse> </b-icon-arrows-collapse>
-                </b-button>
-                <b-collapse v-model="importExportVisible">
-                  <div v-if="!importFile && importExportVisible" class="playlist-examples-box">
-                    <span size="sm">{{ $t("fetchFavorites") }}</span>
-                    <b-link
-                      v-for="(favoritesName, index) in favoritesNames"
-                      :key="index"
-                      v-b-modal:[`modal-fetch-favorites-${index}`]
-                      size="sm"
-                    >
-                      <span>{{ favoritesName }}</span>
-                      <b-modal
-                        :id="`modal-fetch-favorites-${index}`"
-                        :title="$t('confirmationTitle')"
-                        @ok="fetchFavorites(index)"
-                      >
-                        <p>{{ $t("removePlaylistReally") }}</p>
-                      </b-modal>
-                    </b-link>
-                  </div>
-                  <div class="button-box">
-                    <b-input-group size="sm" class="mb-2">
-                      <b-form-file
-                        v-model="importFile"
-                        accept=".js2,.json,.sid,.dat,.mus,.str,.c64,.prg,.p00,.d64,.g64,.nib,.tap,.t64,.reu,.ima,.crt,.img,.zip,.gz,.7z"
-                        :state="Boolean(importFile)"
-                        ref="file-input"
-                        label-size="sm"
-                        :placeholder="$t('importPlaceholder')"
-                        :drop-placeholder="$t('importDropPlaceholder')"
-                        :browse-text="$t('browse')"
-                      >
-                      </b-form-file>
-                      <b-input-group-append>
-                        <b-button @click="exportPlaylist" v-if="playlist.length > 0" style="margin-top: 8px !important">
-                          <b-icon-file-arrow-down-fill> </b-icon-file-arrow-down-fill>
-                          <span>{{ $t("exportPlaylist") }}</span></b-button
+                                              <span style="word-break: break-all">{{
+                                                shortEntry(innerRow.filename)
+                                              }}</span>
+                                            </a>
+                                          </div>
+                                          <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm"
+                                            style="height: fit-content; padding: 2px 4px"
+                                            v-on:click="openDownloadSIDUrl(innerRow.filename, row.id, row.categoryId)"
+                                          >
+                                            <i class="bi bi-download"> </i>
+                                          </button>
+                                        </div>
+                                      </template>
+                                    </span>
+                                  </template>
+                                  <template v-else>
+                                    <div>
+                                      <i class="bi bi-download"> </i>
+                                      <a
+                                        href="#"
+                                        style="white-space: pre-line"
+                                        v-on:click="openDownloadUrl(innerRow.filename, row.id, row.categoryId)"
+                                      >
+                                        <span>{{ shortEntry(innerRow.filename) }}</span>
+                                      </a>
+                                    </div>
+                                  </template>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr></template
+                  >
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade show" id="sid" role="tabpanel" aria-labelledby="sid-tab">
+              <div class="sid">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>{{ $t("sidInfoKey") }}</th>
+                      <th>{{ $t("sidInfoValue") }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="entry in translatedInfos" :key="entry.Name">
+                      <td>
+                        <span
+                          :style="entry.opacity ? 'opacity: 0.5; line-break: anywhere;' : 'line-break: anywhere;'"
+                          >{{ entry.Name }}</span
                         >
-                      </b-input-group-append>
-                    </b-input-group>
-                  </div>
-                </b-collapse>
-                <div>
-                  <div>
-                    <b-button size="sm" v-if="importFile != null" @click="importFile = null">
-                      <b-icon-backspace> </b-icon-backspace>
-                      <span>{{ $t("reset") }}</span>
-                    </b-button>
-                    <b-button
-                      variant="success"
-                      size="sm"
-                      v-b-modal.modal-import-playlist
-                      v-if="
-                        importFile != null && (importFile.name.endsWith('.js2') || importFile.name.endsWith('.json'))
-                      "
-                      class="mr-2"
-                    >
-                      <b-icon-file-arrow-up-fill> </b-icon-file-arrow-up-fill>
-                      <span>{{ $t("startImport") }}</span>
-                    </b-button>
-                    <b-button
-                      variant="success"
-                      size="sm"
-                      v-on:click="importPlaylist"
-                      v-if="
-                        importFile != null && !(importFile.name.endsWith('.js2') || importFile.name.endsWith('.json'))
-                      "
-                      class="mr-2"
-                    >
-                      <b-icon-file-arrow-up-fill> </b-icon-file-arrow-up-fill>
-                      <span>{{ $t("startImport") }}</span>
-                    </b-button>
-                    <b-modal id="modal-import-playlist" :title="$t('confirmationTitle')" @ok="importPlaylist">
-                      <p>{{ $t("removePlaylistReally") }}</p>
-                    </b-modal>
-                  </div>
-                  <b-button
-                    v-if="!importFile && playlist.length > 0"
-                    v-b-modal.modal-remove-playlist
-                    variant="danger"
-                    size="sm"
+                      </td>
+                      <td style="word-break: break-all">{{ entry.Value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="picture-container">
+                  <img :src="picture" id="img" class="picture img-fluid rounded-circle" />
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade show" id="stil" role="tabpanel" aria-labelledby="stil-tab">
+              <div class="stil">
+                <div class="stil-comment">
+                  <span>{{ stil.comment }}</span>
+                </div>
+                <ul>
+                  <li v-for="info in stil.infos" v-show="isValidStil(info)">
+                    <div class="stil-name" v-show="info.name">
+                      <span class="stil-name-header">{{ $t("STILINFO.NAME") }}:</span>
+                      <span>{{ info.name }}</span>
+                    </div>
+                    <div class="stil-author" v-show="info.author">
+                      <span class="stil-author-header">{{ $t("STILINFO.AUTHOR") }}:</span>
+                      <span>{{ info.author }}</span>
+                    </div>
+                    <div class="stil-title" v-show="info.title">
+                      <span class="stil-title-header">{{ $t("STILINFO.TITLE") }}:</span>
+                      <span>{{ info.title }}</span>
+                    </div>
+                    <div class="stil-artist" v-show="info.artist">
+                      <span class="stil-artist-header">{{ $t("STILINFO.ARTIST") }}:</span>
+                      <span>{{ info.artist }}</span>
+                    </div>
+                    <div class="stil-comment" v-show="info.comment">
+                      <span>{{ info.comment }}</span>
+                    </div>
+                  </li>
+                </ul>
+                <ul>
+                  <li v-for="subtune in stil.subtunes">
+                    <div class="stil-subtune" v-show="subtune.tuneNo">
+                      <span class="stil-subtune-header">{{ $t("STILINFO.SUBTUNE") }}:</span>
+                      <span>{{ subtune.tuneNo }}</span>
+                    </div>
+                    <ul>
+                      <li v-for="info in subtune.infos" v-show="isValidStil(info)">
+                        <div class="stil-name" v-show="info.name">
+                          <span class="stil-name-header">{{ $t("STILINFO.NAME") }}:</span>
+                          <span>{{ info.name }}</span>
+                        </div>
+                        <div class="stil-author" v-show="info.author">
+                          <span class="stil-author-header">{{ $t("STILINFO.AUTHOR") }}:</span>
+                          <span>{{ info.author }}</span>
+                        </div>
+                        <div class="stil-title" v-show="info.title">
+                          <span class="stil-title-header">{{ $t("STILINFO.TITLE") }}:</span>
+                          <span>{{ info.title }}</span>
+                        </div>
+                        <div class="stil-artist" v-show="info.artist">
+                          <span class="stil-artist-header">{{ $t("STILINFO.ARTIST") }}:</span>
+                          <span>{{ info.artist }}</span>
+                        </div>
+                        <div class="stil-comment" v-show="info.comment">
+                          <span>{{ info.comment }}</span>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="tab-pane fade show" id="pl" role="tabpanel" aria-labelledby="pl-tab">
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                style="padding: 0px 4px; float: right"
+                v-show="!importFile && !importExportVisible"
+                v-on:click="importExportVisible = !importExportVisible"
+              >
+                <i class="bi bi-arrows-expand"> </i>
+                <span>{{ $t("importExport") }}</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                style="padding: 0px 4px; float: right"
+                v-show="!importFile && importExportVisible"
+                v-on:click="importExportVisible = !importExportVisible"
+              >
+                <i class="bi bi-arrows-collapse"> </i>
+              </button>
+              <div v-show="!importFile && importExportVisible" @click="importExportVisible = !importExportVisible">
+                <div class="playlist-examples-box">
+                  <span class="sm">{{ $t("fetchFavorites") }}</span>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    v-for="(favoritesName, index) in favoritesNames"
+                    :key="index"
+                    data-bs-toggle="modal"
+                    data-bs-target="#fetchFavoritesModal"
+                    @click="modalIndex = index"
                   >
-                    <b-icon-trash-fill> </b-icon-trash-fill>
-                    <span>{{ $t("removePlaylist") }}</span></b-button
-                  >
-                  <b-modal id="modal-remove-playlist" :title="$t('confirmationTitle')" @ok="removePlaylist">
-                    <p>{{ $t("removePlaylistReally") }}</p>
-                  </b-modal>
-                  <b-button
-                    v-if="!importFile"
-                    variant="success"
-                    size="sm"
-                    v-on:click="setNextPlaylistEntry"
-                    v-if="playlist.length > 0"
-                  >
-                    <b-icon-play-fill> </b-icon-play-fill>
-                    <span>{{ $t("next") }}</span></b-button
-                  >
+                    <span>{{ favoritesName }}</span>
+                  </button>
                 </div>
                 <div class="button-box">
-                  <b-input-group size="sm" class="mb-2">
-                    <b-input-group-prepend is-text>
-                      <b-icon icon="search"></b-icon>
-                    </b-input-group-prepend>
-                    <b-form-input
-                      type="search"
-                      v-model="filterText"
-                      :placeholder="$t('searchPlaceholder')"
-                    ></b-form-input>
-                  </b-input-group>
+                  <div class="input-group input-group-sm mb-2">
+                    <input
+                      ref="formFileSm"
+                      class="form-control form-control-sm"
+                      id="formFileSm"
+                      type="file"
+                      @input="importFile = $refs.formFileSm.files[0]"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      @click="exportPlaylist"
+                      v-if="playlist.length > 0"
+                      style="margin-top: 8px !important"
+                    >
+                      <i class="bi bi-file-arrow-down-fill"></i>
+                      <span>{{ $t("exportPlaylist") }}</span>
+                    </button>
+                  </div>
                 </div>
+              </div>
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="fetchFavoritesModal"
+                tabindex="-1"
+                aria-labelledby="fetchFavoritesModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="fetchFavoritesModalLabel">{{ $t("confirmationTitle") }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>{{ $t("removePlaylistReally") }}</p>
+                      <span> </span>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal"
+                        @click="fetchFavorites(modalIndex)"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                <ol class="striped-list">
-                  <li
-                    v-for="(entry, index) in playlist"
-                    :key="index"
-                    :style="
-                      (filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
-                        ? 'height: 0; padding: 0px;visibility: hidden;'
-                        : '') +
-                      (index == playlistIndex && !theaterMode
-                        ? ' background-color: rgb(0 255 58 / 50%) !important'
-                        : '')
+              <div>
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    v-if="importFile != null"
+                    @click="
+                      importFile = null;
+                      $refs.formFileSm.value = null;
                     "
-                    v-on:click="
-                      playlistIndex = index;
-                      $nextTick(function () {
-                        play(
-                          undefined,
-                          playlist[playlistIndex].filename,
-                          playlist[playlistIndex].itemId,
-                          playlist[playlistIndex].categoryId
-                        );
-                      });
-                      currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
-                      updateSid(
+                  >
+                    <i class="bi bi-backspace"></i>
+                    <span>{{ $t("reset") }}</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-success btn-sm"
+                    v-if="importFile != null && (importFile.name.endsWith('.js2') || importFile.name.endsWith('.json'))"
+                    class="mr-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#importPlaylistModal"
+                  >
+                    <i class="bi bi-file-arrow-up-fill"></i>
+                    <span>{{ $t("startImport") }}</span>
+                  </button>
+                  <!-- Modal -->
+                  <div
+                    class="modal fade"
+                    id="importPlaylistModal"
+                    tabindex="-1"
+                    aria-labelledby="importPlaylistModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="importPlaylistModalLabel">{{ $t("confirmationTitle") }}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>{{ $t("removePlaylistReally") }}</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="importPlaylist">
+                            OK
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-success btn-sm"
+                    v-on:click="importPlaylist"
+                    v-if="
+                      importFile != null && !(importFile.name.endsWith('.js2') || importFile.name.endsWith('.json'))
+                    "
+                    class="mr-2"
+                  >
+                    <i class="bi bi-file-arrow-up-fill"></i>
+                    <span>{{ $t("startImport") }}</span>
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  v-if="!importFile && playlist.length > 0"
+                  variant="danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#removeFavoritesModal"
+                >
+                  <i class="bi bi-trash-fill"></i>
+                  <span>{{ $t("removePlaylist") }}</span>
+                </button>
+                <!-- Modal -->
+                <div
+                  class="modal fade"
+                  id="removeFavoritesModal"
+                  tabindex="-1"
+                  aria-labelledby="removeFavoritesModalLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="removeFavoritesModalLabel">{{ $t("confirmationTitle") }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>{{ $t("removePlaylistReally") }}</p>
+                        <span> </span>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="removePlaylist">
+                          OK
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm"
+                  v-if="!importFile"
+                  v-on:click="setNextPlaylistEntry"
+                  v-if="playlist.length > 0"
+                >
+                  <i class="bi bi-play-fill"></i>
+                  <span>{{ $t("next") }}</span>
+                </button>
+              </div>
+              <div class="button-box">
+                <div class="input-group input-group-sm mb-2">
+                  <div class="input-group-prepend">
+                    <i class="bi bi-search"></i>
+                  </div>
+                  <input
+                    id="quickfilter2"
+                    type="search"
+                    class="form-control"
+                    type="search"
+                    v-model="filterText"
+                    :placeholder="$t('searchPlaceholder')"
+                  />
+                </div>
+              </div>
+              <ol class="striped-list">
+                <li
+                  v-for="(entry, index) in playlist"
+                  :key="index"
+                  :style="
+                    (filterText && !entry.filename.toLowerCase().includes(filterText.toLowerCase())
+                      ? 'height: 0; padding: 0px;visibility: hidden;'
+                      : '') +
+                    (index == playlistIndex && !theaterMode ? ' background-color: rgb(0 255 58 / 50%) !important' : '')
+                  "
+                  v-on:click="
+                    playlistIndex = index;
+                    $nextTick(function () {
+                      play(
+                        undefined,
                         playlist[playlistIndex].filename,
                         playlist[playlistIndex].itemId,
                         playlist[playlistIndex].categoryId
                       );
-                    "
-                  >
-                    <span style="display: flex; justify-content: space-between">
-                      <div>
-                        <div class="playlist-item">
-                          <span>{{ shortEntry(entry.filename) }}</span>
-                        </div>
-                        <div v-show="pathEntry(entry.filename).length > 1">
-                          <span style="line-break: anywhere">{{ pathEntry(entry.filename) }}</span>
-                        </div>
+                    });
+                    currentSid = playlistIndex + 1 + ': ' + shortEntry(playlist[playlistIndex].filename);
+                    updateSid(
+                      playlist[playlistIndex].filename,
+                      playlist[playlistIndex].itemId,
+                      playlist[playlistIndex].categoryId
+                    );
+                  "
+                >
+                  <span style="display: flex; justify-content: space-between">
+                    <div>
+                      <div class="playlist-item">
+                        <span>{{ shortEntry(entry.filename) }}</span>
                       </div>
-                      <b-button
-                        v-b-modal:[`modal-remove-${index}`]
-                        v-on:click.stop=""
-                        pill
-                        size="sm"
-                        variant="danger"
-                        style="height: fit-content; opacity: 0.5"
+                      <div v-show="pathEntry(entry.filename).length > 1">
+                        <span style="line-break: anywhere">{{ pathEntry(entry.filename) }}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm"
+                      style="height: fit-content; opacity: 0.5"
+                      data-bs-toggle="modal"
+                      data-bs-target="#removeFavoriteModal"
+                      @click.stop="modalFavoriteIndex = index"
+                    >
+                      <i class="bi bi-trash-fill" style="margin: 2px"></i>
+                    </button>
+                  </span>
+                </li>
+              </ol>
+
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="removeFavoriteModal"
+                tabindex="-1"
+                aria-labelledby="removeFavoriteModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="removeFavoriteModalLabel">{{ $t("confirmationTitle") }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>{{ $t("removeReally") }}</p>
+                      <span> </span>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal"
+                        @click="remove(modalFavoriteIndex)"
                       >
-                        <b-icon-trash-fill style="margin: 2px"> </b-icon-trash-fill>
-                      </b-button>
-                      <b-modal :id="`modal-remove-${index}`" :title="$t('confirmationTitle')" @ok="remove(index)">
-                        <p>{{ $t("removeReally") }}</p>
-                      </b-modal>
-                    </span>
-                  </li>
-                </ol>
-              </b-card-text>
-            </b-tab>
-            <b-tab :disabled="!hasHardware">
-              <template #title>
-                {{ $t("HARDWARE") }}
-              </template>
-
-              <b-card-text>
-                <b-container fluid>
-                  <b-row>
-                    <b-col style="border-right: 1px dotted grey">
-                      <b
-                        ><div style="margin-bottom: 8px; text-align: center">{{ $t("HARDSID") }}</div></b
-                      >
-                    </b-col>
-                    <b-col>
-                      <b
-                        ><div style="margin-bottom: 8px; text-align: center">{{ $t("EXSID") }}</div></b
-                      >
-                    </b-col>
-                    <!--b-col>
-                        <b><div style="margin-bottom: 8px; text-align: center;">{{ $t("SIDBLASTER") }}</div></b>
-                      </b-col-->
-                  </b-row>
-                  <b-row>
-                    <b-col style="border-right: 1px dotted grey">
-                      <div>
-                        <b-container>
-                          <b-img-lazy src="/static/images/hardsid4u.jpeg" alt="HardSID4U" thumbnail center fluid />
-                        </b-container>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label size="sm" for="hardsid6581">
-                              <b-form-select
-                                id="hardsid6581"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.hardsid6581"
-                                size="sm"
-                                :select-size="1"
-                              >
-                                <option :value="0">1</option>
-                                <option :value="1">2</option>
-                                <option :value="2">3</option>
-                                <option :value="3">4</option>
-                              </b-form-select>
-                              <span>{{ $t("convertMessages.config.emulationSection.hardsid6581") }}</span>
-                            </label></span
-                          >
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label size="sm" for="hardsid8580">
-                              <b-form-select
-                                id="hardsid8580"
-                                class="right"
-                                v-model="convertOptions.config.emulationSection.hardsid8580"
-                                size="sm"
-                                :select-size="1"
-                              >
-                                <option :value="0">1</option>
-                                <option :value="1">2</option>
-                                <option :value="2">3</option>
-                                <option :value="3">4</option>
-                              </b-form-select>
-                              <span>{{ $t("convertMessages.config.emulationSection.hardsid8580") }}</span>
-                            </label></span
-                          >
-                        </div>
-                      </div>
-                    </b-col>
-                    <b-col>
-                      <div>
-                        <b-container>
-                          <b-img-lazy src="/static/images/exsid.jpg" alt="ExSID" thumbnail center fluid />
-                        </b-container>
-                      </div>
-                    </b-col>
-
-                    <!--b-col style="border-left: 1px dotted grey;">
-                        <div>
-                          <b-container>
-							<b-img-lazy
-								src="/static/images/sidblaster.jpeg"
-								alt="SIDBlaster"
-                                thumbnail
-								center
-								fluid
-							/>
-                          </b-container>
-						</div>
-                      </b-col-->
-                  </b-row>
-                  <b-row>
-                    <b-col style="border-right: 1px dotted grey">
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-button variant="success" v-on:click="hardware_hardsid_init()">
-                            <span>{{ $t("CONNECT") }}</span>
-                          </b-button>
-                        </span>
-                      </div>
-                    </b-col>
-
-                    <b-col>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-button variant="success" v-on:click="hardware_exsid_init()">
-                            <span>{{ $t("CONNECT") }}</span>
-                          </b-button></span
-                        >
-                      </div>
-                    </b-col>
-
-                    <!--b-col style="border-left: 1px dotted grey;">
-						<div class="settings-box">
-                    	  <span class="setting">
-							<b-button
-								variant="success" v-on:click="hardware_sidblaster_init()"
-							>
-                              <span>{{ $t("CONNECT") }}</span>
-							</b-button></span
-						  >
-						</div>
-                      </b-col-->
-                  </b-row>
-                </b-container>
-                <p style="margin-top: 16px">
-                  {{ $t("USE_REAL_HARDWARE") }}
-                </p>
-                <ul>
-                  <li>
-                    {{ $t("HARDWARE_PREPARATION_1") }}
-                  </li>
-                  <li>
-                    {{ $t("HARDWARE_PREPARATION_2") }}
-                    <a href="https://zadig.akeo.ie/" target="_blank">
-                      {{ $t("HERE") }}
-                    </a>
-                  </li>
-                  <li>
-                    {{ $t("HARDWARE_PREPARATION_3") }}
-                  </li>
-                  <li>
-                    Ubuntu with {{ $t("HARDSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/92-hardsid4u.rules</pre>
-                    <pre>with contents:</pre>
-                    <pre>
-SUBSYSTEM=="usb",ATTR{idVendor}=="6581",ATTR{idProduct}=="8580",MODE="0660",GROUP="plugdev"</pre
-                    >
-                    <pre>$ sudo udevadm trigger</pre>
-                    <pre>now reboot</pre>
-                  </li>
-                  <li>
-                    Ubuntu with {{ $t("EXSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
-                    <pre>with contents:</pre>
-                    <pre>
-ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'"</pre
-                    >
-                    <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
-                    <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
-                    <pre>now reboot</pre>
-                    Fedora Linux with {{ $t("EXSID") }} devices:
-                    <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
-                    <pre>with contents:</pre>
-                    <pre>
-ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'"</pre
-                    >
-                    <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
-                    <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
-                    <pre>now reboot</pre>
-                  </li>
-                </ul>
-                <p>
-                  <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
-
-                  <a
-                    href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
-                    target="_blank"
-                  >
-                    <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
-                  >.
-                  <b-img-lazy src="/static/images/usbc.jpg" alt="HardSID4U" block center fluid />
-                </p>
-                <p>
-                  <b> {{ $t("STREAMING_NOTES") }} </b>
-                </p>
-              </b-card-text>
-            </b-tab>
-            <b-tab>
-              <template #title>
-                {{ $t("CFG") }}
-                <b-spinner
-                  type="border"
-                  :variant="tabIndex == 6 ? 'light' : 'primary'"
-                  small
-                  v-if="loadingCfg"
-                ></b-spinner>
-              </template>
-
-              <b-card-text>
-                <div class="settings-box">
-                  <div class="button-box">
-                    <b-button v-b-modal.modal-set-default size="sm" variant="outline-success">
-                      <span>{{ $t("setDefault") }}</span></b-button
-                    >
-                    <b-modal id="modal-set-default" :title="$t('confirmationTitle')" @ok="setDefault">
-                      <p>{{ $t("setDefaultReally") }}</p>
-                    </b-modal>
+                        OK
+                      </button>
+                    </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="tab-pane fade show" id="hw" role="tabpanel" aria-labelledby="hw-tab">
+              <div class="container container-fluid">
+                <div class="row">
+                  <div class="col" s0tyle="border-right: 1px dotted grey">
+                    <b
+                      ><div style="margin-bottom: 8px; text-align: center">{{ $t("HARDSID") }}</div></b
+                    >
+                  </div>
+                  <div class="col">
+                    <b
+                      ><div style="margin-bottom: 8px; text-align: center">{{ $t("EXSID") }}</div></b
+                    >
+                  </div>
+                  <!--div class="col">
+                        <b><div style="margin-bottom: 8px; text-align: center;">{{ $t("SIDBLASTER") }}</div></b>
+				    </div-->
+                </div>
+                <div class="row">
+                  <div class="col" style="border-right: 1px dotted grey">
+                    <div class="container">
+                      <img
+                        src="/static/images/hardsid4u.jpeg"
+                        alt="HardSID4U"
+                        class="img-fluid img-thumbnail mx-auto"
+                      />
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="hardsid6581">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="hardsid6581"
+                            v-model="convertOptions.config.emulationSection.hardsid6581"
+                          >
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.hardsid6581") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="hardsid8580">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="hardsid8580"
+                            v-model="convertOptions.config.emulationSection.hardsid8580"
+                          >
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.hardsid8580") }}</span>
+                        </label></span
+                      >
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="container">
+                      <img src="/static/images/exsid.jpg" alt="ExSID" class="img-fluid img-thumbnail mx-auto" />
+                    </div>
+                  </div>
+                  <!--div class="col" style="border-left: 1px dotted grey;">
+                         <div class="container">
+						<img
+                        src="/static/images/sidblaster.jpg"
+						alt="SIDBlaster"
+                        class="img-fluid img-thumbnail mx-auto"
+						/>
+                         </div>
+				    </div-->
+                </div>
+                <div class="row">
+                  <div class="col" style="border-right: 1px dotted grey">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <button type="button" class="btn btn-success" v-on:click="hardware_hardsid_init()">
+                          <span>{{ $t("CONNECT") }}</span>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <button type="button" class="btn btn-success" v-on:click="hardware_exsid_init()">
+                          <span>{{ $t("CONNECT") }}</span>
+                        </button></span
+                      >
+                    </div>
+                  </div>
+                  <!--div class="col" style="border-left: 1px dotted grey">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <button type="button" class="btn btn-success" v-on:click="hardware_sidblaster_init()">
+                          <span>{{ $t("CONNECT") }}</span>
+                        </button></span
+                      >
+                    </div>
+                  </div-->
+                </div>
+              </div>
 
-                <b-tabs
-                  v-model="tabConfigIndex"
-                  active-nav-item-class="font-weight-bold text-italic"
-                  pills
-                  card
-                  small
-                  align="right"
+              <p style="margin-top: 16px">{{ $t("USE_REAL_HARDWARE") }}</p>
+              <ul>
+                <li>{{ $t("HARDWARE_PREPARATION_1") }}</li>
+                <li>
+                  {{ $t("HARDWARE_PREPARATION_2") }}
+                  <a href="https://zadig.akeo.ie/" target="_blank"> {{ $t("HERE") }} </a>
+                </li>
+                <li>{{ $t("HARDWARE_PREPARATION_3") }}</li>
+                <li>
+                  Ubuntu with {{ $t("HARDSID") }} devices:
+                  <pre>$ sudo vi /etc/udev/rules.d/92-hardsid4u.rules</pre>
+                  <pre>with contents:</pre>
+                  <pre>SUBSYSTEM=="usb",ATTR{idVendor}=="6581",ATTR{idProduct}=="8580",MODE="0660",GROUP="plugdev"</pre>
+                  <pre>$ sudo udevadm trigger</pre>
+                  <pre>now reboot</pre>
+                </li>
+                <li>
+                  Ubuntu with {{ $t("EXSID") }} devices:
+                  <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
+                  <pre>with contents:</pre>
+                  <pre>
+ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'"</pre
+                  >
+                  <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
+                  <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
+                  <pre>now reboot</pre>
+                  Fedora Linux with {{ $t("EXSID") }} devices:
+                  <pre>$ sudo vi /etc/udev/rules.d/93-exsid.rules</pre>
+                  <pre>with contents:</pre>
+                  <pre>
+ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", RUN+="/bin/sh -c 'echo -n $id:1.0 > /sys/bus/usb/drivers/ftdi_sio/unbind; echo -n $id:1.1 > /sys/bus/usb/drivers/ftdi_sio/unbind'"</pre
+                  >
+                  <pre>For ExSID+ you have to replace idProduct 6001 with 6015!</pre>
+                  <pre>$ sudo udevadm control --reload-rules && udevadm trigger</pre>
+                  <pre>now reboot</pre>
+                </li>
+              </ul>
+              <p>
+                <span>{{ $t("USE_MOBILE_DEVICES_1") }}</span>
+
+                <a
+                  href="https://www.amazon.de/gp/product/B09H2TJCQG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1"
+                  target="_blank"
                 >
-                  <b-tab>
-                    <template #title>{{ $t("streamingCfgHeader") }}</template>
-
-                    <b-card-text>
-                      <div class="settings-box">
-                        <div class="button-box">
-                          <b-button size="sm" variant="outline-success" v-on:click="mobileProfile">
-                            <b-icon-phone-fill> </b-icon-phone-fill>
-                            <span>{{ $t("mobileProfile") }}</span></b-button
-                          >
-                          <b-button size="sm" variant="outline-success" v-on:click="wifiProfile">
-                            <b-icon-wifi> </b-icon-wifi>
-                            <span>{{ $t("wifiProfile") }}</span></b-button
-                          >
+                  <span>{{ $t("USE_MOBILE_DEVICES_2") }}</span></a
+                >.
+                <img src="/static/images/usbc.jpg" alt="HardSID4U" class="d-block img-fluid img-thumbnail mx-auto" />
+              </p>
+              <p>
+                <b> {{ $t("STREAMING_NOTES") }} </b>
+              </p>
+            </div>
+            <div class="tab-pane fade show" id="cfg" role="tabpanel" aria-labelledby="cfg-tab">
+              <div class="settings-box">
+                <div class="button-box">
+                  <button
+                    type="button"
+                    class="btn btn-outline-success btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#setDefaultModal"
+                  >
+                    <span>{{ $t("setDefault") }}</span>
+                  </button>
+                  <!-- Modal -->
+                  <div
+                    class="modal fade"
+                    id="setDefaultModal"
+                    tabindex="-1"
+                    aria-labelledby="setDefaultModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="setDefaultModalLabel">{{ $t("confirmationTitle") }}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>{{ $t("setDefaultReally") }}</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="setDefault">
+                            OK
+                          </button>
                         </div>
                       </div>
-
-                      <b-tabs
-                        v-model="streamingTabConfigIndex"
-                        active-nav-item-class="font-weight-bold text-italic"
-                        pills
-                        card
-                        small
-                        align="right"
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab2" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link active"
+                        id="streaming-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#streaming"
+                        type="button"
+                        role="tab"
+                        aria-controls="streaming"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 0"
                       >
-                        <b-tab>
-                          <template #title>{{ $t("audioStreamingCfgHeader") }}</template>
+                        {{ $t("streamingCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="playback-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#playback"
+                        type="button"
+                        role="tab"
+                        aria-controls="playback"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 1"
+                      >
+                        {{ $t("playbackCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="audio-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#audio"
+                        type="button"
+                        role="tab"
+                        aria-controls="audio"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 2"
+                      >
+                        {{ $t("audioCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="emulation-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#emulation"
+                        type="button"
+                        role="tab"
+                        aria-controls="emulation"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 3"
+                      >
+                        {{ $t("emulationCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="filter-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#filter"
+                        type="button"
+                        role="tab"
+                        aria-controls="filter"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 4"
+                      >
+                        {{ $t("filterCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="mute-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#mute"
+                        type="button"
+                        role="tab"
+                        aria-controls="mute"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 5"
+                      >
+                        {{ $t("mutingCfgHeader") }}
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="cart-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#cart"
+                        type="button"
+                        role="tab"
+                        aria-controls="cart"
+                        aria-selected="true"
+                        @click="tabConfigIndex = 6"
+                      >
+                        {{ $t("floppyCartCfgHeader") }}
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+                <div class="tab-content card-body" style="position: relative">
+                  <div class="tab-pane fade show active" id="streaming" role="tabpanel" aria-labelledby="streaming-tab">
+                    <div class="settings-box">
+                      <div class="button-box">
+                        <button type="button" class="btn btn-outline-success btn-sm" v-on:click="mobileProfile">
+                          <i class="bi bi-phone-fill"> </i>
+                          <span>{{ $t("mobileProfile") }}</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-success btn-sm" v-on:click="wifiProfile">
+                          <i class="bi bi-wifi"> </i>
+                          <span>{{ $t("wifiProfile") }}</span>
+                        </button>
+                      </div>
+                    </div>
 
-                          <b-card-text>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="cbr">
-                                  {{ $t("convertMessages.config.audioSection.cbr") }}
-                                  <b-form-select
-                                    id="cbr"
-                                    class="right"
-                                    v-model="convertOptions.config.audioSection.cbr"
-                                  >
-                                    <option v-for="cbr in cbrs">{{ cbr }}</option>
-                                  </b-form-select></label
-                                ></span
-                              >
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="vbr">
+                    <div class="card">
+                      <div class="card-header">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab3" role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link active"
+                              id="audiostreaming-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#audiostreaming"
+                              type="button"
+                              role="tab"
+                              aria-controls="audiostreaming"
+                              aria-selected="true"
+                              @click="tabConfigIndex = 0"
+                            >
+                              {{ $t("audioStreamingCfgHeader") }}
+                            </button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link"
+                              id="videostreaming-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#videostreaming"
+                              type="button"
+                              role="tab"
+                              aria-controls="videostreaming"
+                              aria-selected="true"
+                              @click="tabConfigIndex = 1"
+                            >
+                              {{ $t("videoStreamingCfgHeader") }}
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div class="tab-content card-body" style="position: relative">
+                        <div
+                          class="tab-pane fade show active"
+                          id="audiostreaming"
+                          role="tabpanel"
+                          aria-labelledby="audiostreaming-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting"
+                              ><label for="cbr">
+                                {{ $t("convertMessages.config.audioSection.cbr") }}
+                                <select
+                                  class="form-select form-select-sm right"
+                                  id="cbr"
+                                  v-model="convertOptions.config.audioSection.cbr"
+                                >
+                                  <option v-for="cbr in cbrs">{{ cbr }}</option>
+                                </select></label
+                              ></span
+                            >
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="vbr">
                                   {{ $t("convertMessages.config.audioSection.vbr") }}
-                                  <b-form-checkbox
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
                                     id="vbr"
-                                    class="right"
+                                    style="float: right; margin-left: 8px"
                                     v-model="convertOptions.config.audioSection.vbr"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="vbrQuality">
-                                  {{ $t("convertMessages.config.audioSection.vbrQuality") }}
-                                  <b-form-select
-                                    id="vbrQuality"
-                                    class="right"
-                                    v-model="convertOptions.config.audioSection.vbrQuality"
-                                  >
-                                    <option v-for="vbrQuality in vbrQualities">
-                                      {{ vbrQuality }}
-                                    </option>
-                                  </b-form-select></label
-                                ></span
-                              >
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <b-form-group
-                                  class="right"
-                                  :label="$t('convertMessages.textToSpeechType')"
-                                  label-for="textToSpeechType"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting"
+                              ><label for="vbrQuality">
+                                {{ $t("convertMessages.config.audioSection.vbrQuality") }}
+                                <select
+                                  class="form-select form-select-sm right"
+                                  id="vbrQuality"
+                                  v-model="convertOptions.config.audioSection.vbrQuality"
                                 >
-                                  <b-form-radio-group v-model="convertOptions.textToSpeechType">
-                                    <b-form-radio value="NONE" id="textToSpeechType">{{
-                                      $t("textToSpeechTypeOff")
-                                    }}</b-form-radio>
-                                    <b-form-radio value="PICO2WAVE">PICO2WAVE</b-form-radio>
-                                    <b-form-radio value="ESPEAK">ESPEAK</b-form-radio>
-                                  </b-form-radio-group>
-                                </b-form-group>
-                              </span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <b-form-group
-                                  class="right"
-                                  :label="$t('convertMessages.textToSpeechLocale')"
-                                  label-for="textToSpeechLocale"
-                                >
-                                  <b-form-radio-group v-model="convertOptions.textToSpeechLocale">
-                                    <b-form-radio value="null" id="textToSpeechLocale">{{
-                                      $t("textToSpeechLocaleAuto")
-                                    }}</b-form-radio>
-                                    <b-form-radio value="en">English</b-form-radio>
-                                    <b-form-radio value="de">Deutsch</b-form-radio>
-                                  </b-form-radio-group>
-                                </b-form-group>
-                              </span>
-                            </div>
-                          </b-card-text>
-                        </b-tab>
-
-                        <b-tab>
-                          <template #title>{{ $t("videoStreamingCfgHeader") }}</template>
-
-                          <b-card-text>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="useHls">
+                                  <option v-for="vbrQuality in vbrQualities">{{ vbrQuality }}</option>
+                                </select></label
+                              ></span
+                            >
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label class="form-check-label" for="textToSpeechTypeOff">
+                                {{ $t("convertMessages.textToSpeechType") }}
+                              </label>
+                              <div class="input-group" style="justify-content: flex-end">
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="NONE"
+                                    id="textToSpeechTypeOff"
+                                    v-model="convertOptions.textToSpeechType"
+                                  />
+                                  <label class="form-check-label" for="textToSpeechTypeOff">
+                                    {{ $t("textToSpeechTypeOff") }}
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="PICO2WAVE"
+                                    id="textToSpeechTypePico2Wave"
+                                    v-model="convertOptions.textToSpeechType"
+                                  />
+                                  <label class="form-check-label" for="textToSpeechTypePico2Wave"> PICO2WAVE </label>
+                                </div>
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="ESPEAK"
+                                    id="textToSpeechTypeESpeak"
+                                    v-model="convertOptions.textToSpeechType"
+                                  />
+                                  <label class="form-check-label" for="textToSpeechTypeESpeak"> ESPEAK </label>
+                                </div>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label class="form-check-label" for="textToSpeechLocaleAuto">
+                                {{ $t("convertMessages.textToSpeechLocale") }}
+                              </label>
+                              <div class="input-group" style="justify-content: flex-end">
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="null"
+                                    id="textToSpeechLocaleAuto"
+                                    v-model="convertOptions.textToSpeechLocale"
+                                  />
+                                  <label class="form-check-label" for="textToSpeechLocaleAuto">
+                                    {{ $t("textToSpeechLocaleAuto") }}
+                                  </label>
+                                </div>
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="en"
+                                    id="en"
+                                    v-model="convertOptions.textToSpeechLocale"
+                                  />
+                                  <label class="form-check-label" for="en"> English </label>
+                                </div>
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="de"
+                                    id="de"
+                                    v-model="convertOptions.textToSpeechLocale"
+                                  />
+                                  <label class="form-check-label" for="de"> Deutsch </label>
+                                </div>
+                              </div>
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="tab-pane fade show"
+                          id="videostreaming"
+                          role="tabpanel"
+                          aria-labelledby="videostreaming-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="useHls">
                                   {{ $t("convertMessages.useHls") }}
-                                  <b-form-checkbox id="useHls" class="right" v-model="convertOptions.useHls">
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <b-form-group class="right" :label="$t('convertMessages.hlsType')" label-for="hlsType">
-                                  <b-form-radio-group v-model="convertOptions.hlsType">
-                                    <b-form-radio value="VIDEO_JS" id="hlsType">video-js</b-form-radio>
-                                    <b-form-radio value="HLS_JS">hls-js</b-form-radio>
-                                  </b-form-radio-group>
-                                </b-form-group>
-                              </span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="videoCoderAudioDelay"
-                                  >{{ $t("convertMessages.config.audioSection.videoCoderAudioDelay") }}
-                                  <b-form-input
-                                    id="videoCoderAudioDelay"
-                                    class="right"
-                                    v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay"
-                                    type="number" /></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="audioCoderBitRate"
-                                  >{{ $t("convertMessages.config.audioSection.audioCoderBitRate") }}
-                                  <b-form-input
-                                    id="audioCoderBitRate"
-                                    class="right"
-                                    type="number"
-                                    min="0"
-                                    oninput="validity.valid||(value='');"
-                                    v-model.number="convertOptions.config.audioSection.audioCoderBitRate" /></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="videoCoderBitRate"
-                                  >{{ $t("convertMessages.config.audioSection.videoCoderBitRate") }}
-                                  <b-form-input
-                                    id="videoCoderBitRate"
-                                    class="right"
-                                    type="number"
-                                    min="0"
-                                    oninput="validity.valid||(value='');"
-                                    v-model.number="convertOptions.config.audioSection.videoCoderBitRate" /></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="showStatus">
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="useHls"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.useHls"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label class="form-check-label right" for="hlsTypeVideoJS">
+                                {{ $t("convertMessages.hlsType") }}
+                              </label>
+                              <div class="input-group" style="justify-content: flex-end">
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="VIDEO_JS"
+                                    id="hlsTypeVideoJS"
+                                    v-model="convertOptions.hlsType"
+                                  />
+                                  <label class="form-check-label" for="hlsTypeVideoJS"> video-js </label>
+                                </div>
+                                <div class="form-check">
+                                  <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    value="HLS_JS"
+                                    id="hlsTypeHLS"
+                                    v-model="convertOptions.hlsType"
+                                  />
+                                  <label class="form-check-label" for="hlsTypeHLS"> hls-js </label>
+                                </div>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="videoCoderAudioDelay"
+                                >{{ $t("convertMessages.config.audioSection.videoCoderAudioDelay") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="videoCoderAudioDelay"
+                                  class="form-control"
+                                  v-model.number="convertOptions.config.audioSection.videoCoderAudioDelay"
+                              /></label>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="audioCoderBitRate"
+                                >{{ $t("convertMessages.config.audioSection.audioCoderBitRate") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="audioCoderBitRate"
+                                  class="form-control"
+                                  min="0"
+                                  v-model.number="convertOptions.config.audioSection.audioCoderBitRate"
+                              /></label>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="videoCoderBitRate"
+                                >{{ $t("convertMessages.config.audioSection.videoCoderBitRate") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="videoCoderBitRate"
+                                  class="form-control"
+                                  min="0"
+                                  v-model.number="convertOptions.config.audioSection.videoCoderBitRate"
+                              /></label>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="showStatus">
                                   {{ $t("convertMessages.showStatus") }}
-                                  <b-form-checkbox id="showStatus" class="right" v-model="convertOptions.showStatus">
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting"
-                                ><label for="pressSpaceInterval"
-                                  >{{ $t("convertMessages.pressSpaceInterval") }}
-                                  <b-form-input
-                                    id="pressSpaceInterval"
-                                    class="right"
-                                    v-model.number="convertOptions.pressSpaceInterval"
-                                    type="number" /></label
-                              ></span>
-                            </div>
-                          </b-card-text>
-                        </b-tab>
-                      </b-tabs>
-                    </b-card-text>
-                  </b-tab>
-
-                  <b-tab>
-                    <template #title>{{ $t("playbackCfgHeader") }}</template>
-
-                    <b-card-text>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="videoTuneAsAudio">
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="showStatus"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.showStatus"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <label for="pressSpaceInterval"
+                                >{{ $t("convertMessages.pressSpaceInterval") }}
+                                <input
+                                  class="right"
+                                  type="number"
+                                  id="pressSpaceInterval"
+                                  class="form-control"
+                                  min="0"
+                                  v-model.number="convertOptions.pressSpaceInterval"
+                              /></label>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="playback" role="tabpanel" aria-labelledby="playback-tab">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="videoTuneAsAudio">
                             {{ $t("convertMessages.videoTuneAsAudio") }}
-                            <b-form-checkbox
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
                               id="videoTuneAsAudio"
-                              class="right"
+                              style="float: right; margin-left: 8px"
                               v-model="convertOptions.videoTuneAsAudio"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="random">
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="random">
                             {{ $t("random") }}
-                            <b-form-checkbox id="random" class="right" v-model="random"> </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="enableDatabase">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="random"
+                              style="float: right; margin-left: 8px"
+                              v-model="random"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="enableDatabase">
                             {{ $t("convertMessages.config.sidplay2Section.enableDatabase") }}
-                            <b-form-checkbox
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
                               id="enableDatabase"
-                              class="right"
+                              style="float: right; margin-left: 8px"
                               v-model="convertOptions.config.sidplay2Section.enableDatabase"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="single">
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="single">
                             {{ $t("convertMessages.config.sidplay2Section.single") }}
-                            <b-form-checkbox
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
                               id="single"
-                              class="right"
+                              style="float: right; margin-left: 8px"
                               v-model="convertOptions.config.sidplay2Section.single"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="loop">
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="loop">
                             {{ $t("convertMessages.config.sidplay2Section.loop") }}
-                            <b-form-checkbox
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
                               id="loop"
-                              class="right"
+                              style="float: right; margin-left: 8px"
                               v-model="convertOptions.config.sidplay2Section.loop"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                    </b-card-text>
-                  </b-tab>
-
-                  <b-tab>
-                    <template #title>{{ $t("audioCfgHeader") }}</template>
-
-                    <b-card-text>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="delayBypass">
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="audio" role="tabpanel" aria-labelledby="audio-tab">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="delayBypass">
                             {{ $t("convertMessages.config.audioSection.delayBypass") }}
-                            <b-form-checkbox
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
                               id="delayBypass"
-                              class="right"
+                              style="float: right; margin-left: 8px"
                               v-model="convertOptions.config.audioSection.delayBypass"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="reverbBypass">
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="reverbBypass">
                             {{ $t("convertMessages.config.audioSection.reverbBypass") }}
-                            <b-form-checkbox
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
                               id="reverbBypass"
-                              class="right"
+                              style="float: right; margin-left: 8px"
                               v-model="convertOptions.config.audioSection.reverbBypass"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="startTime">
-                            {{ $t("convertMessages.config.sidplay2Section.startTime") }}
-                            <b-form-timepicker
-                              id="startTime"
-                              reset-button
-                              reset-value="'00:00'"
-                              class="right"
-                              v-model="startTime"
-                              locale="de"
                             />
                           </label>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="defaultPlayLength"
-                            >{{ $t("convertMessages.config.sidplay2Section.defaultPlayLength") }}
-                            <b-form-timepicker
-                              id="defaultPlayLength"
-                              reset-button
-                              reset-value="'00:00'"
-                              class="right"
-                              v-model="defaultPlayLength"
-                              locale="de"
-                            />
-                          </label>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="fadeInTime"
-                            >{{ $t("convertMessages.config.sidplay2Section.fadeInTime") }}
-                            <b-form-timepicker
-                              id="fadeInTime"
-                              reset-button
-                              reset-value="'00:00'"
-                              class="right"
-                              v-model="fadeInTime"
-                              locale="de"
-                            />
-                          </label>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="fadeOutTime"
-                            >{{ $t("convertMessages.config.sidplay2Section.fadeOutTime") }}
-                            <b-form-timepicker
-                              id="fadeOutTime"
-                              reset-button
-                              reset-value="'00:00'"
-                              class="right"
-                              v-model="fadeOutTime"
-                              locale="de"
-                            />
-                          </label>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="mainVolume">
-                            {{ $t("convertMessages.config.audioSection.mainVolume") }}
-                            <b-form-spinbutton
-                              id="mainVolume"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.mainVolume"
-                              :formatter-fn="volumeFormatter"
-                              min="-6"
-                              max="6"
-                              step="1"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="secondVolume"
-                            >{{ $t("convertMessages.config.audioSection.secondVolume") }}
-                            <b-form-spinbutton
-                              id="secondVolume"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.secondVolume"
-                              :formatter-fn="volumeFormatter"
-                              min="-6"
-                              max="6"
-                              step="1"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="thirdVolume">
-                            {{ $t("convertMessages.config.audioSection.thirdVolume") }}
-                            <b-form-spinbutton
-                              id="thirdVolume"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.thirdVolume"
-                              :formatter-fn="volumeFormatter"
-                              min="-6"
-                              max="6"
-                              step="1"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="mainBalance">
-                            {{ $t("convertMessages.config.audioSection.mainBalance") }}
-                            <b-form-spinbutton
-                              id="mainBalance"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.mainBalance"
-                              :formatter-fn="balanceFormatter"
-                              min="0"
-                              max="1"
-                              step="0.1"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="secondBalance"
-                            >{{ $t("convertMessages.config.audioSection.secondBalance") }}
-
-                            <b-form-spinbutton
-                              id="secondBalance"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.secondBalance"
-                              :formatter-fn="balanceFormatter"
-                              min="0"
-                              max="1"
-                              step="0.1"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="thirdBalance"
-                            >{{ $t("convertMessages.config.audioSection.thirdBalance") }}
-                            <b-form-spinbutton
-                              id="thirdBalance"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.thirdBalance"
-                              :formatter-fn="balanceFormatter"
-                              min="0"
-                              max="1"
-                              step="0.1"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="mainDelay">
-                            {{ $t("convertMessages.config.audioSection.mainDelay") }}
-                            <b-form-spinbutton
-                              id="mainDelay"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.mainDelay"
-                              :formatter-fn="delayFormatter"
-                              min="0"
-                              max="100"
-                              step="10"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="secondDelay">
-                            {{ $t("convertMessages.config.audioSection.secondDelay") }}
-                            <b-form-spinbutton
-                              id="secondDelay"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.secondDelay"
-                              :formatter-fn="delayFormatter"
-                              min="0"
-                              max="100"
-                              step="10"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="thirdDelay">
-                            {{ $t("convertMessages.config.audioSection.thirdDelay") }}
-                            <b-form-spinbutton
-                              id="thirdDelay"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.thirdDelay"
-                              :formatter-fn="delayFormatter"
-                              min="0"
-                              max="100"
-                              step="10"
-                            ></b-form-spinbutton> </label
-                        ></span>
-                      </div>
-                    </b-card-text>
-                  </b-tab>
-
-                  <b-tab>
-                    <template #title>{{ $t("emulationCfgHeader") }}</template>
-
-                    <b-card-text>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group class="right" :label="$t('stereoMode')" label-for="stereoModeAuto">
-                            <b-form-radio-group v-model="stereoMode">
-                              <b-form-radio value="AUTO" id="stereoModeAuto">Auto</b-form-radio>
-                              <b-form-radio value="FORCE_2SID">2-SID</b-form-radio>
-                              <b-form-radio value="FORCE_3SID">3-SID</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="dualSidBase"
-                            >{{ $t("convertMessages.config.emulationSection.dualSidBase") }}
-                            <b-form-select
-                              id="dualSidBase"
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.dualSidBase"
-                              :select-size="1"
-                            >
-                              <option :value="54304">0xd420</option>
-                              <option :value="54336">0xd440</option>
-                              <option :value="54528">0xd500</option>
-                              <option :value="56832">0xde00</option>
-                              <option :value="57088">0xdf00</option>
-                            </b-form-select></label
-                          ></span
-                        >
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="thirdSIDBase"
-                            >{{ $t("convertMessages.config.emulationSection.thirdSIDBase") }}
-                            <b-form-select
-                              id="thirdSIDBase"
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.thirdSIDBase"
-                              :select-size="1"
-                            >
-                              <option :value="54304">0xd420</option>
-                              <option :value="54336">0xd440</option>
-                              <option :value="54528">0xd500</option>
-                              <option :value="56832">0xde00</option>
-                              <option :value="57088">0xdf00</option>
-                            </b-form-select></label
-                          ></span
-                        >
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group
-                            :label="$t('convertMessages.config.emulationSection.defaultClockSpeed')"
-                            label-for="pal"
-                          >
-                            <b-form-radio-group
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.defaultClockSpeed"
-                            >
-                              <b-form-radio value="PAL" id="pal">PAL</b-form-radio>
-                              <b-form-radio value="NTSC">NTSC</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group
-                            :label="$t('convertMessages.config.emulationSection.defaultEmulation')"
-                            label-for="residfp"
-                          >
-                            <b-form-radio-group
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.defaultEmulation"
-                            >
-                              <b-form-radio value="RESIDFP" id="residfp">RESIDFP</b-form-radio>
-                              <b-form-radio value="RESID">RESID</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group
-                            :label="$t('convertMessages.config.emulationSection.defaultSidModel')"
-                            label-for="mos6581"
-                          >
-                            <b-form-radio-group
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.defaultSidModel"
-                            >
-                              <b-form-radio value="MOS6581" id="mos6581">MOS6581</b-form-radio>
-                              <b-form-radio value="MOS8580">MOS8580</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group
-                            :label="$t('convertMessages.config.audioSection.sampling')"
-                            label-for="decimate"
-                          >
-                            <b-form-radio-group class="right" v-model="convertOptions.config.audioSection.sampling">
-                              <b-form-radio value="DECIMATE" id="decimate">DECIMATE</b-form-radio>
-                              <b-form-radio value="RESAMPLE">RESAMPLE</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group :label="$t('convertMessages.config.audioSection.samplingRate')" label-for="low">
-                            <b-form-radio-group class="right" v-model="convertOptions.config.audioSection.samplingRate">
-                              <b-form-radio value="LOW" id="low">LOW</b-form-radio>
-                              <b-form-radio value="MEDIUM">MEDIUM</b-form-radio>
-                              <b-form-radio value="HIGH">HIGH</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="digiBoosted8580">
-                            {{ $t("convertMessages.config.emulationSection.digiBoosted8580") }}
-                            <b-form-checkbox
-                              id="digiBoosted8580"
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.digiBoosted8580"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="detectPSID64ChipModel">
-                            {{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
-                            <b-form-checkbox
-                              id="detectPSID64ChipModel"
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="fakeStereo">
-                            {{ $t("convertMessages.config.emulationSection.fakeStereo") }}
-                            <b-form-checkbox
-                              id="fakeStereo"
-                              class="right"
-                              v-model="convertOptions.config.emulationSection.fakeStereo"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group
-                            class="right"
-                            :label="$t('convertMessages.config.emulationSection.sidToRead')"
-                            label-for="firstSid"
-                          >
-                            <b-form-radio-group v-model="convertOptions.config.emulationSection.sidToRead">
-                              <b-form-radio value="FIRST_SID" id="firstSid">{{ $t("firstSid") }}</b-form-radio>
-                              <b-form-radio value="SECOND_SID">{{ $t("secondSid") }}</b-form-radio>
-                              <b-form-radio value="THIRD_SID">{{ $t("thirdSid") }}</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="bufferSize">
-                            {{ $t("convertMessages.config.audioSection.bufferSize") }}
-                            <b-form-input
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="startTime">
+                          {{ $t("convertMessages.config.sidplay2Section.startTime") }}
+                          <input type="time" id="startTime" class="form-control right" v-model="startTime" />
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultPlayLength">
+                          {{ $t("convertMessages.config.sidplay2Section.defaultPlayLength") }}
+                          <input
+                            type="time"
+                            id="defaultPlayLength"
+                            class="form-control right"
+                            v-model="defaultPlayLength"
+                          />
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="fadeInTime">
+                          {{ $t("convertMessages.config.sidplay2Section.fadeInTime") }}
+                          <input type="time" id="fadeInTime" class="form-control right" v-model="fadeInTime" />
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="fadeOutTime">
+                          {{ $t("convertMessages.config.sidplay2Section.fadeOutTime") }}
+                          <input type="time" id="fadeOutTime" class="form-control right" v-model="fadeOutTime" />
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="mainVolume"
+                          >{{ $t("convertMessages.config.audioSection.mainVolume") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
                               type="number"
+                              id="mainVolume"
+                              class="form-control"
+                              min="-6"
+                              max="6"
+                              v-model.number="convertOptions.config.audioSection.mainVolume"
+                            />
+                            <span class="input-group-text"> db</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="secondVolume"
+                          >{{ $t("convertMessages.config.audioSection.secondVolume") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="secondVolume"
+                              class="form-control"
+                              min="-6"
+                              max="6"
+                              v-model.number="convertOptions.config.audioSection.secondVolume"
+                            />
+                            <span class="input-group-text"> db</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdVolume"
+                          >{{ $t("convertMessages.config.audioSection.thirdVolume") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="thirdVolume"
+                              class="form-control"
+                              min="-6"
+                              max="6"
+                              v-model.number="convertOptions.config.audioSection.thirdVolume"
+                            />
+                            <span class="input-group-text"> db</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="mainBalance"
+                          >{{ $t("convertMessages.config.audioSection.mainBalance") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">l(0) ... </span>
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="mainBalance"
+                              class="form-control"
                               min="0"
-                              oninput="validity.valid||(value='');"
-                              id="bufferSize"
-                              class="right"
-                              v-model.number="convertOptions.config.audioSection.bufferSize"
-                            /> </label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting"
-                          ><label for="audioBufferSize"
-                            >{{ $t("convertMessages.config.audioSection.audioBufferSize") }}
-                            <b-form-select
-                              id="audioBufferSize"
-                              class="right"
-                              v-model="convertOptions.config.audioSection.audioBufferSize"
-                            >
-                              <option :value="1024">1024</option>
-                              <option :value="2048">2048</option>
-                              <option :value="4096">4096</option>
-                              <option :value="8192">8192</option>
-                              <option :value="16384">16384</option>
-                            </b-form-select>
-                          </label></span
-                        >
-                      </div>
-                    </b-card-text>
-                  </b-tab>
+                              max="1"
+                              step="0.1"
+                              v-model.number="convertOptions.config.audioSection.mainBalance"
+                            />
+                            <span class="input-group-text"> ... r(1)</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="secondBalance"
+                          >{{ $t("convertMessages.config.audioSection.secondBalance") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">l(0) ... </span>
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="secondBalance"
+                              class="form-control"
+                              min="0"
+                              max="1"
+                              step="0.1"
+                              v-model.number="convertOptions.config.audioSection.secondBalance"
+                            />
+                            <span class="input-group-text"> ... r(1)</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdBalance"
+                          >{{ $t("convertMessages.config.audioSection.thirdBalance") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">l(0) ... </span>
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="thirdBalance"
+                              class="form-control"
+                              min="0"
+                              max="1"
+                              step="0.1"
+                              v-model.number="convertOptions.config.audioSection.thirdBalance"
+                            />
+                            <span class="input-group-text"> ... r(1)</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="mainDelay"
+                          >{{ $t("convertMessages.config.audioSection.mainDelay") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="mainDelay"
+                              class="form-control"
+                              min="0"
+                              max="100"
+                              step="10"
+                              v-model.number="convertOptions.config.audioSection.mainDelay"
+                            />
+                            <span class="input-group-text">ms</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="secondDelay"
+                          >{{ $t("convertMessages.config.audioSection.secondDelay") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="secondDelay"
+                              class="form-control"
+                              min="0"
+                              max="100"
+                              step="10"
+                              v-model.number="convertOptions.config.audioSection.secondDelay"
+                            />
+                            <span class="input-group-text">ms</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdDelay"
+                          >{{ $t("convertMessages.config.audioSection.thirdDelay") }}
+                          <div class="input-group input-group-sm mb-2">
+                            <input
+                              class="form-control right"
+                              type="number"
+                              id="thirdDelay"
+                              class="form-control"
+                              min="0"
+                              max="100"
+                              step="10"
+                              v-model.number="convertOptions.config.audioSection.thirdDelay"
+                            />
+                            <span class="input-group-text">ms</span>
+                          </div>
+                        </label>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="emulation" role="tabpanel" aria-labelledby="emulation-tab">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="stereoModeAuto"> {{ $t("stereoMode") }} </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="AUTO"
+                              id="stereoModeAuto"
+                              v-model="stereoMode"
+                            />
+                            <label class="form-check-label" for="stereoModeAuto"> Auto </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="FORCE_2SID"
+                              id="stereoMode2Sid"
+                              v-model="stereoMode"
+                            />
+                            <label class="form-check-label" for="stereoMode2Sid"> 2-SID </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="FORCE_3SID"
+                              id="stereoMode3Sid"
+                              v-model="stereoMode"
+                            />
+                            <label class="form-check-label" for="stereoMode3Sid"> 3-SID </label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
 
-                  <b-tab>
-                    <template #title>{{ $t("filterCfgHeader") }}</template>
-
-                    <b-card-text>
-                      <b-tabs
-                        v-model="filterTabConfigIndex"
-                        active-nav-item-class="font-weight-bold text-italic"
-                        pills
-                        card
-                        small
-                        align="right"
-                      >
-                        <b-tab>
-                          <template #title>{{ $t("residFpFilterCfgHeader") }}</template>
-
-                          <b-card-text>
-                            <b-tabs
-                              v-model="residFpFilterModelTabConfigIndex"
-                              active-nav-item-class="font-weight-bold text-italic"
-                              pills
-                              card
-                              small
-                              align="right"
-                            >
-                              <b-tab>
-                                <template #title>{{ $t("residFpFilter6581CfgHeader") }}</template>
-
-                                <b-card-text>
-                                  <b-tabs
-                                    v-model="reSIDfpFilter6581SidTabConfigIndex"
-                                    active-nav-item-class="font-weight-bold text-italic"
-                                    pills
-                                    card
-                                    small
-                                    align="right"
-                                  >
-                                    <b-tab>
-                                      <template #title>{{ $t("reSIDfpFilter6581Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="reSIDfpFilter6581"
-                                              >{{ $t("convertMessages.config.emulationSection.reSIDfpFilter6581") }}
-                                              <b-form-select
-                                                id="reSIDfpFilter6581"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
-                                                :options="reSIDfpFilters6581"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-
-                                    <b-tab>
-                                      <template #title>{{ $t("reSIDfpStereoFilter6581Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="reSIDfpStereoFilter6581"
-                                              >{{
-                                                $t("convertMessages.config.emulationSection.reSIDfpStereoFilter6581")
-                                              }}
-                                              <b-form-select
-                                                id="reSIDfpStereoFilter6581"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter6581"
-                                                :options="reSIDfpFilters6581"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                    <b-tab>
-                                      <template #title>{{ $t("reSIDfpThirdSIDFilter6581Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="reSIDfpThirdSIDFilter6581"
-                                              >{{
-                                                $t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter6581")
-                                              }}
-                                              <b-form-select
-                                                id="reSIDfpThirdSIDFilter6581"
-                                                class="right"
-                                                v-model="
-                                                  convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581
-                                                "
-                                                :options="reSIDfpFilters6581"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                  </b-tabs>
-                                </b-card-text>
-                              </b-tab>
-
-                              <b-tab>
-                                <template #title>{{ $t("residFpFilter8580CfgHeader") }}</template>
-
-                                <b-card-text>
-                                  <b-tabs
-                                    v-model="reSIDfpFilter8580SidTabConfigIndex"
-                                    active-nav-item-class="font-weight-bold text-italic"
-                                    pills
-                                    card
-                                    small
-                                    align="right"
-                                  >
-                                    <b-tab>
-                                      <template #title>{{ $t("reSIDfpFilter8580Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="reSIDfpFilter8580"
-                                              >{{ $t("convertMessages.config.emulationSection.reSIDfpFilter8580") }}
-                                              <b-form-select
-                                                id="reSIDfpFilter8580"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
-                                                :options="reSIDfpFilters8580"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                    <b-tab>
-                                      <template #title>{{ $t("reSIDfpStereoFilter8580Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="reSIDfpStereoFilter8580"
-                                              >{{
-                                                $t("convertMessages.config.emulationSection.reSIDfpStereoFilter8580")
-                                              }}
-                                              <b-form-select
-                                                id="reSIDfpStereoFilter8580"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter8580"
-                                                :options="reSIDfpFilters8580"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-
-                                    <b-tab>
-                                      <template #title>{{ $t("reSIDfpThirdSIDFilter8580Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="reSIDfpThirdSIDFilter8580"
-                                              >{{
-                                                $t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter8580")
-                                              }}
-                                              <b-form-select
-                                                id="reSIDfpThirdSIDFilter8580"
-                                                class="right"
-                                                v-model="
-                                                  convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580
-                                                "
-                                                :options="reSIDfpFilters8580"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                  </b-tabs>
-                                </b-card-text>
-                              </b-tab>
-                            </b-tabs>
-                          </b-card-text>
-                        </b-tab>
-
-                        <b-tab>
-                          <template #title>{{ $t("residFilterCfgHeader") }}</template>
-
-                          <b-card-text>
-                            <b-tabs
-                              v-model="residFilterModelTabConfigIndex"
-                              active-nav-item-class="font-weight-bold text-italic"
-                              pills
-                              card
-                              small
-                              align="right"
-                            >
-                              <b-tab>
-                                <template #title>{{ $t("residFilter6581CfgHeader") }}</template>
-
-                                <b-card-text>
-                                  <b-tabs
-                                    v-model="filter6581SidTabConfigIndex"
-                                    active-nav-item-class="font-weight-bold text-italic"
-                                    pills
-                                    card
-                                    small
-                                    align="right"
-                                  >
-                                    <b-tab>
-                                      <template #title>{{ $t("filter6581Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting">
-                                            <label for="filter6581"
-                                              >{{ $t("convertMessages.config.emulationSection.filter6581") }}
-                                              <b-form-select
-                                                id="filter6581"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.filter6581"
-                                                :options="reSIDfilters6581"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-
-                                    <b-tab>
-                                      <template #title>{{ $t("stereoFilter6581Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="stereoFilter6581"
-                                              >{{ $t("convertMessages.config.emulationSection.stereoFilter6581") }}
-                                              <b-form-select
-                                                id="stereoFilter6581"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.stereoFilter6581"
-                                                :options="reSIDfilters6581"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                    <b-tab>
-                                      <template #title>{{ $t("thirdSIDFilter6581Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="thirdSIDFilter6581"
-                                              >{{ $t("convertMessages.config.emulationSection.thirdSIDFilter6581") }}
-                                              <b-form-select
-                                                id="thirdSIDFilter6581"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
-                                                :options="reSIDfilters6581"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                  </b-tabs>
-                                </b-card-text>
-                              </b-tab>
-
-                              <b-tab>
-                                <template #title>{{ $t("residFilter8580CfgHeader") }}</template>
-
-                                <b-card-text>
-                                  <b-tabs
-                                    v-model="filter8580SidTabConfigIndex"
-                                    active-nav-item-class="font-weight-bold text-italic"
-                                    pills
-                                    card
-                                    small
-                                    align="right"
-                                  >
-                                    <b-tab>
-                                      <template #title>{{ $t("filter8580Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting">
-                                            <label for="filter8580"
-                                              >{{ $t("convertMessages.config.emulationSection.filter8580") }}
-                                              <b-form-select
-                                                id="filter8580"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.filter8580"
-                                                :options="reSIDfilters8580"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-
-                                    <b-tab>
-                                      <template #title>{{ $t("stereoFilter8580Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="stereoFilter8580"
-                                              >{{ $t("convertMessages.config.emulationSection.stereoFilter8580") }}
-                                              <b-form-select
-                                                id="stereoFilter8580"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.stereoFilter8580"
-                                                :options="reSIDfilters8580"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                    <b-tab>
-                                      <template #title>{{ $t("thirdSIDFilter8580Header") }}</template>
-
-                                      <b-card-text>
-                                        <div class="settings-box">
-                                          <span class="setting"
-                                            ><label for="thirdSIDFilter8580"
-                                              >{{ $t("convertMessages.config.emulationSection.thirdSIDFilter8580") }}
-                                              <b-form-select
-                                                id="thirdSIDFilter8580"
-                                                class="right"
-                                                v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
-                                                :options="reSIDfilters8580"
-                                                :select-size="3"
-                                              ></b-form-select> </label
-                                          ></span>
-                                        </div>
-                                      </b-card-text>
-                                    </b-tab>
-                                  </b-tabs>
-                                </b-card-text>
-                              </b-tab>
-                            </b-tabs>
-                          </b-card-text>
-                        </b-tab>
-                      </b-tabs>
-                    </b-card-text>
-                  </b-tab>
-                  <b-tab>
-                    <template #title>{{ $t("mutingCfgHeader") }}</template>
-
-                    <b-card-text>
-                      <b-tabs
-                        v-model="muteSidTabConfigIndex"
-                        active-nav-item-class="font-weight-bold text-italic"
-                        pills
-                        card
-                        small
-                        align="right"
-                      >
-                        <b-tab>
-                          <template #title>{{ $t("muteSidHeader") }}</template>
-
-                          <b-card-text>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteVoice1">
-                                  {{ $t("convertMessages.config.emulationSection.muteVoice1") }}
-                                  <b-form-checkbox
-                                    id="muteVoice1"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteVoice1"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteVoice2">
-                                  {{ $t("convertMessages.config.emulationSection.muteVoice2") }}
-                                  <b-form-checkbox
-                                    id="muteVoice2"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteVoice2"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteVoice3">
-                                  {{ $t("convertMessages.config.emulationSection.muteVoice3") }}
-                                  <b-form-checkbox
-                                    id="muteVoice3"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteVoice3"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteVoice4">
-                                  {{ $t("convertMessages.config.emulationSection.muteVoice4") }}
-                                  <b-form-checkbox
-                                    id="muteVoice4"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteVoice4"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                          </b-card-text>
-                        </b-tab>
-
-                        <b-tab>
-                          <template #title>{{ $t("muteStereoSidHeader") }}</template>
-
-                          <b-card-text>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteStereoVoice1">
-                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice1") }}
-                                  <b-form-checkbox
-                                    id="muteStereoVoice1"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteStereoVoice1"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteStereoVoice2">
-                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice2") }}
-                                  <b-form-checkbox
-                                    id="muteStereoVoice2"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteStereoVoice2"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteStereoVoice3">
-                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice3") }}
-                                  <b-form-checkbox
-                                    id="muteStereoVoice3"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteStereoVoice3"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteStereoVoice4">
-                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }}
-                                  <b-form-checkbox
-                                    id="muteStereoVoice4"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteStereoVoice4"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                          </b-card-text>
-                        </b-tab>
-
-                        <b-tab>
-                          <template #title>{{ $t("muteThirdSidHeader") }}</template>
-
-                          <b-card-text>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteThirdSIDVoice1">
-                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice1") }}
-                                  <b-form-checkbox
-                                    id="muteThirdSIDVoice1"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice1"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteThirdSIDVoice2">
-                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice2") }}
-                                  <b-form-checkbox
-                                    id="muteThirdSIDVoice2"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice2"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteThirdSIDVoice3">
-                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice3") }}
-                                  <b-form-checkbox
-                                    id="muteThirdSIDVoice3"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice3"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                            <div class="settings-box">
-                              <span class="setting">
-                                <label for="muteThirdSIDVoice4">
-                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }}
-                                  <b-form-checkbox
-                                    id="muteThirdSIDVoice4"
-                                    class="right"
-                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4"
-                                  >
-                                  </b-form-checkbox></label
-                              ></span>
-                            </div>
-                          </b-card-text>
-                        </b-tab>
-                      </b-tabs>
-                    </b-card-text>
-                  </b-tab>
-
-                  <b-tab>
-                    <template #title>{{ $t("floppyCartCfgHeader") }}</template>
-
-                    <b-card-text>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="jiffyDosInstalled">
-                            {{ $t("convertMessages.config.c1541Section.jiffyDosInstalled") }}
-                            <b-form-checkbox
-                              id="jiffyDosInstalled"
-                              class="right"
-                              v-model="convertOptions.config.c1541Section.jiffyDosInstalled"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b class="right"> {{ $t("CART_NOTES") }} </b>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group class="right" :label="$t('convertMessages.reuSize')" label-for="reuSizeAuto">
-                            <b-form-radio-group v-model="convertOptions.reuSize">
-                              <b-form-radio value="null" id="reuSizeAuto">Auto</b-form-radio>
-                              <b-form-radio value="128">REU 1700 (128KB)</b-form-radio>
-                              <b-form-radio value="512">REU 1750 (512KB)</b-form-radio>
-                              <b-form-radio value="256">REU 1764 (256KB)</b-form-radio>
-                              <b-form-radio value="2048">REU 1750 XL (2MB)</b-form-radio>
-                              <b-form-radio value="16384">REU (16MB)</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <label for="sfxSoundExpander">
-                            {{ $t("convertMessages.sfxSoundExpander") }}
-                            <b-form-checkbox
-                              id="sfxSoundExpander"
-                              class="right"
-                              v-model="convertOptions.sfxSoundExpander"
-                            >
-                            </b-form-checkbox></label
-                        ></span>
-                      </div>
-                      <div class="settings-box">
-                        <span class="setting">
-                          <b-form-group
-                            :label="$t('convertMessages.sfxSoundExpanderType')"
-                            label-for="sfxSoundExpanderType0"
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="dualSidBase">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="dualSidBase"
+                            v-model="convertOptions.config.emulationSection.dualSidBase"
                           >
-                            <b-form-radio-group class="right" v-model="convertOptions.sfxSoundExpanderType">
-                              <b-form-radio value="0" id="sfxSoundExpanderType0">OPL1 (YM3526)</b-form-radio>
-                              <b-form-radio value="1">OPL2 (YM3812)</b-form-radio>
-                            </b-form-radio-group>
-                          </b-form-group>
-                        </span>
-                      </div>
-                    </b-card-text>
-                  </b-tab>
-                </b-tabs>
-              </b-card-text>
-            </b-tab>
-            <b-tab v-if="username !== 'jsidplay2'">
-              <template #title>
-                {{ $t("LOGS") }}
-                <b-spinner
-                  type="border"
-                  :variant="tabIndex == 8 ? 'light' : 'primary'"
-                  small
-                  v-if="loadingLogs"
-                ></b-spinner>
-              </template>
+                            <option value="54304">0xd420</option>
+                            <option value="54336">0xd440</option>
+                            <option value="54528">0xd500</option>
+                            <option value="56832">0xde00</option>
+                            <option value="57088">0xdf00</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.dualSidBase") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="thirdSIDBase">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="thirdSIDBase"
+                            v-model="convertOptions.config.emulationSection.thirdSIDBase"
+                          >
+                            <option value="54304">0xd420</option>
+                            <option value="54336">0xd440</option>
+                            <option value="54528">0xd500</option>
+                            <option value="56832">0xde00</option>
+                            <option value="57088">0xdf00</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.thirdSIDBase") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultClockSpeed">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="defaultClockSpeed"
+                            v-model="convertOptions.config.emulationSection.defaultClockSpeed"
+                          >
+                            <option value="PAL">PAL</option>
+                            <option value="NTSC">NTSC</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.defaultClockSpeed") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultEmulation">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="defaultEmulation"
+                            v-model="convertOptions.config.emulationSection.defaultEmulation"
+                          >
+                            <option value="RESIDFP">RESIDFP</option>
+                            <option value="RESID">RESID</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.defaultEmulation") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultSidModel">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="defaultSidModel"
+                            v-model="convertOptions.config.emulationSection.defaultSidModel"
+                          >
+                            <option value="MOS6581">MOS6581</option>
+                            <option value="MOS8580">MOS8580</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.emulationSection.defaultSidModel") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="sampling">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="sampling"
+                            v-model="convertOptions.config.audioSection.sampling"
+                          >
+                            <option value="DECIMATE">DECIMATE</option>
+                            <option value="RESAMPLE">RESAMPLE</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.audioSection.sampling") }}</span>
+                        </label>
+                      </span>
+                    </div>
 
-              <b-card-text>
-                <div class="settings-box">
-                  <span class="setting">
-                    <b-form-select
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="samplingRateLow">
+                          {{ $t("convertMessages.config.audioSection.samplingRate") }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="LOW"
+                              id="samplingRateLow"
+                              v-model="convertOptions.config.audioSection.samplingRate"
+                            />
+                            <label class="form-check-label" for="samplingRateLow"> LOW </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="MEDIUM"
+                              id="samplingRateMedium"
+                              v-model="convertOptions.config.audioSection.samplingRate"
+                            />
+                            <label class="form-check-label" for="samplingRateMedium"> MEDIUM </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="HIGH"
+                              id="samplingRateHigh"
+                              v-model="convertOptions.config.audioSection.samplingRate"
+                            />
+                            <label class="form-check-label" for="samplingRateHigh"> HIGH </label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="digiBoosted8580">
+                            {{ $t("convertMessages.config.emulationSection.digiBoosted8580") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="digiBoosted8580"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.emulationSection.digiBoosted8580"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="detectPSID64ChipModel">
+                            {{ $t("convertMessages.config.emulationSection.detectPSID64ChipModel") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="detectPSID64ChipModel"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.emulationSection.detectPSID64ChipModel"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="fakeStereo">
+                            {{ $t("convertMessages.config.emulationSection.fakeStereo") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="fakeStereo"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.emulationSection.fakeStereo"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="firstSid">
+                          {{ $t("convertMessages.config.emulationSection.sidToRead") }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="FIRST_SID"
+                              id="firstSid"
+                              v-model="convertOptions.config.emulationSection.sidToRead"
+                            />
+                            <label class="form-check-label" for="firstSid"> {{ $t("firstSid") }} </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="SECOND_SID"
+                              id="secondSid"
+                              v-model="convertOptions.config.emulationSection.sidToRead"
+                            />
+                            <label class="form-check-label" for="secondSid"> {{ $t("secondSid") }} </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="THIRD_SID"
+                              id="thirdSid"
+                              v-model="convertOptions.config.emulationSection.sidToRead"
+                            />
+                            <label class="form-check-label" for="thirdSid"> {{ $t("thirdSid") }}</label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="bufferSize"
+                          >{{ $t("convertMessages.config.audioSection.bufferSize") }}
+                          <input
+                            class="right"
+                            type="number"
+                            id="bufferSize"
+                            class="form-control"
+                            v-model.number="convertOptions.config.audioSection.bufferSize"
+                        /></label>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="audioBufferSize">
+                          <select
+                            class="form-select form-select-sm right"
+                            id="audioBufferSize"
+                            v-model="convertOptions.config.audioSection.audioBufferSize"
+                          >
+                            <option value="1024">1024</option>
+                            <option value="2048">2048</option>
+                            <option value="4096">4096</option>
+                            <option value="8192">8192</option>
+                            <option value="16384">16384</option>
+                          </select>
+                          <span>{{ $t("convertMessages.config.audioSection.audioBufferSize") }}</span>
+                        </label>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="filter" role="tabpanel" aria-labelledby="filter-tab">
+                    <div class="card">
+                      <div class="card-header">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab4" role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link active"
+                              id="residfpfilter-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#residfpfilter"
+                              type="button"
+                              role="tab"
+                              aria-controls="residfpfilter"
+                              aria-selected="true"
+                              @click="filterTabConfigIndex = 0"
+                            >
+                              {{ $t("residFpFilterCfgHeader") }}
+                            </button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link"
+                              id="residfilter-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#residfilter"
+                              type="button"
+                              role="tab"
+                              aria-controls="residfilter"
+                              aria-selected="true"
+                              @click="filterTabConfigIndex = 1"
+                            >
+                              {{ $t("residFilterCfgHeader") }}
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="tab-content card-body" style="position: relative">
+                        <div
+                          class="tab-pane fade show active"
+                          id="residfpfilter"
+                          role="tabpanel"
+                          aria-labelledby="residfpfilter-tab"
+                        >
+                          <div class="card">
+                            <div class="card-header">
+                              <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab5" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                  <button
+                                    class="nav-link active"
+                                    id="residfpfilter6581-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#residfpfilter6581"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="residfpfilter6581"
+                                    aria-selected="true"
+                                    @click="residFpFilterModelTabConfigIndex = 0"
+                                  >
+                                    {{ $t("residFpFilter6581CfgHeader") }}
+                                  </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                  <button
+                                    class="nav-link"
+                                    id="residfilterfp8580-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#residfpfilter8580"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="residfpfilter8580"
+                                    aria-selected="true"
+                                    @click="residFpFilterModelTabConfigIndex = 1"
+                                  >
+                                    {{ $t("residFpFilter8580CfgHeader") }}
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="tab-content card-body" style="position: relative">
+                              <div
+                                class="tab-pane fade show active"
+                                id="residfpfilter6581"
+                                role="tabpanel"
+                                aria-labelledby="residfpfilter6581-tab"
+                              >
+                                <div class="card">
+                                  <div class="card-header">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab7" role="tablist">
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link active"
+                                          id="reSIDfpFiltername6581-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDfpFiltername6581"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDfpFiltername6581"
+                                          aria-selected="true"
+                                          @click="reSIDfpFilter6581SidTabConfigIndex = 0"
+                                        >
+                                          {{ $t("reSIDfpFilter6581Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDfpStereoFiltername6581-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDfpStereoFiltername6581"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDfpStereoFiltername6581"
+                                          aria-selected="true"
+                                          @click="reSIDfpFilter6581SidTabConfigIndex = 1"
+                                        >
+                                          {{ $t("reSIDfpStereoFilter6581Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDfpThirdSIDFiltername6581-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDfpThirdSIDFiltername6581"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDfpThirdSIDFiltername6581"
+                                          aria-selected="true"
+                                          @click="reSIDfpFilter6581SidTabConfigIndex = 2"
+                                        >
+                                          {{ $t("reSIDfpThirdSIDFilter6581Header") }}
+                                        </button>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div class="tab-content card-body" style="position: relative">
+                                    <div
+                                      class="tab-pane fade show active"
+                                      id="reSIDfpFiltername6581"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDfpFiltername6581-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpFilter6581"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDfpStereoFiltername6581"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDfpStereoFiltername6581-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpStereoFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpStereoFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpStereoFilter6581"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDfpThirdSIDFiltername6581"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDfpThirdSIDFiltername6581-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpThirdSIDFilter6581">
+                                            {{
+                                              $t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter6581")
+                                            }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpThirdSIDFilter6581"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tab-pane fade show"
+                                id="residfpfilter8580"
+                                role="tabpanel"
+                                aria-labelledby="residfpfilter8580-tab"
+                              >
+                                <div class="card">
+                                  <div class="card-header">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab8" role="tablist">
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link active"
+                                          id="reSIDfpFiltername8580-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDfpFiltername8580"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDfpFiltername8580"
+                                          aria-selected="true"
+                                          @click="reSIDfpFilter8580SidTabConfigIndex = 0"
+                                        >
+                                          {{ $t("reSIDfpFilter8580Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDfpStereoFiltername8580-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDfpStereoFiltername8580"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDfpStereoFiltername8580"
+                                          aria-selected="true"
+                                          @click="reSIDfpFilter8580SidTabConfigIndex = 1"
+                                        >
+                                          {{ $t("reSIDfpStereoFilter8580Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDfpThirdSIDFiltername8580-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDfpThirdSIDFiltername8580"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDfpThirdSIDFiltername8580"
+                                          aria-selected="true"
+                                          @click="reSIDfpFilter8580SidTabConfigIndex = 2"
+                                        >
+                                          {{ $t("reSIDfpThirdSIDFilter8580Header") }}
+                                        </button>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div class="tab-content card-body" style="position: relative">
+                                    <div
+                                      class="tab-pane fade show active"
+                                      id="reSIDfpFiltername8580"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDfpFiltername8580-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpFilter8580"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDfpStereoFiltername8580"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDfpStereoFiltername8580-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpStereoFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.reSIDfpStereoFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpStereoFilter8580"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpStereoFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDfpThirdSIDFiltername8580"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDfpThirdSIDFiltername8580-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDfpThirdSIDFilter8580">
+                                            {{
+                                              $t("convertMessages.config.emulationSection.reSIDfpThirdSIDFilter8580")
+                                            }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDfpThirdSIDFilter8580"
+                                              v-model="convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="tab-pane fade show"
+                          id="residfilter"
+                          role="tabpanel"
+                          aria-labelledby="residfilter-tab"
+                        >
+                          <div class="card">
+                            <div class="card-header">
+                              <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab6" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                  <button
+                                    class="nav-link active"
+                                    id="residfilter6581-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#residfilter6581"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="residfilter6581"
+                                    aria-selected="true"
+                                    @click="residFilterModelTabConfigIndex = 0"
+                                  >
+                                    {{ $t("residFilter6581CfgHeader") }}
+                                  </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                  <button
+                                    class="nav-link"
+                                    id="residfilter8580-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#residfilter8580"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="residfilter8580"
+                                    aria-selected="true"
+                                    @click="residFilterModelTabConfigIndex = 1"
+                                  >
+                                    {{ $t("residFilter8580CfgHeader") }}
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="tab-content card-body" style="position: relative">
+                              <div
+                                class="tab-pane fade show active"
+                                id="residfilter6581"
+                                role="tabpanel"
+                                aria-labelledby="residfilter6581-tab"
+                              >
+                                <div class="card">
+                                  <div class="card-header">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab9" role="tablist">
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link active"
+                                          id="reSIDFiltername6581-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDFiltername6581"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDFiltername6581"
+                                          aria-selected="true"
+                                          @click="reSIDFilter6581SidTabConfigIndex = 0"
+                                        >
+                                          {{ $t("reSIDFilter6581Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDStereoFiltername6581-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDStereoFiltername6581"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDStereoFiltername6581"
+                                          aria-selected="true"
+                                          @click="reSIDFilter6581SidTabConfigIndex = 1"
+                                        >
+                                          {{ $t("reSIDStereoFilter6581Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDThirdSIDFiltername6581-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDThirdSIDFiltername6581"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDThirdSIDFiltername6581"
+                                          aria-selected="true"
+                                          @click="reSIDFilter6581SidTabConfigIndex = 2"
+                                        >
+                                          {{ $t("reSIDThirdSIDFilter6581Header") }}
+                                        </button>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div class="tab-content card-body" style="position: relative">
+                                    <div
+                                      class="tab-pane fade show active"
+                                      id="reSIDFiltername6581"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDFiltername6581-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.filter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDFilter6581"
+                                              v-model="convertOptions.config.emulationSection.filter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDStereoFiltername6581"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDStereoFiltername6581-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDStereoFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.stereoFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDStereoFilter6581"
+                                              v-model="convertOptions.config.emulationSection.stereoFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDThirdSIDFiltername6581"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDThirdSIDFiltername6581-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDThirdSIDFilter6581">
+                                            {{ $t("convertMessages.config.emulationSection.thirdSIDFilter6581") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDThirdSIDFilter6581"
+                                              v-model="convertOptions.config.emulationSection.thirdSIDFilter6581"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tab-pane fade show"
+                                id="residfilter8580"
+                                role="tabpanel"
+                                aria-labelledby="residfilter8580-tab"
+                              >
+                                <div class="card">
+                                  <div class="card-header">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab10" role="tablist">
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link active"
+                                          id="reSIDFiltername8580-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDFiltername8580"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDFiltername8580"
+                                          aria-selected="true"
+                                          @click="reSIDFilter8580SidTabConfigIndex = 0"
+                                        >
+                                          {{ $t("reSIDFilter8580Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDStereoFiltername8580-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDStereoFiltername8580"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDStereoFiltername8580"
+                                          aria-selected="true"
+                                          @click="reSIDFilter8580SidTabConfigIndex = 1"
+                                        >
+                                          {{ $t("reSIDStereoFilter8580Header") }}
+                                        </button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                        <button
+                                          class="nav-link"
+                                          id="reSIDThirdSIDFiltername8580-tab"
+                                          data-bs-toggle="pill"
+                                          data-bs-target="#reSIDThirdSIDFiltername8580"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="reSIDThirdSIDFiltername8580"
+                                          aria-selected="true"
+                                          @click="reSIDFilter8580SidTabConfigIndex = 2"
+                                        >
+                                          {{ $t("reSIDThirdSIDFilter8580Header") }}
+                                        </button>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div class="tab-content card-body" style="position: relative">
+                                    <div
+                                      class="tab-pane fade show active"
+                                      id="reSIDFiltername8580"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDFiltername8580-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.filter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDFilter8580"
+                                              v-model="convertOptions.config.emulationSection.filter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDStereoFiltername8580"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDStereoFiltername8580-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDStereoFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.stereoFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDStereoFilter8580"
+                                              v-model="convertOptions.config.emulationSection.stereoFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="tab-pane fade show"
+                                      id="reSIDThirdSIDFiltername8580"
+                                      role="tabpanel"
+                                      aria-labelledby="reSIDThirdSIDFiltername8580-tab"
+                                    >
+                                      <div class="settings-box">
+                                        <span class="setting"
+                                          ><label for="reSIDThirdSIDFilter8580">
+                                            {{ $t("convertMessages.config.emulationSection.thirdSIDFilter8580") }}
+                                            <select
+                                              class="form-select form-select-sm right"
+                                              id="reSIDThirdSIDFilter8580"
+                                              v-model="convertOptions.config.emulationSection.thirdSIDFilter8580"
+                                              size="3"
+                                            >
+                                              <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                            </select></label
+                                          ></span
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="mute" role="tabpanel" aria-labelledby="mute-tab">
+                    <div class="card">
+                      <div class="card-header">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab11" role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link active"
+                              id="muteSid-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#muteSid"
+                              type="button"
+                              role="tab"
+                              aria-controls="muteSid"
+                              aria-selected="true"
+                              @click="muteSidTabConfigIndex = 0"
+                            >
+                              {{ $t("muteSidHeader") }}
+                            </button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link"
+                              id="muteStereoSid-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#muteStereoSid"
+                              type="button"
+                              role="tab"
+                              aria-controls="muteStereoSid"
+                              aria-selected="true"
+                              @click="muteSidTabConfigIndex = 1"
+                            >
+                              {{ $t("muteStereoSidHeader") }}
+                            </button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link"
+                              id="muteThirdSID-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#muteThirdSID"
+                              type="button"
+                              role="tab"
+                              aria-controls="muteThirdSID"
+                              aria-selected="true"
+                              @click="muteSidTabConfigIndex = 2"
+                            >
+                              {{ $t("muteThirdSidHeader") }}
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="tab-content card-body" style="position: relative">
+                        <div
+                          class="tab-pane fade show active"
+                          id="muteSid"
+                          role="tabpanel"
+                          aria-labelledby="muteSid-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice1">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice1") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice1"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice1"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice2">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice2") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice2"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice2"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice3">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice3") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice3"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice3"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteVoice4">
+                                  {{ $t("convertMessages.config.emulationSection.muteVoice4") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteVoice4"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteVoice4"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="tab-pane fade show"
+                          id="muteStereoSid"
+                          role="tabpanel"
+                          aria-labelledby="muteStereoSid-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice1">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice1") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice1"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice1"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice2">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice2") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice2"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice2"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice3">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice3") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice3"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice3"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteStereoVoice4">
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice4"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice4"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="tab-pane fade show"
+                          id="muteThirdSID"
+                          role="tabpanel"
+                          aria-labelledby="muteThirdSID-tab"
+                        >
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice1">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice1") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice1"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice1"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice2">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice2") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice2"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice2"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice3">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice3") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice3"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice3"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                          <div class="settings-box">
+                            <span class="setting">
+                              <div class="form-check">
+                                <label class="form-check-label" for="muteThirdSIDVoice4">
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice4"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4"
+                                  />
+                                </label>
+                              </div>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show" id="cart" role="tabpanel" aria-labelledby="cart-tab">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="jiffyDosInstalled">
+                            {{ $t("convertMessages.config.c1541Section.jiffyDosInstalled") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="jiffyDosInstalled"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.config.c1541Section.jiffyDosInstalled"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <b class="right"> {{ $t("CART_NOTES") }} </b>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label right" for="reuSizeAuto">
+                          {{ $t("convertMessages.reuSize") }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="null"
+                              id="reuSizeAuto"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSizeAuto"> Auto </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="128"
+                              id="reuSize128"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize128"> REU 1700 (128KB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="512"
+                              id="reuSize512"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize512"> REU 1750 (512KB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="256"
+                              id="reuSize256"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize256"> REU 1764 (256KB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="2048"
+                              id="reuSize2048"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize2048"> REU 1750 XL (2MB) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="16384"
+                              id="reuSize16384"
+                              v-model="convertOptions.reuSize"
+                            />
+                            <label class="form-check-label" for="reuSize16384"> REU (16MB) </label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <div class="form-check">
+                          <label class="form-check-label" for="sfxSoundExpander">
+                            {{ $t("convertMessages.sfxSoundExpander") }}
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="sfxSoundExpander"
+                              style="float: right; margin-left: 8px"
+                              v-model="convertOptions.sfxSoundExpander"
+                            />
+                          </label>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label class="form-check-label" for="sfxSoundExpanderType0">
+                          {{ $t("convertMessages.sfxSoundExpanderType") }}
+                        </label>
+                        <div class="input-group" style="justify-content: flex-end">
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="0"
+                              id="sfxSoundExpanderType0"
+                              v-model="convertOptions.sfxSoundExpanderType"
+                            />
+                            <label class="form-check-label" for="sfxSoundExpanderType0"> OPL1 (YM3526) </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              value="1"
+                              id="sfxSoundExpanderType1"
+                              v-model="convertOptions.sfxSoundExpanderType"
+                            />
+                            <label class="form-check-label" for="sfxSoundExpanderType1"> OPL2 (YM3812) </label>
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade show" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+              <div class="settings-box">
+                <span class="setting">
+                  <label for="order">
+                    <select
+                      class="form-select form-select-sm right"
                       id="order"
-                      size="sm"
-                      class="mb-2 right"
                       v-model="order"
                       @change="
                         fetchLogs();
@@ -2806,210 +3915,234 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       "
                     >
                       <option value="ASC">{{ $t("ASC") }}</option>
-                      <option value="DESC">{{ $t("DESC") }}</option> </b-form-select
-                    ><b-form-datepicker
-                      id="instant"
-                      v-model="Logs.date"
-                      :locale="$i18n.locale"
-                      v-bind="$i18n.messages[$i18n.locale].DateLabels || {}"
-                      size="sm"
-                      class="mb-2"
-                      reset-button
-                      @input="
-                        fetchLogs();
-                        countLogs();
-                      "
-                      style="max-width: 100%; padding: 0.175em 0em"
-                    ></b-form-datepicker>
-                    <b-form-timepicker
-                      v-model="Logs.time"
-                      :locale="$i18n.locale"
-                      v-bind="$i18n.messages[$i18n.locale].TimeLabels || {}"
-                      size="sm"
-                      class="mb-2"
-                      show-seconds
-                      now-button
-                      reset-button
-                      @input="
-                        fetchLogs();
-                        countLogs();
-                      "
-                      style="max-width: 100%; padding: 0.175em 0em"
-                    ></b-form-timepicker
-                  ></span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting"
-                    ><label for="tooMuchLogging">
+                      <option value="DESC">{{ $t("DESC") }}</option>
+                    </select>
+                  </label>
+                  <input
+                    type="date"
+                    class="form-control right"
+                    v-model="Logs.date"
+                    :locale="$i18n.locale"
+                    @input="
+                      fetchLogs();
+                      countLogs();
+                    "
+                  />
+
+                  <input
+                    type="time"
+                    class="form-control right"
+                    v-model="Logs.time"
+                    @input="
+                      fetchLogs();
+                      countLogs();
+                    "
+                  />
+                </span>
+              </div>
+
+              <div class="settings-box">
+                <span class="setting">
+                  <div class="form-check">
+                    <label class="form-check-label" for="tooMuchLogging">
                       {{ $t("tooMuchLogging") }}
-                      <b-form-checkbox
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
                         id="tooMuchLogging"
-                        class="right"
+                        style="float: right; margin-left: 8px"
                         v-model="tooMuchLogging"
-                        @change="
+                        v-on:click="
                           fetchLogs();
                           countLogs();
                         "
-                      >
-                      </b-form-checkbox></label
-                  ></span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting"
-                    ><label for="maxResults">
-                      {{ $t("maxResults") }}
-                      <b-form-input
-                        type="number"
-                        min="0"
-                        max="10000"
-                        oninput="validity.valid||(value='');"
-                        id="maxResults"
-                        size="sm"
-                        class="mb-2 right"
-                        v-model.number="maxResults"
-                        @change="
-                          fetchLogs();
-                          countLogs();
-                        "
-                      /> </label
-                  ></span>
-                </div>
-                <b-button
-                  size="sm"
-                  class="mb-2"
-                  variant="success"
-                  v-on:click="
-                    fetchLogs();
-                    countLogs();
-                  "
-                  style="float: left"
-                >
-                  <span>Request LOGS</span>
-                </b-button>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="logCount">
-                      <span class="right" style="font-size: small; font-style: italic; color: #6c757d"
-                        >{{ logsCount.toLocaleString() }} {{ $t("results") }}</span
-                      >
+                      />
                     </label>
-                  </span>
-                </div>
-                <b-table striped bordered :items="logs" :fields="logFields" small fixed responsive>
-                  <template #cell(instant)="row">
-                    <span> {{ toDateTime(row.item.instant) }} </span>
-                  </template>
-                  <template #head(instant)="data">
-                    <div>
-                      <b-icon-calendar2-date />
-                    </div>
-                    <label for="instant" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
-                      $t("Logs.instant")
-                    }}</label>
-                  </template>
-                  <template #head(sourceClassName)="data">
-                    <div>
-                      <b-icon-at />
-                    </div>
-                    <label
-                      for="sourceClassName"
-                      class="d-none d-sm-block"
-                      style="margin-left: 0px; word-wrap: normal"
-                      >{{ $t("Logs.sourceClassName") }}</label
-                    >
-                    <b-form-input
-                      type="text"
-                      id="sourceClassName"
-                      v-model="Logs.sourceClassName"
+                  </div>
+                </span>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-success btn-sm mb-2"
+                v-on:click="
+                  fetchLogs();
+                  countLogs();
+                "
+                style="float: left"
+              >
+                <span>Request LOGS</span>
+              </button>
+              <div class="settings-box">
+                <span class="setting">
+                  <label for="maxResults"
+                    >{{ $t("maxResults") }}
+                    <input
+                      class="form-control right"
+                      type="number"
+                      id="maxResults"
+                      class="form-control"
+                      min="0"
+                      max="10000"
+                      v-model.number="maxResults"
                       @change="
                         fetchLogs();
                         countLogs();
                       "
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
                     />
-                  </template>
-                  <template #head(sourceMethodName)="data">
-                    <div>
-                      <b-icon-hash />
-                    </div>
-                    <label
-                      for="sourceMethodName"
-                      class="d-none d-sm-block"
-                      style="margin-left: 0px; word-wrap: normal"
-                      >{{ $t("Logs.sourceMethodName") }}</label
-                    >
-                    <b-form-input
-                      type="text"
-                      id="sourceMethodName"
-                      v-model="Logs.sourceMethodName"
-                      @change="
-                        fetchLogs();
-                        countLogs();
-                      "
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                  <template #head(level)="data">
-                    <div>
-                      <b-icon-info-lg />
-                    </div>
-                    <label for="level" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
-                      $t("Logs.level")
-                    }}</label>
-                    <b-form-input
-                      type="text"
-                      id="level"
-                      v-model="Logs.level"
-                      @change="
-                        fetchLogs();
-                        countLogs();
-                      "
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                  <template #head(message)="data">
-                    <div>
-                      <b-icon-chat-text />
-                    </div>
-                    <label for="message" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
-                      $t("Logs.message")
-                    }}</label>
-                    <b-form-input
-                      type="text"
-                      id="message"
-                      v-model="Logs.message"
-                      @change="
-                        fetchLogs();
-                        countLogs();
-                      "
-                      style="max-width: 100%; padding: 0.175em 0em"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                    />
-                  </template>
-                </b-table>
-              </b-card-text>
-            </b-tab>
-          </b-tabs>
-        </b-card>
-      </b-form>
+                  </label>
+                </span>
+              </div>
+              <div class="settings-box">
+                <span class="setting">
+                  <span class="right" style="font-size: small; font-style: italic; color: #6c757d"
+                    >{{ logsCount.toLocaleString() }} {{ $t("results") }}</span
+                  >
+                </span>
+              </div>
+
+              <table class="table table-sm table-striped table-bordered w-auto">
+                <thead>
+                  <tr>
+                    <th style="vertical-align: top; width: 15%">
+                      <div>
+                        <i class="bi bi-calendar2-date"></i>
+                      </div>
+                      <div class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">
+                        {{ $t("Logs.instant") }}
+                      </div>
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-at"></i>
+                      </div>
+                      <label
+                        for="sourceClassName"
+                        class="d-none d-sm-block"
+                        style="margin-left: 0px; word-wrap: normal"
+                        >{{ $t("Logs.sourceClassName") }}</label
+                      >
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="sourceClassName"
+                        v-model="Logs.sourceClassName"
+                        @change="
+                          fetchLogs();
+                          countLogs();
+                        "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-hash"></i>
+                      </div>
+                      <label
+                        for="sourceMethodName"
+                        class="d-none d-sm-block"
+                        style="margin-left: 0px; word-wrap: normal"
+                        >{{ $t("Logs.sourceMethodName") }}</label
+                      >
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="sourceMethodName"
+                        v-model="Logs.sourceMethodName"
+                        @change="
+                          fetchLogs();
+                          countLogs();
+                        "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-info-lg"></i>
+                      </div>
+                      <label for="level" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
+                        $t("Logs.level")
+                      }}</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="level"
+                        v-model="Logs.level"
+                        @change="
+                          fetchLogs();
+                          countLogs();
+                        "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-chat-text"></i>
+                      </div>
+                      <label for="message" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">{{
+                        $t("Logs.message")
+                      }}</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="message"
+                        v-model="Logs.message"
+                        @change="
+                          fetchLogs();
+                          countLogs();
+                        "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in logs">
+                    <td style="vertical-align: top; width: 15%; word-break: break-all">
+                      <span> {{ toDateTime(row.instant) }} </span>
+                    </td>
+                    <td style="word-break: break-all">
+                      <span> {{ row.sourceClassName }} </span>
+                    </td>
+                    <td style="word-break: break-all">
+                      <span> {{ row.sourceMethodName }} </span>
+                    </td>
+                    <td style="word-break: break-all">
+                      <span> {{ row.level }} </span>
+                    </td>
+                    <td style="width: 50%; word-break: break-all">
+                      <span> {{ row.message }} </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
 
     <script>
+      const { createApp, ref } = Vue;
+
+      const { createI18n } = VueI18n;
+
       var gumStream; //stream from getUserMedia()
       var recorder; //WebAudioRecorder object
 
@@ -3249,561 +4382,563 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           document.getElementById("main").classList.remove("hide");
         }
       }
-      const messages = {
-        en: {
-          LOGS: "Logs",
-          ABOUT: "About",
-          SIDS: "Directory",
-          ASSEMBLY64: "Search",
-          SID: "SID",
-          STIL: "Info",
-          STILINFO: {
-            SUBTUNE: "Song",
-            NAME: "Name",
-            AUTHOR: "Author",
-            TITLE: "Title",
-            ARTIST: "Artist",
-          },
-          PL: "Playlist",
-          CFG: "Configuration",
-          HARDWARE: "Hardware",
-          USE_REAL_HARDWARE:
-            "You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device.",
-          HARDWARE_PREPARATION_1: "On MacOSX it works out-of-the-box.",
-          HARDWARE_PREPARATION_2: "On a Windows-PC WinUSB is required, download from",
-          HARDWARE_PREPARATION_3: "On Linux proper permission is required",
-          HERE: "here",
-          HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
-          EXSID: "ExSID, ExSID+",
-          SIDBLASTER: "SIDBlaster",
-          CONNECT: "Connect...",
-          USE_MOBILE_DEVICES_1: "To use mobile devices, please use an",
-          USE_MOBILE_DEVICES_2: "USBC to USB adapter",
-          STREAMING_NOTES:
-            "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
-          CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
-          theaterMode: "Random Play",
-          currentlyPlaying: "Playing: ",
-          parentDirectoryHint: "Go up one Level",
-          sidInfoKey: "Name",
-          sidInfoValue: "Value",
-          HVSCEntry: {
-            path: "Full Path",
-            name: "File Name",
-            title: "Title",
-            author: "Author",
-            released: "Release",
-            format: "Format",
-            playerId: "Player ID",
-            noOfSongs: "No. of Songs",
-            startSong: "Start Song",
-            clockFreq: "Clock Freq.",
-            speed: "Speed",
-            sidModel1: "SID Model 1",
-            sidModel2: "SID Model 2",
-            sidModel3: "SID Model 3",
-            compatibility: "Compatibility",
-            tuneLength: "Tune Length (s)",
-            audio: "Audio",
-            sidChipBase1: "SID Chip Base 1",
-            sidChipBase2: "SID Chip Base 2",
-            sidChipBase3: "SID Chip Base 3",
-            driverAddress: "Driver Address",
-            loadAddress: "Load Address",
-            loadLength: "Load Length",
-            initAddress: "Init Address",
-            playerAddress: "Player Address",
-            fileDate: "File Date",
-            fileSizeKb: "File Size (kb)",
-            tuneSizeB: "Tune Size (b)",
-            relocStartPage: "Reloc. Start Page",
-            relocNoPages: "Reloc. no. Pages",
-            stilGlbComment: "Tune Size (b)",
-          },
-          Search: {
-            category: "Content",
-            name: "Name",
-            event: "Event",
-            release: "Release",
-            handle: "Handle",
-            rating: "Rating",
-          },
-          Logs: {
-            instant: "Date Time",
-            sourceClassName: "Class Name",
-            sourceMethodName: "Method Name",
-            level: "Level",
-            message: "Message",
-          },
-          results: "results",
-          username: "Username",
-          password: "Password",
-          maxResults: "Max. Results",
-          tooMuchLogging: "Show LOG messages normally filtered",
-          ASC: "As from",
-          DESC: "Until",
-          filter: "Top",
-          onefilerTop200: "Onefiler",
-          toolsTop100: "Tools",
-          gamesTop200: "Games",
-          top200: "Demos",
-          musicTop200: "Music",
-          graphicsTop200: "Graphics",
-          addAllToPlaylist: "All",
-          downloadMP3: "MP3",
-          remove: "Remove last tune",
-          removeReally: "Do you really want to remove the playlist tune?",
-          next: "Next",
-          reset: "Reset",
-          importExport: "Import/Export",
-          startImport: "Import",
-          fetchFavorites: "Examples:",
-          removePlaylist: "Remove All",
-          confirmationTitle: "Confirmation Dialogue",
-          removePlaylistReally: "Do you really want to remove ALL playlist entries?",
-          browse: "Import...",
-          exportPlaylist: "Export",
-          importPlaceholder: "",
-          importDropPlaceholder: "Drop here...",
-          searchPlaceholder: "Quick filter",
-          random: "Random Playback",
-          mobileProfile: "Mobile profile",
-          wifiProfile: "WiFi profile",
-          stereoMode: "Stereo Mode",
-          streamingCfgHeader: "Streaming",
-          audioStreamingCfgHeader: "Audio",
-          textToSpeechTypeOff: "Off",
-          textToSpeechLocaleAuto: "Auto",
-          videoStreamingCfgHeader: "Video",
-          playbackCfgHeader: "Playback",
-          emulationCfgHeader: "Emulation",
-          audioCfgHeader: "Audio",
-          filterCfgHeader: "Filter",
-          residFpFilterCfgHeader: "RESIDFP",
-          residFilterCfgHeader: "RESID",
-          residFpFilter6581CfgHeader: "MOS6581",
-          residFpFilter8580CfgHeader: "MOS8580",
-          residFilter6581CfgHeader: "MOS6581",
-          residFilter8580CfgHeader: "MOS8580",
-          reSIDfpFilter6581Header: "SID",
-          reSIDfpStereoFilter6581Header: "Stereo SID",
-          reSIDfpThirdSIDFilter6581Header: "3rd SID",
-          reSIDfpFilter8580Header: "SID",
-          reSIDfpStereoFilter8580Header: "Stereo SID",
-          reSIDfpThirdSIDFilter8580Header: "3rd SID",
-          filter6581Header: "SID",
-          stereoFilter6581Header: "Stereo SID",
-          thirdSIDFilter6581Header: "3rd SID",
-          filter8580Header: "SID",
-          stereoFilter8580Header: "Stereo SID",
-          thirdSIDFilter8580Header: "3rd SID",
-          mutingCfgHeader: "Muting",
-          muteSidHeader: "SID",
-          muteStereoSidHeader: "Stereo SID",
-          muteThirdSidHeader: "3rd SID",
-          floppyCartCfgHeader: "Floppy/Cart",
-          firstSid: "Main SID",
-          secondSid: "Stereo SID",
-          thirdSid: "3-SID",
-          setDefault: "Restore Defaults",
-          setDefaultUser: "Restore Default User",
-          setDefaultReally: "Do you really want to restore defaults?",
-          setDefaultUserReally: "Do you really want to restore default user?",
-          firstCategory: "",
-          pleaseWait: "Please wait...",
 
-          convertMessages: $convertMessagesEn,
+      var i18n = createI18n({
+        legacy: false, // You might need to set this option to true if you're using Vue 2 syntax
+        locale: "en", // default locale
+        messages: {
+          en: {
+            LOGS: "Logs",
+            ABOUT: "About",
+            SIDS: "Directory",
+            ASSEMBLY64: "Search",
+            SID: "SID",
+            STIL: "Info",
+            STILINFO: {
+              SUBTUNE: "Song",
+              NAME: "Name",
+              AUTHOR: "Author",
+              TITLE: "Title",
+              ARTIST: "Artist",
+            },
+            PL: "Playlist",
+            CFG: "Configuration",
+            HARDWARE: "Hardware",
+            USE_REAL_HARDWARE:
+              "You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device.",
+            HARDWARE_PREPARATION_1: "On MacOSX it works out-of-the-box.",
+            HARDWARE_PREPARATION_2: "On a Windows-PC WinUSB is required, download from",
+            HARDWARE_PREPARATION_3: "On Linux proper permission is required",
+            HERE: "here",
+            HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
+            EXSID: "ExSID, ExSID+",
+            SIDBLASTER: "SIDBlaster",
+            CONNECT: "Connect...",
+            USE_MOBILE_DEVICES_1: "To use mobile devices, please use an",
+            USE_MOBILE_DEVICES_2: "USBC to USB adapter",
+            STREAMING_NOTES:
+              "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
+            CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
+            theaterMode: "Random Play",
+            currentlyPlaying: "Playing: ",
+            parentDirectoryHint: "Go up one Level",
+            sidInfoKey: "Name",
+            sidInfoValue: "Value",
+            HVSCEntry: {
+              path: "Full Path",
+              name: "File Name",
+              title: "Title",
+              author: "Author",
+              released: "Release",
+              format: "Format",
+              playerId: "Player ID",
+              noOfSongs: "No. of Songs",
+              startSong: "Start Song",
+              clockFreq: "Clock Freq.",
+              speed: "Speed",
+              sidModel1: "SID Model 1",
+              sidModel2: "SID Model 2",
+              sidModel3: "SID Model 3",
+              compatibility: "Compatibility",
+              tuneLength: "Tune Length (s)",
+              audio: "Audio",
+              sidChipBase1: "SID Chip Base 1",
+              sidChipBase2: "SID Chip Base 2",
+              sidChipBase3: "SID Chip Base 3",
+              driverAddress: "Driver Address",
+              loadAddress: "Load Address",
+              loadLength: "Load Length",
+              initAddress: "Init Address",
+              playerAddress: "Player Address",
+              fileDate: "File Date",
+              fileSizeKb: "File Size (kb)",
+              tuneSizeB: "Tune Size (b)",
+              relocStartPage: "Reloc. Start Page",
+              relocNoPages: "Reloc. no. Pages",
+              stilGlbComment: "Tune Size (b)",
+            },
+            Search: {
+              category: "Content",
+              name: "Name",
+              event: "Event",
+              release: "Release",
+              handle: "Handle",
+              rating: "Rating",
+            },
+            Logs: {
+              instant: "Date Time",
+              sourceClassName: "Class Name",
+              sourceMethodName: "Method Name",
+              level: "Level",
+              message: "Message",
+            },
+            results: "results",
+            username: "Username",
+            password: "Password",
+            maxResults: "Max. Results",
+            tooMuchLogging: "Show LOG messages normally filtered",
+            ASC: "As from",
+            DESC: "Until",
+            filter: "Top",
+            onefilerTop200: "Onefiler",
+            toolsTop100: "Tools",
+            gamesTop200: "Games",
+            top200: "Demos",
+            musicTop200: "Music",
+            graphicsTop200: "Graphics",
+            addAllToPlaylist: "All",
+            downloadMP3: "MP3",
+            remove: "Remove last tune",
+            removeReally: "Do you really want to remove the playlist tune?",
+            next: "Next",
+            reset: "Reset",
+            importExport: "Import/Export",
+            startImport: "Import",
+            fetchFavorites: "Examples:",
+            removePlaylist: "Remove All",
+            confirmationTitle: "Confirmation Dialogue",
+            removePlaylistReally: "Do you really want to remove ALL playlist entries?",
+            browse: "Import...",
+            exportPlaylist: "Export",
+            importPlaceholder: "",
+            importDropPlaceholder: "Drop here...",
+            searchPlaceholder: "Quick filter",
+            random: "Random Playback",
+            mobileProfile: "Mobile profile",
+            wifiProfile: "WiFi profile",
+            stereoMode: "Stereo Mode",
+            streamingCfgHeader: "Streaming",
+            audioStreamingCfgHeader: "Audio",
+            textToSpeechTypeOff: "Off",
+            textToSpeechLocaleAuto: "Auto",
+            videoStreamingCfgHeader: "Video",
+            playbackCfgHeader: "Playback",
+            emulationCfgHeader: "Emulation",
+            audioCfgHeader: "Audio",
+            filterCfgHeader: "Filter",
+            residFpFilterCfgHeader: "RESIDFP",
+            residFilterCfgHeader: "RESID",
+            residFpFilter6581CfgHeader: "MOS6581",
+            residFpFilter8580CfgHeader: "MOS8580",
+            residFilter6581CfgHeader: "MOS6581",
+            residFilter8580CfgHeader: "MOS8580",
+            reSIDfpFilter6581Header: "SID",
+            reSIDfpStereoFilter6581Header: "Stereo SID",
+            reSIDfpThirdSIDFilter6581Header: "3rd SID",
+            reSIDfpFilter8580Header: "SID",
+            reSIDfpStereoFilter8580Header: "Stereo SID",
+            reSIDfpThirdSIDFilter8580Header: "3rd SID",
+            reSIDFilter6581Header: "SID",
+            reSIDStereoFilter6581Header: "Stereo SID",
+            reSIDThirdSIDFilter6581Header: "3rd SID",
+            reSIDFilter8580Header: "SID",
+            reSIDStereoFilter8580Header: "Stereo SID",
+            reSIDThirdSIDFilter8580Header: "3rd SID",
+            mutingCfgHeader: "Muting",
+            muteSidHeader: "SID",
+            muteStereoSidHeader: "Stereo SID",
+            muteThirdSidHeader: "3rd SID",
+            floppyCartCfgHeader: "Floppy/Cart",
+            firstSid: "Main SID",
+            secondSid: "Stereo SID",
+            thirdSid: "3-SID",
+            setDefault: "Restore Defaults",
+            setDefaultUser: "Restore Default User",
+            setDefaultReally: "Do you really want to restore defaults?",
+            setDefaultUserReally: "Do you really want to restore default user?",
+            firstCategory: "",
+            pleaseWait: "Please wait...",
+
+            convertMessages: $convertMessagesEn,
+          },
+          de: {
+            LOGS: "Logs",
+            ABOUT: "\u00dcber",
+            SIDS: "Verzeichnis",
+            ASSEMBLY64: "Suche",
+            SID: "SID",
+            STIL: "Info",
+            STILINFO: {
+              SUBTUNE: "Song",
+              NAME: "Name",
+              AUTHOR: "Autor",
+              TITLE: "Titel",
+              ARTIST: "K\u00fcnstler",
+            },
+            PL: "Favoriten",
+            CFG: "Konfiguration",
+            HARDWARE: "Hardware",
+
+            USE_REAL_HARDWARE:
+              "Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy.",
+            HARDWARE_PREPARATION_1: "Auf MacOSX funktioniert es einfach so.",
+            HARDWARE_PREPARATION_2: "Auf einem Windows-PC ist WinUSB erforderlich",
+            HARDWARE_PREPARATION_3: "Auf Linux sind Berechtigungen erforderlich",
+            HERE: "download",
+            HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
+            EXSID: "ExSID, ExSID+",
+            SIDBLASTER: "SIDBlaster",
+            CONNECT: "Verbinden...",
+            USE_MOBILE_DEVICES_1: "Um Mobilger\u00e4te zu verwenden, verwenden Sie bitte einen",
+            USE_MOBILE_DEVICES_2: "USBC nach USB adapter",
+            STREAMING_NOTES:
+              "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
+            CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
+            theaterMode: "Zufalls-Mix",
+            currentlyPlaying: "Es spielt: ",
+            parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
+            sidInfoKey: "Name",
+            sidInfoValue: "Wert",
+            HVSCEntry: {
+              path: "Dateipfad",
+              name: "Dateiname",
+              title: "Titel",
+              author: "Autor",
+              released: "Release",
+              format: "Format",
+              playerId: "Player ID",
+              noOfSongs: "Song Anzahl",
+              startSong: "Start Song",
+              clockFreq: "Takt Frequenz",
+              speed: "Geschwindigkeit",
+              sidModel1: "SID Model 1",
+              sidModel2: "SID Model 2",
+              sidModel3: "SID Model 3",
+              compatibility: "Kompatibilit\u00e4t",
+              tuneLength: "Tune L\u00e4nge (s)",
+              audio: "Ton",
+              sidChipBase1: "SID Chip Basisadresse 1",
+              sidChipBase2: "SID Chip Basisadresse 2",
+              sidChipBase3: "SID Chip Basisadresse 3",
+              driverAddress: "Treiberaddresse",
+              loadAddress: "Lade-Addresse",
+              loadLength: "Ladel\u00e4nge",
+              initAddress: "Init-Addresse",
+              playerAddress: "Player-Addresse",
+              fileDate: "File Datum",
+              fileSizeKb: "File Gr\u00f6sse (kb)",
+              tuneSizeB: "Tune Gr\u00f6sse (b)",
+              relocStartPage: "Reloc. Start Seite",
+              relocNoPages: "Reloc. Seitenanzahl",
+              stilGlbComment: "STIL glb. Kommentar",
+            },
+            Search: {
+              category: "Inhalt",
+              name: "Name",
+              event: "Event",
+              release: "Release",
+              handle: "Handle",
+              rating: "Wertung",
+            },
+            Logs: {
+              instant: "Datum Uhrzeit",
+              sourceClassName: "Klasse",
+              sourceMethodName: "Methode",
+              level: "Level",
+              message: "Meldung",
+            },
+            results: "Ergebnisse",
+            username: "Benutzername",
+            password: "Passwort",
+            maxResults: "Max. Ergebnisse",
+            tooMuchLogging: "Zeige auch Log Nachrichten, die normalerweise gefiltert werden",
+            ASC: "Ab dem",
+            DESC: "Bis zum",
+            filter: "Top",
+            onefilerTop200: "Onefiler",
+            toolsTop100: "Tools",
+            gamesTop200: "Games",
+            top200: "Demos",
+            musicTop200: "Music",
+            graphicsTop200: "Graphics",
+            addAllToPlaylist: "Alle",
+            downloadMP3: "MP3",
+            remove: "Letzten Tune l\u00f6schen",
+            removeReally: "Wollen sie wirklich den Favoriten l\u00f6schen?",
+            next: "N\u00e4chster",
+            reset: "Zur\u00fccksetzen",
+            importExport: "Import/Export",
+            startImport: "Importieren",
+            fetchFavorites: "Beispiele:",
+            removePlaylist: "L\u00f6schen",
+            confirmationTitle: "Sicherheitsabfrage",
+            removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
+            browse: "Importieren...",
+            exportPlaylist: "Exportieren",
+            importPlaceholder: "",
+            importDropPlaceholder: "DnD hier...",
+            searchPlaceholder: "Schnellfilter",
+            random: "Zuf\u00e4llige Wiedergabe",
+            mobileProfile: "Mobiles Profil",
+            wifiProfile: "WiFi Profil",
+            stereoMode: "Stereo Mode",
+            streamingCfgHeader: "Streaming",
+            audioStreamingCfgHeader: "Audio",
+            textToSpeechTypeOff: "Aus",
+            textToSpeechLocaleAuto: "Auto",
+            videoStreamingCfgHeader: "Video",
+            playbackCfgHeader: "Wiedergabe",
+            emulationCfgHeader: "Emulation",
+            audioCfgHeader: "Audio",
+            filterCfgHeader: "Filter",
+            residFpFilterCfgHeader: "RESIDFP",
+            residFilterCfgHeader: "RESID",
+            residFpFilter6581CfgHeader: "MOS6581",
+            residFpFilter8580CfgHeader: "MOS8580",
+            residFilter6581CfgHeader: "MOS6581",
+            residFilter8580CfgHeader: "MOS8580",
+            reSIDfpFilter6581Header: "SID",
+            reSIDfpStereoFilter6581Header: "Stereo SID",
+            reSIDfpThirdSIDFilter6581Header: "3. SID",
+            reSIDfpFilter8580Header: "SID",
+            reSIDfpStereoFilter8580Header: "Stereo SID",
+            reSIDfpThirdSIDFilter8580Header: "3. SID",
+            reSIDFilter6581Header: "SID",
+            reSIDStereoFilter6581Header: "Stereo SID",
+            reSIDThirdSIDFilter6581Header: "3. SID",
+            reSIDFilter8580Header: "SID",
+            reSIDStereoFilter8580Header: "Stereo SID",
+            reSIDThirdSIDFilter8580Header: "3. SID",
+            mutingCfgHeader: "Stummschalten",
+            muteSidHeader: "SID",
+            muteStereoSidHeader: "Stereo SID",
+            muteThirdSidHeader: "3. SID",
+            floppyCartCfgHeader: "Floppy/Cart",
+            firstSid: "Haupt SID",
+            secondSid: "Stereo SID",
+            thirdSid: "3-SID",
+            setDefault: "Standardeinstellungen wiederherstellen",
+            setDefaultUser: "Standardbenutzer wiederherstellen",
+            setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
+            setDefaultUserReally: "Wollen sie wirklich den Standardbenutzer wiederherstellen?",
+            firstCategory: "",
+            pleaseWait: "Bitte warten...",
+            DateLabels: {
+              labelPrevDecade: "Vorheriges Jahrzehnt",
+              labelPrevYear: "Vorheriges Jahr",
+              labelPrevMonth: "Vorheriger Monat",
+              labelCurrentMonth: "Aktueller Monat",
+              labelNextMonth: "Nächster Monat",
+              labelNextYear: "Nächstes Jahr",
+              labelNextDecade: "Nächstes Jahrzehnt",
+              labelToday: "Heute",
+              labelSelected: "Ausgewähltes Datum",
+              labelNoDateSelected: "Kein Datum gewählt",
+              labelCalendar: "Kalender",
+              labelNav: "Kalendernavigation",
+              labelHelp: "Mit den Pfeiltasten durch den Kalender navigieren",
+              labelResetButton: "Zurücksetzen",
+            },
+            TimeLabels: {
+              labelHours: "Stunden",
+              labelMinutes: "Minuten",
+              labelSeconds: "Sekunden",
+              labelIncrement: "Erhöhen",
+              labelDecrement: "Verringern",
+              labelSelected: "Ausgewählte Zeit",
+              labelNoTimeSelected: "Keine Zeit ausgewählt",
+              labelNowButton: "Aktuelle Zeit",
+              labelResetButton: "Zurücksetzen",
+              labelCloseButton: "Schließen",
+            },
+
+            convertMessages: $convertMessagesDe,
+          },
         },
-        de: {
-          LOGS: "Logs",
-          ABOUT: "\u00dcber",
-          SIDS: "Verzeichnis",
-          ASSEMBLY64: "Suche",
-          SID: "SID",
-          STIL: "Info",
-          STILINFO: {
-            SUBTUNE: "Song",
-            NAME: "Name",
-            AUTHOR: "Autor",
-            TITLE: "Titel",
-            ARTIST: "K\u00fcnstler",
-          },
-          PL: "Favoriten",
-          CFG: "Konfiguration",
-          HARDWARE: "Hardware",
-
-          USE_REAL_HARDWARE:
-            "Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy.",
-          HARDWARE_PREPARATION_1: "Auf MacOSX funktioniert es einfach so.",
-          HARDWARE_PREPARATION_2: "Auf einem Windows-PC ist WinUSB erforderlich",
-          HARDWARE_PREPARATION_3: "Auf Linux sind Berechtigungen erforderlich",
-          HERE: "download",
-          HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
-          EXSID: "ExSID, ExSID+",
-          SIDBLASTER: "SIDBlaster",
-          CONNECT: "Verbinden...",
-          USE_MOBILE_DEVICES_1: "Um Mobilger\u00e4te zu verwenden, verwenden Sie bitte einen",
-          USE_MOBILE_DEVICES_2: "USBC nach USB adapter",
-          STREAMING_NOTES:
-            "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
-          CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
-          theaterMode: "Zufalls-Mix",
-          currentlyPlaying: "Es spielt: ",
-          parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
-          sidInfoKey: "Name",
-          sidInfoValue: "Wert",
-          HVSCEntry: {
-            path: "Dateipfad",
-            name: "Dateiname",
-            title: "Titel",
-            author: "Autor",
-            released: "Release",
-            format: "Format",
-            playerId: "Player ID",
-            noOfSongs: "Song Anzahl",
-            startSong: "Start Song",
-            clockFreq: "Takt Frequenz",
-            speed: "Geschwindigkeit",
-            sidModel1: "SID Model 1",
-            sidModel2: "SID Model 2",
-            sidModel3: "SID Model 3",
-            compatibility: "Kompatibilit\u00e4t",
-            tuneLength: "Tune L\u00e4nge (s)",
-            audio: "Ton",
-            sidChipBase1: "SID Chip Basisadresse 1",
-            sidChipBase2: "SID Chip Basisadresse 2",
-            sidChipBase3: "SID Chip Basisadresse 3",
-            driverAddress: "Treiberaddresse",
-            loadAddress: "Lade-Addresse",
-            loadLength: "Ladel\u00e4nge",
-            initAddress: "Init-Addresse",
-            playerAddress: "Player-Addresse",
-            fileDate: "File Datum",
-            fileSizeKb: "File Gr\u00f6sse (kb)",
-            tuneSizeB: "Tune Gr\u00f6sse (b)",
-            relocStartPage: "Reloc. Start Seite",
-            relocNoPages: "Reloc. Seitenanzahl",
-            stilGlbComment: "STIL glb. Kommentar",
-          },
-          Search: {
-            category: "Inhalt",
-            name: "Name",
-            event: "Event",
-            release: "Release",
-            handle: "Handle",
-            rating: "Wertung",
-          },
-          Logs: {
-            instant: "Datum Uhrzeit",
-            sourceClassName: "Klasse",
-            sourceMethodName: "Methode",
-            level: "Level",
-            message: "Meldung",
-          },
-          results: "Ergebnisse",
-          username: "Benutzername",
-          password: "Passwort",
-          maxResults: "Max. Ergebnisse",
-          tooMuchLogging: "Zeige auch Log Nachrichten, die normalerweise gefiltert werden",
-          ASC: "Ab dem",
-          DESC: "Bis zum",
-          filter: "Top",
-          onefilerTop200: "Onefiler",
-          toolsTop100: "Tools",
-          gamesTop200: "Games",
-          top200: "Demos",
-          musicTop200: "Music",
-          graphicsTop200: "Graphics",
-          addAllToPlaylist: "Alle",
-          downloadMP3: "MP3",
-          remove: "Letzten Tune l\u00f6schen",
-          removeReally: "Wollen sie wirklich den Favoriten l\u00f6schen?",
-          next: "N\u00e4chster",
-          reset: "Zur\u00fccksetzen",
-          importExport: "Import/Export",
-          startImport: "Importieren",
-          fetchFavorites: "Beispiele:",
-          removePlaylist: "L\u00f6schen",
-          confirmationTitle: "Sicherheitsabfrage",
-          removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
-          browse: "Importieren...",
-          exportPlaylist: "Exportieren",
-          importPlaceholder: "",
-          importDropPlaceholder: "DnD hier...",
-          searchPlaceholder: "Schnellfilter",
-          random: "Zuf\u00e4llige Wiedergabe",
-          mobileProfile: "Mobiles Profil",
-          wifiProfile: "WiFi Profil",
-          stereoMode: "Stereo Mode",
-          streamingCfgHeader: "Streaming",
-          audioStreamingCfgHeader: "Audio",
-          textToSpeechTypeOff: "Aus",
-          textToSpeechLocaleAuto: "Auto",
-          videoStreamingCfgHeader: "Video",
-          playbackCfgHeader: "Wiedergabe",
-          emulationCfgHeader: "Emulation",
-          audioCfgHeader: "Audio",
-          filterCfgHeader: "Filter",
-          residFpFilterCfgHeader: "RESIDFP",
-          residFilterCfgHeader: "RESID",
-          residFpFilter6581CfgHeader: "MOS6581",
-          residFpFilter8580CfgHeader: "MOS8580",
-          residFilter6581CfgHeader: "MOS6581",
-          residFilter8580CfgHeader: "MOS8580",
-          reSIDfpFilter6581Header: "SID",
-          reSIDfpStereoFilter6581Header: "Stereo SID",
-          reSIDfpThirdSIDFilter6581Header: "3. SID",
-          reSIDfpFilter8580Header: "SID",
-          reSIDfpStereoFilter8580Header: "Stereo SID",
-          reSIDfpThirdSIDFilter8580Header: "3. SID",
-          filter6581Header: "SID",
-          stereoFilter6581Header: "Stereo SID",
-          thirdSIDFilter6581Header: "3. SID",
-          filter8580Header: "SID",
-          stereoFilter8580Header: "Stereo SID",
-          thirdSIDFilter8580Header: "3. SID",
-          mutingCfgHeader: "Stummschalten",
-          muteSidHeader: "SID",
-          muteStereoSidHeader: "Stereo SID",
-          muteThirdSidHeader: "3. SID",
-          floppyCartCfgHeader: "Floppy/Cart",
-          firstSid: "Haupt SID",
-          secondSid: "Stereo SID",
-          thirdSid: "3-SID",
-          setDefault: "Standardeinstellungen wiederherstellen",
-          setDefaultUser: "Standardbenutzer wiederherstellen",
-          setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
-          setDefaultUserReally: "Wollen sie wirklich den Standardbenutzer wiederherstellen?",
-          firstCategory: "",
-          pleaseWait: "Bitte warten...",
-          DateLabels: {
-            labelPrevDecade: "Vorheriges Jahrzehnt",
-            labelPrevYear: "Vorheriges Jahr",
-            labelPrevMonth: "Vorheriger Monat",
-            labelCurrentMonth: "Aktueller Monat",
-            labelNextMonth: "Nächster Monat",
-            labelNextYear: "Nächstes Jahr",
-            labelNextDecade: "Nächstes Jahrzehnt",
-            labelToday: "Heute",
-            labelSelected: "Ausgewähltes Datum",
-            labelNoDateSelected: "Kein Datum gewählt",
-            labelCalendar: "Kalender",
-            labelNav: "Kalendernavigation",
-            labelHelp: "Mit den Pfeiltasten durch den Kalender navigieren",
-            labelResetButton: "Zurücksetzen",
-          },
-          TimeLabels: {
-            labelHours: "Stunden",
-            labelMinutes: "Minuten",
-            labelSeconds: "Sekunden",
-            labelIncrement: "Erhöhen",
-            labelDecrement: "Verringern",
-            labelSelected: "Ausgewählte Zeit",
-            labelNoTimeSelected: "Keine Zeit ausgewählt",
-            labelNowButton: "Aktuelle Zeit",
-            labelResetButton: "Zurücksetzen",
-            labelCloseButton: "Schließen",
-          },
-
-          convertMessages: $convertMessagesDe,
-        },
-      };
-
-      const i18n = new VueI18n({
-        locale: "en", // set locale
-        messages, // set locale messages
       });
 
-      new Vue({
-        el: "#app",
-        i18n, //import multi-lang
-        data: {
-          msg: "",
-          timeoutId: undefined,
-          theaterMode: false,
-          carouselImageHeight:
-            window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
-          slide: 0,
-          sliding: null,
-          showAudio: false,
-          showHardwarePlayer: false,
-          langs: ["de", "en"],
-          directoryMode: 0,
-          // ABOUT
-          username: "jsidplay2",
-          password: "jsidplay2!",
-          // SIDS (directories containing SIDS)
-          directory: [],
-          rootDir: {
-            filename: "/",
-            loading: false,
-          },
-          top200Dir: {
-            filename: "/Assembly64/Demos/CSDB/Top200",
-            loading: false,
-          },
-          oneFilerTop200Dir: {
-            filename: "/Assembly64/Demos/CSDB/Onefile-top200",
-            loading: false,
-          },
-          toolsTop200Dir: {
-            filename: "/Assembly64/Tools/CSDB/Top100",
-            loading: false,
-          },
-          musicTop200Dir: {
-            filename: "/Assembly64/Music/CSDB/Top200",
-            loading: false,
-          },
-          graphicsTop200Dir: {
-            filename: "/Assembly64/Graphics/CSDB/Top200",
-            loading: false,
-          },
-          gamesTop200Dir: {
-            filename: "/Assembly64/Games/CSDB/Top200",
-            loading: false,
-          },
-          // SID (info + picture)
-          infos: "",
-          stil: [],
-          maxResults: 100,
-          tooMuchLogging: false,
-          order: "ASC",
-          logs: [],
-          logsCount: 0,
-          hasHardware: false,
-          picture: "",
-          currentSid: "",
-          // ASSEMBLY64
-          category: "",
-          categories: [],
-          searchResults: [],
-          searchFields: [
-            {
-              key: "category",
-              label: "Content",
-              sortable: true,
-              class: "field-category",
+      let app = Vue.createApp({
+        data: function () {
+          return {
+            modalIndex: 0,
+            modalFavoriteIndex: 0,
+            msg: "",
+            timeoutId: undefined,
+            theaterMode: false,
+            carouselImageHeight:
+              window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
+            slide: 0,
+            sliding: null,
+            showAudio: false,
+            showHardwarePlayer: false,
+            langs: ["de", "en"],
+            directoryMode: 0,
+            // ABOUT
+            username: "jsidplay2",
+            password: "jsidplay2!",
+            // SIDS (directories containing SIDS)
+            directory: [],
+            rootDir: {
+              filename: "/",
+              loading: false,
             },
-            {
-              key: "name",
-              sortable: true,
-              class: "field-name",
+            top200Dir: {
+              filename: "/Assembly64/Demos/CSDB/Top200",
+              loading: false,
             },
-            {
-              key: "event",
-              sortable: true,
-              class: "field-event",
+            oneFilerTop200Dir: {
+              filename: "/Assembly64/Demos/CSDB/Onefile-top200",
+              loading: false,
             },
-            {
-              key: "released",
-              label: "Release",
-              sortable: true,
-              class: "field-released",
+            toolsTop200Dir: {
+              filename: "/Assembly64/Tools/CSDB/Top100",
+              loading: false,
             },
-            {
-              key: "handle",
-              sortable: true,
-              class: "field-handle",
+            musicTop200Dir: {
+              filename: "/Assembly64/Music/CSDB/Top200",
+              loading: false,
             },
-            {
-              key: "rating",
-              sortable: true,
-              class: "field-rating",
+            graphicsTop200Dir: {
+              filename: "/Assembly64/Graphics/CSDB/Top200",
+              loading: false,
             },
-            { key: "actions" },
-          ],
-          logFields: [
-            {
-              key: "instant",
-              label: "Date Time",
-              sortable: false,
-              thStyle: { "vertical-align": "top", width: "15%" },
-              class: "field-category",
+            gamesTop200Dir: {
+              filename: "/Assembly64/Games/CSDB/Top200",
+              loading: false,
             },
-            {
-              key: "sourceClassName",
-              label: "Source Class Name",
-              sortable: false,
-              class: "field-category",
+            // SID (info + picture)
+            infos: "",
+            stil: [],
+            maxResults: 100,
+            tooMuchLogging: false,
+            order: "ASC",
+            logs: [],
+            logsCount: 0,
+            hasHardware: false,
+            picture: "",
+            currentSid: "",
+            // ASSEMBLY64
+            category: "",
+            categories: [],
+            searchResults: [],
+            searchFields: [
+              {
+                key: "category",
+                label: "Content",
+                sortable: true,
+                class: "field-category",
+              },
+              {
+                key: "name",
+                sortable: true,
+                class: "field-name",
+              },
+              {
+                key: "event",
+                sortable: true,
+                class: "field-event",
+              },
+              {
+                key: "released",
+                label: "Release",
+                sortable: true,
+                class: "field-released",
+              },
+              {
+                key: "handle",
+                sortable: true,
+                class: "field-handle",
+              },
+              {
+                key: "rating",
+                sortable: true,
+                class: "field-rating",
+              },
+              { key: "actions" },
+            ],
+            logFields: [
+              {
+                key: "instant",
+                label: "Date Time",
+                sortable: false,
+                thStyle: { "vertical-align": "top", width: "15%" },
+                class: "field-category",
+              },
+              {
+                key: "sourceClassName",
+                label: "Source Class Name",
+                sortable: false,
+                class: "field-category",
+              },
+              {
+                key: "sourceMethodName",
+                label: "Source Method Name",
+                sortable: false,
+                class: "field-category",
+              },
+              {
+                key: "level",
+                label: "Level",
+                sortable: false,
+                class: "field-category",
+              },
+              {
+                key: "message",
+                label: "Message",
+                sortable: false,
+                thStyle: { width: "50%" },
+                class: "field-category",
+              },
+            ],
+            contentEntryFields: [
+              {
+                key: "filename",
+                label: "File",
+              },
+            ],
+            sortBy: null,
+            sortDesc: null,
+            name: "",
+            event: "",
+            released: "",
+            rating: "",
+            handle: "",
+            Logs: {
+              date: "",
+              time: "",
+              sourceClassName: "",
+              sourceMethodName: "",
+              level: "",
+              message: "",
             },
-            {
-              key: "sourceMethodName",
-              label: "Source Method Name",
-              sortable: false,
-              class: "field-category",
-            },
-            {
-              key: "level",
-              label: "Level",
-              sortable: false,
-              class: "field-category",
-            },
-            {
-              key: "message",
-              label: "Message",
-              sortable: false,
-              thStyle: { width: "50%" },
-              class: "field-category",
-            },
-          ],
-          contentEntryFields: [
-            {
-              key: "filename",
-              label: "File",
-            },
-          ],
-          sortBy: null,
-          sortDesc: null,
-          name: "",
-          event: "",
-          released: "",
-          rating: "",
-          handle: "",
-          Logs: {
-            date: "",
-            time: "",
-            sourceClassName: "",
-            sourceMethodName: "",
-            level: "",
-            message: "",
-          },
-          // PL (Playlist)
-          importFile: null,
-          importExportVisible: false,
-          playlist: [],
-          playlistIndex: 0,
-          favoritesNames: [],
-          random: true,
-          filterText: "",
-          filterText2: "",
-          // CFG (configuration)
-          // pre-fetched filter definitions
-          reSIDfilters6581: [],
-          reSIDfilters8580: [],
-          reSIDfpFilters6581: [],
-          reSIDfpFilters8580: [],
-          cbrs: [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
-          vbrQualities: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-          // Misc.
-          tabIndex: 0,
-          tabConfigIndex: 0,
-          streamingTabConfigIndex: 0,
-          filterTabConfigIndex: 0,
-          residFpFilterModelTabConfigIndex: 0,
-          residFilterModelTabConfigIndex: 0,
-          muteSidTabConfigIndex: 0,
-          reSIDfpFilter6581SidTabConfigIndex: 0,
-          reSIDfpFilter8580SidTabConfigIndex: 0,
-          filter6581SidTabConfigIndex: 0,
-          filter8580SidTabConfigIndex: 0,
-          loadingSid: false,
-          loadingStil: false,
-          loadingLogs: false,
-          loadingAssembly64: false,
-          loadingPl: false,
-          loadingCfg: false,
-          convertOptions: $convertOptions,
-          defaultConvertOptions: $convertOptions,
+            // PL (Playlist)
+            importFile: null,
+            importExportVisible: false,
+            playlist: [],
+            playlistIndex: 0,
+            favoritesNames: [],
+            random: true,
+            filterText: "",
+            filterText2: "",
+            // CFG (configuration)
+            // pre-fetched filter definitions
+            reSIDFilters6581: [],
+            reSIDFilters8580: [],
+            reSIDfpFilters6581: [],
+            reSIDfpFilters8580: [],
+            cbrs: [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
+            vbrQualities: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            // Misc.
+            tabIndex: 0,
+            tabConfigIndex: 0,
+            streamingTabConfigIndex: 0,
+            filterTabConfigIndex: 0,
+            residFpFilterModelTabConfigIndex: 0,
+            residFilterModelTabConfigIndex: 0,
+            reSIDfpFilter6581SidTabConfigIndex: 0,
+            reSIDfpFilter8580SidTabConfigIndex: 0,
+            reSIDFilter6581SidTabConfigIndex: 0,
+            reSIDFilter8580SidTabConfigIndex: 0,
+            muteSidTabConfigIndex: 0,
+            loadingSid: false,
+            loadingStil: false,
+            loadingLogs: false,
+            loadingAssembly64: false,
+            loadingPl: false,
+            loadingCfg: false,
+            convertOptions: $convertOptions,
+            defaultConvertOptions: $convertOptions,
+          };
         },
         computed: {
           instant: {
@@ -3882,11 +5017,11 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             return [
               {
                 key: "Name",
-                label: i18n.t("sidInfoKey"),
+                label: this.$t("sidInfoKey"),
               },
               {
                 key: "Value",
-                label: i18n.t("sidInfoValue"),
+                label: this.$t("sidInfoValue"),
               },
             ];
           },
@@ -3894,9 +5029,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             if (!this.infos) {
               return [];
             }
+            let outer = this;
             return this.infos.map(function (obj) {
               return {
-                Name: i18n.t(obj.Name),
+                Name: outer.$t(obj.Name),
                 Value: obj.Value,
                 opacity: obj.Name == "HVSCEntry.path",
               };
@@ -3983,7 +5119,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             };
             iframe.src =
               "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
-              i18n.t("pleaseWait") +
+              this.$t("pleaseWait") +
               "</p><span><i></i><i></i></span></div></body>";
 
             document.getElementById("app").appendChild(iframe);
@@ -4168,15 +5304,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               .slice(filename.endsWith("/") ? -2 : -1)
               .join("/");
           },
-          volumeFormatter: function (value) {
-            return value.toLocaleString(this.$i18n.locale) + " db";
-          },
-          balanceFormatter: function (value) {
-            return "l(0) ... " + value.toLocaleString(this.$i18n.locale) + " ... r(1)";
-          },
-          delayFormatter: function (value) {
-            return value.toLocaleString(this.$i18n.locale) + " ms";
-          },
           pathEntry: function (filename) {
             const files = filename.split("/");
             return "/" + files.slice(-files.length + 1, filename.endsWith("/") ? -2 : -1).join("/");
@@ -4313,6 +5440,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 }
                 this.playlistIndex = 0;
                 this.importFile = null;
+                this.$refs.formFileSm.value = null;
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
@@ -4332,6 +5460,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 this.playlist = JSON.parse(res.target.result);
                 this.playlistIndex = 0;
                 this.importFile = null;
+                this.$refs.formFileSm.value = null;
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
@@ -4361,6 +5490,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 .then((response) => {
                   if (response.data != "null") {
                     this.importFile = null;
+                    this.$refs.formFileSm.value = null;
                     this.importExportVisible = false;
                     let entry = {
                       filename: response.data,
@@ -4464,12 +5594,12 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 = this.reSIDfpFilters6581[1];
             this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 = this.reSIDfpFilters8580[1];
 
-            this.convertOptions.config.emulationSection.filter6581 = this.reSIDfilters6581[3];
-            this.convertOptions.config.emulationSection.filter8580 = this.reSIDfilters8580[1];
-            this.convertOptions.config.emulationSection.stereoFilter6581 = this.reSIDfilters6581[3];
-            this.convertOptions.config.emulationSection.stereoFilter8580 = this.reSIDfilters8580[1];
-            this.convertOptions.config.emulationSection.thirdSIDFilter6581 = this.reSIDfilters6581[3];
-            this.convertOptions.config.emulationSection.thirdSIDFilter8580 = this.reSIDfilters8580[1];
+            this.convertOptions.config.emulationSection.filter6581 = this.reSIDFilters6581[3];
+            this.convertOptions.config.emulationSection.filter8580 = this.reSIDFilters8580[1];
+            this.convertOptions.config.emulationSection.stereoFilter6581 = this.reSIDFilters6581[3];
+            this.convertOptions.config.emulationSection.stereoFilter8580 = this.reSIDFilters8580[1];
+            this.convertOptions.config.emulationSection.thirdSIDFilter6581 = this.reSIDFilters6581[3];
+            this.convertOptions.config.emulationSection.thirdSIDFilter8580 = this.reSIDFilters8580[1];
           },
           updateSid: function (entry, itemId, categoryId) {
             if (entry) {
@@ -5002,10 +6132,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             })
               .then((response) => {
                 const filters = response.data;
-                this.reSIDfilters6581 = filters
+                this.reSIDFilters6581 = filters
                   .filter((filter) => filter.startsWith("RESID_MOS6581_"))
                   .map((filter) => filter.substring("RESID_MOS6581_".length));
-                this.reSIDfilters8580 = filters
+                this.reSIDFilters8580 = filters
                   .filter((filter) => filter.startsWith("RESID_MOS8580_"))
                   .map((filter) => filter.substring("RESID_MOS8580_".length));
                 this.reSIDfpFilters6581 = filters
@@ -5018,8 +6148,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 this.updateFilters();
               })
               .catch((error) => {
-                this.reSIDfilters6581 = [];
-                this.reSIDfilters8580 = [];
+                this.reSIDFilters6581 = [];
+                this.reSIDFilters8580 = [];
                 this.reSIDfpFilters6581 = [];
                 this.reSIDfpFilters8580 = [];
                 console.log(error);
@@ -5376,7 +6506,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             deep: true,
           },
         },
-      });
+      })
+        .use(i18n)
+        .mount("#app");
 
       // prevent back button
       history.pushState(null, null, document.URL);
@@ -5385,6 +6517,21 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
         history.pushState(null, null, document.URL);
       });
       window.addEventListener("message", messageListener, false);
+
+      $("form").keypress(function (e) {
+        if (e.keyCode == 13) {
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      $(document).ready(function () {
+        $(".carousel.lazy-load").bind("slide.bs.carousel", function (e) {
+          var image = $(e.relatedTarget).find("img[data-src]");
+          image.attr("src", image.data("src"));
+          image.removeAttr("data-src");
+        });
+      });
     </script>
   </body>
 </html>

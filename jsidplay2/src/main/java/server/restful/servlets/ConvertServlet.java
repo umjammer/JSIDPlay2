@@ -642,6 +642,7 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				replacements.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
 				replacements.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
 				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
+				replacements.put("$prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");
 				replacements.put("$lib",
 						Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib" : "lib-minified");
 				return replacements;
