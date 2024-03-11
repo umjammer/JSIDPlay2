@@ -3979,7 +3979,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         id="tooMuchLogging"
                         style="float: right; margin-left: 8px"
                         v-model="tooMuchLogging"
-                        v-on:click="
+                        v-on:change="
                           fetchLogs();
                           countLogs();
                         "
