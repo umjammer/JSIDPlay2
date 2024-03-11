@@ -871,7 +871,6 @@
 			                    <package>bootstrap@5.3.3</package>
 			                    <package>bootstrap-icons@1.11.3</package>
 			                    <package>vue-i18n@9.10.1</package>
-			                    <package>jquery@3.7.1</package>
 			                    <package>axios@1.5.1</package>
 			                    <package>hls.js@1.4.12</package>
 			                    <package>video.js@8.5.2</package>

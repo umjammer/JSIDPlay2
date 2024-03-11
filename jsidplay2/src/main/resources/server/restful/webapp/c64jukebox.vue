@@ -17,7 +17,6 @@
     <!-- Load Vue followed by I18n -->
     <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
     <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
-    <script src="/webjars/jquery/3.7.1/dist/jquery$min.js"></script>
 
     <!-- helpers -->
     <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global$prod.js"></script>
@@ -483,8 +482,8 @@
                     </button>
 
                     <div
-                      id="carouselExampleCaptions"
-                      class="carousel slide carousel-fade lazy-load"
+                      id="myCarousel"
+                      class="carousel slide carousel-fade"
                       data-bs-ride="carousel"
                       data-bs-pause="false"
                       data-bs-wrap="true"
@@ -499,7 +498,7 @@
                           v-bind:key="entry.filename"
                         >
                           <img
-                            :data-src="createDownloadUrl(entry.filename)"
+                            :src="createDownloadUrl(entry.filename)"
                             :alt="entry.filename"
                             class="img-fluid mx-auto d-block"
                             :style="{
@@ -529,7 +528,7 @@
                       <button
                         class="carousel-control-prev"
                         type="button"
-                        data-bs-target="#carouselExampleCaptions"
+                        data-bs-target="#myCarousel"
                         data-bs-slide="prev"
                       >
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -538,7 +537,7 @@
                       <button
                         class="carousel-control-next"
                         type="button"
-                        data-bs-target="#carouselExampleCaptions"
+                        data-bs-target="#myCarousel"
                         data-bs-slide="next"
                       >
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
@@ -2337,7 +2336,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="startTime">
                           {{ $t("convertMessages.config.sidplay2Section.startTime") }}
-                          <input type="time" id="startTime" class="form-control right" v-model="startTime" />
+
+                          <input
+                            class="right"
+                            type="number"
+                            id="startTime"
+                            class="form-control"
+                            min="0"
+                            max="10"
+                            v-model.number="convertOptions.config.sidplay2Section.startTime"
+                          />
                         </label>
                       </span>
                     </div>
@@ -2346,10 +2354,13 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         <label for="defaultPlayLength">
                           {{ $t("convertMessages.config.sidplay2Section.defaultPlayLength") }}
                           <input
-                            type="time"
+                            class="right"
+                            type="text"
                             id="defaultPlayLength"
-                            class="form-control right"
-                            v-model="defaultPlayLength"
+                            class="form-control"
+                            min="0"
+                            max="10"
+                            v-model="convertOptions.config.sidplay2Section.defaultPlayLength"
                           />
                         </label>
                       </span>
@@ -2358,7 +2369,15 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="fadeInTime">
                           {{ $t("convertMessages.config.sidplay2Section.fadeInTime") }}
-                          <input type="time" id="fadeInTime" class="form-control right" v-model="fadeInTime" />
+                          <input
+                            class="right"
+                            type="number"
+                            id="fadeInTime"
+                            class="form-control"
+                            min="0"
+                            max="10"
+                            v-model.number="convertOptions.config.sidplay2Section.fadeInTime"
+                          />
                         </label>
                       </span>
                     </div>
@@ -2366,7 +2385,15 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="fadeOutTime">
                           {{ $t("convertMessages.config.sidplay2Section.fadeOutTime") }}
-                          <input type="time" id="fadeOutTime" class="form-control right" v-model="fadeOutTime" />
+                          <input
+                            class="right"
+                            type="number"
+                            id="fadeOutTime"
+                            class="form-control"
+                            min="0"
+                            max="10"
+                            v-model.number="convertOptions.config.sidplay2Section.fadeOutTime"
+                          />
                         </label>
                       </span>
                     </div>
@@ -6518,20 +6545,13 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       });
       window.addEventListener("message", messageListener, false);
 
-      $("form").keypress(function (e) {
+      document.getElementById('main').addEventListener('keypress', function(e) {
         if (e.keyCode == 13) {
           e.preventDefault();
           return false;
         }
-      });
+      }, false);
 
-      $(document).ready(function () {
-        $(".carousel.lazy-load").bind("slide.bs.carousel", function (e) {
-          var image = $(e.relatedTarget).find("img[data-src]");
-          image.attr("src", image.data("src"));
-          image.removeAttr("data-src");
-        });
-      });
     </script>
   </body>
 </html>
