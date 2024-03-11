@@ -3956,7 +3956,15 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       "
                   />
 
-                  <input type="time" class="form-control right" v-model="Logs.time" />
+                  <input
+                    type="time"
+                    class="form-control right"
+                    v-model="Logs.time"
+                    @input="
+                        fetchLogs();
+                        countLogs();
+                      "
+                  />
                 </span>
               </div>
 
@@ -3971,6 +3979,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         id="tooMuchLogging"
                         style="float: right; margin-left: 8px"
                         v-model="tooMuchLogging"
+                        v-on:click="
+                    fetchLogs();
+                    countLogs();
+                  "
                       />
                     </label>
                   </div>
@@ -4019,7 +4031,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               <table class="table table-sm table-striped table-bordered w-auto">
                 <thead>
                   <tr>
-                    <th>
+                    <th style="vertical-align: top; width: 15%">
                       <div>
                         <i class="bi bi-calendar2-date"></i>
                       </div>
