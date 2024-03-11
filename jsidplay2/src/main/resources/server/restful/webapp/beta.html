@@ -83,6 +83,7 @@
             </span>
           </button>
           <select
+            id="localesecector"
             class="form-select form-select-sm"
             @change="updateLanguage"
             v-model="$i18n.locale"
@@ -267,6 +268,25 @@
                   ></div>
                 </button>
               </li>
+              <li class="nav-item" role="presentation" v-show="username !== 'jsidplay2'">
+                <button
+                  class="nav-link"
+                  id="logs-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#logs"
+                  type="button"
+                  role="tab"
+                  aria-controls="logs"
+                  aria-selected="false"
+                  @click="tabIndex = 8"
+                >
+                  {{ $t("LOGS") }}
+                  <div
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex===8 ? 'text-light': 'text-primary')"
+                    v-if="loadingLogs"
+                  ></div>
+                </button>
+              </li>
             </ul>
           </div>
           <div class="tab-content card-body" style="position: relative">
@@ -443,6 +463,7 @@
                     <i class="bi bi-search"></i>
                   </div>
                   <input
+                    id="quickfilter"
                     type="search"
                     class="form-control"
                     v-model="filterText2"
@@ -1516,6 +1537,7 @@
                     <i class="bi bi-search"></i>
                   </div>
                   <input
+                    id="quickfilter2"
                     type="search"
                     class="form-control"
                     type="search"
@@ -1640,10 +1662,10 @@
                             id="hardsid6581"
                             v-model="convertOptions.config.emulationSection.hardsid6581"
                           >
-                            <option :value="0">1</option>
-                            <option :value="1">2</option>
-                            <option :value="2">3</option>
-                            <option :value="3">4</option>
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
                           </select>
                           <span>{{ $t("convertMessages.config.emulationSection.hardsid6581") }}</span>
                         </label>
@@ -1657,10 +1679,10 @@
                             id="hardsid8580"
                             v-model="convertOptions.config.emulationSection.hardsid8580"
                           >
-                            <option :value="0">1</option>
-                            <option :value="1">2</option>
-                            <option :value="2">3</option>
-                            <option :value="3">4</option>
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
                           </select>
                           <span>{{ $t("convertMessages.config.emulationSection.hardsid8580") }}</span>
                         </label></span
@@ -2344,7 +2366,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="startTime">
                           {{ $t("convertMessages.config.sidplay2Section.startTime") }}
-                          <input type="time" id="startTime" class="right" v-model="startTime" />
+                          <input type="time" id="startTime" class="form-control right" v-model="startTime" />
                         </label>
                       </span>
                     </div>
@@ -2352,7 +2374,12 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="defaultPlayLength">
                           {{ $t("convertMessages.config.sidplay2Section.defaultPlayLength") }}
-                          <input type="time" id="defaultPlayLength" class="right" v-model="defaultPlayLength" />
+                          <input
+                            type="time"
+                            id="defaultPlayLength"
+                            class="form-control right"
+                            v-model="defaultPlayLength"
+                          />
                         </label>
                       </span>
                     </div>
@@ -2360,7 +2387,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="fadeInTime">
                           {{ $t("convertMessages.config.sidplay2Section.fadeInTime") }}
-                          <input type="time" id="fadeInTime" class="right" v-model="fadeInTime" />
+                          <input type="time" id="fadeInTime" class="form-control right" v-model="fadeInTime" />
                         </label>
                       </span>
                     </div>
@@ -2368,7 +2395,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                       <span class="setting">
                         <label for="fadeOutTime">
                           {{ $t("convertMessages.config.sidplay2Section.fadeOutTime") }}
-                          <input type="time" id="fadeOutTime" class="right" v-model="fadeOutTime" />
+                          <input type="time" id="fadeOutTime" class="form-control right" v-model="fadeOutTime" />
                         </label>
                       </span>
                     </div>
@@ -3666,9 +3693,14 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                             <span class="setting">
                               <div class="form-check">
                                 <label class="form-check-label" for="muteStereoVoice4">
-                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }} <input
-                                  class="form-check-input" type="checkbox" id=muteStereoVoice4" style="float: right;
-                                  margin-left: 8px" v-model="convertOptions.config.emulationSection.muteStereoVoice4" />
+                                  {{ $t("convertMessages.config.emulationSection.muteStereoVoice4") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteStereoVoice4"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteStereoVoice4"
+                                  />
                                 </label>
                               </div>
                             </span>
@@ -3732,9 +3764,13 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                             <span class="setting">
                               <div class="form-check">
                                 <label class="form-check-label" for="muteThirdSIDVoice4">
-                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }} <input
-                                  class="form-check-input" type="checkbox" id=muteThirdSIDVoice4" style="float: right;
-                                  margin-left: 8px" v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4"
+                                  {{ $t("convertMessages.config.emulationSection.muteThirdSIDVoice4") }}
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="muteThirdSIDVoice4"
+                                    style="float: right; margin-left: 8px"
+                                    v-model="convertOptions.config.emulationSection.muteThirdSIDVoice4"
                                   />
                                 </label>
                               </div>
@@ -3869,10 +3905,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               class="form-check-input"
                               type="radio"
                               value="0"
-                              id="sfxSoundExpanderType"
+                              id="sfxSoundExpanderType0"
                               v-model="convertOptions.sfxSoundExpanderType"
                             />
-                            <label class="form-check-label" for="sfxSoundExpanderType"> OPL1 (YM3526) </label>
+                            <label class="form-check-label" for="sfxSoundExpanderType0"> OPL1 (YM3526) </label>
                           </div>
 
                           <div class="form-check">
@@ -3880,10 +3916,10 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               class="form-check-input"
                               type="radio"
                               value="1"
-                              id="sfxSoundExpanderType"
+                              id="sfxSoundExpanderType1"
                               v-model="convertOptions.sfxSoundExpanderType"
                             />
-                            <label class="form-check-label" for="sfxSoundExpanderType"> OPL2 (YM3812) </label>
+                            <label class="form-check-label" for="sfxSoundExpanderType1"> OPL2 (YM3812) </label>
                           </div>
                         </div>
                       </span>
@@ -3891,6 +3927,223 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="tab-pane fade show" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+              <div class="settings-box">
+                <span class="setting">
+                  <label for="order">
+                    <select
+                      class="form-select form-select-sm right"
+                      id="order"
+                      v-model="order"
+                      @change="
+		                        fetchLogs();
+		                        countLogs();
+		                        "
+                    >
+                      <option value="ASC">{{ $t("ASC") }}</option>
+                      <option value="DESC">{{ $t("DESC") }}</option>
+                    </select>
+                  </label>
+                  <input
+                    type="date"
+                    class="form-control right"
+                    v-model="Logs.date"
+                    :locale="$i18n.locale"
+                    @input="
+                        fetchLogs();
+                        countLogs();
+                      "
+                  />
+
+                  <input type="time" class="form-control right" v-model="Logs.time" />
+                </span>
+              </div>
+
+              <div class="settings-box">
+                <span class="setting">
+                  <div class="form-check">
+                    <label class="form-check-label" for="tooMuchLogging">
+                      {{ $t("tooMuchLogging") }}
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="tooMuchLogging"
+                        style="float: right; margin-left: 8px"
+                        v-model="tooMuchLogging"
+                      />
+                    </label>
+                  </div>
+                </span>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-success btn-sm mb-2"
+                v-on:click="
+                    fetchLogs();
+                    countLogs();
+                  "
+                style="float: left"
+              >
+                <span>Request LOGS</span>
+              </button>
+              <div class="settings-box">
+                <span class="setting">
+                  <label for="maxResults"
+                    >{{ $t("maxResults") }}
+                    <input
+                      class="form-control right"
+                      type="number"
+                      id="maxResults"
+                      class="form-control"
+                      min="0"
+                      max="10000"
+                      v-model.number="maxResults"
+                      @change="
+                          fetchLogs();
+                          countLogs();
+                        "
+                    />
+                  </label>
+                </span>
+              </div>
+              <div class="settings-box">
+                <span class="setting">
+                  <span class="right" style="font-size: small; font-style: italic; color: #6c757d"
+                    >{{ logsCount.toLocaleString() }} {{ $t("results") }}</span
+                  >
+                </span>
+              </div>
+
+              <table class="table table-sm table-striped table-bordered w-auto">
+                <thead>
+                  <tr>
+                    <th>
+                      <div>
+                        <i class="bi bi-calendar2-date"></i>
+                      </div>
+                      <div class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal">
+                        {{ $t("Logs.instant") }}
+                      </div>
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-at"></i>
+                      </div>
+                      <label for="sourceClassName" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal"
+                        >{{ $t("Logs.sourceClassName") }}</label
+                      >
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="sourceClassName"
+                        v-model="Logs.sourceClassName"
+                        @change="
+                        fetchLogs();
+                        countLogs();
+                      "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-hash"></i>
+                      </div>
+                      <label
+                        for="sourceMethodName"
+                        class="d-none d-sm-block"
+                        style="margin-left: 0px; word-wrap: normal"
+                        >{{ $t("Logs.sourceMethodName") }}</label
+                      >
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="sourceMethodName"
+                        v-model="Logs.sourceMethodName"
+                        @change="
+                        fetchLogs();
+                        countLogs();
+                      "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-info-lg"></i>
+                      </div>
+                      <label for="level" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal"
+                        >{{ $t("Logs.level") }}</label
+                      >
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="level"
+                        v-model="Logs.level"
+                        @change="
+                        fetchLogs();
+                        countLogs();
+                      "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                    <th>
+                      <div>
+                        <i class="bi bi-chat-text"></i>
+                      </div>
+                      <label for="message" class="d-none d-sm-block" style="margin-left: 0px; word-wrap: normal"
+                        >{{ $t("Logs.message") }}</label
+                      >
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="message"
+                        v-model="Logs.message"
+                        @change="
+                        fetchLogs();
+                        countLogs();
+                      "
+                        style="max-width: 100%; padding: 0.175em 0em"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                      />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in logs">
+                    <td style="vertical-align: top; width: 15%; word-break: break-all">
+                      <span> {{ toDateTime(row.instant) }} </span>
+                    </td>
+                    <td style="word-break: break-all">
+                      <span> {{ row.sourceClassName }} </span>
+                    </td>
+                    <td style="word-break: break-all">
+                      <span> {{ row.sourceMethodName }} </span>
+                    </td>
+                    <td style="word-break: break-all">
+                      <span> {{ row.level }} </span>
+                    </td>
+                    <td style="width: 50%; word-break: break-all">
+                      <span> {{ row.message }} </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
