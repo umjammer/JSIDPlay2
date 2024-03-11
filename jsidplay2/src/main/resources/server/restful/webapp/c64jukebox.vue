@@ -6545,13 +6545,16 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       });
       window.addEventListener("message", messageListener, false);
 
-      document.getElementById('main').addEventListener('keypress', function(e) {
-        if (e.keyCode == 13) {
-          e.preventDefault();
-          return false;
-        }
-      }, false);
-
+      document.getElementById("main").addEventListener(
+        "keypress",
+        function (e) {
+          if (e.keyCode == 13) {
+            e.preventDefault();
+            return false;
+          }
+        },
+        false
+      );
     </script>
   </body>
 </html>
