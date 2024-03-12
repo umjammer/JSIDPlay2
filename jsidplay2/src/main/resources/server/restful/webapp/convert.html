@@ -72,7 +72,8 @@
               v-on:click="setDefaultSidModel6581()"
               style="font-size: smaller"
             >
-              6581
+              <span class="d-block d-sm-none">6581</span>
+              <span class="d-none d-sm-block">Chip model MOS6581</span>
             </button>
           </div>
           <div class="button-container">
@@ -82,7 +83,8 @@
               v-on:click="setDefaultSidModel8580()"
               style="font-size: smaller"
             >
-              8580
+              <span class="d-block d-sm-none">8580</span>
+              <span class="d-none d-sm-block">Chip model MOS8580</span>
             </button>
           </div>
           <div class="button-container">
@@ -92,7 +94,7 @@
               v-on:click="setDefaultEmulationReSid()"
               style="font-size: smaller"
             >
-              RESID
+              ReSID
             </button>
           </div>
           <div class="button-container">
@@ -102,7 +104,8 @@
               v-on:click="setDefaultEmulationReSidFp()"
               style="font-size: smaller"
             >
-              RESIDFP
+              ReSID
+              <i class="bi bi-node-plus"></i>
             </button>
           </div>
         </div>
@@ -115,7 +118,10 @@
               v-on:click="insertNextDisk()"
               style="font-size: smaller"
             >
-              {{ $t("insertNextDisk") }}
+              <i class="bi bi-floppy"></i>
+              <span>&#160;</span>
+              <i class="bi bi-plus"></i>
+              <span class="d-none d-sm-block">{{ $t("insertNextDisk") }}</span>
             </button>
           </div>
           <div class="button-container">
@@ -125,7 +131,10 @@
               v-on:click="insertNextCart()"
               style="font-size: smaller"
             >
-              {{ $t("insertNextCart") }}
+              <i class="bi bi-badge-8k"></i>
+              <span>&#160;</span>
+              <i class="bi bi-plus"></i>
+              <span class="d-none d-sm-block">{{ $t("insertNextCart") }}</span>
             </button>
           </div>
           <div class="button-container">
@@ -135,7 +144,10 @@
               v-on:click="setJoyBtn(0, 16)"
               style="font-size: smaller"
             >
-              Joy1 Btn
+              <i class="bi bi-joystick"></i>
+              <span>&#160;</span>
+              <i class="bi bi-1-circle"></i>
+              <span class="d-none d-sm-block">Joystick1 Button</span>
             </button>
           </div>
           <div class="button-container">
@@ -145,7 +157,10 @@
               v-on:click="setJoyBtn(1, 16)"
               style="font-size: smaller"
             >
-              Joy2 Btn
+              <i class="bi bi-joystick"></i>
+              <span>&#160;</span>
+              <i class="bi bi-2-circle"></i>
+              <span class="d-none d-sm-block">Joystick2 Button</span>
             </button>
           </div>
         </div>
