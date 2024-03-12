@@ -408,7 +408,7 @@
             regardingTimeoutsTip3:
               "If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
             nextDiskDone: "Next Disk has been inserted!",
-            nextDiskCart: "Next Cartridge has been inserted!",
+            nextCartDone: "Next Cartridge has been inserted!",
             defaultSidModel6581Done: "Default SID model has been set to 6581!",
             defaultSidModel8580Done: "Default SID model has been set to 8580!",
             defaultEmulationResidDone: "Default emulation has been set to RESID!",
@@ -595,7 +595,7 @@
             }).then((response) => {
               playClick();
               let result = response.data;
-              if (result) {
+              if (result && result !== "null") {
                 this.printMsg(this.$i18n.t("nextDiskDone")) + ": " + result;
                 this.fastForward();
               }
@@ -612,7 +612,7 @@
             }).then((response) => {
               playClick();
               let result = response.data;
-              if (result) {
+              if (result && result !== "null") {
                 this.printMsg(this.$i18n.t("nextCartDone") + ": " + result);
                 this.fastForward();
               }
