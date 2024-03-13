@@ -1074,7 +1074,7 @@
                                               itemId: row.id,
                                               categoryId: row.categoryId,
                                             });
-					                        $refs.playlistTab.click();
+                                            $refs.playlistTab.click();
                                             playlistIndex = 0;
                                           "
                                         >
