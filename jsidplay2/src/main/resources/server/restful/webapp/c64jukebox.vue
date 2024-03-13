@@ -81,11 +81,11 @@
             I'm sorry. Your browser doesn't support HTML5 audio
           </audio>
           <div v-show="showHardwarePlayer">
-            <button class="btn btn-success btn-sm" v-on:click="pause()">
+            <button type="button" class="btn btn-success btn-sm" v-on:click="pause()">
               <i class="bi bi-stop-fill"></i>
               <span>Stop Hardware Player</span>
             </button>
-            <button class="btn btn-danger btn-sm" v-on:click="end()">
+            <button type="button" class="btn btn-danger btn-sm" v-on:click="end()">
               <span>Quit Hardware Player</span>
             </button>
           </div>
