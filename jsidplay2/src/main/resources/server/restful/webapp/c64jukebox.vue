@@ -202,6 +202,7 @@
                 <button
                   class="nav-link"
                   id="pl-tab"
+                  ref="playlistTab"
                   data-bs-toggle="pill"
                   data-bs-target="#pl"
                   type="button"
@@ -212,7 +213,7 @@
                 >
                   {{ $t("PL") }}
                   <div
-                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 6 ? 'text-light' : 'text-primary')"
+                    :class="'spinner-border spinner-border-sm ' + (tabIndex === 5 ? 'text-light' : 'text-primary')"
                     v-if="loadingPl"
                   ></div>
                 </button>
@@ -558,7 +559,7 @@
                               filename: entry.filename,
                             })
                           );
-                        tabIndex = 5;
+                        $refs.playlistTab.click();
                         showAudio = true;
                       "
                     >
@@ -626,7 +627,7 @@
                             playlist.push({
                               filename: entry.filename,
                             });
-                            tabIndex = 5;
+                            $refs.playlistTab.click();
                             showAudio = true;
                           "
                         >
@@ -1073,7 +1074,7 @@
                                               itemId: row.id,
                                               categoryId: row.categoryId,
                                             });
-                                            tabIndex = 5;
+					                        $refs.playlistTab.click();
                                             playlistIndex = 0;
                                           "
                                         >
@@ -1809,7 +1810,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="streaming"
                         aria-selected="true"
-                        @click="tabConfigIndex = 0"
                       >
                         {{ $t("streamingCfgHeader") }}
                       </button>
@@ -1824,7 +1824,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="playback"
                         aria-selected="true"
-                        @click="tabConfigIndex = 1"
                       >
                         {{ $t("playbackCfgHeader") }}
                       </button>
@@ -1839,7 +1838,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="audio"
                         aria-selected="true"
-                        @click="tabConfigIndex = 2"
                       >
                         {{ $t("audioCfgHeader") }}
                       </button>
@@ -1854,7 +1852,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="emulation"
                         aria-selected="true"
-                        @click="tabConfigIndex = 3"
                       >
                         {{ $t("emulationCfgHeader") }}
                       </button>
@@ -1869,7 +1866,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="filter"
                         aria-selected="true"
-                        @click="tabConfigIndex = 4"
                       >
                         {{ $t("filterCfgHeader") }}
                       </button>
@@ -1884,7 +1880,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="mute"
                         aria-selected="true"
-                        @click="tabConfigIndex = 5"
                       >
                         {{ $t("mutingCfgHeader") }}
                       </button>
@@ -1899,7 +1894,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         role="tab"
                         aria-controls="cart"
                         aria-selected="true"
-                        @click="tabConfigIndex = 6"
                       >
                         {{ $t("floppyCartCfgHeader") }}
                       </button>
@@ -1934,7 +1928,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               role="tab"
                               aria-controls="audiostreaming"
                               aria-selected="true"
-                              @click="tabConfigIndex = 0"
                             >
                               {{ $t("audioStreamingCfgHeader") }}
                             </button>
@@ -1949,7 +1942,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               role="tab"
                               aria-controls="videostreaming"
                               aria-selected="true"
-                              @click="tabConfigIndex = 1"
                             >
                               {{ $t("videoStreamingCfgHeader") }}
                             </button>
@@ -2888,7 +2880,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               role="tab"
                               aria-controls="residfpfilter"
                               aria-selected="true"
-                              @click="filterTabConfigIndex = 0"
                             >
                               {{ $t("residFpFilterCfgHeader") }}
                             </button>
@@ -2903,7 +2894,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               role="tab"
                               aria-controls="residfilter"
                               aria-selected="true"
-                              @click="filterTabConfigIndex = 1"
                             >
                               {{ $t("residFilterCfgHeader") }}
                             </button>
@@ -2930,7 +2920,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     role="tab"
                                     aria-controls="residfpfilter6581"
                                     aria-selected="true"
-                                    @click="residFpFilterModelTabConfigIndex = 0"
                                   >
                                     {{ $t("residFpFilter6581CfgHeader") }}
                                   </button>
@@ -2945,7 +2934,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     role="tab"
                                     aria-controls="residfpfilter8580"
                                     aria-selected="true"
-                                    @click="residFpFilterModelTabConfigIndex = 1"
                                   >
                                     {{ $t("residFpFilter8580CfgHeader") }}
                                   </button>
@@ -2972,7 +2960,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDfpFiltername6581"
                                           aria-selected="true"
-                                          @click="reSIDfpFilter6581SidTabConfigIndex = 0"
                                         >
                                           {{ $t("reSIDfpFilter6581Header") }}
                                         </button>
@@ -2987,7 +2974,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDfpStereoFiltername6581"
                                           aria-selected="true"
-                                          @click="reSIDfpFilter6581SidTabConfigIndex = 1"
                                         >
                                           {{ $t("reSIDfpStereoFilter6581Header") }}
                                         </button>
@@ -3002,7 +2988,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDfpThirdSIDFiltername6581"
                                           aria-selected="true"
-                                          @click="reSIDfpFilter6581SidTabConfigIndex = 2"
                                         >
                                           {{ $t("reSIDfpThirdSIDFilter6581Header") }}
                                         </button>
@@ -3100,7 +3085,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDfpFiltername8580"
                                           aria-selected="true"
-                                          @click="reSIDfpFilter8580SidTabConfigIndex = 0"
                                         >
                                           {{ $t("reSIDfpFilter8580Header") }}
                                         </button>
@@ -3115,7 +3099,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDfpStereoFiltername8580"
                                           aria-selected="true"
-                                          @click="reSIDfpFilter8580SidTabConfigIndex = 1"
                                         >
                                           {{ $t("reSIDfpStereoFilter8580Header") }}
                                         </button>
@@ -3130,7 +3113,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDfpThirdSIDFiltername8580"
                                           aria-selected="true"
-                                          @click="reSIDfpFilter8580SidTabConfigIndex = 2"
                                         >
                                           {{ $t("reSIDfpThirdSIDFilter8580Header") }}
                                         </button>
@@ -3231,7 +3213,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     role="tab"
                                     aria-controls="residfilter6581"
                                     aria-selected="true"
-                                    @click="residFilterModelTabConfigIndex = 0"
                                   >
                                     {{ $t("residFilter6581CfgHeader") }}
                                   </button>
@@ -3246,7 +3227,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     role="tab"
                                     aria-controls="residfilter8580"
                                     aria-selected="true"
-                                    @click="residFilterModelTabConfigIndex = 1"
                                   >
                                     {{ $t("residFilter8580CfgHeader") }}
                                   </button>
@@ -3273,7 +3253,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDFiltername6581"
                                           aria-selected="true"
-                                          @click="reSIDFilter6581SidTabConfigIndex = 0"
                                         >
                                           {{ $t("reSIDFilter6581Header") }}
                                         </button>
@@ -3288,7 +3267,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDStereoFiltername6581"
                                           aria-selected="true"
-                                          @click="reSIDFilter6581SidTabConfigIndex = 1"
                                         >
                                           {{ $t("reSIDStereoFilter6581Header") }}
                                         </button>
@@ -3303,7 +3281,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDThirdSIDFiltername6581"
                                           aria-selected="true"
-                                          @click="reSIDFilter6581SidTabConfigIndex = 2"
                                         >
                                           {{ $t("reSIDThirdSIDFilter6581Header") }}
                                         </button>
@@ -3399,7 +3376,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDFiltername8580"
                                           aria-selected="true"
-                                          @click="reSIDFilter8580SidTabConfigIndex = 0"
                                         >
                                           {{ $t("reSIDFilter8580Header") }}
                                         </button>
@@ -3414,7 +3390,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDStereoFiltername8580"
                                           aria-selected="true"
-                                          @click="reSIDFilter8580SidTabConfigIndex = 1"
                                         >
                                           {{ $t("reSIDStereoFilter8580Header") }}
                                         </button>
@@ -3429,7 +3404,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           role="tab"
                                           aria-controls="reSIDThirdSIDFiltername8580"
                                           aria-selected="true"
-                                          @click="reSIDFilter8580SidTabConfigIndex = 2"
                                         >
                                           {{ $t("reSIDThirdSIDFilter8580Header") }}
                                         </button>
@@ -3526,7 +3500,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               role="tab"
                               aria-controls="muteSid"
                               aria-selected="true"
-                              @click="muteSidTabConfigIndex = 0"
                             >
                               {{ $t("muteSidHeader") }}
                             </button>
@@ -3541,7 +3514,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               role="tab"
                               aria-controls="muteStereoSid"
                               aria-selected="true"
-                              @click="muteSidTabConfigIndex = 1"
                             >
                               {{ $t("muteStereoSidHeader") }}
                             </button>
@@ -3556,7 +3528,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               role="tab"
                               aria-controls="muteThirdSID"
                               aria-selected="true"
-                              @click="muteSidTabConfigIndex = 2"
                             >
                               {{ $t("muteThirdSidHeader") }}
                             </button>
@@ -4784,12 +4755,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             theaterMode: false,
             carouselImageHeight:
               window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
-            slide: 0,
-            sliding: null,
             showAudio: false,
             showHardwarePlayer: false,
             langs: ["de", "en"],
-            directoryMode: 0,
             // ABOUT
             username: "jsidplay2",
             password: "jsidplay2!",
@@ -4841,80 +4809,24 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             searchFields: [
               {
                 key: "category",
-                label: "Content",
-                sortable: true,
-                class: "field-category",
               },
               {
                 key: "name",
-                sortable: true,
-                class: "field-name",
               },
               {
                 key: "event",
-                sortable: true,
-                class: "field-event",
               },
               {
                 key: "released",
-                label: "Release",
-                sortable: true,
-                class: "field-released",
               },
               {
                 key: "handle",
-                sortable: true,
-                class: "field-handle",
               },
               {
                 key: "rating",
-                sortable: true,
-                class: "field-rating",
               },
               { key: "actions" },
             ],
-            logFields: [
-              {
-                key: "instant",
-                label: "Date Time",
-                sortable: false,
-                thStyle: { "vertical-align": "top", width: "15%" },
-                class: "field-category",
-              },
-              {
-                key: "sourceClassName",
-                label: "Source Class Name",
-                sortable: false,
-                class: "field-category",
-              },
-              {
-                key: "sourceMethodName",
-                label: "Source Method Name",
-                sortable: false,
-                class: "field-category",
-              },
-              {
-                key: "level",
-                label: "Level",
-                sortable: false,
-                class: "field-category",
-              },
-              {
-                key: "message",
-                label: "Message",
-                sortable: false,
-                thStyle: { width: "50%" },
-                class: "field-category",
-              },
-            ],
-            contentEntryFields: [
-              {
-                key: "filename",
-                label: "File",
-              },
-            ],
-            sortBy: null,
-            sortDesc: null,
             name: "",
             event: "",
             released: "",
@@ -4947,16 +4859,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             vbrQualities: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
             // Misc.
             tabIndex: 0,
-            tabConfigIndex: 0,
-            streamingTabConfigIndex: 0,
-            filterTabConfigIndex: 0,
-            residFpFilterModelTabConfigIndex: 0,
-            residFilterModelTabConfigIndex: 0,
-            reSIDfpFilter6581SidTabConfigIndex: 0,
-            reSIDfpFilter8580SidTabConfigIndex: 0,
-            reSIDFilter6581SidTabConfigIndex: 0,
-            reSIDFilter8580SidTabConfigIndex: 0,
-            muteSidTabConfigIndex: 0,
             loadingSid: false,
             loadingStil: false,
             loadingLogs: false,
@@ -5007,50 +4909,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 return "AUTO";
               }
             },
-          },
-          startTime: {
-            set: function (val) {
-              this.convertOptions.config.sidplay2Section.startTime = timeConverter(val);
-            },
-            get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.startTime);
-            },
-          },
-          defaultPlayLength: {
-            set: function (val) {
-              this.convertOptions.config.sidplay2Section.defaultPlayLength = timeConverter(val);
-            },
-            get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.defaultPlayLength);
-            },
-          },
-          fadeInTime: {
-            set: function (val) {
-              this.convertOptions.config.sidplay2Section.fadeInTime = timeConverter(val);
-            },
-            get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.fadeInTime);
-            },
-          },
-          fadeOutTime: {
-            set: function (val) {
-              this.convertOptions.config.sidplay2Section.fadeOutTime = timeConverter(val);
-            },
-            get: function () {
-              return timeConverter(this.convertOptions.config.sidplay2Section.fadeOutTime);
-            },
-          },
-          translatedFields() {
-            return [
-              {
-                key: "Name",
-                label: this.$t("sidInfoKey"),
-              },
-              {
-                key: "Value",
-                label: this.$t("sidInfoValue"),
-              },
-            ];
           },
           translatedInfos: function () {
             if (!this.infos) {
@@ -5309,18 +5167,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             deviceCount = 0;
             this.showAudio = true;
             this.showHardwarePlayer = false;
-          },
-          sortChanged(e) {
-            localStorage.sortBy = JSON.stringify(e.sortBy);
-            localStorage.sortDesc = JSON.stringify(e.sortDesc);
-            this.sortBy = e.sortBy;
-            this.sortDesc = e.sortDesc;
-          },
-          onSlideStart(slide) {
-            this.sliding = true;
-          },
-          onSlideEnd(slide) {
-            this.sliding = false;
           },
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
@@ -5959,7 +5805,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               },
             })
               .then((response) => {
-                this.slide = 0;
                 this.directory = response.data.map((file) => {
                   return {
                     filename: file,
@@ -6460,12 +6305,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               this.playlist[this.playlistIndex].categoryId
             );
           }
-          if (localStorage.sortBy) {
-            this.sortBy = JSON.parse(localStorage.sortBy);
-          }
-          if (localStorage.sortDesc) {
-            this.sortDesc = JSON.parse(localStorage.sortDesc);
-          }
           if (localStorage.category) {
             this.category = JSON.parse(localStorage.category);
           }
@@ -6523,8 +6362,11 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           playlistIndex(newValue, oldValue) {
             localStorage.playlistIndex = JSON.stringify(this.playlistIndex);
           },
-          playlist(newValue, oldValue) {
-            localStorage.playlistV2 = JSON.stringify(this.playlist);
+          playlist: {
+            handler: function (after, before) {
+              localStorage.playlistV2 = JSON.stringify(this.playlist);
+            },
+            deep: true,
           },
           convertOptions: {
             handler: function (after, before) {
