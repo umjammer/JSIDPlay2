@@ -50,6 +50,7 @@
           <button
             :class="theaterMode ? 'btn btn-success btn-sm' : 'btn btn-primary btn-sm'"
             :aria-pressed="theaterMode"
+            data-bs-toggle="button"
             v-on:click.prevent="
               theaterMode = !theaterMode;
               if (theaterMode) {
@@ -60,8 +61,7 @@
             "
           >
             <span style="white-space: nowrap">
-              <i class="bi bi-play-fill" v-show="!theaterMode"></i>
-              <i class="bi bi-pause-fill" v-show="theaterMode"></i>
+              <i :class="theaterMode ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
               {{ $t("theaterMode") }}
             </span>
           </button>
@@ -97,7 +97,7 @@
         </div>
         <div class="card">
           <div class="card-header">
-            <ul class="nav nav-pills card-header-pills mb-2" id="myTab" role="tablist">
+            <ul class="nav nav-pills card-header-pills mb-2" role="tablist">
               <li class="nav-item" role="presentation">
                 <button
                   class="nav-link active"
@@ -443,9 +443,7 @@
 
               <div class="button-box">
                 <div class="input-group input-group-sm mb-2">
-                  <div class="input-group-prepend">
-                    <i class="bi bi-search"></i>
-                  </div>
+                  <div class="input-group-text"><i class="bi bi-search"></i></div>
                   <input
                     id="quickfilter"
                     type="search"
@@ -493,8 +491,6 @@
                       <div class="carousel-inner">
                         <div
                           :class="'carousel-item ' + (index === 0 ? 'active' : '')"
-                          data-bs-interval="5000"
-                          data-bs-ride="carousel"
                           v-for="(entry, index) in directory.filter((entry) => isPicture(entry))"
                           v-bind:key="entry.filename"
                         >
@@ -507,11 +503,9 @@
                               width: 'auto',
                             }"
                           />
-                          <div class="carousel-caption d-none d-md-block">
-                            <i class="bi-download"> </i>
+                          <div class="carousel-caption d-block">
                             <a
                               style="
-                                white-space: pre-line;
                                 text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
                                 font-family: sans;
                                 color: #007bff;
@@ -1502,9 +1496,7 @@
               </div>
               <div class="button-box">
                 <div class="input-group input-group-sm mb-2">
-                  <div class="input-group-prepend">
-                    <i class="bi bi-search"></i>
-                  </div>
+                  <div class="input-group-text"><i class="bi bi-search"></i></div>
                   <input
                     id="quickfilter2"
                     type="search"
@@ -1799,7 +1791,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               </div>
               <div class="card">
                 <div class="card-header">
-                  <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab2" role="tablist">
+                  <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                     <li class="nav-item" role="presentation">
                       <button
                         class="nav-link active"
@@ -1823,7 +1815,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         type="button"
                         role="tab"
                         aria-controls="playback"
-                        aria-selected="true"
+                        aria-selected="false"
                       >
                         {{ $t("playbackCfgHeader") }}
                       </button>
@@ -1837,7 +1829,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         type="button"
                         role="tab"
                         aria-controls="audio"
-                        aria-selected="true"
+                        aria-selected="false"
                       >
                         {{ $t("audioCfgHeader") }}
                       </button>
@@ -1851,7 +1843,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         type="button"
                         role="tab"
                         aria-controls="emulation"
-                        aria-selected="true"
+                        aria-selected="false"
                       >
                         {{ $t("emulationCfgHeader") }}
                       </button>
@@ -1865,7 +1857,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         type="button"
                         role="tab"
                         aria-controls="filter"
-                        aria-selected="true"
+                        aria-selected="false"
                       >
                         {{ $t("filterCfgHeader") }}
                       </button>
@@ -1879,7 +1871,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         type="button"
                         role="tab"
                         aria-controls="mute"
-                        aria-selected="true"
+                        aria-selected="false"
                       >
                         {{ $t("mutingCfgHeader") }}
                       </button>
@@ -1893,7 +1885,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         type="button"
                         role="tab"
                         aria-controls="cart"
-                        aria-selected="true"
+                        aria-selected="false"
                       >
                         {{ $t("floppyCartCfgHeader") }}
                       </button>
@@ -1917,7 +1909,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
 
                     <div class="card">
                       <div class="card-header">
-                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab3" role="tablist">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" ole="tablist">
                           <li class="nav-item" role="presentation">
                             <button
                               class="nav-link active"
@@ -1941,7 +1933,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               type="button"
                               role="tab"
                               aria-controls="videostreaming"
-                              aria-selected="true"
+                              aria-selected="false"
                             >
                               {{ $t("videoStreamingCfgHeader") }}
                             </button>
@@ -2869,7 +2861,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   <div class="tab-pane fade show" id="filter" role="tabpanel" aria-labelledby="filter-tab">
                     <div class="card">
                       <div class="card-header">
-                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab4" role="tablist">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                           <li class="nav-item" role="presentation">
                             <button
                               class="nav-link active"
@@ -2893,7 +2885,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               type="button"
                               role="tab"
                               aria-controls="residfilter"
-                              aria-selected="true"
+                              aria-selected="false"
                             >
                               {{ $t("residFilterCfgHeader") }}
                             </button>
@@ -2909,7 +2901,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         >
                           <div class="card">
                             <div class="card-header">
-                              <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab5" role="tablist">
+                              <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                                 <li class="nav-item" role="presentation">
                                   <button
                                     class="nav-link active"
@@ -2933,7 +2925,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     type="button"
                                     role="tab"
                                     aria-controls="residfpfilter8580"
-                                    aria-selected="true"
+                                    aria-selected="false"
                                   >
                                     {{ $t("residFpFilter8580CfgHeader") }}
                                   </button>
@@ -2949,7 +2941,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               >
                                 <div class="card">
                                   <div class="card-header">
-                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab7" role="tablist">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                                       <li class="nav-item" role="presentation">
                                         <button
                                           class="nav-link active"
@@ -2973,7 +2965,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDfpStereoFiltername6581"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDfpStereoFilter6581Header") }}
                                         </button>
@@ -2987,7 +2979,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDfpThirdSIDFiltername6581"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDfpThirdSIDFilter6581Header") }}
                                         </button>
@@ -3074,7 +3066,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               >
                                 <div class="card">
                                   <div class="card-header">
-                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab8" role="tablist">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                                       <li class="nav-item" role="presentation">
                                         <button
                                           class="nav-link active"
@@ -3098,7 +3090,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDfpStereoFiltername8580"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDfpStereoFilter8580Header") }}
                                         </button>
@@ -3112,7 +3104,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDfpThirdSIDFiltername8580"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDfpThirdSIDFilter8580Header") }}
                                         </button>
@@ -3202,7 +3194,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                         >
                           <div class="card">
                             <div class="card-header">
-                              <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab6" role="tablist">
+                              <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                                 <li class="nav-item" role="presentation">
                                   <button
                                     class="nav-link active"
@@ -3226,7 +3218,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                     type="button"
                                     role="tab"
                                     aria-controls="residfilter8580"
-                                    aria-selected="true"
+                                    aria-selected="false"
                                   >
                                     {{ $t("residFilter8580CfgHeader") }}
                                   </button>
@@ -3242,7 +3234,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               >
                                 <div class="card">
                                   <div class="card-header">
-                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab9" role="tablist">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                                       <li class="nav-item" role="presentation">
                                         <button
                                           class="nav-link active"
@@ -3266,7 +3258,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDStereoFiltername6581"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDStereoFilter6581Header") }}
                                         </button>
@@ -3280,7 +3272,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDThirdSIDFiltername6581"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDThirdSIDFilter6581Header") }}
                                         </button>
@@ -3365,7 +3357,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               >
                                 <div class="card">
                                   <div class="card-header">
-                                    <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab10" role="tablist">
+                                    <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                                       <li class="nav-item" role="presentation">
                                         <button
                                           class="nav-link active"
@@ -3389,7 +3381,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDStereoFiltername8580"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDStereoFilter8580Header") }}
                                         </button>
@@ -3403,7 +3395,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                                           type="button"
                                           role="tab"
                                           aria-controls="reSIDThirdSIDFiltername8580"
-                                          aria-selected="true"
+                                          aria-selected="false"
                                         >
                                           {{ $t("reSIDThirdSIDFilter8580Header") }}
                                         </button>
@@ -3489,7 +3481,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                   <div class="tab-pane fade show" id="mute" role="tabpanel" aria-labelledby="mute-tab">
                     <div class="card">
                       <div class="card-header">
-                        <ul class="nav nav-pills card-header-pills mb-2 right" id="myTab11" role="tablist">
+                        <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
                           <li class="nav-item" role="presentation">
                             <button
                               class="nav-link active"
@@ -3513,7 +3505,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               type="button"
                               role="tab"
                               aria-controls="muteStereoSid"
-                              aria-selected="true"
+                              aria-selected="false"
                             >
                               {{ $t("muteStereoSidHeader") }}
                             </button>
@@ -3527,7 +3519,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                               type="button"
                               role="tab"
                               aria-controls="muteThirdSID"
-                              aria-selected="true"
+                              aria-selected="false"
                             >
                               {{ $t("muteThirdSidHeader") }}
                             </button>
