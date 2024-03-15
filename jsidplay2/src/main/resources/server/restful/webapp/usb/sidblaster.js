@@ -57,12 +57,7 @@ async function sidBlasterThreadOutput() {
 			timer = null;
 			return;
 		}
-		// TODO how to delay cycles in us here !?
-		if (bufferFrame.cycles && bufferFrame.cycles/1000 > 0) {
-//			await realwrite(Uint8Array.of(reg | 0x60, data), 2);
-			await delay(bufferFrame.cycles/1000);
-
-		}
+		window.instance.exports.toJava(bufferFrame.cycles);
 		await realwrite(bufferFrame.buffer, bufferFrame.bufferIdx);
 	}
 	timer = setTimeout(() => sidBlasterThreadOutput());

@@ -28,6 +28,7 @@
     <script src="/static/usb/libftdi.js"></script>
     <script src="/static/usb/exsid.js"></script>
     <script src="/static/usb/sidblaster.js"></script>
+    <script src="/static/wasm/complexlogic.wasm-runtime.js"></script>
 
     <!-- disable pull reload -->
     <style>
@@ -229,6 +230,7 @@
                   aria-controls="hw"
                   aria-selected="false"
                   @click="tabIndex = 6"
+                  :disabled="!this.hasHardware"
                 >
                   {{ $t("HARDWARE") }}
                 </button>
@@ -1604,9 +1606,11 @@
                       ><div style="margin-bottom: 8px; text-align: center">{{ $t("EXSID") }}</div></b
                     >
                   </div>
-                  <!--div class="col">
-                        <b><div style="margin-bottom: 8px; text-align: center;">{{ $t("SIDBLASTER") }}</div></b>
-				    </div-->
+                  <div class="col">
+                    <b
+                      ><div style="margin-bottom: 8px; text-align: center">{{ $t("SIDBLASTER") }}</div></b
+                    >
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col" style="border-right: 1px dotted grey">
@@ -1657,15 +1661,15 @@
                       <img src="/static/images/exsid.jpg" alt="ExSID" class="img-fluid img-thumbnail mx-auto" />
                     </div>
                   </div>
-                  <!--div class="col" style="border-left: 1px dotted grey;">
-                         <div class="container">
-						<img
-                        src="/static/images/sidblaster.jpg"
-						alt="SIDBlaster"
+                  <div class="col" style="border-left: 1px dotted grey">
+                    <div class="container">
+                      <img
+                        src="/static/images/sidblaster.jpeg"
+                        alt="SIDBlaster"
                         class="img-fluid img-thumbnail mx-auto"
-						/>
-                         </div>
-				    </div-->
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col" style="border-right: 1px dotted grey">
@@ -1686,7 +1690,7 @@
                       >
                     </div>
                   </div>
-                  <!--div class="col" style="border-left: 1px dotted grey">
+                  <div class="col" style="border-left: 1px dotted grey">
                     <div class="settings-box">
                       <span class="setting">
                         <button type="button" class="btn btn-success" v-on:click="hardware_sidblaster_init()">
@@ -1694,7 +1698,7 @@
                         </button></span
                       >
                     </div>
-                  </div-->
+                  </div>
                 </div>
               </div>
 
@@ -4736,6 +4740,30 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           },
         },
       });
+
+      // Define the 'fromJava' function (mapped to the Java method)
+      function fromJava(message) {
+        console.log("Received message from Java:", message);
+      }
+
+      // Create an empty object to serve as the "env" module
+      const envModule = {};
+
+      // Assign the 'fromJava' function to the "env" module
+      envModule.fromJava = fromJava;
+
+      // Load the Wasm module
+      TeaVM.wasm
+        .load("/static/wasm/complexlogic.wasm", {
+          installImports(o, controller) {
+            // Assign the "env" module to the imports
+            o.env = envModule;
+          },
+        })
+        .then((teavm) => {
+          // Store the instance for future use
+          window.instance = teavm.instance;
+        });
 
       let app = Vue.createApp({
         data: function () {

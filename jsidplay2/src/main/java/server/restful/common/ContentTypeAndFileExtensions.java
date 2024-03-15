@@ -63,7 +63,11 @@ public enum ContentTypeAndFileExtensions {
 	 * FONTS
 	 */
 	MIME_TYPE_WOFF2(create("font/woff2", (Charset) null), false, true, ".woff2"),
-	MIME_TYPE_WOFF(create("font/woff", (Charset) null), false, true, ".woff");
+	MIME_TYPE_WOFF(create("font/woff", (Charset) null), false, true, ".woff"),
+	/**
+	 * WASM
+	 */
+	WASM(create("application/wasm", (Charset) null), false, true, ".wasm");
 
 	private final ContentType contentType;
 	private boolean isText, isCacheable;
