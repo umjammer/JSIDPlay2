@@ -1,7 +1,6 @@
 package libsidplay;
 
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,10 +9,12 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.function.Function;
 
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.Event.Phase;
+import libsidplay.common.EventScheduler;
 import libsidplay.common.Ultimate64Mode;
 import libsidplay.components.c1530.Datasette;
 import libsidplay.components.c1541.C1541;
@@ -50,29 +51,13 @@ import libsidutils.prg2tap.PRG2TAPProgram;
  *
  */
 public class HardwareEnsemble implements Ultimate64 {
-	private static final String JIFFYDOS_C64_ROM = "/libsidplay/roms/JiffyDOS_C64_6.01.bin";
-	private static final String JIFFYDOS_C1541_ROM = "/libsidplay/roms/JiffyDOS_1541-II_6.00.bin";
-	
-	private static final int JIFFYDOS_C64_ROM_SIZE = 0x2000;
-	private static final int JIFFYDOS_C1541_ROM_SIZE = 0x4000;
-	private static final byte[] JIFFYDOS_C64_KERNAL = new byte[JIFFYDOS_C64_ROM_SIZE];
-	private static final byte[] JIFFYDOS_C1541 = new byte[JIFFYDOS_C1541_ROM_SIZE];
-	private static final byte[] EOD_HACK = new byte[] { (byte) 0xEE, (byte) 0xAD, 0x56, 0x30, (byte) 0x90, 0x46, 0x37,
+
+	private final byte[] JIFFYDOS_C64_KERNAL;
+	private final byte[] JIFFYDOS_C1541;
+	private static byte[] EOD_HACK = new byte[] { (byte) 0xEE, (byte) 0xAD, 0x56, 0x30, (byte) 0x90, 0x46, 0x37,
 			(byte) 0xCD, 0x3D, 0x4C, (byte) 0x85, (byte) 0x8F, 0x50, (byte) 0x86, 0x51, (byte) 0x92, };
 	private static final byte[] EOD_HACK2 = new byte[] { 0x49, (byte) 0xB1, (byte) 0xAD, 0x2D, 0x1A, 0x01, 0x26,
 			(byte) 0xFF, 0x25, (byte) 0xDB, (byte) 0xD3, 0x5E, 0x77, 0x3B, (byte) 0x93, (byte) 0xB2, };
-
-	static {
-		try (DataInputStream isJiffyDosC64 = new DataInputStream(
-				HardwareEnsemble.class.getResourceAsStream(JIFFYDOS_C64_ROM));
-				DataInputStream isJiffyDosC1541 = new DataInputStream(
-						HardwareEnsemble.class.getResourceAsStream(JIFFYDOS_C1541_ROM))) {
-			isJiffyDosC64.readFully(JIFFYDOS_C64_KERNAL);
-			isJiffyDosC1541.readFully(JIFFYDOS_C1541);
-		} catch (final IOException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
 
 	/**
 	 * Configuration.
@@ -116,18 +101,15 @@ public class HardwareEnsemble implements Ultimate64 {
 	/**
 	 * Create a complete hardware setup (C64, tape/disk drive, printer and more).
 	 */
-	public HardwareEnsemble(IConfig config) {
-		this(config, MOS6510.class);
-	}
+	public HardwareEnsemble(IConfig config, Function<EventScheduler, MOS6510> cpuCreator, byte[] charBin, byte[] basicBin,
+			byte[] kernalBin, byte[] jiffyDosKernalBin, byte[] jiffyDosC1541, byte[] c1541Bin, byte[] c1541IIBin, byte[] mps803CharsetBin) {
+		JIFFYDOS_C64_KERNAL = jiffyDosKernalBin;
+		JIFFYDOS_C1541 = jiffyDosC1541;
 
-	/**
-	 * Create a complete hardware setup (C64, tape/disk drive, printer and more).
-	 */
-	public HardwareEnsemble(IConfig config, Class<? extends MOS6510> cpuClass) {
 		this.config = config;
 		this.iecBus = new IECBus();
 
-		this.printer = new MPS803(this.iecBus, (byte) 4, (byte) 7) {
+		this.printer = new MPS803(this.iecBus, (byte) 4, (byte) 7, mps803CharsetBin) {
 			@Override
 			public void setBusy(final boolean flag) {
 				c64.cia2.setFlag(flag);
@@ -139,7 +121,7 @@ public class HardwareEnsemble implements Ultimate64 {
 			}
 		};
 
-		this.c64 = new C64(cpuClass) {
+		this.c64 = new C64(cpuCreator, charBin, basicBin, kernalBin) {
 			@Override
 			public void printerUserportWriteData(final byte data) {
 				if (config.getPrinterSection().isPrinterOn()) {
@@ -193,7 +175,7 @@ public class HardwareEnsemble implements Ultimate64 {
 			}
 		};
 
-		final C1541 c1541 = new C1541(iecBus, 8, FloppyType.C1541);
+		final C1541 c1541 = new C1541(iecBus, 8, FloppyType.C1541, c1541Bin, c1541IIBin);
 
 		this.floppies = new C1541[] { c1541 };
 		this.serialDevices = new SerialIECDevice[] { printer };
@@ -264,7 +246,7 @@ public class HardwareEnsemble implements Ultimate64 {
 	/**
 	 * Reset hardware.
 	 */
-	protected void reset() {
+	public void reset() {
 		final ISidPlay2Section sidplay2section = config.getSidplay2Section();
 		c64.configureVICs(vic -> {
 			IPALEmulation palEmulation = vic.getPalEmulation();

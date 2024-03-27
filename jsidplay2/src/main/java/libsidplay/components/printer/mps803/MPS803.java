@@ -1,8 +1,5 @@
 package libsidplay.components.printer.mps803;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-
 import libsidplay.components.iec.IECBus;
 import libsidplay.components.iec.SerialIECDevice;
 import libsidplay.components.printer.IPaper;
@@ -100,17 +97,7 @@ import libsidplay.components.printer.paper.ConsolePaper;
  */
 public abstract class MPS803 extends SerialIECDevice implements UserportPrinterEnvironment {
 
-	private static final String CHAR_ROM = "/libsidplay/roms/mps803char.bin";
-
-	private static final byte[] MPS803_CHARSET_BIN = new byte[3584];
-
-	static {
-		try (DataInputStream is = new DataInputStream(MPS803.class.getResourceAsStream(CHAR_ROM))) {
-			is.readFully(MPS803_CHARSET_BIN);
-		} catch (IOException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
+	private final byte[] MPS803_CHARSET_BIN;
 
 	/**
 	 * Maximum column with.
@@ -265,8 +252,9 @@ public abstract class MPS803 extends SerialIECDevice implements UserportPrinterE
 	 * @param p primary device number
 	 * @param s secondary device number
 	 */
-	public MPS803(final IECBus bus, final int p, final int s) {
+	public MPS803(final IECBus bus, final int p, final int s, byte[] mps803CharsetBin) {
 		super(bus);
+		MPS803_CHARSET_BIN = mps803CharsetBin;
 		this.prnr = p;
 		this.secondary = s;
 		// set default paper

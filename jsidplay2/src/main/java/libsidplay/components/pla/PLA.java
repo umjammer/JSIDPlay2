@@ -3,8 +3,6 @@ package libsidplay.components.pla;
 import static libsidplay.common.SIDChip.REG_COUNT;
 import static libsidplay.common.SIDEmu.NONE;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 import libsidplay.common.Event;
@@ -38,29 +36,13 @@ public final class PLA {
 	 */
 	private static final int MAX_BANKS = 16;
 
-	private static final String CHAR_ROM = "/libsidplay/roms/char.bin";
-	private static final String BASIC_ROM = "/libsidplay/roms/basic.bin";
-	private static final String KERNAL_ROM = "/libsidplay/roms/kernal.bin";
-
 	private static final int CHAR_LENGTH = 0x1000;
 	private static final int BASIC_LENGTH = 0x2000;
 	private static final int KERNAL_LENGTH = 0x2000;
 
-	private static final byte[] CHAR = new byte[CHAR_LENGTH];
-	private static final byte[] BASIC = new byte[BASIC_LENGTH];
-	private static final byte[] KERNAL = new byte[KERNAL_LENGTH];
-
-	static {
-		try (DataInputStream isChar = new DataInputStream(PLA.class.getResourceAsStream(CHAR_ROM));
-				DataInputStream isBasic = new DataInputStream(PLA.class.getResourceAsStream(BASIC_ROM));
-				DataInputStream isKernal = new DataInputStream(PLA.class.getResourceAsStream(KERNAL_ROM))) {
-			isChar.readFully(CHAR);
-			isBasic.readFully(BASIC);
-			isKernal.readFully(KERNAL);
-		} catch (IOException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
+	private static byte[] CHAR;
+	private static byte[] BASIC;
+	private static byte[] KERNAL;
 
 	private static final Bank characterRomBank = new Bank() {
 		@Override
@@ -298,7 +280,11 @@ public final class PLA {
 	/** Cartridge DMA */
 	private boolean cartridgeDma;
 
-	public PLA(final EventScheduler context, final Bank zeroRAMBank, final Bank ramBank) {
+	public PLA(final EventScheduler context, final Bank zeroRAMBank, final Bank ramBank, byte[] charBin,
+			byte[] basicBin, byte[] kernalBin) {
+		CHAR = charBin;
+		BASIC = basicBin;
+		KERNAL = kernalBin;
 		this.context = context;
 		this.ramBank = ramBank;
 		nullCartridge = Cartridge.nullCartridge(this);

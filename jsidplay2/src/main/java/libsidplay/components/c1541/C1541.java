@@ -6,8 +6,6 @@
  */
 package libsidplay.components.c1541;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 import libsidplay.common.Event;
@@ -34,24 +32,12 @@ import libsidplay.components.mos6510.MOS6510;
  * @author Ken Händel
  */
 public final class C1541 {
-	private static final String C1541_ROM = "/libsidplay/roms/c1541.bin";
-	private static final String C1541_II_ROM = "/libsidplay/roms/c1541-2.bin";
 	/**
 	 * Size of the floppy ROM.
 	 */
 	private static final int ROM_SIZE = 0x4000;
-	private static final byte[] C1541 = new byte[ROM_SIZE];
-	private static final byte[] C1541_II = new byte[ROM_SIZE];
-
-	static {
-		try (DataInputStream isC1541 = new DataInputStream(C1541.class.getResourceAsStream(C1541_ROM));
-				DataInputStream isC1541_II = new DataInputStream(C1541.class.getResourceAsStream(C1541_II_ROM))) {
-			isC1541.readFully(C1541);
-			isC1541_II.readFully(C1541_II);
-		} catch (IOException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
+	private final byte[] C1541;
+	private final byte[] C1541_II;
 
 	/**
 	 * Size of the floppy RAM.
@@ -135,7 +121,9 @@ public final class C1541 {
 	 * @param deviceID floppy device number (8-11)
 	 * @param type     C1541 or C1541-II?
 	 */
-	public C1541(final IECBus iecBus, final int deviceID, final FloppyType type) {
+	public C1541(final IECBus iecBus, final int deviceID, final FloppyType type, byte[] c1541Bin, byte[] c1541IIBin) {
+		C1541 = c1541Bin;
+		C1541_II = c1541IIBin;
 		this.id = deviceID;
 
 		// Create a CPU for the floppy disk drive

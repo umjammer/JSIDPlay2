@@ -7,10 +7,10 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 
 import libsidplay.common.CIAChipModel;
@@ -288,17 +288,16 @@ public abstract class C64 implements DatasetteEnvironment, C1541Environment, Use
 		this.parallelCable = parallelCable;
 	}
 
-	public C64(Class<? extends MOS6510> cpuClass) {
+	public C64(byte[] charBin, byte[] basicBin, byte[] kernalBin) {
+		this(context -> new MOS6510(context), charBin, basicBin, kernalBin);
+	}
+
+	public C64(Function<EventScheduler, MOS6510> cpuCreator, byte[] charBin, byte[] basicBin, byte[] kernalBin) {
 		context = new EventScheduler();
 
-		pla = new PLA(context, zeroRAMBank, ramBank);
+		cpu = cpuCreator.apply(context);
+		pla = new PLA(context, zeroRAMBank, ramBank, charBin, basicBin, kernalBin);
 
-		try {
-			cpu = cpuClass.getConstructor(EventScheduler.class).newInstance(context);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException("Cannot create MOS6510 instance of: " + cpuClass);
-		}
 		cpu.setMemoryHandler(address -> pla.cpuRead(address), (address, value) -> pla.cpuWrite(address, value));
 		pla.setCpu(cpu);
 
