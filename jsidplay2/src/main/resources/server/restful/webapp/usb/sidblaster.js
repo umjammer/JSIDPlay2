@@ -57,7 +57,7 @@ async function sidBlasterThreadOutput() {
 			timer = null;
 			return;
 		}
-		window.instance.exports.toJava(bufferFrame.cycles);
+		window.instance.exports.delaySidBlaster(bufferFrame.cycles);
 		await realwrite(bufferFrame.buffer, bufferFrame.bufferIdx);
 	}
 	timer = setTimeout(() => sidBlasterThreadOutput());

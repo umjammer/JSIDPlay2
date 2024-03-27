@@ -28,7 +28,7 @@
     <script src="/static/usb/libftdi.js"></script>
     <script src="/static/usb/exsid.js"></script>
     <script src="/static/usb/sidblaster.js"></script>
-    <script src="/static/wasm/complexlogic.wasm-runtime.js"></script>
+    <script src="/static/wasm/jsidplay2.wasm-runtime.js"></script>
 
     <!-- disable pull reload -->
     <style>
@@ -4754,7 +4754,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
 
       // Load the Wasm module
       TeaVM.wasm
-        .load("/static/wasm/complexlogic.wasm", {
+        .load("/static/wasm/jsidplay2.wasm", {
           installImports(o, controller) {
             // Assign the "env" module to the imports
             o.env = envModule;
