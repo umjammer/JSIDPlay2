@@ -157,7 +157,7 @@ public final class SidIdV2 extends SidIdBase {
 	/**
 	 * Configuration sections.
 	 */
-	private ArrayList<PlayerSection> sections;
+	private ArrayList<PlayerSection> sections = new ArrayList<>();
 
 	/**
 	 * Scan multiple times.

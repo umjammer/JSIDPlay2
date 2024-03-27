@@ -2,8 +2,6 @@ package libsidplay.sidtune;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 /**
  * Header has been extended for 'RSID' format<BR>
@@ -184,11 +182,15 @@ public class PSidHeader {
 	byte sidChip3MiddleNybbles;
 
 	static String getString(byte[] info) {
-		try (Scanner sc = new Scanner(new String(info, ISO_8859_1))) {
-			return sc.useDelimiter("\0").next();
-		} catch (NoSuchElementException e) {
-			return "<?>";
+		StringBuilder result = new StringBuilder();
+		String infoString = new String(info, ISO_8859_1);
+		for (char ch : infoString.toCharArray()) {
+			if (ch == '\0') {
+				break;
+			}
+			result.append(ch);
 		}
+		return result.length() == 0 ? "<?>" : result.toString();
 	}
 
 	public String getName() {

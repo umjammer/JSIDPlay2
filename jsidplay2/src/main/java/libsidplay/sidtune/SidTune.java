@@ -335,6 +335,8 @@ public abstract class SidTune {
 	 */
 	public abstract Integer placeProgramInMemory(final byte[] c64buf);
 
+	public abstract Integer placeProgramInMemoryTeaVM(final byte[] mem, final byte[] PSID);
+	
 	/**
 	 * @param destFileName Destination for the file.
 	 * @throws IOException

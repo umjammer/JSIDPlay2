@@ -37,6 +37,12 @@ public class MP3Tune extends SidTune {
 	}
 
 	@Override
+	public Integer placeProgramInMemoryTeaVM(byte[] c64buf, byte[] driver) {
+		// No program to load
+		return null;
+	}
+
+	@Override
 	public void save(String destFileName) throws IOException {
 		throw new RuntimeException("Saving of this format is not possible!");
 	}

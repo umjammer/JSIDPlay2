@@ -30,18 +30,8 @@ import libsidutils.sidid.SidIdV2;
 
 class Prg extends SidTune {
 
-	private static final SidIdV2 SID_ID = new SidIdV2();
-	private static final SidIdInfo SID_ID_INFO = new SidIdInfo();
-
-	static {
-		try {
-			SID_ID.readconfig();
-			SID_ID.setMultiScan(true);
-			SID_ID_INFO.readconfig();
-		} catch (final IOException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
+	private static SidIdV2 SID_ID;
+	private static SidIdInfo SID_ID_INFO;
 
 	protected int programOffset;
 
@@ -90,6 +80,26 @@ class Prg extends SidTune {
 		return null;
 	}
 
+	@Override
+	public Integer placeProgramInMemoryTeaVM(final byte[] mem, byte[] driver) {
+		final int start = info.loadAddr;
+		final int end = start + info.c64dataLen;
+		mem[0x2d] = (byte) (end & 0xff);
+		mem[0x2e] = (byte) (end >> 8); // Variables start
+		mem[0x2f] = (byte) (end & 0xff);
+		mem[0x30] = (byte) (end >> 8); // Arrays start
+		mem[0x31] = (byte) (end & 0xff);
+		mem[0x32] = (byte) (end >> 8); // Strings start
+		mem[0xac] = (byte) (start & 0xff);
+		mem[0xad] = (byte) (start >> 8);
+		mem[0xae] = (byte) (end & 0xff);
+		mem[0xaf] = (byte) (end >> 8);
+
+		// Copy data from cache to the correct destination.
+		System.arraycopy(program, programOffset, mem, start, end - start);
+		return null;
+	}
+
 	/**
 	 * Identify the player IDs of a program in memory.
 	 *
@@ -97,6 +107,15 @@ class Prg extends SidTune {
 	 */
 	@Override
 	public Collection<String> identify() {
+		if (SID_ID == null) {
+			try {
+				SID_ID = new SidIdV2();
+				SID_ID.readconfig();
+				SID_ID.setMultiScan(true);
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 		return SID_ID.identify(program);
 	}
 
@@ -108,6 +127,14 @@ class Prg extends SidTune {
 	 */
 	@Override
 	public PlayerInfoSection getPlayerInfo(String playerName) {
+		if (SID_ID_INFO == null) {
+			try {
+				SID_ID_INFO = new SidIdInfo();
+				SID_ID_INFO.readconfig();
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 		return SID_ID_INFO.getPlayerInfo(playerName);
 	}
 

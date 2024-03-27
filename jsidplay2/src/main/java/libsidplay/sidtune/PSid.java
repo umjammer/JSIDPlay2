@@ -99,6 +99,17 @@ class PSid extends Prg {
 		}
 	}
 
+	@Override
+	public Integer placeProgramInMemoryTeaVM(final byte[] mem, byte[] driver) {
+		super.placeProgramInMemory(mem);
+		if (info.compatibility == RSID_BASIC) {
+			mem[0x30c] = (byte) (info.currentSong - 1);
+			return null;
+		} else {
+			return relocateAndInstallDriver(mem, driver);
+		}
+	}
+
 	/**
 	 * Linux ALSA is very sensible for timing: therefore we assemble before we open
 	 * AudioLine
@@ -151,9 +162,13 @@ class PSid extends Prg {
 			URL url = PSid.class.getResource(PSID_DRIVER_BIN);
 			PSID_DRIVER = new byte[url.openConnection().getContentLength()];
 			is.readFully(PSID_DRIVER);
+			return relocateAndInstallDriver(ram, PSID_DRIVER);
 		} catch (IOException e) {
 			throw new RuntimeException("Load failed for resource: " + PSID_DRIVER_BIN);
 		}
+	}
+
+	private int relocateAndInstallDriver(final byte[] ram, byte[] PSID_DRIVER) {
 		ByteBuffer relocatedBuffer = new Reloc65().reloc65(PSID_DRIVER, info.determinedDriverAddr - 10);
 
 		if (relocatedBuffer == null) {
