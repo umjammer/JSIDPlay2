@@ -4,14 +4,14 @@ final class Spline {
 	private final double[][] params;
 	private double[] c;
 
-	protected Spline(double[][] input) {
-		params = new double[input.length - 1][];
+	protected Spline(double[][] input, int inputlength) {
+		params = new double[inputlength - 1][];
 
-		for (int i = 0; i < input.length - 1; i++) {
+		for (int i = 0; i < inputlength - 1; i++) {
 			double[] p0 = i != 0 ? input[i - 1] : null;
 			double[] p1 = input[i];
 			double[] p2 = input[i + 1];
-			double[] p3 = i != input.length - 2 ? input[i + 2] : null;
+			double[] p3 = i != inputlength - 2 ? input[i + 2] : null;
 
 			final double k1, k2;
 			if (p0 == null) {
@@ -46,7 +46,7 @@ final class Spline {
 		 * necessary.
 		 */
 		params[0][0] = Double.MIN_VALUE;
-		params[params.length - 1][1] = Double.MAX_VALUE;
+		params[inputlength - 1 - 1][1] = Double.MAX_VALUE;
 
 		c = params[0];
 	}

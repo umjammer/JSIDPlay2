@@ -76,13 +76,13 @@ public final class FilterModelConfig {
 		// Create lookup table mapping capacitor voltage to op-amp input
 		// voltage:
 		// vc -> vx
-		double[][] scaled_voltage = new double[opamp_voltage.length][2];
-		for (int i = 0; i < opamp_voltage.length; i++) {
+		double[][] scaled_voltage = new double[22][2];
+		for (int i = 0; i < 22; i++) {
 			scaled_voltage[i][0] = (N16 * (opamp_voltage[i][0] - opamp_voltage[i][1]) + (1 << 16)) / 2;
 			scaled_voltage[i][1] = N16 * opamp_voltage[i][0];
 		}
 
-		Spline s = new Spline(scaled_voltage);
+		Spline s = new Spline(scaled_voltage, 22);
 		double[] out = new double[2];
 		for (int x = 0; x < 0x10000; x++) {
 			s.evaluate(x, out);
@@ -97,14 +97,14 @@ public final class FilterModelConfig {
 		// entirely accurate, since the input for each transistor is different,
 		// and transistors are not linear components. However modeling all
 		// transistors separately would be extremely costly.
-		OpAmp opampModel = new OpAmp(opamp_voltage, Vdd - Vth);
+		OpAmp opampModel = new OpAmp(opamp_voltage, 22, Vdd - Vth);
 		summer = new char[7][];
-		for (int i = 0; i < summer.length; i++) {
+		for (int i = 0; i < 7; i++) {
 			int idiv = 2 + i; // 2 - 6 input "resistors".
 			int size = idiv << 16;
 			opampModel.reset();
 			summer[i] = new char[size];
-			for (int vi = 0; vi < summer[i].length; vi++) {
+			for (int vi = 0; vi < size; vi++) {
 				double vin = vmin + vi / N16 / idiv; /* vmin .. vmax */
 				summer[i][vi] = (char) ((opampModel.solve(idiv, vin) - vmin) * N16 + 0.5);
 			}
@@ -117,7 +117,7 @@ public final class FilterModelConfig {
 		// All "on", transistors are modeled as one - see comments above for
 		// the filter summer.
 		mixer = new char[8][];
-		for (int i = 0; i < mixer.length; i++) {
+		for (int i = 0; i < 8; i++) {
 			final int size;
 			if (i == 0) {
 				size = 1;
@@ -126,7 +126,7 @@ public final class FilterModelConfig {
 			}
 			opampModel.reset();
 			mixer[i] = new char[size];
-			for (int vi = 0; vi < mixer[i].length; vi++) {
+			for (int vi = 0; vi < size; vi++) {
 				double vin = vmin + vi / N16 / (i == 0 ? 1 : i); /* vmin .. vmax */
 				mixer[i][vi] = (char) ((opampModel.solve(i * 8.0 / 6.0, vin) - vmin) * N16 + 0.5);
 			}
@@ -137,10 +137,11 @@ public final class FilterModelConfig {
 		// From die photographs of the bandpass and volume "resistor" ladders
 		// it follows that gain ~ vol/8 and 1/Q ~ ~res/8 (assuming ideal
 		// op-amps and ideal "resistors").
-		gain = new char[16][1 << 16];
-		for (int n8 = 0; n8 < FilterModelConfig.gain.length; n8++) {
+		gain = new char[16][];
+		for (int n8 = 0; n8 < 16; n8++) {
+			gain[n8] = new char[65536];
 			opampModel.reset();
-			for (int vi = 0; vi < FilterModelConfig.gain[n8].length; vi++) {
+			for (int vi = 0; vi < 65536; vi++) {
 				double vin = vmin + vi / N16; /* vmin .. vmax */
 				gain[n8][vi] = (char) ((opampModel.solve(n8 / 8.0, vin) - vmin) * N16 + 0.5);
 			}

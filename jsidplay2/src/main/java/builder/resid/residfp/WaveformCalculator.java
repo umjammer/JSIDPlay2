@@ -140,8 +140,14 @@ public final class WaveformCalculator {
 			float wave_zero = model == ChipModel.MOS6581 ? -0x380 : -0x800;
 
 			final float[] o = new float[12];
-			float[][] wftable = new float[11][4096];
-			byte[][] wfdigital = new byte[11][4096];
+			float[][] wftable = new float[11][];
+			for (int i = 0; i < 11; i++) {
+				wftable[i] = new float[4096];
+			}
+			byte[][] wfdigital = new byte[11][];
+			for (int i = 0; i < 11; i++) {
+				wfdigital[i] = new byte[4096];
+			}
 
 			for (int waveform = 1; waveform < 8; waveform++) {
 				for (int accumulator = 0; accumulator < 1 << 24; accumulator += 1 << 12) {

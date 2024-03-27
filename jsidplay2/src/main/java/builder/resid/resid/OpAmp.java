@@ -26,11 +26,11 @@ final class OpAmp {
 	 * @param opamp opamp mapping table as pairs of points (in -&gt; out)
 	 * @param Vddt  transistor dt parameter (in volts)
 	 */
-	protected OpAmp(double[][] opamp, double Vddt) {
+	protected OpAmp(double[][] opamp, int length, double Vddt) {
 		this.Vddt = Vddt;
 		this.vmin = opamp[0][0];
-		this.vmax = opamp[opamp.length - 1][0];
-		this.opamp = new Spline(opamp);
+		this.vmax = opamp[length - 1][0];
+		this.opamp = new Spline(opamp, length);
 	}
 
 	protected void reset() {
