@@ -415,7 +415,6 @@
         <version>0.10.0-dev-10</version>
         <executions>
           <execution>
-            <id>hello</id>
             <goals>
               <goal>compile</goal>
             </goals>

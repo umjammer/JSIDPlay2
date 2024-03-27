@@ -164,6 +164,11 @@ public abstract class SidTune {
 		return load(url, getContents(stream));
 	}
 
+	public static SidTune load(String url, final InputStream stream, SidTuneType type)
+			throws IOException, SidTuneError {
+		return load(url, getContents(stream), type);
+	}
+
 	/**
 	 * Load tune (PSID, PRG, P00, T64).
 	 *
@@ -192,6 +197,20 @@ public abstract class SidTune {
 					}
 				}
 			}
+		}
+	}
+
+	protected static SidTune load(String name, byte[] fileContents, SidTuneType sidTuneType) throws SidTuneError {
+		switch (sidTuneType) {
+		case PSID:
+		default:
+			return PSid.load(name, fileContents);
+		case PRG:
+			return Prg.load(name, fileContents);
+		case P00:
+			return P00.load(name, fileContents);
+		case T64:
+			return T64.load(name, fileContents);
 		}
 	}
 
@@ -336,7 +355,7 @@ public abstract class SidTune {
 	public abstract Integer placeProgramInMemory(final byte[] c64buf);
 
 	public abstract Integer placeProgramInMemoryTeaVM(final byte[] mem, final byte[] PSID);
-	
+
 	/**
 	 * @param destFileName Destination for the file.
 	 * @throws IOException

@@ -6,7 +6,10 @@ import static libsidplay.sidtune.SidTune.RESET;
 import static libsidutils.CBMCodeUtils.petsciiToScreenRam;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.logging.Logger;
+
+import javax.sound.sampled.LineUnavailableException;
 
 import org.teavm.interop.Async;
 import org.teavm.interop.Export;
@@ -22,6 +25,8 @@ import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IConfig;
 import libsidplay.sidtune.SidTune;
+import libsidplay.sidtune.SidTuneError;
+import libsidplay.sidtune.SidTuneType;
 
 /**
  * TeaVM version of JSIDPlay2 to generate web assembly code.
@@ -41,7 +46,6 @@ public class JSIDPlay2TeaVM {
 	private static HardwareEnsemble hardwareEnsemble;
 	private static String command;
 	private static int bufferSize;
-	private static boolean finished;
 
 	@Export(name = "jsidplay2")
 	public static void jsidplay2() throws Exception {
@@ -53,89 +57,79 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@Export(name = "open")
-	public static void open(int length) {
-		try {
-			hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), CharsRom.CHARS,
-					BasicRom.BASIC, KernalRom.KERNAL, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
-			hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
-			byte[] contents = new byte[length];
-			getSid(contents);
-			SidTune tune = SidTune.load("some.sid", new ByteArrayInputStream(contents));
-			tune.getInfo().setSelectedSong(null);
+	public static void open(int sidTuneLength, int sidTuneTypeNum)
+			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+		SidTuneType sidTuneType = SidTuneType.get(sidTuneTypeNum);
+		String name = "example" + sidTuneType.getFileExtension();
 
-			hardwareEnsemble.reset();
-			hardwareEnsemble.getC64().getEventScheduler().schedule(Event.of("Auto-start", event -> {
-				if (tune != RESET) {
-					// for tunes: Install player into RAM
-					Integer driverAddress = tune.placeProgramInMemoryTeaVM(hardwareEnsemble.getC64().getRAM(), PSid.PSID);
-					if (driverAddress != null) {
-						// Set play address to feedback call frames counter.
-						hardwareEnsemble.getC64().setPlayAddr(tune.getInfo().getPlayAddr());
-						// Start SID player driver
-						hardwareEnsemble.getC64().getCPU().forcedJump(driverAddress);
-					} else {
-						// No player: Start basic program or assembler code
-						final int loadAddr = tune.getInfo().getLoadAddr();
-						command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
-					}
+		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), CharsRom.CHARS, BasicRom.BASIC,
+				KernalRom.KERNAL, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
+		hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
+		byte[] contents = new byte[sidTuneLength];
+		getSid(contents);
+		SidTune tune = SidTune.load(name, new ByteArrayInputStream(contents), sidTuneType);
+		tune.getInfo().setSelectedSong(null);
+
+		hardwareEnsemble.reset();
+		hardwareEnsemble.getC64().getEventScheduler().schedule(Event.of("Auto-start", event -> {
+			if (tune != RESET) {
+				// for tunes: Install player into RAM
+				Integer driverAddress = tune.placeProgramInMemoryTeaVM(hardwareEnsemble.getC64().getRAM(), PSid.PSID);
+				if (driverAddress != null) {
+					// Set play address to feedback call frames counter.
+					hardwareEnsemble.getC64().setPlayAddr(tune.getInfo().getPlayAddr());
+					// Start SID player driver
+					hardwareEnsemble.getC64().getCPU().forcedJump(driverAddress);
+				} else {
+					// No player: Start basic program or assembler code
+					final int loadAddr = tune.getInfo().getLoadAddr();
+					command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
 				}
-				if (command != null) {
-					if (command.startsWith(LOAD)) {
-						// Load from tape needs someone to press play
-						hardwareEnsemble.getDatasette().control(Control.START);
-					}
-					// Enter basic command
-					typeInCommand(command);
+			}
+			if (command != null) {
+				if (command.startsWith(LOAD)) {
+					// Load from tape needs someone to press play
+					hardwareEnsemble.getDatasette().control(Control.START);
 				}
-			}), SidTune.getInitDelay(tune));
-			ReSIDBuilder sidBuilder = new ReSIDBuilder(hardwareEnsemble.getC64().getEventScheduler(), config,
-					CPUClock.PAL, hardwareEnsemble.getC64().getCartridge());
-			JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver();
-			audioDriver.open(config.getAudioSection(), null, hardwareEnsemble.getC64().getClock(),
-					hardwareEnsemble.getC64().getEventScheduler());
-			sidBuilder.setAudioDriver(audioDriver);
-			hardwareEnsemble.getC64().insertSIDChips((sidNum, sidEmu) -> {
-				if (SidTune.isSIDUsed(config.getEmulationSection(), tune, sidNum)) {
-					return sidBuilder.lock(sidEmu, sidNum, tune);
-				} else if (sidEmu != NONE) {
-					sidBuilder.unlock(sidEmu);
-				}
-				return NONE;
-			}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
-			sidBuilder.start();
-			bufferSize = config.getAudioSection().getBufferSize();
-			context = hardwareEnsemble.getC64().getEventScheduler();
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+				// Enter basic command
+				typeInCommand(command);
+			}
+		}), SidTune.getInitDelay(tune));
+		ReSIDBuilder sidBuilder = new ReSIDBuilder(hardwareEnsemble.getC64().getEventScheduler(), config, CPUClock.PAL,
+				hardwareEnsemble.getC64().getCartridge());
+		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver();
+		audioDriver.open(config.getAudioSection(), null, hardwareEnsemble.getC64().getClock(),
+				hardwareEnsemble.getC64().getEventScheduler());
+		sidBuilder.setAudioDriver(audioDriver);
+		hardwareEnsemble.getC64().insertSIDChips((sidNum, sidEmu) -> {
+			if (SidTune.isSIDUsed(config.getEmulationSection(), tune, sidNum)) {
+				return sidBuilder.lock(sidEmu, sidNum, tune);
+			} else if (sidEmu != NONE) {
+				sidBuilder.unlock(sidEmu);
+			}
+			return NONE;
+		}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
+		sidBuilder.start();
+		bufferSize = config.getAudioSection().getBufferSize();
+		context = hardwareEnsemble.getC64().getEventScheduler();
 	}
 
 	@Async
 	@Export(name = "clock")
-	public static void clock() {
-		try {
-			for (int i = 0; i < bufferSize; i++) {
-				if (!finished) {
-					context.clock();
-				}
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
+	public static int clock() throws InterruptedException {
+		for (int i = 0; i < bufferSize; i++) {
+			context.clock();
 		}
+		return bufferSize;
 	}
 
 	@Export(name = "close")
 	public static void close() {
-		try {
-			finished = true;
-			bufferSize = 0;
-			config = null;
-			hardwareEnsemble = null;
-			command = null;
-			context = null;
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+		bufferSize = 0;
+		config = null;
+		hardwareEnsemble = null;
+		command = null;
+		context = null;
 	}
 
 	@Import(module = "env", name = "getSid")

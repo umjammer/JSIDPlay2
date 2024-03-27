@@ -145,6 +145,17 @@
             this.chosenFile = fileList[0];
             app.msg = "";
           },
+          toSidTuneType() {
+            if (app.chosenFile.name.toLowerCase().endsWith(".sid")) {
+              return 0;
+            } else if (app.chosenFile.name.toLowerCase().endsWith(".prg")) {
+              return 1;
+            } else if (app.chosenFile.name.toLowerCase().endsWith(".p00")) {
+              return 2;
+            } else if (app.chosenFile.name.toLowerCase().endsWith(".t64")) {
+              return 3;
+            }
+          },
           startTune() {
             // Load the Wasm module
             TeaVM.wasm
@@ -168,10 +179,10 @@
                 var reader = new FileReader();
                 reader.onload = function () {
                   sidTuneByteArray = new Uint8Array(this.result);
-                  window.instance.exports.open(sidTuneByteArray.length);
+                  window.instance.exports.open(sidTuneByteArray.length, app.toSidTuneType());
+                  app.playing = true;
                   app.playWasm();
                   app.msg = app.$t("playing");
-                  app.playing = true;
                 };
                 reader.readAsArrayBuffer(app.chosenFile);
                 app.msg = app.$t("loading");
@@ -194,8 +205,7 @@
             setTimeout(() => this.clock());
           },
           clock: async function () {
-            window.instance.exports.clock();
-            setTimeout(() => this.clock());
+            if (window.instance.exports.clock() > 0) setTimeout(() => this.clock());
           },
         },
         mounted: function () {
