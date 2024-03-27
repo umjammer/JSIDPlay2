@@ -1,8 +1,5 @@
 package builder.resid;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import builder.resid.SampleMixer.NoOpSampleMixer;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
@@ -12,7 +9,7 @@ import libsidplay.common.SIDEmu;
 
 public abstract class ReSIDBase extends SIDEmu {
 
-	private static final Logger RESID = Logger.getLogger(ReSIDBase.class.getName());
+//	private static final Logger RESID = Logger.getLogger(ReSIDBase.class.getName());
 
 	private final SIDChip sid = createSID();
 
@@ -64,9 +61,9 @@ public abstract class ReSIDBase extends SIDEmu {
 		clock();
 		super.write(addr, data);
 		sid.write(addr, data);
-		if (RESID.isLoggable(Level.FINE)) {
-			RESID.fine(String.format("write 0x%02x=0x%02x", addr, data));
-		}
+//		if (RESID.isLoggable(Level.FINE)) {
+//			RESID.fine(String.format("write 0x%02x=0x%02x", addr, data));
+//		}
 	}
 
 	@Override
