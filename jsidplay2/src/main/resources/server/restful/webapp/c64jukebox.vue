@@ -1598,24 +1598,10 @@
             <div class="tab-pane fade show" id="hw" role="tabpanel" aria-labelledby="hw-tab">
               <div class="container container-fluid">
                 <div class="row">
-                  <div class="col" s0tyle="border-right: 1px dotted grey">
+                  <div class="col" style="border-right: 1px dotted grey">
                     <b
                       ><div style="margin-bottom: 8px; text-align: center">{{ $t("HARDSID") }}</div></b
                     >
-                  </div>
-                  <div class="col">
-                    <b
-                      ><div style="margin-bottom: 8px; text-align: center">{{ $t("EXSID") }}</div></b
-                    >
-                  </div>
-                  <div class="col">
-                    <b
-                      ><div style="margin-bottom: 8px; text-align: center">{{ $t("SIDBLASTER") }}</div></b
-                    >
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col" style="border-right: 1px dotted grey">
                     <div class="container">
                       <img
                         src="/static/images/hardsid4u.jpeg"
@@ -1657,45 +1643,43 @@
                         </label></span
                       >
                     </div>
-                  </div>
-                  <div class="col">
-                    <div class="container">
-                      <img src="/static/images/exsid.jpg" alt="ExSID" class="img-fluid img-thumbnail mx-auto" />
+                    <div class="settings-box">
+                      <span class="setting">
+                        <button type="button" class="btn btn-sm btn-success" v-on:click="hardware_hardsid_init()">
+                          <span>{{ $t("CONNECT") }}</span>
+                        </button>
+                      </span>
                     </div>
                   </div>
-                  <div class="col" style="border-left: 1px dotted grey">
-                    <div class="container">
+                  <div class="col" style="display: flex; justify-content: space-between; flex-direction: column;">
+                    <b
+                      ><div style="margin-bottom: 8px; text-align: center">{{ $t("EXSID") }}</div></b
+                    >
+                    <div class="container" style="flex: auto">
+                      <img src="/static/images/exsid.jpg" alt="ExSID" class="img-fluid img-thumbnail mx-auto" />
+                    </div>
+                    <div class="settings-box">
+                      <span class="setting">
+                        <button type="button" class="btn btn-sm btn-success" v-on:click="hardware_exsid_init()">
+                          <span>{{ $t("CONNECT") }}</span>
+                        </button></span
+                      >
+                    </div>
+                  </div>
+                  <div class="col" style="border-left: 1px dotted grey; display: flex; justify-content: space-between; flex-direction: column;">
+                    <b
+                      ><div style="margin-bottom: 8px; text-align: center">{{ $t("SIDBLASTER") }}</div></b
+                    >
+                    <div class="container" style="flex: auto">
                       <img
                         src="/static/images/sidblaster.jpeg"
                         alt="SIDBlaster"
                         class="img-fluid img-thumbnail mx-auto"
                       />
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col" style="border-right: 1px dotted grey">
                     <div class="settings-box">
                       <span class="setting">
-                        <button type="button" class="btn btn-success" v-on:click="hardware_hardsid_init()">
-                          <span>{{ $t("CONNECT") }}</span>
-                        </button>
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class="settings-box">
-                      <span class="setting">
-                        <button type="button" class="btn btn-success" v-on:click="hardware_exsid_init()">
-                          <span>{{ $t("CONNECT") }}</span>
-                        </button></span
-                      >
-                    </div>
-                  </div>
-                  <div class="col" style="border-left: 1px dotted grey">
-                    <div class="settings-box">
-                      <span class="setting">
-                        <button type="button" class="btn btn-success" v-on:click="hardware_sidblaster_init()">
+                        <button type="button" class="btn btn-sm btn-success" v-on:click="hardware_sidblaster_init()">
                           <span>{{ $t("CONNECT") }}</span>
                         </button></span
                       >
