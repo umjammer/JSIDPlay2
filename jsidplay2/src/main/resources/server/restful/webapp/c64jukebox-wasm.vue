@@ -157,11 +157,9 @@
             }
           },
           startTune() {
-            // Load the Wasm module
             TeaVM.wasm
               .load("/static/wasm/jsidplay2.wasm", {
                 installImports(o, controller) {
-                  // Assign the functions to the "env" module
                   o.env = {
                     getSid: getSid,
                     processSamples: processSamples,
@@ -171,7 +169,6 @@
                 },
               })
               .then((teavm) => {
-                // Store the instance for future use
                 window.instance = teavm.instance;
                 // create emulation core
                 window.instance.exports.jsidplay2();

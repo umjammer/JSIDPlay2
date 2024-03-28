@@ -4740,22 +4740,18 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
         console.log("Received message from Java:", message);
       }
 
-      // Create an empty object to serve as the "env" module
-      const envModule = {};
-
-      // Assign the 'fromJava' function to the "env" module
-      envModule.fromJava = fromJava;
-
-      // Load the Wasm module
       TeaVM.wasm
         .load("/static/wasm/jsidplay2.wasm", {
           installImports(o, controller) {
-            // Assign the "env" module to the imports
-            o.env = envModule;
+            o.env = {
+              getSid: () => {},
+              processSamples: () => {},
+              getBufferSize: () => {},
+              getAudioBufferSize: () => {},
+            };
           },
         })
         .then((teavm) => {
-          // Store the instance for future use
           window.instance = teavm.instance;
         });
 
