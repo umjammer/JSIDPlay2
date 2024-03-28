@@ -40,7 +40,7 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.FavoritesServletParameters")
 	public static class FavoritesServletParameters {
 
-		private Integer favoritesNumber = 0;
+		private Integer favoritesNumber = null;
 
 		public Integer getFavoritesNumber() {
 			return favoritesNumber;
@@ -84,7 +84,10 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 			}
 			final Integer favoritesNumber = servletParameters.getFavoritesNumber();
 
-			if (favoritesNumber < configuration.getFavorites().size()) {
+			if (favoritesNumber == null) {
+				setOutput(MIME_TYPE_JSON, response, // app, only
+						getFavoritesByNumber(0).stream().map(fav -> fav.filename).collect(Collectors.toList()));
+			} else if (favoritesNumber < configuration.getFavorites().size()) {
 				List<FavoritesWrapper> favorites = getFavoritesByNumber(favoritesNumber);
 
 				setOutput(MIME_TYPE_JSON, response, favorites);
