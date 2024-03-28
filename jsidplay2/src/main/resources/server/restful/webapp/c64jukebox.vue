@@ -351,6 +351,7 @@
                       autocorrect="off"
                       autocapitalize="off"
                       spellcheck="false"
+                      tabindex="-1"
                   /></label>
                 </span>
               </div>
@@ -367,6 +368,7 @@
                       autocorrect="off"
                       autocapitalize="off"
                       spellcheck="false"
+                      tabindex="-1"
                       v-on:blur="delayedFetchDirectory(rootDir)"
                   /></label>
                 </span>
