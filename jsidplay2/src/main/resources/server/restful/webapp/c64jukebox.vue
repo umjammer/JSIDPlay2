@@ -1651,7 +1651,7 @@
                       </span>
                     </div>
                   </div>
-                  <div class="col" style="display: flex; justify-content: space-between; flex-direction: column;">
+                  <div class="col" style="display: flex; justify-content: space-between; flex-direction: column">
                     <b
                       ><div style="margin-bottom: 8px; text-align: center">{{ $t("EXSID") }}</div></b
                     >
@@ -1666,7 +1666,15 @@
                       >
                     </div>
                   </div>
-                  <div class="col" style="border-left: 1px dotted grey; display: flex; justify-content: space-between; flex-direction: column;">
+                  <div
+                    class="col"
+                    style="
+                      border-left: 1px dotted grey;
+                      display: flex;
+                      justify-content: space-between;
+                      flex-direction: column;
+                    "
+                  >
                     <b
                       ><div style="margin-bottom: 8px; text-align: center">{{ $t("SIDBLASTER") }}</div></b
                     >
