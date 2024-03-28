@@ -141,6 +141,9 @@
         },
         computed: {},
         methods: {
+          updateLanguage() {
+            localStorage.locale = this.$i18n.locale;
+          },
           fileChange(fileList) {
             this.chosenFile = fileList[0];
             app.msg = "";
