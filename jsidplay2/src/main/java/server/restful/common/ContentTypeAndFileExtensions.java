@@ -65,7 +65,7 @@ public enum ContentTypeAndFileExtensions {
 	MIME_TYPE_WOFF2(create("font/woff2", (Charset) null), false, true, ".woff2"),
 	MIME_TYPE_WOFF(create("font/woff", (Charset) null), false, true, ".woff"),
 	/**
-	 * WASM
+	 * Web Assembly
 	 */
 	WASM(create("application/wasm", (Charset) null), false, true, ".wasm");
 

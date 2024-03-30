@@ -619,9 +619,10 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 			private File createVideoFile(Player player, AudioDriver driver) throws IOException {
 				ISidPlay2Section sidplay2Section = player.getConfig().getSidplay2Section();
 
-				File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(),
-						sidplay2Section.getTmpDir());
-				videoFile.deleteOnExit();
+				File tmpDir = new File(sidplay2Section.getTmpDir(), UUID.randomUUID().toString());
+				tmpDir.mkdir();
+
+				File videoFile = File.createTempFile("jsidplay2video", driver.getExtension(), tmpDir);
 				player.setRecordingFilenameProvider(tune -> getFilenameWithoutSuffix(videoFile.getAbsolutePath()));
 				return videoFile;
 			}

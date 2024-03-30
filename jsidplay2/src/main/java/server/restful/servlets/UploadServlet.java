@@ -145,7 +145,6 @@ public class UploadServlet extends JSIDPlay2Servlet {
 				tmpDir.mkdir();
 
 				File file = new File(tmpDir, new File(filePath).getName());
-				file.deleteOnExit();
 
 				try (OutputStream fos = new FileOutputStream(file)) {
 					copy(new ByteArrayInputStream(uploadContents.getContents()), fos);
@@ -157,26 +156,26 @@ public class UploadServlet extends JSIDPlay2Servlet {
 				if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".zip")) {
 					// uncompress zip
 					TFile.cp_rp(tFile, tmpDir, TArchiveDetector.ALL);
-					uploadResult = getUploadResult(tmpDir, tFile, LEXICALLY_FIRST_MEDIA, null);
+					uploadResult = getUploadResult(tmpDir, LEXICALLY_FIRST_MEDIA, null);
 				} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith(".gz")) {
 					// uncompress gzip
 					File dst = new File(tmpDir, IOUtils.getFilenameWithoutSuffix(file.getName()));
 					try (InputStream is = new GZIPInputStream(ZipFileUtils.newFileInputStream(file))) {
 						TFile.cp(is, dst);
 					}
-					uploadResult = getUploadResult(tmpDir, tmpDir, LEXICALLY_FIRST_MEDIA, null);
+					uploadResult = getUploadResult(tmpDir, LEXICALLY_FIRST_MEDIA, null);
 				} else if (file.getName().toLowerCase(Locale.ENGLISH).endsWith("7z")) {
 					// uncompress 7zip
 					Extract7ZipUtil extract7Zip = new Extract7ZipUtil(tFile, tmpDir);
 					extract7Zip.extract();
-					uploadResult = getUploadResult(tmpDir, tmpDir, LEXICALLY_FIRST_MEDIA, null);
+					uploadResult = getUploadResult(tmpDir, LEXICALLY_FIRST_MEDIA, null);
 				} else {
 					uploadResult = file;
 				}
 				return uploadResult;
 			}
 
-			private File getUploadResult(File dir, File file, BiPredicate<File, File> mediaTester, File uploadResult) {
+			private File getUploadResult(File dir, BiPredicate<File, File> mediaTester, File uploadResult) {
 				final File[] listFiles = dir.listFiles();
 				if (listFiles == null) {
 					return null;
@@ -193,8 +192,7 @@ public class UploadServlet extends JSIDPlay2Servlet {
 							uploadResult = memberFile;
 						}
 					} else if (memberFile.isDirectory() && !memberFile.getName().equals(MACOSX)) {
-						File toAttachChild = getUploadResult(memberFile, new TFile(memberFile), mediaTester,
-								uploadResult);
+						File toAttachChild = getUploadResult(memberFile, mediaTester, uploadResult);
 						if (toAttachChild != null) {
 							uploadResult = toAttachChild;
 						}
