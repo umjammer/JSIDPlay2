@@ -134,7 +134,8 @@ final public class ConsolePlayer {
 
 		final SidTune tune = SidTune.load(file);
 		tune.getInfo().setSelectedSong(song);
-		final Player player = new Player(config, cpuDebug ? MOS6510Debug.class : MOS6510.class);
+		final Player player = new Player(config,
+				context -> cpuDebug ? new MOS6510Debug(context) : new MOS6510(context));
 		player.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 		player.setTune(tune);
 		final ConsoleIO consoleIO = new ConsoleIO(config, file.getAbsolutePath());

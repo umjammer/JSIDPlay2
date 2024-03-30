@@ -52,7 +52,7 @@ import libsidutils.prg2tap.PRG2TAPProgram;
  */
 public class HardwareEnsemble implements Ultimate64 {
 
-	private final byte[] JIFFYDOS_C64_KERNAL;
+	private final byte[] JIFFYDOS_C64;
 	private final byte[] JIFFYDOS_C1541;
 	private static byte[] EOD_HACK = new byte[] { (byte) 0xEE, (byte) 0xAD, 0x56, 0x30, (byte) 0x90, 0x46, 0x37,
 			(byte) 0xCD, 0x3D, 0x4C, (byte) 0x85, (byte) 0x8F, 0x50, (byte) 0x86, 0x51, (byte) 0x92, };
@@ -101,15 +101,16 @@ public class HardwareEnsemble implements Ultimate64 {
 	/**
 	 * Create a complete hardware setup (C64, tape/disk drive, printer and more).
 	 */
-	public HardwareEnsemble(IConfig config, Function<EventScheduler, MOS6510> cpuCreator, byte[] charBin, byte[] basicBin,
-			byte[] kernalBin, byte[] jiffyDosKernalBin, byte[] jiffyDosC1541, byte[] c1541Bin, byte[] c1541IIBin, byte[] mps803CharsetBin) {
-		JIFFYDOS_C64_KERNAL = jiffyDosKernalBin;
-		JIFFYDOS_C1541 = jiffyDosC1541;
+	public HardwareEnsemble(IConfig config, Function<EventScheduler, MOS6510> cpuCreator, byte[] charBin,
+			byte[] basicBin, byte[] kernalBin, byte[] jiffyDosC64Bin, byte[] jiffyDosC1541Bin, byte[] c1541Bin,
+			byte[] c1541_IIBin, byte[] mps803CharBin) {
+		JIFFYDOS_C64 = jiffyDosC64Bin;
+		JIFFYDOS_C1541 = jiffyDosC1541Bin;
 
 		this.config = config;
 		this.iecBus = new IECBus();
 
-		this.printer = new MPS803(this.iecBus, (byte) 4, (byte) 7, mps803CharsetBin) {
+		this.printer = new MPS803(this.iecBus, (byte) 4, (byte) 7, mps803CharBin) {
 			@Override
 			public void setBusy(final boolean flag) {
 				c64.cia2.setFlag(flag);
@@ -175,7 +176,7 @@ public class HardwareEnsemble implements Ultimate64 {
 			}
 		};
 
-		final C1541 c1541 = new C1541(iecBus, 8, FloppyType.C1541, c1541Bin, c1541IIBin);
+		final C1541 c1541 = new C1541(iecBus, 8, FloppyType.C1541, c1541Bin, c1541_IIBin);
 
 		this.floppies = new C1541[] { c1541 };
 		this.serialDevices = new SerialIECDevice[] { printer };
@@ -263,7 +264,7 @@ public class HardwareEnsemble implements Ultimate64 {
 			palette.setDotCreep(sidplay2section.getBleed());
 		});
 		final IC1541Section c1541Section = config.getC1541Section();
-		c64.setCustomKernal(c1541Section.isJiffyDosInstalled() ? JIFFYDOS_C64_KERNAL : null);
+		c64.setCustomKernal(c1541Section.isJiffyDosInstalled() ? JIFFYDOS_C64 : null);
 		c64.reset();
 		iecBus.reset();
 		datasette.reset();

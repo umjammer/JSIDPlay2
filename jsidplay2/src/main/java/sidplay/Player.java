@@ -19,9 +19,9 @@ import static sidplay.AllRoms.C1541;
 import static sidplay.AllRoms.C1541_II;
 import static sidplay.AllRoms.CHAR;
 import static sidplay.AllRoms.JIFFYDOS_C1541;
-import static sidplay.AllRoms.JIFFYDOS_C64_KERNAL;
+import static sidplay.AllRoms.JIFFYDOS_C64;
 import static sidplay.AllRoms.KERNAL;
-import static sidplay.AllRoms.MPS803_CHARSET_BIN;
+import static sidplay.AllRoms.MPS803_CHAR;
 import static sidplay.ini.IniDefaults.DEFAULT_AUDIO;
 import static sidplay.ini.IniDefaults.DEFAULT_TMP_DIR;
 import static sidplay.player.State.END;
@@ -36,7 +36,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Calendar;
@@ -115,7 +114,6 @@ import sidplay.player.WhatsSidEvent;
 public class Player extends HardwareEnsemble implements VideoDriver, SIDListener, IMOS6510Extension {
 
 	private static final Logger LOG = Logger.getLogger(Player.class.getName());
-
 
 	/** Build date calculated from our own modify time */
 	public static Calendar LAST_MODIFIED;
@@ -338,7 +336,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * @param config configuration
 	 */
 	public Player(final IConfig config) {
-		this(config, MOS6510.class);
+		this(config, context -> new MOS6510(context));
 	}
 
 	/**
@@ -347,15 +345,8 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * @param config   configuration
 	 * @param cpuClass CPU class implementation
 	 */
-	public Player(final IConfig config, final Class<? extends MOS6510> cpuClass) {
-		super(config, context -> {
-			try {
-				return cpuClass.getConstructor(EventScheduler.class).newInstance(context);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				throw new RuntimeException("Cannot create MOS6510 instance of: " + cpuClass);
-			}
-		}, CHAR, BASIC, KERNAL, JIFFYDOS_C64_KERNAL, JIFFYDOS_C1541, C1541, C1541_II, MPS803_CHARSET_BIN);
+	public Player(final IConfig config, Function<EventScheduler, MOS6510> cpuCreator) {
+		super(config, cpuCreator, CHAR, BASIC, KERNAL, JIFFYDOS_C64, JIFFYDOS_C1541, C1541, C1541_II, MPS803_CHAR);
 		initializeTmpDir(config);
 		stateProperty = new ObjectProperty<>(State.class.getSimpleName(), QUIT);
 		audioAndDriver = new SimpleImmutableEntry<>(DEFAULT_AUDIO, DEFAULT_AUDIO.getAudioDriver());
