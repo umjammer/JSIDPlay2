@@ -197,6 +197,7 @@
               chunkNumber = 0;
               app.msg = "";
               app.playing = false;
+              audioContext.close();
             });
           },
           playWasm: function () {
