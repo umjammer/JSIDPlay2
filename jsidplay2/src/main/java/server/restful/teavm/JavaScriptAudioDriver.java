@@ -18,12 +18,18 @@ import sidplay.audio.AudioDriver;
 public final class JavaScriptAudioDriver implements AudioDriver {
 	protected ByteBuffer sampleBuffer;
 
+	float[] resultL;
+	float[] resultR;
+
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
 			throws IOException, LineUnavailableException, InterruptedException {
 		AudioConfig cfg = new AudioConfig(audioSection);
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
+
+		resultL = new float[cfg.getChunkFrames()];
+		resultR = new float[cfg.getChunkFrames()];
 	}
 
 	@Override
@@ -32,15 +38,19 @@ public final class JavaScriptAudioDriver implements AudioDriver {
 		short[] dest = new short[shortPosition];
 		((Buffer) sampleBuffer).flip();
 		sampleBuffer.asShortBuffer().get(dest);
+		((Buffer) sampleBuffer).position(shortPosition << 1);
+
 		int channelDataLength = dest.length >> 1;
-		float[] resultL = new float[channelDataLength];
-		float[] resultR = new float[channelDataLength];
-		for (int i = 0; i < channelDataLength; i++) {
+		int i = 0;
+		for (i = 0; i < channelDataLength; i++) {
 			resultL[i] = dest[i << 1] / 32768.0f;
 			resultR[i] = dest[(i << 1) + 1] / 32768.0f;
 		}
+		for (; i < resultL.length; i++) {
+			resultL[i] = 0f;
+			resultR[i] = 0f;
+		}
 		processSamples(resultL, resultR, channelDataLength);
-		((Buffer) sampleBuffer).position(shortPosition << 1);
 	}
 
 	@Override
