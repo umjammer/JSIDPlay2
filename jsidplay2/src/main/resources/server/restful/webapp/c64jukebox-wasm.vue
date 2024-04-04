@@ -80,7 +80,7 @@
         return 16384;
       }
 
-      async function processSamples(leftChannelPtr, rightChannelPtr, length) {
+      function processSamples(leftChannelPtr, rightChannelPtr, length) {
         let leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
         let rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
 
@@ -205,7 +205,7 @@
             audioContext = new AudioContext();
             setTimeout(() => this.clock());
           },
-          clock: async function () {
+          clock: function () {
             if (window.instance.exports.clock() > 0) setTimeout(() => this.clock());
           },
         },
