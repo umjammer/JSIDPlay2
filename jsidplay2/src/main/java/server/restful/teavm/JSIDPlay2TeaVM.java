@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import org.teavm.interop.Async;
 import org.teavm.interop.Export;
 import org.teavm.interop.Import;
 
@@ -109,7 +108,6 @@ public class JSIDPlay2TeaVM {
 		context = hardwareEnsemble.getC64().getEventScheduler();
 	}
 
-	@Async
 	@Export(name = "clock")
 	public static int clock() throws InterruptedException {
 		for (int i = 0; i < bufferSize; i++) {
