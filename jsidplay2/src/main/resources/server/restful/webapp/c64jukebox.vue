@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap$min.css" />
     <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons$min.css" />
 
-    <!-- Load Vue followed by I18n -->
+    <!-- Load Vue followed by Bootstrap -->
     <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
     <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
 

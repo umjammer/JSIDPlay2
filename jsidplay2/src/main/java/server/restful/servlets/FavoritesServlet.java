@@ -84,9 +84,11 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 			}
 			final Integer favoritesNumber = servletParameters.getFavoritesNumber();
 
-			if (favoritesNumber == null) {
-				setOutput(MIME_TYPE_JSON, response, // app, only
-						getFavoritesByNumber(0).stream().map(fav -> fav.filename).collect(Collectors.toList()));
+			if (favoritesNumber == null) { // jsidplay2app compatibility, only
+				List<String> favorites = getFavoritesByNumber(0).stream().map(fav -> fav.filename)
+						.collect(Collectors.toList());
+
+				setOutput(MIME_TYPE_JSON, response, favorites);
 			} else if (favoritesNumber < configuration.getFavorites().size()) {
 				List<FavoritesWrapper> favorites = getFavoritesByNumber(favoritesNumber);
 

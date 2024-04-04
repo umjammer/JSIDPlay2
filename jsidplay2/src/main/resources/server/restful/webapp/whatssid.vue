@@ -6,7 +6,7 @@
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
-    <!-- Load Vue followed by I18n -->
+    <!-- Load Vue -->
     <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
     <!-- helpers -->
     <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>

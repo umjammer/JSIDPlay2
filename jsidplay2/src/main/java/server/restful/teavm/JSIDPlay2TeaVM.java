@@ -47,27 +47,22 @@ public class JSIDPlay2TeaVM {
 	private static String command;
 	private static int bufferSize;
 
-	@Export(name = "jsidplay2")
-	public static void jsidplay2() throws Exception {
+	@Export(name = "open")
+	public static void open(byte[] sidContents, int sidTuneTypeNum)
+			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		config = new EmptyConfig();
-		LOG.finest("bufferSize: " + getBufferSize());
-		LOG.finest("audioBufferSize: " + getAudioBufferSize());
 		config.getAudioSection().setBufferSize(getBufferSize());
 		config.getAudioSection().setAudioBufferSize(getAudioBufferSize());
-	}
-
-	@Export(name = "open")
-	public static void open(int sidTuneLength, int sidTuneTypeNum)
-			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		SidTuneType sidTuneType = SidTuneType.get(sidTuneTypeNum);
-		String name = "example" + sidTuneType.getFileExtension();
+		LOG.finest("bufferSize: " + getBufferSize());
+		LOG.finest("audioBufferSize: " + getAudioBufferSize());
+		LOG.finest("SID.length: " + sidContents.length);
 
 		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), CharsRom.CHARS, BasicRom.BASIC,
 				KernalRom.KERNAL, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
 		hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
-		byte[] contents = new byte[sidTuneLength];
-		getSid(contents);
-		SidTune tune = SidTune.load(name, new ByteArrayInputStream(contents), sidTuneType);
+
+		SidTuneType sidTuneType = SidTuneType.get(sidTuneTypeNum);
+		SidTune tune = SidTune.load(sidTuneType.getFileExtension(), new ByteArrayInputStream(sidContents), sidTuneType);
 		tune.getInfo().setSelectedSong(null);
 
 		hardwareEnsemble.reset();
@@ -127,13 +122,10 @@ public class JSIDPlay2TeaVM {
 	public static void close() {
 		bufferSize = 0;
 		config = null;
-		hardwareEnsemble = null;
 		command = null;
 		context = null;
+		hardwareEnsemble = null;
 	}
-
-	@Import(module = "env", name = "getSid")
-	public static native void getSid(byte[] contents);
 
 	@Import(module = "env", name = "getBufferSize")
 	public static native int getBufferSize();

@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap$min.css" />
     <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons$min.css" />
 
-    <!-- Load Vue followed by I18n -->
+    <!-- Load Vue followed by Bootstrap -->
     <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
     <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
 
@@ -80,14 +80,6 @@
         return 2048;
       }
 
-      function getSid(sidContentsPtr) {
-        let address = instance.exports.teavm_byteArrayData(sidContentsPtr);
-        let sidArray = new Uint8Array(instance.exports.memory.buffer, address);
-        for (i = 0; i < sidArray.length; i++) {
-          sidArray[i] = sidTuneByteArray[i];
-        }
-      }
-
       async function processSamples(leftChannelPtr, rightChannelPtr, length) {
         let leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
         let rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
@@ -135,7 +127,6 @@
             langs: ["de", "en"],
             msg: "",
             chosenFile: undefined,
-            sidTuneByteArray: undefined,
             playing: false,
           };
         },
@@ -148,14 +139,14 @@
             this.chosenFile = fileList[0];
             app.msg = "";
           },
-          toSidTuneType() {
-            if (app.chosenFile.name.toLowerCase().endsWith(".sid")) {
+          toSidTuneType(name) {
+            if (name.toLowerCase().endsWith(".sid")) {
               return 0;
-            } else if (app.chosenFile.name.toLowerCase().endsWith(".prg")) {
+            } else if (name.toLowerCase().endsWith(".prg")) {
               return 1;
-            } else if (app.chosenFile.name.toLowerCase().endsWith(".p00")) {
+            } else if (name.toLowerCase().endsWith(".p00")) {
               return 2;
-            } else if (app.chosenFile.name.toLowerCase().endsWith(".t64")) {
+            } else if (name.toLowerCase().endsWith(".t64")) {
               return 3;
             }
           },
@@ -164,7 +155,6 @@
               .load("/static/wasm/jsidplay2.wasm", {
                 installImports(o, controller) {
                   o.env = {
-                    getSid: getSid,
                     processSamples: processSamples,
                     getBufferSize: getBufferSize,
                     getAudioBufferSize: getAudioBufferSize,
@@ -173,13 +163,23 @@
               })
               .then((teavm) => {
                 window.instance = teavm.instance;
-                // create emulation core
-                window.instance.exports.jsidplay2();
-                // load tune
+
                 var reader = new FileReader();
                 reader.onload = function () {
-                  sidTuneByteArray = new Uint8Array(this.result);
-                  window.instance.exports.open(sidTuneByteArray.length, app.toSidTuneType());
+                  let sidTuneByteArray = new Uint8Array(this.result);
+
+                  let sidContentsPtr = window.instance.exports.teavm_allocateByteArray(sidTuneByteArray.length);
+                  let sidContentsAddress = window.instance.exports.teavm_byteArrayData(sidContentsPtr);
+                  let sidContents = new Uint8Array(
+                    window.instance.exports.memory.buffer,
+                    sidContentsAddress,
+                    sidTuneByteArray.length
+                  );
+                  for (i = 0; i < sidContents.length; i++) {
+                    sidContents[i] = sidTuneByteArray[i];
+                  }
+
+                  window.instance.exports.open(sidContentsPtr, app.toSidTuneType(app.chosenFile.name));
                   app.playing = true;
                   app.playWasm();
                   app.msg = app.$t("playing");
