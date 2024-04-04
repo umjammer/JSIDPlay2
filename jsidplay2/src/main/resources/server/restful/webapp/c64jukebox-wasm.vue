@@ -77,7 +77,7 @@
       }
 
       function getAudioBufferSize() {
-        return 2048;
+        return 16384;
       }
 
       async function processSamples(leftChannelPtr, rightChannelPtr, length) {
