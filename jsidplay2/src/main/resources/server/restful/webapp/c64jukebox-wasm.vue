@@ -139,17 +139,6 @@
             this.chosenFile = fileList[0];
             app.msg = "";
           },
-          toSidTuneType(name) {
-            if (name.toLowerCase().endsWith(".sid")) {
-              return 0;
-            } else if (name.toLowerCase().endsWith(".prg")) {
-              return 1;
-            } else if (name.toLowerCase().endsWith(".p00")) {
-              return 2;
-            } else if (name.toLowerCase().endsWith(".t64")) {
-              return 3;
-            }
-          },
           startTune() {
             TeaVM.wasm
               .load("/static/wasm/jsidplay2.wasm", {
