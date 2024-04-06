@@ -46,6 +46,34 @@ public class JSIDPlay2TeaVM {
 	private static String command;
 	private static int bufferSize;
 
+	//
+	// Imports from JavaScript
+	//
+
+	@Import(module = "env", name = "getBufferSize")
+	public static native int getBufferSize();
+
+	@Import(module = "env", name = "getAudioBufferSize")
+	public static native int getAudioBufferSize();
+
+	private static SidTuneType getSidTuneType(String name) {
+		if (name.toLowerCase().endsWith(".sid")) {
+			return SidTuneType.PSID;
+		} else if (name.toLowerCase().endsWith(".prg")) {
+			return SidTuneType.PRG;
+		} else if (name.toLowerCase().endsWith(".p00")) {
+			return SidTuneType.P00;
+		} else if (name.toLowerCase().endsWith(".t64")) {
+			return SidTuneType.T64;
+		} else {
+			return SidTuneType.PSID;
+		}
+	}
+
+	//
+	// Exports to JavaScript
+	//
+
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
@@ -121,17 +149,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "close")
 	public static void close() {
 		bufferSize = 0;
-		config = null;
-		command = null;
-		context = null;
-		hardwareEnsemble = null;
 	}
-
-	@Import(module = "env", name = "getBufferSize")
-	public static native int getBufferSize();
-
-	@Import(module = "env", name = "getAudioBufferSize")
-	public static native int getAudioBufferSize();
 
 	@Export(name = "delaySidBlaster")
 	public static void delaySidBlaster(int cycles) {
@@ -141,19 +159,9 @@ public class JSIDPlay2TeaVM {
 			;
 	}
 
-	private static SidTuneType getSidTuneType(String name) {
-		if (name.toLowerCase().endsWith(".sid")) {
-			return SidTuneType.PSID;
-		} else if (name.toLowerCase().endsWith(".prg")) {
-			return SidTuneType.PRG;
-		} else if (name.toLowerCase().endsWith(".p00")) {
-			return SidTuneType.P00;
-		} else if (name.toLowerCase().endsWith(".t64")) {
-			return SidTuneType.T64;
-		} else {
-			return SidTuneType.PSID;
-		}
-	}
+	//
+	// Private methods
+	//
 
 	private static void typeInCommand(final String multiLineCommand) {
 		String command;
@@ -174,6 +182,10 @@ public class JSIDPlay2TeaVM {
 		System.arraycopy(command.getBytes(US_ASCII), 0, hardwareEnsemble.getC64().getRAM(), RAM_COMMAND, length);
 		hardwareEnsemble.getC64().getRAM()[RAM_COMMAND_LEN] = (byte) length;
 	}
+
+	//
+	// main
+	//
 
 	public static void main(String[] args) throws Exception {
 	}
