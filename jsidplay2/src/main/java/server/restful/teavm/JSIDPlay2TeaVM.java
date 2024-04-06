@@ -47,21 +47,23 @@ public class JSIDPlay2TeaVM {
 	private static int bufferSize;
 
 	@Export(name = "open")
-	public static void open(byte[] sidContents, int sidTuneTypeNum)
+	public static void open(byte[] sidContents, String nameFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+		String name = new StringBuilder(nameFromJS).toString();
+
 		config = new EmptyConfig();
 		config.getAudioSection().setBufferSize(getBufferSize());
 		config.getAudioSection().setAudioBufferSize(getAudioBufferSize());
 		LOG.finest("bufferSize: " + getBufferSize());
 		LOG.finest("audioBufferSize: " + getAudioBufferSize());
 		LOG.finest("SID.length: " + sidContents.length);
+		LOG.finest("name: " + name);
 
 		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), CharsRom.CHARS, BasicRom.BASIC,
 				KernalRom.KERNAL, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
 		hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 
-		SidTuneType sidTuneType = SidTuneType.get(sidTuneTypeNum);
-		SidTune tune = SidTune.load(sidTuneType.getFileExtension(), new ByteArrayInputStream(sidContents), sidTuneType);
+		SidTune tune = SidTune.load(name, new ByteArrayInputStream(sidContents), getSidTuneType(name));
 		tune.getInfo().setSelectedSong(null);
 
 		hardwareEnsemble.reset();
@@ -137,6 +139,20 @@ public class JSIDPlay2TeaVM {
 		long startTime = System.nanoTime();
 		while (System.nanoTime() - startTime < delay)
 			;
+	}
+
+	private static SidTuneType getSidTuneType(String name) {
+		if (name.toLowerCase().endsWith(".sid")) {
+			return SidTuneType.PSID;
+		} else if (name.toLowerCase().endsWith(".prg")) {
+			return SidTuneType.PRG;
+		} else if (name.toLowerCase().endsWith(".p00")) {
+			return SidTuneType.P00;
+		} else if (name.toLowerCase().endsWith(".t64")) {
+			return SidTuneType.T64;
+		} else {
+			return SidTuneType.PSID;
+		}
 	}
 
 	private static void typeInCommand(final String multiLineCommand) {

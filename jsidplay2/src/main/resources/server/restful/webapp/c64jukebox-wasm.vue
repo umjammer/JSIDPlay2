@@ -179,7 +179,20 @@
                     sidContents[i] = sidTuneByteArray[i];
                   }
 
-                  window.instance.exports.open(sidContentsPtr, app.toSidTuneType(app.chosenFile.name));
+                  let tuneNamePtr = window.instance.exports.teavm_allocateString(app.chosenFile.name.length);
+                  let tuneNameAddress = window.instance.exports.teavm_objectArrayData(
+                    instance.exports.teavm_stringData(tuneNamePtr)
+                  );
+                  let tuneNameView = new Uint16Array(
+                    window.instance.exports.memory.buffer,
+                    tuneNameAddress,
+                    app.chosenFile.name.length
+                  );
+                  for (let i = 0; i < app.chosenFile.name.length; ++i) {
+                    tuneNameView[i] = app.chosenFile.name.charCodeAt(i);
+                  }
+
+                  window.instance.exports.open(sidContentsPtr, tuneNamePtr);
                   app.playing = true;
                   app.playWasm();
                   app.msg = app.$t("playing");
