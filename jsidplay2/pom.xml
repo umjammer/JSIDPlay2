@@ -420,7 +420,7 @@
             </goals>
             <configuration>
               <stopOnErrors>true</stopOnErrors>              
-              <mainClass>server.restful.teavm.JSIDPlay2TeaVM</mainClass>
+              <mainClass>client.teavm.JSIDPlay2TeaVM</mainClass>
               <targetDirectory>${project.build.directory}/classes/server/restful/webapp/wasm</targetDirectory>
               <targetFileName>${project.artifactId}.wasm</targetFileName>
               <debugInformationGenerated>true</debugInformationGenerated>

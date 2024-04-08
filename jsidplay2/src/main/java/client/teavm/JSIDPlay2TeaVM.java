@@ -1,4 +1,4 @@
-package server.restful.teavm;
+package client.teavm;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static libsidplay.common.SIDEmu.NONE;

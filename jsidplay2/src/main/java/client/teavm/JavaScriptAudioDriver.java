@@ -1,4 +1,4 @@
-package server.restful.teavm;
+package client.teavm;
 
 import java.io.IOException;
 import java.nio.Buffer;
