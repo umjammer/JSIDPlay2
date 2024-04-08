@@ -79,7 +79,7 @@ public class JSIDPlay2TeaVM {
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		String name = new StringBuilder(nameFromJS).toString();
 
-		config = new EmptyConfig();
+		config = new JavaScriptConfig();
 		config.getAudioSection().setBufferSize(getBufferSize());
 		config.getAudioSection().setAudioBufferSize(getAudioBufferSize());
 		LOG.finest("bufferSize: " + getBufferSize());

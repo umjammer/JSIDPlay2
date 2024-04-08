@@ -26,7 +26,7 @@ import libsidplay.config.ISidPlay2Section;
 import libsidplay.config.IWhatsSidSection;
 import sidplay.audio.Audio;
 
-public class EmptyConfig implements IConfig {
+public class JavaScriptConfig implements IConfig {
 
 	@Override
 	public ISidPlay2Section getSidplay2Section() {
