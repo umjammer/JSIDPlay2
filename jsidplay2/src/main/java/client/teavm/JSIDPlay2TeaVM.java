@@ -7,6 +7,9 @@ import static libsidutils.CBMCodeUtils.petsciiToScreenRam;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -77,7 +80,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		String name = new StringBuilder(nameFromJS).toString();
+		String url = new StringBuilder(nameFromJS).toString();
 
 		config = new JavaScriptConfig();
 		config.getAudioSection().setBufferSize(getBufferSize());
@@ -85,20 +88,28 @@ public class JSIDPlay2TeaVM {
 		LOG.finest("bufferSize: " + getBufferSize());
 		LOG.finest("audioBufferSize: " + getAudioBufferSize());
 		LOG.finest("SID.length: " + sidContents.length);
-		LOG.finest("name: " + name);
+		LOG.finest("name: " + url);
 
-		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), CharsRom.CHARS, BasicRom.BASIC,
-				KernalRom.KERNAL, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
+		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
+		Decoder decoder = Base64.getDecoder();
+		byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
+		byte[] basicRom = decoder.decode(allRoms.get(JavaScriptRoms.BASIC_ROM));
+		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
+		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
+
+		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
+				new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
 		hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 
-		SidTune tune = SidTune.load(name, new ByteArrayInputStream(sidContents), getSidTuneType(name));
+		SidTune tune = SidTune.load(url, new ByteArrayInputStream(sidContents), getSidTuneType(url));
 		tune.getInfo().setSelectedSong(null);
 
 		hardwareEnsemble.reset();
 		hardwareEnsemble.getC64().getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
 				// for tunes: Install player into RAM
-				Integer driverAddress = tune.placeProgramInMemoryTeaVM(hardwareEnsemble.getC64().getRAM(), PSid.PSID);
+				Integer driverAddress = tune.placeProgramInMemoryTeaVM(hardwareEnsemble.getC64().getRAM(),
+						psidDriverBin);
 				if (driverAddress != null) {
 					// Set play address to feedback call frames counter.
 					hardwareEnsemble.getC64().setPlayAddr(tune.getInfo().getPlayAddr());

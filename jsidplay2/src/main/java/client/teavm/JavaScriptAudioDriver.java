@@ -16,10 +16,11 @@ import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
 
 public final class JavaScriptAudioDriver implements AudioDriver {
-	protected ByteBuffer sampleBuffer;
 
-	float[] resultL;
-	float[] resultR;
+	private float[] resultL;
+	private float[] resultR;
+
+	protected ByteBuffer sampleBuffer;
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
@@ -45,10 +46,6 @@ public final class JavaScriptAudioDriver implements AudioDriver {
 		for (i = 0; i < channelDataLength; i++) {
 			resultL[i] = dest[i << 1] / 32768.0f;
 			resultR[i] = dest[(i << 1) + 1] / 32768.0f;
-		}
-		for (; i < resultL.length; i++) {
-			resultL[i] = 0f;
-			resultR[i] = 0f;
 		}
 		processSamples(resultL, resultR, channelDataLength);
 	}

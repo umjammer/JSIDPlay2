@@ -73,7 +73,7 @@
 
       // Define the functions (mapped to the Java methods)
       function getBufferSize() {
-        return 65536;
+        return 16 * 65536;
       }
 
       function getAudioBufferSize() {
