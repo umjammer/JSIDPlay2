@@ -25,7 +25,9 @@ import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
+import libsidplay.config.IAudioSection;
 import libsidplay.config.IConfig;
+import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneType;
@@ -59,19 +61,7 @@ public class JSIDPlay2TeaVM {
 	@Import(module = "env", name = "getAudioBufferSize")
 	public static native int getAudioBufferSize();
 
-	private static SidTuneType getSidTuneType(String name) {
-		if (name.toLowerCase().endsWith(".sid")) {
-			return SidTuneType.PSID;
-		} else if (name.toLowerCase().endsWith(".prg")) {
-			return SidTuneType.PRG;
-		} else if (name.toLowerCase().endsWith(".p00")) {
-			return SidTuneType.P00;
-		} else if (name.toLowerCase().endsWith(".t64")) {
-			return SidTuneType.T64;
-		} else {
-			return SidTuneType.PSID;
-		}
-	}
+	
 
 	//
 	// Exports to JavaScript
@@ -83,8 +73,10 @@ public class JSIDPlay2TeaVM {
 		String url = new StringBuilder(nameFromJS).toString();
 
 		config = new JavaScriptConfig();
-		config.getAudioSection().setBufferSize(getBufferSize());
-		config.getAudioSection().setAudioBufferSize(getAudioBufferSize());
+		final IAudioSection audioSection = config.getAudioSection();
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		audioSection.setBufferSize(getBufferSize());
+		audioSection.setAudioBufferSize(getAudioBufferSize());
 		LOG.finest("bufferSize: " + getBufferSize());
 		LOG.finest("audioBufferSize: " + getAudioBufferSize());
 		LOG.finest("SID.length: " + sidContents.length);
@@ -104,6 +96,7 @@ public class JSIDPlay2TeaVM {
 		SidTune tune = SidTune.load(url, new ByteArrayInputStream(sidContents), getSidTuneType(url));
 		tune.getInfo().setSelectedSong(null);
 
+		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		hardwareEnsemble.reset();
 		hardwareEnsemble.getC64().getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
@@ -130,12 +123,14 @@ public class JSIDPlay2TeaVM {
 				typeInCommand(command);
 			}
 		}), SidTune.getInitDelay(tune));
-		ReSIDBuilder sidBuilder = new ReSIDBuilder(hardwareEnsemble.getC64().getEventScheduler(), config, CPUClock.PAL,
-				hardwareEnsemble.getC64().getCartridge());
+
+		ReSIDBuilder sidBuilder = new ReSIDBuilder(hardwareEnsemble.getC64().getEventScheduler(), config,
+				hardwareEnsemble.getC64().getClock(), hardwareEnsemble.getC64().getCartridge());
 		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver();
-		audioDriver.open(config.getAudioSection(), null, hardwareEnsemble.getC64().getClock(),
+		audioDriver.open(audioSection, null, hardwareEnsemble.getC64().getClock(),
 				hardwareEnsemble.getC64().getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
+
 		hardwareEnsemble.getC64().insertSIDChips((sidNum, sidEmu) -> {
 			if (SidTune.isSIDUsed(config.getEmulationSection(), tune, sidNum)) {
 				return sidBuilder.lock(sidEmu, sidNum, tune);
@@ -145,7 +140,7 @@ public class JSIDPlay2TeaVM {
 			return NONE;
 		}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
 		sidBuilder.start();
-		bufferSize = config.getAudioSection().getBufferSize();
+		bufferSize = audioSection.getBufferSize();
 		context = hardwareEnsemble.getC64().getEventScheduler();
 	}
 
@@ -173,6 +168,20 @@ public class JSIDPlay2TeaVM {
 	//
 	// Private methods
 	//
+
+	private static SidTuneType getSidTuneType(String name) {
+		if (name.toLowerCase().endsWith(".sid")) {
+			return SidTuneType.PSID;
+		} else if (name.toLowerCase().endsWith(".prg")) {
+			return SidTuneType.PRG;
+		} else if (name.toLowerCase().endsWith(".p00")) {
+			return SidTuneType.P00;
+		} else if (name.toLowerCase().endsWith(".t64")) {
+			return SidTuneType.T64;
+		} else {
+			return SidTuneType.PSID;
+		}
+	}
 
 	private static void typeInCommand(final String multiLineCommand) {
 		String command;

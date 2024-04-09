@@ -236,7 +236,7 @@ public class HardwareEnsemble implements Ultimate64 {
 	 *
 	 * @param cpuFreq frequency (PAL/NTSC)
 	 */
-	protected void setClock(final CPUClock cpuFreq) {
+	public void setClock(final CPUClock cpuFreq) {
 		c64.setClock(cpuFreq);
 		c1541Runner.setClockDivider(cpuFreq);
 		for (SerialIECDevice device : serialDevices) {

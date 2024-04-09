@@ -42,8 +42,7 @@ public final class JavaScriptAudioDriver implements AudioDriver {
 		((Buffer) sampleBuffer).position(shortPosition << 1);
 
 		int channelDataLength = dest.length >> 1;
-		int i = 0;
-		for (i = 0; i < channelDataLength; i++) {
+		for (int i = 0; i < channelDataLength; i++) {
 			resultL[i] = dest[i << 1] / 32768.0f;
 			resultR[i] = dest[(i << 1) + 1] / 32768.0f;
 		}
