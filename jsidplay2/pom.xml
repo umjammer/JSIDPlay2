@@ -431,9 +431,9 @@
 							<targetDirectory>
 								${project.build.directory}/classes/server/restful/webapp/wasm</targetDirectory>
 							<targetFileName>${project.artifactId}.wasm</targetFileName>
-							<debugInformationGenerated>true</debugInformationGenerated>
-							<sourceMapsGenerated>true</sourceMapsGenerated>
-							<sourceFilesCopied>true</sourceFilesCopied>
+							<debugInformationGenerated>false</debugInformationGenerated>
+							<sourceMapsGenerated>false</sourceMapsGenerated>
+							<sourceFilesCopied>false</sourceFilesCopied>
 							<targetType>WEBASSEMBLY</targetType>
 							<optimizationLevel>SIMPLE</optimizationLevel>
 						</configuration>
