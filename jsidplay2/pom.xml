@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -14,8 +15,11 @@
 	<inceptionYear>2007</inceptionYear>
 	<name>JSIDPlay2</name>
 	<url>https://sourceforge.net/projects/jsidplay2/</url>
-	<description>This is a Commodore 64 emulator specialized for sound reproduction. It is also a SID player for music collections like HVSC and CGSC.
- It is a full C64 emulator and can play games of the GameBase64 project as well.</description>
+	<description>This is a Commodore 64 emulator specialized for sound
+		reproduction. It is also a SID player for music collections like HVSC
+		and CGSC.
+		It is a full C64 emulator and can play games of the GameBase64 project
+		as well.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,8 +46,10 @@
 
 	<scm>
 		<url>https://sourceforge.net/p/jsidplay2/code/HEAD/tree/trunk/jsidplay2</url>
-		<developerConnection>scm:svn:svn+ssh://kenchis@svn.code.sf.net/p/jsidplay2/code/trunk/jsidplay2</developerConnection>
-		<connection>scm:svn:http://svn.code.sf.net/p/jsidplay2/code/trunk/jsidplay2</connection>
+		<developerConnection>
+			scm:svn:svn+ssh://kenchis@svn.code.sf.net/p/jsidplay2/code/trunk/jsidplay2</developerConnection>
+		<connection>
+			scm:svn:http://svn.code.sf.net/p/jsidplay2/code/trunk/jsidplay2</connection>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -70,11 +76,12 @@
 				<maven.test.skip>true</maven.test.skip>
 				<additional.javadoc.options></additional.javadoc.options>
 				<javadoc.path>${java.home}/../bin/javadoc</javadoc.path>
-				<generatedSource>${project.build.directory}/generated-sources/annotation</generatedSource>
+				<generatedSource>
+					${project.build.directory}/generated-sources/annotation</generatedSource>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
-			    <jdk>1.8</jdk>
+				<jdk>1.8</jdk>
 			</activation>
 		</profile>
 		<profile>
@@ -87,7 +94,7 @@
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
-			    <jdk>[1.9,)</jdk>
+				<jdk>[1.9,)</jdk>
 			</activation>
 		</profile>
 		<profile>
@@ -201,11 +208,11 @@
 			<artifactId>xuggle-xuggler</artifactId>
 			<version>5.4</version>
 		</dependency>
-	    <dependency>
-	        <groupId>com.google.zxing</groupId>
-	        <artifactId>core</artifactId>
-	        <version>3.5.2</version>
-	    </dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.5.2</version>
+		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
@@ -233,9 +240,9 @@
 			<version>3.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>net.gcardone.junidecode</groupId>
-		    <artifactId>junidecode</artifactId>
-		    <version>0.4.1</version>
+			<groupId>net.gcardone.junidecode</groupId>
+			<artifactId>junidecode</artifactId>
+			<version>0.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>hardsid</groupId>
@@ -349,18 +356,18 @@
 			<version>5.6.15.Final</version>
 			<scope>provided</scope>
 		</dependency>
-		 <dependency>
-		      <groupId>org.teavm</groupId>
-		      <artifactId>teavm-classlib</artifactId>
-		      <version>0.10.0-dev-10</version>
-		      <scope>provided</scope>
-		    </dependency>
+		<dependency>
+			<groupId>org.teavm</groupId>
+			<artifactId>teavm-classlib</artifactId>
+			<version>0.10.0-dev-10</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.teavm/teavm-jso-apis -->
 		<dependency>
-		    <groupId>org.teavm</groupId>
-		    <artifactId>teavm-jso-apis</artifactId>
-		    <version>0.10.0-dev-10</version>
-				      <scope>provided</scope>
+			<groupId>org.teavm</groupId>
+			<artifactId>teavm-jso-apis</artifactId>
+			<version>0.10.0-dev-10</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- test dependencies -->
 		<dependency>
@@ -409,103 +416,109 @@
 			</resource>
 		</resources>
 		<plugins>
-	<plugin>
-        <groupId>org.teavm</groupId>
-        <artifactId>teavm-maven-plugin</artifactId>
-        <version>0.10.0-dev-10</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <stopOnErrors>true</stopOnErrors>              
-              <mainClass>client.teavm.JSIDPlay2TeaVM</mainClass>
-              <targetDirectory>${project.build.directory}/classes/server/restful/webapp/wasm</targetDirectory>
-              <targetFileName>${project.artifactId}.wasm</targetFileName>
-              <debugInformationGenerated>true</debugInformationGenerated>
-			  <sourceMapsGenerated>true</sourceMapsGenerated>
-              <sourceFilesCopied>true</sourceFilesCopied>
-              <targetType>WEBASSEMBLY</targetType>
-              <optimizationLevel>SIMPLE</optimizationLevel>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 			<plugin>
-	            <groupId>org.codehaus.mojo</groupId>
-	            <artifactId>animal-sniffer-maven-plugin</artifactId>
-	            <version>1.23</version>
-	            <executions>
-	                <execution>
-	                    <id>verify-java-api</id>
-	                    <goals>
-	                        <goal>check</goal>
-	                    </goals>
-	                    <phase>verify</phase>
-	                </execution>
-	            </executions>
-	            <configuration>
-	                <signature>
-	                    <groupId>org.codehaus.mojo.signature</groupId>
-	                    <artifactId>java18</artifactId>
-	                    <version>1.0</version>
-	                </signature>
-	            </configuration>
-	        </plugin>
-			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-enforcer-plugin</artifactId>
-			  <version>3.4.1</version>
-			  <executions>
-			    <execution>
-			      <id>enforce-maven</id>
-			      <goals>
-			        <goal>enforce</goal>
-			      </goals>
-			      <configuration>
-			        <rules>
-			          <banDuplicatePomDependencyVersions />
-			          <requireJavaVersion>
-			            <version>[1.8,)</version>
-			            <message>Invalid Java version. It should, at least, be Java 8!</message>
-			          </requireJavaVersion>
-			          <requireMavenVersion>
-			            <version>3.5.2</version>
-					    <message>Invalid Maven version. It should, at least, be 3.5.2</message>
-			          </requireMavenVersion>
-			        </rules>
-			      </configuration>
-			    </execution>
-			  </executions>
+				<groupId>org.teavm</groupId>
+				<artifactId>teavm-maven-plugin</artifactId>
+				<version>0.10.0-dev-10</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<stopOnErrors>true</stopOnErrors>
+							<mainClass>client.teavm.JSIDPlay2TeaVM</mainClass>
+							<targetDirectory>
+								${project.build.directory}/classes/server/restful/webapp/wasm</targetDirectory>
+							<targetFileName>${project.artifactId}.wasm</targetFileName>
+							<debugInformationGenerated>true</debugInformationGenerated>
+							<sourceMapsGenerated>true</sourceMapsGenerated>
+							<sourceFilesCopied>true</sourceFilesCopied>
+							<targetType>WEBASSEMBLY</targetType>
+							<optimizationLevel>SIMPLE</optimizationLevel>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
-			  <groupId>com.hubspot.maven.plugins</groupId>
-			  <artifactId>prettier-maven-plugin</artifactId>
-			  <version>0.18</version>
-			  <!-- version>0.19</version requires Java11 -->
-			  <configuration>
-				<prettierJavaVersion>2.0.0</prettierJavaVersion>
-				<printWidth>120</printWidth>
-				<tabWidth>2</tabWidth>
-				<useTabs>false</useTabs>
-				<ignoreConfigFile>true</ignoreConfigFile>
-				<ignoreEditorConfig>true</ignoreEditorConfig>
-				<inputGlobs>
-				  <inputGlob>src/main/resources/server/restful/webapp/*.vue</inputGlob>
-				  <inputGlob>src/main/resources/server/restful/webapp/*.html</inputGlob>
-				</inputGlobs>
-			  </configuration>
-			  <executions>
-			    <execution>
-			      <phase>validate</phase>
-			      <goals>
-			        <goal>write</goal>
-			      </goals>
-			    </execution>
-			  </executions>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-maven-plugin</artifactId>
+				<version>1.23</version>
+				<executions>
+					<execution>
+						<id>verify-java-api</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<phase>verify</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<signature>
+						<groupId>org.codehaus.mojo.signature</groupId>
+						<artifactId>java18</artifactId>
+						<version>1.0</version>
+					</signature>
+				</configuration>
 			</plugin>
-			<!-- https://mvnrepository.com/artifact/org.codehaus.mojo/versions-maven-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.4.1</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<banDuplicatePomDependencyVersions />
+								<requireJavaVersion>
+									<version>[1.8,)</version>
+									<message>Invalid Java version. It should, at
+										least, be Java 8!</message>
+								</requireJavaVersion>
+								<requireMavenVersion>
+									<version>3.5.2</version>
+									<message>Invalid Maven version. It should,
+										at least, be 3.5.2</message>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.hubspot.maven.plugins</groupId>
+				<artifactId>prettier-maven-plugin</artifactId>
+				<version>0.18</version>
+				<!-- version>0.19</version requires Java11 -->
+				<configuration>
+					<prettierJavaVersion>2.0.0</prettierJavaVersion>
+					<printWidth>120</printWidth>
+					<tabWidth>2</tabWidth>
+					<useTabs>false</useTabs>
+					<ignoreConfigFile>true</ignoreConfigFile>
+					<ignoreEditorConfig>true</ignoreEditorConfig>
+					<inputGlobs>
+						<inputGlob>
+							src/main/resources/server/restful/webapp/*.vue</inputGlob>
+						<inputGlob>
+							src/main/resources/server/restful/webapp/*.html</inputGlob>
+					</inputGlobs>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>write</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!--
+			https://mvnrepository.com/artifact/org.codehaus.mojo/versions-maven-plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>versions-maven-plugin</artifactId>
@@ -529,7 +542,8 @@
 						<configuration>
 							<backend>html</backend>
 							<doctype>book</doctype>
-							<outputDirectory>${project.build.directory}/classes/doc</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/classes/doc</outputDirectory>
 							<headerFooter>true</headerFooter>
 							<attributes>
 								<name>${project.name}</name>
@@ -587,15 +601,16 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
 				<configuration>
-			        <generatedSourcesDirectory>${project.build.directory}/generated-sources</generatedSourcesDirectory>
-        			<annotationProcessorPaths>
-                		<annotationProcessorPath>
-		                    <!-- Note: Use org.hibernate.orm for Hibernate 6+ --> 
-		                    <groupId>org.hibernate</groupId>
-		                    <artifactId>hibernate-jpamodelgen</artifactId>
-		                    <version>5.6.15.Final</version>
-		                </annotationProcessorPath>
-            		</annotationProcessorPaths>
+					<generatedSourcesDirectory>
+						${project.build.directory}/generated-sources</generatedSourcesDirectory>
+					<annotationProcessorPaths>
+						<annotationProcessorPath>
+							<!-- Note: Use org.hibernate.orm for Hibernate 6+ -->
+							<groupId>org.hibernate</groupId>
+							<artifactId>hibernate-jpamodelgen</artifactId>
+							<version>5.6.15.Final</version>
+						</annotationProcessorPath>
+					</annotationProcessorPaths>
 					<debug>${debug}</debug>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<debuglevel>${debuglevel}</debuglevel>
@@ -621,17 +636,17 @@
 						</configuration>
 					</execution>
 					<execution>
-					  <id>timestamp-property</id>
-					  <goals>
-					    <goal>timestamp-property</goal>
-					  </goals>
-					  <phase>validate</phase>
-					  <configuration>
-					    <name>current.year</name>
-					    <pattern>yyyy</pattern>
-					    <timeZone>Europe/Berlin</timeZone>
-					    <locale>de_DE</locale>
-					  </configuration>
+						<id>timestamp-property</id>
+						<goals>
+							<goal>timestamp-property</goal>
+						</goals>
+						<phase>validate</phase>
+						<configuration>
+							<name>current.year</name>
+							<pattern>yyyy</pattern>
+							<timeZone>Europe/Berlin</timeZone>
+							<locale>de_DE</locale>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -647,22 +662,25 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<additionalOptions>${additional.javadoc.options} -source 8</additionalOptions>
+							<additionalOptions>${additional.javadoc.options}
+								-source 8</additionalOptions>
 							<javadocExecutable>${javadoc.path}</javadocExecutable>
 							<doclint>${doclint}</doclint>
-							<jarOutputDirectory>${project.build.directory}/standalone</jarOutputDirectory>
-							<finalName>${project.artifactId}_doc-${project.version}</finalName>
+							<jarOutputDirectory>
+								${project.build.directory}/standalone</jarOutputDirectory>
+							<finalName>
+								${project.artifactId}_doc-${project.version}</finalName>
 							<nonavbar>true</nonavbar>
 							<quiet>true</quiet>
 							<failOnError>true</failOnError>
 							<failOnWarnings>true</failOnWarnings>
 							<show>private</show>
 							<tags>
-							    <tag>
-							        <name>jsidplay2.systemProperty</name>
-							        <placement>a</placement>
-							        <head>System Property:</head>
-							    </tag> 
+								<tag>
+									<name>jsidplay2.systemProperty</name>
+									<placement>a</placement>
+									<head>System Property:</head>
+								</tag>
 							</tags>
 						</configuration>
 					</execution>
@@ -686,21 +704,24 @@
 									<artifactId>jinput-platform</artifactId>
 									<version>2.0.6</version>
 									<classifier>natives-windows</classifier>
-									<outputDirectory>${project.build.directory}/standalone</outputDirectory>
+									<outputDirectory>
+										${project.build.directory}/standalone</outputDirectory>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.java.jinput</groupId>
 									<artifactId>jinput-platform</artifactId>
 									<version>2.0.6</version>
 									<classifier>natives-linux</classifier>
-									<outputDirectory>${project.build.directory}/standalone</outputDirectory>
+									<outputDirectory>
+										${project.build.directory}/standalone</outputDirectory>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.java.jinput</groupId>
 									<artifactId>jinput-platform</artifactId>
 									<version>2.0.6</version>
 									<classifier>natives-osx</classifier>
-									<outputDirectory>${project.build.directory}/standalone</outputDirectory>
+									<outputDirectory>
+										${project.build.directory}/standalone</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -712,7 +733,8 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/standalone</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/standalone</outputDirectory>
 							<includeScope>runtime</includeScope>
 							<excludeScope>provided</excludeScope>
 							<excludeArtifactIds>jinput-platform</excludeArtifactIds>
@@ -740,11 +762,13 @@
 									<mainClass>${javafx.main.class}</mainClass>
 								</manifest>
 								<manifestEntries>
-									<Class-Path>${project.artifactId}_doc-${project.version}-javadoc.jar</Class-Path>
+									<Class-Path>
+										${project.artifactId}_doc-${project.version}-javadoc.jar</Class-Path>
 								</manifestEntries>
 							</archive>
 							<classifier>ui</classifier>
-							<outputDirectory>${project.build.directory}/standalone</outputDirectory>
+							<outputDirectory>
+								${project.build.directory}/standalone</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -768,11 +792,16 @@
 								<include>libsidplay/common/SamplingRate.class</include>
 								<include>libsidplay/common/SIDChip.class</include>
 								<include>libsidplay/config/IFilterSection.class</include>
-								<include>libsidplay/config/IWhatsSidSystemProperties.class</include>
-								<include>libsidutils/fingerprinting/IFingerprintMatcher.class</include>
-								<include>libsidutils/fingerprinting/rest/beans/WAVBean.class</include>
-								<include>libsidutils/fingerprinting/rest/beans/MusicInfoBean.class</include>
-								<include>libsidutils/fingerprinting/rest/beans/MusicInfoWithConfidenceBean.class</include>
+								<include>
+									libsidplay/config/IWhatsSidSystemProperties.class</include>
+								<include>
+									libsidutils/fingerprinting/IFingerprintMatcher.class</include>
+								<include>
+									libsidutils/fingerprinting/rest/beans/WAVBean.class</include>
+								<include>
+									libsidutils/fingerprinting/rest/beans/MusicInfoBean.class</include>
+								<include>
+									libsidutils/fingerprinting/rest/beans/MusicInfoWithConfidenceBean.class</include>
 								<include>libsidplay/sidtune/PSidHeader.class</include>
 								<include>sidplay/audio/AudioConfig.class</include>
 								<include>sidplay/audio/AudioDriver.class</include>
@@ -785,9 +814,11 @@
 							</includes>
 							<excludes>
 								<exclude>builder/resid/resid/ReSID.class</exclude>
-								<exclude>builder/resid/resid/ReSID$FakeStereo.class</exclude>
+								<exclude>
+									builder/resid/resid/ReSID$FakeStereo.class</exclude>
 								<exclude>builder/resid/residfp/ReSIDfp.class</exclude>
-								<exclude>builder/resid/residfp/ReSIDfp$FakeStereo.class</exclude>
+								<exclude>
+									builder/resid/residfp/ReSIDfp$FakeStereo.class</exclude>
 							</excludes>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
 							<classifier>jsiddevice</classifier>
@@ -797,7 +828,8 @@
 									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 									<addClasspath>false</addClasspath>
-									<mainClass>server.netsiddev.NetworkSIDDeviceMain</mainClass>
+									<mainClass>
+										server.netsiddev.NetworkSIDDeviceMain</mainClass>
 								</manifest>
 							</archive>
 						</configuration>
@@ -814,9 +846,12 @@
 								<include>libsidplay/**/*.class</include>
 								<include>libsidplay/**/*.bin</include>
 								<include>libsidutils/*.class</include>
-								<include>libsidutils/fingerprinting/IFingerprintMatcher.class</include>
-								<include>libsidutils/fingerprinting/rest/beans/MusicInfoBean.class</include>
-								<include>libsidutils/fingerprinting/rest/beans/MusicInfoWithConfidenceBean.class</include>
+								<include>
+									libsidutils/fingerprinting/IFingerprintMatcher.class</include>
+								<include>
+									libsidutils/fingerprinting/rest/beans/MusicInfoBean.class</include>
+								<include>
+									libsidutils/fingerprinting/rest/beans/MusicInfoWithConfidenceBean.class</include>
 								<include>libsidutils/prg2tap/*.class</include>
 								<include>libsidutils/prg2tap/*.bin</include>
 								<include>libsidutils/reloc65/*</include>
@@ -897,33 +932,34 @@
 				</executions>
 			</plugin>
 			<plugin>
-			    <groupId>org.orienteer.jnpm</groupId>
-			    <artifactId>jnpm-maven-plugin</artifactId>
-			    <version>1.5</version>
-			    <executions>
-			        <execution>
+				<groupId>org.orienteer.jnpm</groupId>
+				<artifactId>jnpm-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
 						<id>webjars</id>
 						<phase>generate-sources</phase>
-			            <goals>
-			                <goal>install</goal>
-			            </goals>
+						<goals>
+							<goal>install</goal>
+						</goals>
 						<!-- Check for newest version here: -->
 						<!-- https://www.npmjs.com -->
-						<!-- Note: Change server.restful.common.rtmp.HlsType as well! -->
-			            <configuration>
-			                <packages>
-			                    <package>vue@3.4.21</package>
-			                    <package>bootstrap@5.3.3</package>
-			                    <package>bootstrap-icons@1.11.3</package>
-			                    <package>vue-i18n@9.10.1</package>
-			                    <package>axios@1.5.1</package>
-			                    <package>hls.js@1.4.12</package>
-			                    <package>video.js@8.5.2</package>
-			                    <package>web-audio-recorder-js@0.0.2</package>
-			                </packages>
-			            </configuration>
-			        </execution>
-			    </executions>
+						<!-- Note: Change server.restful.common.rtmp.HlsType as
+						well! -->
+						<configuration>
+							<packages>
+								<package>vue@3.4.21</package>
+								<package>bootstrap@5.3.3</package>
+								<package>bootstrap-icons@1.11.3</package>
+								<package>vue-i18n@9.10.1</package>
+								<package>axios@1.5.1</package>
+								<package>hls.js@1.4.12</package>
+								<package>video.js@8.5.2</package>
+								<package>web-audio-recorder-js@0.0.2</package>
+							</packages>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -995,12 +1031,15 @@
 							<dontWrapJar>true</dontWrapJar>
 							<headerType>gui</headerType>
 							<jar>${project.artifactId}-${project.version}-ui.jar</jar>
-							<outfile>${project.build.directory}/standalone/${project.artifactId}-${project.version}.exe</outfile>
+							<outfile>
+								${project.build.directory}/standalone/${project.artifactId}-${project.version}.exe</outfile>
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
-							<downloadUrl>https://adoptium.net/de/temurin/releases/?arch=x64&amp;package=jdk</downloadUrl>
-							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<downloadUrl>
+								https://adoptium.net/de/temurin/releases/?arch=x64&amp;package=jdk</downloadUrl>
+							<supportUrl>
+								https://sourceforge.net/projects/jsidplay2/</supportUrl>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsidplay2.ico</icon>
 							<singleInstance>
@@ -1021,23 +1060,27 @@
 									<opt>--add-modules</opt>
 									<opt>javafx.controls,javafx.web,javafx.fxml</opt>
 									<opt>--add-opens</opt>
-									<opt>java.base/java.io=org.apache.tomcat.embed.core</opt>
+									<opt>
+										java.base/java.io=org.apache.tomcat.embed.core</opt>
 									<opt>--add-opens</opt>
 									<opt>java.base/java.util.function=jcommander</opt>
 								</opts>
 							</jre>
 							<versionInfo>
-							    <fileVersion>${project.version}.0.0</fileVersion>
-							    <txtFileVersion>${project.version}</txtFileVersion>
-							    <fileDescription>JSIDPlay2 UI Version</fileDescription>
-  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
-							    <productVersion>${project.version}.0.0</productVersion>
-							    <txtProductVersion>${project.version}</txtProductVersion>
-							    <productName>JSIDPlay2</productName>
-							    <companyName>Open Source</companyName>
-							    <internalName>jsidplay2-${project.version}</internalName>
-							    <originalFilename>jsidplay2-${project.version}.exe</originalFilename>
-							  </versionInfo>
+								<fileVersion>${project.version}.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>JSIDPlay2 UI Version</fileDescription>
+								<copyright>Copyright (©)
+									${project.inceptionYear}-${current.year} Ken
+									Händel</copyright>
+								<productVersion>${project.version}.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>JSIDPlay2</productName>
+								<companyName>Open Source</companyName>
+								<internalName>jsidplay2-${project.version}</internalName>
+								<originalFilename>
+									jsidplay2-${project.version}.exe</originalFilename>
+							</versionInfo>
 						</configuration>
 					</execution>
 					<execution>
@@ -1050,12 +1093,14 @@
 							<dontWrapJar>true</dontWrapJar>
 							<headerType>gui</headerType>
 							<jar>${project.artifactId}-${project.version}-ui.jar</jar>
-							<outfile>${project.build.directory}/standalone/${project.artifactId}-java8-${project.version}.exe</outfile>
+							<outfile>
+								${project.build.directory}/standalone/${project.artifactId}-java8-${project.version}.exe</outfile>
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
 							<downloadUrl>https://java.com/download</downloadUrl>
-							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<supportUrl>
+								https://sourceforge.net/projects/jsidplay2/</supportUrl>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsidplay2.ico</icon>
 							<singleInstance>
@@ -1073,17 +1118,20 @@
 								<maxVersion>1.8.0_999</maxVersion>
 							</jre>
 							<versionInfo>
-							    <fileVersion>${project.version}.0.0</fileVersion>
-							    <txtFileVersion>${project.version}</txtFileVersion>
-							    <fileDescription>JSIDPlay2 UI Version for Java8</fileDescription>
-  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
-							    <productVersion>${project.version}.0.0</productVersion>
-							    <txtProductVersion>${project.version}</txtProductVersion>
-							    <productName>JSIDPlay2</productName>
-							    <companyName>Open Source</companyName>
-							    <internalName>jsidplay2-java8-${project.version}</internalName>
-							    <originalFilename>jsidplay2-java8-${project.version}.exe</originalFilename>
-							  </versionInfo>
+								<fileVersion>${project.version}.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>JSIDPlay2 UI Version for Java8</fileDescription>
+								<copyright>Copyright (©)
+									${project.inceptionYear}-${current.year} Ken
+									Händel</copyright>
+								<productVersion>${project.version}.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>JSIDPlay2</productName>
+								<companyName>Open Source</companyName>
+								<internalName>jsidplay2-java8-${project.version}</internalName>
+								<originalFilename>
+									jsidplay2-java8-${project.version}.exe</originalFilename>
+							</versionInfo>
 						</configuration>
 					</execution>
 					<execution>
@@ -1096,12 +1144,14 @@
 							<dontWrapJar>true</dontWrapJar>
 							<headerType>console</headerType>
 							<jar>${project.artifactId}-${project.version}-ui.jar</jar>
-							<outfile>${project.build.directory}/standalone/${project.artifactId}-console-${project.version}.exe</outfile>
+							<outfile>
+								${project.build.directory}/standalone/${project.artifactId}-console-${project.version}.exe</outfile>
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
 							<downloadUrl>https://java.com/download</downloadUrl>
-							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<supportUrl>
+								https://sourceforge.net/projects/jsidplay2/</supportUrl>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsidplay2.ico</icon>
 							<classPath>
@@ -1114,17 +1164,21 @@
 								<minVersion>1.8.0</minVersion>
 							</jre>
 							<versionInfo>
-							    <fileVersion>${project.version}.0.0</fileVersion>
-							    <txtFileVersion>${project.version}</txtFileVersion>
-							    <fileDescription>JSIDPlay2 Console Version</fileDescription>
-  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
-							    <productVersion>${project.version}.0.0</productVersion>
-							    <txtProductVersion>${project.version}</txtProductVersion>
-							    <productName>JSIDPlay2</productName>
-							    <companyName>Open Source</companyName>
-							    <internalName>jsidplay2-console-${project.version}</internalName>
-							    <originalFilename>jsidplay2-console-${project.version}.exe</originalFilename>
-							  </versionInfo>
+								<fileVersion>${project.version}.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>JSIDPlay2 Console Version</fileDescription>
+								<copyright>Copyright (©)
+									${project.inceptionYear}-${current.year} Ken
+									Händel</copyright>
+								<productVersion>${project.version}.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>JSIDPlay2</productName>
+								<companyName>Open Source</companyName>
+								<internalName>
+									jsidplay2-console-${project.version}</internalName>
+								<originalFilename>
+									jsidplay2-console-${project.version}.exe</originalFilename>
+							</versionInfo>
 						</configuration>
 					</execution>
 					<execution>
@@ -1135,12 +1189,15 @@
 						</goals>
 						<configuration>
 							<headerType>gui</headerType>
-							<jar>${project.build.directory}/deploy/${project.artifactId}-${project.version}-jsiddevice.jar</jar>
-							<outfile>${project.build.directory}/deploy/jsiddevice-${project.version}.exe</outfile>
+							<jar>
+								${project.build.directory}/deploy/${project.artifactId}-${project.version}-jsiddevice.jar</jar>
+							<outfile>
+								${project.build.directory}/deploy/jsiddevice-${project.version}.exe</outfile>
 							<errTitle>NetworkSIDDevice</errTitle>
 							<chdir>.</chdir>
 							<downloadUrl>https://java.com/download</downloadUrl>
-							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<supportUrl>
+								https://sourceforge.net/projects/jsidplay2/</supportUrl>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsiddevice.ico</icon>
 							<singleInstance>
@@ -1154,17 +1211,20 @@
 								<minVersion>1.8.0</minVersion>
 							</jre>
 							<versionInfo>
-							    <fileVersion>${project.version}.0.0</fileVersion>
-							    <txtFileVersion>${project.version}</txtFileVersion>
-							    <fileDescription>JSIDDevice Version</fileDescription>
-  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
-							    <productVersion>${project.version}.0.0</productVersion>
-							    <txtProductVersion>${project.version}</txtProductVersion>
-							    <productName>JSIDPlay2</productName>
-							    <companyName>Open Source</companyName>
-							    <internalName>jsiddevice-${project.version}</internalName>
-							    <originalFilename>jsiddevice-${project.version}.exe</originalFilename>
-							  </versionInfo>
+								<fileVersion>${project.version}.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>JSIDDevice Version</fileDescription>
+								<copyright>Copyright (©)
+									${project.inceptionYear}-${current.year} Ken
+									Händel</copyright>
+								<productVersion>${project.version}.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>JSIDPlay2</productName>
+								<companyName>Open Source</companyName>
+								<internalName>jsiddevice-${project.version}</internalName>
+								<originalFilename>
+									jsiddevice-${project.version}.exe</originalFilename>
+							</versionInfo>
 						</configuration>
 					</execution>
 					<execution>
@@ -1177,12 +1237,14 @@
 							<dontWrapJar>true</dontWrapJar>
 							<headerType>console</headerType>
 							<jar>${project.artifactId}-${project.version}-ui.jar</jar>
-							<outfile>${project.build.directory}/standalone/sidblastertool-${project.version}.exe</outfile>
+							<outfile>
+								${project.build.directory}/standalone/sidblastertool-${project.version}.exe</outfile>
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
 							<downloadUrl>https://java.com/download</downloadUrl>
-							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<supportUrl>
+								https://sourceforge.net/projects/jsidplay2/</supportUrl>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsidplay2.ico</icon>
 							<classPath>
@@ -1195,17 +1257,20 @@
 								<minVersion>1.8.0</minVersion>
 							</jre>
 							<versionInfo>
-							    <fileVersion>${project.version}.0.0</fileVersion>
-							    <txtFileVersion>${project.version}</txtFileVersion>
-							    <fileDescription>SIDBlaster Tool</fileDescription>
-  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
-							    <productVersion>${project.version}.0.0</productVersion>
-							    <txtProductVersion>${project.version}</txtProductVersion>
-							    <productName>JSIDPlay2</productName>
-							    <companyName>Open Source</companyName>
-							    <internalName>sidblastertool-${project.version}</internalName>
-							    <originalFilename>sidblastertool-${project.version}.exe</originalFilename>
-							  </versionInfo>
+								<fileVersion>${project.version}.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>SIDBlaster Tool</fileDescription>
+								<copyright>Copyright (©)
+									${project.inceptionYear}-${current.year} Ken
+									Händel</copyright>
+								<productVersion>${project.version}.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>JSIDPlay2</productName>
+								<companyName>Open Source</companyName>
+								<internalName>sidblastertool-${project.version}</internalName>
+								<originalFilename>
+									sidblastertool-${project.version}.exe</originalFilename>
+							</versionInfo>
 						</configuration>
 					</execution>
 					<execution>
@@ -1218,12 +1283,14 @@
 							<dontWrapJar>true</dontWrapJar>
 							<headerType>console</headerType>
 							<jar>${project.artifactId}-${project.version}-ui.jar</jar>
-							<outfile>${project.build.directory}/standalone/recordingtool-${project.version}.exe</outfile>
+							<outfile>
+								${project.build.directory}/standalone/recordingtool-${project.version}.exe</outfile>
 							<errTitle>${project.name}</errTitle>
 							<chdir>.</chdir>
 							<priority>high</priority>
 							<downloadUrl>https://java.com/download</downloadUrl>
-							<supportUrl>https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<supportUrl>
+								https://sourceforge.net/projects/jsidplay2/</supportUrl>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsidplay2.ico</icon>
 							<classPath>
@@ -1236,17 +1303,20 @@
 								<minVersion>1.8.0</minVersion>
 							</jre>
 							<versionInfo>
-							    <fileVersion>${project.version}.0.0</fileVersion>
-							    <txtFileVersion>${project.version}</txtFileVersion>
-							    <fileDescription>Recording Tool</fileDescription>
-  							    <copyright>Copyright (©) ${project.inceptionYear}-${current.year} Ken Händel</copyright>
-							    <productVersion>${project.version}.0.0</productVersion>
-							    <txtProductVersion>${project.version}</txtProductVersion>
-							    <productName>JSIDPlay2</productName>
-							    <companyName>Open Source</companyName>
-							    <internalName>recordingtool-${project.version}</internalName>
-							    <originalFilename>recordingtool-${project.version}.exe</originalFilename>
-							  </versionInfo>
+								<fileVersion>${project.version}.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>Recording Tool</fileDescription>
+								<copyright>Copyright (©)
+									${project.inceptionYear}-${current.year} Ken
+									Händel</copyright>
+								<productVersion>${project.version}.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>JSIDPlay2</productName>
+								<companyName>Open Source</companyName>
+								<internalName>recordingtool-${project.version}</internalName>
+								<originalFilename>
+									recordingtool-${project.version}.exe</originalFilename>
+							</versionInfo>
 						</configuration>
 					</execution>
 				</executions>
@@ -1264,9 +1334,11 @@
 						</goals>
 						<configuration>
 							<alias>jsidplay2</alias>
-							<keystore>${project.build.directory}/deploy/keystore.jks</keystore>
+							<keystore>
+								${project.build.directory}/deploy/keystore.jks</keystore>
 							<storetype>pkcs12</storetype>
-							<dname>cn="JSIDPlay2", ou="JSIDPlay2", o="Open Source",
+							<dname>cn="JSIDPlay2", ou="JSIDPlay2", o="Open
+								Source",
 								l="Berlin", c="DE"</dname>
 							<keypass>jsidplay2</keypass>
 							<storepass>jsidplay2</storepass>
@@ -1292,16 +1364,22 @@
 							<fileset>
 								<directory>${project.build.directory}/standalone</directory>
 								<includes>
-									<include>${project.artifactId}-${project.version}.exe</include>
-									<include>${project.artifactId}-java8-${project.version}.exe</include>
-									<include>${project.artifactId}-console-${project.version}.exe</include>
-									<include>sidblastertool-${project.version}.exe</include>
-									<include>recordingtool-${project.version}.exe</include>
+									<include>
+										${project.artifactId}-${project.version}.exe</include>
+									<include>
+										${project.artifactId}-java8-${project.version}.exe</include>
+									<include>
+										${project.artifactId}-console-${project.version}.exe</include>
+									<include>
+										sidblastertool-${project.version}.exe</include>
+									<include>
+										recordingtool-${project.version}.exe</include>
 								</includes>
 							</fileset>
 							<name>${project.name}</name>
 							<url>https://sourceforge.net/projects/jsidplay2/</url>
-							<keystore>${project.build.directory}/deploy/keystore.jks</keystore>
+							<keystore>
+								${project.build.directory}/deploy/keystore.jks</keystore>
 							<alias>jsidplay2</alias>
 							<storepass>jsidplay2</storepass>
 						</configuration>
@@ -1321,7 +1399,8 @@
 							</fileset>
 							<name>jsiddevice</name>
 							<url>https://sourceforge.net/projects/jsidplay2/</url>
-							<keystore>${project.build.directory}/deploy/keystore.jks</keystore>
+							<keystore>
+								${project.build.directory}/deploy/keystore.jks</keystore>
 							<alias>jsidplay2</alias>
 							<storepass>jsidplay2</storepass>
 						</configuration>
@@ -1343,7 +1422,8 @@
 								<descriptor>src/main/assembly/zip.xml</descriptor>
 							</descriptors>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
-							<finalName>${project.artifactId}-${project.version}-${javafx.platform}</finalName>
+							<finalName>
+								${project.artifactId}-${project.version}-${javafx.platform}</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
