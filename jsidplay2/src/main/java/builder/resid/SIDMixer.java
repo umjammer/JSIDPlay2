@@ -186,8 +186,6 @@ public class SIDMixer implements Mixer {
 	 * Audio buffers for two channels (stereo).
 	 */
 	private IntBuffer audioBufferL, audioBufferR;
-	private byte[] allocateL;
-	private byte[] allocateR;
 	/**
 	 * Capacity of the Audio buffers audioBufferL and audioBufferR.
 	 */
@@ -280,17 +278,9 @@ public class SIDMixer implements Mixer {
 		this.audioDriver = audioDriver;
 		this.bufferSize = audioSection.getBufferSize();
 		this.buffer = audioDriver.buffer();
-		this.allocateL = new byte[Integer.BYTES * bufferSize];
-		this.allocateR = new byte[Integer.BYTES * bufferSize];
-		this.audioBufferL = ByteBuffer.wrap(allocateL).order(nativeOrder()).asIntBuffer();
-		this.audioBufferR = ByteBuffer.wrap(allocateR).order(nativeOrder()).asIntBuffer();
-		this.cart.setSampler(createSampleMixer(ByteBuffer.wrap(allocateL).order(nativeOrder()).asIntBuffer(),
-				ByteBuffer.wrap(allocateR).order(nativeOrder()).asIntBuffer()));
-
-		// TeaVM does not support Buffer.duplicate, therefore:
-//		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
-//		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
-//		this.cart.setSampler(createSampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
+		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
+		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
+		this.cart.setSampler(createSampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
 	}
 
 	/**
@@ -347,15 +337,7 @@ public class SIDMixer implements Mixer {
 		} else {
 			sids.add(sid);
 		}
-		IntBuffer duplicateL = ByteBuffer.wrap(allocateL).order(nativeOrder()).asIntBuffer();
-		((Buffer) duplicateL).position(audioBufferL.position());
-		((Buffer) duplicateL).limit(audioBufferL.limit());
-		IntBuffer duplicateR = ByteBuffer.wrap(allocateR).order(nativeOrder()).asIntBuffer();
-		((Buffer) duplicateR).position(audioBufferR.position());
-		((Buffer) duplicateR).limit(audioBufferR.limit());
-		sid.setSampler(createSampleMixer(duplicateL, duplicateR));
-		// TeaVM does not support Buffer.duplicate, therefore:
-//		sid.setSampler(createSampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
+		sid.setSampler(createSampleMixer(audioBufferL.duplicate(), audioBufferR.duplicate()));
 		setVolume(sidNum, config.getAudioSection().getVolume(sidNum));
 		setBalance(sidNum, config.getAudioSection().getBalance(sidNum));
 		setDelay(sidNum, config.getAudioSection().getDelay(sidNum));
