@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -17,11 +18,11 @@ import sidplay.audio.AudioDriver;
 
 public final class JavaScriptAudioDriver implements AudioDriver {
 
-	private float[] resultL;
-	private float[] resultR;
-
 	protected ByteBuffer sampleBuffer;
 
+	private float[] resultL;
+	private float[] resultR;
+	
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
 			throws IOException, LineUnavailableException, InterruptedException {
@@ -36,16 +37,14 @@ public final class JavaScriptAudioDriver implements AudioDriver {
 	@Override
 	public void write() throws InterruptedException {
 		int shortPosition = sampleBuffer.position() >> 1;
-		short[] dest = new short[shortPosition];
 		((Buffer) sampleBuffer).flip();
-		sampleBuffer.asShortBuffer().get(dest);
-		((Buffer) sampleBuffer).position(shortPosition << 1);
-
-		int channelDataLength = dest.length >> 1;
+		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
+		int channelDataLength = shortPosition >> 1;
 		for (int i = 0; i < channelDataLength; i++) {
-			resultL[i] = dest[i << 1] / 32768.0f;
-			resultR[i] = dest[(i << 1) + 1] / 32768.0f;
+			resultL[i] = shortBuffer.get() / 32768.0f;
+			resultR[i] = shortBuffer.get() / 32768.0f;
 		}
+		((Buffer) sampleBuffer).position(shortPosition << 1);
 		processSamples(resultL, resultR, channelDataLength);
 	}
 
