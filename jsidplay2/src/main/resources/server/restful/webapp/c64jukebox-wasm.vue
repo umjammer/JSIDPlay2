@@ -44,7 +44,7 @@
         <div class="locale-changer">
           <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (Web Assembly Version)</h1>
           <select
-            id="localesecector"
+            id="localeselector"
             class="form-select form-select-sm"
             @change="updateLanguage"
             v-model="$i18n.locale"
@@ -69,7 +69,7 @@
     </div>
     <script>
       var audioContext;
-      var chunkNumber = 0;
+      var chunkNumber = 6;
 
       // Define the functions (mapped to the Java methods)
       function getBufferSize() {
@@ -196,7 +196,7 @@
           stopTune() {
             window.instance.exports.close();
             setTimeout(() => {
-              chunkNumber = 0;
+              chunkNumber = 6;
               app.msg = "";
               app.playing = false;
               audioContext.close();

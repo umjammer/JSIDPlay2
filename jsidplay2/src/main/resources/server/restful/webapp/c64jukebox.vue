@@ -67,7 +67,7 @@
             </span>
           </button>
           <select
-            id="localesecector"
+            id="localeselector"
             class="form-select form-select-sm"
             @change="updateLanguage"
             v-model="$i18n.locale"
