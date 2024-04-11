@@ -5,6 +5,7 @@ import client.teavm.JavaScriptConfig;
 
 public class JSIDPlay2ByteCoder {
 
+	@SuppressWarnings("unused")
 	private static JavaScriptConfig config;
 //	private static C64 c64;
 
