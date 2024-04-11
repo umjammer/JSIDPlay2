@@ -369,21 +369,6 @@
 			<version>0.10.0-dev-10</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-	        <groupId>de.mirkosertic.bytecoder</groupId>
-	        <artifactId>bytecoder-core</artifactId>
-	        <version>2023-12-01</version>
-	    </dependency>
-		<dependency>
-			<groupId>de.mirkosertic.bytecoder</groupId>
-			<artifactId>bytecoder.api</artifactId>
-			<version>2023-12-01</version>
-		</dependency>
-		<dependency>
-			<groupId>de.mirkosertic.bytecoder</groupId>
-			<artifactId>java.base</artifactId>
-			<version>2023-12-01</version>
-		</dependency>
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.testfx</groupId>
@@ -452,27 +437,6 @@
 							<targetType>WEBASSEMBLY</targetType>
 							<optimizationLevel>SIMPLE</optimizationLevel>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>de.mirkosertic.bytecoder</groupId>
-				<artifactId>bytecoder-mavenplugin</artifactId>
-				<version>2023-12-01</version>
-				<configuration>
-					<mainClass>
-						client.bytecoder.JSIDPlay2ByteCoder</mainClass>
-					<backend>js</backend>
-					<buildDirectory>${project.build.directory}/classes/server/restful/webapp/wasm</buildDirectory>
-					<backend>wasm</backend>
-					<debugOutput>true</debugOutput>
-					<optimizationLevel>ALL</optimizationLevel>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -1654,25 +1618,6 @@
 										</artifactId>
 										<versionRange>
 											[0.10.0-dev-10,)
-										</versionRange>
-										<goals>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											de.mirkosertic.bytecoder
-										</groupId>
-										<artifactId>
-											bytecoder-mavenplugin
-										</artifactId>
-										<versionRange>
-											[2023-12-01,)
 										</versionRange>
 										<goals>
 											<goal>compile</goal>
