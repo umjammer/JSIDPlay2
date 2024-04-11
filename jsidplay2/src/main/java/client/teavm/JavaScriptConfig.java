@@ -637,7 +637,7 @@ public class JavaScriptConfig implements IConfig {
 			
 			@Override
 			public boolean getReverbBypass() {
-				return false;
+				return true;
 			}
 			
 			@Override
