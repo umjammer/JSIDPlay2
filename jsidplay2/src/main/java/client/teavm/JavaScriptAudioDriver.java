@@ -22,7 +22,7 @@ public final class JavaScriptAudioDriver implements AudioDriver {
 
 	private float[] resultL;
 	private float[] resultR;
-	
+
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
 			throws IOException, LineUnavailableException, InterruptedException {
@@ -36,16 +36,15 @@ public final class JavaScriptAudioDriver implements AudioDriver {
 
 	@Override
 	public void write() throws InterruptedException {
-		int shortPosition = sampleBuffer.position() >> 1;
+		int frameCount = sampleBuffer.position() >> 2;
 		((Buffer) sampleBuffer).flip();
 		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
-		int channelDataLength = shortPosition >> 1;
-		for (int i = 0; i < channelDataLength; i++) {
+		for (int i = 0; i < frameCount; i++) {
 			resultL[i] = shortBuffer.get() / 32768.0f;
 			resultR[i] = shortBuffer.get() / 32768.0f;
 		}
-		((Buffer) sampleBuffer).position(shortPosition << 1);
-		processSamples(resultL, resultR, channelDataLength);
+		((Buffer) sampleBuffer).position(frameCount << 2);
+		processSamples(resultL, resultR, frameCount);
 	}
 
 	@Override

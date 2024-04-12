@@ -61,8 +61,6 @@ public class JSIDPlay2TeaVM {
 	@Import(module = "env", name = "getAudioBufferSize")
 	public static native int getAudioBufferSize();
 
-	
-
 	//
 	// Exports to JavaScript
 	//
@@ -70,6 +68,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+		// TeaVM string canot be used directly, therefore:
 		String url = new StringBuilder(nameFromJS).toString();
 
 		config = new JavaScriptConfig();
@@ -77,10 +76,11 @@ public class JSIDPlay2TeaVM {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		audioSection.setBufferSize(getBufferSize());
 		audioSection.setAudioBufferSize(getAudioBufferSize());
-		LOG.finest("bufferSize: " + getBufferSize());
-		LOG.finest("audioBufferSize: " + getAudioBufferSize());
-		LOG.finest("SID.length: " + sidContents.length);
-		LOG.finest("name: " + url);
+
+		LOG.finest("Tube name: " + url);
+		LOG.finest("Tune length: " + sidContents.length);
+		LOG.finest("bufferSize: " + audioSection.getBufferSize());
+		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
 
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
@@ -89,13 +89,12 @@ public class JSIDPlay2TeaVM {
 		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
 		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
 
-		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
-				new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
-		hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
-
 		SidTune tune = SidTune.load(url, new ByteArrayInputStream(sidContents), getSidTuneType(url));
 		tune.getInfo().setSelectedSong(null);
 
+		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
+				new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
+		hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		hardwareEnsemble.reset();
 		hardwareEnsemble.getC64().getEventScheduler().schedule(Event.of("Auto-start", event -> {
