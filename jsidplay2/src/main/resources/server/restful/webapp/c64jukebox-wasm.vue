@@ -71,6 +71,25 @@
       var audioContext;
       var chunkNumber = 6;
 
+      function allocateTeaVMbyteArray(array) {
+        let byteArrayPtr = window.instance.exports.teavm_allocateByteArray(array.length);
+        let byteArrayData = window.instance.exports.teavm_byteArrayData(byteArrayPtr);
+        new Uint8Array(window.instance.exports.memory.buffer, byteArrayData, array.length).set(array);
+        return byteArrayPtr;
+      }
+
+      function allocateTeaVMstring(str) {
+        let stringPtr = window.instance.exports.teavm_allocateString(str.length);
+        let objectArrayData = window.instance.exports.teavm_objectArrayData(
+          instance.exports.teavm_stringData(stringPtr)
+        );
+        let arrayView = new Uint16Array(window.instance.exports.memory.buffer, objectArrayData, str.length);
+        for (let i = 0; i < arrayView.length; ++i) {
+          arrayView[i] = str.charCodeAt(i);
+        }
+        return stringPtr;
+      }
+
       // Define the functions (mapped to the Java methods)
       function getBufferSize() {
         return 16 * 65536;
@@ -153,33 +172,11 @@
 
                 var reader = new FileReader();
                 reader.onload = function () {
-                  let sidTuneByteArray = new Uint8Array(this.result);
-
-                  let sidContentsPtr = window.instance.exports.teavm_allocateByteArray(sidTuneByteArray.length);
-                  let sidContentsAddress = window.instance.exports.teavm_byteArrayData(sidContentsPtr);
-                  let sidContents = new Uint8Array(
-                    window.instance.exports.memory.buffer,
-                    sidContentsAddress,
-                    sidTuneByteArray.length
-                  );
-                  for (i = 0; i < sidContents.length; i++) {
-                    sidContents[i] = sidTuneByteArray[i];
-                  }
-
-                  let tuneNamePtr = window.instance.exports.teavm_allocateString(app.chosenFile.name.length);
-                  let tuneNameAddress = window.instance.exports.teavm_objectArrayData(
-                    instance.exports.teavm_stringData(tuneNamePtr)
-                  );
-                  let tuneNameView = new Uint16Array(
-                    window.instance.exports.memory.buffer,
-                    tuneNameAddress,
-                    app.chosenFile.name.length
-                  );
-                  for (let i = 0; i < app.chosenFile.name.length; ++i) {
-                    tuneNameView[i] = app.chosenFile.name.charCodeAt(i);
-                  }
+                  let sidContentsPtr = allocateTeaVMbyteArray(new Uint8Array(this.result));
+                  let tuneNamePtr = allocateTeaVMstring(app.chosenFile.name);
 
                   window.instance.exports.open(sidContentsPtr, tuneNamePtr);
+
                   app.playing = true;
                   app.playWasm();
                   app.msg = app.$t("playing");
@@ -203,10 +200,10 @@
           playWasm: function () {
             var AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
-            setTimeout(() => this.clock());
+            setTimeout(() => app.clock());
           },
           clock: function () {
-            if (window.instance.exports.clock() > 0) setTimeout(() => this.clock());
+            if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
         },
         mounted: function () {
