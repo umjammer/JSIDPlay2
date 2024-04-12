@@ -68,7 +68,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		// TeaVM string canot be used directly, therefore:
+		// TeaVM string can not be used directly for some strange reason, therefore:
 		String url = new StringBuilder(nameFromJS).toString();
 
 		config = new JavaScriptConfig();
@@ -158,6 +158,7 @@ public class JSIDPlay2TeaVM {
 
 	@Export(name = "delaySidBlaster")
 	public static void delaySidBlaster(int cycles) {
+		// some hackery for SIDBlaster USB to support delayed writes
 		long delay = (long) (cycles / CPUClock.PAL.getCpuFrequency() * 1000000000L);
 		long startTime = System.nanoTime();
 		while (System.nanoTime() - startTime < delay)
