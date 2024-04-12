@@ -1182,6 +1182,53 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>launch4j-server</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<dontWrapJar>true</dontWrapJar>
+							<headerType>console</headerType>
+							<jar>${project.artifactId}-${project.version}-ui.jar</jar>
+							<outfile>
+								${project.build.directory}/standalone/${project.artifactId}-server-${project.version}.exe</outfile>
+							<errTitle>${project.name}</errTitle>
+							<chdir>.</chdir>
+							<priority>high</priority>
+							<downloadUrl>https://java.com/download</downloadUrl>
+							<supportUrl>
+								https://sourceforge.net/projects/jsidplay2/</supportUrl>
+							<stayAlive>false</stayAlive>
+							<icon>src/main/launch4j/jsidplay2.ico</icon>
+							<classPath>
+								<mainClass>server.restful.JSIDPlay2Server</mainClass>
+								<jarLocation>.</jarLocation>
+								<addDependencies>true</addDependencies>
+							</classPath>
+							<jre>
+								<path>%JAVA_HOME%;%PATH%</path>
+								<minVersion>1.8.0</minVersion>
+							</jre>
+							<versionInfo>
+								<fileVersion>${project.version}.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>JSIDPlay2 Server Version</fileDescription>
+								<copyright>Copyright (©)
+									${project.inceptionYear}-${current.year} Ken
+									Händel</copyright>
+								<productVersion>${project.version}.0.0</productVersion>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>JSIDPlay2</productName>
+								<companyName>Open Source</companyName>
+								<internalName>
+									jsidplay2-server-${project.version}</internalName>
+								<originalFilename>
+									jsidplay2-server-${project.version}.exe</originalFilename>
+							</versionInfo>
+						</configuration>
+					</execution>
+					<execution>
 						<id>netsiddev</id>
 						<phase>package</phase>
 						<goals>
