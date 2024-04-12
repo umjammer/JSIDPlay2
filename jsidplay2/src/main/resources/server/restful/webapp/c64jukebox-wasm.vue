@@ -86,8 +86,12 @@
 
         const sourceNode = audioContext.createBufferSource();
         sourceNode.buffer = audioContext.createBuffer(2, length, 44100);
-        sourceNode.buffer.getChannelData(0).set(new Float32Array(instance.exports.memory.buffer, leftChannelAddress, length));
-        sourceNode.buffer.getChannelData(1).set(new Float32Array(instance.exports.memory.buffer, rightChannelAddress, length));
+        sourceNode.buffer
+          .getChannelData(0)
+          .set(new Float32Array(instance.exports.memory.buffer, leftChannelAddress, length));
+        sourceNode.buffer
+          .getChannelData(1)
+          .set(new Float32Array(instance.exports.memory.buffer, rightChannelAddress, length));
         sourceNode.connect(audioContext.destination);
         sourceNode.start((length / 44100.0) * chunkNumber++);
       }
