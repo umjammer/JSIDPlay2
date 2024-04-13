@@ -60,16 +60,38 @@
           v-on:change="fileChange($event.target.files)"
           :disabled="chosenFile && playing"
         />
+        <div class="form-check" v-show="chosenFile && !playing">
+          <label class="form-check-label" for="screen">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="screen"
+              style="float: right; margin-left: 8px"
+              v-model="screen"
+            />
+            {{ $t("screen") }}
+          </label>
+        </div>
+
         <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">{{ $t("play") }}</button>
         <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
       </form>
       <div>
         <p>{{ msg }}</p>
       </div>
+      <div v-show="screen">
+        <canvas id="myCanvas" width="384" height="312" />
+      </div>
     </div>
     <script>
       var audioContext;
       var chunkNumber = 6;
+      var canvas;
+      var ctx;
+      var pixels;
+      const maxWidth = 384;
+      const maxHeight = 312;
+      const pixelsCount = (maxWidth * maxHeight) << 2;
 
       function allocateTeaVMbyteArray(array) {
         let byteArrayPtr = window.instance.exports.teavm_allocateByteArray(array.length);
@@ -115,6 +137,17 @@
         sourceNode.start((length / 44100.0) * chunkNumber++);
       }
 
+      function processPixels(pixelsPtr) {
+        let pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
+
+        pixels = new Uint32Array(instance.exports.memory.buffer, pixelsAddress, pixelsCount);
+        if (chunkNumber % 4 == 0) {
+          var imageData = ctx.createImageData(maxWidth, maxHeight);
+          imageData.data.set(pixels);
+          ctx.putImageData(imageData, 0, 0);
+        }
+      }
+
       const { createApp, ref } = Vue;
 
       const { createI18n } = VueI18n;
@@ -124,12 +157,14 @@
         locale: "en",
         messages: {
           en: {
+            screen: "Screen",
             play: "Play",
             stop: "Stop",
             loading: "Loading tune, please wait...",
             playing: "Playing...",
           },
           de: {
+            screen: "Bildschirm",
             play: "Spiele",
             stop: "Stop",
             loading: "Lade den tune, bitte warten...",
@@ -145,6 +180,7 @@
             msg: "",
             chosenFile: undefined,
             playing: false,
+            screen: false,
           };
         },
         computed: {},
@@ -162,6 +198,7 @@
                 installImports(o, controller) {
                   o.env = {
                     processSamples: processSamples,
+                    processPixels: processPixels,
                     getBufferSize: getBufferSize,
                     getAudioBufferSize: getAudioBufferSize,
                   };
@@ -175,7 +212,7 @@
                   let sidContentsPtr = allocateTeaVMbyteArray(new Uint8Array(this.result));
                   let tuneNamePtr = allocateTeaVMstring(app.chosenFile.name);
 
-                  window.instance.exports.open(sidContentsPtr, tuneNamePtr);
+                  window.instance.exports.open(sidContentsPtr, tuneNamePtr, app.screen);
 
                   app.playing = true;
                   app.playWasm();
@@ -183,6 +220,7 @@
                 };
                 reader.readAsArrayBuffer(app.chosenFile);
                 app.msg = app.$t("loading");
+                ctx.clearRect(0, 0, maxWidth, maxHeight);
               })
               .catch((error) => {
                 console.log(error);
@@ -210,6 +248,8 @@
           if (localStorage.locale) {
             this.$i18n.locale = localStorage.locale;
           }
+          canvas = document.getElementById("myCanvas");
+          ctx = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
         },
         watch: {},
       })

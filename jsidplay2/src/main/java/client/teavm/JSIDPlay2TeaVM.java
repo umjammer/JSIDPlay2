@@ -66,7 +66,7 @@ public class JSIDPlay2TeaVM {
 	//
 
 	@Export(name = "open")
-	public static void open(byte[] sidContents, String nameFromJS)
+	public static void open(byte[] sidContents, String nameFromJS, boolean screen)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		// TeaVM string can not be used directly for some strange reason, therefore:
 		String url = new StringBuilder(nameFromJS).toString();
@@ -94,7 +94,11 @@ public class JSIDPlay2TeaVM {
 
 		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
 				new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
-		hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
+		if (screen) {
+			hardwareEnsemble.getC64().getVIC().setPalEmulation(new JavaScriptPalEmulation());
+		} else {
+			hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
+		}
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		hardwareEnsemble.reset();
 		hardwareEnsemble.getC64().getEventScheduler().schedule(Event.of("Auto-start", event -> {
@@ -138,6 +142,10 @@ public class JSIDPlay2TeaVM {
 			}
 			return NONE;
 		}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
+		if (screen) {
+			hardwareEnsemble.getC64().configureVICs(vic -> vic.setVideoDriver(audioDriver));
+		}
+
 		sidBuilder.start();
 		bufferSize = audioSection.getBufferSize();
 		context = hardwareEnsemble.getC64().getEventScheduler();
