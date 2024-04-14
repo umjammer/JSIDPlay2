@@ -18,6 +18,7 @@ import org.teavm.interop.Export;
 import org.teavm.interop.Import;
 
 import builder.resid.ReSIDBuilder;
+import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
@@ -47,7 +48,7 @@ public class JSIDPlay2TeaVM {
 
 	private static IConfig config;
 	private static EventScheduler context;
-	private static HardwareEnsemble hardwareEnsemble;
+	private static C64 c64;
 	private static String command;
 	private static int bufferSize;
 
@@ -68,7 +69,8 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS, int nthFrame)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		// TeaVM string can not be used directly for some strange reason, therefore:
+		// JavaScript string can not be used directly for some strange reason,
+		// therefore:
 		String url = new StringBuilder(nameFromJS).toString();
 
 		config = new JavaScriptConfig();
@@ -78,7 +80,7 @@ public class JSIDPlay2TeaVM {
 		audioSection.setAudioBufferSize(getAudioBufferSize());
 
 		LOG.finest("Tube name: " + url);
-		LOG.finest("Tune length: " + sidContents.length);
+		LOG.finest("Tune byte length: " + sidContents.length);
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
 
@@ -92,25 +94,21 @@ public class JSIDPlay2TeaVM {
 		SidTune tune = SidTune.load(url, new ByteArrayInputStream(sidContents), getSidTuneType(url));
 		tune.getInfo().setSelectedSong(null);
 
-		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
-				new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
-		if (nthFrame > 0) {
-			hardwareEnsemble.getC64().getVIC().setPalEmulation(new JavaScriptPalEmulation());
-		} else {
-			hardwareEnsemble.getC64().getVIC().setPalEmulation(PALEmulation.NONE);
-		}
+		HardwareEnsemble hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom,
+				basicRom, kernalRom, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
+		c64 = hardwareEnsemble.getC64();
+		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation() : PALEmulation.NONE);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		hardwareEnsemble.reset();
-		hardwareEnsemble.getC64().getEventScheduler().schedule(Event.of("Auto-start", event -> {
+		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
 				// for tunes: Install player into RAM
-				Integer driverAddress = tune.placeProgramInMemoryTeaVM(hardwareEnsemble.getC64().getRAM(),
-						psidDriverBin);
+				Integer driverAddress = tune.placeProgramInMemoryTeaVM(c64.getRAM(), psidDriverBin);
 				if (driverAddress != null) {
 					// Set play address to feedback call frames counter.
-					hardwareEnsemble.getC64().setPlayAddr(tune.getInfo().getPlayAddr());
+					c64.setPlayAddr(tune.getInfo().getPlayAddr());
 					// Start SID player driver
-					hardwareEnsemble.getC64().getCPU().forcedJump(driverAddress);
+					c64.getCPU().forcedJump(driverAddress);
 				} else {
 					// No player: Start basic program or assembler code
 					final int loadAddr = tune.getInfo().getLoadAddr();
@@ -127,14 +125,12 @@ public class JSIDPlay2TeaVM {
 			}
 		}), SidTune.getInitDelay(tune));
 
-		ReSIDBuilder sidBuilder = new ReSIDBuilder(hardwareEnsemble.getC64().getEventScheduler(), config,
-				hardwareEnsemble.getC64().getClock(), hardwareEnsemble.getC64().getCartridge());
+		ReSIDBuilder sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
 		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver(nthFrame);
-		audioDriver.open(audioSection, null, hardwareEnsemble.getC64().getClock(),
-				hardwareEnsemble.getC64().getEventScheduler());
+		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 
-		hardwareEnsemble.getC64().insertSIDChips((sidNum, sidEmu) -> {
+		c64.insertSIDChips((sidNum, sidEmu) -> {
 			if (SidTune.isSIDUsed(config.getEmulationSection(), tune, sidNum)) {
 				return sidBuilder.lock(sidEmu, sidNum, tune);
 			} else if (sidEmu != NONE) {
@@ -143,12 +139,12 @@ public class JSIDPlay2TeaVM {
 			return NONE;
 		}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
 		if (nthFrame > 0) {
-			hardwareEnsemble.getC64().configureVICs(vic -> vic.setVideoDriver(audioDriver));
+			c64.configureVICs(vic -> vic.setVideoDriver(audioDriver));
 		}
 
 		sidBuilder.start();
 		bufferSize = audioSection.getBufferSize();
-		context = hardwareEnsemble.getC64().getEventScheduler();
+		context = c64.getEventScheduler();
 	}
 
 	@Export(name = "clock")
@@ -197,8 +193,7 @@ public class JSIDPlay2TeaVM {
 			String[] lines = multiLineCommand.split("\r");
 			for (String line : lines) {
 				byte[] screenRam = petsciiToScreenRam(line);
-				System.arraycopy(screenRam, 0, hardwareEnsemble.getC64().getRAM(), RAM_COMMAND_SCREEN_ADDRESS,
-						screenRam.length);
+				System.arraycopy(screenRam, 0, c64.getRAM(), RAM_COMMAND_SCREEN_ADDRESS, screenRam.length);
 				break;
 			}
 			int indexOf = multiLineCommand.indexOf('\r');
@@ -207,8 +202,8 @@ public class JSIDPlay2TeaVM {
 			command = multiLineCommand;
 		}
 		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
-		System.arraycopy(command.getBytes(US_ASCII), 0, hardwareEnsemble.getC64().getRAM(), RAM_COMMAND, length);
-		hardwareEnsemble.getC64().getRAM()[RAM_COMMAND_LEN] = (byte) length;
+		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
+		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
 	}
 
 	//

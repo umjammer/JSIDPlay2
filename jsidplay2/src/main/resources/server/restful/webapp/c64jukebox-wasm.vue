@@ -188,7 +188,7 @@
             playing: false,
             screen: false,
             nthFrame: 50,
-            nthFrames: [1, 2, 25, 50, 60],
+            nthFrames: [25, 30, 50, 60],
           };
         },
         computed: {},
