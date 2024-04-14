@@ -95,7 +95,6 @@
       var chunkNumber;
       var canvas;
       var ctx;
-      var pixels;
       var pixelsAddress;
       const maxWidth = 384;
       const maxHeight = 312;
@@ -130,10 +129,10 @@
       }
 
       function processSamples(leftChannelPtr, rightChannelPtr, length) {
-        let leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
-        let rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
+        var leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
+        var rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
 
-        const sourceNode = audioContext.createBufferSource();
+        var sourceNode = audioContext.createBufferSource();
         sourceNode.buffer = audioContext.createBuffer(2, length, 44100);
         sourceNode.buffer
           .getChannelData(0)
@@ -161,7 +160,7 @@
 
       const { createI18n } = VueI18n;
 
-      var i18n = createI18n({
+      let i18n = createI18n({
         legacy: false,
         locale: "en",
         messages: {
@@ -197,11 +196,6 @@
           };
         },
         computed: {
-          refreshRateMs: {
-            get: function () {
-              return 1000 / 50 * app.nthFrame;
-            },
-          }
         },
         methods: {
           updateLanguage() {
@@ -253,18 +247,20 @@
             var AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
 
-            chunkNumber = 0;
+            chunkNumber = 6;
             pixelsAddress = undefined;
             ctx.clearRect(0, 0, maxWidth, maxHeight);
 
             setTimeout(() => app.clock());
-            setTimeout(() => app.showFrame());
+            if (app.screen) {
+              setTimeout(() => app.showFrame());
+            }
           },
           clock: function () {
             if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
           showFrame: function () {
-            showPicture(); if (app.playing) setTimeout(() => app.showFrame(), app.refreshRateMs);
+            showPicture(); if (app.playing) setTimeout(() => app.showFrame(), 1000 / 50.0 * app.nthFrame);
           },
         },
         mounted: function () {
