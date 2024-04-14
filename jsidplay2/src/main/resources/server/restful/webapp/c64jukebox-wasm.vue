@@ -55,9 +55,10 @@
         </div>
 
         <input
+          ref="formFileSm"
+          id="file"
           type="file"
-          name="file"
-          v-on:change="fileChange($event.target.files)"
+          @input="chosenFile = $refs.formFileSm.files[0]"
           :disabled="chosenFile && playing"
         />
         <div class="form-check" v-show="chosenFile && !playing">
@@ -70,6 +71,12 @@
               v-model="screen"
             />
             {{ $t("screen") }}
+          </label>
+          <label for="nthFrame" v-show="screen">
+            <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
+              <option v-for="n in nthFrames" :value="n">{{ n }}</option>
+            </select>
+            {{ $t("nthFrame") }}
           </label>
         </div>
 
@@ -140,12 +147,9 @@
       function processPixels(pixelsPtr) {
         let pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
 
-        pixels = new Uint32Array(instance.exports.memory.buffer, pixelsAddress, pixelsCount);
-        if (chunkNumber % 4 == 0) {
-          var imageData = ctx.createImageData(maxWidth, maxHeight);
-          imageData.data.set(pixels);
-          ctx.putImageData(imageData, 0, 0);
-        }
+        var imageData = ctx.createImageData(maxWidth, maxHeight);
+        imageData.data.set(new Uint32Array(instance.exports.memory.buffer, pixelsAddress, pixelsCount));
+        ctx.putImageData(imageData, 0, 0);
       }
 
       const { createApp, ref } = Vue;
@@ -158,6 +162,7 @@
         messages: {
           en: {
             screen: "Screen",
+            nthFrame: "Show every nth frame",
             play: "Play",
             stop: "Stop",
             loading: "Loading tune, please wait...",
@@ -165,6 +170,7 @@
           },
           de: {
             screen: "Bildschirm",
+            nthFrame: "Zeige jedes Nte Bild",
             play: "Spiele",
             stop: "Stop",
             loading: "Lade den tune, bitte warten...",
@@ -181,6 +187,8 @@
             chosenFile: undefined,
             playing: false,
             screen: false,
+            nthFrame: 50,
+            nthFrames: [1, 2, 25, 50, 60],
           };
         },
         computed: {},
@@ -188,11 +196,8 @@
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
           },
-          fileChange(fileList) {
-            this.chosenFile = fileList[0];
-            app.msg = "";
-          },
           startTune() {
+            ctx.clearRect(0, 0, maxWidth, maxHeight);
             TeaVM.wasm
               .load("/static/wasm/jsidplay2.wasm", {
                 installImports(o, controller) {
@@ -212,7 +217,7 @@
                   let sidContentsPtr = allocateTeaVMbyteArray(new Uint8Array(this.result));
                   let tuneNamePtr = allocateTeaVMstring(app.chosenFile.name);
 
-                  window.instance.exports.open(sidContentsPtr, tuneNamePtr, app.screen);
+                  window.instance.exports.open(sidContentsPtr, tuneNamePtr, app.screen ? app.nthFrame : 0);
 
                   app.playing = true;
                   app.playWasm();
@@ -220,7 +225,6 @@
                 };
                 reader.readAsArrayBuffer(app.chosenFile);
                 app.msg = app.$t("loading");
-                ctx.clearRect(0, 0, maxWidth, maxHeight);
               })
               .catch((error) => {
                 console.log(error);

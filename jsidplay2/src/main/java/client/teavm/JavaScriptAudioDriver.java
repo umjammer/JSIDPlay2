@@ -22,9 +22,13 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 
 	protected ByteBuffer sampleBuffer;
 
-	private float[] resultL;
-	private float[] resultR;
+	private float[] resultL, resultR;
 	private int[] pixels;
+	private int n, nthFrame;
+
+	public JavaScriptAudioDriver(int nthFrame) {
+		this.nthFrame = nthFrame;
+	}
 
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
@@ -42,6 +46,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	public void write() throws InterruptedException {
 		int frameCount = sampleBuffer.position() >> 2;
 		((Buffer) sampleBuffer).flip();
+		// SHORT to FLOAT samples
 		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
 		for (int i = 0; i < frameCount; i++) {
 			resultL[i] = shortBuffer.get() / 32768.0f;
@@ -53,15 +58,19 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 
 	@Override
 	public void accept(VIC vic) {
-		int[] array = vic.getPixels().array();
-		for (int i = 0; i < array.length; i++) {
-			int argb = array[i];
-			pixels[i << 2] = (argb >> 16) & 0xff;
-			pixels[(i << 2) + 1] = (argb >> 8) & 0xff;
-			pixels[(i << 2) + 2] = argb & 0xff;
-			pixels[(i << 2) + 3] = (argb >> 24) & 0xff;
+		if (++n == nthFrame) {
+			n = 0;
+			// ARGB to GBRA
+			int[] array = vic.getPixels().array();
+			for (int i = 0; i < array.length; i++) {
+				int argb = array[i];
+				pixels[i << 2] = (argb >> 16) & 0xff;
+				pixels[(i << 2) + 1] = (argb >> 8) & 0xff;
+				pixels[(i << 2) + 2] = argb & 0xff;
+				pixels[(i << 2) + 3] = (argb >> 24) & 0xff;
+			}
+			processPixels(pixels);
 		}
-		processPixels(pixels);
 	}
 
 	@Override
