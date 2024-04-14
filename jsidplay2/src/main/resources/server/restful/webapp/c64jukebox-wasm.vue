@@ -147,7 +147,7 @@
       function processPixels(pixelsPtr) {
         pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
       }
-      
+
       function showPicture() {
         if (pixelsAddress) {
           var imageData = ctx.createImageData(maxWidth, maxHeight);
@@ -195,8 +195,7 @@
             nthFrames: [10, 25, 30, 50, 60],
           };
         },
-        computed: {
-        },
+        computed: {},
         methods: {
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
@@ -260,7 +259,8 @@
             if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
           showFrame: function () {
-            showPicture(); if (app.playing) setTimeout(() => app.showFrame(), 1000 / 50.0 * app.nthFrame);
+            showPicture();
+            if (app.playing) setTimeout(() => app.showFrame(), (1000 / 50.0) * app.nthFrame);
           },
         },
         mounted: function () {
