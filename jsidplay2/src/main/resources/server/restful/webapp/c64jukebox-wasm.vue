@@ -92,10 +92,11 @@
     </div>
     <script>
       var audioContext;
-      var chunkNumber = 6;
+      var chunkNumber;
       var canvas;
       var ctx;
       var pixels;
+      var pixelsAddress;
       const maxWidth = 384;
       const maxHeight = 312;
       const pixelsCount = (maxWidth * maxHeight) << 2;
@@ -145,11 +146,15 @@
       }
 
       function processPixels(pixelsPtr) {
-        let pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
-
-        var imageData = ctx.createImageData(maxWidth, maxHeight);
-        imageData.data.set(new Uint32Array(instance.exports.memory.buffer, pixelsAddress, pixelsCount));
-        ctx.putImageData(imageData, 0, 0);
+        pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
+      }
+      
+      function showPicture() {
+        if (pixelsAddress) {
+          var imageData = ctx.createImageData(maxWidth, maxHeight);
+          imageData.data.set(new Uint32Array(instance.exports.memory.buffer, pixelsAddress, pixelsCount));
+          ctx.putImageData(imageData, 0, 0);
+        }
       }
 
       const { createApp, ref } = Vue;
@@ -187,17 +192,22 @@
             chosenFile: undefined,
             playing: false,
             screen: false,
-            nthFrame: 50,
-            nthFrames: [25, 30, 50, 60],
+            nthFrame: 25,
+            nthFrames: [10, 25, 30, 50, 60],
           };
         },
-        computed: {},
+        computed: {
+          refreshRateMs: {
+            get: function () {
+              return 1000 / 50 * app.nthFrame;
+            },
+          }
+        },
         methods: {
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
           },
           startTune() {
-            ctx.clearRect(0, 0, maxWidth, maxHeight);
             TeaVM.wasm
               .load("/static/wasm/jsidplay2.wasm", {
                 installImports(o, controller) {
@@ -231,9 +241,9 @@
               });
           },
           stopTune() {
+            ctx.clearRect(0, 0, maxWidth, maxHeight);
             window.instance.exports.close();
             setTimeout(() => {
-              chunkNumber = 6;
               app.msg = "";
               app.playing = false;
               audioContext.close();
@@ -242,10 +252,19 @@
           playWasm: function () {
             var AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
+
+            chunkNumber = 0;
+            pixelsAddress = undefined;
+            ctx.clearRect(0, 0, maxWidth, maxHeight);
+
             setTimeout(() => app.clock());
+            setTimeout(() => app.showFrame());
           },
           clock: function () {
             if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
+          },
+          showFrame: function () {
+            showPicture(); if (app.playing) setTimeout(() => app.showFrame(), app.refreshRateMs);
           },
         },
         mounted: function () {
