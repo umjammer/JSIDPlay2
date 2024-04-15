@@ -146,6 +146,7 @@
 
       function processPixels(pixelsPtr) {
         var pixelsAddress = instance.exports.teavm_byteArrayData(pixelsPtr);
+
         imageData = ctx.createImageData(maxWidth, maxHeight);
         imageData.data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, screenByteLength));
       }
@@ -222,9 +223,7 @@
 
                   window.instance.exports.open(sidContentsPtr, tuneNamePtr, app.screen ? app.nthFrame : 0);
 
-                  app.playing = true;
-                  app.playWasm();
-                  app.msg = app.$t("playing");
+                  app.play();
                 };
                 reader.readAsArrayBuffer(app.chosenFile);
                 app.msg = app.$t("loading");
@@ -242,13 +241,15 @@
               audioContext.close();
             });
           },
-          playWasm: function () {
+          play: function () {
             var AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
 
-            chunkNumber = 6;
+            chunkNumber = 6; // small delay for warm-up phase
             imageData = undefined;
             ctx.clearRect(0, 0, maxWidth, maxHeight);
+            app.playing = true;
+            app.msg = app.$t("playing");
 
             setTimeout(() => app.clock());
             if (app.screen) {
