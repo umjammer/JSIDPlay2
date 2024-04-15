@@ -23,7 +23,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	protected ByteBuffer sampleBuffer;
 
 	private float[] resultL, resultR;
-	private int[] pixels;
+	private byte[] pixels;
 	private int n, nthFrame;
 
 	public JavaScriptAudioDriver(int nthFrame) {
@@ -39,7 +39,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 
 		resultL = new float[cfg.getChunkFrames()];
 		resultR = new float[cfg.getChunkFrames()];
-		pixels = new int[(VIC.MAX_WIDTH * VIC.MAX_HEIGHT) << 2];
+		pixels = new byte[(VIC.MAX_WIDTH * VIC.MAX_HEIGHT) << 2];
 	}
 
 	@Override
@@ -60,14 +60,14 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	public void accept(VIC vic) {
 		if (++n == nthFrame) {
 			n = 0;
-			// ARGB to GBRA
+			// ARGB to RGBA
 			int[] array = vic.getPixels().array();
 			for (int i = 0; i < array.length; i++) {
 				int argb = array[i];
-				pixels[i << 2] = (argb >> 16) & 0xff;
-				pixels[(i << 2) + 1] = (argb >> 8) & 0xff;
-				pixels[(i << 2) + 2] = argb & 0xff;
-				pixels[(i << 2) + 3] = (argb >> 24) & 0xff;
+				pixels[i << 2] = (byte) ((argb >> 16) & 0xff);
+				pixels[(i << 2) + 1] = (byte) ((argb >> 8) & 0xff);
+				pixels[(i << 2) + 2] = (byte) (argb & 0xff);
+				pixels[(i << 2) + 3] = (byte) ((argb >> 24) & 0xff);
 			}
 			processPixels(pixels);
 		}
@@ -92,6 +92,6 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	private static native void processSamples(float[] resultL, float[] resultR, int length);
 
 	@Import(module = "env", name = "processPixels")
-	private static native void processPixels(int[] pixels);
+	private static native void processPixels(byte[] pixels);
 
 }

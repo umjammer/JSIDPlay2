@@ -95,10 +95,10 @@
       var chunkNumber;
       var canvas;
       var ctx;
-      var pixelsAddress;
+      var imageData;
       const maxWidth = 384;
       const maxHeight = 312;
-      const pixelsCount = (maxWidth * maxHeight) << 2;
+      const screenByteLength = (maxWidth * maxHeight) << 2;
 
       function allocateTeaVMbyteArray(array) {
         let byteArrayPtr = window.instance.exports.teavm_allocateByteArray(array.length);
@@ -145,13 +145,13 @@
       }
 
       function processPixels(pixelsPtr) {
-        pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
+        var pixelsAddress = instance.exports.teavm_byteArrayData(pixelsPtr);
+        imageData = ctx.createImageData(maxWidth, maxHeight);
+        imageData.data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, screenByteLength));
       }
 
       function showPicture() {
-        if (pixelsAddress) {
-          var imageData = ctx.createImageData(maxWidth, maxHeight);
-          imageData.data.set(new Uint32Array(instance.exports.memory.buffer, pixelsAddress, pixelsCount));
+        if (imageData) {
           ctx.putImageData(imageData, 0, 0);
         }
       }
@@ -247,7 +247,7 @@
             audioContext = new AudioContext();
 
             chunkNumber = 6;
-            pixelsAddress = undefined;
+            imageData = undefined;
             ctx.clearRect(0, 0, maxWidth, maxHeight);
 
             setTimeout(() => app.clock());
