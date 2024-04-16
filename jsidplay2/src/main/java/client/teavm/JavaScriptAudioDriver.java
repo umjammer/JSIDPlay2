@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -22,8 +23,8 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 
 	protected ByteBuffer sampleBuffer;
 
-	private float[] resultL, resultR;
-	private byte[] pixels;
+	private FloatBuffer resultL, resultR;
+	private ByteBuffer pixels;
 	private int n, nthFrame;
 
 	public JavaScriptAudioDriver(int nthFrame) {
@@ -37,9 +38,9 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
 
-		resultL = new float[cfg.getChunkFrames()];
-		resultR = new float[cfg.getChunkFrames()];
-		pixels = new byte[(VIC.MAX_WIDTH * VIC.MAX_HEIGHT) << 2];
+		resultL = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
+		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
+		pixels = ByteBuffer.wrap(new byte[(VIC.MAX_WIDTH * VIC.MAX_HEIGHT) << 2]);
 	}
 
 	@Override
@@ -49,11 +50,13 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 		// SHORT to FLOAT samples
 		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
 		for (int i = 0; i < frameCount; i++) {
-			resultL[i] = shortBuffer.get() / 32768.0f;
-			resultR[i] = shortBuffer.get() / 32768.0f;
+			resultL.put(shortBuffer.get() / 32768.0f);
+			resultR.put(shortBuffer.get() / 32768.0f);
 		}
 		((Buffer) sampleBuffer).position(frameCount << 2);
-		processSamples(resultL, resultR, frameCount);
+		processSamples(resultL.array(), resultR.array(), frameCount);
+		((Buffer) resultL).clear();
+		((Buffer) resultR).clear();
 	}
 
 	@Override
@@ -61,15 +64,14 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 		if (++n == nthFrame) {
 			n = 0;
 			// ARGB to RGBA
-			int[] array = vic.getPixels().array();
-			for (int i = 0; i < array.length; i++) {
-				int argb = array[i];
-				pixels[i << 2] = (byte) ((argb >> 16) & 0xff);
-				pixels[(i << 2) + 1] = (byte) ((argb >> 8) & 0xff);
-				pixels[(i << 2) + 2] = (byte) (argb & 0xff);
-				pixels[(i << 2) + 3] = (byte) ((argb >> 24) & 0xff);
+			for (int argb : vic.getPixels().array()) {
+				pixels.put((byte) ((argb >> 16) & 0xff));
+				pixels.put((byte) ((argb >> 8) & 0xff));
+				pixels.put((byte) (argb & 0xff));
+				pixels.put((byte) ((argb >> 24) & 0xff));
 			}
-			processPixels(pixels);
+			processPixels(pixels.array());
+			((Buffer) pixels).clear();
 		}
 	}
 
