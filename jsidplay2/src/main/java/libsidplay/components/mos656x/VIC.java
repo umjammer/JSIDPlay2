@@ -6,8 +6,6 @@
  */
 package libsidplay.components.mos656x;
 
-import java.nio.Buffer;
-import java.nio.IntBuffer;
 import java.util.Arrays;
 
 import libsidplay.common.Event;
@@ -187,11 +185,6 @@ public abstract class VIC extends Bank {
 	private byte irqFlags;
 	/** masks for the IRQ flags */
 	private byte irqMask;
-	/**
-	 * Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha, red, green,
-	 * blue
-	 */
-	protected final IntBuffer pixels = IntBuffer.allocate(MAX_WIDTH * MAX_HEIGHT);
 
 	/** Current visible line */
 	protected int lineCycle;
@@ -575,7 +568,7 @@ public abstract class VIC extends Bank {
 		}
 		if (palEmulation != PALEmulation.NONE) {
 			/* Pixels arrive in 0x12345678 order. */
-			palEmulation.drawPixels(graphicsDataBuffer, pixels::put);
+			palEmulation.drawPixels(graphicsDataBuffer);
 		}
 	}
 
@@ -1057,9 +1050,7 @@ public abstract class VIC extends Bank {
 			s.consuming = false;
 		}
 
-		// clear the screen
-		((Buffer) pixels).clear();
-		((Buffer) pixels.put(new int[pixels.capacity()])).clear();
+		palEmulation.reset();
 		graphicsRendering = false;
 
 		// reset all registers
@@ -1144,14 +1135,6 @@ public abstract class VIC extends Bank {
 
 	public byte[] getRegisters() {
 		return registers;
-	}
-
-	/**
-	 * @return Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha,
-	 *         red, green, blue
-	 */
-	public IntBuffer getPixels() {
-		return pixels;
 	}
 
 }

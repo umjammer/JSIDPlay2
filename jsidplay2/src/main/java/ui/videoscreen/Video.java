@@ -542,7 +542,7 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 	public void accept(VIC vic) {
 		WritableImage image = new WritableImage(vic.getBorderWidth(), vic.getBorderHeight());
 		image.getPixelWriter().setPixels(0, 0, vic.getBorderWidth(), vic.getBorderHeight(),
-				PixelFormat.getIntArgbInstance(), vic.getPixels().array(), 0, vic.getBorderWidth());
+				PixelFormat.getIntArgbInstance(), vic.getPalEmulation().getPixels().array(), 0, vic.getBorderWidth());
 		imageQueue.push(image);
 	}
 

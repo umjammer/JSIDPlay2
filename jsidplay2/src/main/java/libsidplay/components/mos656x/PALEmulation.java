@@ -1,6 +1,7 @@
 package libsidplay.components.mos656x;
 
-import java.util.function.Consumer;
+import java.nio.Buffer;
+import java.nio.IntBuffer;
 
 import libsidplay.common.VICChipModel;
 
@@ -41,6 +42,12 @@ public class PALEmulation implements IPALEmulation {
 
 	/** System's palette */
 	private final Palette palette = new Palette();
+
+	/**
+	 * Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha, red, green,
+	 * blue
+	 */
+	protected final IntBuffer pixels = IntBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT);
 
 	public PALEmulation(VICChipModel model) {
 		this.model = model;
@@ -90,6 +97,7 @@ public class PALEmulation implements IPALEmulation {
 	@Override
 	public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
 		if (isFrameStart) {
+			((Buffer) pixels).clear();
 			/* current row odd? -> start with even, init, swap */
 			linePaletteCurrent = (rasterY & 1) != 0 ? linePaletteEven : linePaletteOdd;
 			combinedLinesCurrent = (rasterY & 1) != 0 ? combinedLinesEven : combinedLinesOdd;
@@ -111,7 +119,7 @@ public class PALEmulation implements IPALEmulation {
 	 * @param pixelConsumer      consumer of the corresponding RGBA pixels
 	 */
 	@Override
-	public void drawPixels(int graphicsDataBuffer, Consumer<Integer> pixelConsumer) {
+	public void drawPixels(int graphicsDataBuffer) {
 		/* Pixels arrive in 0x12345678 order. */
 		for (int j = 0; j < 2; j++) {
 			oldGraphicsData |= graphicsDataBuffer >>> 16;
@@ -126,7 +134,7 @@ public class PALEmulation implements IPALEmulation {
 				} else {
 					rgbaColor = ALPHA | vicPaletteNoPal[vicColor & 0x0f];
 				}
-				pixelConsumer.accept(rgbaColor);
+				pixels.put(rgbaColor);
 				previousLineDecodedColor[previousLineIndex++] = lineColor;
 			}
 			graphicsDataBuffer <<= 16;
@@ -134,6 +142,20 @@ public class PALEmulation implements IPALEmulation {
 
 	}
 
+	/**
+	 * @return Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha,
+	 *         red, green, blue
+	 */
+	public IntBuffer getPixels() {
+		return pixels;
+	}
+
+	public void reset() {
+		// clear the screen
+		((Buffer) pixels).clear();
+		((Buffer) pixels.put(new int[pixels.capacity()])).clear();
+	}
+	
 	public static final IPALEmulation NONE = new IPALEmulation() {
 		@Override
 		public void updatePalette() {
@@ -190,11 +212,20 @@ public class PALEmulation implements IPALEmulation {
 		}
 
 		@Override
-		public void drawPixels(int graphicsDataBuffer, Consumer<Integer> pixelConsumer) {
+		public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
+		}
+		
+		@Override
+		public void drawPixels(int graphicsDataBuffer) {
 		}
 
 		@Override
-		public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
+		public IntBuffer getPixels() {
+			return null;
+		}
+		
+		@Override
+		public void reset() {
 		}
 	};
 

@@ -1,35 +1,44 @@
 package client.teavm;
 
-import java.util.function.Consumer;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
+import libsidplay.components.mos656x.VIC;
 
 public class JavaScriptPalEmulation implements IPALEmulation {
-	/** Alpha channel of ARGB pixel data. */
-	private static final int ALPHA = 0xff000000;
 
-	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0x000000, 0xFFFFFF, 0x68372B, 0x70A4B2, 0x6F3D86,
-			0x588D43, 0x352879, 0xB8C76F, 0x6F4F25, 0x433900, 0x9A6759, 0x444444, 0x6C6C6C, 0x9AD284, 0x6C5EB5,
-			0x959595, };
+	/** RGBA pixel data. */
+	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0x000000FF, 0xFFFFFFFF, 0x68372BFF, 0x70A4B2FF,
+			0x6F3D86FF, 0x588D43FF, 0x352879FF, 0xB8C76FFF, 0x6F4F25FF, 0x433900FF, 0x9A6759FF, 0x444444FF, 0x6C6C6CFF,
+			0x9AD284FF, 0x6C5EB5FF, 0x959595FF, };
 
 	/** Previous sequencer data */
 	private int oldGraphicsData;
 
+	private final ByteBuffer pixelsByteBuffer = ByteBuffer.allocate((VIC.MAX_WIDTH * VIC.MAX_HEIGHT) << 2);
+
+	private final IntBuffer pixelsIntBuffer = pixelsByteBuffer.asIntBuffer();
+
 	@Override
 	public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
 		oldGraphicsData = 0;
+		if (isFrameStart) {
+			((Buffer) pixelsIntBuffer).clear();
+		}
 	}
 
 	@Override
-	public void drawPixels(int graphicsDataBuffer, Consumer<Integer> pixelConsumer) {
+	public void drawPixels(int graphicsDataBuffer) {
 		/* Pixels arrive in 0x12345678 order. */
 		for (int j = 0; j < 2; j++) {
 			oldGraphicsData |= graphicsDataBuffer >>> 16;
 			for (int i = 0; i < 4; i++) {
 				oldGraphicsData <<= 4;
 				final int vicColor = oldGraphicsData >>> 16;
-				pixelConsumer.accept(ALPHA | VIC_PALETTE_NO_PAL[vicColor & 0x0f]);
+				pixelsIntBuffer.put(VIC_PALETTE_NO_PAL[vicColor & 0x0f]);
 			}
 			graphicsDataBuffer <<= 16;
 		}
@@ -89,4 +98,22 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 		};
 	}
 
+	@Override
+	public IntBuffer getPixels() {
+		return pixelsIntBuffer;
+	}
+
+	public byte[] getPixelsArray() {
+		return pixelsByteBuffer.array();
+	}
+
+	@Override
+	public void reset() {
+		// clear the screen
+		((Buffer) pixelsIntBuffer).clear();
+		for (int i = 0; i < pixelsIntBuffer.capacity(); i++) {
+			pixelsIntBuffer.put(0x000000FF);
+		}
+		((Buffer) pixelsIntBuffer).clear();
+	}
 }

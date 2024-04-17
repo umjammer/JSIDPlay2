@@ -4745,6 +4745,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
           installImports(o, controller) {
             o.env = {
               processSamples: () => {},
+              processPixels: () => {},
               getBufferSize: () => {},
               getAudioBufferSize: () => {},
             };

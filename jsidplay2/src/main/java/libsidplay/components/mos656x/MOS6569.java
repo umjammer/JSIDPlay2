@@ -6,8 +6,6 @@
  */
 package libsidplay.components.mos656x;
 
-import java.nio.Buffer;
-
 import libsidplay.common.Event;
 import libsidplay.common.Event.Phase;
 import libsidplay.common.EventScheduler;
@@ -274,7 +272,6 @@ public final class MOS6569 extends VIC {
 			}
 			if (rasterY == FIRST_DISPLAY_LINE) {
 				graphicsRendering = true;
-				((Buffer) pixels).clear();
 			}
 
 			if (rasterY == LAST_DISPLAY_LINE + 1) {

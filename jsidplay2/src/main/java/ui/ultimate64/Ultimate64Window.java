@@ -13,7 +13,6 @@ import java.net.DatagramSocket;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -214,8 +213,7 @@ public class Ultimate64Window extends C64Window implements Ultimate64 {
 			assert encodingType == 0; // or later 1 for RLE?
 
 			if (frameStart) {
-				IntBuffer pixels = IntBuffer.allocate(pixelsPerLine << 2 /* * linesPerPacket */);
-
+				palEmulation.reset();
 				int graphicsDataBuffer = 0;
 				int pixelDataOffset = 0;
 				for (int y = 0; y < linesPerPacket; y++) {
@@ -226,13 +224,13 @@ public class Ultimate64Window extends C64Window implements Ultimate64 {
 						graphicsDataBuffer <<= 4;
 						graphicsDataBuffer |= pixelData[pixelDataOffset + x >> 1] >> ((x & 1) << 2) & 0xf;
 						if ((x + 1 & 0x7) == 0) {
-							palEmulation.drawPixels(graphicsDataBuffer, color -> pixels.put(color));
+							palEmulation.drawPixels(graphicsDataBuffer);
 						}
 					}
 					pixelDataOffset += pixelsPerLine;
 				}
 				image.getPixelWriter().setPixels(0, lineNo, pixelsPerLine, linesPerPacket,
-						PixelFormat.getIntArgbInstance(), pixels.array(), 0, pixelsPerLine);
+						PixelFormat.getIntArgbInstance(), palEmulation.getPixels().array(), 0, pixelsPerLine);
 				if (isLastPacketOfFrame) {
 					imageQueue.push(copyImage());
 				}

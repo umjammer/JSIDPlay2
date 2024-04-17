@@ -1,6 +1,6 @@
 package libsidplay.components.mos656x;
 
-import java.util.function.Consumer;
+import java.nio.IntBuffer;
 
 public interface IPALEmulation {
 
@@ -19,7 +19,7 @@ public interface IPALEmulation {
 	 *                           0x0-0xF)
 	 * @param pixelConsumer      consumer of the corresponding RGBA pixels
 	 */
-	void drawPixels(int graphicsDataBuffer, Consumer<Integer> pixelConsumer);
+	void drawPixels(int graphicsDataBuffer);
 
 	/**
 	 * Updates the palette using the current palette settings.
@@ -36,5 +36,13 @@ public interface IPALEmulation {
 	 * @return The currently used palette.
 	 */
 	IPalette getPalette();
+
+	void reset();
+	
+	/**
+	 * @return Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha,
+	 *         red, green, blue
+	 */
+	IntBuffer getPixels();
 
 }

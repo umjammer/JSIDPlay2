@@ -24,7 +24,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	protected ByteBuffer sampleBuffer;
 
 	private FloatBuffer resultL, resultR;
-	private ByteBuffer pixels;
+	private byte[] pixels;
 	private int n, nthFrame;
 
 	public JavaScriptAudioDriver(int nthFrame) {
@@ -40,7 +40,6 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 
 		resultL = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
-		pixels = ByteBuffer.wrap(new byte[(VIC.MAX_WIDTH * VIC.MAX_HEIGHT) << 2]);
 	}
 
 	@Override
@@ -63,15 +62,10 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	public void accept(VIC vic) {
 		if (++n == nthFrame) {
 			n = 0;
-			// ARGB to RGBA
-			for (int argb : vic.getPixels().array()) {
-				pixels.put((byte) ((argb >> 16) & 0xff));
-				pixels.put((byte) ((argb >> 8) & 0xff));
-				pixels.put((byte) (argb & 0xff));
-				pixels.put((byte) ((argb >> 24) & 0xff));
+			if (pixels == null) {
+				pixels = ((JavaScriptPalEmulation) vic.getPalEmulation()).getPixelsArray();
 			}
-			processPixels(pixels.array());
-			((Buffer) pixels).clear();
+			processPixels(pixels);
 		}
 	}
 
