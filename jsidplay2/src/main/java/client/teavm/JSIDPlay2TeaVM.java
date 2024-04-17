@@ -83,6 +83,7 @@ public class JSIDPlay2TeaVM {
 		LOG.finest("Tune byte length: " + sidContents.length);
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
+		LOG.finest("nthFrame: " + nthFrame);
 
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();

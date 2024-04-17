@@ -1050,7 +1050,9 @@ public abstract class VIC extends Bank {
 			s.consuming = false;
 		}
 
-		palEmulation.reset();
+		if (palEmulation != PALEmulation.NONE) {
+			palEmulation.reset();
+		}
 		graphicsRendering = false;
 
 		// reset all registers

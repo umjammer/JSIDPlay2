@@ -6,6 +6,9 @@ import java.nio.IntBuffer;
 import libsidplay.common.VICChipModel;
 
 public class PALEmulation implements IPALEmulation {
+	
+	public static final IPALEmulation NONE = null;
+
 	/** Alpha channel of ARGB pixel data. */
 	private static final int ALPHA = 0xff000000;
 
@@ -156,77 +159,4 @@ public class PALEmulation implements IPALEmulation {
 		((Buffer) pixels.put(new int[pixels.capacity()])).clear();
 	}
 	
-	public static final IPALEmulation NONE = new IPALEmulation() {
-		@Override
-		public void updatePalette() {
-		}
-
-		@Override
-		public void setVicPaletteNoPal(int[] vicPaletteNoPal) {
-		}
-
-		@Override
-		public void setPalEmulationEnable(boolean palEmulationEnable) {
-		}
-
-		@Override
-		public IPalette getPalette() {
-			return new IPalette() {
-
-				@Override
-				public void setTint(float tint) {
-				}
-
-				@Override
-				public void setSaturation(float saturation) {
-				}
-
-				@Override
-				public void setPhaseShift(float phaseShift) {
-				}
-
-				@Override
-				public void setOffset(float offset) {
-				}
-
-				@Override
-				public void setLuminanceC(float luminanceC) {
-				}
-
-				@Override
-				public void setGamma(float gamma) {
-				}
-
-				@Override
-				public void setDotCreep(float dotCreep) {
-				}
-
-				@Override
-				public void setContrast(float contrast) {
-				}
-
-				@Override
-				public void setBrightness(float brightness) {
-				}
-			};
-		}
-
-		@Override
-		public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
-		}
-		
-		@Override
-		public void drawPixels(int graphicsDataBuffer) {
-		}
-
-		@Override
-		public IntBuffer getPixels() {
-			return null;
-		}
-		
-		@Override
-		public void reset() {
-		}
-	};
-
 }

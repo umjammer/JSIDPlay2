@@ -403,7 +403,9 @@ public final class MOS6569 extends VIC {
 	@Override
 	public void reset() {
 		super.reset();
-		palEmulation.updatePalette();
+		if (palEmulation != PALEmulation.NONE) {
+			palEmulation.updatePalette();
+		}
 		lineCycle = 9; // preincremented at event
 		context.schedule(event, 0, Phase.PHI1);
 	}
