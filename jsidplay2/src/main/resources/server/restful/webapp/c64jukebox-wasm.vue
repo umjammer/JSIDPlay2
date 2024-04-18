@@ -126,7 +126,7 @@
       }
 
       function getAudioBufferSize() {
-        return 16384;
+        return audioContext.sampleRate;
       }
 
       function getSamplingRate() {
