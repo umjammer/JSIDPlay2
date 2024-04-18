@@ -54,32 +54,6 @@
           </select>
         </div>
 
-        <div class="form-check" v-show="chosenFile && !playing">
-          <label class="form-check-label" for="screen">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="screen"
-              style="float: right; margin-left: 8px"
-              v-model="screen"
-            />
-            {{ $t("screen") }}
-          </label>
-          <label for="defaultClockSpeed" v-show="screen">
-            <select class="form-select form-select-sm right" id="defaultClockSpeed" v-model="defaultClockSpeed">
-              <option value="50">PAL</option>
-              <option value="60">NTSC</option>
-            </select>
-            <span>{{ $t("defaultClockSpeed") }}</span>
-          </label>
-          <label for="nthFrame" v-show="screen">
-            <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
-              <option v-for="n in nthFrames" :value="n">{{ n }}</option>
-            </select>
-            {{ $t("nthFrame") }}
-          </label>
-        </div>
-
         <input
           ref="formFileSm"
           id="file"
@@ -90,13 +64,118 @@
 
         <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">{{ $t("play") }}</button>
         <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
+
+        <div class="form-check" v-show="chosenFile && !playing">
+          <div class="settings-box">
+            <span class="setting">
+              <label class="form-check-label" for="screen">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="screen"
+                  style="float: right; margin-left: 8px"
+                  v-model="screen"
+                />
+                {{ $t("screen") }}
+              </label>
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <p>{{ msg }}</p>
+        </div>
+        <div v-show="screen">
+          <canvas id="myCanvas" width="384" height="312" />
+        </div>
+
+        <div class="form-check" v-show="chosenFile && !playing">
+          <div class="settings-box">
+            <span class="setting">
+              <label for="nthFrame" v-show="screen">
+                <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
+                  <option v-for="n in nthFrames" :value="n">{{ n }}</option>
+                </select>
+                {{ $t("nthFrame") }}
+              </label>
+            </span>
+          </div>
+          <div class="settings-box">
+            <span class="setting">
+              <label for="defaultClockSpeed">
+                <select class="form-select form-select-sm right" id="defaultClockSpeed" v-model="defaultClockSpeed">
+                  <option value="50">PAL</option>
+                  <option value="60">NTSC</option>
+                </select>
+                <span>{{ $t("defaultClockSpeed") }}</span>
+              </label>
+            </span>
+          </div>
+
+          <div class="settings-box">
+            <span class="setting">
+              <label for="defaultSidModel">
+                <select class="form-select form-select-sm right" id="defaultSidModel" v-model="defaultSidModel">
+                  <option value="false">MOS6581</option>
+                  <option value="true">MOS8580</option>
+                </select>
+                <span>{{ $t("defaultSidModel") }}</span>
+              </label>
+            </span>
+          </div>
+          <div class="settings-box">
+            <span class="setting">
+              <label for="sampling">
+                <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
+                  <option value="false">DECIMATE</option>
+                  <option value="true">RESAMPLE</option>
+                </select>
+                <span>{{ $t("sampling") }}</span>
+              </label>
+            </span>
+          </div>
+
+          <div class="settings-box">
+            <span class="setting">
+              <div class="form-check">
+                <label class="form-check-label" for="reverbBypass">
+                  {{ $t("reverbBypass") }}
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="reverbBypass"
+                    style="float: right; margin-left: 8px"
+                    v-model="reverbBypass"
+                  />
+                </label>
+              </div>
+            </span>
+          </div>
+
+          <div class="settings-box">
+            <span class="setting">
+              <label for="bufferSize"
+                >{{ $t("bufferSize") }}
+                <input class="right" type="number" id="bufferSize" class="form-control" v-model.number="bufferSize"
+              /></label>
+            </span>
+          </div>
+          <div class="settings-box">
+            <span class="setting">
+              <label for="audioBufferSize">
+                <select class="form-select form-select-sm right" id="audioBufferSize" v-model="audioBufferSize">
+                  <option value="1024">1024</option>
+                  <option value="2048">2048</option>
+                  <option value="4096">4096</option>
+                  <option value="8192">8192</option>
+                  <option value="16384">16384</option>
+                </select>
+                <span>{{ $t("audioBufferSize") }}</span>
+              </label>
+            </span>
+          </div>
+        </div>
       </form>
-      <div>
-        <p>{{ msg }}</p>
-      </div>
-      <div v-show="screen">
-        <canvas id="myCanvas" width="384" height="312" />
-      </div>
     </div>
     <script>
       var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -158,7 +237,12 @@
         messages: {
           en: {
             screen: "Screen",
-            defaultClockSpeed: "PAL/NTSC",
+            defaultClockSpeed: "Default clock speed",
+            defaultSidModel: "Default SID model",
+            sampling: "Sampling Method",
+            reverbBypass: "Bypass Schroeder reverb",
+            bufferSize: "Emulation buffer size",
+            audioBufferSize: "Audio buffer size",
             nthFrame: "Show every nth frame",
             play: "Play",
             stop: "Stop",
@@ -167,7 +251,12 @@
           },
           de: {
             screen: "Bildschirm",
-            defaultClockSpeed: "PAL/NTSC",
+            defaultClockSpeed: "Default Clock Speed",
+            defaultSidModel: "Default SID Model",
+            sampling: "Sampling Methode",
+            reverbBypass: "Schroeder Reverb überbrücken",
+            bufferSize: "Emulationspuffer Größe",
+            audioBufferSize: "Audio Puffer Größe",
             nthFrame: "Zeige jedes Nte Bild",
             play: "Spiele",
             stop: "Stop",
@@ -188,6 +277,11 @@
             defaultClockSpeed: "50",
             nthFrame: 10,
             nthFrames: [10, 25, 30, 50, 60],
+            defaultSidModel: false,
+            sampling: false,
+            reverbBypass: true,
+            bufferSize: 16 * 65536,
+            audioBufferSize: 16384,
           };
         },
         computed: {},
@@ -201,15 +295,15 @@
               .load("/static/wasm/jsidplay2.wasm", {
                 installImports(o, controller) {
                   o.audiosection = {
-                    getBufferSize: () => 16 * 65536,
-                    getAudioBufferSize: () => audioContext.sampleRate,
+                    getBufferSize: () => app.bufferSize,
+                    getAudioBufferSize: () => app.audioBufferSize,
                     getSamplingRate: () => audioContext.sampleRate,
-                    getSamplingMethodResample: () => false,
-                    getReverbBypass: () => true,
+                    getSamplingMethodResample: () => app.sampling,
+                    getReverbBypass: () => app.reverbBypass,
                   };
                   o.emulationsection = {
                     getDefaultClockSpeed: () => app.defaultClockSpeed,
-                    getDefaultSidModel8580: () => true,
+                    getDefaultSidModel8580: () => app.defaultSidModel === "true",
                   };
                   o.audiodriver = {
                     processSamples: processSamples,
