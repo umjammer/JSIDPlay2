@@ -66,6 +66,9 @@ public class JSIDPlay2TeaVM {
 	@Import(module = "env", name = "getSamplingRate")
 	public static native int getSamplingRateAsInt();
 
+	@Import(module = "env", name = "getDefaultClockSpeed")
+	public static native int getDefaultClockSpeedAsInt();
+
 	//
 	// Exports to JavaScript
 	//
@@ -83,12 +86,14 @@ public class JSIDPlay2TeaVM {
 		audioSection.setBufferSize(getBufferSize());
 		audioSection.setAudioBufferSize(getAudioBufferSize());
 		audioSection.setSamplingRate(getSamplingRate(getSamplingRateAsInt()));
+		emulationSection.setDefaultClockSpeed(getCPUClock(getDefaultClockSpeedAsInt()));
 
 		LOG.finest("Tune name: " + url);
 		LOG.finest("Tune byte length: " + sidContents.length);
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
 		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
+		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
 		LOG.finest("nthFrame: " + nthFrame);
 
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
@@ -103,9 +108,9 @@ public class JSIDPlay2TeaVM {
 
 		HardwareEnsemble hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom,
 				basicRom, kernalRom, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
+		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation() : PALEmulation.NONE);
-		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		hardwareEnsemble.reset();
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
@@ -225,6 +230,17 @@ public class JSIDPlay2TeaVM {
 			return SamplingRate.HIGH;
 		default:
 			return SamplingRate.LOW;
+		}
+	}
+
+	private static CPUClock getCPUClock(int cpuClockAsInt) {
+		switch (cpuClockAsInt) {
+		case 50:
+			return CPUClock.PAL;
+		case 60:
+			return CPUClock.NTSC;
+		default:
+			return CPUClock.PAL;
 		}
 	}
 

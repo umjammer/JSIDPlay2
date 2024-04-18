@@ -4749,6 +4749,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               getBufferSize: () => {},
               getAudioBufferSize: () => {},
               getSamplingRate: () => {},
+              getDefaultClockSpeed: () => {},
             };
           },
         })

@@ -54,13 +54,6 @@
           </select>
         </div>
 
-        <input
-          ref="formFileSm"
-          id="file"
-          type="file"
-          @input="chosenFile = $refs.formFileSm.files[0]"
-          :disabled="chosenFile && playing"
-        />
         <div class="form-check" v-show="chosenFile && !playing">
           <label class="form-check-label" for="screen">
             <input
@@ -72,6 +65,13 @@
             />
             {{ $t("screen") }}
           </label>
+          <label for="defaultClockSpeed" v-show="screen">
+            <select class="form-select form-select-sm right" id="defaultClockSpeed" v-model="defaultClockSpeed">
+              <option value="50">PAL</option>
+              <option value="60">NTSC</option>
+            </select>
+            <span>{{ $t("defaultClockSpeed") }}</span>
+          </label>
           <label for="nthFrame" v-show="screen">
             <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
               <option v-for="n in nthFrames" :value="n">{{ n }}</option>
@@ -79,6 +79,14 @@
             {{ $t("nthFrame") }}
           </label>
         </div>
+
+        <input
+          ref="formFileSm"
+          id="file"
+          type="file"
+          @input="chosenFile = $refs.formFileSm.files[0]"
+          :disabled="chosenFile && playing"
+        />
 
         <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">{{ $t("play") }}</button>
         <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
@@ -133,14 +141,19 @@
         return audioContext.sampleRate;
       }
 
+      function getDefaultClockSpeed() {
+        return app.defaultClockSpeed;
+      }
+
       function processSamples(leftChannelPtr, rightChannelPtr, length) {
         var leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
         var rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
 
-        var sourceNode = audioContext.createBufferSource();
         var buffer = audioContext.createBuffer(2, length, audioContext.sampleRate);
         buffer.getChannelData(0).set(new Float32Array(instance.exports.memory.buffer, leftChannelAddress, length));
         buffer.getChannelData(1).set(new Float32Array(instance.exports.memory.buffer, rightChannelAddress, length));
+
+        var sourceNode = audioContext.createBufferSource();
         sourceNode.buffer = buffer;
         sourceNode.connect(audioContext.destination);
         sourceNode.start((length / audioContext.sampleRate) * chunkNumber++);
@@ -149,14 +162,7 @@
       function processPixels(pixelsPtr) {
         var pixelsAddress = instance.exports.teavm_byteArrayData(pixelsPtr);
 
-        imageData = ctx.createImageData(maxWidth, maxHeight);
         imageData.data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, screenByteLength));
-      }
-
-      function showPicture() {
-        if (imageData) {
-          ctx.putImageData(imageData, 0, 0);
-        }
       }
 
       const { createApp, ref } = Vue;
@@ -169,6 +175,7 @@
         messages: {
           en: {
             screen: "Screen",
+            defaultClockSpeed: "PAL/NTSC",
             nthFrame: "Show every nth frame",
             play: "Play",
             stop: "Stop",
@@ -177,6 +184,7 @@
           },
           de: {
             screen: "Bildschirm",
+            defaultClockSpeed: "PAL/NTSC",
             nthFrame: "Zeige jedes Nte Bild",
             play: "Spiele",
             stop: "Stop",
@@ -194,11 +202,12 @@
             chosenFile: undefined,
             playing: false,
             screen: false,
-            nthFrame: 25,
+            defaultClockSpeed: "50",
+            nthFrame: 10,
             nthFrames: [10, 25, 30, 50, 60],
           };
         },
-        computed: {},
+        computed: { },
         methods: {
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
@@ -211,6 +220,7 @@
                     getBufferSize: getBufferSize,
                     getAudioBufferSize: getAudioBufferSize,
                     getSamplingRate: getSamplingRate,
+                    getDefaultClockSpeed: getDefaultClockSpeed,
                     processSamples: processSamples,
                     processPixels: processPixels,
                   };
@@ -247,7 +257,6 @@
           },
           play: function () {
             chunkNumber = 6; // small delay for warm-up phase
-            imageData = undefined;
             ctx.clearRect(0, 0, maxWidth, maxHeight);
             app.playing = true;
             app.msg = app.$t("playing");
@@ -261,8 +270,8 @@
             if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
           showFrame: function () {
-            showPicture();
-            if (app.playing) setTimeout(() => app.showFrame(), (1000 / 50.0) * app.nthFrame);
+            if (imageData) ctx.putImageData(imageData, 0, 0);
+            if (app.playing) setTimeout(() => app.showFrame(), 1000 / app.defaultClockSpeed * app.nthFrame);
           },
         },
         mounted: function () {
@@ -271,6 +280,7 @@
           }
           canvas = document.getElementById("myCanvas");
           ctx = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
+          imageData = ctx.createImageData(maxWidth, maxHeight);
         },
         watch: {},
       })
