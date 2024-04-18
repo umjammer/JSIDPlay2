@@ -139,12 +139,8 @@
 
         var sourceNode = audioContext.createBufferSource();
         var buffer = audioContext.createBuffer(2, length, audioContext.sampleRate);
-        buffer
-          .getChannelData(0)
-          .set(new Float32Array(instance.exports.memory.buffer, leftChannelAddress, length));
-        buffer
-          .getChannelData(1)
-          .set(new Float32Array(instance.exports.memory.buffer, rightChannelAddress, length));
+        buffer.getChannelData(0).set(new Float32Array(instance.exports.memory.buffer, leftChannelAddress, length));
+        buffer.getChannelData(1).set(new Float32Array(instance.exports.memory.buffer, rightChannelAddress, length));
         sourceNode.buffer = buffer;
         sourceNode.connect(audioContext.destination);
         sourceNode.start((length / audioContext.sampleRate) * chunkNumber++);
