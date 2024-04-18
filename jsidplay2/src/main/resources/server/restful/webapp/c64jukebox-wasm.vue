@@ -207,7 +207,7 @@
             nthFrames: [10, 25, 30, 50, 60],
           };
         },
-        computed: { },
+        computed: {},
         methods: {
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
@@ -271,7 +271,7 @@
           },
           showFrame: function () {
             if (imageData) ctx.putImageData(imageData, 0, 0);
-            if (app.playing) setTimeout(() => app.showFrame(), 1000 / app.defaultClockSpeed * app.nthFrame);
+            if (app.playing) setTimeout(() => app.showFrame(), (1000 / app.defaultClockSpeed) * app.nthFrame);
           },
         },
         mounted: function () {
