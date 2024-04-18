@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.teavm.interop.Import;
+
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
@@ -27,6 +29,9 @@ import libsidplay.config.IWhatsSidSection;
 import sidplay.audio.Audio;
 
 public class JavaScriptConfig implements IConfig {
+
+	private static final String AUDIO_SECTION = "audiosection";
+	private static final String EMULATION_SECTION = "emulationsection";
 
 	@Override
 	public ISidPlay2Section getSidplay2Section() {
@@ -338,10 +343,6 @@ public class JavaScriptConfig implements IConfig {
 	public IAudioSection getAudioSection() {
 		return new IAudioSection() {
 
-			private int bufferSize = 65536;
-			private int audioBufferSize = 4096;
-			private SamplingRate samplingRate = SamplingRate.LOW;
-
 			@Override
 			public void setVideoStreamingUrl(String videoStreamingUrl) {
 			}
@@ -404,7 +405,6 @@ public class JavaScriptConfig implements IConfig {
 
 			@Override
 			public void setSamplingRate(SamplingRate samplingRate) {
-				this.samplingRate = samplingRate;
 			}
 
 			@Override
@@ -497,7 +497,6 @@ public class JavaScriptConfig implements IConfig {
 
 			@Override
 			public void setBufferSize(int bufferSize) {
-				this.bufferSize = bufferSize;
 			}
 
 			@Override
@@ -510,7 +509,6 @@ public class JavaScriptConfig implements IConfig {
 
 			@Override
 			public void setAudioBufferSize(int audioBufferSize) {
-				this.audioBufferSize = audioBufferSize;
 			}
 
 			@Override
@@ -599,13 +597,33 @@ public class JavaScriptConfig implements IConfig {
 
 			@Override
 			public SamplingRate getSamplingRate() {
-				return samplingRate;
+				switch (getSamplingRateAsInt()) {
+				case 8000:
+					return SamplingRate.VERY_LOW;
+				case 44100:
+				default:
+					return SamplingRate.LOW;
+				case 48000:
+					return SamplingRate.MEDIUM;
+				case 96000:
+					return SamplingRate.HIGH;
+				}
 			}
+
+			@Import(module = AUDIO_SECTION, name = "getSamplingRate")
+			public native int getSamplingRateAsInt();
 
 			@Override
 			public SamplingMethod getSampling() {
-				return SamplingMethod.DECIMATE;
+				if (getSamplingMethodResample()) {
+					return SamplingMethod.RESAMPLE;
+				} else {
+					return SamplingMethod.DECIMATE;
+				}
 			}
+
+			@Import(module = AUDIO_SECTION, name = "getSamplingMethodResample")
+			public native boolean getSamplingMethodResample();
 
 			@Override
 			public float getReverbSustainDelay() {
@@ -638,9 +656,8 @@ public class JavaScriptConfig implements IConfig {
 			}
 
 			@Override
-			public boolean getReverbBypass() {
-				return true;
-			}
+			@Import(module = AUDIO_SECTION, name = "getReverbBypass")
+			public native boolean getReverbBypass();
 
 			@Override
 			public float getReverbAllPass2Delay() {
@@ -708,9 +725,8 @@ public class JavaScriptConfig implements IConfig {
 			}
 
 			@Override
-			public int getBufferSize() {
-				return bufferSize;
-			}
+			@Import(module = AUDIO_SECTION, name = "getBufferSize")
+			public native int getBufferSize();
 
 			@Override
 			public int getAudioCoderBitRateTolerance() {
@@ -723,9 +739,8 @@ public class JavaScriptConfig implements IConfig {
 			}
 
 			@Override
-			public int getAudioBufferSize() {
-				return audioBufferSize;
-			}
+			@Import(module = AUDIO_SECTION, name = "getAudioBufferSize")
+			public native int getAudioBufferSize();
 
 			@Override
 			public Audio getAudio() {
@@ -737,8 +752,6 @@ public class JavaScriptConfig implements IConfig {
 	@Override
 	public IEmulationSection getEmulationSection() {
 		return new IEmulationSection() {
-
-			private CPUClock defaultClockSpeed = CPUClock.PAL;
 
 			@Override
 			public void setUserSidModel(ChipModel model) {
@@ -998,7 +1011,6 @@ public class JavaScriptConfig implements IConfig {
 
 			@Override
 			public void setDefaultClockSpeed(CPUClock speed) {
-				this.defaultClockSpeed = speed;
 			}
 
 			@Override
@@ -1323,8 +1335,15 @@ public class JavaScriptConfig implements IConfig {
 
 			@Override
 			public ChipModel getDefaultSidModel() {
-				return ChipModel.MOS8580;
+				if (getDefaultSidModel8580()) {
+					return ChipModel.MOS8580;
+				} else {
+					return ChipModel.MOS6581;
+				}
 			}
+
+			@Import(module = EMULATION_SECTION, name = "getDefaultSidModel8580")
+			public native boolean getDefaultSidModel8580();
 
 			@Override
 			public Emulation getDefaultEmulation() {
@@ -1333,8 +1352,18 @@ public class JavaScriptConfig implements IConfig {
 
 			@Override
 			public CPUClock getDefaultClockSpeed() {
-				return defaultClockSpeed;
+				switch (getDefaultClockSpeedAsInt()) {
+				case 50:
+				default:
+					return CPUClock.PAL;
+				case 60:
+					return CPUClock.NTSC;
+				}
 			}
+
+			@Import(module = EMULATION_SECTION, name = "getDefaultClockSpeed")
+			public native int getDefaultClockSpeedAsInt();
+
 		};
 	}
 

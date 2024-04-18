@@ -4743,13 +4743,20 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       TeaVM.wasm
         .load("/static/wasm/jsidplay2.wasm", {
           installImports(o, controller) {
-            o.env = {
-              processSamples: () => {},
-              processPixels: () => {},
+            o.audiosection = {
               getBufferSize: () => {},
               getAudioBufferSize: () => {},
               getSamplingRate: () => {},
+              getSamplingMethodResample: () => {},
+              getReverbBypass: () => {},
+            };
+            o.emulationsection = {
               getDefaultClockSpeed: () => {},
+              getDefaultSidModel8580: () => {},
+            };
+            o.audiodriver = {
+              processSamples: () => {},
+              processPixels: () => {},
             };
           },
         })

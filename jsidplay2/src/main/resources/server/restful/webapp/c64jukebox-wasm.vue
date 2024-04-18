@@ -128,23 +128,6 @@
         return stringPtr;
       }
 
-      // Define the functions (mapped to the Java methods)
-      function getBufferSize() {
-        return 16 * 65536;
-      }
-
-      function getAudioBufferSize() {
-        return audioContext.sampleRate;
-      }
-
-      function getSamplingRate() {
-        return audioContext.sampleRate;
-      }
-
-      function getDefaultClockSpeed() {
-        return app.defaultClockSpeed;
-      }
-
       function processSamples(leftChannelPtr, rightChannelPtr, length) {
         var leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
         var rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
@@ -213,14 +196,22 @@
             localStorage.locale = this.$i18n.locale;
           },
           startTune() {
+            audioContext = new AudioContext();
             TeaVM.wasm
               .load("/static/wasm/jsidplay2.wasm", {
                 installImports(o, controller) {
-                  o.env = {
-                    getBufferSize: getBufferSize,
-                    getAudioBufferSize: getAudioBufferSize,
-                    getSamplingRate: getSamplingRate,
-                    getDefaultClockSpeed: getDefaultClockSpeed,
+                  o.audiosection = {
+                    getBufferSize: () => 16 * 65536,
+                    getAudioBufferSize: () => audioContext.sampleRate,
+                    getSamplingRate: () => audioContext.sampleRate,
+                    getSamplingMethodResample: () => false,
+                    getReverbBypass: () => true,
+                  };
+                  o.emulationsection = {
+                    getDefaultClockSpeed: () => app.defaultClockSpeed,
+                    getDefaultSidModel8580: () => true,
+                  };
+                  o.audiodriver = {
                     processSamples: processSamples,
                     processPixels: processPixels,
                   };
@@ -234,7 +225,6 @@
                   let sidContentsPtr = allocateTeaVMbyteArray(new Uint8Array(this.result));
                   let tuneNamePtr = allocateTeaVMstring(app.chosenFile.name);
 
-                  audioContext = new AudioContext();
                   window.instance.exports.open(sidContentsPtr, tuneNamePtr, app.screen ? app.nthFrame : 0);
 
                   app.play();

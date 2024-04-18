@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import javax.sound.sampled.LineUnavailableException;
 
 import org.teavm.interop.Export;
-import org.teavm.interop.Import;
 
 import builder.resid.ReSIDBuilder;
 import libsidplay.C64;
@@ -23,7 +22,6 @@ import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
-import libsidplay.common.SamplingRate;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
@@ -54,22 +52,6 @@ public class JSIDPlay2TeaVM {
 	private static int bufferSize;
 
 	//
-	// Imports from JavaScript
-	//
-
-	@Import(module = "env", name = "getBufferSize")
-	public static native int getBufferSize();
-
-	@Import(module = "env", name = "getAudioBufferSize")
-	public static native int getAudioBufferSize();
-
-	@Import(module = "env", name = "getSamplingRate")
-	public static native int getSamplingRateAsInt();
-
-	@Import(module = "env", name = "getDefaultClockSpeed")
-	public static native int getDefaultClockSpeedAsInt();
-
-	//
 	// Exports to JavaScript
 	//
 
@@ -80,21 +62,15 @@ public class JSIDPlay2TeaVM {
 		// therefore:
 		String url = new StringBuilder(nameFromJS).toString();
 
+		LOG.finest("Tune byte length: " + sidContents.length);
+		LOG.finest("Tune name: " + url);
+		LOG.finest("nthFrame: " + nthFrame);
+
 		config = new JavaScriptConfig();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
-		audioSection.setBufferSize(getBufferSize());
-		audioSection.setAudioBufferSize(getAudioBufferSize());
-		audioSection.setSamplingRate(getSamplingRate(getSamplingRateAsInt()));
-		emulationSection.setDefaultClockSpeed(getCPUClock(getDefaultClockSpeedAsInt()));
 
-		LOG.finest("Tune name: " + url);
-		LOG.finest("Tune byte length: " + sidContents.length);
-		LOG.finest("bufferSize: " + audioSection.getBufferSize());
-		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
-		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
-		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
-		LOG.finest("nthFrame: " + nthFrame);
+		doLog(audioSection, emulationSection);
 
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
@@ -103,7 +79,7 @@ public class JSIDPlay2TeaVM {
 		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
 		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
 
-		SidTune tune = SidTune.load(url, new ByteArrayInputStream(sidContents), getSidTuneType(url));
+		SidTune tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
 		tune.getInfo().setSelectedSong(null);
 
 		HardwareEnsemble hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom,
@@ -185,20 +161,6 @@ public class JSIDPlay2TeaVM {
 	// Private methods
 	//
 
-	private static SidTuneType getSidTuneType(String name) {
-		if (name.toLowerCase().endsWith(".sid")) {
-			return SidTuneType.PSID;
-		} else if (name.toLowerCase().endsWith(".prg")) {
-			return SidTuneType.PRG;
-		} else if (name.toLowerCase().endsWith(".p00")) {
-			return SidTuneType.P00;
-		} else if (name.toLowerCase().endsWith(".t64")) {
-			return SidTuneType.T64;
-		} else {
-			return SidTuneType.PSID;
-		}
-	}
-
 	private static void typeInCommand(final String multiLineCommand) {
 		String command;
 		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
@@ -218,30 +180,14 @@ public class JSIDPlay2TeaVM {
 		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
 	}
 
-	private static SamplingRate getSamplingRate(int samplingRateAsInt) {
-		switch (samplingRateAsInt) {
-		case 8000:
-			return SamplingRate.VERY_LOW;
-		case 44100:
-			return SamplingRate.LOW;
-		case 48000:
-			return SamplingRate.MEDIUM;
-		case 96000:
-			return SamplingRate.HIGH;
-		default:
-			return SamplingRate.LOW;
-		}
-	}
-
-	private static CPUClock getCPUClock(int cpuClockAsInt) {
-		switch (cpuClockAsInt) {
-		case 50:
-			return CPUClock.PAL;
-		case 60:
-			return CPUClock.NTSC;
-		default:
-			return CPUClock.PAL;
-		}
+	private static void doLog(IAudioSection audioSection, IEmulationSection emulationSection) {
+		LOG.finest("bufferSize: " + audioSection.getBufferSize());
+		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
+		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
+		LOG.finest("sampling: " + audioSection.getSampling());
+		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
+		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
+		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
 	}
 
 	//
