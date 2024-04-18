@@ -23,6 +23,7 @@ import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
+import libsidplay.common.SamplingRate;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
@@ -62,6 +63,9 @@ public class JSIDPlay2TeaVM {
 	@Import(module = "env", name = "getAudioBufferSize")
 	public static native int getAudioBufferSize();
 
+	@Import(module = "env", name = "getSamplingRate")
+	public static native int getSamplingRateAsInt();
+
 	//
 	// Exports to JavaScript
 	//
@@ -78,11 +82,13 @@ public class JSIDPlay2TeaVM {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		audioSection.setBufferSize(getBufferSize());
 		audioSection.setAudioBufferSize(getAudioBufferSize());
+		audioSection.setSamplingRate(getSamplingRate(getSamplingRateAsInt()));
 
-		LOG.finest("Tube name: " + url);
+		LOG.finest("Tune name: " + url);
 		LOG.finest("Tune byte length: " + sidContents.length);
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
+		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
 		LOG.finest("nthFrame: " + nthFrame);
 
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
@@ -205,6 +211,21 @@ public class JSIDPlay2TeaVM {
 		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
 		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
 		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
+	}
+
+	private static SamplingRate getSamplingRate(int samplingRateAsInt) {
+		switch (samplingRateAsInt) {
+		case 8000:
+			return SamplingRate.VERY_LOW;
+		case 44100:
+			return SamplingRate.LOW;
+		case 48000:
+			return SamplingRate.MEDIUM;
+		case 96000:
+			return SamplingRate.HIGH;
+		default:
+			return SamplingRate.LOW;
+		}
 	}
 
 	//

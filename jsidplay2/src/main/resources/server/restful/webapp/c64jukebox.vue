@@ -4748,6 +4748,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               processPixels: () => {},
               getBufferSize: () => {},
               getAudioBufferSize: () => {},
+              getSamplingRate: () => {},
             };
           },
         })

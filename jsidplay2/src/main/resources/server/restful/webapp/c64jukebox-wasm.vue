@@ -91,6 +91,7 @@
       </div>
     </div>
     <script>
+      var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
       var chunkNumber;
       var canvas;
@@ -128,20 +129,25 @@
         return 16384;
       }
 
+      function getSamplingRate() {
+        return audioContext.sampleRate;
+      }
+
       function processSamples(leftChannelPtr, rightChannelPtr, length) {
         var leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
         var rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
 
         var sourceNode = audioContext.createBufferSource();
-        sourceNode.buffer = audioContext.createBuffer(2, length, 44100);
-        sourceNode.buffer
+        var buffer = audioContext.createBuffer(2, length, audioContext.sampleRate);
+        buffer
           .getChannelData(0)
           .set(new Float32Array(instance.exports.memory.buffer, leftChannelAddress, length));
-        sourceNode.buffer
+        buffer
           .getChannelData(1)
           .set(new Float32Array(instance.exports.memory.buffer, rightChannelAddress, length));
+        sourceNode.buffer = buffer;
         sourceNode.connect(audioContext.destination);
-        sourceNode.start((length / 44100.0) * chunkNumber++);
+        sourceNode.start((length / audioContext.sampleRate) * chunkNumber++);
       }
 
       function processPixels(pixelsPtr) {
@@ -206,10 +212,11 @@
               .load("/static/wasm/jsidplay2.wasm", {
                 installImports(o, controller) {
                   o.env = {
-                    processSamples: processSamples,
-                    processPixels: processPixels,
                     getBufferSize: getBufferSize,
                     getAudioBufferSize: getAudioBufferSize,
+                    getSamplingRate: getSamplingRate,
+                    processSamples: processSamples,
+                    processPixels: processPixels,
                   };
                 },
               })
@@ -221,6 +228,7 @@
                   let sidContentsPtr = allocateTeaVMbyteArray(new Uint8Array(this.result));
                   let tuneNamePtr = allocateTeaVMstring(app.chosenFile.name);
 
+                  audioContext = new AudioContext();
                   window.instance.exports.open(sidContentsPtr, tuneNamePtr, app.screen ? app.nthFrame : 0);
 
                   app.play();
@@ -242,9 +250,6 @@
             });
           },
           play: function () {
-            var AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioContext = new AudioContext();
-
             chunkNumber = 6; // small delay for warm-up phase
             imageData = undefined;
             ctx.clearRect(0, 0, maxWidth, maxHeight);

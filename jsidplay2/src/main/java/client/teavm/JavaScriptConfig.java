@@ -340,6 +340,7 @@ public class JavaScriptConfig implements IConfig {
 			
 			private int bufferSize = 65536;
 			private int audioBufferSize = 4096;
+			private SamplingRate samplingRate = SamplingRate.LOW;
 
 			@Override
 			public void setVideoStreamingUrl(String videoStreamingUrl) {
@@ -402,7 +403,8 @@ public class JavaScriptConfig implements IConfig {
 			}
 			
 			@Override
-			public void setSamplingRate(SamplingRate sampligRate) {
+			public void setSamplingRate(SamplingRate samplingRate) {
+				this.samplingRate  = samplingRate;
 			}
 			
 			@Override
@@ -597,7 +599,7 @@ public class JavaScriptConfig implements IConfig {
 			
 			@Override
 			public SamplingRate getSamplingRate() {
-				return SamplingRate.LOW;
+				return samplingRate;
 			}
 			
 			@Override
