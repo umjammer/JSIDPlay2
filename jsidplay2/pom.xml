@@ -1475,6 +1475,22 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>zip-wasm</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/zip-wasm.xml</descriptor>
+							</descriptors>
+							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
+							<finalName>
+								${project.artifactId}-${project.version}-wasm</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+					</execution>
+					<execution>
 						<id>zip-jsiddevice</id>
 						<phase>install</phase>
 						<goals>
