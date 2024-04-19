@@ -345,17 +345,17 @@
             app.playing = true;
             app.msg = app.$t("playing");
 
-            setTimeout(() => app.clock());
+            app.clock();
             if (app.screen) {
-              setTimeout(() => app.showFrame());
+              app.show();
             }
           },
           clock: function () {
             if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
-          showFrame: function () {
+          show: function () {
             if (imageData) ctx.putImageData(imageData, 0, 0);
-            if (app.playing) setTimeout(() => app.showFrame(), (1000 / app.defaultClockSpeed) * app.nthFrame);
+            if (app.playing) setTimeout(() => app.show(), (1000 / app.defaultClockSpeed) * app.nthFrame);
           },
         },
         mounted: function () {
