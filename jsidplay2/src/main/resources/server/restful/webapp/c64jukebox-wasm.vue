@@ -298,7 +298,7 @@
                     getBufferSize: () => app.bufferSize,
                     getAudioBufferSize: () => app.audioBufferSize,
                     getSamplingRate: () => audioContext.sampleRate,
-                    getSamplingMethodResample: () => app.sampling,
+                    getSamplingMethodResample: () => app.sampling === "true",
                     getReverbBypass: () => app.reverbBypass,
                   };
                   o.emulationsection = {
