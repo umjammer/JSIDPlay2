@@ -39,20 +39,21 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 
 		resultL = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
+		n = 0;
 	}
 
 	@Override
 	public void write() throws InterruptedException {
-		int frameCount = sampleBuffer.position() >> 2;
+		int position = ((Buffer) sampleBuffer).position();
 		((Buffer) sampleBuffer).flip();
 		// SHORT to FLOAT samples
 		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
-		for (int i = 0; i < frameCount; i++) {
+		while (shortBuffer.hasRemaining()) {
 			resultL.put(shortBuffer.get() / 32768.0f);
 			resultR.put(shortBuffer.get() / 32768.0f);
 		}
-		((Buffer) sampleBuffer).position(frameCount << 2);
-		processSamples(resultL.array(), resultR.array(), frameCount);
+		((Buffer) sampleBuffer).position(position);
+		processSamples(resultL.array(), resultR.array(), resultL.position());
 		((Buffer) resultL).clear();
 		((Buffer) resultR).clear();
 	}
