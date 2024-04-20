@@ -220,6 +220,7 @@
         sourceNode.start((length / audioContext.sampleRate) * chunkNumber++);
       }
 
+      // XXX endianess matters here? Int pixel data treated as byte array!
       function processPixels(pixelsPtr) {
         var pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
 
