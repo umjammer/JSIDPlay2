@@ -24,7 +24,6 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	protected ByteBuffer sampleBuffer;
 
 	private FloatBuffer resultL, resultR;
-	private byte[] pixels;
 	private int n, nthFrame;
 
 	public JavaScriptAudioDriver(int nthFrame) {
@@ -62,10 +61,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	public void accept(VIC vic) {
 		if (++n == nthFrame) {
 			n = 0;
-			if (pixels == null) {
-				pixels = ((JavaScriptPalEmulation) vic.getPalEmulation()).getPixelsArray();
-			}
-			processPixels(pixels);
+			processPixels(vic.getPalEmulation().getPixels().array());
 		}
 	}
 
@@ -88,6 +84,6 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	private static native void processSamples(float[] resultL, float[] resultR, int length);
 
 	@Import(module = "audiodriver", name = "processPixels")
-	private static native void processPixels(byte[] pixels);
+	private static native void processPixels(int[] pixels);
 
 }

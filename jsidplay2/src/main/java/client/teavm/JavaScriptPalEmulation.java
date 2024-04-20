@@ -1,7 +1,6 @@
 package client.teavm;
 
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import libsidplay.components.mos656x.IPALEmulation;
@@ -10,23 +9,21 @@ import libsidplay.components.mos656x.VIC;
 
 public class JavaScriptPalEmulation implements IPALEmulation {
 
-	/** RGBA pixel data. */
-	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0x000000FF, 0xFFFFFFFF, 0x68372BFF, 0x70A4B2FF,
-			0x6F3D86FF, 0x588D43FF, 0x352879FF, 0xB8C76FFF, 0x6F4F25FF, 0x433900FF, 0x9A6759FF, 0x444444FF, 0x6C6C6CFF,
-			0x9AD284FF, 0x6C5EB5FF, 0x959595FF, };
+	/** ABGR pixel data. */
+	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0xFF000000, 0xFFFFFFFF, 0xFF2B3768, 0xFFB2A470,
+			0xFF863D6F, 0xFF438D58, 0xFF792835, 0xFF6FC7B8, 0xFF254F6F, 0xFF003943, 0xFF59679A, 0xFF444444, 0xFF6C6C6C,
+			0xFF84D29A, 0xFFB55E6C, 0xFF959595, };
 
 	/** Previous sequencer data */
 	private int oldGraphicsData;
 
-	private final ByteBuffer pixelsByteBuffer = ByteBuffer.allocate((VIC.MAX_WIDTH * VIC.MAX_HEIGHT) << 2);
-
-	private final IntBuffer pixelsIntBuffer = pixelsByteBuffer.asIntBuffer();
+	private final IntBuffer pixels = IntBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT);
 
 	@Override
 	public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
 		oldGraphicsData = 0;
 		if (isFrameStart) {
-			((Buffer) pixelsIntBuffer).clear();
+			((Buffer) pixels).clear();
 		}
 	}
 
@@ -38,7 +35,7 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 			for (int i = 0; i < 4; i++) {
 				oldGraphicsData <<= 4;
 				final int vicColor = oldGraphicsData >>> 16;
-				pixelsIntBuffer.put(VIC_PALETTE_NO_PAL[vicColor & 0x0f]);
+				pixels.put(VIC_PALETTE_NO_PAL[vicColor & 0x0f]);
 			}
 			graphicsDataBuffer <<= 16;
 		}
@@ -98,22 +95,22 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 		};
 	}
 
+	/**
+	 * @return Output ABGR screen buffer as int32 array. MSB to LSB -&gt; alpha,
+	 *         blue, green, red
+	 */
 	@Override
 	public IntBuffer getPixels() {
-		return pixelsIntBuffer;
-	}
-
-	public byte[] getPixelsArray() {
-		return pixelsByteBuffer.array();
+		return pixels;
 	}
 
 	@Override
 	public void reset() {
 		// clear the screen
-		((Buffer) pixelsIntBuffer).clear();
-		for (int i = 0; i < pixelsIntBuffer.capacity(); i++) {
-			pixelsIntBuffer.put(0x000000FF);
+		((Buffer) pixels).clear();
+		for (int i = 0; i < pixels.capacity(); i++) {
+			pixels.put(0xFF000000);
 		}
-		((Buffer) pixelsIntBuffer).clear();
+		((Buffer) pixels).clear();
 	}
 }

@@ -6,7 +6,7 @@ import java.nio.IntBuffer;
 import libsidplay.common.VICChipModel;
 
 public class PALEmulation implements IPALEmulation {
-	
+
 	public static final IPALEmulation NONE = null;
 
 	/** Alpha channel of ARGB pixel data. */
@@ -149,14 +149,16 @@ public class PALEmulation implements IPALEmulation {
 	 * @return Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha,
 	 *         red, green, blue
 	 */
+	@Override
 	public IntBuffer getPixels() {
 		return pixels;
 	}
 
+	@Override
 	public void reset() {
 		// clear the screen
 		((Buffer) pixels).clear();
 		((Buffer) pixels.put(new int[pixels.capacity()])).clear();
 	}
-	
+
 }

@@ -181,9 +181,8 @@
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
       var chunkNumber;
-      var canvas;
-      var ctx;
-      var imageData;
+      var canvas, canvasContext;
+      var imageData, data;
       const maxWidth = 384;
       const maxHeight = 312;
       const screenByteLength = (maxWidth * maxHeight) << 2;
@@ -222,9 +221,9 @@
       }
 
       function processPixels(pixelsPtr) {
-        var pixelsAddress = instance.exports.teavm_byteArrayData(pixelsPtr);
+        var pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
 
-        imageData.data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, screenByteLength));
+        data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, screenByteLength));
       }
 
       const { createApp, ref } = Vue;
@@ -331,7 +330,7 @@
               });
           },
           stopTune() {
-            ctx.clearRect(0, 0, maxWidth, maxHeight);
+            canvasContext.clearRect(0, 0, maxWidth, maxHeight);
             window.instance.exports.close();
             setTimeout(() => {
               app.msg = "";
@@ -341,7 +340,7 @@
           },
           play: function () {
             chunkNumber = 6; // small delay for warm-up phase
-            ctx.clearRect(0, 0, maxWidth, maxHeight);
+            canvasContext.clearRect(0, 0, maxWidth, maxHeight);
             app.playing = true;
             app.msg = app.$t("playing");
 
@@ -354,7 +353,7 @@
             if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
           show: function () {
-            if (imageData) ctx.putImageData(imageData, 0, 0);
+            if (imageData) canvasContext.putImageData(imageData, 0, 0);
             if (app.playing) setTimeout(() => app.show(), (1000 / app.defaultClockSpeed) * app.nthFrame);
           },
         },
@@ -363,8 +362,9 @@
             this.$i18n.locale = localStorage.locale;
           }
           canvas = document.getElementById("myCanvas");
-          ctx = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
-          imageData = ctx.createImageData(maxWidth, maxHeight);
+          canvasContext = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
+          imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
+          data = imageData.data;
         },
         watch: {},
       })
