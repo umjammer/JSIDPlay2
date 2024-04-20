@@ -86,7 +86,7 @@
           <p>{{ msg }}</p>
         </div>
         <div v-show="screen">
-          <canvas id="myCanvas" width="384" height="312" />
+          <canvas id="c64Screen" width="384" :height="canvasHeight" />
         </div>
 
         <div class="form-check" v-show="chosenFile && !playing">
@@ -181,11 +181,11 @@
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
       var chunkNumber;
-      var canvas, canvasContext;
+
+      var canvasContext;
       var imageData, data;
       const maxWidth = 384;
       const maxHeight = 312;
-      const screenByteLength = (maxWidth * maxHeight) << 2;
 
       function allocateTeaVMbyteArray(array) {
         let byteArrayPtr = window.instance.exports.teavm_allocateByteArray(array.length);
@@ -223,7 +223,7 @@
       function processPixels(pixelsPtr) {
         var pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
 
-        data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, screenByteLength));
+        data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, app.screenByteLength));
       }
 
       const { createApp, ref } = Vue;
@@ -283,7 +283,18 @@
             audioBufferSize: 16384,
           };
         },
-        computed: {},
+        computed: {
+          canvasHeight: {
+            get: function () {
+              return this.defaultClockSpeed === "50" ? 285 : 236;
+            },
+          },
+          screenByteLength: {
+            get: function () {
+              return (maxWidth * app.canvasHeight) << 2;
+            },
+          },
+        },
         methods: {
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
@@ -361,7 +372,7 @@
           if (localStorage.locale) {
             this.$i18n.locale = localStorage.locale;
           }
-          canvas = document.getElementById("myCanvas");
+          var canvas = document.getElementById("c64Screen");
           canvasContext = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
           imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
           data = imageData.data;
