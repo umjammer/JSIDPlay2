@@ -34,8 +34,7 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 			oldGraphicsData |= graphicsDataBuffer >>> 16;
 			for (int i = 0; i < 4; i++) {
 				oldGraphicsData <<= 4;
-				final int vicColor = oldGraphicsData >>> 16;
-				pixels.put(VIC_PALETTE_NO_PAL[vicColor & 0x0f]);
+				pixels.put(VIC_PALETTE_NO_PAL[oldGraphicsData >>> 16 & 0x0f]);
 			}
 			graphicsDataBuffer <<= 16;
 		}
