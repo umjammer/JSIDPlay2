@@ -64,7 +64,6 @@ public class JSIDPlay2TeaVM {
 			String url = new StringBuilder(nameFromJS).toString();
 			LOG.finest("Load Tune, length=" + sidContents.length);
 			LOG.finest("Tune name: " + url);
-
 			tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
 			tune.getInfo().setSelectedSong(null);
 		} else {
