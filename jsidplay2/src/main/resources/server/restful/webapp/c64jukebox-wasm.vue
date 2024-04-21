@@ -162,16 +162,9 @@
           </div>
           <div class="settings-box">
             <span class="setting">
-              <label for="audioBufferSize">
-                <select class="form-select form-select-sm right" id="audioBufferSize" v-model="audioBufferSize">
-                  <option value="1024">1024</option>
-                  <option value="2048">2048</option>
-                  <option value="4096">4096</option>
-                  <option value="8192">8192</option>
-                  <option value="16384">16384</option>
-                </select>
-                <span>{{ $t("audioBufferSize") }}</span>
-              </label>
+              <label for="audioBufferSize">{{ $t("audioBufferSize") }}
+                <input class="right" type="number" id="audioBufferSize" class="form-control" v-model.number="audioBufferSize"
+              /></label>
             </span>
           </div>
         </div>
@@ -186,6 +179,63 @@
       var imageData, data;
       const maxWidth = 384;
       const maxHeight = 312;
+      const MAX_QUEUE_SIZE = 60;
+      const DROP_NTH_FRAME = 10;
+      const DROP_FRAMES_SIZE = DROP_NTH_FRAME << 1;
+
+      function Queue() {
+        var head, tail, size;
+        return Object.freeze({
+          enqueue(value) {
+     		// prevent overflow, remove first frame
+	    	if (size === MAX_QUEUE_SIZE) {
+		    	head = head.next;
+		    	size--;
+		    }
+            const link = { value, next: undefined };
+            tail = head ? (tail.next = link) : (head = link);
+			size++;
+          },
+          dequeue() {
+    		// prevent overflow by dropping in-between frames
+			if (size > DROP_FRAMES_SIZE) {
+				var prev = head, scan = head;
+				var count = size / DROP_NTH_FRAME;
+				while (count-- > 0) {
+					// skip frames
+					for (i = 0; i < DROP_NTH_FRAME && scan.next; i++) {
+						prev = scan;
+						scan = scan.next;
+					}
+					if (!scan.next) {
+						// end of list? We remove the last frame
+						tail = prev;
+					}
+					// remove in-between frame
+					prev.next = scan.next;
+					size--;
+				}
+			}
+            if (head) {
+              const value = head.value;
+              head = head.next;
+              return value;
+            }
+			size--;
+          },
+          peek() {
+            return head?.value;
+          },
+          clear() {
+            tail = head = undefined;
+			size = 0;
+          },
+          isNotEmpty() {
+            return head;
+          },
+        });
+      }
+      var imageQueue = new Queue();
 
       function allocateTeaVMbyteArray(array) {
         let byteArrayPtr = window.instance.exports.teavm_allocateByteArray(array.length);
@@ -220,11 +270,11 @@
         sourceNode.start((length / audioContext.sampleRate) * chunkNumber++);
       }
 
-      // XXX endianess matters here? Int pixel data treated as byte array!
       function processPixels(pixelsPtr) {
-        var pixelsAddress = instance.exports.teavm_intArrayData(pixelsPtr);
-
-        data.set(new Uint8Array(instance.exports.memory.buffer, pixelsAddress, app.screenByteLength));
+        // XXX works for little-endian, only: int array treated as byte array!
+        imageQueue.enqueue({
+          image: new Uint8Array(instance.exports.memory.buffer, instance.exports.teavm_intArrayData(pixelsPtr), app.screenByteLength).slice(),
+        });
       }
 
       const { createApp, ref } = Vue;
@@ -275,13 +325,13 @@
             playing: false,
             screen: false,
             defaultClockSpeed: "50",
-            nthFrame: 10,
-            nthFrames: [10, 25, 30, 50, 60],
+            nthFrame: 1,
+            nthFrames: [1, 10, 25, 30, 50, 60],
             defaultSidModel: false,
             sampling: false,
             reverbBypass: true,
-            bufferSize: 16 * 65536,
-            audioBufferSize: 16384,
+            bufferSize: 8 * 48000,
+            audioBufferSize: 48000,
           };
         },
         computed: {
@@ -345,14 +395,16 @@
             canvasContext.clearRect(0, 0, maxWidth, maxHeight);
             window.instance.exports.close();
             setTimeout(() => {
+              imageQueue.clear();
               app.msg = "";
               app.playing = false;
               audioContext.close();
             });
           },
           play: function () {
-            chunkNumber = 6; // small delay for warm-up phase
+            chunkNumber = 2; // initial delay for warm-up phase
             canvasContext.clearRect(0, 0, maxWidth, maxHeight);
+            imageQueue.clear();
             app.playing = true;
             app.msg = app.$t("playing");
 
@@ -365,7 +417,10 @@
             if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
           show: function () {
-            if (imageData) canvasContext.putImageData(imageData, 0, 0);
+            if (imageQueue.isNotEmpty()) {
+              data.set(imageQueue.dequeue().image);
+              canvasContext.putImageData(imageData, 0, 0);
+            }
             if (app.playing) setTimeout(() => app.show(), (1000 / app.defaultClockSpeed) * app.nthFrame);
           },
         },
@@ -374,7 +429,7 @@
             this.$i18n.locale = localStorage.locale;
           }
           var canvas = document.getElementById("c64Screen");
-          canvasContext = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
+          canvasContext = canvas.getContext("2d");
           imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
           data = imageData.data;
         },
