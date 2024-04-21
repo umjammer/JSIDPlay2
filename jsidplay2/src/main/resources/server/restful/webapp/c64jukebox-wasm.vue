@@ -162,8 +162,14 @@
           </div>
           <div class="settings-box">
             <span class="setting">
-              <label for="audioBufferSize">{{ $t("audioBufferSize") }}
-                <input class="right" type="number" id="audioBufferSize" class="form-control" v-model.number="audioBufferSize"
+              <label for="audioBufferSize"
+                >{{ $t("audioBufferSize") }}
+                <input
+                  class="right"
+                  type="number"
+                  id="audioBufferSize"
+                  class="form-control"
+                  v-model.number="audioBufferSize"
               /></label>
             </span>
           </div>
@@ -187,48 +193,49 @@
         var head, tail, size;
         return Object.freeze({
           enqueue(value) {
-     		// prevent overflow, remove first frame
-	    	if (size === MAX_QUEUE_SIZE) {
-		    	head = head.next;
-		    	size--;
-		    }
+            // prevent overflow, remove first frame
+            if (size === MAX_QUEUE_SIZE) {
+              head = head.next;
+              size--;
+            }
             const link = { value, next: undefined };
             tail = head ? (tail.next = link) : (head = link);
-			size++;
+            size++;
           },
           dequeue() {
-    		// prevent overflow by dropping in-between frames
-			if (size > DROP_FRAMES_SIZE) {
-				var prev = head, scan = head;
-				var count = size / DROP_NTH_FRAME;
-				while (count-- > 0) {
-					// skip frames
-					for (i = 0; i < DROP_NTH_FRAME && scan.next; i++) {
-						prev = scan;
-						scan = scan.next;
-					}
-					if (!scan.next) {
-						// end of list? We remove the last frame
-						tail = prev;
-					}
-					// remove in-between frame
-					prev.next = scan.next;
-					size--;
-				}
-			}
+            // prevent overflow by dropping in-between frames
+            if (size > DROP_FRAMES_SIZE) {
+              var prev = head,
+                scan = head;
+              var count = size / DROP_NTH_FRAME;
+              while (count-- > 0) {
+                // skip frames
+                for (i = 0; i < DROP_NTH_FRAME && scan.next; i++) {
+                  prev = scan;
+                  scan = scan.next;
+                }
+                if (!scan.next) {
+                  // end of list? We remove the last frame
+                  tail = prev;
+                }
+                // remove in-between frame
+                prev.next = scan.next;
+                size--;
+              }
+            }
             if (head) {
               const value = head.value;
               head = head.next;
               return value;
             }
-			size--;
+            size--;
           },
           peek() {
             return head?.value;
           },
           clear() {
             tail = head = undefined;
-			size = 0;
+            size = 0;
           },
           isNotEmpty() {
             return head;
@@ -273,7 +280,11 @@
       function processPixels(pixelsPtr) {
         // XXX works for little-endian, only: int array treated as byte array!
         imageQueue.enqueue({
-          image: new Uint8Array(instance.exports.memory.buffer, instance.exports.teavm_intArrayData(pixelsPtr), app.screenByteLength).slice(),
+          image: new Uint8Array(
+            instance.exports.memory.buffer,
+            instance.exports.teavm_intArrayData(pixelsPtr),
+            app.screenByteLength
+          ).slice(),
         });
       }
 
