@@ -80,7 +80,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 		return true;
 	}
 
-	/* This method maps to a JavaScript method in a web page. */
+	/* This methods maps to a JavaScript methods in a web page. */
 	@Import(module = "audiodriver", name = "processSamples")
 	private static native void processSamples(float[] resultL, float[] resultR, int length);
 
