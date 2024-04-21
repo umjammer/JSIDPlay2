@@ -54,18 +54,20 @@
           </select>
         </div>
 
+        <button type="button" v-on:click="reset()">{{ $t("reset") }}</button>
+
         <input
           ref="formFileSm"
           id="file"
           type="file"
           @input="chosenFile = $refs.formFileSm.files[0]"
-          :disabled="chosenFile && playing"
+          :disabled="playing"
         />
 
         <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">{{ $t("play") }}</button>
         <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
 
-        <div class="form-check" v-show="chosenFile && !playing">
+        <div class="form-check" v-show="!playing">
           <div class="settings-box">
             <span class="setting">
               <label class="form-check-label" for="screen">
@@ -89,7 +91,7 @@
           <canvas id="c64Screen" width="384" :height="canvasHeight" />
         </div>
 
-        <div class="form-check" v-show="chosenFile && !playing">
+        <div class="form-check" v-show="!playing">
           <div class="settings-box">
             <span class="setting">
               <label for="nthFrame" v-show="screen">
@@ -306,6 +308,7 @@
             audioBufferSize: "Audio buffer size",
             nthFrame: "Show every nth frame",
             play: "Play",
+            reset: "Reset",
             stop: "Stop",
             loading: "Loading tune, please wait...",
             playing: "Playing...",
@@ -320,6 +323,7 @@
             audioBufferSize: "Audio Puffer Größe",
             nthFrame: "Zeige jedes Nte Bild",
             play: "Spiele",
+            reset: "Reset",
             stop: "Stop",
             loading: "Lade den tune, bitte warten...",
             playing: "Abspielen...",
@@ -396,6 +400,40 @@
                   app.play();
                 };
                 reader.readAsArrayBuffer(app.chosenFile);
+                app.msg = app.$t("loading");
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          },
+          reset() {
+            audioContext = new AudioContext();
+            TeaVM.wasm
+              .load("/static/wasm/jsidplay2.wasm", {
+                installImports(o, controller) {
+                  o.audiosection = {
+                    getBufferSize: () => app.bufferSize,
+                    getAudioBufferSize: () => app.audioBufferSize,
+                    getSamplingRate: () => audioContext.sampleRate,
+                    getSamplingMethodResample: () => app.sampling === "true",
+                    getReverbBypass: () => app.reverbBypass,
+                  };
+                  o.emulationsection = {
+                    getDefaultClockSpeed: () => app.defaultClockSpeed,
+                    getDefaultSidModel8580: () => app.defaultSidModel === "true",
+                  };
+                  o.audiodriver = {
+                    processSamples: processSamples,
+                    processPixels: processPixels,
+                  };
+                },
+              })
+              .then((teavm) => {
+                window.instance = teavm.instance;
+
+                window.instance.exports.open(undefined, undefined, app.screen ? app.nthFrame : 0);
+
+                app.play();
                 app.msg = app.$t("loading");
               })
               .catch((error) => {

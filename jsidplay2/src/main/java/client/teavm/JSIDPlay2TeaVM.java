@@ -58,12 +58,19 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS, int nthFrame)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		// JavaScript string can not be used directly for some strange reason,
-		// therefore:
-		String url = new StringBuilder(nameFromJS).toString();
+		SidTune tune;
+		if (sidContents != null) {
+			// JavaScript string cannot be used directly for some reason, therefore:
+			String url = new StringBuilder(nameFromJS).toString();
+			LOG.finest("Load Tune, length=" + sidContents.length);
+			LOG.finest("Tune name: " + url);
 
-		LOG.finest("Tune byte length: " + sidContents.length);
-		LOG.finest("Tune name: " + url);
+			tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
+			tune.getInfo().setSelectedSong(null);
+		} else {
+			LOG.finest("RESET");
+			tune = RESET;
+		}
 		LOG.finest("nthFrame: " + nthFrame);
 
 		config = new JavaScriptConfig();
@@ -78,9 +85,6 @@ public class JSIDPlay2TeaVM {
 		byte[] basicRom = decoder.decode(allRoms.get(JavaScriptRoms.BASIC_ROM));
 		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
 		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
-
-		SidTune tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
-		tune.getInfo().setSelectedSong(null);
 
 		HardwareEnsemble hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom,
 				basicRom, kernalRom, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
