@@ -1,3 +1,10 @@
 Release Notes:
 ==============
-JSIDPlay2 Web Assembly Version added (powered by TeaVM): Play tunes offline in your browser
+JSIDPlay2 Web Assembly Version added (WASM)
+ - < 2MB assembly code
+ - runs in every browser
+ - play tunes offline (no server required)
+ - performance depending on your PC hardware
+ - Powered by TeaVM (byte code to WASM transpiler)
+ - single source code for web and for java player
+ 
