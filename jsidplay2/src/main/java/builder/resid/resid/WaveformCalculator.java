@@ -99,8 +99,10 @@ public final class WaveformCalculator {
 		CombinedWaveformConfig[] cfgArray = config[model == ChipModel.MOS6581 ? 0 : 1];
 
 		if (!CACHE.containsKey(cfgArray)) {
-			short[][] wftable = new short[8][4096];
-
+			short[][] wftable = new short[8][];
+			for (int i = 0; i < 8; i++) {
+				wftable[i] = new short[4096];
+			}
 			for (int accumulator = 0; accumulator < 1 << 24; accumulator += 1 << 12) {
 				int idx = accumulator >> 12;
 				wftable[0][idx] = 0xfff;

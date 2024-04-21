@@ -335,7 +335,7 @@
             chosenFile: undefined,
             playing: false,
             screen: false,
-            defaultClockSpeed: "50",
+            defaultClockSpeed: 50,
             nthFrame: 1,
             nthFrames: [1, 10, 25, 30, 50, 60],
             defaultSidModel: false,
@@ -348,7 +348,7 @@
         computed: {
           canvasHeight: {
             get: function () {
-              return this.defaultClockSpeed === "50" ? 285 : 236;
+              return this.defaultClockSpeed == 50 ? 285 : 236;
             },
           },
           screenByteLength: {

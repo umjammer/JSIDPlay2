@@ -37,7 +37,7 @@ import libsidplay.common.ChipModel;
  * @author Antti Lankila
  */
 public final class WaveformGenerator {
-	private final short[][] model_wave = new short[8][4096];
+	private final short[][] model_wave = new short[8][];
 	private final short[] dac = new short[4096];
 
 	/** Current and previous accumulator value. */
@@ -86,6 +86,7 @@ public final class WaveformGenerator {
 
 	protected void setWaveformModels(short[][] models) {
 		for (int i = 0; i < 8; i++) {
+			model_wave[i] = new short[4096];
 			System.arraycopy(models[i], 0, model_wave[i], 0, 4096);
 		}
 	}
