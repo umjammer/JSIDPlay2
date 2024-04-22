@@ -218,7 +218,10 @@ public final class SincResampler implements Resampler {
 		 */
 		if (fir == null) {
 			// Allocate memory for FIR tables.
-			fir = new int[firRES][firN];
+			fir = new int[firRES][];
+			for (int i = 0; i < firRES; i++) {
+				fir[i] = new int[firN];
+			}
 			FIR_CACHE.put(firKey, fir);
 
 			/* Calculate the sinc tables. */
