@@ -54,127 +54,161 @@
           </select>
         </div>
 
-        <button type="button" v-on:click="reset()">{{ $t("reset") }}</button>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <input
+                ref="formFileSm"
+                id="file"
+                type="file"
+                @input="chosenFile = $refs.formFileSm.files[0]"
+                :disabled="playing"
+              />
 
-        <input
-          ref="formFileSm"
-          id="file"
-          type="file"
-          @input="chosenFile = $refs.formFileSm.files[0]"
-          :disabled="playing"
-        />
+              <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">
+                {{ $t("play") }}
+              </button>
+              <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
+              <button type="button" v-on:click="reset()">{{ $t("reset") }}</button>
 
-        <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">{{ $t("play") }}</button>
-        <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
-
-        <div class="form-check" v-show="!playing">
-          <div class="settings-box">
-            <span class="setting">
-              <label class="form-check-label" for="screen">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="screen"
-                  style="float: right; margin-left: 8px"
-                  v-model="screen"
-                />
-                {{ $t("screen") }}
-              </label>
-            </span>
-          </div>
-        </div>
-
-        <div>
-          <p>{{ msg }}</p>
-        </div>
-        <div v-show="screen">
-          <canvas id="c64Screen" width="384" :height="canvasHeight" />
-        </div>
-
-        <div class="form-check" v-show="!playing">
-          <div class="settings-box">
-            <span class="setting">
-              <label for="nthFrame" v-show="screen">
-                <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
-                  <option v-for="n in nthFrames" :value="n">{{ n }}</option>
-                </select>
-                {{ $t("nthFrame") }}
-              </label>
-            </span>
-          </div>
-          <div class="settings-box">
-            <span class="setting">
-              <label for="defaultClockSpeed">
-                <select class="form-select form-select-sm right" id="defaultClockSpeed" v-model="defaultClockSpeed">
-                  <option value="50">PAL</option>
-                  <option value="60">NTSC</option>
-                </select>
-                <span>{{ $t("defaultClockSpeed") }}</span>
-              </label>
-            </span>
-          </div>
-
-          <div class="settings-box">
-            <span class="setting">
-              <label for="defaultSidModel">
-                <select class="form-select form-select-sm right" id="defaultSidModel" v-model="defaultSidModel">
-                  <option value="false">MOS6581</option>
-                  <option value="true">MOS8580</option>
-                </select>
-                <span>{{ $t("defaultSidModel") }}</span>
-              </label>
-            </span>
-          </div>
-          <div class="settings-box">
-            <span class="setting">
-              <label for="sampling">
-                <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
-                  <option value="false">DECIMATE</option>
-                  <option value="true">RESAMPLE</option>
-                </select>
-                <span>{{ $t("sampling") }}</span>
-              </label>
-            </span>
-          </div>
-
-          <div class="settings-box">
-            <span class="setting">
-              <div class="form-check">
-                <label class="form-check-label" for="reverbBypass">
-                  {{ $t("reverbBypass") }}
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="reverbBypass"
-                    style="float: right; margin-left: 8px"
-                    v-model="reverbBypass"
-                  />
-                </label>
+              <div class="form-check" v-show="!playing">
+                <div class="settings-box">
+                  <span class="setting">
+                    <label class="form-check-label" for="screen">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="screen"
+                        style="float: right; margin-left: 8px"
+                        v-model="screen"
+                      />
+                      {{ $t("screen") }}
+                    </label>
+                  </span>
+                </div>
               </div>
-            </span>
+
+              <div>
+                <p>{{ msg }}</p>
+              </div>
+            </div>
           </div>
 
-          <div class="settings-box">
-            <span class="setting">
-              <label for="bufferSize"
-                >{{ $t("bufferSize") }}
-                <input class="right" type="number" id="bufferSize" class="form-control" v-model.number="bufferSize"
-              /></label>
-            </span>
+          <div class="row">
+            <div class="col">
+              <div v-show="screen">
+                <canvas id="c64Screen" width="384" :height="canvasHeight" />
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-check" v-show="!playing">
+                <div class="settings-box">
+                  <span class="setting">
+                    <label for="nthFrame" v-show="screen">
+                      <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
+                        <option v-for="n in nthFrames" :value="n">{{ n }}</option>
+                      </select>
+                      {{ $t("nthFrame") }}
+                    </label>
+                  </span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting">
+                    <label for="defaultClockSpeed">
+                      <select
+                        class="form-select form-select-sm right"
+                        id="defaultClockSpeed"
+                        v-model="defaultClockSpeed"
+                      >
+                        <option value="50">PAL</option>
+                        <option value="60">NTSC</option>
+                      </select>
+                      <span>{{ $t("defaultClockSpeed") }}</span>
+                    </label>
+                  </span>
+                </div>
+
+                <div class="settings-box">
+                  <span class="setting">
+                    <label for="defaultSidModel">
+                      <select class="form-select form-select-sm right" id="defaultSidModel" v-model="defaultSidModel">
+                        <option value="false">MOS6581</option>
+                        <option value="true">MOS8580</option>
+                      </select>
+                      <span>{{ $t("defaultSidModel") }}</span>
+                    </label>
+                  </span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting">
+                    <label for="sampling">
+                      <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
+                        <option value="false">DECIMATE</option>
+                        <option value="true">RESAMPLE</option>
+                      </select>
+                      <span>{{ $t("sampling") }}</span>
+                    </label>
+                  </span>
+                </div>
+
+                <div class="settings-box">
+                  <span class="setting">
+                    <div class="form-check">
+                      <label class="form-check-label" for="reverbBypass">
+                        {{ $t("reverbBypass") }}
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="reverbBypass"
+                          style="float: right; margin-left: 8px"
+                          v-model="reverbBypass"
+                        />
+                      </label>
+                    </div>
+                  </span>
+                </div>
+
+                <div class="settings-box">
+                  <span class="setting">
+                    <label for="bufferSize"
+                      >{{ $t("bufferSize") }}
+                      <input
+                        class="right"
+                        type="number"
+                        id="bufferSize"
+                        class="form-control"
+                        v-model.number="bufferSize"
+                    /></label>
+                  </span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting">
+                    <label for="audioBufferSize"
+                      >{{ $t("audioBufferSize") }}
+                      <input
+                        class="right"
+                        type="number"
+                        id="audioBufferSize"
+                        class="form-control"
+                        v-model.number="audioBufferSize"
+                    /></label>
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="settings-box">
-            <span class="setting">
-              <label for="audioBufferSize"
-                >{{ $t("audioBufferSize") }}
-                <input
-                  class="right"
-                  type="number"
-                  id="audioBufferSize"
-                  class="form-control"
-                  v-model.number="audioBufferSize"
-              /></label>
-            </span>
-          </div>
+          <p>Web Assembly Version (WASM) powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
+          <ol>
+            <li>Complete client side code, no server required</li>
+            <li>&lt;2MB in size</li>
+            <li>Single Source for Java and WASM Version</li>
+            <li>Runs with nearly native speed (1.5x)</li>
+            <li>Runs in all major browsers</li>
+            <li>Full emulation, no compromise in compatibility</li>
+            <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
+            <li>Performance only depends on your PC setup</li>
+            <li>Runs even on a mobile phone, only, if it's fast enough :-)</li>
+          </ol>
         </div>
       </form>
     </div>
