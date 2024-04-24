@@ -167,6 +167,20 @@
                     </div>
                   </span>
                 </div>
+                <div class="settings-box">
+                  <span class="setting">
+                    <label class="form-check-label" for="sidWrites">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sidWrites"
+                        style="float: right; margin-left: 8px"
+                        v-model="sidWrites"
+                      />
+                      {{ $t("sidWrites") }}
+                    </label>
+                  </span>
+                </div>
 
                 <div class="settings-box">
                   <span class="setting">
@@ -324,6 +338,10 @@
         });
       }
 
+      function processSidWrite(time, relTime, addr, value) {
+        console.log("time=" + time + ", relTime=" + relTime + ", addr=" + addr + ", value=" + value);
+      }
+
       const { createApp, ref } = Vue;
 
       const { createI18n } = VueI18n;
@@ -338,6 +356,7 @@
             defaultSidModel: "Default SID model",
             sampling: "Sampling Method",
             reverbBypass: "Bypass Schroeder reverb",
+            sidWrites: "Print SID writes to console",
             bufferSize: "Emulation buffer size",
             audioBufferSize: "Audio buffer size",
             nthFrame: "Show every nth frame",
@@ -353,6 +372,7 @@
             defaultSidModel: "Default SID Model",
             sampling: "Sampling Methode",
             reverbBypass: "Schroeder Reverb überbrücken",
+            sidWrites: "SID writes in Konsole schreiben",
             bufferSize: "Emulationspuffer Größe",
             audioBufferSize: "Audio Puffer Größe",
             nthFrame: "Zeige jedes Nte Bild",
@@ -379,6 +399,7 @@
             defaultSidModel: false,
             sampling: false,
             reverbBypass: true,
+            sidWrites: false,
             bufferSize: 8 * 48000,
             audioBufferSize: 48000,
           };
@@ -418,6 +439,7 @@
                   o.audiodriver = {
                     processSamples: processSamples,
                     processPixels: processPixels,
+                    processSidWrite: processSidWrite,
                   };
                 },
               })
@@ -429,7 +451,12 @@
                   let sidContentsPtr = allocateTeaVMbyteArray(new Uint8Array(this.result));
                   let tuneNamePtr = allocateTeaVMstring(app.chosenFile.name);
 
-                  window.instance.exports.open(sidContentsPtr, tuneNamePtr, app.screen ? app.nthFrame : 0);
+                  window.instance.exports.open(
+                    sidContentsPtr,
+                    tuneNamePtr,
+                    app.screen ? app.nthFrame : 0,
+                    app.sidWrites
+                  );
 
                   app.play();
                 };
@@ -459,13 +486,14 @@
                   o.audiodriver = {
                     processSamples: processSamples,
                     processPixels: processPixels,
+                    processSidWrite: processSidWrite,
                   };
                 },
               })
               .then((teavm) => {
                 window.instance = teavm.instance;
 
-                window.instance.exports.open(undefined, undefined, app.screen ? app.nthFrame : 0);
+                window.instance.exports.open(undefined, undefined, app.screen ? app.nthFrame : 0, app.sidWrites);
 
                 app.play();
                 app.msg = app.$t("loading");

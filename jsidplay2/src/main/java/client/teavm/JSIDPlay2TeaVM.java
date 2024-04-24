@@ -56,7 +56,7 @@ public class JSIDPlay2TeaVM {
 	//
 
 	@Export(name = "open")
-	public static void open(byte[] sidContents, String nameFromJS, int nthFrame)
+	public static void open(byte[] sidContents, String nameFromJS, int nthFrame, boolean addSidListener)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		SidTune tune;
 		if (sidContents != null) {
@@ -132,7 +132,9 @@ public class JSIDPlay2TeaVM {
 		if (nthFrame > 0) {
 			c64.configureVICs(vic -> vic.setVideoDriver(audioDriver));
 		}
-
+		if (addSidListener) {
+			c64.setSIDListener(audioDriver);
+		}
 		sidBuilder.start();
 		bufferSize = audioSection.getBufferSize();
 		context = c64.getEventScheduler();

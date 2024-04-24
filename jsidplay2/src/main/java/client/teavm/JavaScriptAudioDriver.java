@@ -12,19 +12,23 @@ import javax.sound.sampled.LineUnavailableException;
 import org.teavm.interop.Import;
 
 import libsidplay.common.CPUClock;
+import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
+import libsidplay.common.SIDListener;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.config.IAudioSection;
 import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.VideoDriver;
 
-public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
+public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SIDListener {
 
-	protected ByteBuffer sampleBuffer;
+	private EventScheduler context;
+	private ByteBuffer sampleBuffer;
 
 	private FloatBuffer resultL, resultR;
 	private int n, nthFrame;
+	private long sidWiteTime;
 
 	public JavaScriptAudioDriver(int nthFrame) {
 		this.nthFrame = nthFrame;
@@ -33,6 +37,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
 			throws IOException, LineUnavailableException, InterruptedException {
+		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
@@ -40,6 +45,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 		resultL = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		n = 0;
+		sidWiteTime = 0;
 	}
 
 	@Override
@@ -67,6 +73,16 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 	}
 
 	@Override
+	public void write(int addr, byte data) {
+		final long time = context.getTime(Event.Phase.PHI2);
+		if (sidWiteTime == 0) {
+			sidWiteTime = time;
+		}
+		processSidWrite(time, time - sidWiteTime, addr, data & 0xff);
+		sidWiteTime = time;
+	}
+
+	@Override
 	public void close() {
 	}
 
@@ -86,5 +102,8 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver {
 
 	@Import(module = "audiodriver", name = "processPixels")
 	private static native void processPixels(int[] pixels);
+
+	@Import(module = "audiodriver", name = "processSidWrite")
+	private static native void processSidWrite(long time, long relTime, int addr, int value);
 
 }
