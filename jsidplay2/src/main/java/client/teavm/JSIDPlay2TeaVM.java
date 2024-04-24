@@ -71,6 +71,7 @@ public class JSIDPlay2TeaVM {
 			tune = RESET;
 		}
 		LOG.finest("nthFrame: " + nthFrame);
+		LOG.finest("addSidListener: " + addSidListener);
 
 		config = new JavaScriptConfig();
 		final IAudioSection audioSection = config.getAudioSection();

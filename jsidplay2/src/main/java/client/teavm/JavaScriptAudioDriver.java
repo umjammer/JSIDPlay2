@@ -93,7 +93,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 
 	@Override
 	public boolean isRecording() {
-		return true;
+		return false;
 	}
 
 	/* This methods maps to a JavaScript methods in a web page. */
