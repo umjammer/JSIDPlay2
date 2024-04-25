@@ -1488,6 +1488,9 @@
 							<finalName>
 								${project.artifactId}-${project.version}-wasm</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
+							<filters>
+								<filter>src/main/assembly/filter-wasm.properties</filter>
+							</filters>
 						</configuration>
 					</execution>
 					<execution>

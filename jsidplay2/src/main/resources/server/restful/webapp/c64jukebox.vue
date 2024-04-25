@@ -11,17 +11,17 @@
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <!-- Load required Bootstrap, Icons CSS -->
-    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap$min.css" />
-    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons$min.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap${min}.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons${min}.css" />
 
     <!-- Load Vue followed by Bootstrap -->
-    <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
-    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
+    <script src="/webjars/vue/3.4.21/dist/vue.global${prod}.js"></script>
+    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap${min}.js"></script>
 
     <!-- helpers -->
-    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global$prod.js"></script>
-    <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
-    <script src="/webjars/web-audio-recorder-js/0.0.2/$lib/WebAudioRecorder$min.js"></script>
+    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
+    <script src="/webjars/axios/1.5.1/dist/axios${min}.js"></script>
+    <script src="/webjars/web-audio-recorder-js/0.0.2/${lib}/WebAudioRecorder${min}.js"></script>
 
     <!-- USB -->
     <script src="/static/usb/hardsid.js"></script>
@@ -280,7 +280,7 @@
               <p style="text-align: center; font-size: smaller; padding: 16px">
                 C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
                 JSIDPlay2 is copyrighted to:<br />
-                2007-$year Ken H&#228;ndel,<br />
+                2007-${year} Ken H&#228;ndel,<br />
                 Antti S. Lankila and Wilfred Bos<br /><br />
                 Distortion Simulation and 6581/8580 emulation:<br />
                 Copyright &#169; 2005-2011 Antti S. Lankila<br />
@@ -4340,7 +4340,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
         }
       }
       function messageListener(event) {
-        if (event.origin !== "$baseUrl") {
+        if (event.origin !== "${baseUrl}") {
           console.log("Ignored: Got a message from bad origin: " + event.origin);
         } else {
           var myMsg = event.data;
@@ -4537,7 +4537,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             firstCategory: "",
             pleaseWait: "Please wait...",
 
-            convertMessages: $convertMessagesEn,
+            convertMessages: ${convertMessagesEn},
           },
           de: {
             LOGS: "Logs",
@@ -4730,7 +4730,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               labelCloseButton: "Schließen",
             },
 
-            convertMessages: $convertMessagesDe,
+            convertMessages: ${convertMessagesDe},
           },
         },
       });
@@ -4885,8 +4885,8 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             loadingAssembly64: false,
             loadingPl: false,
             loadingCfg: false,
-            convertOptions: $convertOptions,
-            defaultConvertOptions: $convertOptions,
+            convertOptions: ${convertOptions},
+            defaultConvertOptions: ${convertOptions},
           };
         },
         computed: {
@@ -4967,7 +4967,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
                 input.connect(audioContext.destination);
 
                 recorder = new WebAudioRecorder(input, {
-                  workerDir: "../webjars/web-audio-recorder-js/0.0.2/$lib/",
+                  workerDir: "../webjars/web-audio-recorder-js/0.0.2/${lib}/",
                   encoding: "wav",
                 });
                 recorder.onComplete = function (recorder, blob) {
@@ -5023,7 +5023,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               iframe.src = url;
             };
             iframe.src =
-              "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='$baseUrl/static/please_wait.css' /></head><body><div class='loading'><p>" +
+              "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='${baseUrl}/static/please_wait.css' /></head><body><div class='loading'><p>" +
               this.$t("pleaseWait") +
               "</p><span><i></i><i></i></span></div></body>";
 
@@ -6140,7 +6140,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/aql/presets",
+              url: "${assembly64Url}/leet/search/aql/presets",
             })
               .then((response) => {
                 let presets = response.data;
@@ -6174,7 +6174,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/aql/0/200" + url,
+              url: "${assembly64Url}/leet/search/aql/0/200" + url,
             })
               .then((response) => {
                 if (response.status === 200) {
@@ -6219,7 +6219,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             this.loadingAssembly64 = true; //the loading begin
             axios({
               method: "get",
-              url: "$assembly64Url/leet/search/legacy/entries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
+              url: "${assembly64Url}/leet/search/legacy/entries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
             })
               .then((response) => {
                 if (response.status === 200) {

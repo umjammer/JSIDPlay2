@@ -903,4 +903,4 @@ JSIDPlay2 App.
 *Please note:* Streaming music using your mobile can cause additional costs!
 
 As an alternative you can use a browser enabled client like
-link:https://haendel.ddns.net:8443/static/c64jukebox.vue[my example VUE client here^]
+link:${baseUrl}/static/c64jukebox.vue[my example VUE client here^]

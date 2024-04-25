@@ -76,16 +76,16 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				ContentTypeAndFileExtensions mimeType = getMimeType(IOUtils.getFilenameSuffix(request.getPathInfo()));
 
 				Map<String, String> replacements = new HashMap<>();
-				replacements.put("$baseUrl", BASE_URL);
-				replacements.put("$convertOptions", CONVERT_OPTIONS);
-				replacements.put("$convertMessagesEn", CONVERT_MESSAGES_EN);
-				replacements.put("$convertMessagesDe", CONVERT_MESSAGES_DE);
-				replacements.put("$assembly64Url", configuration.getOnlineSection().getAssembly64Url());
-				replacements.put("$year", String.valueOf(LocalDate.now().getYear()));
+				replacements.put("baseUrl", BASE_URL);
+				replacements.put("convertOptions", CONVERT_OPTIONS);
+				replacements.put("convertMessagesEn", CONVERT_MESSAGES_EN);
+				replacements.put("convertMessagesDe", CONVERT_MESSAGES_DE);
+				replacements.put("assembly64Url", configuration.getOnlineSection().getAssembly64Url());
+				replacements.put("year", String.valueOf(LocalDate.now().getYear()));
 				if (!ContentTypeAndFileExtensions.MIME_TYPE_JAVASCRIPT.isCompatible(mimeType.getMimeType())) {
-					replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
-					replacements.put("$prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");
-					replacements.put("$lib",
+					replacements.put("min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
+					replacements.put("prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");
+					replacements.put("lib",
 							Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib" : "lib-minified");
 				}
 				if (mimeType.isCacheable()) {

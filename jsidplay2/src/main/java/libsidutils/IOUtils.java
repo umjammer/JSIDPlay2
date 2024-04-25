@@ -29,7 +29,6 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 import net.java.truevfs.access.TArchiveDetector;
@@ -270,11 +269,8 @@ public class IOUtils {
 		try (java.util.Scanner s = new java.util.Scanner(is, charsetName)) {
 			s.useDelimiter("\\A");
 			String string = s.hasNext() ? s.next() : "";
-			List<Entry<String, String>> sortedEntries = replacements.entrySet().stream()
-					.sorted((e1, e2) -> -Integer.compare(e1.getKey().length(), e2.getKey().length()))
-					.collect(Collectors.toList());
-			for (Entry<String, String> replacement : sortedEntries) {
-				string = string.replace(replacement.getKey(), replacement.getValue());
+			for (Entry<String, String> replacement : replacements.entrySet()) {
+				string = string.replace("${" + replacement.getKey() + "}", replacement.getValue());
 			}
 			return string;
 		}

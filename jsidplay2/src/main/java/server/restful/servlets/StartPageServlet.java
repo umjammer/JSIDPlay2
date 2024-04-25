@@ -51,7 +51,7 @@ public class StartPageServlet extends JSIDPlay2Servlet {
 			throws ServletException, IOException {
 		try {
 			Map<String, String> replacements = new HashMap<>();
-			replacements.put("https://haendel.ddns.net:8443", BASE_URL);
+			replacements.put("baseUrl", BASE_URL);
 
 			try (InputStream is = StartPageServlet.class.getResourceAsStream("/doc/restful.html")) {
 				setOutput(MIME_TYPE_HTML, response, convertStreamToString(is, UTF_8.name(), replacements));

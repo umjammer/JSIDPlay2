@@ -11,16 +11,16 @@
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <!-- Load required Bootstrap, Icons CSS -->
-    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap$min.css" />
-    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons$min.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap${min}.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons${min}.css" />
 
     <!-- Load Vue followed by Bootstrap -->
-    <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
-    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
+    <script src="/webjars/vue/3.4.21/dist/vue.global${prod}.js"></script>
+    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap${min}.js"></script>
 
     <!-- helpers -->
-    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global$prod.js"></script>
-    <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
+    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
+    <script src="/webjars/axios/1.5.1/dist/axios${min}.js"></script>
 
     <!-- WASM -->
     <script src="/static/wasm/jsidplay2.wasm-runtime.js"></script>

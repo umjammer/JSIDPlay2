@@ -633,18 +633,18 @@ public class ConvertServlet extends JSIDPlay2Servlet {
 				String qrCodeImgTag = createQrCodeImgTag(createShareWithURL(request), "UTF-8", "png", 320, 320);
 
 				Map<String, String> replacements = new HashMap<>();
-				replacements.put("$uuid", uuid.toString());
-				replacements.put("$qrCodeImgTag", qrCodeImgTag);
-				replacements.put("$videoUrl", videoUrl);
-				replacements.put("$hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
-				replacements.put("$hlsType", servletParameters.getHlsType().name());
-				replacements.put("$hlsScript", servletParameters.getHlsType().getScript());
-				replacements.put("$hlsStyle", servletParameters.getHlsType().getStyle());
-				replacements.put("$notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
-				replacements.put("$notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
-				replacements.put("$min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
-				replacements.put("$prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");
-				replacements.put("$lib",
+				replacements.put("uuid", uuid.toString());
+				replacements.put("qrCodeImgTag", qrCodeImgTag);
+				replacements.put("videoUrl", videoUrl);
+				replacements.put("hls", String.valueOf(Boolean.TRUE.equals(servletParameters.useHls)));
+				replacements.put("hlsType", servletParameters.getHlsType().name());
+				replacements.put("hlsScript", servletParameters.getHlsType().getScript());
+				replacements.put("hlsStyle", servletParameters.getHlsType().getStyle());
+				replacements.put("notYetPlayedTimeout", String.valueOf(RTMP_NOT_YET_PLAYED_TIMEOUT));
+				replacements.put("notifyForHLS", String.valueOf(NOTIFY_FOR_HLS));
+				replacements.put("min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
+				replacements.put("prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");
+				replacements.put("lib",
 						Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "lib" : "lib-minified");
 				return replacements;
 			}

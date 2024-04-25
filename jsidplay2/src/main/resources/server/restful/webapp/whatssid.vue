@@ -7,9 +7,9 @@
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <!-- Load Vue -->
-    <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
+    <script src="/webjars/vue/3.4.21/dist/vue.global${prod}.js"></script>
     <!-- helpers -->
-    <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
+    <script src="/webjars/axios/1.5.1/dist/axios${min}.js"></script>
 
     <!-- disable pull reload -->
     <style>

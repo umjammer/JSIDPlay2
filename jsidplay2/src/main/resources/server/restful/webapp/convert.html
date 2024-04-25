@@ -4,25 +4,25 @@
     <style lang="scss" scoped>
       @import "/static/convert.scss";
     </style>
-    <link href="$hlsStyle" rel="stylesheet" />
+    <link href="${hlsStyle}" rel="stylesheet" />
     <!-- favicon.ico -->
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link id="favicon-16x16" rel="icon" href="/static/favicon-16x16.png" type="image/png" sizes="16x16" />
 
     <!-- Load required Bootstrap, Icons CSS -->
-    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap$min.css" />
-    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons$min.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/dist/css/bootstrap${min}.css" />
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons${min}.css" />
 
     <!-- Load Vue followed by I18n -->
-    <script src="/webjars/vue/3.4.21/dist/vue.global$prod.js"></script>
-    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap$min.js"></script>
+    <script src="/webjars/vue/3.4.21/dist/vue.global${prod}.js"></script>
+    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap${min}.js"></script>
 
     <!-- helpers -->
-    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global$prod.js"></script>
-    <script src="/webjars/axios/1.5.1/dist/axios$min.js"></script>
-    <script src="/webjars/web-audio-recorder-js/0.0.2/$lib/WebAudioRecorder$min.js"></script>
-    <script src="$hlsScript"></script>
+    <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
+    <script src="/webjars/axios/1.5.1/dist/axios${min}.js"></script>
+    <script src="/webjars/web-audio-recorder-js/0.0.2/${lib}/WebAudioRecorder${min}.js"></script>
+    <script src="${hlsScript}"></script>
 
     <script type="application/javascript">
       var sourceURL = document.referrer;
@@ -214,8 +214,8 @@
         <div class="card">
           <div class="card-body">
             <div class="barcode-container">
-              <b-alert v-if="!hls" variant="success" show>{{ $t("mobilePlaybackTip1") }}</b-alert>
-              $qrCodeImgTag
+              <div v-if="!hls" variant="alert alert-success" role="alert" show>{{ $t("mobilePlaybackTip1") }}</div>
+              ${qrCodeImgTag}
             </div>
           </div>
         </div>
@@ -405,7 +405,7 @@
             regardingTimeoutsTip1: "Actions and key presses are delayed a few seconds.",
             regardingTimeoutsTip2: "Maximum play time is 1 hour.",
             regardingTimeoutsTip3:
-              "If video gets stopped, make sure to continue playing within $notYetPlayedTimeout seconds.",
+              "If video gets stopped, make sure to continue playing within ${notYetPlayedTimeout} seconds.",
             nextDiskDone: "Next Disk has been inserted!",
             nextCartDone: "Next Cartridge has been inserted!",
             defaultSidModel6581Done: "Default SID model has been set to 6581!",
@@ -425,7 +425,7 @@
             regardingTimeoutsTip1: "Aktionen und Tastendr\u00fccke sind einige Sekunden verz\u00f6gert.",
             regardingTimeoutsTip2: "Die maximale Spieldauer betr\u00e4gt 1 Stunde.",
             regardingTimeoutsTip3:
-              "Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von $notYetPlayedTimeout Sekunden fortsetzen.",
+              "Wird das Video angehalten, stellen sie sicher, dass sie das Video innerhalb von ${notYetPlayedTimeout} Sekunden fortsetzen.",
             nextDiskDone: "N\u00e4chste Diskette wurde eingelegt!",
             nextCartDone: "N\u00e4chstes Modul wurde eingesteckt!",
             defaultSidModel6581Done: "Default SID Chip ist jetzt 6581!",
@@ -441,8 +441,8 @@
         data: function () {
           return {
             langs: ["de", "en"],
-            hls: $hls,
-            notifyForHLS: $notifyForHLS,
+            hls: ${hls},
+            notifyForHLS: ${notifyForHLS},
             shiftLeftPressed: false,
             shiftRightPressed: false,
             ctrlPressed: false,
@@ -462,7 +462,7 @@
             if (!this.hls) {
               setTimeout(() => {
                 window.open(
-                  "$videoUrl",
+                  "${videoUrl}",
                   "c64video",
                   "resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, titlebar=no, location=no, fullscreen=yes"
                 );
@@ -477,30 +477,30 @@
           },
           fastForward: function () {
             if (this.hls) {
-              if ("$hlsType" === "VIDEO_JS") {
+              if ("${hlsType}" === "VIDEO_JS") {
                 var video = videojs("video-container");
                 video.currentTime(video.bufferedEnd() - 1);
-              } else if ("$hlsType" === "HLS_JS") {
+              } else if ("${hlsType}" === "HLS_JS") {
                 var video = document.getElementById("video-container");
                 video.currentTime = video.duration - 1;
               }
             }
           },
           currentTime: function () {
-            if ("$hlsType" === "VIDEO_JS") {
+            if ("${hlsType}" === "VIDEO_JS") {
               var video = videojs("video-container");
               return video.currentTime();
-            } else if ("$hlsType" === "HLS_JS") {
+            } else if ("${hlsType}" === "HLS_JS") {
               var video = document.getElementById("video-container");
               return video.currentTime;
             }
             return null;
           },
           bufferedEnd: function () {
-            if ("$hlsType" === "VIDEO_JS") {
+            if ("${hlsType}" === "VIDEO_JS") {
               var video = videojs("video-container");
               return video.bufferedEnd();
-            } else if ("$hlsType" === "HLS_JS") {
+            } else if ("${hlsType}" === "HLS_JS") {
               var video = document.getElementById("video-container");
               return video.duration;
             }
@@ -549,7 +549,7 @@
           typeKey: function (key) {
             axios({
               method: "get",
-              url: "/static/press_key?name=$uuid&type=" + key,
+              url: "/static/press_key?name=${uuid}&type=" + key,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -562,7 +562,7 @@
           pressKey: function (key) {
             axios({
               method: "get",
-              url: "/static/press_key?name=$uuid&press=" + key,
+              url: "/static/press_key?name=${uuid}&press=" + key,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -574,7 +574,7 @@
           releaseKey: function (key) {
             axios({
               method: "get",
-              url: "/static/press_key?name=$uuid&release=" + key,
+              url: "/static/press_key?name=${uuid}&release=" + key,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -586,7 +586,7 @@
           insertNextDisk: function () {
             axios({
               method: "get",
-              url: "/static/insert_next_disk?name=$uuid",
+              url: "/static/insert_next_disk?name=${uuid}",
               auth: {
                 username: this.username,
                 password: this.password,
@@ -603,7 +603,7 @@
           insertNextCart: function () {
             axios({
               method: "get",
-              url: "/static/insert_next_cart?name=$uuid",
+              url: "/static/insert_next_cart?name=${uuid}",
               auth: {
                 username: this.username,
                 password: this.password,
@@ -620,7 +620,7 @@
           setDefaultSidModel6581: function () {
             axios({
               method: "get",
-              url: "/static/set_default_sid_model_6581?name=$uuid",
+              url: "/static/set_default_sid_model_6581?name=${uuid}",
               auth: {
                 username: this.username,
                 password: this.password,
@@ -635,7 +635,7 @@
           setDefaultSidModel8580: function () {
             axios({
               method: "get",
-              url: "/static/set_default_sid_model_8580?name=$uuid",
+              url: "/static/set_default_sid_model_8580?name=${uuid}",
               auth: {
                 username: this.username,
                 password: this.password,
@@ -650,7 +650,7 @@
           setDefaultEmulationReSid: function () {
             axios({
               method: "get",
-              url: "/static/set_default_emulation_resid?name=$uuid",
+              url: "/static/set_default_emulation_resid?name=${uuid}",
               auth: {
                 username: this.username,
                 password: this.password,
@@ -665,7 +665,7 @@
           setDefaultEmulationReSidFp: function () {
             axios({
               method: "get",
-              url: "/static/set_default_emulation_residfp?name=$uuid",
+              url: "/static/set_default_emulation_residfp?name=${uuid}",
               auth: {
                 username: this.username,
                 password: this.password,
@@ -680,7 +680,7 @@
           setJoyBtn: function (number, value) {
             axios({
               method: "get",
-              url: "/static/joystick?name=$uuid&number=" + number + "&value=" + value,
+              url: "/static/joystick?name=${uuid}&number=" + number + "&value=" + value,
               auth: {
                 username: this.username,
                 password: this.password,
@@ -713,12 +713,12 @@
               var xhttp = new XMLHttpRequest();
               xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                  // console.log("HLS keep alive: $uuid");
+                  // console.log("HLS keep alive: ${uuid}");
                 }
               };
               xhttp.open(
                 "GET",
-                "/static/on_keep_alive?name=$uuid&currentTime=" +
+                "/static/on_keep_alive?name=${uuid}&currentTime=" +
                   outerThis.currentTime() +
                   "&bufferedEnd=" +
                   outerThis.bufferedEnd(),
@@ -728,13 +728,13 @@
             }, this.notifyForHLS);
 
             setTimeout(function () {
-              if ("$hlsType" === "VIDEO_JS") {
+              if ("${hlsType}" === "VIDEO_JS") {
                 var video = videojs("video-container");
                 video.on("resize", function () {
                   this.fluid(true);
                 });
                 video.src({
-                  src: "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl",
+                  src: "/jsidplay2service/JSIDPlay2REST/proxy/${videoUrl}",
                   type: "application/x-mpegURL",
                 });
                 var promise = video.play();
@@ -758,12 +758,12 @@
                       playerContainer.appendChild(button);
                     });
                 }
-              } else if ("$hlsType" === "HLS_JS") {
+              } else if ("${hlsType}" === "HLS_JS") {
                 var video = document.getElementById("video-container");
 
                 if (Hls.isSupported()) {
                   var hls = new Hls();
-                  hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl");
+                  hls.loadSource("/jsidplay2service/JSIDPlay2REST/proxy/${videoUrl}");
                   hls.attachMedia(video);
                   hls.on(Hls.Events.ERROR, function (event, data) {
                     if (data.fatal) {
@@ -805,7 +805,7 @@
                       });
                   }
                 } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-                  video.src = "/jsidplay2service/JSIDPlay2REST/proxy/$videoUrl";
+                  video.src = "/jsidplay2service/JSIDPlay2REST/proxy/${videoUrl}";
                 }
               }
             }, this.waitForVideo);
