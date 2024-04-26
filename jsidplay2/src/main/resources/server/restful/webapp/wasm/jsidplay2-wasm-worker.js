@@ -23,9 +23,27 @@ function allocateTeaVMstring(str) {
 self.addEventListener(
   "message",
   function (event) {
-    const { eventType, eventData, eventId } = event.data;
+    var { eventType, eventData, eventId } = event.data;
 
-    if (eventType === "INITIALISE") {
+     if (eventType === "CLOCK") {
+      instance.exports.clock();
+
+      self.postMessage({
+        eventType: "CLOCKED",
+      });
+    } else if (eventType === "OPEN") {
+      instance.exports.open(
+        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
+        eventData.tuneName ? allocateTeaVMstring(eventData.tuneName) : undefined,
+        eventData.startSong,
+        eventData.nthFrame,
+        eventData.sidWrites
+      );
+
+      self.postMessage({
+        eventType: "OPENED",
+      });
+    } else if (eventType === "INITIALISE") {
       screenByteLength = eventData.screenByteLength;
 
       TeaVM.wasm
@@ -86,34 +104,10 @@ self.addEventListener(
         .then((teavm) => {
           instance = teavm.instance;
 
-          // Send back initialised message to main thread
           self.postMessage({
             eventType: "INITIALISED",
-            eventData: undefined,
           });
         });
-    } else if (eventType === "OPEN") {
-      instance.exports.open(
-        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
-        eventData.tuneName ? allocateTeaVMstring(eventData.tuneName) : undefined,
-        eventData.startSong,
-        eventData.nthFrame,
-        eventData.sidWrites
-      );
-
-      // Send back initialised message to main thread
-      self.postMessage({
-        eventType: "OPENED",
-        eventData: undefined,
-      });
-    } else if (eventType === "CLOCK") {
-      instance.exports.clock();
-
-      // Send back initialised message to main thread
-      self.postMessage({
-        eventType: "CLOCKED",
-        eventData: undefined,
-      });
     }
   },
   false

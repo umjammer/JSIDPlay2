@@ -326,33 +326,9 @@
           });
 
           worker.addEventListener("message", function (event) {
-            const { eventType, eventData, eventId } = event.data;
+            var { eventType, eventData, eventId } = event.data;
 
-            if (eventType === "INITIALISED") {
-              worker.postMessage({
-                eventType: "OPEN",
-                eventData: {
-                  contents: contents,
-                  tuneName: tuneName,
-                  startSong: app.startSong,
-                  nthFrame: app.screen ? app.nthFrame : 0,
-                  sidWrites: app.sidWrites,
-                },
-              });
-
-              chunkNumber = 2; // initial delay for warm-up phase
-              canvasContext.clearRect(0, 0, maxWidth, maxHeight);
-              imageQueue.clear();
-              app.playing = true;
-              app.msg = app.$t("playing");
-              if (app.screen) {
-                app.show();
-              }
-            } else if (eventType === "OPENED") {
-              worker.postMessage({ eventType: "CLOCK", eventData: undefined });
-            } else if (eventType === "CLOCKED") {
-              worker.postMessage({ eventType: "CLOCK", eventData: undefined });
-            } else if (eventType === "SAMPLES") {
+            if (eventType === "SAMPLES") {
               var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
               buffer.getChannelData(0).set(eventData.left);
               buffer.getChannelData(1).set(eventData.right);
@@ -376,7 +352,28 @@
                   ", value=" +
                   eventData.value
               );
-            } else if (eventType === "ERROR") {
+            } else if (eventType === "OPENED" || eventType === "CLOCKED") {
+              worker.postMessage({ eventType: "CLOCK" });
+            } else if (eventType === "INITIALISED") {
+              worker.postMessage({
+                eventType: "OPEN",
+                eventData: {
+                  contents: contents,
+                  tuneName: tuneName,
+                  startSong: app.startSong,
+                  nthFrame: app.screen ? app.nthFrame : 0,
+                  sidWrites: app.sidWrites,
+                },
+              });
+
+              chunkNumber = 2; // initial delay for warm-up phase
+              canvasContext.clearRect(0, 0, maxWidth, maxHeight);
+              imageQueue.clear();
+              app.playing = true;
+              app.msg = app.$t("playing");
+              if (app.screen) {
+                app.show();
+              }
             }
           });
 
