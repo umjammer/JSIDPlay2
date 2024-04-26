@@ -27,7 +27,6 @@ var screenByteLength;
         eventData: {
 			left: new Float32Array(instance.exports.memory.buffer, instance.exports.teavm_floatArrayData(leftChannelPtr), length),
 			right: new Float32Array(instance.exports.memory.buffer, instance.exports.teavm_floatArrayData(rightChannelPtr), length),
-			length: length,
 		}
     });
   }

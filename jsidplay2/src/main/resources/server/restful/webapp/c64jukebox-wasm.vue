@@ -336,20 +336,22 @@
               imageQueue.clear();
               app.playing = true;
               app.msg = app.$t("playing");
-              app.show();
+              if (app.screen) {
+                app.show();
+              }
             } else if (eventType === "OPENED") {
               worker.postMessage({ eventType: "CLOCK", eventData: undefined });
             } else if (eventType === "CLOCKED") {
               worker.postMessage({ eventType: "CLOCK", eventData: undefined });
             } else if (eventType === "SAMPLES") {
-              var buffer = audioContext.createBuffer(2, eventData.length, audioContext.sampleRate);
+              var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
               buffer.getChannelData(0).set(eventData.left);
               buffer.getChannelData(1).set(eventData.right);
 
               var sourceNode = audioContext.createBufferSource();
               sourceNode.buffer = buffer;
               sourceNode.connect(audioContext.destination);
-              sourceNode.start((eventData.length / audioContext.sampleRate) * chunkNumber++);
+              sourceNode.start((eventData.left.length / audioContext.sampleRate) * chunkNumber++);
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
