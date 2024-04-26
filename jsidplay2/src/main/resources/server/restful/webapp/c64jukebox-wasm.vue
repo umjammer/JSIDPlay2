@@ -22,9 +22,6 @@
     <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
     <script src="/webjars/axios/1.5.1/dist/axios${min}.js"></script>
 
-    <!-- WASM -->
-    <script src="/static/wasm/jsidplay2.wasm-runtime.js"></script>
-
     <!-- disable pull reload -->
     <style>
       html,
@@ -227,12 +224,6 @@
       </form>
     </div>
     <script>
-      var AudioContext = window.AudioContext || window.webkitAudioContext;
-      var audioContext;
-      var chunkNumber;
-
-      var canvasContext;
-      var imageData, data;
       const maxWidth = 384;
       const maxHeight = 312;
       const MAX_QUEUE_SIZE = 60;
@@ -292,54 +283,96 @@
           },
         });
       }
+
+      var worker;
+
+      var AudioContext = window.AudioContext || window.webkitAudioContext;
+      var audioContext;
+      var chunkNumber;
+
+      var canvasContext;
+      var imageData, data;
       var imageQueue = new Queue();
 
-      function allocateTeaVMbyteArray(array) {
-        let byteArrayPtr = window.instance.exports.teavm_allocateByteArray(array.length);
-        let byteArrayData = window.instance.exports.teavm_byteArrayData(byteArrayPtr);
-        new Uint8Array(window.instance.exports.memory.buffer, byteArrayData, array.length).set(array);
-        return byteArrayPtr;
-      }
-
-      function allocateTeaVMstring(str) {
-        let stringPtr = window.instance.exports.teavm_allocateString(str.length);
-        let objectArrayData = window.instance.exports.teavm_objectArrayData(
-          instance.exports.teavm_stringData(stringPtr)
-        );
-        let arrayView = new Uint16Array(window.instance.exports.memory.buffer, objectArrayData, str.length);
-        for (let i = 0; i < arrayView.length; ++i) {
-          arrayView[i] = str.charCodeAt(i);
+      function wasmWorker(contents, tuneName) {
+        if (worker) {
+          worker.terminate();
+          worker = undefined;
         }
-        return stringPtr;
-      }
 
-      function processSamples(leftChannelPtr, rightChannelPtr, length) {
-        var leftChannelAddress = instance.exports.teavm_floatArrayData(leftChannelPtr);
-        var rightChannelAddress = instance.exports.teavm_floatArrayData(rightChannelPtr);
+        worker = new Worker("wasm/jsidplay2-wasm-worker.js");
 
-        var buffer = audioContext.createBuffer(2, length, audioContext.sampleRate);
-        buffer.getChannelData(0).set(new Float32Array(instance.exports.memory.buffer, leftChannelAddress, length));
-        buffer.getChannelData(1).set(new Float32Array(instance.exports.memory.buffer, rightChannelAddress, length));
+        return new Promise((resolve, reject) => {
+          worker.postMessage({
+            eventType: "INITIALISE",
+            eventData: {
+              bufferSize: app.bufferSize,
+              audioBufferSize: app.audioBufferSize,
+              samplingRate: audioContext.sampleRate,
+              samplingMethodResample: app.sampling === "true",
+              reverbBypass: app.reverbBypass,
+              defaultClockSpeed: app.defaultClockSpeed,
+              defaultSidModel: app.defaultSidModel === "true",
+              screenByteLength: app.screenByteLength,
+            },
+          });
 
-        var sourceNode = audioContext.createBufferSource();
-        sourceNode.buffer = buffer;
-        sourceNode.connect(audioContext.destination);
-        sourceNode.start((length / audioContext.sampleRate) * chunkNumber++);
-      }
+          worker.addEventListener("message", function (event) {
+            const { eventType, eventData, eventId } = event.data;
 
-      function processPixels(pixelsPtr) {
-        // XXX works for little-endian, only: int array treated as byte array!
-        imageQueue.enqueue({
-          image: new Uint8Array(
-            instance.exports.memory.buffer,
-            instance.exports.teavm_intArrayData(pixelsPtr),
-            app.screenByteLength
-          ).slice(),
+            if (eventType === "INITIALISED") {
+              worker.postMessage({
+                eventType: "OPEN",
+                eventData: {
+                  contents: contents,
+                  tuneName: tuneName,
+                  nthFrame: app.screen ? app.nthFrame : 0,
+                  sidWrites: app.sidWrites,
+                },
+              });
+
+              chunkNumber = 2; // initial delay for warm-up phase
+              canvasContext.clearRect(0, 0, maxWidth, maxHeight);
+              imageQueue.clear();
+              app.playing = true;
+              app.msg = app.$t("playing");
+              app.show();
+            } else if (eventType === "OPENED") {
+              worker.postMessage({ eventType: "CLOCK", eventData: undefined });
+            } else if (eventType === "CLOCKED") {
+              worker.postMessage({ eventType: "CLOCK", eventData: undefined });
+            } else if (eventType === "SAMPLES") {
+              var buffer = audioContext.createBuffer(2, eventData.length, audioContext.sampleRate);
+              buffer.getChannelData(0).set(eventData.left);
+              buffer.getChannelData(1).set(eventData.right);
+
+              var sourceNode = audioContext.createBufferSource();
+              sourceNode.buffer = buffer;
+              sourceNode.connect(audioContext.destination);
+              sourceNode.start((eventData.length / audioContext.sampleRate) * chunkNumber++);
+            } else if (eventType === "FRAME") {
+              imageQueue.enqueue({
+                image: eventData.image,
+              });
+            } else if (eventType === "SID_WRITE") {
+              console.log(
+                "time=" +
+                  eventData.time +
+                  ", relTime=" +
+                  eventData.relTime +
+                  ", addr=" +
+                  eventData.addr +
+                  ", value=" +
+                  eventData.value
+              );
+            } else if (eventType === "ERROR") {
+            }
+          });
+
+          worker.addEventListener("error", function (error) {
+            reject(error);
+          });
         });
-      }
-
-      function processSidWrite(time, relTime, addr, value) {
-        console.log("time=" + time + ", relTime=" + relTime + ", addr=" + addr + ", value=" + value);
       }
 
       const { createApp, ref } = Vue;
@@ -420,112 +453,30 @@
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
           },
-          startTune() {
-            audioContext = new AudioContext();
-            TeaVM.wasm
-              .load("/static/wasm/jsidplay2.wasm", {
-                installImports(o, controller) {
-                  o.audiosection = {
-                    getBufferSize: () => app.bufferSize,
-                    getAudioBufferSize: () => app.audioBufferSize,
-                    getSamplingRate: () => audioContext.sampleRate,
-                    getSamplingMethodResample: () => app.sampling === "true",
-                    getReverbBypass: () => app.reverbBypass,
-                  };
-                  o.emulationsection = {
-                    getDefaultClockSpeed: () => app.defaultClockSpeed,
-                    getDefaultSidModel8580: () => app.defaultSidModel === "true",
-                  };
-                  o.audiodriver = {
-                    processSamples: processSamples,
-                    processPixels: processPixels,
-                    processSidWrite: processSidWrite,
-                  };
-                },
-              })
-              .then((teavm) => {
-                window.instance = teavm.instance;
-
-                var reader = new FileReader();
-                reader.onload = function () {
-                  let sidContentsPtr = allocateTeaVMbyteArray(new Uint8Array(this.result));
-                  let tuneNamePtr = allocateTeaVMstring(app.chosenFile.name);
-
-                  window.instance.exports.open(
-                    sidContentsPtr,
-                    tuneNamePtr,
-                    app.screen ? app.nthFrame : 0,
-                    app.sidWrites
-                  );
-
-                  app.play();
-                };
-                reader.readAsArrayBuffer(app.chosenFile);
-                app.msg = app.$t("loading");
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          },
           reset() {
             audioContext = new AudioContext();
-            TeaVM.wasm
-              .load("/static/wasm/jsidplay2.wasm", {
-                installImports(o, controller) {
-                  o.audiosection = {
-                    getBufferSize: () => app.bufferSize,
-                    getAudioBufferSize: () => app.audioBufferSize,
-                    getSamplingRate: () => audioContext.sampleRate,
-                    getSamplingMethodResample: () => app.sampling === "true",
-                    getReverbBypass: () => app.reverbBypass,
-                  };
-                  o.emulationsection = {
-                    getDefaultClockSpeed: () => app.defaultClockSpeed,
-                    getDefaultSidModel8580: () => app.defaultSidModel === "true",
-                  };
-                  o.audiodriver = {
-                    processSamples: processSamples,
-                    processPixels: processPixels,
-                    processSidWrite: processSidWrite,
-                  };
-                },
-              })
-              .then((teavm) => {
-                window.instance = teavm.instance;
-
-                window.instance.exports.open(undefined, undefined, app.screen ? app.nthFrame : 0, app.sidWrites);
-
-                app.play();
-                app.msg = app.$t("loading");
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            wasmWorker(undefined, undefined);
+            app.msg = app.$t("loading");
+          },
+          startTune() {
+            audioContext = new AudioContext();
+            var reader = new FileReader();
+            reader.onload = function () {
+              wasmWorker(new Uint8Array(this.result), app.chosenFile.name);
+            };
+            reader.readAsArrayBuffer(app.chosenFile);
+            app.msg = app.$t("loading");
           },
           stopTune() {
             canvasContext.clearRect(0, 0, maxWidth, maxHeight);
-            window.instance.exports.close();
+            worker.terminate();
+            worker = undefined;
             setTimeout(() => {
               imageQueue.clear();
               app.msg = "";
               app.playing = false;
               audioContext.close();
             });
-          },
-          play: function () {
-            chunkNumber = 2; // initial delay for warm-up phase
-            canvasContext.clearRect(0, 0, maxWidth, maxHeight);
-            imageQueue.clear();
-            app.playing = true;
-            app.msg = app.$t("playing");
-
-            app.clock();
-            if (app.screen) {
-              app.show();
-            }
-          },
-          clock: function () {
-            if (window.instance.exports.clock() > 0) setTimeout(() => app.clock());
           },
           show: function () {
             if (imageQueue.isNotEmpty()) {
