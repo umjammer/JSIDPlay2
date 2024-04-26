@@ -101,6 +101,14 @@
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
                   <span class="setting">
+                    <label for="startSong"
+                      >{{ $t("startSong") }}
+                      <input class="right" type="number" id="startSong" class="form-control" v-model.number="startSong"
+                    /></label>
+                  </span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting">
                     <label for="nthFrame" v-show="screen">
                       <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
                         <option v-for="n in nthFrames" :value="n">{{ n }}</option>
@@ -326,6 +334,7 @@
                 eventData: {
                   contents: contents,
                   tuneName: tuneName,
+                  startSong: app.startSong,
                   nthFrame: app.screen ? app.nthFrame : 0,
                   sidWrites: app.sidWrites,
                 },
@@ -394,6 +403,7 @@
             sidWrites: "Print SID writes to console",
             bufferSize: "Emulation buffer size",
             audioBufferSize: "Audio buffer size",
+            startSong: "Start song",
             nthFrame: "Show every nth frame",
             play: "Play",
             reset: "Reset",
@@ -410,6 +420,7 @@
             sidWrites: "SID writes in Konsole schreiben",
             bufferSize: "Emulationspuffer Größe",
             audioBufferSize: "Audio Puffer Größe",
+            startSong: "Start Song",
             nthFrame: "Zeige jedes Nte Bild",
             play: "Spiele",
             reset: "Reset",
@@ -429,6 +440,7 @@
             playing: false,
             screen: false,
             defaultClockSpeed: 50,
+            startSong: 0,
             nthFrame: 1,
             nthFrames: [1, 10, 25, 30, 50, 60],
             defaultSidModel: false,

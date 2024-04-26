@@ -56,7 +56,7 @@ public class JSIDPlay2TeaVM {
 	//
 
 	@Export(name = "open")
-	public static void open(byte[] sidContents, String nameFromJS, int nthFrame, boolean addSidListener)
+	public static void open(byte[] sidContents, String nameFromJS, int song, int nthFrame, boolean addSidListener)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		SidTune tune;
 		if (sidContents != null) {
@@ -64,8 +64,9 @@ public class JSIDPlay2TeaVM {
 			String url = new StringBuilder(nameFromJS).toString();
 			LOG.finest("Load Tune, length=" + sidContents.length);
 			LOG.finest("Tune name: " + url);
+			LOG.finest("Song: " + song);
 			tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
-			tune.getInfo().setSelectedSong(null);
+			tune.getInfo().setSelectedSong(song == 0 ? null : song);
 		} else {
 			LOG.finest("RESET");
 			tune = RESET;
