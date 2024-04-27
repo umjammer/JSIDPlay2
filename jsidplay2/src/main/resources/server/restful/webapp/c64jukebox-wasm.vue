@@ -226,15 +226,16 @@
           </div>
           <p>Web Assembly Version (WASM) powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
           <ol>
+            <li>NOT JAVA, just Web Assembly (W3C standard) and Javascript</li>
             <li>Complete client side code, no server required</li>
             <li>&lt;2MB in size</li>
-            <li>Single Source for Java and WASM Version</li>
-            <li>Runs with nearly native speed (1.5x)</li>
-            <li>Runs in all major browsers</li>
-            <li>Full emulation, no compromise in compatibility</li>
+            <li>Developed as single Source code in JSIDPlay2 project</li>
+            <li>Runs with nearly native speed (approximately 1.5x)</li>
+            <li>Runs in all browsers</li>
+            <li>Full emulation quality, no compromises</li>
             <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
             <li>Performance only depends on your PC setup</li>
-            <li>Runs even on a mobile phone, only, if it's fast enough :-)</li>
+            <li>Could even run on a mobile phone, if it's fast enough :-)</li>
           </ol>
         </div>
       </form>
