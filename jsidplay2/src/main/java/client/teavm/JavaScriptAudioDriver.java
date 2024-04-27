@@ -56,8 +56,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		n = 0;
 		sidWiteTime = 0;
-
-		for (int i = -32768; i < 32768; i++) {
+		for (int i = Short.MIN_VALUE; i <= Short.MAX_VALUE; i++) {
 			lookupTable[i + 32768] = (float) (i / 32768.0f);
 		}
 	}

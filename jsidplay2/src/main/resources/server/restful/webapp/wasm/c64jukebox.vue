@@ -379,7 +379,7 @@
               app.clearScreen();
               app.msg = app.$t("playing");
               if (app.screen) {
-                app.showFrame();
+                setTimeout(() => app.showFrame(), app.startTime * app.audioBufferSize * 1000 / audioContext.sampleRate);
               }
             }
           });
