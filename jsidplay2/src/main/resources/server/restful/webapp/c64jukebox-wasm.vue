@@ -119,6 +119,14 @@
                 </div>
                 <div class="settings-box">
                   <span class="setting">
+                    <label for="startTime"
+                      >{{ $t("startTime") }}
+                      <input class="right" type="number" id="startTime" class="form-control" v-model.number="startTime"
+                    /></label>
+                  </span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting">
                     <label for="defaultClockSpeed">
                       <select
                         class="form-select form-select-sm right"
@@ -365,7 +373,7 @@
                 },
               });
 
-              chunkNumber = 2; // initial delay for warm-up phase
+              chunkNumber = app.startTime;
               imageQueue.clear();
               app.playing = true;
               app.clearScreen();
@@ -401,6 +409,7 @@
             audioBufferSize: "Audio buffer size",
             startSong: "Start song",
             nthFrame: "Show every nth frame",
+            startTime: "Initial delay for warm-up phase",
             play: "Play",
             reset: "Reset",
             stop: "Stop",
@@ -418,6 +427,7 @@
             audioBufferSize: "Audio Puffer Größe",
             startSong: "Start Song",
             nthFrame: "Zeige jedes Nte Bild",
+            startTime: "Initiale Verzögerung für die Aufwärmphase",
             play: "Spiele",
             reset: "Reset",
             stop: "Stop",
@@ -439,6 +449,7 @@
             startSong: 0,
             nthFrame: 1,
             nthFrames: [1, 10, 25, 30, 50, 60],
+            startTime: 2,
             defaultSidModel: false,
             sampling: false,
             reverbBypass: true,
@@ -483,7 +494,7 @@
             });
           },
           clearScreen: function () {
-            data.set(new Uint8Array(maxWidth * maxHeight << 2));
+            data.set(new Uint8Array((maxWidth * maxHeight) << 2));
             canvasContext.putImageData(imageData, 0, 0);
           },
           showFrame: function () {
