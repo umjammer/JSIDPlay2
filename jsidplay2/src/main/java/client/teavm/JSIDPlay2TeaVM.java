@@ -143,16 +143,10 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@Export(name = "clock")
-	public static int clock() throws InterruptedException {
+	public static void clock() throws InterruptedException {
 		for (int i = 0; i < bufferSize; i++) {
 			context.clock();
 		}
-		return bufferSize;
-	}
-
-	@Export(name = "close")
-	public static void close() {
-		bufferSize = 0;
 	}
 
 	@Export(name = "delaySidBlaster")

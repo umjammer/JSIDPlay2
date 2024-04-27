@@ -25,7 +25,7 @@ self.addEventListener(
   function (event) {
     var { eventType, eventData, eventId } = event.data;
 
-     if (eventType === "CLOCK") {
+    if (eventType === "CLOCK") {
       instance.exports.clock();
 
       self.postMessage({
