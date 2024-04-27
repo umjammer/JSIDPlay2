@@ -1,7 +1,5 @@
 importScripts("jsidplay2.wasm-runtime.js");
 
-var screenByteLength;
-
 function allocateTeaVMbyteArray(array) {
   let byteArrayPtr = instance.exports.teavm_allocateByteArray(array.length);
   let byteArrayData = instance.exports.teavm_byteArrayData(byteArrayPtr);
@@ -44,8 +42,6 @@ self.addEventListener(
         eventType: "OPENED",
       });
     } else if (eventType === "INITIALISE") {
-      screenByteLength = eventData.screenByteLength;
-
       TeaVM.wasm
         .load("/static/wasm/jsidplay2.wasm", {
           installImports(o, controller) {
@@ -77,14 +73,14 @@ self.addEventListener(
                     ),
                   },
                 }),
-              processPixels: (pixelsPtr) =>
+              processPixels: (pixelsPtr, length) =>
                 self.postMessage({
                   eventType: "FRAME",
                   eventData: {
                     image: new Uint8Array(
                       instance.exports.memory.buffer,
                       instance.exports.teavm_intArrayData(pixelsPtr),
-                      screenByteLength
+                      length
                     ).slice(),
                   },
                 }),

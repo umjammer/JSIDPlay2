@@ -1,5 +1,8 @@
 package client.teavm;
 
+import static libsidplay.common.CPUClock.PAL;
+import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;
+
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -15,6 +18,7 @@ import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.SIDListener;
+import libsidplay.components.mos656x.MOS6567;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.config.IAudioSection;
 import sidplay.audio.AudioConfig;
@@ -23,12 +27,16 @@ import sidplay.audio.VideoDriver;
 
 public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SIDListener {
 
+	private CPUClock cpuClock;
 	private EventScheduler context;
 	private ByteBuffer sampleBuffer;
 
 	private FloatBuffer resultL, resultR;
 	private int n, nthFrame;
 	private long sidWiteTime;
+
+	private int[] array;
+	private int length;
 
 	public JavaScriptAudioDriver(int nthFrame) {
 		this.nthFrame = nthFrame;
@@ -37,6 +45,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 	@Override
 	public void open(IAudioSection audioSection, String recordingFilename, CPUClock cpuClock, EventScheduler context)
 			throws IOException, LineUnavailableException, InterruptedException {
+		this.cpuClock = cpuClock;
 		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
@@ -68,7 +77,11 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 	public void accept(VIC vic) {
 		if (++n == nthFrame) {
 			n = 0;
-			processPixels(vic.getPalEmulation().getPixels().array());
+			if (array == null) {
+				array = vic.getPalEmulation().getPixels().array();
+				length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
+			}
+			processPixels(array, length);
 		}
 	}
 
@@ -101,7 +114,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 	private static native void processSamples(float[] resultL, float[] resultR, int length);
 
 	@Import(module = "audiodriver", name = "processPixels")
-	private static native void processPixels(int[] pixels);
+	private static native void processPixels(int[] pixels, int length);
 
 	@Import(module = "audiodriver", name = "processSidWrite")
 	private static native void processSidWrite(long time, long relTime, int addr, int value);

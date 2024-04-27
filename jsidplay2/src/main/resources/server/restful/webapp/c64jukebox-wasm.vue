@@ -321,7 +321,6 @@
               reverbBypass: app.reverbBypass,
               defaultClockSpeed: app.defaultClockSpeed,
               defaultSidModel: app.defaultSidModel === "true",
-              screenByteLength: app.screenByteLength,
             },
           });
 
@@ -366,7 +365,7 @@
                 },
               });
 
-              chunkNumber = 2; // initial delay for warm-up phase
+              chunkNumber = 4; // initial delay for warm-up phase
               canvasContext.clearRect(0, 0, maxWidth, maxHeight);
               imageQueue.clear();
               app.playing = true;
@@ -452,11 +451,6 @@
           canvasHeight: {
             get: function () {
               return this.defaultClockSpeed == 50 ? 285 : 236;
-            },
-          },
-          screenByteLength: {
-            get: function () {
-              return (maxWidth * app.canvasHeight) << 2;
             },
           },
         },
