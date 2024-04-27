@@ -365,15 +365,13 @@
                 },
               });
 
-              chunkNumber = 4; // initial delay for warm-up phase
-              canvasContext.clearRect(0, 0, maxWidth, maxHeight);
+              chunkNumber = 2; // initial delay for warm-up phase
               imageQueue.clear();
               app.playing = true;
+              app.clearScreen();
               app.msg = app.$t("playing");
               if (app.screen) {
-                data.set(new Uint8Array(maxWidth * maxHeight << 2));
-                canvasContext.putImageData(imageData, 0, 0);
-                app.show();
+                app.showFrame();
               }
             }
           });
@@ -475,7 +473,6 @@
             app.msg = app.$t("loading");
           },
           stopTune() {
-            canvasContext.clearRect(0, 0, maxWidth, maxHeight);
             worker.terminate();
             worker = undefined;
             setTimeout(() => {
@@ -485,12 +482,16 @@
               audioContext.close();
             });
           },
-          show: function () {
+          clearScreen: function () {
+            data.set(new Uint8Array(maxWidth * maxHeight << 2));
+            canvasContext.putImageData(imageData, 0, 0);
+          },
+          showFrame: function () {
             if (imageQueue.isNotEmpty()) {
               data.set(imageQueue.dequeue().image);
               canvasContext.putImageData(imageData, 0, 0);
             }
-            if (app.playing) setTimeout(() => app.show(), (1000 / app.defaultClockSpeed) * app.nthFrame);
+            if (app.playing) setTimeout(() => app.showFrame(), (1000 / app.defaultClockSpeed) * app.nthFrame);
           },
         },
         mounted: function () {
