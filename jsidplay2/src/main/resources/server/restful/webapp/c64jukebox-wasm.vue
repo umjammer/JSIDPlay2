@@ -371,6 +371,8 @@
               app.playing = true;
               app.msg = app.$t("playing");
               if (app.screen) {
+                data.set(new Uint8Array(maxWidth * maxHeight << 2));
+                canvasContext.putImageData(imageData, 0, 0);
                 app.show();
               }
             }
