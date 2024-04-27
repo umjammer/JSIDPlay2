@@ -317,7 +317,7 @@
           worker = undefined;
         }
 
-        worker = new Worker("wasm/jsidplay2-wasm-worker.js");
+        worker = new Worker("jsidplay2-wasm-worker.js");
 
         return new Promise((resolve, reject) => {
           worker.postMessage({

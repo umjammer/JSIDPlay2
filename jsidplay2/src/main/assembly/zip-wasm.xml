@@ -11,13 +11,17 @@
 		<fileSet>
 			<directory>${project.build.directory}/classes/server/restful/webapp/wasm/</directory>
 			<outputDirectory></outputDirectory>
+			<filtered>false</filtered>
+			<excludes>
+				<exclude>c64jukebox.vue</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/classes/server/restful/webapp/</directory>
+			<directory>${project.build.directory}/classes/server/restful/webapp/wasm/</directory>
 			<outputDirectory></outputDirectory>
 			<filtered>true</filtered>
 			<includes>
-				<include>c64jukebox-wasm.vue</include>
+				<include>c64jukebox.vue</include>
 			</includes>
 		</fileSet>
 	</fileSets>

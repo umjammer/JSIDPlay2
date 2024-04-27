@@ -43,7 +43,7 @@ self.addEventListener(
       });
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm
-        .load("/static/wasm/jsidplay2.wasm", {
+        .load("jsidplay2.wasm", {
           installImports(o, controller) {
             o.audiosection = {
               getBufferSize: () => eventData.bufferSize,
