@@ -20,7 +20,6 @@
 
     <!-- helpers -->
     <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
-    <script src="/webjars/axios/1.5.1/dist/axios${min}.js"></script>
 
     <!-- disable pull reload -->
     <style>
