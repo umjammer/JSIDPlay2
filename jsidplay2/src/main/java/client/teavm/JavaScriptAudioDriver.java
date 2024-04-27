@@ -32,6 +32,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 	private ByteBuffer sampleBuffer;
 
 	private FloatBuffer resultL, resultR;
+	float[] lookupTable = new float[65536];
 	private int n, nthFrame;
 	private long sidWiteTime;
 
@@ -55,6 +56,10 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		n = 0;
 		sidWiteTime = 0;
+
+		for (int i = -32768; i < 32768; i++) {
+			lookupTable[i + 32768] = (float) (i / 32768.0f);
+		}
 	}
 
 	@Override
@@ -64,8 +69,8 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 		// SHORT to FLOAT samples
 		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
 		while (shortBuffer.hasRemaining()) {
-			resultL.put(shortBuffer.get() / 32768.0f);
-			resultR.put(shortBuffer.get() / 32768.0f);
+			resultL.put(lookupTable[shortBuffer.get() + 32768]);
+			resultR.put(lookupTable[shortBuffer.get() + 32768]);
 		}
 		((Buffer) sampleBuffer).position(position);
 		processSamples(resultL.array(), resultR.array(), resultL.position());
