@@ -507,6 +507,8 @@
 						<inputGlob>
 							src/main/resources/server/restful/webapp/*.html</inputGlob>
 						<inputGlob>
+							src/main/resources/server/restful/webapp/wasm/*.vue</inputGlob>
+						<inputGlob>
 							src/main/resources/server/restful/webapp/wasm/*.js</inputGlob>
 					</inputGlobs>
 				</configuration>
