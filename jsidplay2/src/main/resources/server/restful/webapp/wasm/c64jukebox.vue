@@ -103,7 +103,7 @@
           <div class="row">
             <div class="col">
               <div v-show="screen">
-                <canvas id="c64Screen" width="384" :height="canvasHeight" />
+                <canvas id="c64Screen" style="scale: 2; margin: 150px;" width="384" :height="canvasHeight" />
               </div>
             </div>
             <div class="col">
