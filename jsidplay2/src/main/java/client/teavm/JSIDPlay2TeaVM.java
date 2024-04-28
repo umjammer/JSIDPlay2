@@ -17,9 +17,11 @@ import javax.sound.sampled.LineUnavailableException;
 import org.teavm.interop.Export;
 
 import builder.resid.ReSIDBuilder;
+import client.teavm.config.JavaScriptConfig;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
+import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.Control;
@@ -31,6 +33,8 @@ import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneType;
+import sidplay.player.PSid64DetectedTuneInfo;
+import sidplay.player.PSid64Detection;
 
 /**
  * TeaVM version of JSIDPlay2 to generate web assembly code.
@@ -44,10 +48,13 @@ public class JSIDPlay2TeaVM {
 	private static final int MAX_COMMAND_LEN = 16;
 	private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
 	private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
+	private static final int PSID_DETECTION_TIME = 3;
 
 	private static IConfig config;
 	private static EventScheduler context;
+	private static SidTune tune;
 	private static C64 c64;
+	private static ReSIDBuilder sidBuilder;
 	private static String command;
 	private static int bufferSize;
 
@@ -58,7 +65,6 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS, int song, int nthFrame, boolean addSidListener)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		SidTune tune;
 		if (sidContents != null) {
 			// JavaScript string cannot be used directly for some reason, therefore:
 			String url = new StringBuilder(nameFromJS).toString();
@@ -93,6 +99,7 @@ public class JSIDPlay2TeaVM {
 		c64 = hardwareEnsemble.getC64();
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation() : PALEmulation.NONE);
 		hardwareEnsemble.reset();
+		emulationSection.getOverrideSection().reset();
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
 				// for tunes: Install player into RAM
@@ -117,8 +124,10 @@ public class JSIDPlay2TeaVM {
 				typeInCommand(command);
 			}
 		}), SidTune.getInitDelay(tune));
+		c64.getEventScheduler().schedule(Event.of("PSID64 Detection", event -> autodetectPSID64()),
+				(long) (PSID_DETECTION_TIME * c64.getClock().getCpuFrequency()));
 
-		ReSIDBuilder sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
+		sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
 		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver(nthFrame);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
@@ -179,6 +188,41 @@ public class JSIDPlay2TeaVM {
 		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
 		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
 		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
+	}
+
+	private static void autodetectPSID64() {
+		IEmulationSection emulationSection = config.getEmulationSection();
+
+		if (emulationSection.isDetectPSID64ChipModel()) {
+			PSid64DetectedTuneInfo psid64TuneInfo = PSid64Detection.detectPSid64TuneInfo(c64.getRAM(),
+					c64.getVicMemBase() + c64.getVIC().getVideoMatrixBase());
+			if (psid64TuneInfo.isDetected()) {
+
+				boolean update = false;
+				if (psid64TuneInfo.hasDifferentUserChipModel(ChipModel.getChipModel(emulationSection, tune, 0))) {
+					emulationSection.getOverrideSection().getSidModel()[0] = psid64TuneInfo.getUserChipModel();
+					update = true;
+				}
+				if (psid64TuneInfo.hasDifferentStereoChipModel(ChipModel.getChipModel(emulationSection, tune, 1))) {
+					emulationSection.getOverrideSection().getSidModel()[1] = psid64TuneInfo.getStereoChipModel();
+					update = true;
+				}
+				if (psid64TuneInfo.hasDifferentStereoAddress(SidTune.getSIDAddress(emulationSection, tune, 1))) {
+					emulationSection.getOverrideSection().getSidBase()[1] = psid64TuneInfo.getStereoAddress();
+					update = true;
+				}
+				if (update) {
+					c64.insertSIDChips((sidNum, sidEmu) -> {
+						if (SidTune.isSIDUsed(config.getEmulationSection(), tune, sidNum)) {
+							return sidBuilder.lock(sidEmu, sidNum, tune);
+						} else if (sidEmu != NONE) {
+							sidBuilder.unlock(sidEmu);
+						}
+						return NONE;
+					}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
+				}
+			}
+		}
 	}
 
 	private static void doLog(IAudioSection audioSection, IEmulationSection emulationSection) {
