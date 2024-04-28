@@ -48,7 +48,6 @@ public class JSIDPlay2TeaVM {
 	private static final int MAX_COMMAND_LEN = 16;
 	private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
 	private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
-	private static final int PSID_DETECTION_TIME = 3;
 
 	private static IConfig config;
 	private static EventScheduler context;
@@ -123,9 +122,9 @@ public class JSIDPlay2TeaVM {
 				// Enter basic command
 				typeInCommand(command);
 			}
+			c64.getEventScheduler().schedule(Event.of("PSID64 Detection", event2 -> autodetectPSID64()),
+					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
-		c64.getEventScheduler().schedule(Event.of("PSID64 Detection", event -> autodetectPSID64()),
-				(long) (PSID_DETECTION_TIME * c64.getClock().getCpuFrequency()));
 
 		sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
 		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver(nthFrame);
