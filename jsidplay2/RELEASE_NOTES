@@ -1,12 +1,19 @@
 Release Notes:
 ==============
+
 C64Jukebox
  - Update to use Vue3 and Bootstrap5
+ 
 JSIDPlay2 Web Assembly Version added (WASM) - https://haendel.ddns.net:8443/static/wasm/c64jukebox.vue
+ - NOT JAVA, just Web Assembly (W3C standard) and Javascript
+ - Complete client side code, no server required (once loaded to browsers cache)
  - < 2MB assembly code
- - runs in every browser
- - play tunes offline (no server required)
- - performance depending on your PC hardware
- - single source code for web and for java player
- - Powered by TeaVM (byte code to WASM transpiler)
+ - Developed as single source code in JSIDPlay2 project
+ - Runs with near to native speed
+ - Runs in all browsers
+ - Full emulation quality, no compromises
+ - Compatible with all SIDs (mono, stereo and 3-SID)
+ - Performance only depends on your PC setup
+ - Could even run on a mobile phone, if it's fast enough :-)
+ - Powered by TeaVM (byte code to WASM transpiler - https://teavm.org/)
  

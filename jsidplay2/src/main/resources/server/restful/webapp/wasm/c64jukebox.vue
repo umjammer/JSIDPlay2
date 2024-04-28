@@ -226,7 +226,7 @@
           <p>Web Assembly Version (WASM) powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
           <ol>
             <li>NOT JAVA, just Web Assembly (W3C standard) and Javascript</li>
-            <li>Complete client side code, no server required (loaded from browsers cache)</li>
+            <li>Complete client side code, no server required (once loaded to browsers cache)</li>
             <li>&lt;2MB in size</li>
             <li>Developed as single source code in JSIDPlay2 project</li>
             <li>Runs with near to native speed</li>
