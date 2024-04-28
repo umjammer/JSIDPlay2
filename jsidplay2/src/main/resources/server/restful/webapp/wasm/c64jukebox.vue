@@ -75,7 +75,7 @@
                 {{ $t("pause") }}
               </button>
               <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
-              <button type="button" v-on:click="reset()" :disabled="!playing">{{ $t("reset") }}</button>
+              <button type="button" v-on:click="reset()" :disabled="playing">{{ $t("reset") }}</button>
 
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
