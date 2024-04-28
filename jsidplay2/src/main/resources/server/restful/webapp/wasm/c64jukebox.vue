@@ -64,8 +64,18 @@
               <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">
                 {{ $t("play") }}
               </button>
+              <button
+                type="button"
+                :class="paused ? 'btn btn-primary btn-sm' : ''"
+                :aria-pressed="paused"
+                data-bs-toggle="button"
+                v-on:click="pauseTune()"
+                :disabled="!playing"
+              >
+                {{ $t("pause") }}
+              </button>
               <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
-              <button type="button" v-on:click="reset()">{{ $t("reset") }}</button>
+              <button type="button" v-on:click="reset()" :disabled="!playing">{{ $t("reset") }}</button>
 
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
@@ -360,7 +370,9 @@
                   eventData.value
               );
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
-              worker.postMessage({ eventType: "CLOCK" });
+              if (!app.paused) {
+                worker.postMessage({ eventType: "CLOCK" });
+              }
             } else if (eventType === "INITIALISED") {
               worker.postMessage({
                 eventType: "OPEN",
@@ -376,10 +388,14 @@
               chunkNumber = app.startTime;
               imageQueue.clear();
               app.playing = true;
+              app.paused = false;
               app.clearScreen();
               app.msg = app.$t("playing");
               if (app.screen) {
-                setTimeout(() => app.showFrame(), app.startTime * app.audioBufferSize * 1000 / audioContext.sampleRate);
+                setTimeout(
+                  () => app.showFrame(),
+                  (app.startTime * app.audioBufferSize * 1000) / audioContext.sampleRate
+                );
               }
             }
           });
@@ -411,6 +427,7 @@
             nthFrame: "Show every nth frame",
             startTime: "Initial delay for warm-up phase",
             play: "Play",
+            pause: "Pause",
             reset: "Reset",
             stop: "Stop",
             loading: "Loading tune, please wait...",
@@ -429,6 +446,7 @@
             nthFrame: "Zeige jedes Nte Bild",
             startTime: "Initiale Verzögerung für die Aufwärmphase",
             play: "Spiele",
+            pause: "Pause",
             reset: "Reset",
             stop: "Stop",
             loading: "Lade den tune, bitte warten...",
@@ -444,6 +462,7 @@
             msg: "",
             chosenFile: undefined,
             playing: false,
+            paused: false,
             screen: false,
             defaultClockSpeed: 50,
             startSong: 0,
@@ -483,6 +502,15 @@
             reader.readAsArrayBuffer(app.chosenFile);
             app.msg = app.$t("loading");
           },
+          pauseTune() {
+            app.paused = !app.paused;
+            if (!app.paused) {
+              audioContext.resume();
+              worker.postMessage({ eventType: "CLOCK" });
+            } else {
+              audioContext.suspend();
+            }
+          },
           stopTune() {
             worker.terminate();
             worker = undefined;
@@ -490,6 +518,7 @@
               imageQueue.clear();
               app.msg = "";
               app.playing = false;
+              app.paused = false;
               audioContext.close();
             });
           },
