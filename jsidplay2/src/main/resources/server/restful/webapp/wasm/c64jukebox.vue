@@ -507,13 +507,11 @@
           stopTune() {
             worker.terminate();
             worker = undefined;
-            setTimeout(() => {
-              imageQueue.clear();
-              app.msg = "";
-              app.playing = false;
-              app.paused = false;
-              audioContext.close();
-            });
+            audioContext.close();
+            imageQueue.clear();
+            app.msg = "";
+            app.playing = false;
+            app.paused = false;
           },
           clearScreen: function () {
             data.set(new Uint8Array((maxWidth * maxHeight) << 2));
