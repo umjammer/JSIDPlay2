@@ -103,7 +103,7 @@
           <div class="row">
             <div class="col">
               <div v-show="screen">
-                <canvas id="c64Screen" style="scale: 2; margin: 150px;" width="384" :height="canvasHeight" />
+                <canvas id="c64Screen" style="scale: 2; margin: 150px" width="384" height="285" />
               </div>
             </div>
             <div class="col">
@@ -291,11 +291,12 @@
               }
             }
             if (head) {
-              const value = head.value;
+              var value = head.value;
               head = head.next;
+              size--;
               return value;
             }
-            size--;
+            return undefined;
           },
           peek() {
             return head?.value;
@@ -321,11 +322,13 @@
       var imageQueue = new Queue();
 
       function wasmWorker(contents, tuneName) {
+        audioContext = new AudioContext();
+        app.msg = app.$t("loading");
+
         if (worker) {
           worker.terminate();
           worker = undefined;
         }
-
         worker = new Worker("jsidplay2-wasm-worker.js");
 
         return new Promise((resolve, reject) => {
@@ -477,39 +480,29 @@
             audioBufferSize: 48000,
           };
         },
-        computed: {
-          canvasHeight: {
-            get: function () {
-              return this.defaultClockSpeed == 50 ? 285 : 236;
-            },
-          },
-        },
+        computed: {},
         methods: {
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
           },
           reset() {
-            audioContext = new AudioContext();
             wasmWorker(undefined, undefined);
-            app.msg = app.$t("loading");
           },
           startTune() {
-            audioContext = new AudioContext();
             var reader = new FileReader();
             reader.onload = function () {
               wasmWorker(new Uint8Array(this.result), app.chosenFile.name);
             };
             reader.readAsArrayBuffer(app.chosenFile);
-            app.msg = app.$t("loading");
           },
           pauseTune() {
-            app.paused = !app.paused;
-            if (!app.paused) {
+            if (app.paused) {
               audioContext.resume();
               worker.postMessage({ eventType: "CLOCK" });
             } else {
               audioContext.suspend();
             }
+            app.paused = !app.paused;
           },
           stopTune() {
             worker.terminate();
@@ -527,8 +520,9 @@
             canvasContext.putImageData(imageData, 0, 0);
           },
           showFrame: function () {
-            if (imageQueue.isNotEmpty()) {
-              data.set(imageQueue.dequeue().image);
+            var elem = imageQueue.dequeue();
+            if (elem) {
+              data.set(elem.image);
               canvasContext.putImageData(imageData, 0, 0);
             }
             if (app.playing) setTimeout(() => app.showFrame(), (1000 / app.defaultClockSpeed) * app.nthFrame);
