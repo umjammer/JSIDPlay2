@@ -11,7 +11,7 @@ import libsidplay.common.EventScheduler;
 public class SeparateThreadC1541Runner extends C1541Runner {
 
 	private Thread c1541Thread;
-	private final Semaphore c1541Ticks = new Semaphore(0, false);
+	private final Semaphore semaphore = new Semaphore(0, false);
 
 	public SeparateThreadC1541Runner(final EventScheduler c64Context, final EventScheduler c1541Context) {
 		super(c64Context, c1541Context);
@@ -21,18 +21,18 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 	private final Event slaveWaitsForMaster = new Event("Slave waits for master") {
 		@Override
 		public void event() throws InterruptedException {
-			int allowedTicks = c1541Ticks.drainPermits();
+			int allowedTicks = semaphore.drainPermits();
 			/*
 			 * if we just ran out of clocks, freeze this thread on acquiring the next clock.
 			 */
 			if (allowedTicks == 0) {
 				/* notify master scheduler that the kid is up-to-date */
-				synchronized (c1541Ticks) {
-					c1541Ticks.notify();
+				synchronized (semaphore) {
+					semaphore.notify();
 				}
 				/* resume by acquiring the next permit */
-				c1541Ticks.acquire(1);
-				allowedTicks = 1 + c1541Ticks.drainPermits();
+				semaphore.acquire(1);
+				allowedTicks = 1 + semaphore.drainPermits();
 			}
 			c1541Context.schedule(this, allowedTicks, Event.Phase.PHI2);
 		}
@@ -46,10 +46,7 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 	public void synchronize(long offset) {
 		try {
 			/* wait until kid has reached our timestamp */
-			synchronized (c1541Ticks) {
-				if (offset == 0) {
-					offset = 1;
-				}
+			synchronized (semaphore) {
 				int clocks = updateSlaveTicks(offset);
 				/*
 				 * By necessity, we must allow the C1541 to advance for at least 1 clock. This
@@ -57,11 +54,11 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 				 * Unfortunately, this will reduce the cycle-exactness of our emulation.
 				 * Hopefully this doesn't happen often.
 				 */
-				if (clocks == 0) {
+				if (clocks <= 0) {
 					clocks = 1;
 				}
-				c1541Ticks.release(clocks);
-				c1541Ticks.wait();
+				semaphore.release(clocks);
+				semaphore.wait();
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
@@ -70,13 +67,13 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 
 	@Override
 	public void event() throws InterruptedException {
-		c1541Ticks.release(updateSlaveTicks(1)); // XXX 1?
-		c64Context.schedule(this, 2000, Event.Phase.PHI2);
+		semaphore.release(updateSlaveTicks(1));
+		c64Context.schedule(this, 2000, Event.Phase.PHI2);// XXX PHI2?
 	}
 
 	@Override
 	public void reset() {
-		c1541Ticks.drainPermits();
+		semaphore.drainPermits();
 
 		cancel();
 		
