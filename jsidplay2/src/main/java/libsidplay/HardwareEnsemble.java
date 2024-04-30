@@ -185,6 +185,7 @@ public class HardwareEnsemble implements Ultimate64 {
 		this.iecBus.setFloppies(floppies);
 		this.iecBus.setSerialDevices(serialDevices);
 		this.c1541Runner = new SameThreadC1541Runner(c64.getEventScheduler(), c1541.getEventScheduler());
+//		this.c1541Runner = new SeparateThreadC1541Runner(c64.getEventScheduler(), c1541.getEventScheduler());
 	}
 
 	/**
