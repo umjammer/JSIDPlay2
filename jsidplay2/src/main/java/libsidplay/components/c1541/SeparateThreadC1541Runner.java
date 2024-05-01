@@ -38,6 +38,51 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 		}
 	};
 
+	@Override
+	public void reset() {
+		semaphore.drainPermits();
+
+		cancel();
+
+		super.reset();
+
+		c1541Context.schedule(slaveWaitsForMaster, 0, Event.Phase.PHI2);
+
+		c1541Thread = new Thread(new Runnable() {
+			/**
+			 * Runs the scheduler in a dedicated tight loop.
+			 */
+			public void run() {
+				while (true) {
+					try {
+						c1541Context.clock();
+					} catch (InterruptedException e) {
+						break;
+					}
+				}
+			}
+
+		});
+		c1541Thread.start();
+
+		c64Context.schedule(this, 0, Event.Phase.PHI2);
+	}
+
+	@Override
+	public void cancel() {
+		c64Context.cancel(this);
+
+		while (c1541Thread != null && c1541Thread.isAlive()) {
+			c1541Thread.interrupt();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		c1541Context.cancel(slaveWaitsForMaster);
+	}
+
 	/**
 	 * Synchronize C1541 and C64 schedulers. Called by C64; C1541 will be sleeping
 	 * and in sync once we return.
@@ -69,51 +114,6 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 	public void event() throws InterruptedException {
 		semaphore.release(updateSlaveTicks(1));
 		c64Context.schedule(this, 2000, Event.Phase.PHI2);// XXX PHI2?
-	}
-
-	@Override
-	public void reset() {
-		semaphore.drainPermits();
-
-		cancel();
-		
-		super.reset();
-		
-		c1541Context.schedule(slaveWaitsForMaster, 0, Event.Phase.PHI2);
-
-		c1541Thread = new Thread(new Runnable() {
-			/**
-			 * Runs the scheduler in a dedicated tight loop.
-			 */
-			public void run() {
-				while (true) {
-					try {
-						c1541Context.clock();
-					} catch (InterruptedException e) {
-						break;
-					}
-				}
-			}
-
-		});
-		c1541Thread.start();
-
-		c64Context.schedule(this, 0, Event.Phase.PHI2);
-	}
-
-	@Override
-	public void cancel() {
-		c64Context.cancel(this);
-
-		while (c1541Thread !=null &&c1541Thread.isAlive()) {
-			c1541Thread.interrupt();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		c1541Context.cancel(slaveWaitsForMaster);
 	}
 
 }
