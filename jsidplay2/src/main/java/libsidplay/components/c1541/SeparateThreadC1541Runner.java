@@ -39,37 +39,60 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 	};
 
 	private void clockC1541Context(long offset) {
-		try {
-			/* wait until kid has reached our timestamp */
-			synchronized (semaphore) {
-				int clocks = updateSlaveTicks(offset);
-				/*
-				 * By necessity, we must allow the C1541 to advance for at least 1 clock. This
-				 * is because 1541 thread may be stalled at c1541Ticks.acquire(1).
-				 * Unfortunately, this will reduce the cycle-exactness of our emulation.
-				 * Hopefully this doesn't happen often.
-				 */
-				if (clocks <= 0) {
-					clocks = 1;
-				}
-				semaphore.release(clocks);
-				semaphore.wait();
+		/* wait until kid has reached our timestamp */
+		synchronized (semaphore) {
+			int targetTime = updateSlaveTicks(offset);
+			/*
+			 * By necessity, we must allow the C1541 to advance for at least 1 clock. This
+			 * is because 1541 thread may be stalled at c1541Ticks.acquire(1).
+			 * Unfortunately, this will reduce the cycle-exactness of our emulation.
+			 * Hopefully this doesn't happen often.
+			 */
+			if (targetTime <= 0) {
+				targetTime = 1;
 			}
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			semaphore.release(targetTime);
+			try {
+				semaphore.wait();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
 	@Override
 	public void reset() {
-		semaphore.drainPermits();
-
 		cancel();
 		super.reset();
 		c64Context.schedule(this, 0, Event.Phase.PHI2);
 
-		c1541Context.schedule(slaveWaitsForMaster, 0, Event.Phase.PHI2);
+		startThread();
+	}
 
+	@Override
+	public void cancel() {
+		c64Context.cancel(this);
+
+		stopThread();
+	}
+
+	/**
+	 * Synchronize C1541 and C64 schedulers. Called by C64; C1541 will be sleeping
+	 * and in sync once we return.
+	 */
+	@Override
+	public void synchronize(long offset) {
+		clockC1541Context(offset);
+	}
+
+	@Override
+	public void event() throws InterruptedException {
+		synchronize(0);
+		c64Context.schedule(this, 2000);
+	}
+
+	private void startThread() {
+		c1541Context.schedule(slaveWaitsForMaster, 0, Event.Phase.PHI2);
 		c1541Thread = new Thread(new Runnable() {
 			/**
 			 * Runs the scheduler in a dedicated tight loop.
@@ -86,12 +109,12 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 
 		});
 		c1541Thread.start();
-
 	}
 
-	@Override
-	public void cancel() {
-		c64Context.cancel(this);
+	private void stopThread() {
+		c1541Context.cancel(slaveWaitsForMaster);
+
+		semaphore.drainPermits();
 
 		while (c1541Thread != null && c1541Thread.isAlive()) {
 			c1541Thread.interrupt();
@@ -101,22 +124,6 @@ public class SeparateThreadC1541Runner extends C1541Runner {
 				throw new RuntimeException(e);
 			}
 		}
-		c1541Context.cancel(slaveWaitsForMaster);
-	}
-
-	/**
-	 * Synchronize C1541 and C64 schedulers. Called by C64; C1541 will be sleeping
-	 * and in sync once we return.
-	 */
-	@Override
-	public void synchronize(long offset) {
-		clockC1541Context(offset);
-	}
-
-	@Override
-	public void event() throws InterruptedException {
-		synchronize(0);// semaphore.release(updateSlaveTicks(0));
-		c64Context.schedule(this, 2000);
 	}
 
 }

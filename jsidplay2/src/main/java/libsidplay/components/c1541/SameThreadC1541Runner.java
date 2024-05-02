@@ -21,10 +21,6 @@ public class SameThreadC1541Runner extends C1541Runner {
 		c1541Context.schedule(terminationEvent, targetTime, Event.Phase.PHI2);
 		notTerminated = true;
 
-		/*
-		 * This should actually never throw InterruptedException, because the only kind
-		 * of Events that throw it are related to audio production.
-		 */
 		try {
 			while (notTerminated) {
 				c1541Context.clock();
@@ -36,16 +32,22 @@ public class SameThreadC1541Runner extends C1541Runner {
 
 	@Override
 	public void reset() {
-		super.reset();
 		cancel();
+		super.reset();
 		c64Context.schedule(this, 0, Event.Phase.PHI2);
 	}
 
 	@Override
 	public void cancel() {
 		c64Context.cancel(this);
+
+		c1541Context.cancel(terminationEvent);
 	}
 
+	/**
+	 * Synchronize C1541 and C64 schedulers. Called by C64; C1541 will be sleeping
+	 * and in sync once we return.
+	 */
 	@Override
 	public void synchronize(long offset) {
 		clockC1541Context(offset);
