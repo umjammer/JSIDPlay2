@@ -21,8 +21,8 @@ public class JavaScriptRoms {
 	public static final String CHAR_ROM = "CHAR_ROM";
 	public static final String BASIC_ROM = "BASIC_ROM";
 	public static final String KERNAL_ROM = "KERNAL_ROM";
-	public static final String PSID_DRIVER_ROM = "PSID_DRIVER_ROM";
 	public static final String C1541_ROM = "C1541_ROM";
+	public static final String PSID_DRIVER_ROM = "PSID_DRIVER_ROM";
 
 	private static final String PSID_DRIVER_BIN = "/libsidplay/sidtune/psiddriver.bin";
 
