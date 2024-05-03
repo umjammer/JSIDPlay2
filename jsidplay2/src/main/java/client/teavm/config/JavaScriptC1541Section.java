@@ -4,6 +4,8 @@ import libsidplay.components.c1541.FloppyType;
 import libsidplay.config.IC1541Section;
 
 public final class JavaScriptC1541Section implements IC1541Section {
+	private boolean driveOn;
+
 	@Override
 	public void setRamExpansionEnabled4(boolean on) {
 	}
@@ -38,6 +40,7 @@ public final class JavaScriptC1541Section implements IC1541Section {
 
 	@Override
 	public void setDriveOn(boolean on) {
+		driveOn = on;
 	}
 
 	@Override
@@ -77,11 +80,11 @@ public final class JavaScriptC1541Section implements IC1541Section {
 
 	@Override
 	public boolean isDriveOn() {
-		return false;
+		return driveOn;
 	}
 
 	@Override
 	public FloppyType getFloppyType() {
-		return FloppyType.C1541_II;
+		return FloppyType.C1541;
 	}
 }

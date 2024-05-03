@@ -6,7 +6,10 @@ import static libsidplay.sidtune.SidTune.RESET;
 import static libsidutils.CBMCodeUtils.petsciiToScreenRam;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Map;
@@ -28,6 +31,7 @@ import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
+import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
@@ -48,10 +52,12 @@ public class JSIDPlay2TeaVM {
 	private static final int MAX_COMMAND_LEN = 16;
 	private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
 	private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
+	private static final String LOAD_8_1_RUN = "LOAD\"%s\",8,1\rRUN\r"/* , LOAD_RUN = "LOAD\rRUN\r" */;
 
 	private static IConfig config;
 	private static EventScheduler context;
 	private static SidTune tune;
+	private static HardwareEnsemble hardwareEnsemble;
 	private static C64 c64;
 	private static ReSIDBuilder sidBuilder;
 	private static String command;
@@ -64,9 +70,20 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS, int song, int nthFrame, boolean addSidListener)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		if (sidContents != null) {
+		String url = null;
+		if (nameFromJS != null) {
 			// JavaScript string cannot be used directly for some reason, therefore:
-			String url = new StringBuilder(nameFromJS).toString();
+			url = new StringBuilder(nameFromJS).toString();
+		}
+		config = new JavaScriptConfig();
+		final IAudioSection audioSection = config.getAudioSection();
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		final IC1541Section c1541Section = config.getC1541Section();
+
+		doLog(audioSection, emulationSection);
+
+		c1541Section.setDriveOn(url != null && url.toLowerCase().endsWith(".d64"));
+		if (sidContents != null && !c1541Section.isDriveOn()) {
 			LOG.finest("Load Tune, length=" + sidContents.length);
 			LOG.finest("Tune name: " + url);
 			LOG.finest("Song: " + song);
@@ -79,24 +96,23 @@ public class JSIDPlay2TeaVM {
 		LOG.finest("nthFrame: " + nthFrame);
 		LOG.finest("addSidListener: " + addSidListener);
 
-		config = new JavaScriptConfig();
-		final IAudioSection audioSection = config.getAudioSection();
-		final IEmulationSection emulationSection = config.getEmulationSection();
-
-		doLog(audioSection, emulationSection);
-
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
 		byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
 		byte[] basicRom = decoder.decode(allRoms.get(JavaScriptRoms.BASIC_ROM));
 		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
+		byte[] c1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM));
 		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
 
-		HardwareEnsemble hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom,
-				basicRom, kernalRom, new byte[0], new byte[0], new byte[0], new byte[0], new byte[0]);
+		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
+				new byte[0], new byte[0], c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation() : PALEmulation.NONE);
+		if (c1541Section.isDriveOn()) {
+			insertDisk(sidContents, url);
+			command = String.format(LOAD_8_1_RUN, "*");
+		}
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
@@ -234,6 +250,21 @@ public class JSIDPlay2TeaVM {
 		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
 	}
 
+	private static void insertDisk(byte[] sidContents, String url) {
+		File d64File = new File(url);
+		try {
+			try (OutputStream os = new FileOutputStream(d64File)) {
+				os.write(sidContents);
+			}
+			d64File.setWritable(false);
+			// attach selected disk into the first disk drive
+			hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println(String.format("Cannot insert media file '%s'.", d64File.getAbsolutePath()));
+		}
+	}
+	
 	//
 	// main
 	//

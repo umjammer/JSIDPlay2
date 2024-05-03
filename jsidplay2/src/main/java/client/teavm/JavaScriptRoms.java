@@ -22,6 +22,7 @@ public class JavaScriptRoms {
 	public static final String BASIC_ROM = "BASIC_ROM";
 	public static final String KERNAL_ROM = "KERNAL_ROM";
 	public static final String PSID_DRIVER_ROM = "PSID_DRIVER_ROM";
+	public static final String C1541_ROM = "C1541_ROM";
 
 	private static final String PSID_DRIVER_BIN = "/libsidplay/sidtune/psiddriver.bin";
 
@@ -37,6 +38,7 @@ public class JavaScriptRoms {
 			String charRom = new String(Base64.getEncoder().encode(AllRoms.CHAR));
 			String basicRom = new String(Base64.getEncoder().encode(AllRoms.BASIC));
 			String kernalRom = new String(Base64.getEncoder().encode(AllRoms.KERNAL));
+			String c1541Rom = new String(Base64.getEncoder().encode(AllRoms.C1541));
 			String psidDriver = new String(Base64.getEncoder().encode(psidDriverBin));
 
 			Value<Map<String, String>> result = emit(() -> new HashMap<>());
@@ -44,11 +46,13 @@ public class JavaScriptRoms {
 			Value<String> basicRomValue = emit(() -> basicRom);
 			Value<String> kernalRomValue = emit(() -> kernalRom);
 			Value<String> charRomValue = emit(() -> charRom);
+			Value<String> c1541RomValue = emit(() -> c1541Rom);
 			Value<String> psidDriverValue = emit(() -> psidDriver);
 
 			emit(() -> result.get().put(CHAR_ROM, charRomValue.get()));
 			emit(() -> result.get().put(BASIC_ROM, basicRomValue.get()));
 			emit(() -> result.get().put(KERNAL_ROM, kernalRomValue.get()));
+			emit(() -> result.get().put(C1541_ROM, c1541RomValue.get()));
 			emit(() -> result.get().put(PSID_DRIVER_ROM, psidDriverValue.get()));
 
 			exit(() -> result.get());
