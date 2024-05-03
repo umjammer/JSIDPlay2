@@ -101,7 +101,8 @@ public class JSIDPlay2TeaVM {
 		byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
 		byte[] basicRom = decoder.decode(allRoms.get(JavaScriptRoms.BASIC_ROM));
 		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
-		byte[] c1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM));
+		byte[] c1541Rom = c1541Section.isDriveOn() ? decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM))
+				: new byte[0];
 		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
 
 		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
@@ -264,7 +265,7 @@ public class JSIDPlay2TeaVM {
 			System.err.println(String.format("Cannot insert media file '%s'.", d64File.getAbsolutePath()));
 		}
 	}
-	
+
 	//
 	// main
 	//
