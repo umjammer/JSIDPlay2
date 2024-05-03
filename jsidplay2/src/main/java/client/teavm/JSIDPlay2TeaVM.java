@@ -110,12 +110,12 @@ public class JSIDPlay2TeaVM {
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation() : PALEmulation.NONE);
+		hardwareEnsemble.reset();
+		emulationSection.getOverrideSection().reset();
 		if (c1541Section.isDriveOn()) {
 			insertDisk(sidContents, url);
 			command = String.format(LOAD_8_1_RUN, "*");
 		}
-		hardwareEnsemble.reset();
-		emulationSection.getOverrideSection().reset();
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
 				// for tunes: Install player into RAM
