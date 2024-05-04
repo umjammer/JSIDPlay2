@@ -468,7 +468,7 @@
             pause: "Pause",
             reset: "Reset",
             stop: "Stop",
-            chooseTune: "Tune",
+            chooseTune: "SID",
             chooseDisk: "Disk",
             diskInserted: "Disk inserted",
             load: "Load *,8,1",
@@ -489,7 +489,7 @@
             pause: "Pause",
             reset: "Reset",
             stop: "Stop",
-            chooseTune: "Tune",
+            chooseTune: "SID",
             chooseDisk: "Diskette",
             diskInserted: "Diskette eingelegt",
             load: "Load *,8,1",
@@ -593,7 +593,7 @@
               data.set(elem.image);
               canvasContext.putImageData(imageData, 0, 0);
             }
-            if (app.playing) setTimeout(() => app.showFrame(), (1000 * app.nthFrame / app.defaultClockSpeed));
+            if (app.playing) setTimeout(() => app.showFrame(), (1000 * app.nthFrame) / app.defaultClockSpeed);
           },
         },
         mounted: function () {
