@@ -361,8 +361,10 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
+      var timerStarted;
 
       function wasmWorker(contents, tuneName, reset) {
+        timerStarted = false;
         audioContext = new AudioContext();
 
         if (worker) {
@@ -397,6 +399,14 @@
               sourceNode.buffer = buffer;
               sourceNode.connect(audioContext.destination);
               sourceNode.start((eventData.left.length / audioContext.sampleRate) * chunkNumber++);
+
+              if (!timerStarted && app.screen) {
+                timerStarted = true;
+                setTimeout(
+                  () => app.showFrame(),
+                  ((chunkNumber - 1) * app.audioBufferSize * 1000) / audioContext.sampleRate
+                );
+              }
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
@@ -428,14 +438,11 @@
                 },
               });
 
-              chunkNumber = reset ? 0 : app.startTime;
+              chunkNumber = app.startTime;
               imageQueue.clear();
               app.playing = true;
               app.paused = false;
               app.clearScreen();
-              if (app.screen) {
-                setTimeout(() => app.showFrame(), (chunkNumber * app.audioBufferSize * 1000) / audioContext.sampleRate);
-              }
             }
           });
 
@@ -527,7 +534,7 @@
             localStorage.locale = this.$i18n.locale;
           },
           reset() {
-            wasmWorker(undefined, undefined);
+            wasmWorker();
           },
           insertDisk() {
             var reader = new FileReader();
