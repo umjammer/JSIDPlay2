@@ -522,7 +522,7 @@
             startSong: 0,
             nthFrame: 4,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
-            startTime: 4,
+            startTime: 0,
             defaultSidModel: false,
             sampling: false,
             reverbBypass: true,
