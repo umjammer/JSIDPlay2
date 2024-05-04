@@ -400,7 +400,7 @@
               sourceNode.connect(audioContext.destination);
               sourceNode.start((eventData.left.length / audioContext.sampleRate) * chunkNumber++);
               if (chunkNumber > 1) {
-                los=true;
+                los = true;
               }
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
