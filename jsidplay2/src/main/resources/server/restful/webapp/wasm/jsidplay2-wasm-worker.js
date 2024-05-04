@@ -41,6 +41,13 @@ self.addEventListener(
       self.postMessage({
         eventType: "OPENED",
       });
+    } else if (eventType === "INSERT_DISK") {
+      instance.exports.insertDisk(
+        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
+        eventData.diskName ? allocateTeaVMstring(eventData.diskName) : undefined
+      );
+    } else if (eventType === "SET_COMMAND") {
+      instance.exports.setCommand(eventData.command ? allocateTeaVMstring(eventData.command) : undefined);
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm
         .load("jsidplay2.wasm", {

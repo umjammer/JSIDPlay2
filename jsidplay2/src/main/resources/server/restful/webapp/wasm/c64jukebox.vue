@@ -53,15 +53,44 @@
         <div class="container">
           <div class="row">
             <div class="col">
+              <label for="file" class="form-label">{{ $t("chooseTune") }}</label>
               <input
                 ref="formFileSm"
                 id="file"
                 type="file"
-                @input="chosenFile = $refs.formFileSm.files[0]"
+                @input="
+                  $refs.formDiskFileSm.value = null;
+                  chosenFile = $refs.formFileSm.files[0];
+                "
                 :disabled="playing"
               />
-
-              <button type="button" v-on:click="startTune()" :disabled="!chosenFile || playing">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label for="diskFile" class="form-label">{{ $t("chooseDisk") }}</label>
+              <input
+                ref="formDiskFileSm"
+                id="diskFile"
+                type="file"
+                :disabled="!playing"
+                @input="
+                  chosenDiskFile = $refs.formDiskFileSm.files[0];
+                  insertDisk();
+                "
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <button
+                type="button"
+                v-on:click="
+                  $refs.formDiskFileSm.value = null;
+                  startTune();
+                "
+                :disabled="!chosenFile || playing"
+              >
                 {{ $t("play") }}
               </button>
               <button
@@ -75,7 +104,18 @@
                 {{ $t("pause") }}
               </button>
               <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
-              <button type="button" v-on:click="reset()" :disabled="playing">{{ $t("reset") }}</button>
+              <button
+                type="button"
+                v-on:click="
+                  $refs.formFileSm.value = null;
+                  $refs.formDiskFileSm.value = null;
+                  stopTune();
+                  reset();
+                "
+              >
+                {{ $t("reset") }}
+              </button>
+              <button type="button" v-on:click="load()" :disabled="!chosenDiskFile">{{ $t("load") }}</button>
 
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
@@ -433,6 +473,10 @@
             pause: "Pause",
             reset: "Reset",
             stop: "Stop",
+            chooseTune: "Tune",
+            chooseDisk: "Disk",
+            diskInserted: "Disk inserted",
+            load: "Load *,8,1",
             loading: "Loading tune, please wait...",
             playing: "Playing...",
           },
@@ -452,6 +496,10 @@
             pause: "Pause",
             reset: "Reset",
             stop: "Stop",
+            chooseTune: "Tune",
+            chooseDisk: "Diskette",
+            diskInserted: "Diskette eingelegt",
+            load: "Load *,8,1",
             loading: "Lade den tune, bitte warten...",
             playing: "Abspielen...",
           },
@@ -464,9 +512,10 @@
             langs: ["de", "en"],
             msg: "",
             chosenFile: undefined,
+            chosenDiskFile: undefined,
             playing: false,
             paused: false,
-            screen: false,
+            screen: true,
             defaultClockSpeed: 50,
             startSong: 0,
             nthFrame: 4,
@@ -488,6 +537,30 @@
           reset() {
             wasmWorker(undefined, undefined);
           },
+          insertDisk() {
+            var reader = new FileReader();
+            reader.onload = function () {
+              worker.postMessage({
+                eventType: "INSERT_DISK",
+                eventData: {
+                  contents: new Uint8Array(this.result),
+                  diskName: app.chosenDiskFile.name,
+                },
+              });
+              app.msg = app.$t("diskInserted") + ": " + app.chosenDiskFile.name;
+            };
+            reader.readAsArrayBuffer(app.chosenDiskFile);
+          },
+          load() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "SET_COMMAND",
+                eventData: {
+                  command: 'LOAD"*",8,1\rRUN\r',
+                },
+              });
+            }
+          },
           startTune() {
             var reader = new FileReader();
             reader.onload = function () {
@@ -505,9 +578,14 @@
             app.paused = !app.paused;
           },
           stopTune() {
-            worker.terminate();
-            worker = undefined;
-            audioContext.close();
+            if (worker) {
+              worker.terminate();
+              worker = undefined;
+            }
+            if (audioContext) {
+              audioContext.close();
+              audioContext = undefined;
+            }
             imageQueue.clear();
             app.msg = "";
             app.playing = false;

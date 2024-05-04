@@ -31,7 +31,6 @@ import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
-import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
@@ -52,7 +51,6 @@ public class JSIDPlay2TeaVM {
 	private static final int MAX_COMMAND_LEN = 16;
 	private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
 	private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
-	private static final String LOAD_8_1_RUN = "LOAD\"%s\",8,1\rRUN\r"/* , LOAD_RUN = "LOAD\rRUN\r" */;
 
 	private static IConfig config;
 	private static EventScheduler context;
@@ -74,12 +72,10 @@ public class JSIDPlay2TeaVM {
 		config = new JavaScriptConfig();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
-		final IC1541Section c1541Section = config.getC1541Section();
 
 		doLog(audioSection, emulationSection);
 
-		c1541Section.setDriveOn(url != null && url.toLowerCase().endsWith(".d64"));
-		if (sidContents != null && !c1541Section.isDriveOn()) {
+		if (sidContents != null) {
 			LOG.finest("Load Tune, length=" + sidContents.length);
 			LOG.finest("Tune name: " + url);
 			LOG.finest("Song: " + song);
@@ -107,10 +103,6 @@ public class JSIDPlay2TeaVM {
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame) : PALEmulation.NONE);
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
-		if (c1541Section.isDriveOn()) {
-			insertDisk(sidContents, url);
-			command = String.format(LOAD_8_1_RUN, "*");
-		}
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
 				// for tunes: Install player into RAM
@@ -162,10 +154,49 @@ public class JSIDPlay2TeaVM {
 		context = c64.getEventScheduler();
 	}
 
+	@Export(name = "setCommand")
+	public static void typeInCommand(final String nameFromJS) {
+		String multiLineCommand = jsStringToJavaString(nameFromJS);
+		String command;
+		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
+			String[] lines = multiLineCommand.split("\r");
+			for (String line : lines) {
+				byte[] screenRam = petsciiToScreenRam(line);
+				System.arraycopy(screenRam, 0, c64.getRAM(), RAM_COMMAND_SCREEN_ADDRESS, screenRam.length);
+				break;
+			}
+			int indexOf = multiLineCommand.indexOf('\r');
+			command = indexOf != -1 ? multiLineCommand.substring(indexOf) : "\r";
+		} else {
+			command = multiLineCommand;
+		}
+		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
+		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
+		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
+	}
+
 	@Export(name = "clock")
 	public static void clock() throws InterruptedException {
 		for (int i = 0; i < bufferSize; i++) {
 			context.clock();
+		}
+	}
+
+	@Export(name = "insertDisk")
+	private static void insertDisk(byte[] sidContents, String nameFromJS) {
+		File d64File = new File(jsStringToJavaString(nameFromJS));
+		try {
+			try (OutputStream os = new FileOutputStream(d64File)) {
+				os.write(sidContents);
+			}
+			d64File.setWritable(false);
+			config.getC1541Section().setDriveOn(true);
+			hardwareEnsemble.enableFloppyDiskDrives(true);
+			// attach selected disk into the first disk drive
+			hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println(String.format("Cannot insert media file '%s'.", d64File.getAbsolutePath()));
 		}
 	}
 
@@ -202,25 +233,6 @@ public class JSIDPlay2TeaVM {
 		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
 	}
 
-	private static void typeInCommand(final String multiLineCommand) {
-		String command;
-		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
-			String[] lines = multiLineCommand.split("\r");
-			for (String line : lines) {
-				byte[] screenRam = petsciiToScreenRam(line);
-				System.arraycopy(screenRam, 0, c64.getRAM(), RAM_COMMAND_SCREEN_ADDRESS, screenRam.length);
-				break;
-			}
-			int indexOf = multiLineCommand.indexOf('\r');
-			command = indexOf != -1 ? multiLineCommand.substring(indexOf) : "\r";
-		} else {
-			command = multiLineCommand;
-		}
-		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
-		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
-		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
-	}
-
 	private static void autodetectPSID64() {
 		IEmulationSection emulationSection = config.getEmulationSection();
 
@@ -253,21 +265,6 @@ public class JSIDPlay2TeaVM {
 					}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
 				}
 			}
-		}
-	}
-
-	private static void insertDisk(byte[] sidContents, String url) {
-		File d64File = new File(url);
-		try {
-			try (OutputStream os = new FileOutputStream(d64File)) {
-				os.write(sidContents);
-			}
-			d64File.setWritable(false);
-			// attach selected disk into the first disk drive
-			hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			System.err.println(String.format("Cannot insert media file '%s'.", d64File.getAbsolutePath()));
 		}
 	}
 
