@@ -294,7 +294,7 @@
       const maxWidth = 384;
       const maxHeight = 312;
       const MAX_QUEUE_SIZE = 60;
-      const DROP_NTH_FRAME = 10;
+      const DROP_NTH_FRAME = 4;
       const DROP_FRAMES_SIZE = DROP_NTH_FRAME << 1;
 
       function Queue() {
@@ -361,10 +361,10 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
-      var timerStarted;
+      var los;
 
       function wasmWorker(contents, tuneName, reset) {
-        timerStarted = false;
+        los = false;
         audioContext = new AudioContext();
 
         if (worker) {
@@ -399,13 +399,8 @@
               sourceNode.buffer = buffer;
               sourceNode.connect(audioContext.destination);
               sourceNode.start((eventData.left.length / audioContext.sampleRate) * chunkNumber++);
-
-              if (!timerStarted && app.screen) {
-                timerStarted = true;
-                setTimeout(
-                  () => app.showFrame(),
-                  ((chunkNumber - 1) * app.audioBufferSize * 1000) / audioContext.sampleRate
-                );
+              if (chunkNumber > 1) {
+                los=true;
               }
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
@@ -443,6 +438,9 @@
               app.playing = true;
               app.paused = false;
               app.clearScreen();
+              if (app.screen) {
+                setTimeout(() => app.showFrame(), 0);
+              }
             }
           });
 
@@ -596,7 +594,7 @@
           },
           showFrame: function () {
             var elem = imageQueue.dequeue();
-            if (elem) {
+            if (elem && los) {
               data.set(elem.image);
               canvasContext.putImageData(imageData, 0, 0);
             }
