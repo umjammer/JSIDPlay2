@@ -403,9 +403,11 @@
                 los = true;
               }
             } else if (eventType === "FRAME") {
-              imageQueue.enqueue({
-                image: eventData.image,
-              });
+              if (los) {
+                imageQueue.enqueue({
+                  image: eventData.image,
+                });
+              }
             } else if (eventType === "SID_WRITE") {
               console.log(
                 "time=" +
