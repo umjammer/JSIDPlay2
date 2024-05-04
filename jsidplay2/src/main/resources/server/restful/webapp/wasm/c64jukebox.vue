@@ -60,6 +60,7 @@
                 type="file"
                 @input="
                   $refs.formDiskFileSm.value = null;
+                  chosenDiskFile = undefined;
                   chosenFile = $refs.formFileSm.files[0];
                 "
                 :disabled="playing"
@@ -87,6 +88,8 @@
                 type="button"
                 v-on:click="
                   $refs.formDiskFileSm.value = null;
+                  chosenDiskFile = undefined;
+                  screen = false;
                   startTune();
                 "
                 :disabled="!chosenFile || playing"
@@ -108,8 +111,11 @@
                 type="button"
                 v-on:click="
                   $refs.formFileSm.value = null;
+                  chosenFile = undefined;
                   $refs.formDiskFileSm.value = null;
+                  chosenDiskFile = undefined;
                   stopTune();
+                  screen = true;
                   reset();
                 "
               >
@@ -119,10 +125,16 @@
           </div>
           <div class="row">
             <div class="col">
-              <button type="button" v-on:click="load('LOAD&quot;*&quot;,8,1\rRUN\r')" :disabled="!chosenDiskFile">
+              <button
+                type="button"
+                v-on:click="load('LOAD&quot;*&quot;,8,1\rRUN\r')"
+                :disabled="!chosenDiskFile || !playing"
+              >
                 {{ $t("load") }}
               </button>
-              <button type="button" v-on:click="load(' ')" :disabled="!chosenDiskFile">{{ $t("space") }}</button>
+              <button type="button" v-on:click="load(' ')" :disabled="!chosenDiskFile || !playing">
+                {{ $t("space") }}
+              </button>
             </div>
           </div>
 
@@ -136,23 +148,6 @@
               </div>
             </div>
             <div class="col">
-              <div class="form-check" v-show="!playing">
-                <div class="settings-box">
-                  <span class="setting">
-                    <label class="form-check-label" for="screen">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="screen"
-                        style="float: right; margin-left: 8px"
-                        v-model="screen"
-                      />
-                      {{ $t("screen") }}
-                    </label>
-                  </span>
-                </div>
-              </div>
-
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
                   <span class="setting">
@@ -367,7 +362,7 @@
       var imageData, data;
       var imageQueue = new Queue();
 
-      function wasmWorker(contents, tuneName) {
+      function wasmWorker(contents, tuneName, reset) {
         audioContext = new AudioContext();
 
         if (worker) {
@@ -433,16 +428,13 @@
                 },
               });
 
-              chunkNumber = app.startTime;
+              chunkNumber = reset ? 0 : app.startTime;
               imageQueue.clear();
               app.playing = true;
               app.paused = false;
               app.clearScreen();
               if (app.screen) {
-                setTimeout(
-                  () => app.showFrame(),
-                  (app.startTime * app.audioBufferSize * 1000) / audioContext.sampleRate
-                );
+                setTimeout(() => app.showFrame(), (chunkNumber * app.audioBufferSize * 1000) / audioContext.sampleRate);
               }
             }
           });
@@ -462,7 +454,6 @@
         locale: "en",
         messages: {
           en: {
-            screen: "Screen",
             defaultClockSpeed: "Default clock speed",
             defaultSidModel: "Default SID model",
             sampling: "Sampling Method",
@@ -472,7 +463,7 @@
             audioBufferSize: "Audio buffer size",
             startSong: "Start song",
             nthFrame: "Show every nth frame",
-            startTime: "Initial delay for warm-up phase",
+            startTime: "Initial delay for warm-up phase [in audio buffers]",
             play: "Play",
             pause: "Pause",
             reset: "Reset",
@@ -484,7 +475,6 @@
             space: "Space Key",
           },
           de: {
-            screen: "Bildschirm",
             defaultClockSpeed: "Default Clock Speed",
             defaultSidModel: "Default SID Model",
             sampling: "Sampling Methode",
@@ -494,7 +484,7 @@
             audioBufferSize: "Audio Puffer Größe",
             startSong: "Start Song",
             nthFrame: "Zeige jedes Nte Bild",
-            startTime: "Initiale Verzögerung für die Aufwärmphase",
+            startTime: "Initiale Verzögerung für die Aufwärmphase [in Audio Puffern]",
             play: "Spiele",
             pause: "Pause",
             reset: "Reset",
@@ -522,7 +512,7 @@
             startSong: 0,
             nthFrame: 4,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
-            startTime: 0,
+            startTime: 4,
             defaultSidModel: false,
             sampling: false,
             reverbBypass: true,
@@ -603,7 +593,7 @@
               data.set(elem.image);
               canvasContext.putImageData(imageData, 0, 0);
             }
-            if (app.playing) setTimeout(() => app.showFrame(), (1000 / app.defaultClockSpeed) * app.nthFrame);
+            if (app.playing) setTimeout(() => app.showFrame(), (1000 * app.nthFrame / app.defaultClockSpeed));
           },
         },
         mounted: function () {
