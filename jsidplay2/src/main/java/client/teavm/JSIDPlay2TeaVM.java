@@ -70,11 +70,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String nameFromJS, int song, int nthFrame, boolean addSidListener)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		String url = null;
-		if (nameFromJS != null) {
-			// JavaScript string cannot be used directly for some reason, therefore:
-			url = new StringBuilder(nameFromJS).toString();
-		}
+		String url = jsStringToJavaString(nameFromJS);
 		config = new JavaScriptConfig();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
@@ -101,15 +97,14 @@ public class JSIDPlay2TeaVM {
 		byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
 		byte[] basicRom = decoder.decode(allRoms.get(JavaScriptRoms.BASIC_ROM));
 		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
-		byte[] c1541Rom = c1541Section.isDriveOn() ? decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM))
-				: new byte[0];
+		byte[] c1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM));
 		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
 
 		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
 				new byte[0], new byte[0], c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation() : PALEmulation.NONE);
+		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame) : PALEmulation.NONE);
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
 		if (c1541Section.isDriveOn()) {
@@ -187,6 +182,26 @@ public class JSIDPlay2TeaVM {
 	// Private methods
 	//
 
+	/**
+	 * JavaScript string cannot be used directly for some reason, therefore:
+	 */
+	private static String jsStringToJavaString(String stringFromJS) {
+		if (stringFromJS != null) {
+			return new StringBuilder(stringFromJS).toString();
+		}
+		return null;
+	}
+
+	private static void doLog(IAudioSection audioSection, IEmulationSection emulationSection) {
+		LOG.finest("bufferSize: " + audioSection.getBufferSize());
+		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
+		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
+		LOG.finest("sampling: " + audioSection.getSampling());
+		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
+		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
+		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
+	}
+
 	private static void typeInCommand(final String multiLineCommand) {
 		String command;
 		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
@@ -239,16 +254,6 @@ public class JSIDPlay2TeaVM {
 				}
 			}
 		}
-	}
-
-	private static void doLog(IAudioSection audioSection, IEmulationSection emulationSection) {
-		LOG.finest("bufferSize: " + audioSection.getBufferSize());
-		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
-		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
-		LOG.finest("sampling: " + audioSection.getSampling());
-		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
-		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
-		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
 	}
 
 	private static void insertDisk(byte[] sidContents, String url) {

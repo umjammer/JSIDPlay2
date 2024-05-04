@@ -18,25 +18,36 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 	private int oldGraphicsData;
 
 	private final IntBuffer pixels = IntBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT);
+	private int n, nthFrame;
+	
+	public JavaScriptPalEmulation(int nthFrame) {
+		this.nthFrame = nthFrame;
+		n = 0;
+	}
 
 	@Override
 	public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
 		oldGraphicsData = 0;
 		if (isFrameStart) {
 			((Buffer) pixels).clear();
+			if (++n == nthFrame) {
+				n = 0;
+			}
 		}
 	}
 
 	@Override
 	public void drawPixels(int graphicsDataBuffer) {
-		/* Pixels arrive in 0x12345678 order. */
-		for (int j = 0; j < 2; j++) {
-			oldGraphicsData |= graphicsDataBuffer >>> 16;
-			for (int i = 0; i < 4; i++) {
-				oldGraphicsData <<= 4;
-				pixels.put(VIC_PALETTE_NO_PAL[(oldGraphicsData >>> 16) & 0x0f]);
+		if (n == 0) {
+			/* Pixels arrive in 0x12345678 order. */
+			for (int j = 0; j < 2; j++) {
+				oldGraphicsData |= graphicsDataBuffer >>> 16;
+				for (int i = 0; i < 4; i++) {
+					oldGraphicsData <<= 4;
+					pixels.put(VIC_PALETTE_NO_PAL[(oldGraphicsData >>> 16) & 0x0f]);
+				}
+				graphicsDataBuffer <<= 16;
 			}
-			graphicsDataBuffer <<= 16;
 		}
 	}
 

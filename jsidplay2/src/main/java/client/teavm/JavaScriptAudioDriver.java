@@ -32,7 +32,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 	private ByteBuffer sampleBuffer;
 
 	private FloatBuffer resultL, resultR;
-	float[] lookupTable = new float[65536];
+	private float[] lookupTable = new float[65536];
 	private int n, nthFrame;
 	private long sidWiteTime;
 

@@ -118,7 +118,7 @@
                 </div>
                 <div class="settings-box">
                   <span class="setting">
-                    <label for="nthFrame" v-show="screen">
+                    <label for="nthFrame">
                       <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
                         <option v-for="n in nthFrames" :value="n">{{ n }}</option>
                       </select>
@@ -469,8 +469,8 @@
             screen: false,
             defaultClockSpeed: 50,
             startSong: 0,
-            nthFrame: 1,
-            nthFrames: [1, 10, 25, 30, 50, 60],
+            nthFrame: 4,
+            nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
             startTime: 4,
             defaultSidModel: false,
             sampling: false,
