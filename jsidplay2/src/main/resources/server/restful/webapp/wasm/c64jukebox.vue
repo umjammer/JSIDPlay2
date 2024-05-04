@@ -115,12 +115,13 @@
               >
                 {{ $t("reset") }}
               </button>
-
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <button type="button" v-on:click="load('LOAD&quot;*&quot;,8,1\rRUN\r')" :disabled="!chosenDiskFile">{{ $t("load") }}</button>
+              <button type="button" v-on:click="load('LOAD&quot;*&quot;,8,1\rRUN\r')" :disabled="!chosenDiskFile">
+                {{ $t("load") }}
+              </button>
               <button type="button" v-on:click="load(' ')" :disabled="!chosenDiskFile">{{ $t("space") }}</button>
             </div>
           </div>

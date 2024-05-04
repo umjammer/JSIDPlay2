@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -183,17 +184,19 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@Export(name = "insertDisk")
-	private static void insertDisk(byte[] sidContents, String nameFromJS) {
+	private static void insertDisk(byte[] diskContents, String nameFromJS) {
 		File d64File = new File(jsStringToJavaString(nameFromJS));
 		try {
 			try (OutputStream os = new FileOutputStream(d64File)) {
-				os.write(sidContents);
+				os.write(diskContents);
 			}
 			d64File.setWritable(false);
 			config.getC1541Section().setDriveOn(true);
 			hardwareEnsemble.enableFloppyDiskDrives(true);
 			// attach selected disk into the first disk drive
 			hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
+
+			installHack(d64File);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			System.err.println(String.format("Cannot insert media file '%s'.", d64File.getAbsolutePath()));
@@ -266,6 +269,10 @@ public class JSIDPlay2TeaVM {
 				}
 			}
 		}
+	}
+
+	private static void installHack(File d64File) {
+		c64.getCPU().setEODHack(d64File.getName().toLowerCase(Locale.US).contains("disgrace"));
 	}
 
 	//
