@@ -115,8 +115,26 @@
               >
                 {{ $t("reset") }}
               </button>
-              <button type="button" v-on:click="load()" :disabled="!chosenDiskFile">{{ $t("load") }}</button>
 
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <button type="button" v-on:click="load('LOAD&quot;*&quot;,8,1\rRUN\r')" :disabled="!chosenDiskFile">{{ $t("load") }}</button>
+              <button type="button" v-on:click="load(' ')" :disabled="!chosenDiskFile">{{ $t("space") }}</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div>
+                <p>{{ msg }}</p>
+              </div>
+              <div v-show="screen">
+                <canvas id="c64Screen" style="scale: 2; margin: 150px" width="384" height="285" />
+              </div>
+            </div>
+            <div class="col">
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
                   <span class="setting">
@@ -134,19 +152,6 @@
                 </div>
               </div>
 
-              <div>
-                <p>{{ msg }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col">
-              <div v-show="screen">
-                <canvas id="c64Screen" style="scale: 2; margin: 150px" width="384" height="285" />
-              </div>
-            </div>
-            <div class="col">
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
                   <span class="setting">
@@ -363,7 +368,6 @@
 
       function wasmWorker(contents, tuneName) {
         audioContext = new AudioContext();
-        app.msg = app.$t("loading");
 
         if (worker) {
           worker.terminate();
@@ -433,7 +437,6 @@
               app.playing = true;
               app.paused = false;
               app.clearScreen();
-              app.msg = app.$t("playing");
               if (app.screen) {
                 setTimeout(
                   () => app.showFrame(),
@@ -477,8 +480,7 @@
             chooseDisk: "Disk",
             diskInserted: "Disk inserted",
             load: "Load *,8,1",
-            loading: "Loading tune, please wait...",
-            playing: "Playing...",
+            space: "Space Key",
           },
           de: {
             screen: "Bildschirm",
@@ -500,8 +502,7 @@
             chooseDisk: "Diskette",
             diskInserted: "Diskette eingelegt",
             load: "Load *,8,1",
-            loading: "Lade den tune, bitte warten...",
-            playing: "Abspielen...",
+            space: "Leertaste",
           },
         },
       });
@@ -551,12 +552,12 @@
             };
             reader.readAsArrayBuffer(app.chosenDiskFile);
           },
-          load() {
+          load(command) {
             if (worker) {
               worker.postMessage({
                 eventType: "SET_COMMAND",
                 eventData: {
-                  command: 'LOAD"*",8,1\rRUN\r',
+                  command: command,
                 },
               });
             }
