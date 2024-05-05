@@ -34,6 +34,7 @@ import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
+import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneType;
@@ -69,14 +70,15 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		String url = jsStringToJavaString(sidContentsName);
 		config = new JavaScriptConfig();
+		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
 
-		doLog(audioSection, emulationSection);
+		doLog(sidplay2Section, audioSection, emulationSection);
 
 		if (sidContents != null) {
+			String url = jsStringToJavaString(sidContentsName);
 			LOG.finest("Load Tune, length=" + sidContents.length);
 			LOG.finest("Tune name: " + url);
 			LOG.finest("Song: " + song);
@@ -137,13 +139,13 @@ public class JSIDPlay2TeaVM {
 		sidBuilder.setAudioDriver(audioDriver);
 
 		c64.insertSIDChips((sidNum, sidEmu) -> {
-			if (SidTune.isSIDUsed(config.getEmulationSection(), tune, sidNum)) {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
 				return sidBuilder.lock(sidEmu, sidNum, tune);
 			} else if (sidEmu != NONE) {
 				sidBuilder.unlock(sidEmu);
 			}
 			return NONE;
-		}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
+		}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
 		if (nthFrame > 0) {
 			c64.configureVICs(vic -> vic.setVideoDriver(audioDriver));
 		}
@@ -226,14 +228,16 @@ public class JSIDPlay2TeaVM {
 		return null;
 	}
 
-	private static void doLog(IAudioSection audioSection, IEmulationSection emulationSection) {
-		LOG.finest("bufferSize: " + audioSection.getBufferSize());
-		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
-		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
-		LOG.finest("sampling: " + audioSection.getSampling());
-		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
+	private static void doLog(ISidPlay2Section sidplay2Section, IAudioSection audioSection,
+			IEmulationSection emulationSection) {
+		LOG.finest("palEmulation: " + sidplay2Section.isPalEmulation());
 		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
 		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
+		LOG.finest("sampling: " + audioSection.getSampling());
+		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
+		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
+		LOG.finest("bufferSize: " + audioSection.getBufferSize());
+		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
 	}
 
 	private static void autodetectPSID64() {
