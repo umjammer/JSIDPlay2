@@ -525,30 +525,6 @@
           reset() {
             wasmWorker();
           },
-          insertDisk() {
-            var reader = new FileReader();
-            reader.onload = function () {
-              worker.postMessage({
-                eventType: "INSERT_DISK",
-                eventData: {
-                  contents: new Uint8Array(this.result),
-                  diskName: app.chosenDiskFile.name,
-                },
-              });
-              app.msg = app.$t("diskInserted") + ": " + app.chosenDiskFile.name;
-            };
-            reader.readAsArrayBuffer(app.chosenDiskFile);
-          },
-          load(command) {
-            if (worker) {
-              worker.postMessage({
-                eventType: "SET_COMMAND",
-                eventData: {
-                  command: command,
-                },
-              });
-            }
-          },
           startTune() {
             var reader = new FileReader();
             reader.onload = function () {
@@ -593,6 +569,30 @@
             }
             var diff = new Date().getTime() - start - time;
             if (app.playing) setTimeout(() => app.showFrame(), timeSpan - diff);
+          },
+          insertDisk() {
+            var reader = new FileReader();
+            reader.onload = function () {
+              worker.postMessage({
+                eventType: "INSERT_DISK",
+                eventData: {
+                  contents: new Uint8Array(this.result),
+                  diskName: app.chosenDiskFile.name,
+                },
+              });
+              app.msg = app.$t("diskInserted") + ": " + app.chosenDiskFile.name;
+            };
+            reader.readAsArrayBuffer(app.chosenDiskFile);
+          },
+          load(command) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "SET_COMMAND",
+                eventData: {
+                  command: command,
+                },
+              });
+            }
           },
         },
         mounted: function () {
