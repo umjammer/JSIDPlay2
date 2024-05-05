@@ -29,6 +29,8 @@ import libsidplay.common.ChipModel;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.Control;
+import libsidplay.components.c1541.DiskImage;
+import libsidplay.components.c1541.IExtendImageListener;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
@@ -196,8 +198,13 @@ public class JSIDPlay2TeaVM {
 			config.getC1541Section().setDriveOn(true);
 			hardwareEnsemble.enableFloppyDiskDrives(true);
 			// attach selected disk into the first disk drive
-			hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
-
+			DiskImage disk = hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
+			disk.setExtendImagePolicy(new IExtendImageListener() {
+				@Override
+				public boolean isAllowed() {
+					return true;
+				}
+			});
 			installHack(d64File);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
