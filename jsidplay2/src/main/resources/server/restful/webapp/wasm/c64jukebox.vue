@@ -336,8 +336,9 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
-      var start, time = 0;
-    
+      var start,
+        time = 0;
+
       function wasmWorker(contents, tuneName, reset) {
         audioContext = new AudioContext();
 
@@ -368,7 +369,7 @@
               if (chunkNumber === 0) {
                 audioContext.close();
                 audioContext = new AudioContext();
-              }            
+              }
               var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
               buffer.getChannelData(0).set(eventData.left);
               buffer.getChannelData(1).set(eventData.right);
@@ -414,7 +415,7 @@
               app.paused = false;
               app.clearScreen();
               if (app.screen) {
-                start = new Date().getTime(), time = 0;
+                (start = new Date().getTime()), (time = 0);
                 setTimeout(() => app.showFrame(), 0);
               }
             }
@@ -576,7 +577,7 @@
               data.set(elem.image);
               canvasContext.putImageData(imageData, 0, 0);
             }
-            var diff = (new Date().getTime() - start) - time;
+            var diff = new Date().getTime() - start - time;
             if (app.playing) setTimeout(() => app.showFrame(), timeSpan - diff);
           },
         },
