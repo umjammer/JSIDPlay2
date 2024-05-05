@@ -301,36 +301,11 @@
         var head, tail, size;
         return Object.freeze({
           enqueue(value) {
-            // prevent overflow, remove first frame
-            if (size === MAX_QUEUE_SIZE) {
-              head = head.next;
-              size--;
-            }
             const link = { value, next: undefined };
             tail = head ? (tail.next = link) : (head = link);
             size++;
           },
           dequeue() {
-            // prevent overflow by dropping in-between frames
-            if (size > DROP_FRAMES_SIZE) {
-              var prev = head,
-                scan = head;
-              var count = size / DROP_NTH_FRAME;
-              while (count-- > 0) {
-                // skip frames
-                for (i = 0; i < DROP_NTH_FRAME && scan.next; i++) {
-                  prev = scan;
-                  scan = scan.next;
-                }
-                if (!scan.next) {
-                  // end of list? We remove the last frame
-                  tail = prev;
-                }
-                // remove in-between frame
-                prev.next = scan.next;
-                size--;
-              }
-            }
             if (head) {
               var value = head.value;
               head = head.next;
@@ -361,10 +336,9 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
-      var los;
-
+      var start, time = 0;
+    
       function wasmWorker(contents, tuneName, reset) {
-        los = false;
         audioContext = new AudioContext();
 
         if (worker) {
@@ -391,6 +365,10 @@
             var { eventType, eventData, eventId } = event.data;
 
             if (eventType === "SAMPLES") {
+              if (chunkNumber === 0) {
+                audioContext.close();
+                audioContext = new AudioContext();
+              }            
               var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
               buffer.getChannelData(0).set(eventData.left);
               buffer.getChannelData(1).set(eventData.right);
@@ -399,15 +377,10 @@
               sourceNode.buffer = buffer;
               sourceNode.connect(audioContext.destination);
               sourceNode.start((eventData.left.length / audioContext.sampleRate) * chunkNumber++);
-              if (chunkNumber > 1) {
-                los = true;
-              }
             } else if (eventType === "FRAME") {
-              if (los) {
-                imageQueue.enqueue({
-                  image: eventData.image,
-                });
-              }
+              imageQueue.enqueue({
+                image: eventData.image,
+              });
             } else if (eventType === "SID_WRITE") {
               console.log(
                 "time=" +
@@ -441,6 +414,7 @@
               app.paused = false;
               app.clearScreen();
               if (app.screen) {
+                start = new Date().getTime(), time = 0;
                 setTimeout(() => app.showFrame(), 0);
               }
             }
@@ -519,7 +493,7 @@
             startSong: 0,
             nthFrame: 4,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
-            startTime: 4,
+            startTime: 0,
             defaultSidModel: false,
             sampling: false,
             reverbBypass: true,
@@ -595,12 +569,15 @@
             canvasContext.putImageData(imageData, 0, 0);
           },
           showFrame: function () {
+            var timeSpan = (1000 * app.nthFrame) / app.defaultClockSpeed;
+            time += timeSpan;
             var elem = imageQueue.dequeue();
-            if (elem && los) {
+            if (elem) {
               data.set(elem.image);
               canvasContext.putImageData(imageData, 0, 0);
             }
-            if (app.playing) setTimeout(() => app.showFrame(), (1000 * app.nthFrame) / app.defaultClockSpeed);
+            var diff = (new Date().getTime() - start) - time;
+            if (app.playing) setTimeout(() => app.showFrame(), timeSpan - diff);
           },
         },
         mounted: function () {
