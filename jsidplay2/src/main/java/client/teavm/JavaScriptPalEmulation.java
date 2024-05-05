@@ -1,8 +1,13 @@
 package client.teavm;
 
+import static client.teavm.JavaScriptPalette.COMBINED_LINES_EVEN;
+import static client.teavm.JavaScriptPalette.COMBINED_LINES_ODD;
+import static client.teavm.JavaScriptPalette.LINE_PALETTE_EVEN;
+import static client.teavm.JavaScriptPalette.LINE_PALETTE_ODD;
+import static java.util.Arrays.stream;
+
 import java.nio.Buffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 import java.util.Base64.Decoder;
 import java.util.Map;
 
@@ -12,7 +17,7 @@ import libsidplay.components.mos656x.VIC;
 
 public class JavaScriptPalEmulation implements IPALEmulation {
 
-	/** ABGR pixel data. */
+	/** ABGR pixel data.VIC colors without PAL emulation. */
 	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0xFF000000, 0xFFFFFFFF, 0xFF2B3768, 0xFFB2A470,
 			0xFF863D6F, 0xFF438D58, 0xFF792835, 0xFF6FC7B8, 0xFF254F6F, 0xFF003943, 0xFF59679A, 0xFF444444, 0xFF6C6C6C,
 			0xFF84D29A, 0xFFB55E6C, 0xFF959595, };
@@ -37,19 +42,20 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 	private int oldGraphicsData;
 
 	private final IntBuffer pixels = IntBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT);
-	private int n, nthFrame;
+	private final int nthFrame;
+	private int n;
 
 	private boolean palEmulationEnable;
 
 	public JavaScriptPalEmulation(int nthFrame, Decoder decoder) {
 		this.nthFrame = nthFrame;
 		Map<String, String> palette = JavaScriptPalette.getPalette(false);
-		this.combinedLinesEven = Arrays.stream(palette.get(JavaScriptPalette.COMBINED_LINES_EVEN).split(","))
-				.mapToInt(Integer::parseInt).toArray();
-		this.combinedLinesOdd = Arrays.stream(palette.get(JavaScriptPalette.COMBINED_LINES_ODD).split(","))
-				.mapToInt(Integer::parseInt).toArray();
-		this.linePaletteEven = decoder.decode(palette.get(JavaScriptPalette.LINE_PALETTE_EVEN));
-		this.linePaletteOdd = decoder.decode(palette.get(JavaScriptPalette.LINE_PALETTE_ODD));
+		this.combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt)
+				.toArray();
+		this.combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(Integer::parseInt)
+				.toArray();
+		this.linePaletteEven = decoder.decode(palette.get(LINE_PALETTE_EVEN));
+		this.linePaletteOdd = decoder.decode(palette.get(LINE_PALETTE_ODD));
 		n = 0;
 	}
 
@@ -89,14 +95,13 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 						final int vicColor = oldGraphicsData >>> 16;
 						final byte lineColor = linePaletteCurrent[vicColor];
 						final byte previousLineColor = previousLineDecodedColor[previousLineIndex];
-						int palCol = combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00];
-						// RGB -> ABGR
-						int b = palCol & 0xff;
-						int g = ((palCol >> 8) & 0xff);
-						int r = ((palCol >> 16) & 0xff);
-						int rgbaColor = 0xff000000 | (b << 16) | (g << 8) | r;
-						pixels.put(rgbaColor);
 						previousLineDecodedColor[previousLineIndex++] = lineColor;
+						// RGB -> ABGR
+						int palCol = combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00];
+						int r = ((palCol >> 16) & 0xff);
+						int g = ((palCol >> 8) & 0xff);
+						int b = palCol & 0xff;
+						pixels.put(0xff000000 | (b << 16) | (g << 8) | r);
 					} else {
 						pixels.put(VIC_PALETTE_NO_PAL[(oldGraphicsData >>> 16) & 0x0f]);
 					}

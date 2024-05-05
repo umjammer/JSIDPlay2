@@ -1,13 +1,13 @@
 package client.teavm;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.of;
 import static org.teavm.metaprogramming.Metaprogramming.emit;
 import static org.teavm.metaprogramming.Metaprogramming.exit;
 
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.teavm.metaprogramming.CompileTime;
 import org.teavm.metaprogramming.Meta;
@@ -30,9 +30,9 @@ public class JavaScriptPalette {
 	public static native Map<String, String> getPalette(boolean b);
 
 	private static void getPalette(Value<Boolean> b) {
-		ISidPlay2Section sidplay2section = IniDefaults.SIDPLAY2_SECTION;
+		final ISidPlay2Section sidplay2section = IniDefaults.SIDPLAY2_SECTION;
 
-		Palette palette = new Palette();
+		final Palette palette = new Palette();
 		palette.setBrightness(sidplay2section.getBrightness());
 		palette.setContrast(sidplay2section.getContrast());
 		palette.setGamma(sidplay2section.getGamma());
@@ -42,12 +42,10 @@ public class JavaScriptPalette {
 		palette.setTint(sidplay2section.getTint());
 		palette.setLuminanceC(sidplay2section.getBlur());
 		palette.setDotCreep(sidplay2section.getBleed());
-
 		palette.calculatePalette(Palette.buildPaletteVariant(VICChipModel.MOS6567R8));
-		String combinedLinesEven = IntStream.of(palette.getEvenLines()).mapToObj(Integer::toString)
-				.collect(Collectors.joining(","));
-		String oddLinesEven = IntStream.of(palette.getOddLines()).mapToObj(Integer::toString)
-				.collect(Collectors.joining(","));
+
+		String combinedLinesEven = of(palette.getEvenLines()).mapToObj(Integer::toString).collect(joining(","));
+		String oddLinesEven = of(palette.getOddLines()).mapToObj(Integer::toString).collect(joining(","));
 		String linePaletteEven = new String(Base64.getEncoder().encode(palette.getEvenFiltered()));
 		String linePaletteOdd = new String(Base64.getEncoder().encode(palette.getOddFiltered()));
 
