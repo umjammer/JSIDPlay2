@@ -67,9 +67,9 @@ public class JSIDPlay2TeaVM {
 	//
 
 	@Export(name = "open")
-	public static void open(byte[] sidContents, String nameFromJS, int song, int nthFrame, boolean addSidListener)
+	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		String url = jsStringToJavaString(nameFromJS);
+		String url = jsStringToJavaString(sidContentsName);
 		config = new JavaScriptConfig();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
@@ -184,8 +184,8 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@Export(name = "insertDisk")
-	private static void insertDisk(byte[] diskContents, String nameFromJS) {
-		File d64File = new File(jsStringToJavaString(nameFromJS));
+	private static void insertDisk(byte[] diskContents, String diskContentsName) {
+		File d64File = new File(jsStringToJavaString(diskContentsName));
 		try {
 			try (OutputStream os = new FileOutputStream(d64File)) {
 				os.write(diskContents);

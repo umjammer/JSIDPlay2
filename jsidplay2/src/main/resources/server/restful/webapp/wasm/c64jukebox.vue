@@ -293,15 +293,16 @@
           <p>Web Assembly Version (WASM) powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
           <ol>
             <li>NOT JAVA, just Web Assembly (W3C standard) and Javascript</li>
-            <li>Complete client side code, no server required (once loaded to browsers cache)</li>
-            <li>&lt;2MB in size</li>
+            <li>Runs in all major browsers (tested in Google Chrome, Firefox, MsEdge and Opera)</li>
+            <li>Complete client side code, no server required (once loaded into the browsers cache)</li>
+            <li>Runs in a web worker using a separate native thread</li>
+            <li>Runs near to native speed</li>
+            <li>~2MB in size, +2MB used for PAL emulation color data</li>
             <li>Developed as single source code in JSIDPlay2 project</li>
-            <li>Runs with near to native speed</li>
-            <li>Runs in all browsers</li>
-            <li>Full emulation quality, no compromises</li>
-            <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
+            <li>Full emulation quality, no compromises, C64, Floppy and more</li>
+            <li>Compatible with all SIDs (mono, stereo and 3-SID), can run multi-disk demos</li>
             <li>Performance only depends on your PC setup</li>
-            <li>Could even run on a mobile phone, if it's fast enough :-)</li>
+            <li>Would even run on a mobile phone, if it will get as fast as a PC</li>
           </ol>
         </div>
       </form>
@@ -310,16 +311,13 @@
       const maxWidth = 384;
       const maxHeight = 312;
       const MAX_QUEUE_SIZE = 60;
-      const DROP_NTH_FRAME = 4;
-      const DROP_FRAMES_SIZE = DROP_NTH_FRAME << 1;
 
       function Queue() {
-        var head, tail, size;
+        var head, tail;
         return Object.freeze({
           enqueue(value) {
             const link = { value, next: undefined };
             tail = head ? (tail.next = link) : (head = link);
-            size++;
           },
           dequeue() {
             if (head) {
@@ -335,7 +333,6 @@
           },
           clear() {
             tail = head = undefined;
-            size = 0;
           },
           isNotEmpty() {
             return head;
@@ -352,8 +349,8 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
-      var start,
-        time = 0;
+      var start;
+      var time;
 
       function wasmWorker(contents, tuneName, reset) {
         audioContext = new AudioContext();
