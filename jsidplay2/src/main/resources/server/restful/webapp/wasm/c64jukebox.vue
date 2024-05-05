@@ -159,6 +159,22 @@
                 </div>
                 <div class="settings-box">
                   <span class="setting">
+                    <div class="form-check">
+                      <label class="form-check-label" for="palEmulation">
+                        {{ $t("palEmulation") }}
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="palEmulation"
+                          style="float: right; margin-left: 8px"
+                          v-model="palEmulation"
+                        />
+                      </label>
+                    </div>
+                  </span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting">
                     <label for="nthFrame">
                       <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
                         <option v-for="n in nthFrames" :value="n">{{ n }}</option>
@@ -352,6 +368,7 @@
           worker.postMessage({
             eventType: "INITIALISE",
             eventData: {
+              palEmulation: app.palEmulation,
               bufferSize: app.bufferSize,
               audioBufferSize: app.audioBufferSize,
               samplingRate: audioContext.sampleRate,
@@ -436,6 +453,7 @@
         locale: "en",
         messages: {
           en: {
+            palEmulation: "PAL emulation",
             defaultClockSpeed: "Default clock speed",
             defaultSidModel: "Default SID model",
             sampling: "Sampling Method",
@@ -457,6 +475,7 @@
             space: "Space Key",
           },
           de: {
+            palEmulation: "PAL Emulation",
             defaultClockSpeed: "Default Clock Speed",
             defaultSidModel: "Default SID Model",
             sampling: "Sampling Methode",
@@ -490,6 +509,7 @@
             playing: false,
             paused: false,
             screen: true,
+            palEmulation: false,
             defaultClockSpeed: 50,
             startSong: 0,
             nthFrame: 4,

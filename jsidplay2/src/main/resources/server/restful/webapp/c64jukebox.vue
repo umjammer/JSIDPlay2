@@ -4743,6 +4743,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       TeaVM.wasm
         .load("/static/wasm/jsidplay2.wasm", {
           installImports(o, controller) {
+            o.sidplay2section = {
+              getPalEmulation: () => {},
+            };
             o.audiosection = {
               getBufferSize: () => {},
               getAudioBufferSize: () => {},

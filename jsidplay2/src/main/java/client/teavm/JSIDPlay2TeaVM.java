@@ -101,7 +101,7 @@ public class JSIDPlay2TeaVM {
 				new byte[0], new byte[0], c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame) : PALEmulation.NONE);
+		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame, decoder) : PALEmulation.NONE);
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {

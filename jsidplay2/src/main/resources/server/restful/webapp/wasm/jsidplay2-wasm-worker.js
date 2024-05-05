@@ -60,6 +60,9 @@ self.addEventListener(
       TeaVM.wasm
         .load("jsidplay2.wasm", {
           installImports(o, controller) {
+            o.sidplay2section = {
+              getPalEmulation: () => eventData.palEmulation,
+            };
             o.audiosection = {
               getBufferSize: () => eventData.bufferSize,
               getAudioBufferSize: () => eventData.audioBufferSize,

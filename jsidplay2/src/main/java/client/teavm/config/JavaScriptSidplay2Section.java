@@ -2,9 +2,14 @@ package client.teavm.config;
 
 import java.io.File;
 
+import org.teavm.interop.Import;
+
 import libsidplay.config.ISidPlay2Section;
 
 public final class JavaScriptSidplay2Section implements ISidPlay2Section {
+	
+	private static final String SIDPLAY2_SECTION = "sidplay2section";
+
 	@Override
 	public void setVersion(int version) {
 	}
@@ -104,9 +109,8 @@ public final class JavaScriptSidplay2Section implements ISidPlay2Section {
 	}
 
 	@Override
-	public boolean isPalEmulation() {
-		return false;
-	}
+	@Import(module = SIDPLAY2_SECTION, name = "getPalEmulation")
+	public native boolean isPalEmulation();
 
 	@Override
 	public boolean isLoop() {
