@@ -308,10 +308,6 @@
       </form>
     </div>
     <script>
-      const maxWidth = 384;
-      const maxHeight = 312;
-      const MAX_QUEUE_SIZE = 60;
-
       function Queue() {
         var head, tail;
         return Object.freeze({
@@ -339,6 +335,9 @@
         });
       }
 
+      const maxWidth = 384;
+      const maxHeight = 312;
+
       var worker;
 
       var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -348,8 +347,7 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
-      var start;
-      var time;
+      var start, time;
 
       function wasmWorker(contents, tuneName, reset) {
         audioContext = new AudioContext();
