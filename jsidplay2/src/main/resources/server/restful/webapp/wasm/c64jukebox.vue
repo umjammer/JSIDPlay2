@@ -323,7 +323,6 @@
             if (head) {
               var value = head.value;
               head = head.next;
-              size--;
               return value;
             }
             return undefined;
