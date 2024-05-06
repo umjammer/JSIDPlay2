@@ -208,8 +208,29 @@ public class JSIDPlay2TeaVM {
 			installHack(d64File);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			System.err.println(String.format("Cannot insert media file '%s'.", d64File.getAbsolutePath()));
+			System.err.println(String.format("Cannot insert media file '%s'.", diskContentsName));
 		}
+	}
+
+	@Export(name = "insertTape")
+	public static void insertTape(byte[] tapeContents, String tapeContentsName) {
+		File tapeFile = new File(jsStringToJavaString(tapeContentsName));
+		try {
+			try (OutputStream os = new FileOutputStream(tapeFile)) {
+				os.write(tapeContents);
+			}
+			tapeFile.setWritable(false);
+			LOG.fine(tapeFile.getAbsolutePath());
+			hardwareEnsemble.getDatasette().insertTape(tapeFile);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println(String.format("Cannot insert media file '%s'.", tapeContentsName));
+		}
+	}
+
+	@Export(name = "pressPlayOnTape")
+	public static void pressPlayOnTape() {
+		hardwareEnsemble.getDatasette().control(Control.START);
 	}
 
 	@Export(name = "delaySidBlaster")

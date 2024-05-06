@@ -61,6 +61,7 @@
                 @input="
                   $refs.formDiskFileSm.value = null;
                   chosenDiskFile = undefined;
+                  chosenTapeFile = undefined;
                   chosenFile = $refs.formFileSm.files[0];
                 "
                 :disabled="playing"
@@ -84,11 +85,27 @@
           </div>
           <div class="row">
             <div class="col">
+              <label for="tapeFile" class="form-label">{{ $t("chooseTape") }}</label>
+              <input
+                ref="formTapeFileSm"
+                id="tapeFile"
+                type="file"
+                :disabled="!playing"
+                @input="
+                  chosenTapeFile = $refs.formTapeFileSm.files[0];
+                  insertTape();
+                "
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
               <button
                 type="button"
                 v-on:click="
                   $refs.formDiskFileSm.value = null;
                   chosenDiskFile = undefined;
+                  chosenTapeFile = undefined;
                   screen = false;
                   startTune();
                 "
@@ -113,7 +130,9 @@
                   $refs.formFileSm.value = null;
                   chosenFile = undefined;
                   $refs.formDiskFileSm.value = null;
+                  $refs.formTapeFileSm.value = null;
                   chosenDiskFile = undefined;
+                  chosenTapeFile = undefined;
                   stopTune();
                   screen = true;
                   reset();
@@ -127,12 +146,18 @@
             <div class="col">
               <button
                 type="button"
-                v-on:click="load('LOAD&quot;*&quot;,8,1\rRUN\r')"
+                v-on:click="setCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
                 :disabled="!chosenDiskFile || !playing"
               >
-                {{ $t("load") }}
+                {{ $t("loadDisk") }}
               </button>
-              <button type="button" v-on:click="load(' ')" :disabled="!chosenDiskFile || !playing">
+              <button type="button" v-on:click="setCommand('LOAD\rRUN\r')" :disabled="!chosenTapeFile || !playing">
+                {{ $t("loadTape") }}
+              </button>
+              <button type="button" v-on:click="pressPlayOnTape()" :disabled="!chosenTapeFile || !playing">
+                {{ $t("pressPlayOnTape") }}
+              </button>
+              <button type="button" v-on:click="setCommand(' ')" :disabled="!playing">
                 {{ $t("space") }}
               </button>
             </div>
@@ -464,8 +489,12 @@
             stop: "Stop",
             chooseTune: "SID",
             chooseDisk: "Disk",
+            chooseTape: "Tape",
             diskInserted: "Disk inserted",
-            load: "Load *,8,1",
+            tapeInserted: "Tape inserted",
+            loadDisk: "Load *,8,1",
+            loadTape: "Load",
+            pressPlayOnTape: "Press Play on Tape",
             space: "Space Key",
           },
           de: {
@@ -486,8 +515,12 @@
             stop: "Stop",
             chooseTune: "SID",
             chooseDisk: "Diskette",
+            chooseTape: "Kasette",
             diskInserted: "Diskette eingelegt",
-            load: "Load *,8,1",
+            tapeInserted: "Kasette eingelegt",
+            loadDisk: "Load *,8,1",
+            loadTape: "Load",
+            pressPlayOnTape: "Drücke Play auf der Datasette",
             space: "Leertaste",
           },
         },
@@ -500,6 +533,7 @@
             msg: "",
             chosenFile: undefined,
             chosenDiskFile: undefined,
+            chosenTapeFile: undefined,
             playing: false,
             paused: false,
             screen: true,
@@ -584,13 +618,35 @@
             };
             reader.readAsArrayBuffer(app.chosenDiskFile);
           },
-          load(command) {
+          setCommand(command) {
             if (worker) {
               worker.postMessage({
                 eventType: "SET_COMMAND",
                 eventData: {
                   command: command,
                 },
+              });
+            }
+          },
+          insertTape() {
+            var reader = new FileReader();
+            reader.onload = function () {
+              worker.postMessage({
+                eventType: "INSERT_TAPE",
+                eventData: {
+                  contents: new Uint8Array(this.result),
+                  tapeName: app.chosenTapeFile.name,
+                },
+              });
+              app.msg = app.$t("tapeInserted") + ": " + app.chosenTapeFile.name;
+            };
+            reader.readAsArrayBuffer(app.chosenTapeFile);
+          },
+          pressPlayOnTape() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "PRESS_PLAY_ON_TAPE",
+                eventData: {},
               });
             }
           },
