@@ -73,6 +73,12 @@ self.addEventListener(
       self.postMessage({
         eventType: "COMMAND_SET",
       });
+    } else if (eventType === "TYPE_KEY") {
+      instance.exports.typeKey(eventData.key ? allocateTeaVMstring(eventData.key) : undefined);
+
+      self.postMessage({
+        eventType: "KEY_TYPED",
+      });
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm
         .load("jsidplay2.wasm", {

@@ -33,6 +33,7 @@ import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.c1541.DiskImage;
 import libsidplay.components.c1541.IExtendImageListener;
 import libsidplay.components.cart.CartridgeType;
+import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
@@ -72,7 +73,8 @@ public class JSIDPlay2TeaVM {
 	//
 
 	@Export(name = "open")
-	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener, byte[] cartContents, String cartContentsName)
+	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
+			byte[] cartContents, String cartContentsName)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		config = new JavaScriptConfig();
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
@@ -98,7 +100,7 @@ public class JSIDPlay2TeaVM {
 		if (cartContentsUrl != null) {
 			LOG.finest("Cart, length=: " + cartContents.length);
 			LOG.finest("Cart name: : " + cartContentsUrl);
-		}		
+		}
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
 		byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
@@ -250,6 +252,22 @@ public class JSIDPlay2TeaVM {
 		long startTime = System.nanoTime();
 		while (System.nanoTime() - startTime < delay)
 			;
+	}
+
+	@Export(name = "typeKey")
+	public static void typeKey(final String keyCode) {
+		String keyCodeStr = jsStringToJavaString(keyCode);
+		LOG.fine("keyCodeStr: " + keyCodeStr);
+		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
+		LOG.fine("key: " + key);
+		c64.getKeyboard().keyPressed(key);
+
+		c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
+
+			c64.getEventScheduler().scheduleThreadSafeKeyEvent(
+					Event.of("Virtual Keyboard Released", event3 -> c64.getKeyboard().keyReleased(key)));
+
+		}), c64.getClock().getCyclesPerFrame() << 2);
 	}
 
 	//

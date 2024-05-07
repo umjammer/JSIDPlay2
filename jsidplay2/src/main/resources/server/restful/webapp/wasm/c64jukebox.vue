@@ -54,12 +54,7 @@
           <div class="row">
             <div class="col">
               <label for="file" class="form-label">{{ $t("chooseTune") }}</label>
-              <input
-                ref="formFileSm"
-                id="file"
-                type="file"
-                :disabled="playing"
-              />
+              <input ref="formFileSm" id="file" type="file" @input="startTune()" />
             </div>
           </div>
           <div class="row">
@@ -77,7 +72,7 @@
           <div class="row">
             <div class="col">
               <label for="cartFile" class="form-label">{{ $t("chooseCart") }}</label>
-              <input ref="formCartFileSm" id="cartFile" type="file" />
+              <input ref="formCartFileSm" id="cartFile" type="file" @input="reset()" />
             </div>
           </div>
           <div class="row">
@@ -85,9 +80,9 @@
               <button
                 type="button"
                 v-on:click="
-                  screen = false;
                   startTune();
                 "
+                :disabled="!$refs.formFileSm || !$refs.formFileSm.files[0]"
               >
                 {{ $t("play") }}
               </button>
@@ -105,8 +100,6 @@
               <button
                 type="button"
                 v-on:click="
-                  stopTune();
-                  screen = true;
                   reset();
                 "
               >
@@ -137,7 +130,7 @@
               >
                 {{ $t("pressPlayOnTape") }}
               </button>
-              <button type="button" v-on:click="setCommand(' ')" :disabled="!playing">
+              <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing">
                 {{ $t("space") }}
               </button>
             </div>
@@ -548,6 +541,8 @@
             localStorage.locale = this.$i18n.locale;
           },
           reset() {
+            app.screen = true;
+            app.stopTune();
             var reader = new FileReader();
             reader.onload = function () {
               wasmWorker(undefined, undefined, new Uint8Array(this.result), app.$refs.formCartFileSm.files[0].name);
@@ -559,11 +554,14 @@
             }
           },
           startTune() {
+            app.screen = false;
             var reader = new FileReader();
             reader.onload = function () {
               wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
             };
-            reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
+            if (app.$refs.formFileSm.files[0]) {
+              reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
+            }
           },
           pauseTune() {
             if (app.paused) {
@@ -627,6 +625,16 @@
                 eventType: "SET_COMMAND",
                 eventData: {
                   command: command,
+                },
+              });
+            }
+          },
+          typeKey(key) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "TYPE_KEY",
+                eventData: {
+                  key: key,
                 },
               });
             }
