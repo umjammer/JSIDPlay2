@@ -80,7 +80,7 @@
               <button
                 type="button"
                 v-on:click="startTune()"
-                :disabled="!$refs.formFileSm || !$refs.formFileSm.files[0]"
+                :disabled="!$refs.formFileSm || !$refs.formFileSm.files[0] || playing"
               >
                 {{ $t("play") }}
               </button>
