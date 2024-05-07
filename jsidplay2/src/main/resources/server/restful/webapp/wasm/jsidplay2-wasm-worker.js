@@ -35,7 +35,9 @@ self.addEventListener(
         eventData.tuneName ? allocateTeaVMstring(eventData.tuneName) : undefined,
         eventData.startSong,
         eventData.nthFrame,
-        eventData.sidWrites
+        eventData.sidWrites,
+        eventData.cartContents ? allocateTeaVMbyteArray(eventData.cartContents) : undefined,
+        eventData.cartName ? allocateTeaVMstring(eventData.cartName) : undefined
       );
 
       self.postMessage({

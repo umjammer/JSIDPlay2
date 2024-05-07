@@ -60,9 +60,8 @@
                 type="file"
                 @input="
                   $refs.formDiskFileSm.value = null;
-                  chosenDiskFile = undefined;
-                  chosenTapeFile = undefined;
-                  chosenFile = $refs.formFileSm.files[0];
+                  $refs.formTapeFileSm.value = null;
+                  $refs.formCartFileSm.value = null;
                 "
                 :disabled="playing"
               />
@@ -71,31 +70,19 @@
           <div class="row">
             <div class="col">
               <label for="diskFile" class="form-label">{{ $t("chooseDisk") }}</label>
-              <input
-                ref="formDiskFileSm"
-                id="diskFile"
-                type="file"
-                :disabled="!playing"
-                @input="
-                  chosenDiskFile = $refs.formDiskFileSm.files[0];
-                  insertDisk();
-                "
-              />
+              <input ref="formDiskFileSm" id="diskFile" type="file" @input="insertDisk()" />
             </div>
           </div>
           <div class="row">
             <div class="col">
               <label for="tapeFile" class="form-label">{{ $t("chooseTape") }}</label>
-              <input
-                ref="formTapeFileSm"
-                id="tapeFile"
-                type="file"
-                :disabled="!playing"
-                @input="
-                  chosenTapeFile = $refs.formTapeFileSm.files[0];
-                  insertTape();
-                "
-              />
+              <input ref="formTapeFileSm" id="tapeFile" type="file" @input="insertTape()" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label for="cartFile" class="form-label">{{ $t("chooseCart") }}</label>
+              <input ref="formCartFileSm" id="cartFile" type="file" />
             </div>
           </div>
           <div class="row">
@@ -104,12 +91,9 @@
                 type="button"
                 v-on:click="
                   $refs.formDiskFileSm.value = null;
-                  chosenDiskFile = undefined;
-                  chosenTapeFile = undefined;
                   screen = false;
                   startTune();
                 "
-                :disabled="!chosenFile || playing"
               >
                 {{ $t("play") }}
               </button>
@@ -128,11 +112,6 @@
                 type="button"
                 v-on:click="
                   $refs.formFileSm.value = null;
-                  chosenFile = undefined;
-                  $refs.formDiskFileSm.value = null;
-                  $refs.formTapeFileSm.value = null;
-                  chosenDiskFile = undefined;
-                  chosenTapeFile = undefined;
                   stopTune();
                   screen = true;
                   reset();
@@ -147,14 +126,22 @@
               <button
                 type="button"
                 v-on:click="setCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
-                :disabled="!chosenDiskFile || !playing"
+                :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing"
               >
                 {{ $t("loadDisk") }}
               </button>
-              <button type="button" v-on:click="setCommand('LOAD\rRUN\r')" :disabled="!chosenTapeFile || !playing">
+              <button
+                type="button"
+                v-on:click="setCommand('LOAD\rRUN\r')"
+                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing"
+              >
                 {{ $t("loadTape") }}
               </button>
-              <button type="button" v-on:click="pressPlayOnTape()" :disabled="!chosenTapeFile || !playing">
+              <button
+                type="button"
+                v-on:click="pressPlayOnTape()"
+                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing"
+              >
                 {{ $t("pressPlayOnTape") }}
               </button>
               <button type="button" v-on:click="setCommand(' ')" :disabled="!playing">
@@ -374,7 +361,7 @@
       var imageQueue = new Queue();
       var start, time;
 
-      function wasmWorker(contents, tuneName, reset) {
+      function wasmWorker(contents, tuneName, cartContents, cartName) {
         audioContext = new AudioContext();
 
         if (worker) {
@@ -430,6 +417,14 @@
                   eventData.value
               );
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
+              if (eventType === "OPENED") {
+                if (app.$refs.formDiskFileSm.files[0]) {
+                  app.insertDisk();
+                }
+                if (app.$refs.formTapeFileSm.files[0]) {
+                  app.insertTape();
+                }
+              }
               if (!app.paused) {
                 worker.postMessage({ eventType: "CLOCK" });
               }
@@ -442,6 +437,8 @@
                   startSong: app.startSong,
                   nthFrame: app.screen ? app.nthFrame : 0,
                   sidWrites: app.sidWrites,
+                  cartContents: cartContents,
+                  cartName: cartName,
                 },
               });
 
@@ -490,8 +487,10 @@
             chooseTune: "SID",
             chooseDisk: "Disk",
             chooseTape: "Tape",
+            chooseCart: "Cartridge",
             diskInserted: "Disk inserted",
             tapeInserted: "Tape inserted",
+            cartInserted: "Cartridge inserted",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             pressPlayOnTape: "Press Play on Tape",
@@ -516,8 +515,10 @@
             chooseTune: "SID",
             chooseDisk: "Diskette",
             chooseTape: "Kasette",
+            chooseCart: "Modul",
             diskInserted: "Diskette eingelegt",
             tapeInserted: "Kasette eingelegt",
+            cartInserted: "Modul eingesteckt",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             pressPlayOnTape: "Drücke Play auf der Datasette",
@@ -531,9 +532,6 @@
           return {
             langs: ["de", "en"],
             msg: "",
-            chosenFile: undefined,
-            chosenDiskFile: undefined,
-            chosenTapeFile: undefined,
             playing: false,
             paused: false,
             screen: true,
@@ -557,14 +555,22 @@
             localStorage.locale = this.$i18n.locale;
           },
           reset() {
-            wasmWorker();
+            var reader = new FileReader();
+            reader.onload = function () {
+              wasmWorker(undefined, undefined, new Uint8Array(this.result), app.$refs.formCartFileSm.files[0].name);
+            };
+            if (app.$refs.formCartFileSm.files[0]) {
+              reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
+            } else {
+              wasmWorker();
+            }
           },
           startTune() {
             var reader = new FileReader();
             reader.onload = function () {
-              wasmWorker(new Uint8Array(this.result), app.chosenFile.name);
+              wasmWorker(new Uint8Array(this.result), app.$refs.formCartFileSm.files[0].name);
             };
-            reader.readAsArrayBuffer(app.chosenFile);
+            reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
           },
           pauseTune() {
             if (app.paused) {
@@ -607,16 +613,20 @@
           insertDisk() {
             var reader = new FileReader();
             reader.onload = function () {
-              worker.postMessage({
-                eventType: "INSERT_DISK",
-                eventData: {
-                  contents: new Uint8Array(this.result),
-                  diskName: app.chosenDiskFile.name,
-                },
-              });
-              app.msg = app.$t("diskInserted") + ": " + app.chosenDiskFile.name;
+              if (worker) {
+                worker.postMessage({
+                  eventType: "INSERT_DISK",
+                  eventData: {
+                    contents: new Uint8Array(this.result),
+                    diskName: app.$refs.formDiskFileSm.files[0].name,
+                  },
+                });
+              }
+              app.msg = app.$t("diskInserted") + ": " + app.$refs.formDiskFileSm.files[0].name;
             };
-            reader.readAsArrayBuffer(app.chosenDiskFile);
+            if (app.$refs.formDiskFileSm.files[0]) {
+              reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
+            }
           },
           setCommand(command) {
             if (worker) {
@@ -631,16 +641,20 @@
           insertTape() {
             var reader = new FileReader();
             reader.onload = function () {
-              worker.postMessage({
-                eventType: "INSERT_TAPE",
-                eventData: {
-                  contents: new Uint8Array(this.result),
-                  tapeName: app.chosenTapeFile.name,
-                },
-              });
-              app.msg = app.$t("tapeInserted") + ": " + app.chosenTapeFile.name;
+              if (worker) {
+                worker.postMessage({
+                  eventType: "INSERT_TAPE",
+                  eventData: {
+                    contents: new Uint8Array(this.result),
+                    tapeName: app.$refs.formTapeFileSm.files[0].name,
+                  },
+                });
+              }
+              app.msg = app.$t("tapeInserted") + ": " + app.$refs.formTapeFileSm.files[0].name;
             };
-            reader.readAsArrayBuffer(app.chosenTapeFile);
+            if (app.$refs.formTapeFileSm.files[0]) {
+              reader.readAsArrayBuffer(app.$refs.formTapeFileSm.files[0]);
+            }
           },
           pressPlayOnTape() {
             if (worker) {

@@ -7,6 +7,7 @@ import static libsidutils.CBMCodeUtils.petsciiToScreenRam;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +32,7 @@ import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.c1541.DiskImage;
 import libsidplay.components.c1541.IExtendImageListener;
+import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
@@ -70,7 +72,7 @@ public class JSIDPlay2TeaVM {
 	//
 
 	@Export(name = "open")
-	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener)
+	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener, byte[] cartContents, String cartContentsName)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		config = new JavaScriptConfig();
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
@@ -92,7 +94,11 @@ public class JSIDPlay2TeaVM {
 		}
 		LOG.finest("nthFrame: " + nthFrame);
 		LOG.finest("addSidListener: " + addSidListener);
-
+		String cartContentsUrl = jsStringToJavaString(cartContentsName);
+		if (cartContentsUrl != null) {
+			LOG.finest("Cart, length=: " + cartContents.length);
+			LOG.finest("Cart name: : " + cartContentsUrl);
+		}		
 		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
 		byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
@@ -106,6 +112,17 @@ public class JSIDPlay2TeaVM {
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame, decoder) : PALEmulation.NONE);
+		if (cartContents != null) {
+			File cartFile = new File(cartContentsUrl);
+			try {
+				createReadOnlyFile(cartContents, cartFile);
+				c64.setCartridge(CartridgeType.CRT, cartFile);
+				LOG.fine("Cartridge: image attached: " + cartContentsUrl);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+				System.err.println(String.format("Cannot insert media file '%s'.", cartContentsUrl));
+			}
+		}
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
@@ -191,10 +208,7 @@ public class JSIDPlay2TeaVM {
 	private static void insertDisk(byte[] diskContents, String diskContentsName) {
 		File d64File = new File(jsStringToJavaString(diskContentsName));
 		try {
-			try (OutputStream os = new FileOutputStream(d64File)) {
-				os.write(diskContents);
-			}
-			d64File.setWritable(false);
+			createReadOnlyFile(diskContents, d64File);
 			config.getC1541Section().setDriveOn(true);
 			hardwareEnsemble.enableFloppyDiskDrives(true);
 			// attach selected disk into the first disk drive
@@ -216,11 +230,7 @@ public class JSIDPlay2TeaVM {
 	public static void insertTape(byte[] tapeContents, String tapeContentsName) {
 		File tapeFile = new File(jsStringToJavaString(tapeContentsName));
 		try {
-			try (OutputStream os = new FileOutputStream(tapeFile)) {
-				os.write(tapeContents);
-			}
-			tapeFile.setWritable(false);
-			LOG.fine(tapeFile.getAbsolutePath());
+			createReadOnlyFile(tapeContents, tapeFile);
 			hardwareEnsemble.getDatasette().insertTape(tapeFile);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
@@ -305,6 +315,13 @@ public class JSIDPlay2TeaVM {
 
 	private static void installHack(File d64File) {
 		c64.getCPU().setEODHack(d64File.getName().toLowerCase(Locale.US).contains("disgrace"));
+	}
+
+	private static void createReadOnlyFile(byte[] fileContents, File file) throws IOException, FileNotFoundException {
+		try (OutputStream os = new FileOutputStream(file)) {
+			os.write(fileContents);
+		}
+		file.setWritable(false);
 	}
 
 	//
