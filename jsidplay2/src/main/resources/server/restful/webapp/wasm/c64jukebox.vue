@@ -58,11 +58,6 @@
                 ref="formFileSm"
                 id="file"
                 type="file"
-                @input="
-                  $refs.formDiskFileSm.value = null;
-                  $refs.formTapeFileSm.value = null;
-                  $refs.formCartFileSm.value = null;
-                "
                 :disabled="playing"
               />
             </div>
@@ -90,7 +85,6 @@
               <button
                 type="button"
                 v-on:click="
-                  $refs.formDiskFileSm.value = null;
                   screen = false;
                   startTune();
                 "
@@ -111,7 +105,6 @@
               <button
                 type="button"
                 v-on:click="
-                  $refs.formFileSm.value = null;
                   stopTune();
                   screen = true;
                   reset();
@@ -568,9 +561,9 @@
           startTune() {
             var reader = new FileReader();
             reader.onload = function () {
-              wasmWorker(new Uint8Array(this.result), app.$refs.formCartFileSm.files[0].name);
+              wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
             };
-            reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
+            reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
           },
           pauseTune() {
             if (app.paused) {
