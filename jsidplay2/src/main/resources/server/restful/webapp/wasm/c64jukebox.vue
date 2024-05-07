@@ -105,25 +105,25 @@
               <button
                 type="button"
                 v-on:click="setCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
-                :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing"
+                :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !app.screen"
               >
                 {{ $t("loadDisk") }}
               </button>
               <button
                 type="button"
                 v-on:click="setCommand('LOAD\rRUN\r')"
-                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing"
+                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !app.screen"
               >
                 {{ $t("loadTape") }}
               </button>
               <button
                 type="button"
                 v-on:click="pressPlayOnTape()"
-                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing"
+                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !app.screen"
               >
                 {{ $t("pressPlayOnTape") }}
               </button>
-              <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing">
+              <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing || !app.screen">
                 {{ $t("space") }}
               </button>
             </div>
