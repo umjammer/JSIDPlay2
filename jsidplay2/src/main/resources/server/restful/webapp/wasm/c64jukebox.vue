@@ -587,10 +587,12 @@
           showFrame: function () {
             var timeSpan = (1000 * app.nthFrame) / app.defaultClockSpeed;
             time += timeSpan;
-            var elem = imageQueue.dequeue();
-            if (elem) {
-              data.set(elem.image);
-              canvasContext.putImageData(imageData, 0, 0);
+            if (!app.paused) {
+              var elem = imageQueue.dequeue();
+              if (elem) {
+                data.set(elem.image);
+                canvasContext.putImageData(imageData, 0, 0);
+              }
             }
             var diff = new Date().getTime() - start - time;
             if (app.playing) setTimeout(() => app.showFrame(), timeSpan - diff);
