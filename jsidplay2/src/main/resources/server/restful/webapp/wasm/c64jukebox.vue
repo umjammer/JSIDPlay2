@@ -79,9 +79,7 @@
             <div class="col">
               <button
                 type="button"
-                v-on:click="
-                  startTune();
-                "
+                v-on:click="startTune()"
                 :disabled="!$refs.formFileSm || !$refs.formFileSm.files[0]"
               >
                 {{ $t("play") }}
@@ -97,12 +95,7 @@
                 {{ $t("pause") }}
               </button>
               <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
-              <button
-                type="button"
-                v-on:click="
-                  reset();
-                "
-              >
+              <button type="button" v-on:click="reset()">
                 {{ $t("reset") }}
               </button>
             </div>
@@ -554,6 +547,7 @@
             }
           },
           startTune() {
+            app.stopTune();
             app.screen = false;
             var reader = new FileReader();
             reader.onload = function () {
