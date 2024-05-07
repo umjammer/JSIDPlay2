@@ -105,25 +105,25 @@
               <button
                 type="button"
                 v-on:click="setCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
-                :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !app.screen"
+                :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !screen"
               >
                 {{ $t("loadDisk") }}
               </button>
               <button
                 type="button"
                 v-on:click="setCommand('LOAD\rRUN\r')"
-                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !app.screen"
+                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
               >
                 {{ $t("loadTape") }}
               </button>
               <button
                 type="button"
                 v-on:click="pressPlayOnTape()"
-                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !app.screen"
+                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
               >
                 {{ $t("pressPlayOnTape") }}
               </button>
-              <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing || !app.screen">
+              <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing || !screen">
                 {{ $t("space") }}
               </button>
             </div>
@@ -397,10 +397,10 @@
               );
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
               if (eventType === "OPENED") {
-                if (app.screen && app.$refs.formDiskFileSm.files[0]) {
+                if (app.screen) {
                   app.insertDisk();
                 }
-                if (app.screen && app.$refs.formTapeFileSm.files[0]) {
+                if (app.screen) {
                   app.insertTape();
                 }
               }
@@ -609,7 +609,7 @@
               }
               app.msg = app.$t("diskInserted") + ": " + app.$refs.formDiskFileSm.files[0].name;
             };
-            if (app.$refs.formDiskFileSm.files[0]) {
+            if (app.$refs.formDiskFileSm && app.$refs.formDiskFileSm.files[0]) {
               reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
             }
           },
@@ -647,7 +647,7 @@
               }
               app.msg = app.$t("tapeInserted") + ": " + app.$refs.formTapeFileSm.files[0].name;
             };
-            if (app.$refs.formTapeFileSm.files[0]) {
+            if (app.$refs.formTapeFileSm && app.$refs.formTapeFileSm.files[0]) {
               reader.readAsArrayBuffer(app.$refs.formTapeFileSm.files[0]);
             }
           },
