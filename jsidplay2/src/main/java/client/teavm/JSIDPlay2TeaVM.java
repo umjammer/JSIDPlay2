@@ -245,21 +245,12 @@ public class JSIDPlay2TeaVM {
 		hardwareEnsemble.getDatasette().control(Control.START);
 	}
 
-	@Export(name = "delaySidBlaster")
-	public static void delaySidBlaster(int cycles) {
-		// some hackery for SIDBlaster USB to support delayed writes
-		long delay = (long) (cycles / CPUClock.PAL.getCpuFrequency() * 1000000000L);
-		long startTime = System.nanoTime();
-		while (System.nanoTime() - startTime < delay)
-			;
-	}
-
 	@Export(name = "typeKey")
 	public static void typeKey(final String keyCode) {
 		String keyCodeStr = jsStringToJavaString(keyCode);
 		LOG.fine("keyCodeStr: " + keyCodeStr);
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
-		LOG.fine("key: " + key);
+		LOG.fine("typeKey: " + key);
 		c64.getKeyboard().keyPressed(key);
 
 		c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
@@ -273,6 +264,15 @@ public class JSIDPlay2TeaVM {
 	//
 	// Private methods
 	//
+
+	@Export(name = "delaySidBlaster")
+	public static void delaySidBlaster(int cycles) {
+		// some hackery for SIDBlaster USB to support delayed writes
+		long delay = (long) (cycles / CPUClock.PAL.getCpuFrequency() * 1000000000L);
+		long startTime = System.nanoTime();
+		while (System.nanoTime() - startTime < delay)
+			;
+	}
 
 	/**
 	 * JavaScript string cannot be used directly for some reason, therefore:

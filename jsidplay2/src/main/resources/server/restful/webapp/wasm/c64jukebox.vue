@@ -397,10 +397,10 @@
               );
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
               if (eventType === "OPENED") {
-                if (app.$refs.formDiskFileSm.files[0]) {
+                if (app.screen && app.$refs.formDiskFileSm.files[0]) {
                   app.insertDisk();
                 }
-                if (app.$refs.formTapeFileSm.files[0]) {
+                if (app.screen && app.$refs.formTapeFileSm.files[0]) {
                   app.insertTape();
                 }
               }
@@ -459,9 +459,9 @@
             startSong: "Start song",
             nthFrame: "Show every nth frame",
             startTime: "Initial delay for warm-up phase [in audio buffers]",
-            play: "Play",
+            play: "Play SID",
             pause: "Pause",
-            reset: "Reset",
+            reset: "Reset C64",
             stop: "Stop",
             chooseTune: "SID",
             chooseDisk: "Disk",
@@ -487,9 +487,9 @@
             startSong: "Start Song",
             nthFrame: "Zeige jedes Nte Bild",
             startTime: "Initiale Verzögerung für die Aufwärmphase [in Audio Puffern]",
-            play: "Spiele",
+            play: "Spiele SID",
             pause: "Pause",
-            reset: "Reset",
+            reset: "Reset C64",
             stop: "Stop",
             chooseTune: "SID",
             chooseDisk: "Diskette",
@@ -547,8 +547,8 @@
             }
           },
           startTune() {
-            app.stopTune();
             app.screen = false;
+            app.stopTune();
             var reader = new FileReader();
             reader.onload = function () {
               wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
