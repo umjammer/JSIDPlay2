@@ -378,7 +378,7 @@
                 audioContext = new AudioContext();
                 nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
               } else if (nextTime < audioContext.currentTime) {
-                nextTime = audioContext.currentTime + 0.05;
+                nextTime = audioContext.currentTime + 0.05; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
               nextTime += eventData.left.length / audioContext.sampleRate;
