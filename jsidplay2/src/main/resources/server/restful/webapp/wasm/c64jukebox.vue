@@ -134,6 +134,7 @@
               <div>
                 <p>{{ msg }}</p>
               </div>
+              <span>Frames in der Queue: {{ framesCounter }}</span>
               <div v-show="screen">
                 <canvas id="c64Screen" style="scale: 2; margin: 150px" width="384" height="285" />
               </div>
@@ -299,17 +300,20 @@
       </form>
     </div>
     <script>
+      var size = 0;
       function Queue() {
         var head, tail;
         return Object.freeze({
           enqueue(value) {
             const link = { value, next: undefined };
             tail = head ? (tail.next = link) : (head = link);
+            size++;
           },
           dequeue() {
             if (head) {
               var value = head.value;
               head = head.next;
+              size--;
               return value;
             }
             return undefined;
@@ -319,6 +323,7 @@
           },
           clear() {
             tail = head = undefined;
+            size = 0;
           },
           isNotEmpty() {
             return head;
@@ -373,8 +378,8 @@
                 audioContext = new AudioContext();
               }
               var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
-              buffer.getChannelData(0).set(eventData.left);
-              buffer.getChannelData(1).set(eventData.right);
+                buffer.getChannelData(0).set(eventData.left);
+                buffer.getChannelData(1).set(eventData.right);
 
               var sourceNode = audioContext.createBufferSource();
               sourceNode.buffer = buffer;
@@ -404,9 +409,15 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused) {
+              if (!app.paused && size * app.nthFrame < 120) {
                 worker.postMessage({ eventType: "CLOCK" });
+              } else {
+                setTimeout(
+                  () => worker.postMessage({ eventType: "IDLE" }),
+                  (1000 * app.nthFrame) / app.defaultClockSpeed
+                );
               }
+              app.framesCounter = size;
             } else if (eventType === "INITIALISED") {
               worker.postMessage({
                 eventType: "OPEN",
@@ -526,6 +537,7 @@
             sidWrites: false,
             bufferSize: 2 * 48000,
             audioBufferSize: 48000,
+            framesCounter: 0,
           };
         },
         computed: {},
@@ -585,7 +597,7 @@
             canvasContext.putImageData(imageData, 0, 0);
           },
           showFrame: function () {
-            var timeSpan = (1000 * app.nthFrame) / app.defaultClockSpeed;
+            var timeSpan = (1000 * app.nthFrame) / (app.defaultClockSpeed - 1);
             time += timeSpan;
             if (!app.paused) {
               var elem = imageQueue.dequeue();

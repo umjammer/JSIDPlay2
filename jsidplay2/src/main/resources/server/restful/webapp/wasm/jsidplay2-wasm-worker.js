@@ -29,6 +29,10 @@ self.addEventListener(
       self.postMessage({
         eventType: "CLOCKED",
       });
+    } else if (eventType === "IDLE") {
+      self.postMessage({
+        eventType: "CLOCKED",
+      });
     } else if (eventType === "OPEN") {
       instance.exports.open(
         eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
