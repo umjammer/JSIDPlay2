@@ -378,8 +378,8 @@
                 audioContext = new AudioContext();
               }
               var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
-                buffer.getChannelData(0).set(eventData.left);
-                buffer.getChannelData(1).set(eventData.right);
+              buffer.getChannelData(0).set(eventData.left);
+              buffer.getChannelData(1).set(eventData.right);
 
               var sourceNode = audioContext.createBufferSource();
               sourceNode.buffer = buffer;
