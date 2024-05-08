@@ -177,14 +177,6 @@
                 </div>
                 <div class="settings-box">
                   <span class="setting">
-                    <label for="startTime"
-                      >{{ $t("startTime") }}
-                      <input class="right" type="number" id="startTime" class="form-control" v-model.number="startTime"
-                    /></label>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
                     <label for="defaultClockSpeed">
                       <select
                         class="form-select form-select-sm right"
@@ -338,7 +330,7 @@
 
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
-      var chunkNumber;
+      var nextTime;
 
       var canvasContext;
       var imageData, data;
@@ -373,10 +365,6 @@
             var { eventType, eventData, eventId } = event.data;
 
             if (eventType === "SAMPLES") {
-              if (chunkNumber === 0) {
-                audioContext.close();
-                audioContext = new AudioContext();
-              }
               var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
               buffer.getChannelData(0).set(eventData.left);
               buffer.getChannelData(1).set(eventData.right);
@@ -384,7 +372,15 @@
               var sourceNode = audioContext.createBufferSource();
               sourceNode.buffer = buffer;
               sourceNode.connect(audioContext.destination);
-              sourceNode.start((eventData.left.length / audioContext.sampleRate) * chunkNumber++);
+
+              if (nextTime == 0) {
+                audioContext.close();
+                audioContext = new AudioContext();
+                nextTime = audioContext.currentTime + 0.05;  // add 50ms latency to work well across systems
+              }
+              sourceNode.start(nextTime);
+              nextTime += eventData.left.length / audioContext.sampleRate;
+              
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
@@ -432,7 +428,7 @@
                 },
               });
 
-              chunkNumber = app.startTime;
+              nextTime = 0;
               imageQueue.clear();
               app.playing = true;
               app.paused = false;
@@ -469,7 +465,6 @@
             audioBufferSize: "Audio buffer size",
             startSong: "Start song",
             nthFrame: "Show every nth frame",
-            startTime: "Initial delay for warm-up phase [in audio buffers]",
             play: "Play SID",
             pause: "Pause",
             reset: "Reset C64",
@@ -497,7 +492,6 @@
             audioBufferSize: "Audio Puffer Größe",
             startSong: "Start Song",
             nthFrame: "Zeige jedes Nte Bild",
-            startTime: "Initiale Verzögerung für die Aufwärmphase [in Audio Puffern]",
             play: "Spiele SID",
             pause: "Pause",
             reset: "Reset C64",
@@ -530,7 +524,6 @@
             startSong: 0,
             nthFrame: 4,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
-            startTime: 0,
             defaultSidModel: true,
             sampling: false,
             reverbBypass: true,
