@@ -376,11 +376,10 @@
               if (nextTime == 0) {
                 audioContext.close();
                 audioContext = new AudioContext();
-                nextTime = audioContext.currentTime + 0.05;  // add 50ms latency to work well across systems
+                nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
               }
               sourceNode.start(nextTime);
               nextTime += eventData.left.length / audioContext.sampleRate;
-              
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
