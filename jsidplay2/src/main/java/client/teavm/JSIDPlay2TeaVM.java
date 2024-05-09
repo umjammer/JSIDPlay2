@@ -261,10 +261,6 @@ public class JSIDPlay2TeaVM {
 		}), c64.getClock().getCyclesPerFrame() << 2);
 	}
 
-	//
-	// Private methods
-	//
-
 	@Export(name = "delaySidBlaster")
 	public static void delaySidBlaster(int cycles) {
 		// some hackery for SIDBlaster USB to support delayed writes
@@ -274,6 +270,10 @@ public class JSIDPlay2TeaVM {
 			;
 	}
 
+	//
+	// Private methods
+	//
+	
 	/**
 	 * JavaScript string cannot be used directly for some reason, therefore:
 	 */
