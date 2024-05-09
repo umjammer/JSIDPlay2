@@ -58,17 +58,7 @@
 			<id>lib</id>
 			<url>file://${basedir}/lib</url>
 		</repository>
-		<repository>
-			<id>teavm-dev</id>
-			<url>https://teavm.org/maven/repository</url>
-		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>teavm-dev</id>
-			<url>https://teavm.org/maven/repository</url>
-		</pluginRepository>
-	</pluginRepositories>
 	<profiles>
 		<profile>
 			<id>development-java8</id>
@@ -359,14 +349,14 @@
 		<dependency>
 			<groupId>org.teavm</groupId>
 			<artifactId>teavm-classlib</artifactId>
-			<version>0.10.0-dev-11</version>
+			<version>0.10.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.teavm/teavm-jso-apis -->
 		<dependency>
 			<groupId>org.teavm</groupId>
 			<artifactId>teavm-jso-apis</artifactId>
-			<version>0.10.0-dev-11</version>
+			<version>0.10.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- test dependencies -->
@@ -419,7 +409,7 @@
 			<plugin>
 				<groupId>org.teavm</groupId>
 				<artifactId>teavm-maven-plugin</artifactId>
-				<version>0.10.0-dev-11</version>
+				<version>0.10.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -1687,7 +1677,7 @@
 											teavm-maven-plugin
 										</artifactId>
 										<versionRange>
-											[0.10.0-dev-11,)
+											[0.10.0,)
 										</versionRange>
 										<goals>
 											<goal>compile</goal>
