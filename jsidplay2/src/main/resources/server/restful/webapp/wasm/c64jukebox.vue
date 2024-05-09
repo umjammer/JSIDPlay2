@@ -338,7 +338,10 @@
       var start, time;
 
       function wasmWorker(contents, tuneName, cartContents, cartName) {
-        audioContext = new AudioContext();
+        audioContext = new AudioContext({
+          latencyHint: "interactive",
+          sampleRate: 48000,
+        });
 
         if (worker) {
           worker.terminate();
@@ -375,7 +378,10 @@
 
               if (nextTime == 0) {
                 audioContext.close();
-                audioContext = new AudioContext();
+                audioContext = new AudioContext({
+                  latencyHint: "interactive",
+                  sampleRate: 48000,
+                });
                 nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
               } else if (nextTime < audioContext.currentTime) {
                 nextTime = audioContext.currentTime + 0.05; // if samples are not produced fast enough
