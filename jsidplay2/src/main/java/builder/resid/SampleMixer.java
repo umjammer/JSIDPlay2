@@ -126,9 +126,12 @@ public interface SampleMixer extends IntConsumer {
 		 */
 		private IntBuffer delayedSamples;
 
+		private boolean delayedSamplesEnabled;
+
 		DefaultSampleMixer(IntBuffer audioBufferL, IntBuffer audioBufferR) {
 			this.bufferL = audioBufferL;
 			this.bufferR = audioBufferR;
+			this.delayedSamplesEnabled = false;
 			setVolume(1 << VOLUME_SCALER, 1 << VOLUME_SCALER);
 			setDelay(0);
 		}
@@ -141,6 +144,7 @@ public interface SampleMixer extends IntConsumer {
 
 		@Override
 		public void setDelay(int delayedSamples) {
+			this.delayedSamplesEnabled = delayedSamples != 0;
 			this.delayedSamples = ByteBuffer.allocateDirect(Integer.BYTES * (delayedSamples + 1))
 					.order(ByteOrder.nativeOrder()).asIntBuffer().put(new int[delayedSamples + 1]);
 			((Buffer) this.delayedSamples).flip();
@@ -148,10 +152,12 @@ public interface SampleMixer extends IntConsumer {
 
 		@Override
 		public void accept(int sample) {
-			if (!delayedSamples.put(sample).hasRemaining()) {
-				((Buffer) this.delayedSamples).flip();
+			if (this.delayedSamplesEnabled) {
+				if (!delayedSamples.put(sample).hasRemaining()) {
+					((Buffer) this.delayedSamples).flip();
+				}
+				sample = delayedSamples.get(delayedSamples.position());
 			}
-			sample = delayedSamples.get(delayedSamples.position());
 			bufferL.put(bufferL.get(bufferL.position()) + sample * volumeL);
 			bufferR.put(bufferR.get(bufferR.position()) + sample * volumeR);
 		}
