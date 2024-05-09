@@ -133,8 +133,8 @@ public class SIDMixer implements Mixer {
 			// Erase audio buffers
 			((Buffer) audioBufferL).flip();
 			((Buffer) audioBufferR).flip();
-			((Buffer) audioBufferL.put(new int[bufferSize])).clear();
-			((Buffer) audioBufferR.put(new int[bufferSize])).clear();
+			((Buffer) audioBufferL.put(emptyBuffer)).clear();
+			((Buffer) audioBufferR.put(emptyBuffer)).clear();
 			context.schedule(this, bufferSize);
 		}
 
@@ -190,6 +190,7 @@ public class SIDMixer implements Mixer {
 	 * Capacity of the Audio buffers audioBufferL and audioBufferR.
 	 */
 	private int bufferSize;
+	private int[] emptyBuffer;
 
 	/**
 	 * Resampler of sample output for two channels (stereo).
@@ -277,6 +278,7 @@ public class SIDMixer implements Mixer {
 
 		this.audioDriver = audioDriver;
 		this.bufferSize = audioSection.getBufferSize();
+		this.emptyBuffer = new int[bufferSize];
 		this.buffer = audioDriver.buffer();
 		this.audioBufferL = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
 		this.audioBufferR = ByteBuffer.allocateDirect(Integer.BYTES * bufferSize).order(nativeOrder()).asIntBuffer();
