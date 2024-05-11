@@ -18,7 +18,7 @@ public final class JavaScriptEmulationSection implements IEmulationSection {
 
 	private static final String EMULATION_SECTION = "emulationsection";
 
-	private OverrideSection overrideSection = new OverrideSection();
+	private final OverrideSection overrideSection = new OverrideSection();
 
 	@Override
 	public void setUserSidModel(ChipModel model) {

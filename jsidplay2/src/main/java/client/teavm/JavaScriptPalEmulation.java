@@ -17,7 +17,10 @@ import libsidplay.components.mos656x.VIC;
 
 public class JavaScriptPalEmulation implements IPALEmulation {
 
-	/** ABGR pixel data.VIC colors without PAL emulation. */
+	/**
+	 * ABGR pixel data. VIC colors without PAL emulation. Use this palette for VIC
+	 * colors 0-15. https://www.pepto.de/projects/colorvic/2001/
+	 */
 	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0xFF000000, 0xFFFFFFFF, 0xFF2B3768, 0xFFB2A470,
 			0xFF863D6F, 0xFF438D58, 0xFF792835, 0xFF6FC7B8, 0xFF254F6F, 0xFF003943, 0xFF59679A, 0xFF444444, 0xFF6C6C6C,
 			0xFF84D29A, 0xFFB55E6C, 0xFF959595, };
