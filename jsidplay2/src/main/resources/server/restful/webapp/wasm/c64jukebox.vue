@@ -136,7 +136,12 @@
               </div>
               <span>Frames in der Queue: {{ framesCounter }}</span>
               <div v-show="screen">
-                <canvas id="c64Screen" style="scale: 2; margin: 150px; border: 2px solid black;" width="384" height="285"/>
+                <canvas
+                  id="c64Screen"
+                  style="scale: 2; margin: 150px; border: 2px solid black"
+                  width="384"
+                  height="285"
+                />
               </div>
             </div>
             <div class="col">
