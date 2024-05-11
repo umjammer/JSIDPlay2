@@ -31,7 +31,6 @@ import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.c1541.DiskImage;
-import libsidplay.components.c1541.IExtendImageListener;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.components.mos6510.MOS6510;
@@ -43,6 +42,7 @@ import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
 import libsidplay.sidtune.SidTuneError;
 import libsidplay.sidtune.SidTuneType;
+import libsidutils.IOUtils;
 import sidplay.player.PSid64DetectedTuneInfo;
 import sidplay.player.PSid64Detection;
 
@@ -115,9 +115,8 @@ public class JSIDPlay2TeaVM {
 		c64 = hardwareEnsemble.getC64();
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame, decoder) : PALEmulation.NONE);
 		if (cartContents != null) {
-			File cartFile = new File(cartContentsUrl);
 			try {
-				createReadOnlyFile(cartContents, cartFile);
+				File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
 				c64.setCartridge(CartridgeType.CRT, cartFile);
 				LOG.fine("Cartridge: image attached: " + cartContentsUrl);
 			} catch (IOException e) {
@@ -208,35 +207,30 @@ public class JSIDPlay2TeaVM {
 
 	@Export(name = "insertDisk")
 	private static void insertDisk(byte[] diskContents, String diskContentsName) {
-		File d64File = new File(jsStringToJavaString(diskContentsName));
+		String diskContentsUrl = jsStringToJavaString(diskContentsName);
 		try {
-			createReadOnlyFile(diskContents, d64File);
+			File d64File = createReadOnlyFile(diskContents, diskContentsUrl);
 			config.getC1541Section().setDriveOn(true);
 			hardwareEnsemble.enableFloppyDiskDrives(true);
 			// attach selected disk into the first disk drive
 			DiskImage disk = hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
-			disk.setExtendImagePolicy(new IExtendImageListener() {
-				@Override
-				public boolean isAllowed() {
-					return true;
-				}
-			});
+			disk.setExtendImagePolicy(() -> true);
 			installHack(d64File);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			System.err.println(String.format("Cannot insert media file '%s'.", diskContentsName));
+			System.err.println(String.format("Cannot insert media file '%s'.", diskContentsUrl));
 		}
 	}
 
 	@Export(name = "insertTape")
 	public static void insertTape(byte[] tapeContents, String tapeContentsName) {
-		File tapeFile = new File(jsStringToJavaString(tapeContentsName));
+		String tapeContentsUrl = jsStringToJavaString(tapeContentsName);
 		try {
-			createReadOnlyFile(tapeContents, tapeFile);
+			File tapeFile = createReadOnlyFile(tapeContents, tapeContentsUrl);
 			hardwareEnsemble.getDatasette().insertTape(tapeFile);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			System.err.println(String.format("Cannot insert media file '%s'.", tapeContentsName));
+			System.err.println(String.format("Cannot insert media file '%s'.", tapeContentsUrl));
 		}
 	}
 
@@ -273,7 +267,7 @@ public class JSIDPlay2TeaVM {
 	//
 	// Private methods
 	//
-	
+
 	/**
 	 * JavaScript string cannot be used directly for some reason, therefore:
 	 */
@@ -335,16 +329,16 @@ public class JSIDPlay2TeaVM {
 		c64.getCPU().setEODHack(d64File.getName().toLowerCase(Locale.US).contains("disgrace"));
 	}
 
-	private static void createReadOnlyFile(byte[] fileContents, File file) throws IOException, FileNotFoundException {
-		try (OutputStream os = new FileOutputStream(file)) {
+	private static File createReadOnlyFile(byte[] fileContents, String fileContentsUrl)
+			throws IOException, FileNotFoundException {
+		File tmp = File.createTempFile(IOUtils.getFilenameWithoutSuffix(fileContentsUrl),
+				IOUtils.getFilenameSuffix(fileContentsUrl));
+		try (OutputStream os = new FileOutputStream(tmp)) {
 			os.write(fileContents);
 		}
-		file.setWritable(false);
+		tmp.setWritable(false);
+		return tmp;
 	}
-
-	//
-	// main
-	//
 
 	public static void main(String[] args) throws Exception {
 	}

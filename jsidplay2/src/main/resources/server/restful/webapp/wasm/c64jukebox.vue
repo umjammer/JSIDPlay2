@@ -136,7 +136,7 @@
               </div>
               <span>Frames in der Queue: {{ framesCounter }}</span>
               <div v-show="screen">
-                <canvas id="c64Screen" style="scale: 2; margin: 150px" width="384" height="285" />
+                <canvas id="c64Screen" style="scale: 2; margin: 150px; border: 2px solid black;" width="384" height="285"/>
               </div>
             </div>
             <div class="col">
@@ -548,11 +548,11 @@
           reset() {
             app.screen = true;
             app.stopTune();
-            var reader = new FileReader();
-            reader.onload = function () {
-              wasmWorker(undefined, undefined, new Uint8Array(this.result), app.$refs.formCartFileSm.files[0].name);
-            };
             if (app.$refs.formCartFileSm.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function () {
+                wasmWorker(undefined, undefined, new Uint8Array(this.result), app.$refs.formCartFileSm.files[0].name);
+              };
               reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
             } else {
               wasmWorker();
@@ -561,11 +561,11 @@
           startTune() {
             app.screen = false;
             app.stopTune();
-            var reader = new FileReader();
-            reader.onload = function () {
-              wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
-            };
             if (app.$refs.formFileSm.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function () {
+                wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
+              };
               reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
             }
           },
