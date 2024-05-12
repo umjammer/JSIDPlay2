@@ -152,6 +152,9 @@ self.addEventListener(
                   },
                 }),
             };
+            o.c1541section = {
+              isJiffyDosInstalled: () => eventData.jiffyDosInstalled,
+            };
           },
         })
         .then((teavm) => {

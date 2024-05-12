@@ -71,11 +71,11 @@
                   <ul class="dropdown-menu">
                     <li>
                       <div class="dropdown-item form-check">
-                        <label class="form-check-label" for="vbr" style="cursor: pointer">
+                        <label class="form-check-label" for="pause" style="cursor: pointer">
                           <input
                             class="form-check-input"
                             type="checkbox"
-                            id="vbr"
+                            id="pause"
                             style="float: right; margin-left: 8px"
                             v-model="paused"
                             @click="pauseTune()"
@@ -110,6 +110,23 @@
                             style="display: none"
                           />
                         </li>
+                        
+                    <li>
+                      <div class="dropdown-item form-check">
+                        <label class="form-check-label" for="jiffyDosInstalled" style="cursor: pointer">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="jiffyDosInstalled"
+                            style="float: right; margin-left: 8px"
+                            v-model="jiffyDosInstalled"
+                            @change="reset()"
+                          />
+                          {{ $t("jiffyDosInstalled") }}
+                        </label>
+                        </div>
+                        </li>
+                        
                         <li>
                           <a class="dropdown-item" href="#" @click="ejectDisk()">{{ $t("ejectDisk") }}</a>
                         </li>
@@ -422,10 +439,11 @@
               bufferSize: app.bufferSize,
               audioBufferSize: app.audioBufferSize,
               samplingRate: audioContext.sampleRate,
-              samplingMethodResample: app.sampling === "true",
+              samplingMethodResample: "" + app.sampling === "true",
               reverbBypass: app.reverbBypass,
               defaultClockSpeed: app.defaultClockSpeed,
-              defaultSidModel: app.defaultSidModel === "true",
+              defaultSidModel: "" + app.defaultSidModel === "true",
+              jiffyDosInstalled: "" + app.jiffyDosInstalled === "true",
             },
           });
 
@@ -481,7 +499,7 @@
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 setTimeout(
-                  () => worker.postMessage({ eventType: "IDLE" }),
+                  () => { if (worker) worker.postMessage({ eventType: "IDLE" })},
                   (1000 * app.nthFrame) / app.defaultClockSpeed
                 );
               }
@@ -531,6 +549,7 @@
             palEmulation: "PAL emulation",
             defaultClockSpeed: "Default clock speed",
             defaultSidModel: "Default SID model",
+            jiffyDosInstalled: "JiffyDOS",
             sampling: "Sampling Method",
             reverbBypass: "Bypass Schroeder reverb",
             sidWrites: "Print SID writes to console",
@@ -570,6 +589,7 @@
             palEmulation: "PAL Emulation",
             defaultClockSpeed: "Default Clock Speed",
             defaultSidModel: "Default SID Model",
+            jiffyDosInstalled: "JiffyDOS",
             sampling: "Sampling Methode",
             reverbBypass: "Schroeder Reverb überbrücken",
             sidWrites: "SID writes in Konsole schreiben",
@@ -621,6 +641,7 @@
             nthFrame: 4,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
             defaultSidModel: true,
+            jiffyDosInstalled: false,
             sampling: false,
             reverbBypass: true,
             sidWrites: false,

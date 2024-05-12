@@ -36,6 +36,7 @@ import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
+import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.config.ISidPlay2Section;
@@ -80,8 +81,9 @@ public class JSIDPlay2TeaVM {
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
+		final IC1541Section c1541Section = config.getC1541Section();
 
-		doLog(sidplay2Section, audioSection, emulationSection);
+		doLog(sidplay2Section, audioSection, emulationSection, c1541Section);
 
 		if (sidContents != null) {
 			String url = jsStringToJavaString(sidContentsName);
@@ -108,9 +110,11 @@ public class JSIDPlay2TeaVM {
 		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
 		byte[] c1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM));
 		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
+		byte[] jiffyDosC64Rom = decoder.decode(allRoms.get(JavaScriptRoms.JIFFYDOS_C64_ROM));
+		byte[] jiffyDosC1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.JIFFYDOS_C1541_ROM));
 
 		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
-				new byte[0], new byte[0], c1541Rom, new byte[0], new byte[0]);
+				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
 		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame, decoder) : PALEmulation.NONE);
@@ -247,7 +251,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "ejectTape")
 	private static void ejectTape() {
 		try {
-			hardwareEnsemble.getDatasette().ejectTape();;
+			hardwareEnsemble.getDatasette().ejectTape();
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			System.err.println("Cannot eject tape.");
@@ -299,7 +303,7 @@ public class JSIDPlay2TeaVM {
 	}
 
 	private static void doLog(ISidPlay2Section sidplay2Section, IAudioSection audioSection,
-			IEmulationSection emulationSection) {
+			IEmulationSection emulationSection, IC1541Section c1541Section) {
 		LOG.finest("palEmulation: " + sidplay2Section.isPalEmulation());
 		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
 		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
@@ -308,6 +312,7 @@ public class JSIDPlay2TeaVM {
 		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
+		LOG.finest("isJiffyDosInstalled: " + c1541Section.isJiffyDosInstalled());
 	}
 
 	private static void autodetectPSID64() {

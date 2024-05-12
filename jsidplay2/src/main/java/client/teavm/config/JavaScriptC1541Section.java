@@ -1,9 +1,14 @@
 package client.teavm.config;
 
+import org.teavm.interop.Import;
+
 import libsidplay.components.c1541.FloppyType;
 import libsidplay.config.IC1541Section;
 
 public final class JavaScriptC1541Section implements IC1541Section {
+
+	private static final String C1541_SECTION = "c1541section";
+
 	private boolean driveOn;
 
 	@Override
@@ -74,9 +79,8 @@ public final class JavaScriptC1541Section implements IC1541Section {
 	}
 
 	@Override
-	public boolean isJiffyDosInstalled() {
-		return false;
-	}
+	@Import(module = C1541_SECTION, name = "isJiffyDosInstalled")
+	public native boolean isJiffyDosInstalled();
 
 	@Override
 	public boolean isDriveOn() {
