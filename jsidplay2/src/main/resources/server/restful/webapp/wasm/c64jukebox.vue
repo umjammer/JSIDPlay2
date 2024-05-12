@@ -94,10 +94,14 @@
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("devices") }}</a>
                   <ul class="dropdown-menu">
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy">{{ $t("floppy") }}&raquo; </a>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy"
+                        >{{ $t("floppy") }}&raquo;
+                      </a>
                       <ul class="submenu dropdown-menu" :style="showFloppy ? 'display: block !important' : ''">
                         <li>
-                          <a class="dropdown-item" href="#" @click="$refs.formDiskFileSm.click()">{{ $t("insertDisk") }}</a>
+                          <a class="dropdown-item" href="#" @click="$refs.formDiskFileSm.click()">{{
+                            $t("insertDisk")
+                          }}</a>
                           <input
                             ref="formDiskFileSm"
                             id="diskFile"
@@ -112,10 +116,14 @@
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showTape = !showTape">{{ $t("tape") }}&raquo; </a>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showTape = !showTape"
+                        >{{ $t("tape") }}&raquo;
+                      </a>
                       <ul class="submenu dropdown-menu" :style="showTape ? 'display: block !important' : ''">
                         <li>
-                          <a class="dropdown-item" href="#" @click="$refs.formTapeFileSm.click()">{{ $t("insertTape") }}</a>
+                          <a class="dropdown-item" href="#" @click="$refs.formTapeFileSm.click()">{{
+                            $t("insertTape")
+                          }}</a>
                           <input
                             ref="formTapeFileSm"
                             id="tapeFile"
@@ -133,10 +141,14 @@
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showCart = !showCart">{{ $t("cart") }}&raquo; </a>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showCart = !showCart"
+                        >{{ $t("cart") }}&raquo;
+                      </a>
                       <ul class="submenu dropdown-menu" :style="showCart ? 'display: block !important' : ''">
                         <li>
-                          <a class="dropdown-item" href="#" @click="$refs.formCartFileSm.click()">{{ $t("insertCart") }}</a>
+                          <a class="dropdown-item" href="#" @click="$refs.formCartFileSm.click()">{{
+                            $t("insertCart")
+                          }}</a>
                           <input
                             ref="formCartFileSm"
                             id="cartFile"
@@ -543,15 +555,12 @@
             cart: "Cart",
             insertCart: "Insert Cartridge",
             ejectCart: "Eject Cartridge",
-            chooseTune: "SID",
-            chooseDisk: "Disk",
-            chooseTape: "Tape",
-            chooseCart: "Cartridge",
             diskInserted: "Disk inserted",
             diskEjected: "Disk ejected",
             tapeInserted: "Tape inserted",
             tapeEjected: "Tape ejected",
             cartInserted: "Cartridge inserted",
+            cartEjected: "Cartridge ejected",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Space Key",
@@ -585,15 +594,12 @@
             cart: "Modul",
             insertCart: "Modul einlegen",
             ejectCart: "Modul auswerfen",
-            chooseTune: "SID",
-            chooseDisk: "Diskette",
-            chooseTape: "Kasette",
-            chooseCart: "Modul",
             diskInserted: "Diskette eingelegt",
             diskEjected: "Diskette ausgeworfen",
             tapeInserted: "Kasette eingelegt",
             tapeEjected: "Kasette ausgeworfen",
             cartInserted: "Modul eingesteckt",
+            cartEjected: "Modul ausgeworfen",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Leertaste",
@@ -674,7 +680,6 @@
               audioContext = undefined;
             }
             imageQueue.clear();
-            app.msg = "";
             app.playing = false;
             app.paused = false;
           },
@@ -778,7 +783,7 @@
             }
           },
           insertCart() {
-            app.msg = app.$t("cartInserted" + ": " + app.$refs.formCartFileSm.files[0].name);
+            app.msg = app.$t("cartInserted") + ": " + app.$refs.formCartFileSm.files[0].name;
             app.reset();
           },
           ejectCart() {
