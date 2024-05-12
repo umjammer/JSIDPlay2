@@ -56,6 +56,12 @@ self.addEventListener(
       self.postMessage({
         eventType: "DISK_INSERTED",
       });
+    } else if (eventType === "EJECT_DISK") {
+      instance.exports.ejectDisk();
+
+      self.postMessage({
+        eventType: "DISK_EJECTED",
+      });
     } else if (eventType === "INSERT_TAPE") {
       instance.exports.insertTape(
         eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
@@ -64,6 +70,12 @@ self.addEventListener(
 
       self.postMessage({
         eventType: "TAPE_INSERTED",
+      });
+    } else if (eventType === "EJECT_TAPE") {
+      instance.exports.ejectTape();
+
+      self.postMessage({
+        eventType: "TAPE_EJECTED",
       });
     } else if (eventType === "PRESS_PLAY_ON_TAPE") {
       instance.exports.pressPlayOnTape();

@@ -2,7 +2,7 @@
 <html>
   <head>
     <style lang="scss" scoped>
-      @import "/static/c64jukebox.scss";
+      @import "/static/wasm/c64jukebox.scss";
     </style>
 
     <!-- favicon.ico -->
@@ -16,7 +16,7 @@
 
     <!-- Load Vue followed by Bootstrap -->
     <script src="/webjars/vue/3.4.21/dist/vue.global${prod}.js"></script>
-    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap${min}.js"></script>
+    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle${min}.js"></script>
 
     <!-- helpers -->
     <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
@@ -50,56 +50,116 @@
           </select>
         </div>
 
+        <nav class="navbar navbar-expand navbar-dark bg-primary">
+          <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="main_nav">
+              <ul class="navbar-nav">
+                <li class="nav-item dropdown" id="myDropdown">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> File </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="#" @click="$refs.formFileSm.click()"> Load SID/PRG/P00 </a>
+                      <input ref="formFileSm" id="file" type="file" @input="startTune()" style="display: none" />
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" @click="reset()"> {{ $t("reset") }} </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown" id="myDropdown">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Player </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <div class="dropdown-item form-check">
+                        <label class="form-check-label" for="vbr" style="cursor: pointer">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="vbr"
+                            style="float: right; margin-left: 8px"
+                            v-model="paused"
+                            @click="pauseTune()"
+                            :disabled="!playing"
+                          />
+                          {{ $t("pause") }}
+                        </label>
+                      </div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" @click="stopTune()"> Stop </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown" id="myDropdown">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Geräte </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy"> Floppy &raquo; </a>
+                      <ul class="submenu dropdown-menu" :style="showFloppy ? 'display: block !important' : ''">
+                        <li>
+                          <a class="dropdown-item" href="#" @click="$refs.formDiskFileSm.click()">Insert Disk</a>
+                          <input
+                            ref="formDiskFileSm"
+                            id="diskFile"
+                            type="file"
+                            @input="insertDisk()"
+                            style="display: none"
+                          />
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" @click="ejectDisk()">Eject Disk</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showTape = !showTape"> Datasette &raquo; </a>
+                      <ul class="submenu dropdown-menu" :style="showTape ? 'display: block !important' : ''">
+                        <li>
+                          <a class="dropdown-item" href="#" @click="$refs.formTapeFileSm.click()">Insert Tape</a>
+                          <input
+                            ref="formTapeFileSm"
+                            id="tapeFile"
+                            type="file"
+                            @input="insertTape()"
+                            style="display: none"
+                          />
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" @click="pressPlayOnTape()">{{ $t("pressPlayOnTape") }}</a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" @click="ejectTape()">Eject Tape</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showCart = !showCart"> Cartridge &raquo; </a>
+                      <ul class="submenu dropdown-menu" :style="showCart ? 'display: block !important' : ''">
+                        <li>
+                          <a class="dropdown-item" href="#" @click="$refs.formCartFileSm.click()">Insert Cartridge</a>
+                          <input
+                            ref="formCartFileSm"
+                            id="cartFile"
+                            type="file"
+                            @input="insertCart()"
+                            style="display: none"
+                          />
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" @click="ejectCart()">Eject Cart</a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <!-- navbar-collapse.// -->
+          </div>
+          <!-- container-fluid.// -->
+        </nav>
+
         <div class="container">
-          <div class="row">
-            <div class="col">
-              <label for="file" class="form-label">{{ $t("chooseTune") }}</label>
-              <input ref="formFileSm" id="file" type="file" @input="startTune()" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <label for="diskFile" class="form-label">{{ $t("chooseDisk") }}</label>
-              <input ref="formDiskFileSm" id="diskFile" type="file" @input="insertDisk()" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <label for="tapeFile" class="form-label">{{ $t("chooseTape") }}</label>
-              <input ref="formTapeFileSm" id="tapeFile" type="file" @input="insertTape()" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <label for="cartFile" class="form-label">{{ $t("chooseCart") }}</label>
-              <input ref="formCartFileSm" id="cartFile" type="file" @input="reset()" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <button
-                type="button"
-                v-on:click="startTune()"
-                :disabled="!$refs.formFileSm || !$refs.formFileSm.files[0] || playing"
-              >
-                {{ $t("play") }}
-              </button>
-              <button
-                type="button"
-                :class="paused ? 'btn btn-primary btn-sm' : ''"
-                :aria-pressed="paused"
-                data-bs-toggle="button"
-                v-on:click="pauseTune()"
-                :disabled="!playing"
-              >
-                {{ $t("pause") }}
-              </button>
-              <button type="button" v-on:click="stopTune()" :disabled="!playing">{{ $t("stop") }}</button>
-              <button type="button" v-on:click="reset()">
-                {{ $t("reset") }}
-              </button>
-            </div>
-          </div>
           <div class="row">
             <div class="col">
               <button
@@ -116,13 +176,6 @@
               >
                 {{ $t("loadTape") }}
               </button>
-              <button
-                type="button"
-                v-on:click="pressPlayOnTape()"
-                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
-              >
-                {{ $t("pressPlayOnTape") }}
-              </button>
               <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing || !screen">
                 {{ $t("space") }}
               </button>
@@ -135,13 +188,8 @@
                 <p>{{ msg }}</p>
               </div>
               <span>Frames in der Queue: {{ framesCounter }}</span>
-              <div v-show="screen">
-                <canvas
-                  id="c64Screen"
-                  style="scale: 2; margin: 150px; border: 2px solid black"
-                  width="384"
-                  height="285"
-                />
+              <div v-show="screen" style="width: 100%; margin: 0px auto">
+                <canvas id="c64Screen" style="border: 2px solid black" width="384" height="285" />
               </div>
             </div>
             <div class="col">
@@ -467,6 +515,7 @@
         locale: "en",
         messages: {
           en: {
+            FileMenu: "File",
             palEmulation: "PAL emulation",
             defaultClockSpeed: "Default clock speed",
             defaultSidModel: "Default SID model",
@@ -486,7 +535,9 @@
             chooseTape: "Tape",
             chooseCart: "Cartridge",
             diskInserted: "Disk inserted",
+            diskEjected: "Disk ejected",
             tapeInserted: "Tape inserted",
+            tapeEjected: "Tape ejected",
             cartInserted: "Cartridge inserted",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
@@ -494,6 +545,7 @@
             space: "Space Key",
           },
           de: {
+            FileMenu: "Datei",
             palEmulation: "PAL Emulation",
             defaultClockSpeed: "Default Clock Speed",
             defaultSidModel: "Default SID Model",
@@ -513,7 +565,9 @@
             chooseTape: "Kasette",
             chooseCart: "Modul",
             diskInserted: "Diskette eingelegt",
+            diskEjected: "Diskette ausgeworfen",
             tapeInserted: "Kasette eingelegt",
+            tapeEjected: "Kasette ausgeworfen",
             cartInserted: "Modul eingesteckt",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
@@ -543,6 +597,9 @@
             bufferSize: 2 * 48000,
             audioBufferSize: 48000,
             framesCounter: 0,
+            showFloppy: false,
+            showTape: false,
+            showCart: false,
           };
         },
         computed: {},
@@ -632,6 +689,15 @@
               reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
             }
           },
+          ejectDisk() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "EJECT_DISK",
+              });
+            }
+            app.$refs.formDiskFileSm.value = "";
+            app.msg = app.$t("diskEjected");
+          },
           setCommand(command) {
             if (worker) {
               worker.postMessage({
@@ -670,6 +736,15 @@
               reader.readAsArrayBuffer(app.$refs.formTapeFileSm.files[0]);
             }
           },
+          ejectTape() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "EJECT_TAPE",
+              });
+            }
+            app.$refs.formTapeFileSm.value = "";
+            app.msg = app.$t("tapeEjected");
+          },
           pressPlayOnTape() {
             if (worker) {
               worker.postMessage({
@@ -677,6 +752,15 @@
                 eventData: {},
               });
             }
+          },
+          insertCart() {
+            app.msg = app.$t("cartInserted" + ": " + app.$refs.formCartFileSm.files[0].name);
+            app.reset();
+          },
+          ejectCart() {
+            app.$refs.formCartFileSm.value = "";
+            app.msg = app.$t("cartEjected");
+            app.reset();
           },
         },
         mounted: function () {

@@ -222,6 +222,16 @@ public class JSIDPlay2TeaVM {
 		}
 	}
 
+	@Export(name = "ejectDisk")
+	private static void ejectDisk() {
+		try {
+			hardwareEnsemble.getFloppies()[0].getDiskController().ejectDisk();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println("Cannot eject disk.");
+		}
+	}
+
 	@Export(name = "insertTape")
 	public static void insertTape(byte[] tapeContents, String tapeContentsName) {
 		String tapeContentsUrl = jsStringToJavaString(tapeContentsName);
@@ -231,6 +241,16 @@ public class JSIDPlay2TeaVM {
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			System.err.println(String.format("Cannot insert media file '%s'.", tapeContentsUrl));
+		}
+	}
+
+	@Export(name = "ejectTape")
+	private static void ejectTape() {
+		try {
+			hardwareEnsemble.getDatasette().ejectTape();;
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println("Cannot eject tape.");
 		}
 	}
 
