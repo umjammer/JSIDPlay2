@@ -110,23 +110,23 @@
                             style="display: none"
                           />
                         </li>
-                        
-                    <li>
-                      <div class="dropdown-item form-check">
-                        <label class="form-check-label" for="jiffyDosInstalled" style="cursor: pointer">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="jiffyDosInstalled"
-                            style="float: right; margin-left: 8px"
-                            v-model="jiffyDosInstalled"
-                            @change="reset()"
-                          />
-                          {{ $t("jiffyDosInstalled") }}
-                        </label>
-                        </div>
+
+                        <li>
+                          <div class="dropdown-item form-check">
+                            <label class="form-check-label" for="jiffyDosInstalled" style="cursor: pointer">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="jiffyDosInstalled"
+                                style="float: right; margin-left: 8px"
+                                v-model="jiffyDosInstalled"
+                                @change="reset()"
+                              />
+                              {{ $t("jiffyDosInstalled") }}
+                            </label>
+                          </div>
                         </li>
-                        
+
                         <li>
                           <a class="dropdown-item" href="#" @click="ejectDisk()">{{ $t("ejectDisk") }}</a>
                         </li>
@@ -498,10 +498,9 @@
               if (!app.paused && size * app.nthFrame < 120) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
-                setTimeout(
-                  () => { if (worker) worker.postMessage({ eventType: "IDLE" })},
-                  (1000 * app.nthFrame) / app.defaultClockSpeed
-                );
+                setTimeout(() => {
+                  if (worker) worker.postMessage({ eventType: "IDLE" });
+                }, (1000 * app.nthFrame) / app.defaultClockSpeed);
               }
               app.framesCounter = size;
             } else if (eventType === "INITIALISED") {
