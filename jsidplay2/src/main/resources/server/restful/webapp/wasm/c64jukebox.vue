@@ -55,10 +55,10 @@
             <div class="collapse navbar-collapse" id="main_nav">
               <ul class="navbar-nav">
                 <li class="nav-item dropdown" id="myDropdown">
-                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> File </a>
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("file") }}</a>
                   <ul class="dropdown-menu">
                     <li>
-                      <a class="dropdown-item" href="#" @click="$refs.formFileSm.click()"> Load SID/PRG/P00 </a>
+                      <a class="dropdown-item" href="#" @click="$refs.formFileSm.click()"> {{ $t("play") }} </a>
                       <input ref="formFileSm" id="file" type="file" @input="startTune()" style="display: none" />
                     </li>
                     <li>
@@ -67,7 +67,7 @@
                   </ul>
                 </li>
                 <li class="nav-item dropdown" id="myDropdown">
-                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Player </a>
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("player") }}</a>
                   <ul class="dropdown-menu">
                     <li>
                       <div class="dropdown-item form-check">
@@ -86,18 +86,18 @@
                       </div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" @click="stopTune()"> Stop </a>
+                      <a class="dropdown-item" href="#" @click="stopTune()">{{ $t("stop") }}</a>
                     </li>
                   </ul>
                 </li>
                 <li class="nav-item dropdown" id="myDropdown">
-                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Geräte </a>
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("devices") }}</a>
                   <ul class="dropdown-menu">
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy"> Floppy &raquo; </a>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy">{{ $t("floppy") }}&raquo; </a>
                       <ul class="submenu dropdown-menu" :style="showFloppy ? 'display: block !important' : ''">
                         <li>
-                          <a class="dropdown-item" href="#" @click="$refs.formDiskFileSm.click()">Insert Disk</a>
+                          <a class="dropdown-item" href="#" @click="$refs.formDiskFileSm.click()">{{ $t("insertDisk") }}</a>
                           <input
                             ref="formDiskFileSm"
                             id="diskFile"
@@ -107,15 +107,15 @@
                           />
                         </li>
                         <li>
-                          <a class="dropdown-item" href="#" @click="ejectDisk()">Eject Disk</a>
+                          <a class="dropdown-item" href="#" @click="ejectDisk()">{{ $t("ejectDisk") }}</a>
                         </li>
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showTape = !showTape"> Datasette &raquo; </a>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showTape = !showTape">{{ $t("tape") }}&raquo; </a>
                       <ul class="submenu dropdown-menu" :style="showTape ? 'display: block !important' : ''">
                         <li>
-                          <a class="dropdown-item" href="#" @click="$refs.formTapeFileSm.click()">Insert Tape</a>
+                          <a class="dropdown-item" href="#" @click="$refs.formTapeFileSm.click()">{{ $t("insertTape") }}</a>
                           <input
                             ref="formTapeFileSm"
                             id="tapeFile"
@@ -128,15 +128,15 @@
                           <a class="dropdown-item" href="#" @click="pressPlayOnTape()">{{ $t("pressPlayOnTape") }}</a>
                         </li>
                         <li>
-                          <a class="dropdown-item" href="#" @click="ejectTape()">Eject Tape</a>
+                          <a class="dropdown-item" href="#" @click="ejectTape()">{{ $t("ejectTape") }}</a>
                         </li>
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showCart = !showCart"> Cartridge &raquo; </a>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showCart = !showCart">{{ $t("cart") }}&raquo; </a>
                       <ul class="submenu dropdown-menu" :style="showCart ? 'display: block !important' : ''">
                         <li>
-                          <a class="dropdown-item" href="#" @click="$refs.formCartFileSm.click()">Insert Cartridge</a>
+                          <a class="dropdown-item" href="#" @click="$refs.formCartFileSm.click()">{{ $t("insertCart") }}</a>
                           <input
                             ref="formCartFileSm"
                             id="cartFile"
@@ -146,7 +146,7 @@
                           />
                         </li>
                         <li>
-                          <a class="dropdown-item" href="#" @click="ejectCart()">Eject Cart</a>
+                          <a class="dropdown-item" href="#" @click="ejectCart()">{{ $t("ejectCart") }}</a>
                         </li>
                       </ul>
                     </li>
@@ -526,10 +526,23 @@
             audioBufferSize: "Audio buffer size",
             startSong: "Start song",
             nthFrame: "Show every nth frame",
-            play: "Play SID",
+            file: "File",
+            play: "Load SID/PRG/P00",
+            player: "Player",
             pause: "Pause",
             reset: "Reset C64",
             stop: "Stop",
+            devices: "Devices",
+            floppy: "Floppy",
+            insertDisk: "Insert Disk",
+            ejectDisk: "Eject Disk",
+            tape: "Tape",
+            insertTape: "Insert Tape",
+            pressPlayOnTape: "Press Play on Tape",
+            ejectTape: "Eject Tape",
+            cart: "Cart",
+            insertCart: "Insert Cartridge",
+            ejectCart: "Eject Cartridge",
             chooseTune: "SID",
             chooseDisk: "Disk",
             chooseTape: "Tape",
@@ -541,7 +554,6 @@
             cartInserted: "Cartridge inserted",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
-            pressPlayOnTape: "Press Play on Tape",
             space: "Space Key",
           },
           de: {
@@ -556,10 +568,23 @@
             audioBufferSize: "Audio Puffer Größe",
             startSong: "Start Song",
             nthFrame: "Zeige jedes Nte Bild",
-            play: "Spiele SID",
+            file: "Datei",
+            play: "Lade SID/PRG/P00",
+            player: "Player",
             pause: "Pause",
             reset: "Reset C64",
             stop: "Stop",
+            devices: "Geräte",
+            floppy: "Floppy",
+            insertDisk: "Diskette einlegen",
+            ejectDisk: "Diskette auswerfen",
+            tape: "Datasette",
+            insertTape: "Kasette einlegen",
+            pressPlayOnTape: "Drücke Play auf der Datasette",
+            ejectTape: "Kasette auswerfen",
+            cart: "Modul",
+            insertCart: "Modul einlegen",
+            ejectCart: "Modul auswerfen",
             chooseTune: "SID",
             chooseDisk: "Diskette",
             chooseTape: "Kasette",
@@ -571,7 +596,6 @@
             cartInserted: "Modul eingesteckt",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
-            pressPlayOnTape: "Drücke Play auf der Datasette",
             space: "Leertaste",
           },
         },
