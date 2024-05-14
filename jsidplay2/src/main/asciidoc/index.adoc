@@ -14,7 +14,9 @@ Both Demos use VUE3 and Bootstrap5.
 
 * link:https://haendel.ddns.net:8443/static/c64jukebox.vue[The first demo site^] streams content from my server to the browser
 
-* link:https://haendel.ddns.net:8443/static/wasm/c64jukebox.vue[The second demo site^] can play tunes directly in the browser (alpha version)
+* link:https://haendel.ddns.net:8443/static/teavm/wasm/c64jukebox.vue[The second demo site^] can play tunes directly in the browser (web assembly alpha version)
+
+* link:https://haendel.ddns.net:8443/static/teavm/js/c64jukebox.vue[The third demo site^] can play tunes directly in the browser (javascript alpha version)
 
 == Introduction
 

@@ -9,7 +9,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/wasm/</directory>
+			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/js/</directory>
 			<outputDirectory></outputDirectory>
 			<filtered>false</filtered>
 			<excludes>
@@ -17,7 +17,7 @@
 			</excludes>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/wasm/</directory>
+			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/js/</directory>
 			<outputDirectory></outputDirectory>
 			<filtered>true</filtered>
 			<includes>

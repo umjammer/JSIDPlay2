@@ -4,7 +4,7 @@ Release Notes:
 C64Jukebox
  - Update to use Vue3 and Bootstrap5
  
-JSIDPlay2 Web Assembly Version added (WASM) - https://haendel.ddns.net:8443/static/wasm/c64jukebox.vue
+JSIDPlay2 Web Assembly Version added (WASM) - https://haendel.ddns.net:8443/static/teavm/wasm/c64jukebox.vue
  - NOT JAVA, just Web Assembly (W3C standard) and Javascript
  - Complete client side code, no server required (once loaded to browsers cache)
  - < 2MB assembly code

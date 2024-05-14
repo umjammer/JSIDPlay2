@@ -3,6 +3,7 @@ package client.teavm.config;
 import java.util.Arrays;
 import java.util.List;
 
+import client.teavm.IConfigResolver;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
@@ -14,15 +15,24 @@ import libsidplay.config.IWhatsSidSection;
 
 public class JavaScriptConfig implements IConfig {
 
-	private final JavaScriptSidplay2Section sidplay2Section = new JavaScriptSidplay2Section();
-	private final JavaScriptC1541Section c1541Section = new JavaScriptC1541Section();
-	private final JavaScriptPrinterSection printerSection = new JavaScriptPrinterSection();
-	private final JavaScriptAudioSection audioSection = new JavaScriptAudioSection();
-	private final JavaScriptEmulationSection emulationSection = new JavaScriptEmulationSection();
-	private final JavaScriptWhatsSidSection whatsSidSection = new JavaScriptWhatsSidSection();
+	private final JavaScriptSidplay2Section sidplay2Section;
+	private final JavaScriptC1541Section c1541Section;
+	private final JavaScriptPrinterSection printerSection;
+	private final JavaScriptAudioSection audioSection;
+	private final JavaScriptEmulationSection emulationSection;
+	private final JavaScriptWhatsSidSection whatsSidSection;
 	private final List<IFilterSection> filterSections = Arrays.asList(new JavaScriptFilterAlankila6581R4AR_3789(),
 			new JavaScriptFilterTrurl8580R5_3691(), new JavaScriptFilterAverage6581(), new JavaScriptFilterAverage8580());
 
+	public JavaScriptConfig(IConfigResolver resolver) {
+		sidplay2Section = new JavaScriptSidplay2Section(resolver);
+		c1541Section = new JavaScriptC1541Section(resolver);
+		printerSection = new JavaScriptPrinterSection();
+		audioSection = new JavaScriptAudioSection(resolver);
+		emulationSection = new JavaScriptEmulationSection(resolver);
+		whatsSidSection = new JavaScriptWhatsSidSection();
+	}
+	
 	@Override
 	public ISidPlay2Section getSidplay2Section() {
 		return sidplay2Section;

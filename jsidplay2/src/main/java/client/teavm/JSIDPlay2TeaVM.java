@@ -77,7 +77,7 @@ public class JSIDPlay2TeaVM {
 	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
 			byte[] cartContents, String cartContentsName)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		config = new JavaScriptConfig();
+		config = new JavaScriptConfig(new WebAssemblyConfigResolver());
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
@@ -130,6 +130,7 @@ public class JSIDPlay2TeaVM {
 		}
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
+		sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
 				// for tunes: Install player into RAM
@@ -157,8 +158,7 @@ public class JSIDPlay2TeaVM {
 					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
 
-		sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
-		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver(nthFrame);
+		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver(new WebAssemblyAudioDriver(), nthFrame);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 

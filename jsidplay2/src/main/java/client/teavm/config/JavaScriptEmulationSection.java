@@ -3,8 +3,7 @@ package client.teavm.config;
 import java.util.Collections;
 import java.util.List;
 
-import org.teavm.interop.Import;
-
+import client.teavm.IConfigResolver;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
@@ -16,9 +15,13 @@ import libsidplay.config.IEmulationSection;
 
 public final class JavaScriptEmulationSection implements IEmulationSection {
 
-	private static final String EMULATION_SECTION = "emulationsection";
-
 	private final OverrideSection overrideSection = new OverrideSection();
+
+	private IConfigResolver resolver;
+
+	public JavaScriptEmulationSection(IConfigResolver resolver) {
+		this.resolver = resolver;
+	}
 
 	@Override
 	public void setUserSidModel(ChipModel model) {
@@ -609,8 +612,9 @@ public final class JavaScriptEmulationSection implements IEmulationSection {
 		}
 	}
 
-	@Import(module = EMULATION_SECTION, name = "getDefaultSidModel8580")
-	public native boolean getDefaultSidModel8580();
+	public boolean getDefaultSidModel8580() {
+		return resolver.getDefaultSidModel8580();
+	}
 
 	@Override
 	public Emulation getDefaultEmulation() {
@@ -628,6 +632,7 @@ public final class JavaScriptEmulationSection implements IEmulationSection {
 		}
 	}
 
-	@Import(module = EMULATION_SECTION, name = "getDefaultClockSpeed")
-	public native int getDefaultClockSpeedAsInt();
+	public int getDefaultClockSpeedAsInt() {
+		return resolver.getDefaultClockSpeedAsInt();
+	}
 }

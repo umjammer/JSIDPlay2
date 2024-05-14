@@ -3,12 +3,11 @@
   <head>
     <title>TeaVM example</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <script type="text/javascript" charset="utf-8" src="/static/wasm/jsidplay2.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/teavm/js/jsidplay2.js"></script>
     <script>
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
       var nextTime;
-
 
       audioContext = new AudioContext({
         latencyHint: "interactive",
@@ -62,7 +61,7 @@
       }
     </script>
   </head>
-  <body onload="main();">
+  <body onload="main(new Array('true', '96000', '48000', '48000','false','true','50', 'true','false'));">
     <input id="file" type="file" oninput="startTune()" />
 
     <div id="sidplay2Section" palEmulation="true"></div>

@@ -384,29 +384,33 @@ public class OnlineContent {
 		try (FileWriter servlets = new FileWriter(root.resolve("tomcat-servlets.list").toFile());
 				FileWriter filters = new FileWriter(root.resolve("tomcat-filters.list").toFile());) {
 			for (String clzName : clzList) {
-				Class<?> clz = getClass().getClassLoader().loadClass(clzName);
-				if (clz.getAnnotation(WebServlet.class) != null) {
-					servlets.write(clzName + ",");
-				}
-				if (clz.getAnnotation(WebFilter.class) != null) {
-					filters.write(clzName + ",");
-				}
-				if (clz.getAnnotation(Parameters.class) != null) {
-					// Parameter classes are being checked for development errors at build time
-					if (clzName.startsWith(JSIDPlay2Server.class.getPackage().getName())) {
-						// ... check server parameters
-						ServletParameterHelper.check(clz, true);
-					} else {
-						for (Class<?> cls : Arrays.asList(clz, clz.getEnclosingClass()).stream()
-								.filter(Objects::nonNull).collect(Collectors.toList())) {
-							try {
-								// ... check main parameters
-								cls.getMethod("main", String[].class);
-								ServletParameterHelper.check(clz, false);
-							} catch (NoSuchMethodException e) {
+				try {
+					Class<?> clz = getClass().getClassLoader().loadClass(clzName);
+					if (clz.getAnnotation(WebServlet.class) != null) {
+						servlets.write(clzName + ",");
+					}
+					if (clz.getAnnotation(WebFilter.class) != null) {
+						filters.write(clzName + ",");
+					}
+					if (clz.getAnnotation(Parameters.class) != null) {
+						// Parameter classes are being checked for development errors at build time
+						if (clzName.startsWith(JSIDPlay2Server.class.getPackage().getName())) {
+							// ... check server parameters
+							ServletParameterHelper.check(clz, true);
+						} else {
+							for (Class<?> cls : Arrays.asList(clz, clz.getEnclosingClass()).stream()
+									.filter(Objects::nonNull).collect(Collectors.toList())) {
+								try {
+									// ... check main parameters
+									cls.getMethod("main", String[].class);
+									ServletParameterHelper.check(clz, false);
+								} catch (NoSuchMethodException e) {
+								}
 							}
 						}
 					}
+				} catch (ClassNotFoundException| ExceptionInInitializerError | SecurityException |IOException e) {
+					// ignore
 				}
 			}
 		}

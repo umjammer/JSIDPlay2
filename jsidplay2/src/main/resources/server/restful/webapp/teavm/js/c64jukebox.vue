@@ -2,7 +2,7 @@
 <html>
   <head>
     <style lang="scss" scoped>
-      @import "/static/wasm/c64jukebox.scss";
+      @import "/static/teavm/js/c64jukebox.scss";
     </style>
 
     <!-- favicon.ico -->
@@ -32,13 +32,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title>C64 Jukebox (Web Assembly Version)</title>
+    <title>C64 Jukebox (JavaScript Version)</title>
   </head>
   <body>
     <div id="app">
       <form enctype="multipart/form-data">
         <div class="locale-changer">
-          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (Web Assembly Version)</h1>
+          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (JavaScript Version)</h1>
           <select
             id="localeselector"
             class="form-select form-select-sm"
@@ -356,9 +356,9 @@
               </div>
             </div>
           </div>
-          <p>Web Assembly Version (WASM) powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
+          <p>JavaScript Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
           <ol>
-            <li>NOT JAVA, just Web Assembly (W3C standard) and Javascript</li>
+            <li>NOT JAVA, just JavaScript</li>
             <li>Runs in all major browsers (tested in Google Chrome, Firefox, MsEdge and Opera)</li>
             <li>Complete client side code, no server required (once loaded into the browsers cache)</li>
             <li>Runs in a web worker using a separate native thread</li>
@@ -429,7 +429,7 @@
           worker.terminate();
           worker = undefined;
         }
-        worker = new Worker("jsidplay2-wasm-worker.js");
+        worker = new Worker("jsidplay2-js-worker.js");
 
         return new Promise((resolve, reject) => {
           worker.postMessage({
@@ -467,7 +467,7 @@
                 });
                 nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
               } else if (nextTime < audioContext.currentTime) {
-                nextTime = audioContext.currentTime + 0.05; // if samples are not produced fast enough
+                nextTime = audioContext.currentTime + 0.01; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
               nextTime += eventData.left.length / audioContext.sampleRate;

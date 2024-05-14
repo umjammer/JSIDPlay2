@@ -12,8 +12,6 @@ import java.nio.ShortBuffer;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import org.teavm.interop.Import;
-
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
@@ -39,8 +37,10 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 
 	private int[] array;
 	private int length;
+	private IAudioDriver audioDriver;
 
-	public JavaScriptAudioDriver(int nthFrame) {
+	public JavaScriptAudioDriver(IAudioDriver audioDriver, int nthFrame) {
+		this.audioDriver = audioDriver;
 		this.nthFrame = nthFrame;
 	}
 
@@ -73,7 +73,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 			resultR.put(lookupTable[shortBuffer.get() + 32768]);
 		}
 		((Buffer) sampleBuffer).position(position);
-		processSamples(resultL.array(), resultR.array(), resultL.position());
+		audioDriver.processSamples(resultL.array(), resultR.array(), resultL.position());
 		((Buffer) resultL).clear();
 		((Buffer) resultR).clear();
 	}
@@ -86,7 +86,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 				array = vic.getPalEmulation().getPixels().array();
 				length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
 			}
-			processPixels(array, length);
+			audioDriver.processPixels(array, length);
 		}
 	}
 
@@ -96,7 +96,7 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 		if (sidWiteTime == 0) {
 			sidWiteTime = time;
 		}
-		processSidWrite(time, time - sidWiteTime, addr, data & 0xff);
+		audioDriver.processSidWrite((int) (time - sidWiteTime), addr, data & 0xff);
 		sidWiteTime = time;
 	}
 
@@ -113,15 +113,5 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 	public boolean isRecording() {
 		return false;
 	}
-
-	/* This methods maps to a JavaScript methods in a web page. */
-	@Import(module = "audiodriver", name = "processSamples")
-	private static native void processSamples(float[] resultL, float[] resultR, int length);
-
-	@Import(module = "audiodriver", name = "processPixels")
-	private static native void processPixels(int[] pixels, int length);
-
-	@Import(module = "audiodriver", name = "processSidWrite")
-	private static native void processSidWrite(long time, long relTime, int addr, int value);
 
 }

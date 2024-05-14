@@ -2,8 +2,7 @@ package client.teavm.config;
 
 import java.io.File;
 
-import org.teavm.interop.Import;
-
+import client.teavm.IConfigResolver;
 import libsidplay.common.SamplingMethod;
 import libsidplay.common.SamplingRate;
 import libsidplay.common.VideoCoderPreset;
@@ -12,7 +11,11 @@ import sidplay.audio.Audio;
 
 public final class JavaScriptAudioSection implements IAudioSection {
 
-	private static final String AUDIO_SECTION = "audiosection";
+	private IConfigResolver resolver;
+
+	public JavaScriptAudioSection(IConfigResolver resolver) {
+		this.resolver = resolver;
+	}
 
 	@Override
 	public void setVideoStreamingUrl(String videoStreamingUrl) {
@@ -268,7 +271,7 @@ public final class JavaScriptAudioSection implements IAudioSection {
 
 	@Override
 	public SamplingRate getSamplingRate() {
-		switch (getSamplingRateAsInt()) {
+		switch (resolver.getSamplingRateAsInt()) {
 		case 8000:
 			return SamplingRate.VERY_LOW;
 		case 44100:
@@ -281,20 +284,14 @@ public final class JavaScriptAudioSection implements IAudioSection {
 		}
 	}
 
-	@Import(module = AUDIO_SECTION, name = "getSamplingRate")
-	public native int getSamplingRateAsInt();
-
 	@Override
 	public SamplingMethod getSampling() {
-		if (getSamplingMethodResample()) {
+		if (resolver.getSamplingMethodResample()) {
 			return SamplingMethod.RESAMPLE;
 		} else {
 			return SamplingMethod.DECIMATE;
 		}
 	}
-
-	@Import(module = AUDIO_SECTION, name = "getSamplingMethodResample")
-	public native boolean getSamplingMethodResample();
 
 	@Override
 	public float getReverbSustainDelay() {
@@ -327,8 +324,9 @@ public final class JavaScriptAudioSection implements IAudioSection {
 	}
 
 	@Override
-	@Import(module = AUDIO_SECTION, name = "getReverbBypass")
-	public native boolean getReverbBypass();
+	public boolean getReverbBypass() {
+		return resolver.getReverbBypass();
+	}
 
 	@Override
 	public float getReverbAllPass2Delay() {
@@ -396,8 +394,9 @@ public final class JavaScriptAudioSection implements IAudioSection {
 	}
 
 	@Override
-	@Import(module = AUDIO_SECTION, name = "getBufferSize")
-	public native int getBufferSize();
+	public int getBufferSize() {
+		return resolver.getBufferSize();
+	}
 
 	@Override
 	public int getAudioCoderBitRateTolerance() {
@@ -410,8 +409,9 @@ public final class JavaScriptAudioSection implements IAudioSection {
 	}
 
 	@Override
-	@Import(module = AUDIO_SECTION, name = "getAudioBufferSize")
-	public native int getAudioBufferSize();
+	public int getAudioBufferSize() {
+		return resolver.getAudioBufferSize();
+	}
 
 	@Override
 	public Audio getAudio() {

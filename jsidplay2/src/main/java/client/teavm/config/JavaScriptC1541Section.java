@@ -1,15 +1,18 @@
 package client.teavm.config;
 
-import org.teavm.interop.Import;
-
+import client.teavm.IConfigResolver;
 import libsidplay.components.c1541.FloppyType;
 import libsidplay.config.IC1541Section;
 
 public final class JavaScriptC1541Section implements IC1541Section {
 
-	private static final String C1541_SECTION = "c1541section";
-
 	private boolean driveOn;
+
+	private IConfigResolver resolver;
+
+	public JavaScriptC1541Section(IConfigResolver resolver) {
+		this.resolver = resolver;
+	}
 
 	@Override
 	public void setRamExpansionEnabled4(boolean on) {
@@ -79,8 +82,9 @@ public final class JavaScriptC1541Section implements IC1541Section {
 	}
 
 	@Override
-	@Import(module = C1541_SECTION, name = "isJiffyDosInstalled")
-	public native boolean isJiffyDosInstalled();
+	public boolean isJiffyDosInstalled() {
+		return resolver.isJiffyDosInstalled();
+	}
 
 	@Override
 	public boolean isDriveOn() {

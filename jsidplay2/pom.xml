@@ -412,6 +412,7 @@
 				<version>0.10.0</version>
 				<executions>
 					<execution>
+						<id>wasm</id>
 						<goals>
 							<goal>compile</goal>
 						</goals>
@@ -419,12 +420,30 @@
 							<stopOnErrors>true</stopOnErrors>
 							<mainClass>client.teavm.JSIDPlay2TeaVM</mainClass>
 							<targetDirectory>
-								${project.build.directory}/classes/server/restful/webapp/wasm</targetDirectory>
+								${project.build.directory}/classes/server/restful/webapp/teavm/wasm</targetDirectory>
 							<targetFileName>${project.artifactId}.wasm</targetFileName>
 							<debugInformationGenerated>false</debugInformationGenerated>
 							<sourceMapsGenerated>false</sourceMapsGenerated>
 							<sourceFilesCopied>false</sourceFilesCopied>
 							<targetType>WEBASSEMBLY</targetType>
+							<optimizationLevel>SIMPLE</optimizationLevel>
+						</configuration>
+					</execution>
+					<execution>
+						<id>js</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<stopOnErrors>true</stopOnErrors>
+							<mainClass>client.teavm.Test</mainClass>
+							<targetDirectory>
+								${project.build.directory}/classes/server/restful/webapp/teavm/js</targetDirectory>
+							<targetFileName>${project.artifactId}.js</targetFileName>
+							<debugInformationGenerated>false</debugInformationGenerated>
+							<sourceMapsGenerated>false</sourceMapsGenerated>
+							<sourceFilesCopied>false</sourceFilesCopied>
+							<targetType>JAVASCRIPT</targetType>
 							<optimizationLevel>SIMPLE</optimizationLevel>
 						</configuration>
 					</execution>
@@ -497,9 +516,13 @@
 						<inputGlob>
 							src/main/resources/server/restful/webapp/*.html</inputGlob>
 						<inputGlob>
-							src/main/resources/server/restful/webapp/wasm/*.vue</inputGlob>
+							src/main/resources/server/restful/webapp/teavm/wasm/*.vue</inputGlob>
 						<inputGlob>
-							src/main/resources/server/restful/webapp/wasm/*.js</inputGlob>
+							src/main/resources/server/restful/webapp/teavm/wasm/*.js</inputGlob>
+						<inputGlob>
+							src/main/resources/server/restful/webapp/teavm/js/*.vue</inputGlob>
+						<inputGlob>
+							src/main/resources/server/restful/webapp/teavm/js/*.js</inputGlob>
 					</inputGlobs>
 				</configuration>
 				<executions>
@@ -1484,6 +1507,25 @@
 							<appendAssemblyId>false</appendAssemblyId>
 							<filters>
 								<filter>src/main/assembly/filter-wasm.properties</filter>
+							</filters>
+						</configuration>
+					</execution>
+					<execution>
+						<id>zip-js</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/zip-js.xml</descriptor>
+							</descriptors>
+							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
+							<finalName>
+								${project.artifactId}-${project.version}-js</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<filters>
+								<filter>src/main/assembly/filter-js.properties</filter>
 							</filters>
 						</configuration>
 					</execution>
