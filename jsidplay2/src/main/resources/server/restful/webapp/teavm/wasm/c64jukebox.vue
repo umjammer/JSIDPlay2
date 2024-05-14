@@ -477,9 +477,7 @@
               });
             } else if (eventType === "SID_WRITE") {
               console.log(
-                "time=" +
-                  eventData.time +
-                  ", relTime=" +
+                  "relTime=" +
                   eventData.relTime +
                   ", addr=" +
                   eventData.addr +

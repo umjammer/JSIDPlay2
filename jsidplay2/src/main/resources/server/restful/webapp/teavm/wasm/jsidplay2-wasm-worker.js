@@ -141,11 +141,10 @@ self.addEventListener(
                     ).slice(),
                   },
                 }),
-              processSidWrite: (time, relTime, addr, value) =>
+              processSidWrite: (relTime, addr, value) =>
                 self.postMessage({
                   eventType: "SID_WRITE",
                   eventData: {
-                    time: time,
                     relTime: relTime,
                     addr: addr,
                     value: value,
