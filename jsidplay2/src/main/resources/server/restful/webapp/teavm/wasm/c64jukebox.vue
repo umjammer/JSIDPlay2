@@ -467,10 +467,10 @@
                 });
                 nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
               } else if (nextTime < audioContext.currentTime) {
-                nextTime = audioContext.currentTime + 0.05; // if samples are not produced fast enough
+                nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
-              nextTime += eventData.left.length / audioContext.sampleRate;
+              nextTime += eventData.left.length / audioContext.sampleRate + 0.005;
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
@@ -489,9 +489,7 @@
               if (!app.paused && size * app.nthFrame < 120) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
-                setTimeout(() => {
-                  if (worker) worker.postMessage({ eventType: "IDLE" });
-                }, (1000 * app.nthFrame) / app.defaultClockSpeed);
+                worker.postMessage({ eventType: "IDLE" });
               }
               app.framesCounter = size;
             } else if (eventType === "INITIALISED") {
