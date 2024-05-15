@@ -37,7 +37,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 
 	private int[] array;
 	private int length;
-	private IAudioDriverTeaVM audioDriver;
+	private final IAudioDriverTeaVM audioDriver;
 
 	public AudioDriverTeaVM(IAudioDriverTeaVM audioDriver, int nthFrame) {
 		this.audioDriver = audioDriver;

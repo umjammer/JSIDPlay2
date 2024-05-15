@@ -40,6 +40,7 @@ import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
+import libsidplay.config.IConfig;
 import libsidplay.config.IEmulationSection;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.sidtune.SidTune;
@@ -49,6 +50,9 @@ import libsidutils.IOUtils;
 import sidplay.player.PSid64DetectedTuneInfo;
 import sidplay.player.PSid64Detection;
 
+/**
+ * TeaVM version of JSIDPlay2 to generate JavaScript code.
+ */
 public class JSIDPlay2TeaVM {
 
 	private static final Logger LOG = Logger.getLogger(JSIDPlay2TeaVM.class.getName());
@@ -61,7 +65,7 @@ public class JSIDPlay2TeaVM {
 			private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
 			private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
 
-			private ConfigurationTeaVM config;
+			private IConfig config;
 			private SidTune tune;
 			private HardwareEnsemble hardwareEnsemble;
 			private C64 c64;
@@ -74,20 +78,7 @@ public class JSIDPlay2TeaVM {
 			public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
 					byte[] cartContents, String cartContentsName)
 					throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-
-				boolean palEmulation = Boolean.TRUE.equals(Boolean.valueOf(args[0]));
-				bufferSize = Integer.valueOf(args[1]);
-				int audioBufferSize = Integer.valueOf(args[2]);
-				int samplingRate = Integer.valueOf(args[3]);
-				boolean samplingMethodResample = Boolean.TRUE.equals(Boolean.valueOf(args[4]));
-				boolean reverbBypass = Boolean.TRUE.equals(Boolean.valueOf(args[5]));
-				int defaultClockSpeed = Integer.valueOf(args[6]);
-				boolean defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
-				boolean jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
-
-				config = new ConfigurationTeaVM(new JavaScriptConfigResolver(palEmulation, bufferSize, audioBufferSize,
-						samplingRate, samplingMethodResample, reverbBypass, defaultClockSpeed, defaultSidModel8580,
-						jiffyDosInstalled));
+				config = new ConfigurationTeaVM(new JavaScriptConfigResolver(args));
 				final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 				final IAudioSection audioSection = config.getAudioSection();
 				final IEmulationSection emulationSection = config.getEmulationSection();
@@ -332,7 +323,7 @@ public class JSIDPlay2TeaVM {
 		LOG.finest("isJiffyDosInstalled: " + c1541Section.isJiffyDosInstalled());
 	}
 
-	private static void autodetectPSID64(ConfigurationTeaVM config, C64 c64, SidTune tune, ReSIDBuilder sidBuilder) {
+	private static void autodetectPSID64(IConfig config, C64 c64, SidTune tune, ReSIDBuilder sidBuilder) {
 		IEmulationSection emulationSection = config.getEmulationSection();
 
 		if (emulationSection.isDetectPSID64ChipModel()) {

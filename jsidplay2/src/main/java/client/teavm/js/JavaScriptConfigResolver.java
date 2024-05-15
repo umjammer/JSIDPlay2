@@ -14,18 +14,16 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 	private boolean defaultSidModel8580;
 	private boolean jiffyDosInstalled;
 
-	public JavaScriptConfigResolver(boolean palEmulation, int bufferSize, int audioBufferSize, int samplingRate,
-			boolean samplingMethodResample, boolean reverbBypass, int defaultClockSpeed, boolean defaultSidModel8580,
-			boolean jiffyDosInstalled) {
-		this.palEmulation = palEmulation;
-		this.bufferSize = bufferSize;
-		this.audioBufferSize = audioBufferSize;
-		this.samplingRate = samplingRate;
-		this.samplingMethodResample = samplingMethodResample;
-		this.reverbBypass = reverbBypass;
-		this.defaultClockSpeed = defaultClockSpeed;
-		this.defaultSidModel8580 = defaultSidModel8580;
-		this.jiffyDosInstalled = jiffyDosInstalled;
+	public JavaScriptConfigResolver(String[] args) {
+		this.palEmulation = Boolean.TRUE.equals(Boolean.valueOf(args[0]));
+		this.bufferSize = Integer.valueOf(args[1]);
+		this.audioBufferSize = Integer.valueOf(args[2]);
+		this.samplingRate = Integer.valueOf(args[3]);
+		this.samplingMethodResample = Boolean.TRUE.equals(Boolean.valueOf(args[4]));
+		this.reverbBypass = Boolean.TRUE.equals(Boolean.valueOf(args[5]));
+		this.defaultClockSpeed = Integer.valueOf(args[6]);
+		this.defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
+		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
 	}
 
 	@Override
