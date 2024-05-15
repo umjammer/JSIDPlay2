@@ -1,12 +1,7 @@
 importScripts("jsidplay2.js");
 
-function xxx(args) {
+function initialize(args) {
   main(args);
-}
-
-function getInt64Bytes(x) {
-  let y = Math.floor(x / 2 ** 32);
-  return [y, y << 8, y << 16, y << 24, x, x << 8, x << 16, x << 24].map((z) => z >>> 24);
 }
 
 function processSamples(resultL, resultR, length) {
@@ -136,7 +131,7 @@ self.addEventListener(
         eventType: "KEY_TYPED",
       });
     } else if (eventType === "INITIALISE") {
-      xxx(
+      initialize(
         new Array(
           "" + eventData.palEmulation,
           "" + eventData.bufferSize,
