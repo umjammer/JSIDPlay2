@@ -2,18 +2,18 @@ package client.teavm.config;
 
 import java.io.File;
 
-import client.teavm.IConfigResolver;
+import client.teavm.IConfigResolverTeaVM;
 import libsidplay.common.SamplingMethod;
 import libsidplay.common.SamplingRate;
 import libsidplay.common.VideoCoderPreset;
 import libsidplay.config.IAudioSection;
 import sidplay.audio.Audio;
 
-public final class JavaScriptAudioSection implements IAudioSection {
+public final class AudioSectionTeaVM implements IAudioSection {
 
-	private IConfigResolver resolver;
+	private IConfigResolverTeaVM resolver;
 
-	public JavaScriptAudioSection(IConfigResolver resolver) {
+	public AudioSectionTeaVM(IConfigResolverTeaVM resolver) {
 		this.resolver = resolver;
 	}
 

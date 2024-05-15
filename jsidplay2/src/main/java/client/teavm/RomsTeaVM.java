@@ -17,7 +17,7 @@ import org.teavm.metaprogramming.Value;
 import sidplay.AllRoms;
 
 @CompileTime
-public class JavaScriptRoms {
+public class RomsTeaVM {
 	public static final String CHAR_ROM = "CHAR_ROM";
 	public static final String BASIC_ROM = "BASIC_ROM";
 	public static final String KERNAL_ROM = "KERNAL_ROM";
@@ -32,8 +32,8 @@ public class JavaScriptRoms {
 	public static native Map<String, String> getJavaScriptRoms(boolean b);
 
 	private static void getJavaScriptRoms(Value<Boolean> b) {
-		try (DataInputStream is = new DataInputStream(JavaScriptRoms.class.getResourceAsStream(PSID_DRIVER_BIN))) {
-			URL url = JavaScriptRoms.class.getResource(PSID_DRIVER_BIN);
+		try (DataInputStream is = new DataInputStream(RomsTeaVM.class.getResourceAsStream(PSID_DRIVER_BIN))) {
+			URL url = RomsTeaVM.class.getResource(PSID_DRIVER_BIN);
 			byte[] psidDriverBin = new byte[url.openConnection().getContentLength()];
 			is.readFully(psidDriverBin);
 

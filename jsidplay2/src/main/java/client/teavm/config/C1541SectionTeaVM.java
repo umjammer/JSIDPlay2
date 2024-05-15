@@ -1,16 +1,16 @@
 package client.teavm.config;
 
-import client.teavm.IConfigResolver;
+import client.teavm.IConfigResolverTeaVM;
 import libsidplay.components.c1541.FloppyType;
 import libsidplay.config.IC1541Section;
 
-public final class JavaScriptC1541Section implements IC1541Section {
+public final class C1541SectionTeaVM implements IC1541Section {
 
 	private boolean driveOn;
 
-	private IConfigResolver resolver;
+	private IConfigResolverTeaVM resolver;
 
-	public JavaScriptC1541Section(IConfigResolver resolver) {
+	public C1541SectionTeaVM(IConfigResolverTeaVM resolver) {
 		this.resolver = resolver;
 	}
 

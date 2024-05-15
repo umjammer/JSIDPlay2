@@ -418,7 +418,7 @@
 						</goals>
 						<configuration>
 							<stopOnErrors>true</stopOnErrors>
-							<mainClass>client.teavm.JSIDPlay2TeaVM</mainClass>
+							<mainClass>client.teavm.wasm.JSIDPlay2TeaVM</mainClass>
 							<targetDirectory>
 								${project.build.directory}/classes/server/restful/webapp/teavm/wasm</targetDirectory>
 							<targetFileName>${project.artifactId}.wasm</targetFileName>
@@ -436,7 +436,7 @@
 						</goals>
 						<configuration>
 							<stopOnErrors>true</stopOnErrors>
-							<mainClass>client.teavm.Test</mainClass>
+							<mainClass>client.teavm.js.JSIDPlay2TeaVM</mainClass>
 							<targetDirectory>
 								${project.build.directory}/classes/server/restful/webapp/teavm/js</targetDirectory>
 							<targetFileName>${project.artifactId}.js</targetFileName>

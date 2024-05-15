@@ -1,6 +1,8 @@
-package client.teavm;
+package client.teavm.js;
 
-public class JavaScriptConfigResolver implements IConfigResolver {
+import client.teavm.IConfigResolverTeaVM;
+
+public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 
 	private boolean palEmulation;
 	private int bufferSize;

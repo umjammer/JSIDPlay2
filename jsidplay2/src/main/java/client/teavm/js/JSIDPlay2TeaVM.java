@@ -1,4 +1,4 @@
-package client.teavm;
+package client.teavm.js;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static libsidplay.common.SIDEmu.NONE;
@@ -22,7 +22,10 @@ import javax.sound.sampled.LineUnavailableException;
 import org.teavm.jso.JSBody;
 
 import builder.resid.ReSIDBuilder;
-import client.teavm.config.JavaScriptConfig;
+import client.teavm.AudioDriverTeaVM;
+import client.teavm.PalEmulationTeaVM;
+import client.teavm.RomsTeaVM;
+import client.teavm.config.ConfigurationTeaVM;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
@@ -46,19 +49,19 @@ import libsidutils.IOUtils;
 import sidplay.player.PSid64DetectedTuneInfo;
 import sidplay.player.PSid64Detection;
 
-public class Test {
+public class JSIDPlay2TeaVM {
 
-	private static final Logger LOG = Logger.getLogger(Test.class.getName());
+	private static final Logger LOG = Logger.getLogger(JSIDPlay2TeaVM.class.getName());
 
 	public static void main(String[] args) {
-		exportAPI(new Exported() {
+		exportAPI(new JavaScriptExportedApi() {
 			private static final int RAM_COMMAND = 0x277;
 			private static final int RAM_COMMAND_LEN = 0xc6;
 			private static final int MAX_COMMAND_LEN = 16;
 			private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
 			private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
 
-			private JavaScriptConfig config;
+			private ConfigurationTeaVM config;
 			private SidTune tune;
 			private HardwareEnsemble hardwareEnsemble;
 			private C64 c64;
@@ -82,7 +85,7 @@ public class Test {
 				boolean defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
 				boolean jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
 
-				config = new JavaScriptConfig(new JavaScriptConfigResolver(palEmulation, bufferSize, audioBufferSize,
+				config = new ConfigurationTeaVM(new JavaScriptConfigResolver(palEmulation, bufferSize, audioBufferSize,
 						samplingRate, samplingMethodResample, reverbBypass, defaultClockSpeed, defaultSidModel8580,
 						jiffyDosInstalled));
 				final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
@@ -110,22 +113,22 @@ public class Test {
 					LOG.finest("Cart, length=: " + cartContents.length);
 					LOG.finest("Cart name: : " + cartContentsUrl);
 				}
-				Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
+				Map<String, String> allRoms = RomsTeaVM.getJavaScriptRoms(false);
 				Decoder decoder = Base64.getDecoder();
-				byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
-				byte[] basicRom = decoder.decode(allRoms.get(JavaScriptRoms.BASIC_ROM));
-				byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
-				byte[] c1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM));
-				byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
-				byte[] jiffyDosC64Rom = decoder.decode(allRoms.get(JavaScriptRoms.JIFFYDOS_C64_ROM));
-				byte[] jiffyDosC1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.JIFFYDOS_C1541_ROM));
+				byte[] charRom = decoder.decode(allRoms.get(RomsTeaVM.CHAR_ROM));
+				byte[] basicRom = decoder.decode(allRoms.get(RomsTeaVM.BASIC_ROM));
+				byte[] kernalRom = decoder.decode(allRoms.get(RomsTeaVM.KERNAL_ROM));
+				byte[] c1541Rom = decoder.decode(allRoms.get(RomsTeaVM.C1541_ROM));
+				byte[] psidDriverBin = decoder.decode(allRoms.get(RomsTeaVM.PSID_DRIVER_ROM));
+				byte[] jiffyDosC64Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C64_ROM));
+				byte[] jiffyDosC1541Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C1541_ROM));
 
 				hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom,
 						kernalRom, jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 				hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 				c64 = hardwareEnsemble.getC64();
 				c64.getVIC().setPalEmulation(
-						nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame, decoder) : PALEmulation.NONE);
+						nthFrame > 0 ? new PalEmulationTeaVM(nthFrame, decoder) : PALEmulation.NONE);
 				if (cartContents != null) {
 					try {
 						File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
@@ -166,7 +169,7 @@ public class Test {
 							Event.of("PSID64 Detection", event2 -> autodetectPSID64(config, c64, tune, sidBuilder)),
 							(long) (c64.getClock().getCpuFrequency()));
 				}), SidTune.getInitDelay(tune));
-				JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver(new JavascriptAudioDriver(), nthFrame);
+				AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(new JavaScriptAudioDriver(), nthFrame);
 				audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 				sidBuilder.setAudioDriver(audioDriver);
 
@@ -300,7 +303,7 @@ public class Test {
 	}
 
 	@JSBody(params = "jsidplay2", script = "main.api = jsidplay2;")
-	private static native void exportAPI(Exported jsidplay2);
+	private static native void exportAPI(JavaScriptExportedApi jsidplay2);
 
 	//
 	// Private methods
@@ -329,7 +332,7 @@ public class Test {
 		LOG.finest("isJiffyDosInstalled: " + c1541Section.isJiffyDosInstalled());
 	}
 
-	private static void autodetectPSID64(JavaScriptConfig config, C64 c64, SidTune tune, ReSIDBuilder sidBuilder) {
+	private static void autodetectPSID64(ConfigurationTeaVM config, C64 c64, SidTune tune, ReSIDBuilder sidBuilder) {
 		IEmulationSection emulationSection = config.getEmulationSection();
 
 		if (emulationSection.isDetectPSID64ChipModel()) {

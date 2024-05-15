@@ -19,7 +19,7 @@ import libsidplay.config.ISidPlay2Section;
 import sidplay.ini.IniDefaults;
 
 @CompileTime
-public class JavaScriptPalette {
+public class PaletteTeaVM {
 
 	public static final String COMBINED_LINES_EVEN = "COMBINED_LINES_EVEN";
 	public static final String COMBINED_LINES_ODD = "COMBINED_LINES_ODD";

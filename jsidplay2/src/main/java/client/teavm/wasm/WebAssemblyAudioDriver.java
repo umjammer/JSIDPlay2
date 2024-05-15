@@ -1,8 +1,10 @@
-package client.teavm;
+package client.teavm.wasm;
 
 import org.teavm.interop.Import;
 
-public class WebAssemblyAudioDriver implements IAudioDriver {
+import client.teavm.IAudioDriverTeaVM;
+
+public class WebAssemblyAudioDriver implements IAudioDriverTeaVM {
 
 	@Override
 	public void processSamples(float[] resultL, float[] resultR, int length) {

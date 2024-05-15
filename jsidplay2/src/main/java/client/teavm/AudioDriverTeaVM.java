@@ -23,7 +23,7 @@ import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.VideoDriver;
 
-public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SIDListener {
+public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDListener {
 
 	private CPUClock cpuClock;
 	private EventScheduler context;
@@ -37,9 +37,9 @@ public final class JavaScriptAudioDriver implements AudioDriver, VideoDriver, SI
 
 	private int[] array;
 	private int length;
-	private IAudioDriver audioDriver;
+	private IAudioDriverTeaVM audioDriver;
 
-	public JavaScriptAudioDriver(IAudioDriver audioDriver, int nthFrame) {
+	public AudioDriverTeaVM(IAudioDriverTeaVM audioDriver, int nthFrame) {
 		this.audioDriver = audioDriver;
 		this.nthFrame = nthFrame;
 	}

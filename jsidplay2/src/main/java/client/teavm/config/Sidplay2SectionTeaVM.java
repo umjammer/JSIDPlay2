@@ -2,14 +2,14 @@ package client.teavm.config;
 
 import java.io.File;
 
-import client.teavm.IConfigResolver;
+import client.teavm.IConfigResolverTeaVM;
 import libsidplay.config.ISidPlay2Section;
 
-public final class JavaScriptSidplay2Section implements ISidPlay2Section {
+public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 
-	private IConfigResolver resolver;
+	private IConfigResolverTeaVM resolver;
 
-	public JavaScriptSidplay2Section(IConfigResolver resolver) {
+	public Sidplay2SectionTeaVM(IConfigResolverTeaVM resolver) {
 		this.resolver = resolver;
 	}
 
@@ -128,7 +128,7 @@ public final class JavaScriptSidplay2Section implements ISidPlay2Section {
 
 	@Override
 	public int getVersion() {
-		return JavaScriptConfig.REQUIRED_CONFIG_VERSION;
+		return ConfigurationTeaVM.REQUIRED_CONFIG_VERSION;
 	}
 
 	@Override

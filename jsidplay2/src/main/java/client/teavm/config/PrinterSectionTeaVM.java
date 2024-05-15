@@ -2,7 +2,7 @@ package client.teavm.config;
 
 import libsidplay.config.IPrinterSection;
 
-public final class JavaScriptPrinterSection implements IPrinterSection {
+public final class PrinterSectionTeaVM implements IPrinterSection {
 
 	@Override
 	public void setPrinterOn(boolean on) {

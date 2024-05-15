@@ -3,7 +3,7 @@ package client.teavm.config;
 import java.util.Collections;
 import java.util.List;
 
-import client.teavm.IConfigResolver;
+import client.teavm.IConfigResolverTeaVM;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
@@ -13,13 +13,13 @@ import libsidplay.common.Ultimate64Mode;
 import libsidplay.config.IDeviceMapping;
 import libsidplay.config.IEmulationSection;
 
-public final class JavaScriptEmulationSection implements IEmulationSection {
+public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	private final OverrideSection overrideSection = new OverrideSection();
 
-	private IConfigResolver resolver;
+	private IConfigResolverTeaVM resolver;
 
-	public JavaScriptEmulationSection(IConfigResolver resolver) {
+	public EmulationSectionTeaVM(IConfigResolverTeaVM resolver) {
 		this.resolver = resolver;
 	}
 

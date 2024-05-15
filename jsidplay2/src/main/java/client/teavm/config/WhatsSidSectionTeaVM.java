@@ -2,7 +2,7 @@ package client.teavm.config;
 
 import libsidplay.config.IWhatsSidSection;
 
-public final class JavaScriptWhatsSidSection implements IWhatsSidSection {
+public final class WhatsSidSectionTeaVM implements IWhatsSidSection {
 
 	@Override
 	public void setUsername(String username) {

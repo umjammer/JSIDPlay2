@@ -1,4 +1,4 @@
-package client.teavm;
+package client.teavm.js;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import org.teavm.jso.JSObject;
 
 import libsidplay.sidtune.SidTuneError;
 
-public interface Exported extends JSObject {
+public interface JavaScriptExportedApi extends JSObject {
 
 	void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
 			byte[] cartContents, String cartContentsName)

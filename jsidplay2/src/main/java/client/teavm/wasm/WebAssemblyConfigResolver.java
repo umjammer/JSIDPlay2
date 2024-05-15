@@ -1,8 +1,10 @@
-package client.teavm;
+package client.teavm.wasm;
 
 import org.teavm.interop.Import;
 
-public class WebAssemblyConfigResolver implements IConfigResolver {
+import client.teavm.IConfigResolverTeaVM;
+
+public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 
 	private static final String SIDPLAY2_SECTION = "sidplay2section";
 
@@ -57,6 +59,7 @@ public class WebAssemblyConfigResolver implements IConfigResolver {
 		return WebAssemblyConfigResolver.isJiffyDosInstalledJS();
 	}
 	
+	/* This methods maps to a JavaScript methods in a web page. */
 	@Import(module = SIDPLAY2_SECTION, name = "getPalEmulation")
 	public static native boolean isPalEmulationJS();
 

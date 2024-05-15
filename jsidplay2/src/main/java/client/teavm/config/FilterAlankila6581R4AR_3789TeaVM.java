@@ -2,7 +2,7 @@ package client.teavm.config;
 
 import libsidplay.config.IFilterSection;
 
-public final class JavaScriptFilterTrurl8580R5_3691 implements IFilterSection {
+public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
 	@Override
 	public void setVoiceNonlinearity(float voiceNonlinearity) {
 	}
@@ -57,12 +57,12 @@ public final class JavaScriptFilterTrurl8580R5_3691 implements IFilterSection {
 
 	@Override
 	public float getVoiceNonlinearity() {
-		return 0;
+		return 03.3e6f;
 	}
 
 	@Override
 	public float getSteepness() {
-		return 0;
+		return 1.0066634233403395f;
 	}
 
 	@Override
@@ -72,27 +72,27 @@ public final class JavaScriptFilterTrurl8580R5_3691 implements IFilterSection {
 
 	@Override
 	public float getOffset() {
-		return 0;
+		return 274228796.97550374f;
 	}
 
 	@Override
 	public float getNonlinearity() {
-		return 1.0f;
+		return 0.9613160610660189f;
 	}
 
 	@Override
 	public String getName() {
-		return "FilterTrurl8580R5_3691";
+		return "FilterAlankila6581R4AR_3789";
 	}
 
 	@Override
 	public float getMinimumfetresistance() {
-		return 0;
+		return 16125.154840564108f;
 	}
 
 	@Override
 	public float getK() {
-		return 6.55f;
+		return 0;
 	}
 
 	@Override
@@ -107,16 +107,16 @@ public final class JavaScriptFilterTrurl8580R5_3691 implements IFilterSection {
 
 	@Override
 	public float getBaseresistance() {
-		return 0;
+		return 1147036.4394268463f;
 	}
 
 	@Override
 	public float getB() {
-		return 20;
+		return 0;
 	}
 
 	@Override
 	public float getAttenuation() {
-		return 0;
+		return 0.5f;
 	}
 }

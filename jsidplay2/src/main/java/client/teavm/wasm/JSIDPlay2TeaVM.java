@@ -1,4 +1,4 @@
-package client.teavm;
+package client.teavm.wasm;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static libsidplay.common.SIDEmu.NONE;
@@ -22,7 +22,10 @@ import javax.sound.sampled.LineUnavailableException;
 import org.teavm.interop.Export;
 
 import builder.resid.ReSIDBuilder;
-import client.teavm.config.JavaScriptConfig;
+import client.teavm.AudioDriverTeaVM;
+import client.teavm.PalEmulationTeaVM;
+import client.teavm.RomsTeaVM;
+import client.teavm.config.ConfigurationTeaVM;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
@@ -77,7 +80,7 @@ public class JSIDPlay2TeaVM {
 	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
 			byte[] cartContents, String cartContentsName)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		config = new JavaScriptConfig(new WebAssemblyConfigResolver());
+		config = new ConfigurationTeaVM(new WebAssemblyConfigResolver());
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
@@ -103,21 +106,21 @@ public class JSIDPlay2TeaVM {
 			LOG.finest("Cart, length=: " + cartContents.length);
 			LOG.finest("Cart name: : " + cartContentsUrl);
 		}
-		Map<String, String> allRoms = JavaScriptRoms.getJavaScriptRoms(false);
+		Map<String, String> allRoms = RomsTeaVM.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
-		byte[] charRom = decoder.decode(allRoms.get(JavaScriptRoms.CHAR_ROM));
-		byte[] basicRom = decoder.decode(allRoms.get(JavaScriptRoms.BASIC_ROM));
-		byte[] kernalRom = decoder.decode(allRoms.get(JavaScriptRoms.KERNAL_ROM));
-		byte[] c1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.C1541_ROM));
-		byte[] psidDriverBin = decoder.decode(allRoms.get(JavaScriptRoms.PSID_DRIVER_ROM));
-		byte[] jiffyDosC64Rom = decoder.decode(allRoms.get(JavaScriptRoms.JIFFYDOS_C64_ROM));
-		byte[] jiffyDosC1541Rom = decoder.decode(allRoms.get(JavaScriptRoms.JIFFYDOS_C1541_ROM));
+		byte[] charRom = decoder.decode(allRoms.get(RomsTeaVM.CHAR_ROM));
+		byte[] basicRom = decoder.decode(allRoms.get(RomsTeaVM.BASIC_ROM));
+		byte[] kernalRom = decoder.decode(allRoms.get(RomsTeaVM.KERNAL_ROM));
+		byte[] c1541Rom = decoder.decode(allRoms.get(RomsTeaVM.C1541_ROM));
+		byte[] psidDriverBin = decoder.decode(allRoms.get(RomsTeaVM.PSID_DRIVER_ROM));
+		byte[] jiffyDosC64Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C64_ROM));
+		byte[] jiffyDosC1541Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C1541_ROM));
 
 		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
 				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		c64.getVIC().setPalEmulation(nthFrame > 0 ? new JavaScriptPalEmulation(nthFrame, decoder) : PALEmulation.NONE);
+		c64.getVIC().setPalEmulation(nthFrame > 0 ? new PalEmulationTeaVM(nthFrame, decoder) : PALEmulation.NONE);
 		if (cartContents != null) {
 			try {
 				File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
@@ -158,7 +161,7 @@ public class JSIDPlay2TeaVM {
 					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
 
-		JavaScriptAudioDriver audioDriver = new JavaScriptAudioDriver(new WebAssemblyAudioDriver(), nthFrame);
+		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(new WebAssemblyAudioDriver(), nthFrame);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 

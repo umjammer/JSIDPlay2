@@ -1,6 +1,6 @@
 package client.teavm;
 
-public interface IConfigResolver {
+public interface IConfigResolverTeaVM {
 
 	int getSamplingRateAsInt();
 

@@ -1,6 +1,6 @@
 package client.teavm;
 
-public interface IAudioDriver {
+public interface IAudioDriverTeaVM {
 
 	void processSamples(float[] resultL, float[] resultR, int length);
 

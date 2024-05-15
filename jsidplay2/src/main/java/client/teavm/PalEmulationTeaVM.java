@@ -1,9 +1,9 @@
 package client.teavm;
 
-import static client.teavm.JavaScriptPalette.COMBINED_LINES_EVEN;
-import static client.teavm.JavaScriptPalette.COMBINED_LINES_ODD;
-import static client.teavm.JavaScriptPalette.LINE_PALETTE_EVEN;
-import static client.teavm.JavaScriptPalette.LINE_PALETTE_ODD;
+import static client.teavm.PaletteTeaVM.COMBINED_LINES_EVEN;
+import static client.teavm.PaletteTeaVM.COMBINED_LINES_ODD;
+import static client.teavm.PaletteTeaVM.LINE_PALETTE_EVEN;
+import static client.teavm.PaletteTeaVM.LINE_PALETTE_ODD;
 import static java.util.Arrays.stream;
 
 import java.nio.Buffer;
@@ -15,7 +15,7 @@ import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.VIC;
 
-public class JavaScriptPalEmulation implements IPALEmulation {
+public class PalEmulationTeaVM implements IPALEmulation {
 
 	/**
 	 * ABGR pixel data. VIC colors without PAL emulation. Use this palette for VIC
@@ -50,9 +50,9 @@ public class JavaScriptPalEmulation implements IPALEmulation {
 
 	private boolean palEmulationEnable;
 
-	public JavaScriptPalEmulation(int nthFrame, Decoder decoder) {
+	public PalEmulationTeaVM(int nthFrame, Decoder decoder) {
 		this.nthFrame = nthFrame;
-		Map<String, String> palette = JavaScriptPalette.getPalette(false);
+		Map<String, String> palette = PaletteTeaVM.getPalette(false);
 		this.combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt)
 				.toArray();
 		this.combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(Integer::parseInt)

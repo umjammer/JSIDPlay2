@@ -2,7 +2,7 @@ package client.teavm.config;
 
 import libsidplay.config.IFilterSection;
 
-public final class JavaScriptFilterAverage6581 implements IFilterSection {
+public final class FilterAverage8580TeaVM implements IFilterSection {
 	@Override
 	public void setVoiceNonlinearity(float voiceNonlinearity) {
 	}
@@ -82,7 +82,7 @@ public final class JavaScriptFilterAverage6581 implements IFilterSection {
 
 	@Override
 	public String getName() {
-		return "FilterAverage6581";
+		return "FilterAverage8580";
 	}
 
 	@Override
@@ -97,12 +97,12 @@ public final class JavaScriptFilterAverage6581 implements IFilterSection {
 
 	@Override
 	public float getFilter8580CurvePosition() {
-		return 0;
+		return 12500;
 	}
 
 	@Override
 	public float getFilter6581CurvePosition() {
-		return 0.5f;
+		return 0;
 	}
 
 	@Override
