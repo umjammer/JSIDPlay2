@@ -28,7 +28,7 @@
     <script src="/static/usb/libftdi.js"></script>
     <script src="/static/usb/exsid.js"></script>
     <script src="/static/usb/sidblaster.js"></script>
-    <script src="/static/wasm/jsidplay2.wasm-runtime.js"></script>
+    <script src="/static/teavm/wasm/jsidplay2.wasm-runtime.js"></script>
 
     <!-- disable pull reload -->
     <style>
@@ -4741,7 +4741,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       }
 
       TeaVM.wasm
-        .load("/static/wasm/jsidplay2.wasm", {
+        .load("/static/teavm/wasm/jsidplay2.wasm", {
           installImports(o, controller) {
             o.sidplay2section = {
               getPalEmulation: () => {},
@@ -4761,6 +4761,9 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               processSamples: () => {},
               processPixels: () => {},
               processSidWrite: () => {},
+            };
+            o.c1541section = {
+              isJiffyDosInstalled: () => {},
             };
           },
         })
