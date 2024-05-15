@@ -16,7 +16,7 @@
 
     <!-- Load Vue followed by Bootstrap -->
     <script src="/webjars/vue/3.4.21/dist/vue.global${prod}.js"></script>
-    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap${min}.js"></script>
+    <script src="/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle${min}.js"></script>
 
     <!-- helpers -->
     <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
