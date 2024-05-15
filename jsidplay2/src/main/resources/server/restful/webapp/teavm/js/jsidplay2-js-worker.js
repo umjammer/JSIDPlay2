@@ -29,14 +29,6 @@ function processPixels(pixels, length) {
       image: byteArray,
     },
   });
-/*
-  self.postMessage({
-    eventType: "FRAME",
-    eventData: {
-      image: new Uint8Array(pixels, 0, length).slice(),
-    },
-  });
-*/
 }
 function processSidWrite(relTime, addr, value) {
   self.postMessage({
