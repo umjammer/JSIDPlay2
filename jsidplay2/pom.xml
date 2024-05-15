@@ -444,7 +444,7 @@
 							<sourceMapsGenerated>false</sourceMapsGenerated>
 							<sourceFilesCopied>false</sourceFilesCopied>
 							<targetType>JAVASCRIPT</targetType>
-							<optimizationLevel>SIMPLE</optimizationLevel>
+							<optimizationLevel>ADVANCED</optimizationLevel>
 						</configuration>
 					</execution>
 				</executions>
