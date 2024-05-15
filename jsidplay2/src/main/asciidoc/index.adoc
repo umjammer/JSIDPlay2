@@ -10,13 +10,19 @@ link:https://sourceforge.net/projects/jsidplay2/[JSIDPlay2@Sourceforge^]
 
 == Online Demo
 
-Both Demos use VUE3 and Bootstrap5.
+These Demos are using VUE3 and Bootstrap5 frontend frameworks.
 
-* link:https://haendel.ddns.net:8443/static/c64jukebox.vue[The first demo site^] streams content from my server to the browser
+This Demo requires JSIDPlay2 in server mode and streams content from my server to the browser...
 
-* link:https://haendel.ddns.net:8443/static/teavm/wasm/c64jukebox.vue[The second demo site^] can play tunes directly in the browser (web assembly alpha version)
+* link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64jukebox - using RESTful API^]
 
-* link:https://haendel.ddns.net:8443/static/teavm/js/c64jukebox.vue[The third demo site^] can play tunes directly in the browser (javascript alpha version)
+...whilst this runs directly in the browser using JavaScript
+
+* link:https://haendel.ddns.net:8443/static/teavm/js/c64jukebox.vue[C64jukebox - using JavaScript^]
+
+...this runs directly in the browser as well, but using web assembly (WASM) format, a standard by W3C
+
+* link:https://haendel.ddns.net:8443/static/teavm/wasm/c64jukebox.vue[C64jukebox - using WASM^] can play tunes directly in the browser (web assembly, experimental)
 
 == Introduction
 
