@@ -15,31 +15,28 @@ function processSamples(resultL, resultR, length) {
   });
 }
 function processPixels(pixels, length) {
-  // Create a new Uint8Array to store the resulting byte array
-  const byteArray = new Uint8Array(length); // Each pixel has 4 bytes (ABGR)
-
-  for (let i = 0; i < length / 4; i++) {
-    const pixel = pixels[i];
-
-    // Extract individual color components (in big-endian order)
-    const alpha = (pixel >> 24) & 0xff;
-    const blue = (pixel >> 16) & 0xff;
-    const green = (pixel >> 8) & 0xff;
-    const red = pixel & 0xff;
-
-    // Populate the byte array with the desired color component
-    byteArray[i * 4] = red; // Red
-    byteArray[i * 4 + 1] = green; // Green
-    byteArray[i * 4 + 2] = blue; // Blue
-    byteArray[i * 4 + 3] = alpha; // Alpha
+  const byteArray = new Uint8Array(length);
+  for (let i = 0; i < length; i += 4) {
+    const pixel = pixels[i >> 2];
+    byteArray[i] = (pixel >> 24) & 0xff;
+    byteArray[i + 1] = (pixel >> 16) & 0xff;
+    byteArray[i + 2] = (pixel >> 8) & 0xff;
+    byteArray[i + 3] = pixel & 0xff;
   }
-
   self.postMessage({
     eventType: "FRAME",
     eventData: {
       image: byteArray,
     },
   });
+/*
+  self.postMessage({
+    eventType: "FRAME",
+    eventData: {
+      image: new Uint8Array(pixels, 0, length).slice(),
+    },
+  });
+*/
 }
 function processSidWrite(relTime, addr, value) {
   self.postMessage({
