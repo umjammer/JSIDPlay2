@@ -15,18 +15,10 @@ function processSamples(resultL, resultR, length) {
   });
 }
 function processPixels(pixels, length) {
-  const byteArray = new Uint8Array(length);
-  for (let i = 0; i < length; i += 4) {
-    const pixel = pixels[i >> 2];
-    byteArray[i] = (pixel >> 24) & 0xff;
-    byteArray[i + 1] = (pixel >> 16) & 0xff;
-    byteArray[i + 2] = (pixel >> 8) & 0xff;
-    byteArray[i + 3] = pixel & 0xff;
-  }
   self.postMessage({
     eventType: "FRAME",
     eventData: {
-      image: byteArray,
+      image: new Uint8Array(pixels, 0, length).slice(),
     },
   });
 }
