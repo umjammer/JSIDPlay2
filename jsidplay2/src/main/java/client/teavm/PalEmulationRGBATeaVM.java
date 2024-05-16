@@ -100,8 +100,8 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 						final byte previousLineColor = previousLineDecodedColor[previousLineIndex];
 						previousLineDecodedColor[previousLineIndex++] = lineColor;
 						// RGB -> RGBA
-						int palCol = combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00];
-						pixels.put((palCol << 8) | 0x000000ff);
+						pixels.put(
+								(combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00] << 8) | 0xff);
 					} else {
 						pixels.put(VIC_PALETTE_NO_PAL[(oldGraphicsData >>> 16) & 0x0f]);
 					}
