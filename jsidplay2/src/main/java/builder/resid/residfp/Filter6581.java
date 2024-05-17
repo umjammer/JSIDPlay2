@@ -4,6 +4,10 @@ public final class Filter6581 extends Filter {
 
 	protected Filter6581() {
 		super();
+		type3_w0s = new float[1024][];
+		for (int i = 0; i < 1024; i++) {
+			type3_w0s[i] = new float[256];
+		}
 		setCurveAndDistortionDefaults();
 	}
 
@@ -21,7 +25,7 @@ public final class Filter6581 extends Filter {
 	 * size of approximation: the bound is exceeded only during most extreme
 	 * distortion.
 	 */
-	private final float[][] type3_w0s = new float[1024][256];
+	private float[][] type3_w0s;
 	private float[] type3_w0;
 
 	/*
@@ -156,7 +160,7 @@ public final class Filter6581 extends Filter {
 			fcBase[j] = offset / (float) Math.pow(steepness, type3_fc_kink);
 		}
 
-		final float[] distBase = new float[type3_w0s[0].length];
+		final float[] distBase = new float[256];
 		for (int i = 0; i < distBase.length; i++) {
 			final float dist = i > 0 ? (i + 0.5f) / TYPE3_W0S_RESOLUTION : 0;
 			distBase[i] = 1f / (float) Math.pow(steepness, dist * OSC_TO_FC);
