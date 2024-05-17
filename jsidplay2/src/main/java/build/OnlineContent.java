@@ -409,8 +409,8 @@ public class OnlineContent {
 							}
 						}
 					}
-				} catch (ClassNotFoundException| ExceptionInInitializerError | SecurityException |IOException e) {
-					// ignore
+				} catch (ClassNotFoundException e) {
+					// ignore (maybe TeaVM dependencies not found?)
 				}
 			}
 		}
