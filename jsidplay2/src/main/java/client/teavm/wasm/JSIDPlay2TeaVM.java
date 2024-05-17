@@ -309,6 +309,7 @@ public class JSIDPlay2TeaVM {
 			IEmulationSection emulationSection, IC1541Section c1541Section) {
 		LOG.finest("palEmulation: " + sidplay2Section.isPalEmulation());
 		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
+		LOG.finest("defaultEmulation: " + emulationSection.getDefaultEmulation());
 		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
 		LOG.finest("sampling: " + audioSection.getSampling());
 		LOG.finest("samplingRate: " + audioSection.getSamplingRate());

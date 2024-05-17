@@ -59,6 +59,11 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 		return WebAssemblyConfigResolver.isJiffyDosInstalledJS();
 	}
 	
+	@Override
+	public String getDefaultEmulationAsString() {
+		return "RESID"; // RESIDFP currently not working
+	}
+	
 	/* This methods maps to a JavaScript methods in a web page. */
 	@Import(module = SIDPLAY2_SECTION, name = "getPalEmulation")
 	public static native boolean isPalEmulationJS();

@@ -14,6 +14,8 @@ public interface IConfigResolverTeaVM {
 
 	boolean isJiffyDosInstalled();
 
+	String getDefaultEmulationAsString();
+
 	boolean getDefaultSidModel8580();
 
 	int getDefaultClockSpeedAsInt();

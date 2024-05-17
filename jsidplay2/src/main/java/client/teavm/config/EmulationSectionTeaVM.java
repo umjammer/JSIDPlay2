@@ -618,7 +618,7 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public Emulation getDefaultEmulation() {
-		return Emulation.RESID;
+		return Emulation.valueOf(resolver.getDefaultEmulationAsString());
 	}
 
 	@Override
