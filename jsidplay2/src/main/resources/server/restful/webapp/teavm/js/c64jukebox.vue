@@ -273,7 +273,7 @@
                   </span>
                 </div>
 
-                <div class="settings-box">
+                <!--div class="settings-box">
                   <span class="setting">
                     <label for="defaultEmulation">
                       <select class="form-select form-select-sm right" id="defaultEmulation" v-model="defaultEmulation">
@@ -283,7 +283,7 @@
                       <span>{{ $t("defaultEmulation") }}</span>
                     </label>
                   </span>
-                </div>
+                </div-->
                 <div class="settings-box">
                   <span class="setting">
                     <label for="defaultSidModel">
