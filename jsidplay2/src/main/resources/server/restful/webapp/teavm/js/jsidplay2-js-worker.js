@@ -121,9 +121,9 @@ self.addEventListener(
           "" + eventData.samplingMethodResample,
           "" + eventData.reverbBypass,
           "" + eventData.defaultClockSpeed,
+          "" + eventData.defaultEmulation,
           "" + eventData.defaultSidModel,
-          "" + eventData.jiffyDosInstalled,
-          "" + eventData.defaultEmulation
+          "" + eventData.jiffyDosInstalled
         )
       );
 
