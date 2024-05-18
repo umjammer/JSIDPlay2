@@ -9,7 +9,6 @@ package libsidplay.components.mos656x;
 import libsidplay.common.Event;
 import libsidplay.common.Event.Phase;
 import libsidplay.common.EventScheduler;
-import libsidplay.common.VICChipModel;
 import libsidplay.components.pla.PLA;
 
 /**
@@ -22,9 +21,8 @@ public class MOS6567 extends VIC {
 	public static final int CYCLES_PER_LINE = 65;
 	public static final int MAX_RASTERS = 263;
 
-	public MOS6567(VICChipModel model, PLA pla, EventScheduler context) {
+	public MOS6567(PLA pla, EventScheduler context) {
 		super(pla, context, CYCLES_PER_LINE, MAX_RASTERS);
-		palEmulation = new PALEmulation(model);
 	}
 
 	private static final int FIRST_DISPLAY_LINE = 40;

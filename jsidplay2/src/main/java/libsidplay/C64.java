@@ -33,6 +33,7 @@ import libsidplay.components.mos6510.MOS6510;
 import libsidplay.components.mos6526.MOS6526;
 import libsidplay.components.mos656x.MOS6567;
 import libsidplay.components.mos656x.MOS6569;
+import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.components.pla.Bank;
 import libsidplay.components.pla.PLA;
@@ -301,8 +302,12 @@ public abstract class C64 implements DatasetteEnvironment, C1541Environment, Use
 		cpu.setMemoryHandler(address -> pla.cpuRead(address), (address, value) -> pla.cpuWrite(address, value));
 		pla.setCpu(cpu);
 
-		palVic = new MOS6569(VICChipModel.MOS6567R8, pla, context);
-		ntscVic = new MOS6567(VICChipModel.MOS6567R8, pla, context);
+		palVic = new MOS6569(pla, context);
+		palVic.setPalEmulation(new PALEmulation(VICChipModel.MOS6567R8));
+
+		ntscVic = new MOS6567(pla, context);
+		ntscVic.setPalEmulation(new PALEmulation(VICChipModel.MOS6567R8));
+
 		pla.setVic(palVic);
 
 		cia1 = new MOS6526(context, CIAChipModel.MOS6526) {
