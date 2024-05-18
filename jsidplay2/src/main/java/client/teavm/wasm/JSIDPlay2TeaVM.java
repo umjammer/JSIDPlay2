@@ -23,8 +23,7 @@ import org.teavm.interop.Export;
 
 import builder.resid.ReSIDBuilder;
 import client.teavm.AudioDriverTeaVM;
-import client.teavm.PalEmulationABGRTeaVM;
-import client.teavm.RomsTeaVM;
+import client.teavm.compiletime.RomsTeaVM;
 import client.teavm.config.ConfigurationTeaVM;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;

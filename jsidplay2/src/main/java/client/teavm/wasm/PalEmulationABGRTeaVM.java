@@ -1,29 +1,32 @@
-package client.teavm;
+package client.teavm.wasm;
 
-import static client.teavm.PaletteTeaVM.COMBINED_LINES_EVEN;
-import static client.teavm.PaletteTeaVM.COMBINED_LINES_ODD;
-import static client.teavm.PaletteTeaVM.LINE_PALETTE_EVEN;
-import static client.teavm.PaletteTeaVM.LINE_PALETTE_ODD;
+import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
+import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
+import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_EVEN;
+import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_ODD;
 import static java.util.Arrays.stream;
 
 import java.nio.Buffer;
 import java.nio.IntBuffer;
 import java.util.Base64.Decoder;
+
+import client.teavm.compiletime.PaletteTeaVM;
+
 import java.util.Map;
 
 import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.VIC;
 
-public class PalEmulationRGBATeaVM implements IPALEmulation {
+public class PalEmulationABGRTeaVM implements IPALEmulation {
 
 	/**
-	 * RGBA pixel data. VIC colors without PAL emulation. Use this palette for VIC
+	 * ABGR pixel data. VIC colors without PAL emulation. Use this palette for VIC
 	 * colors 0-15. https://www.pepto.de/projects/colorvic/2001/
 	 */
-	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0x000000FF, 0xFFFFFFFF, 0x68372BFF, 0x70A4B2FF,
-			0x6F3D86FF, 0x588D43FF, 0x352879FF, 0xB8C76FFF, 0x6F4F25FF, 0x433900FF, 0x9A6759FF, 0x444444FF, 0x6C6C6CFF,
-			0x9AD284FF, 0x6C5EB5FF, 0x959595FF, };
+	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0xFF000000, 0xFFFFFFFF, 0xFF2B3768, 0xFFB2A470,
+			0xFF863D6F, 0xFF438D58, 0xFF792835, 0xFF6FC7B8, 0xFF254F6F, 0xFF003943, 0xFF59679A, 0xFF444444, 0xFF6C6C6C,
+			0xFF84D29A, 0xFFB55E6C, 0xFF959595, };
 
 	/** Table for looking up color using a packed 2x8 value for even rasterlines */
 	private final int[] combinedLinesEven;
@@ -50,7 +53,7 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 
 	private boolean palEmulationEnable;
 
-	public PalEmulationRGBATeaVM(int nthFrame, Decoder decoder) {
+	public PalEmulationABGRTeaVM(int nthFrame, Decoder decoder) {
 		this.nthFrame = nthFrame;
 		Map<String, String> palette = PaletteTeaVM.getPalette(false);
 		this.combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt)
@@ -99,9 +102,12 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 						final byte lineColor = linePaletteCurrent[vicColor];
 						final byte previousLineColor = previousLineDecodedColor[previousLineIndex];
 						previousLineDecodedColor[previousLineIndex++] = lineColor;
-						// RGB -> RGBA
-						pixels.put(
-								(combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00] << 8) | 0xff);
+						// RGB -> ABGR
+						int palCol = combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00];
+						int r = ((palCol >> 16) & 0xff);
+						int g = ((palCol >> 8) & 0xff);
+						int b = palCol & 0xff;
+						pixels.put(0xff000000 | (b << 16) | (g << 8) | r);
 					} else {
 						pixels.put(VIC_PALETTE_NO_PAL[(oldGraphicsData >>> 16) & 0x0f]);
 					}

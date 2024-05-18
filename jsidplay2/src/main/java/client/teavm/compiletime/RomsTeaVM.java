@@ -1,4 +1,4 @@
-package client.teavm;
+package client.teavm.compiletime;
 
 import static org.teavm.metaprogramming.Metaprogramming.emit;
 import static org.teavm.metaprogramming.Metaprogramming.exit;
