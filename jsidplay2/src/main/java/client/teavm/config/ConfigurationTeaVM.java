@@ -13,6 +13,11 @@ import libsidplay.config.IPrinterSection;
 import libsidplay.config.ISidPlay2Section;
 import libsidplay.config.IWhatsSidSection;
 
+/**
+ * Default configuration to be included and used in the JavaScript and web
+ * assembly version builds. Everything is fix, except where a resolver gets
+ * asked for configuration values from the browser's JavaScript environment.
+ */
 public class ConfigurationTeaVM implements IConfig {
 
 	private final Sidplay2SectionTeaVM sidplay2Section;
@@ -32,7 +37,7 @@ public class ConfigurationTeaVM implements IConfig {
 		emulationSection = new EmulationSectionTeaVM(resolver);
 		whatsSidSection = new WhatsSidSectionTeaVM();
 	}
-	
+
 	@Override
 	public ISidPlay2Section getSidplay2Section() {
 		return sidplay2Section;

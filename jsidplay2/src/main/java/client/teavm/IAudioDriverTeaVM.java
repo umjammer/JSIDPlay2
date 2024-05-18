@@ -1,5 +1,8 @@
 package client.teavm;
 
+/**
+ * I/O interface to JavaScript
+ */
 public interface IAudioDriverTeaVM {
 
 	void processSamples(float[] resultL, float[] resultR, int length);

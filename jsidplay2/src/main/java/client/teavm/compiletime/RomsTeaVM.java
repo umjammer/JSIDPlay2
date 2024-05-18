@@ -16,8 +16,12 @@ import org.teavm.metaprogramming.Value;
 
 import sidplay.AllRoms;
 
+/**
+ * Emulator ROMS to be included and used in the JavaScript and web assembly version builds.
+ */
 @CompileTime
 public class RomsTeaVM {
+	
 	public static final String CHAR_ROM = "CHAR_ROM";
 	public static final String BASIC_ROM = "BASIC_ROM";
 	public static final String KERNAL_ROM = "KERNAL_ROM";

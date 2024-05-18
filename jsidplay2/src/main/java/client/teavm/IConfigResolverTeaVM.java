@@ -1,5 +1,8 @@
 package client.teavm;
 
+/**
+ * Interface to get configuration data from JavaScript
+ */
 public interface IConfigResolverTeaVM {
 
 	int getSamplingRateAsInt();

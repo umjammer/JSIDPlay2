@@ -23,6 +23,16 @@ import sidplay.audio.AudioConfig;
 import sidplay.audio.AudioDriver;
 import sidplay.audio.VideoDriver;
 
+/**
+ * Audio driver to be used in the JavaScript and web assembly version builds.
+ * Browser needs float array for each channel with sound samples with a value
+ * range of -1..1. And pixel data is required as a byte array containing color
+ * data four bytes each pixel (RGBA). The possibility to sniff for SID writes
+ * helps to make USB hardware working in the browser and for debug purposes.
+ * 
+ * <B>Note:</B> A lookup table is used for sample data (short to float
+ * conversion) for performance reasons
+ */
 public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDListener {
 
 	private CPUClock cpuClock;
@@ -84,7 +94,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 			n = 0;
 			if (array == null) {
 				array = vic.getPalEmulation().getPixels().array();
-				length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
+				length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT);
 			}
 			audioDriver.processPixels(array, length);
 		}

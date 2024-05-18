@@ -20,14 +20,15 @@ public class JavaScriptAudioDriver implements IAudioDriverTeaVM {
 
 	@Override
 	public void processPixels(int[] pixels, int length) {
-		for (int i = 0; i < length; i += 4) {
+		int byteArrayLength = length << 2;
+		for (int i = 0; i < byteArrayLength; i += 4) {
 			int pixel = pixels[i >> 2];
 			byteArray[i] = (byte) ((pixel >> 24) & 0xff);
 			byteArray[i + 1] = (byte) ((pixel >> 16) & 0xff);
 			byteArray[i + 2] = (byte) ((pixel >> 8) & 0xff);
 			byteArray[i + 3] = (byte) (pixel & 0xff);
 		}
-		JavaScriptAudioDriver.processPixelsJS(byteArray, length << 2);
+		JavaScriptAudioDriver.processPixelsJS(byteArray, byteArrayLength);
 	}
 
 	@Override

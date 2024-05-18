@@ -18,8 +18,15 @@ import libsidplay.components.mos656x.Palette;
 import libsidplay.config.ISidPlay2Section;
 import sidplay.ini.IniDefaults;
 
+/**
+ * Pre- generated PAL emulation color data to be included and used in the
+ * JavaScript and web assembly version builds. These color data will be static
+ * then and this helps to save time on startup in the browser.
+ */
 @CompileTime
 public class PaletteTeaVM {
+
+	private static final VICChipModel VIC_MODEL = VICChipModel.MOS6567R8;
 
 	public static final String COMBINED_LINES_EVEN = "COMBINED_LINES_EVEN";
 	public static final String COMBINED_LINES_ODD = "COMBINED_LINES_ODD";
@@ -42,7 +49,7 @@ public class PaletteTeaVM {
 		palette.setTint(sidplay2section.getTint());
 		palette.setLuminanceC(sidplay2section.getBlur());
 		palette.setDotCreep(sidplay2section.getBleed());
-		palette.calculatePalette(Palette.buildPaletteVariant(VICChipModel.MOS6567R8));
+		palette.calculatePalette(Palette.buildPaletteVariant(VIC_MODEL));
 
 		String combinedLinesEven = of(palette.getEvenLines()).mapToObj(Integer::toString).collect(joining(","));
 		String oddLinesEven = of(palette.getOddLines()).mapToObj(Integer::toString).collect(joining(","));
