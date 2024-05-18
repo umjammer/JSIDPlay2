@@ -16,6 +16,7 @@ public class ViceSync {
 	private DataInputStream in;
 	private DataOutputStream out;
 
+	@SuppressWarnings("resource")
 	public void connect(int port) throws IOException {
 		int portNumber = port;
 		serverSocket = new ServerSocket(portNumber);
