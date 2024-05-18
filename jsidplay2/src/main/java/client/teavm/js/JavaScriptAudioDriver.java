@@ -7,7 +7,7 @@ import libsidplay.components.mos656x.VIC;
 
 public class JavaScriptAudioDriver implements IAudioDriverTeaVM {
 
-	private byte[] byteArray;
+	private final byte[] byteArray;
 
 	public JavaScriptAudioDriver() {
 		byteArray = new byte[VIC.MAX_WIDTH * VIC.MAX_HEIGHT << 2];
@@ -20,6 +20,8 @@ public class JavaScriptAudioDriver implements IAudioDriverTeaVM {
 
 	@Override
 	public void processPixels(int[] pixels, int length) {
+		// Unfortunately we must convert here, however the JavaScript version is fast as
+		// hell :-)
 		int byteArrayLength = length << 2;
 		for (int i = 0; i < byteArrayLength; i += 4) {
 			int pixel = pixels[i >> 2];
@@ -36,7 +38,7 @@ public class JavaScriptAudioDriver implements IAudioDriverTeaVM {
 		JavaScriptAudioDriver.processSidWriteJS(relTime, addr, value);
 	}
 
-	/* This methods maps to a JavaScript methods in a web page. */
+	/* This methods maps to JavaScript methods in a web page. */
 	@JSBody(params = { "resultL", "resultR", "length" }, script = "processSamples(resultL, resultR, length)")
 	public static native void processSamplesJS(float[] resultL, float[] resultR, int length);
 

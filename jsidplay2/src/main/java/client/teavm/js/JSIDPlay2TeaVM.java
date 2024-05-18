@@ -159,6 +159,7 @@ public class JSIDPlay2TeaVM {
 							Event.of("PSID64 Detection", event2 -> autodetectPSID64(config, c64, tune, sidBuilder)),
 							(long) (c64.getClock().getCpuFrequency()));
 				}), SidTune.getInitDelay(tune));
+				
 				AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(new JavaScriptAudioDriver(), nthFrame);
 				audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 				sidBuilder.setAudioDriver(audioDriver);

@@ -4,6 +4,10 @@ import org.teavm.interop.Import;
 
 import client.teavm.common.IConfigResolverTeaVM;
 
+/**
+ * Web assembly version's configuration is handled reading methods from
+ * JavaScript modules corresponding their INI section names.
+ */
 public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 
 	private static final String SIDPLAY2_SECTION = "sidplay2section";

@@ -2,6 +2,10 @@ package client.teavm.js;
 
 import client.teavm.common.IConfigResolverTeaVM;
 
+/**
+ * JavaScript version's configuration is handled by main arguments for ease of
+ * use. Maybe should be implemented a better way.
+ */
 public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 
 	private boolean palEmulation;
@@ -62,7 +66,7 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 	public String getDefaultEmulationAsString() {
 		return defaultEmulation;
 	}
-	
+
 	@Override
 	public boolean getDefaultSidModel8580() {
 		return defaultSidModel8580;
