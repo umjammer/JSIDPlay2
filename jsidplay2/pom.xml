@@ -412,24 +412,6 @@
 				<version>0.10.0</version>
 				<executions>
 					<execution>
-						<id>wasm</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<stopOnErrors>true</stopOnErrors>
-							<mainClass>client.teavm.wasm.JSIDPlay2TeaVM</mainClass>
-							<targetDirectory>
-								${project.build.directory}/classes/server/restful/webapp/teavm/wasm</targetDirectory>
-							<targetFileName>${project.artifactId}.wasm</targetFileName>
-							<debugInformationGenerated>false</debugInformationGenerated>
-							<sourceMapsGenerated>false</sourceMapsGenerated>
-							<sourceFilesCopied>false</sourceFilesCopied>
-							<targetType>WEBASSEMBLY</targetType>
-							<optimizationLevel>SIMPLE</optimizationLevel>
-						</configuration>
-					</execution>
-					<execution>
 						<id>js</id>
 						<goals>
 							<goal>compile</goal>
@@ -445,6 +427,24 @@
 							<sourceFilesCopied>false</sourceFilesCopied>
 							<targetType>JAVASCRIPT</targetType>
 							<optimizationLevel>FULL</optimizationLevel>
+						</configuration>
+					</execution>
+					<execution>
+						<id>wasm</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<stopOnErrors>true</stopOnErrors>
+							<mainClass>client.teavm.wasm.JSIDPlay2TeaVM</mainClass>
+							<targetDirectory>
+								${project.build.directory}/classes/server/restful/webapp/teavm/wasm</targetDirectory>
+							<targetFileName>${project.artifactId}.wasm</targetFileName>
+							<debugInformationGenerated>false</debugInformationGenerated>
+							<sourceMapsGenerated>false</sourceMapsGenerated>
+							<sourceFilesCopied>false</sourceFilesCopied>
+							<targetType>WEBASSEMBLY</targetType>
+							<optimizationLevel>SIMPLE</optimizationLevel>
 						</configuration>
 					</execution>
 				</executions>
