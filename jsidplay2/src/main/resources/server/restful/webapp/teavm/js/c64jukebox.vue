@@ -682,6 +682,7 @@
               var reader = new FileReader();
               reader.onload = function () {
                 wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
+                app.$refs.formFileSm.value="";
               };
               reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
             }
