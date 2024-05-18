@@ -13,27 +13,27 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 	private static final String EMULATION_SECTION = "emulationsection";
 
 	private static final String C1541_SECTION = "c1541section";
-	
+
 	@Override
 	public boolean isPalEmulation() {
 		return WebAssemblyConfigResolver.isPalEmulationJS();
 	}
-	
+
 	@Override
 	public int getSamplingRateAsInt() {
 		return WebAssemblyConfigResolver.getSamplingRateAsIntJS();
 	}
-	
+
 	@Override
 	public boolean getSamplingMethodResample() {
 		return WebAssemblyConfigResolver.getSamplingMethodResampleJS();
 	}
-	
+
 	@Override
 	public boolean getReverbBypass() {
 		return WebAssemblyConfigResolver.getReverbBypassJS();
 	}
-	
+
 	@Override
 	public int getBufferSize() {
 		return WebAssemblyConfigResolver.getBufferSizeJS();
@@ -48,7 +48,7 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 	public boolean getDefaultSidModel8580() {
 		return WebAssemblyConfigResolver.getDefaultSidModel8580JS();
 	}
-	
+
 	@Override
 	public int getDefaultClockSpeedAsInt() {
 		return WebAssemblyConfigResolver.getDefaultClockSpeedAsIntJS();
@@ -58,12 +58,12 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 	public boolean isJiffyDosInstalled() {
 		return WebAssemblyConfigResolver.isJiffyDosInstalledJS();
 	}
-	
+
 	@Override
 	public String getDefaultEmulationAsString() {
-		return "RESID"; // RESIDFP currently not working
+		return WebAssemblyConfigResolver.getDefaultEmulationAsIntJS() == 0 ? "RESID" : "RESIDFP";
 	}
-	
+
 	/* This methods maps to a JavaScript methods in a web page. */
 	@Import(module = SIDPLAY2_SECTION, name = "getPalEmulation")
 	public static native boolean isPalEmulationJS();
@@ -83,6 +83,9 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 	@Import(module = AUDIO_SECTION, name = "getAudioBufferSize")
 	public static native int getAudioBufferSizeJS();
 
+	@Import(module = EMULATION_SECTION, name = "getDefaultEmulation")
+	public static native int getDefaultEmulationAsIntJS();
+
 	@Import(module = EMULATION_SECTION, name = "getDefaultSidModel8580")
 	public static native boolean getDefaultSidModel8580JS();
 
@@ -91,5 +94,5 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 
 	@Import(module = C1541_SECTION, name = "isJiffyDosInstalled")
 	public static native boolean isJiffyDosInstalledJS();
-	
+
 }

@@ -275,6 +275,17 @@
 
                 <div class="settings-box">
                   <span class="setting">
+                    <label for="defaultEmulation">
+                      <select class="form-select form-select-sm right" id="defaultEmulation" v-model="defaultEmulation">
+                        <option value="RESID">Dag Lem's resid 1.0 beta</option>
+                        <option value="RESIDFP">Antti S. Lankila's resid-fp</option>
+                      </select>
+                      <span>{{ $t("defaultEmulation") }}</span>
+                    </label>
+                  </span>
+                </div>
+                <div class="settings-box">
+                  <span class="setting">
                     <label for="defaultSidModel">
                       <select class="form-select form-select-sm right" id="defaultSidModel" v-model="defaultSidModel">
                         <option value="false">MOS6581</option>
@@ -444,6 +455,7 @@
               defaultClockSpeed: app.defaultClockSpeed,
               defaultSidModel: "" + app.defaultSidModel === "true",
               jiffyDosInstalled: "" + app.jiffyDosInstalled === "true",
+              defaultEmulation: app.defaultEmulation === "RESID" ? 0 : 1,
             },
           });
 
@@ -536,6 +548,7 @@
             FileMenu: "File",
             palEmulation: "PAL emulation",
             defaultClockSpeed: "Default clock speed",
+            defaultEmulation: "Default Emulation",
             defaultSidModel: "Default SID model",
             jiffyDosInstalled: "JiffyDOS",
             sampling: "Sampling Method",
@@ -576,6 +589,7 @@
             FileMenu: "Datei",
             palEmulation: "PAL Emulation",
             defaultClockSpeed: "Default Clock Speed",
+            defaultEmulation: "Default Emulation",
             defaultSidModel: "Default SID Model",
             jiffyDosInstalled: "JiffyDOS",
             sampling: "Sampling Methode",
@@ -628,6 +642,7 @@
             startSong: 0,
             nthFrame: 4,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
+            defaultEmulation: "RESID",
             defaultSidModel: true,
             jiffyDosInstalled: false,
             sampling: false,

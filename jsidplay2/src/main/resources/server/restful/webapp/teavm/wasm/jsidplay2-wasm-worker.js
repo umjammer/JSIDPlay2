@@ -111,6 +111,7 @@ self.addEventListener(
             };
             o.emulationsection = {
               getDefaultClockSpeed: () => eventData.defaultClockSpeed,
+              getDefaultEmulation: () => eventData.defaultEmulation,
               getDefaultSidModel8580: () => eventData.defaultSidModel,
             };
             o.audiodriver = {
