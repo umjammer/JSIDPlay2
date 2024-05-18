@@ -56,7 +56,7 @@
               <ul class="navbar-nav">
                 <li class="nav-item dropdown" id="myDropdown">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("file") }}</a>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu" style="width: 200px !important;">
                     <li>
                       <a class="dropdown-item" href="#" @click="$refs.formFileSm.click()"> {{ $t("play") }} </a>
                       <input ref="formFileSm" id="file" type="file" @input="startTune()" style="display: none" />
@@ -68,10 +68,11 @@
                 </li>
                 <li class="nav-item dropdown" id="myDropdown">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("player") }}</a>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu" style="width: 200px !important;">
                     <li>
                       <div class="dropdown-item form-check">
-                        <label class="form-check-label" for="pause" style="cursor: pointer">
+                        <label class="form-check-label" for="pause" style="cursor: pointer"
+                        >
                           <input
                             class="form-check-input"
                             type="checkbox"
@@ -79,9 +80,8 @@
                             style="float: right; margin-left: 8px"
                             v-model="paused"
                             @click="pauseTune()"
-                            :disabled="!playing"
                           />
-                          {{ $t("pause") }}
+                          {{ $t("pauseContinue") }}
                         </label>
                       </div>
                     </li>
@@ -92,7 +92,7 @@
                 </li>
                 <li class="nav-item dropdown" id="myDropdown">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("devices") }}</a>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu" style="width: 200px !important;">
                     <li>
                       <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy"
                         >{{ $t("floppy") }}&raquo;
@@ -562,7 +562,7 @@
             file: "File",
             play: "Load SID/PRG/P00/T64",
             player: "Player",
-            pause: "Pause",
+            pauseContinue: "Pause/Continue",
             reset: "Reset C64",
             stop: "Stop",
             devices: "Devices",
@@ -603,7 +603,7 @@
             file: "Datei",
             play: "Lade SID/PRG/P00/T64",
             player: "Player",
-            pause: "Pause",
+            pauseContinue: "Pause/Continue",
             reset: "Reset C64",
             stop: "Stop",
             devices: "Geräte",
@@ -682,12 +682,12 @@
               var reader = new FileReader();
               reader.onload = function () {
                 wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
-                app.$refs.formFileSm.value = "";
               };
               reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
             }
           },
           pauseTune() {
+            if (app.playing)  {
             if (app.paused) {
               audioContext.resume();
               worker.postMessage({ eventType: "CLOCK" });
@@ -695,6 +695,11 @@
               audioContext.suspend();
             }
             app.paused = !app.paused;
+            } else if (app.$refs.formFileSm.files[0]) {
+              app.startTune();
+            } else {
+              app.reset();
+            }
           },
           stopTune() {
             if (worker) {
