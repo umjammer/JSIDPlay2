@@ -1,6 +1,6 @@
 package client.teavm.common.config;
 
-import client.teavm.IConfigResolverTeaVM;
+import client.teavm.common.IConfigResolverTeaVM;
 import libsidplay.components.c1541.FloppyType;
 import libsidplay.config.IC1541Section;
 

@@ -2,7 +2,7 @@ package client.teavm.js;
 
 import org.teavm.jso.JSBody;
 
-import client.teavm.IAudioDriverTeaVM;
+import client.teavm.common.IAudioDriverTeaVM;
 import libsidplay.components.mos656x.VIC;
 
 public class JavaScriptAudioDriver implements IAudioDriverTeaVM {

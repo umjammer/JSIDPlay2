@@ -2,7 +2,7 @@ package client.teavm.wasm;
 
 import org.teavm.interop.Import;
 
-import client.teavm.IConfigResolverTeaVM;
+import client.teavm.common.IConfigResolverTeaVM;
 
 public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 

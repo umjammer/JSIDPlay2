@@ -1,6 +1,6 @@
 package client.teavm.js;
 
-import client.teavm.IConfigResolverTeaVM;
+import client.teavm.common.IConfigResolverTeaVM;
 
 public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 

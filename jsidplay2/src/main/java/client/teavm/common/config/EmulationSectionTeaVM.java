@@ -3,7 +3,7 @@ package client.teavm.common.config;
 import java.util.Collections;
 import java.util.List;
 
-import client.teavm.IConfigResolverTeaVM;
+import client.teavm.common.IConfigResolverTeaVM;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;

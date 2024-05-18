@@ -1,4 +1,4 @@
-package client.teavm;
+package client.teavm.common;
 
 /**
  * I/O interface to JavaScript

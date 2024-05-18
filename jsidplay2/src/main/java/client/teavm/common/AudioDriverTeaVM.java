@@ -12,7 +12,6 @@ import java.nio.ShortBuffer;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import client.teavm.IAudioDriverTeaVM;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;

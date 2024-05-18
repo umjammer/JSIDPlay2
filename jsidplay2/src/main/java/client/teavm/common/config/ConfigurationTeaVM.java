@@ -3,7 +3,7 @@ package client.teavm.common.config;
 import java.util.Arrays;
 import java.util.List;
 
-import client.teavm.IConfigResolverTeaVM;
+import client.teavm.common.IConfigResolverTeaVM;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;

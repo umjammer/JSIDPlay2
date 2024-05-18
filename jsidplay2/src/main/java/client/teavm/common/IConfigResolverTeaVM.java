@@ -1,4 +1,4 @@
-package client.teavm;
+package client.teavm.common;
 
 /**
  * Interface to get configuration data from JavaScript
