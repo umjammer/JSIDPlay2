@@ -423,7 +423,7 @@
 
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
-      var nextTime;
+      var nextTime, fix;
 
       var canvasContext;
       var imageData, data;
@@ -472,6 +472,7 @@
               sourceNode.connect(audioContext.destination);
 
               if (nextTime == 0) {
+                fix = app.screen? 0.005 : 0;
                 audioContext.close();
                 audioContext = new AudioContext({
                   latencyHint: "interactive",
@@ -482,7 +483,7 @@
                 nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
-              nextTime += eventData.left.length / audioContext.sampleRate + 0.005;
+              nextTime += eventData.left.length / audioContext.sampleRate + fix;
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,

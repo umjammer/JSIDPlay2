@@ -374,7 +374,7 @@
             <li>Complete client side code, no server required (once loaded into the browsers cache)</li>
             <li>Runs in a web worker using a separate native thread</li>
             <li>Runs near to native speed</li>
-            <li>~2MB in size, +2MB used for PAL emulation color data</li>
+            <li>~2MB in size</li>
             <li>Developed as single source code in JSIDPlay2 project</li>
             <li>Full emulation quality, no compromises, C64, Floppy and more</li>
             <li>Compatible with all SIDs (mono, stereo and 3-SID), can run multi-disk demos</li>
@@ -423,7 +423,7 @@
 
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
-      var nextTime;
+      var nextTime, fix;
 
       var canvasContext;
       var imageData, data;
@@ -472,6 +472,7 @@
               sourceNode.connect(audioContext.destination);
 
               if (nextTime == 0) {
+                fix = app.screen? 0.005 : 0;
                 audioContext.close();
                 audioContext = new AudioContext({
                   latencyHint: "interactive",
@@ -482,7 +483,7 @@
                 nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
-              nextTime += eventData.left.length / audioContext.sampleRate + 0.005;
+              nextTime += eventData.left.length / audioContext.sampleRate + fix;
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
