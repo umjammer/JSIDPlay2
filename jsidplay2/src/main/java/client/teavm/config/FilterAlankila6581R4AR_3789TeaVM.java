@@ -57,7 +57,7 @@ public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
 
 	@Override
 	public float getVoiceNonlinearity() {
-		return 03.3e6f;
+		return 0.9613160610660189f;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
 
 	@Override
 	public float getNonlinearity() {
-		return 0.9613160610660189f;
+		return 3.3e6f;
 	}
 
 	@Override
