@@ -1,16 +1,16 @@
 package client.teavm.js.audio;
 
-import static client.teavm.common.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
-import static client.teavm.common.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
-import static client.teavm.common.compiletime.PaletteTeaVM.LINE_PALETTE_EVEN;
-import static client.teavm.common.compiletime.PaletteTeaVM.LINE_PALETTE_ODD;
+import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
+import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
+import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_EVEN;
+import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_ODD;
 import static java.util.Arrays.stream;
 
 import java.nio.Buffer;
 import java.nio.IntBuffer;
 import java.util.Base64.Decoder;
 
-import client.teavm.common.compiletime.PaletteTeaVM;
+import client.teavm.compiletime.PaletteTeaVM;
 
 import java.util.Map;
 

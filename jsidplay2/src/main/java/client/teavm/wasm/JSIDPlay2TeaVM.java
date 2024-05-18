@@ -23,8 +23,8 @@ import org.teavm.interop.Export;
 
 import builder.resid.ReSIDBuilder;
 import client.teavm.common.AudioDriverTeaVM;
-import client.teavm.common.compiletime.RomsTeaVM;
 import client.teavm.common.config.ConfigurationTeaVM;
+import client.teavm.compiletime.RomsTeaVM;
 import client.teavm.wasm.audio.PalEmulationABGRTeaVM;
 import client.teavm.wasm.audio.WebAssemblyAudioDriver;
 import client.teavm.wasm.config.WebAssemblyConfigResolver;
