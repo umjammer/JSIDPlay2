@@ -1,4 +1,4 @@
-package client.teavm;
+package client.teavm.common;
 
 import static libsidplay.common.CPUClock.PAL;
 import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;
@@ -12,6 +12,7 @@ import java.nio.ShortBuffer;
 
 import javax.sound.sampled.LineUnavailableException;
 
+import client.teavm.IAudioDriverTeaVM;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;

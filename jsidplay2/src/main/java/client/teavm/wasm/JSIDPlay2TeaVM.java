@@ -22,7 +22,7 @@ import javax.sound.sampled.LineUnavailableException;
 import org.teavm.interop.Export;
 
 import builder.resid.ReSIDBuilder;
-import client.teavm.AudioDriverTeaVM;
+import client.teavm.common.AudioDriverTeaVM;
 import client.teavm.compiletime.RomsTeaVM;
 import client.teavm.config.ConfigurationTeaVM;
 import libsidplay.C64;
