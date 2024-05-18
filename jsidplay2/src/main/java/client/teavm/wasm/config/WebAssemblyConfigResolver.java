@@ -64,8 +64,8 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 	}
 
 	@Override
-	public String getDefaultEmulationAsString() {
-		return WebAssemblyConfigResolver.getDefaultEmulationAsIntJS() == 0 ? "RESID" : "RESIDFP";
+	public boolean getDefaultEmulationReSid() {
+		return WebAssemblyConfigResolver.getDefaultEmulationJS();
 	}
 
 	/* This methods maps to a JavaScript methods in a web page. */
@@ -87,8 +87,8 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 	@Import(module = AUDIO_SECTION, name = "getAudioBufferSize")
 	public static native int getAudioBufferSizeJS();
 
-	@Import(module = EMULATION_SECTION, name = "getDefaultEmulation")
-	public static native int getDefaultEmulationAsIntJS();
+	@Import(module = EMULATION_SECTION, name = "getDefaultEmulationReSid")
+	public static native boolean getDefaultEmulationJS();
 
 	@Import(module = EMULATION_SECTION, name = "getDefaultSidModel8580")
 	public static native boolean getDefaultSidModel8580JS();

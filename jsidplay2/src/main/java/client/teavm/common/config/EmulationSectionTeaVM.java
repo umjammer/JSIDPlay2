@@ -605,20 +605,20 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public ChipModel getDefaultSidModel() {
-		if (getDefaultSidModel8580()) {
+		if (resolver.getDefaultSidModel8580()) {
 			return ChipModel.MOS8580;
 		} else {
 			return ChipModel.MOS6581;
 		}
 	}
 
-	public boolean getDefaultSidModel8580() {
-		return resolver.getDefaultSidModel8580();
-	}
-
 	@Override
 	public Emulation getDefaultEmulation() {
-		return Emulation.valueOf(resolver.getDefaultEmulationAsString());
+		if (resolver.getDefaultEmulationReSid()) {
+			return Emulation.RESID;
+		} else {
+			return Emulation.RESIDFP;
+		}
 	}
 
 	@Override

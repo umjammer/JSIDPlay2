@@ -15,7 +15,7 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 	private boolean samplingMethodResample;
 	private boolean reverbBypass;
 	private int defaultClockSpeed;
-	private String defaultEmulation;
+	private boolean defaultEmulationReSid;
 	private boolean defaultSidModel8580;
 	private boolean jiffyDosInstalled;
 
@@ -29,7 +29,7 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 		this.defaultClockSpeed = Integer.valueOf(args[6]);
 		this.defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
 		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
-		this.defaultEmulation = args[9];
+		this.defaultEmulationReSid = Boolean.TRUE.equals(Boolean.valueOf(args[9]));
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 	}
 
 	@Override
-	public String getDefaultEmulationAsString() {
-		return defaultEmulation;
+	public boolean getDefaultEmulationReSid() {
+		return defaultEmulationReSid;
 	}
 
 	@Override

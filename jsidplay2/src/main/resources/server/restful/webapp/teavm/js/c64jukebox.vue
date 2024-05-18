@@ -455,7 +455,7 @@
               defaultClockSpeed: app.defaultClockSpeed,
               defaultSidModel: "" + app.defaultSidModel === "true",
               jiffyDosInstalled: "" + app.jiffyDosInstalled === "true",
-              defaultEmulation: app.defaultEmulation,
+              defaultEmulation: app.defaultEmulation === "RESID",
             },
           });
 
@@ -682,7 +682,7 @@
               var reader = new FileReader();
               reader.onload = function () {
                 wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
-                app.$refs.formFileSm.value="";
+                app.$refs.formFileSm.value = "";
               };
               reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
             }
