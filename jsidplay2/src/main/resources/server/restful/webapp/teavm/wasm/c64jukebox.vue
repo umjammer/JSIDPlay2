@@ -472,7 +472,7 @@
               sourceNode.connect(audioContext.destination);
 
               if (nextTime == 0) {
-                fix = app.screen? 0.005 : 0;
+                fix = app.screen ? 0.005 : 0;
                 audioContext.close();
                 audioContext = new AudioContext({
                   latencyHint: "interactive",
