@@ -27,9 +27,9 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 		this.samplingMethodResample = Boolean.TRUE.equals(Boolean.valueOf(args[4]));
 		this.reverbBypass = Boolean.TRUE.equals(Boolean.valueOf(args[5]));
 		this.defaultClockSpeed = Integer.valueOf(args[6]);
-		this.defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
-		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
-		this.defaultEmulationReSid = Boolean.TRUE.equals(Boolean.valueOf(args[9]));
+		this.defaultEmulationReSid = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
+		this.defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
+		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[9]));
 	}
 
 	@Override
