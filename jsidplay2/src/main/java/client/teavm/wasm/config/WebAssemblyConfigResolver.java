@@ -1,4 +1,4 @@
-package client.teavm.wasm;
+package client.teavm.wasm.config;
 
 import org.teavm.interop.Import;
 

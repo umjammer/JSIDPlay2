@@ -8,7 +8,7 @@ import org.teavm.jso.JSObject;
 
 import libsidplay.sidtune.SidTuneError;
 
-public interface JavaScriptExportedApi extends JSObject {
+public interface IExportedApi extends JSObject {
 
 	/* This methods maps to JavaScript methods in a web page. */
 	void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,

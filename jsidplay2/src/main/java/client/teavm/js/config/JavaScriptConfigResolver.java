@@ -1,4 +1,4 @@
-package client.teavm.js;
+package client.teavm.js.config;
 
 import client.teavm.common.IConfigResolverTeaVM;
 

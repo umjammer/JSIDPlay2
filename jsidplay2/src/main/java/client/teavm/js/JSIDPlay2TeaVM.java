@@ -25,6 +25,9 @@ import builder.resid.ReSIDBuilder;
 import client.teavm.common.AudioDriverTeaVM;
 import client.teavm.common.compiletime.RomsTeaVM;
 import client.teavm.common.config.ConfigurationTeaVM;
+import client.teavm.js.audio.JavaScriptAudioDriver;
+import client.teavm.js.audio.PalEmulationRGBATeaVM;
+import client.teavm.js.config.JavaScriptConfigResolver;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
@@ -57,7 +60,7 @@ public class JSIDPlay2TeaVM {
 	private static final Logger LOG = Logger.getLogger(JSIDPlay2TeaVM.class.getName());
 
 	public static void main(String[] args) {
-		exportAPI(new JavaScriptExportedApi() {
+		exportAPI(new IExportedApi() {
 			private static final int RAM_COMMAND = 0x277;
 			private static final int RAM_COMMAND_LEN = 0xc6;
 			private static final int MAX_COMMAND_LEN = 16;
@@ -294,7 +297,7 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSBody(params = "jsidplay2", script = "main.api = jsidplay2;")
-	private static native void exportAPI(JavaScriptExportedApi jsidplay2);
+	private static native void exportAPI(IExportedApi jsidplay2);
 
 	//
 	// Private methods

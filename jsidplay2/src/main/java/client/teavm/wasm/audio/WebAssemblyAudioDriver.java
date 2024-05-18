@@ -1,4 +1,4 @@
-package client.teavm.wasm;
+package client.teavm.wasm.audio;
 
 import org.teavm.interop.Import;
 

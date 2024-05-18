@@ -1,4 +1,4 @@
-package client.teavm.js;
+package client.teavm.js.audio;
 
 import org.teavm.jso.JSBody;
 

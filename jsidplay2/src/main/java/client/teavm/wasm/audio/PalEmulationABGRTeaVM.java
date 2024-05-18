@@ -1,4 +1,4 @@
-package client.teavm.wasm;
+package client.teavm.wasm.audio;
 
 import static client.teavm.common.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
 import static client.teavm.common.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
