@@ -23,8 +23,8 @@ import org.teavm.jso.JSBody;
 
 import builder.resid.ReSIDBuilder;
 import client.teavm.common.AudioDriverTeaVM;
-import client.teavm.compiletime.RomsTeaVM;
-import client.teavm.config.ConfigurationTeaVM;
+import client.teavm.common.compiletime.RomsTeaVM;
+import client.teavm.common.config.ConfigurationTeaVM;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;

@@ -1,4 +1,4 @@
-package client.teavm.compiletime;
+package client.teavm.common.compiletime;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.of;

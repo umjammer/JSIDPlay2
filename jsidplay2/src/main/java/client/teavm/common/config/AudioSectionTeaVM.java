@@ -1,4 +1,4 @@
-package client.teavm.config;
+package client.teavm.common.config;
 
 import java.io.File;
 
