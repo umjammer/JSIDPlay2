@@ -49,6 +49,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	private byte[] array;
 	private int length;
 	private final IAudioDriverTeaVM audioDriver;
+	private ShortBuffer shortBuffer;
 
 	public AudioDriverTeaVM(IAudioDriverTeaVM audioDriver, int nthFrame) {
 		this.audioDriver = audioDriver;
@@ -63,6 +64,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		AudioConfig cfg = new AudioConfig(audioSection);
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
+		shortBuffer = sampleBuffer.asShortBuffer();
 
 		resultL = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
@@ -75,14 +77,13 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 
 	@Override
 	public void write() throws InterruptedException {
-		int position = ((Buffer) sampleBuffer).position();
-		((Buffer) sampleBuffer).flip();
-		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
+		int position = sampleBuffer.position();
+		((Buffer) shortBuffer).rewind();
+		((Buffer) shortBuffer).limit(position >> 1);
 		while (shortBuffer.hasRemaining()) {
 			resultL.put(lookupTable[shortBuffer.get() + 32768]);
 			resultR.put(lookupTable[shortBuffer.get() + 32768]);
 		}
-		((Buffer) sampleBuffer).position(position);
 		audioDriver.processSamples(resultL.array(), resultR.array(), resultL.position());
 		((Buffer) resultL).clear();
 		((Buffer) resultR).clear();
