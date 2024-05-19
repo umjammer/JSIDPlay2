@@ -4,35 +4,6 @@ function initialize(args) {
   main(args);
 }
 
-function processSamples(resultL, resultR, length) {
-  self.postMessage({
-    eventType: "SAMPLES",
-    eventData: {
-      left: resultL,
-      right: resultR,
-      length: length,
-    },
-  });
-}
-function processPixels(pixels, length) {
-  self.postMessage({
-    eventType: "FRAME",
-    eventData: {
-      image: new Uint8Array(pixels, 0, length).slice(),
-    },
-  });
-}
-function processSidWrite(relTime, addr, value) {
-  self.postMessage({
-    eventType: "SID_WRITE",
-    eventData: {
-      relTime: relTime,
-      addr: addr,
-      value: value,
-    },
-  });
-}
-
 // Handle incoming messages
 self.addEventListener(
   "message",
@@ -113,20 +84,21 @@ self.addEventListener(
       });
     } else if (eventType === "INITIALISE") {
       initialize(
-        new Array(
-          "" + eventData.palEmulation,
-          "" + eventData.bufferSize,
-          "" + eventData.audioBufferSize,
-          "" + eventData.samplingRate,
-          "" + eventData.samplingMethodResample,
-          "" + eventData.reverbBypass,
-          "" + eventData.defaultClockSpeed,
-          "" + eventData.defaultEmulation,
-          "" + eventData.defaultSidModel,
-          "" + eventData.jiffyDosInstalled
-        )
+        [
+          eventData.palEmulation,
+          eventData.bufferSize,
+          eventData.audioBufferSize,
+          eventData.samplingRate,
+          eventData.samplingMethodResample,
+          eventData.reverbBypass,
+          eventData.defaultClockSpeed,
+          eventData.defaultEmulation,
+          eventData.defaultSidModel,
+          eventData.jiffyDosInstalled,
+        ].map(function (item) {
+          return "" + item;
+        })
       );
-
       self.postMessage({
         eventType: "INITIALISED",
       });

@@ -22,13 +22,16 @@ public class JavaScriptAudioDriver implements IAudioDriverTeaVM {
 	}
 
 	/* This methods maps to JavaScript methods in a web page. */
-	@JSBody(params = { "resultL", "resultR", "length" }, script = "processSamples(resultL, resultR, length)")
-	public static native void processSamplesJS(float[] resultL, float[] resultR, int length);
+	@JSBody(params = { "lf", "ri", "le" }, script = "self.postMessage({eventType:'SAMPLES',"
+			+ "eventData:{left:lf,right:ri,length:le}})")
+	public static native void processSamplesJS(float[] lf, float[] ri, int le);
 
-	@JSBody(params = { "pixels", "length" }, script = "processPixels(pixels, length)")
-	public static native void processPixelsJS(byte[] pixels, int length);
+	@JSBody(params = { "pi", "le" }, script = "self.postMessage({eventType:'FRAME',"
+			+ "eventData:{image:new Uint8Array(pi,0,le).slice()}})")
+	public static native void processPixelsJS(byte[] pi, int le);
 
-	@JSBody(params = { "relTime", "addr", "value" }, script = "processSidWrite(relTime, addr, value)")
-	public static native void processSidWriteJS(int relTime, int addr, int value);
+	@JSBody(params = { "ti", "ad", "va" }, script = "self.postMessage({eventType: 'SID_WRITE',"
+			+ "eventData:{relTime:ti,addr:ad,value:va}})")
+	public static native void processSidWriteJS(int ti, int ad, int va);
 
 }
