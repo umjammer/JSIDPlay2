@@ -22,15 +22,15 @@ public class JavaScriptAudioDriver implements IAudioDriverTeaVM {
 	}
 
 	/* This methods maps to JavaScript methods in a web page. */
-	@JSBody(params = { "lf", "ri", "le" }, script = "self.postMessage({eventType:'SAMPLES',"
+	@JSBody(params = { "lf", "ri", "le" }, script = "postMessage({eventType:'SAMPLES',"
 			+ "eventData:{left:lf,right:ri,length:le}})")
 	public static native void processSamplesJS(float[] lf, float[] ri, int le);
 
-	@JSBody(params = { "pi", "le" }, script = "self.postMessage({eventType:'FRAME',"
+	@JSBody(params = { "pi", "le" }, script = "postMessage({eventType:'FRAME',"
 			+ "eventData:{image:new Uint8Array(pi,0,le).slice()}})")
 	public static native void processPixelsJS(byte[] pi, int le);
 
-	@JSBody(params = { "ti", "ad", "va" }, script = "self.postMessage({eventType: 'SID_WRITE',"
+	@JSBody(params = { "ti", "ad", "va" }, script = "postMessage({eventType: 'SID_WRITE',"
 			+ "eventData:{relTime:ti,addr:ad,value:va}})")
 	public static native void processSidWriteJS(int ti, int ad, int va);
 
