@@ -23,10 +23,10 @@ import org.teavm.jso.JSBody;
 
 import builder.resid.ReSIDBuilder;
 import client.teavm.common.AudioDriverTeaVM;
+import client.teavm.common.PalEmulationTeaVM;
 import client.teavm.common.config.ConfigurationTeaVM;
 import client.teavm.compiletime.RomsTeaVM;
 import client.teavm.js.audio.JavaScriptAudioDriver;
-import client.teavm.js.audio.PalEmulationRGBATeaVM;
 import client.teavm.js.config.JavaScriptConfigResolver;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
@@ -121,7 +121,7 @@ public class JSIDPlay2TeaVM {
 				hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 				c64 = hardwareEnsemble.getC64();
 				c64.getVIC().setPalEmulation(
-						nthFrame > 0 ? new PalEmulationRGBATeaVM(nthFrame, decoder) : PALEmulation.NONE);
+						nthFrame > 0 ? new PalEmulationTeaVM(nthFrame, decoder) : PALEmulation.NONE);
 				if (cartContents != null) {
 					try {
 						File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);

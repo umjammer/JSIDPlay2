@@ -23,9 +23,9 @@ import org.teavm.interop.Export;
 
 import builder.resid.ReSIDBuilder;
 import client.teavm.common.AudioDriverTeaVM;
+import client.teavm.common.PalEmulationTeaVM;
 import client.teavm.common.config.ConfigurationTeaVM;
 import client.teavm.compiletime.RomsTeaVM;
-import client.teavm.wasm.audio.PalEmulationABGRTeaVM;
 import client.teavm.wasm.audio.WebAssemblyAudioDriver;
 import client.teavm.wasm.config.WebAssemblyConfigResolver;
 import libsidplay.C64;
@@ -122,7 +122,7 @@ public class JSIDPlay2TeaVM {
 				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		c64.getVIC().setPalEmulation(nthFrame > 0 ? new PalEmulationABGRTeaVM(nthFrame, decoder) : PALEmulation.NONE);
+		c64.getVIC().setPalEmulation(nthFrame > 0 ? new PalEmulationTeaVM(nthFrame, decoder) : PALEmulation.NONE);
 		if (cartContents != null) {
 			try {
 				File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);

@@ -535,14 +535,13 @@ public class Video extends C64VBox implements UIPart, VideoDriver {
 
 	/**
 	 * Create an image per frame of VIC screen output.
-	 *
-	 * @see java.util.function.BiConsumer#accept(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public void accept(VIC vic) {
 		WritableImage image = new WritableImage(vic.getBorderWidth(), vic.getBorderHeight());
 		image.getPixelWriter().setPixels(0, 0, vic.getBorderWidth(), vic.getBorderHeight(),
-				PixelFormat.getIntArgbInstance(), vic.getPalEmulation().getPixels().array(), 0, vic.getBorderWidth());
+				PixelFormat.getByteBgraPreInstance(), vic.getPalEmulation().getPixels().array(), 0,
+				vic.getBorderWidth() << 2);
 		imageQueue.push(image);
 	}
 

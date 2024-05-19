@@ -12,11 +12,11 @@ public class WebAssemblyAudioDriver implements IAudioDriverTeaVM {
 	}
 
 	@Override
-	public void processPixels(int[] pixels, int length) {
+	public void processPixels(byte[] pixels, int length) {
 		// since WASM version will interpret int array as byte array from heap, we just
 		// report the byte length here. Works only for ABGR color data on litte-endian
 		// platforms, though.
-		WebAssemblyAudioDriver.processPixelsJS(pixels, length << 2);
+		WebAssemblyAudioDriver.processPixelsJS(pixels, length);
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class WebAssemblyAudioDriver implements IAudioDriverTeaVM {
 	public static native void processSamplesJS(float[] resultL, float[] resultR, int length);
 
 	@Import(module = "audiodriver", name = "processPixels")
-	public static native void processPixelsJS(int[] pixels, int length);
+	public static native void processPixelsJS(byte[] pixels, int length);
 
 	@Import(module = "audiodriver", name = "processSidWrite")
 	public static native void processSidWriteJS(int relTime, int addr, int value);

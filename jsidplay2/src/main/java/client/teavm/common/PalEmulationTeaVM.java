@@ -1,4 +1,4 @@
-package client.teavm.js.audio;
+package client.teavm.common;
 
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
@@ -7,18 +7,18 @@ import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_ODD;
 import static java.util.Arrays.stream;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.Base64.Decoder;
-
-import client.teavm.compiletime.PaletteTeaVM;
-
 import java.util.Map;
 
+import client.teavm.compiletime.PaletteTeaVM;
 import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.VIC;
 
-public class PalEmulationRGBATeaVM implements IPALEmulation {
+public class PalEmulationTeaVM implements IPALEmulation {
 
 	/**
 	 * RGBA pixel data. VIC colors without PAL emulation. Use this palette for VIC
@@ -47,13 +47,14 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 	/** Previous sequencer data */
 	private int oldGraphicsData;
 
-	private final IntBuffer pixels = IntBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT);
+	private final ByteBuffer pixels = ByteBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT << 2)
+			.order(ByteOrder.BIG_ENDIAN);
 	private final int nthFrame;
 	private int n;
 
 	private boolean palEmulationEnable;
 
-	public PalEmulationRGBATeaVM(int nthFrame, Decoder decoder) {
+	public PalEmulationTeaVM(int nthFrame, Decoder decoder) {
 		this.nthFrame = nthFrame;
 		Map<String, String> palette = PaletteTeaVM.getPalette(false);
 		this.combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt)
@@ -65,6 +66,12 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 		n = 0;
 	}
 
+	/**
+	 * Determine palette for current raster line.
+	 *
+	 * @param rasterY      current raster line
+	 * @param isFrameStart a new frame is about to start?
+	 */
 	@Override
 	public void determineCurrentPalette(int rasterY, boolean isFrameStart) {
 		if (isFrameStart) {
@@ -89,6 +96,13 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 		}
 	}
 
+	/**
+	 * Draw eight pixels at once. Pixels arrive in 0x12345678 order (MSB to LSB).
+	 *
+	 * @param graphicsDataBuffer eight pixels each of 4 bits (VIC color value range
+	 *                           0x0-0xF)
+	 * @param pixelConsumer      consumer of the corresponding RGBA pixels
+	 */
 	@Override
 	public void drawPixels(int graphicsDataBuffer) {
 		if (n == 0) {
@@ -103,10 +117,10 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 						final byte previousLineColor = previousLineDecodedColor[previousLineIndex];
 						previousLineDecodedColor[previousLineIndex++] = lineColor;
 						// RGB -> RGBA
-						pixels.put(
+						pixels.putInt(
 								(combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00] << 8) | 0xff);
 					} else {
-						pixels.put(VIC_PALETTE_NO_PAL[(oldGraphicsData >>> 16) & 0x0f]);
+						pixels.putInt(VIC_PALETTE_NO_PAL[(oldGraphicsData >>> 16) & 0x0f]);
 					}
 				}
 				graphicsDataBuffer <<= 16;
@@ -170,20 +184,25 @@ public class PalEmulationRGBATeaVM implements IPALEmulation {
 	}
 
 	/**
-	 * @return Output ABGR screen buffer as int32 array. MSB to LSB -&gt; alpha,
-	 *         blue, green, red
+	 * @return Output RGBA screen buffer as int32 array. MSB to LSB -&gt; red,
+	 *         green, blue, alpha
 	 */
 	@Override
-	public IntBuffer getPixels() {
+	public ByteBuffer getPixels() {
 		return pixels;
+	}
+
+	@Override
+	public IntBuffer getPixelsAsIntBuffer() {
+		return null;
 	}
 
 	@Override
 	public void reset() {
 		// clear the screen
 		((Buffer) pixels).clear();
-		for (int i = 0; i < pixels.capacity(); i++) {
-			pixels.put(0xFF000000);
+		for (int i = 0; i < pixels.capacity() >> 2; i++) {
+			pixels.putInt(0x000000FF);
 		}
 		((Buffer) pixels).clear();
 	}

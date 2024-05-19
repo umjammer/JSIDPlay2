@@ -1,5 +1,6 @@
 package libsidplay.components.mos656x;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 public interface IPALEmulation {
@@ -38,11 +39,13 @@ public interface IPALEmulation {
 	IPalette getPalette();
 
 	void reset();
-	
+
 	/**
-	 * @return Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha,
-	 *         red, green, blue
+	 * @return Output ARGB screen buffer as byte array. alpha, red, green, blue for
+	 *         each pixel.
 	 */
-	IntBuffer getPixels();
+	ByteBuffer getPixels();
+
+	IntBuffer getPixelsAsIntBuffer();
 
 }

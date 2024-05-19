@@ -173,8 +173,10 @@ public abstract class XuggleVideoDriver extends XuggleBase implements AudioDrive
 	public void accept(VIC vic) {
 		long timeStamp = getVideoTimeStamp();
 
-		pictureBuffer.put(vic.getPalEmulation().getPixels().array(), 0, statusTextOffset).put(statusTextPixels)
-				.put(vic.getPalEmulation().getPixels().array(), pictureBuffer.position(), pictureBuffer.remaining());
+		IntBuffer pixels = vic.getPalEmulation().getPixelsAsIntBuffer();
+		((Buffer) pixels).rewind();
+		((Buffer) pixels).limit(statusTextOffset);
+		pictureBuffer.put(pixels).put(statusTextPixels);
 		((Buffer) pictureBuffer).clear();
 
 		IVideoPicture videoPicture = converter.toPicture(vicImage, timeStamp);

@@ -48,7 +48,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	private int n;
 	private long sidWiteTime;
 
-	private int[] array;
+	private byte[] array;
 	private int length;
 	private final IAudioDriverTeaVM audioDriver;
 
@@ -97,7 +97,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 			n = 0;
 			if (array == null) {
 				array = vic.getPalEmulation().getPixels().array();
-				length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT);
+				length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
 			}
 			audioDriver.processPixels(array, length);
 		}

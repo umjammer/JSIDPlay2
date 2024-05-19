@@ -230,7 +230,8 @@ public class Ultimate64Window extends C64Window implements Ultimate64 {
 					pixelDataOffset += pixelsPerLine;
 				}
 				image.getPixelWriter().setPixels(0, lineNo, pixelsPerLine, linesPerPacket,
-						PixelFormat.getIntArgbInstance(), palEmulation.getPixels().array(), 0, pixelsPerLine);
+						PixelFormat.getByteBgraPreInstance(), palEmulation.getPixels().array(), 0, pixelsPerLine << 2);
+
 				if (isLastPacketOfFrame) {
 					imageQueue.push(copyImage());
 				}

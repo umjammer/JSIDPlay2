@@ -1,6 +1,8 @@
 package libsidplay.components.mos656x;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import libsidplay.common.VICChipModel;
@@ -50,11 +52,15 @@ public class PALEmulation implements IPALEmulation {
 	 * Output ARGB screen buffer as int32 array. MSB to LSB -&gt; alpha, red, green,
 	 * blue
 	 */
-	protected final IntBuffer pixels = IntBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT);
+	protected final ByteBuffer pixels = ByteBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT << 2)
+			.order(ByteOrder.LITTLE_ENDIAN);
+
+	private IntBuffer pixelsAsIntBuffer;
 
 	public PALEmulation(VICChipModel model) {
 		this.model = model;
 		this.palEmulationEnable = true;
+		pixelsAsIntBuffer = pixels.asIntBuffer();
 	}
 
 	@Override
@@ -137,7 +143,7 @@ public class PALEmulation implements IPALEmulation {
 				} else {
 					rgbaColor = ALPHA | vicPaletteNoPal[vicColor & 0x0f];
 				}
-				pixels.put(rgbaColor);
+				pixels.putInt(rgbaColor);
 				previousLineDecodedColor[previousLineIndex++] = lineColor;
 			}
 			graphicsDataBuffer <<= 16;
@@ -150,15 +156,20 @@ public class PALEmulation implements IPALEmulation {
 	 *         red, green, blue
 	 */
 	@Override
-	public IntBuffer getPixels() {
+	public ByteBuffer getPixels() {
 		return pixels;
+	}
+	
+	@Override
+	public IntBuffer getPixelsAsIntBuffer() {
+		return pixelsAsIntBuffer;
 	}
 
 	@Override
 	public void reset() {
 		// clear the screen
 		((Buffer) pixels).clear();
-		((Buffer) pixels.put(new int[pixels.capacity()])).clear();
+		((Buffer) pixels.put(new byte[pixels.capacity()])).clear();
 	}
 
 }
