@@ -369,16 +369,16 @@
           <p>JavaScript Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
           <ol>
             <li>Run JSIDPlay2 in a browser in JavaScript (THIS IS NOT JAVA)</li>
-            <li>Runs out-of-the-box in all browsers</li>
-            <li>Only 2MB in size loads very quick</li>
-            <li>Runs near to native speed in a web worker, performance only depends on your PC setup</li>
-            <li>Runs completely on the client side, no server required (once loaded into the browsers cache)</li>
+            <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
+            <li>Only 2MB in size, loads very quick</li>
+            <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos on PC</li>
+            <li>Runs near to native speed, performance only depends on your max. single core speed</li>
+            <li>Plays at least mono SIDs on a fast mobile phone</li>
+            <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
             <li>Full emulation quality, no compromises, C64, Floppy and more</li>
-            <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos</li>
             <li>
               Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
             </li>
-            <li>Would even run on a mobile phone, if it will get as fast as a PC</li>
             <li>For the first time, embed music or demos in YOUR web-site</li>
           </ol>
         </div>
