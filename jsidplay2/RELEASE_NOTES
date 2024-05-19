@@ -1,7 +1,7 @@
 Release Notes:
 ==============
 
-C64Jukebox (JavaScript Version) added
+C64Jukebox (JavaScript Version) added, powered by TeaVM (https://teavm.org/)
 - https://haendel.ddns.net:8443/static/teavm/js/c64jukebox.vue
 - Run JSIDPlay2 in a browser in JavaScript (THIS IS NOT JAVA)
 - Runs out-of-the-box in all browsers (Chrome is faster than Firefox)
