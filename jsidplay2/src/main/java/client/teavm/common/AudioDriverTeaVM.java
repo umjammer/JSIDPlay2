@@ -78,7 +78,6 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	@Override
 	public void write() throws InterruptedException {
 		int position = sampleBuffer.position();
-		((Buffer) shortBuffer).rewind();
 		((Buffer) shortBuffer).limit(position >> 1);
 		while (shortBuffer.hasRemaining()) {
 			resultL.put(lookupTable[shortBuffer.get() + 32768]);
@@ -87,6 +86,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		audioDriver.processSamples(resultL.array(), resultR.array(), resultL.position());
 		((Buffer) resultL).clear();
 		((Buffer) resultR).clear();
+		((Buffer) shortBuffer).rewind();
 	}
 
 	@Override
