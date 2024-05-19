@@ -21,6 +21,7 @@
     <!-- helpers -->
     <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
     <script src="/webjars/axios/1.5.1/dist/axios${min}.js"></script>
+    <script src="/webjars/nosleep.js/0.12.0/dist/NoSleep${min}.js"></script>
     <script src="/webjars/web-audio-recorder-js/0.0.2/${lib}/WebAudioRecorder${min}.js"></script>
 
     <!-- USB -->
@@ -300,6 +301,12 @@
                 the Free Software Foundation; either version 2 of the License, or<br />
                 (at your option) any later version.
               </p>
+
+              <div class="settings-box">
+                <div class="button-box">
+                  <input type="button" id="toggle" value="Wake Lock is disabled" />
+                </div>
+              </div>
               <div class="settings-box">
                 <div class="button-box">
                   <button
@@ -6405,6 +6412,29 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
       })
         .use(i18n)
         .mount("#app");
+
+
+      var noSleep = new NoSleep();
+
+      var wakeLockEnabled = false;
+      var toggleEl = document.querySelector("#toggle");
+      toggleEl.addEventListener(
+        "click",
+        function () {
+          if (!wakeLockEnabled) {
+            noSleep.enable(); // keep the screen on!
+            wakeLockEnabled = true;
+            toggleEl.value = "Wake Lock is enabled";
+            document.body.style.backgroundColor = "lightblue";
+          } else {
+            noSleep.disable(); // let the screen turn off.
+            wakeLockEnabled = false;
+            toggleEl.value = "Wake Lock is disabled";
+            document.body.style.backgroundColor = "";
+          }
+        },
+        false
+      );
 
       // prevent back button
       history.pushState(null, null, document.URL);

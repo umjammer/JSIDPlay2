@@ -20,6 +20,7 @@
 
     <!-- helpers -->
     <script src="/webjars/vue-i18n/9.10.1/dist/vue-i18n.global${prod}.js"></script>
+    <script src="/webjars/nosleep.js/0.12.0/dist/NoSleep${min}.js"></script>
 
     <!-- disable pull reload -->
     <style>
@@ -190,6 +191,7 @@
         <div class="container">
           <div class="row">
             <div class="col">
+              <input type="button" id="toggle" value="Wake Lock is disabled" />
               <button
                 type="button"
                 v-on:click="setCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
@@ -836,6 +838,28 @@
       })
         .use(i18n)
         .mount("#app");
+
+      var noSleep = new NoSleep();
+
+      var wakeLockEnabled = false;
+      var toggleEl = document.querySelector("#toggle");
+      toggleEl.addEventListener(
+        "click",
+        function () {
+          if (!wakeLockEnabled) {
+            noSleep.enable(); // keep the screen on!
+            wakeLockEnabled = true;
+            toggleEl.value = "Wake Lock is enabled";
+            document.body.style.backgroundColor = "lightblue";
+          } else {
+            noSleep.disable(); // let the screen turn off.
+            wakeLockEnabled = false;
+            toggleEl.value = "Wake Lock is disabled";
+            document.body.style.backgroundColor = "";
+          }
+        },
+        false
+      );
     </script>
   </body>
 </html>
