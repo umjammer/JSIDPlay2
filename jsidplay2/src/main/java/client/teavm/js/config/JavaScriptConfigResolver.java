@@ -11,10 +11,10 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 	private boolean palEmulation;
 	private int bufferSize;
 	private int audioBufferSize;
-	private int samplingRate;
+	private int samplingRateAsInt;
 	private boolean samplingMethodResample;
 	private boolean reverbBypass;
-	private int defaultClockSpeed;
+	private int defaultClockSpeedAsInt;
 	private boolean defaultEmulationReSid;
 	private boolean defaultSidModel8580;
 	private boolean jiffyDosInstalled;
@@ -23,10 +23,10 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 		this.palEmulation = Boolean.TRUE.equals(Boolean.valueOf(args[0]));
 		this.bufferSize = Integer.valueOf(args[1]);
 		this.audioBufferSize = Integer.valueOf(args[2]);
-		this.samplingRate = Integer.valueOf(args[3]);
+		this.samplingRateAsInt = Integer.valueOf(args[3]);
 		this.samplingMethodResample = Boolean.TRUE.equals(Boolean.valueOf(args[4]));
 		this.reverbBypass = Boolean.TRUE.equals(Boolean.valueOf(args[5]));
-		this.defaultClockSpeed = Integer.valueOf(args[6]);
+		this.defaultClockSpeedAsInt = Integer.valueOf(args[6]);
 		this.defaultEmulationReSid = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
 		this.defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
 		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[9]));
@@ -39,7 +39,7 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 
 	@Override
 	public int getSamplingRateAsInt() {
-		return samplingRate;
+		return samplingRateAsInt;
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 
 	@Override
 	public int getDefaultClockSpeedAsInt() {
-		return defaultClockSpeed;
+		return defaultClockSpeedAsInt;
 	}
 
 	@Override
