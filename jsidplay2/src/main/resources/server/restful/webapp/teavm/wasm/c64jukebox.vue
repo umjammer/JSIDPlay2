@@ -649,7 +649,7 @@
             sampling: false,
             reverbBypass: true,
             sidWrites: false,
-            bufferSize: 2 * 48000,
+            bufferSize: 3 * 48000,
             audioBufferSize: 48000,
             framesCounter: 0,
             showFloppy: false,
