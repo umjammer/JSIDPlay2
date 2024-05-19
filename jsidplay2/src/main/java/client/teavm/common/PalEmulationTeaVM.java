@@ -18,11 +18,14 @@ import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.VIC;
 
+/**
+ * JavaScript needs BGRA (MSB to LSB) big endian.
+ */
 public class PalEmulationTeaVM implements IPALEmulation {
 
 	/**
-	 * RGBA pixel data. VIC colors without PAL emulation. Use this palette for VIC
-	 * colors 0-15. https://www.pepto.de/projects/colorvic/2001/
+	 * RGBA pixel data (MSB to LSB). VIC colors without PAL emulation. Use this
+	 * palette for VIC colors 0-15. https://www.pepto.de/projects/colorvic/2001/
 	 */
 	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0x000000FF, 0xFFFFFFFF, 0x68372BFF, 0x70A4B2FF,
 			0x6F3D86FF, 0x588D43FF, 0x352879FF, 0xB8C76FFF, 0x6F4F25FF, 0x433900FF, 0x9A6759FF, 0x444444FF, 0x6C6C6CFF,
@@ -116,7 +119,6 @@ public class PalEmulationTeaVM implements IPALEmulation {
 						final byte lineColor = linePaletteCurrent[vicColor];
 						final byte previousLineColor = previousLineDecodedColor[previousLineIndex];
 						previousLineDecodedColor[previousLineIndex++] = lineColor;
-						// RGB -> RGBA
 						pixels.putInt(
 								(combinedLinesCurrent[lineColor & 0xff | previousLineColor << 8 & 0xff00] << 8) | 0xff);
 					} else {

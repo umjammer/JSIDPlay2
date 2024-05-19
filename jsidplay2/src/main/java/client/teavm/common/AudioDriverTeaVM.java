@@ -27,11 +27,9 @@ import sidplay.audio.VideoDriver;
  * Audio driver to be used in the JavaScript and web assembly version builds.
  * Browser needs float array for each channel with sound samples with a value
  * range of -1..1. And pixel data is required as a byte array containing color
- * data four bytes each pixel (RGBA). Pixel data is reported as int array here
- * and conversion to byte array must be done in the implementing classes, since
- * it differs for WASM or JavaScript version. Additionally the possibility to
- * sniff for SID writes helps to make USB hardware working in the browser and
- * for debug purposes.
+ * data four bytes each pixel BGRA (MSB to LSB) big endian. Additionally the
+ * possibility to sniff for SID writes helps to make USB hardware working in the
+ * browser and for debug purposes.
  * 
  * <B>Note:</B> A lookup table is used for sample data conversion (short to
  * float) for performance reasons
@@ -79,7 +77,6 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	public void write() throws InterruptedException {
 		int position = ((Buffer) sampleBuffer).position();
 		((Buffer) sampleBuffer).flip();
-		// SHORT to FLOAT samples
 		ShortBuffer shortBuffer = sampleBuffer.asShortBuffer();
 		while (shortBuffer.hasRemaining()) {
 			resultL.put(lookupTable[shortBuffer.get() + 32768]);
