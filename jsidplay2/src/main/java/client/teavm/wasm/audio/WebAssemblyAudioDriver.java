@@ -8,17 +8,17 @@ public class WebAssemblyAudioDriver implements IAudioDriverTeaVM {
 
 	@Override
 	public void processSamples(float[] resultL, float[] resultR, int length) {
-		WebAssemblyAudioDriver.processSamplesJS(resultL, resultR, length);
+		processSamplesJS(resultL, resultR, length);
 	}
 
 	@Override
 	public void processPixels(byte[] pixels, int length) {
-		WebAssemblyAudioDriver.processPixelsJS(pixels, length);
+		processPixelsJS(pixels, length);
 	}
 
 	@Override
 	public void processSidWrite(int relTime, int addr, int value) {
-		WebAssemblyAudioDriver.processSidWriteJS(relTime, addr, value);
+		processSidWriteJS(relTime, addr, value);
 	}
 
 	/* This methods maps to JavaScript methods in a web page. */
