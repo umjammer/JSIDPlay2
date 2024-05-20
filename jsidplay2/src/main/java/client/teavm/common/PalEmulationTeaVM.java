@@ -60,12 +60,12 @@ public class PalEmulationTeaVM implements IPALEmulation {
 	public PalEmulationTeaVM(int nthFrame, Decoder decoder) {
 		this.nthFrame = nthFrame;
 		Map<String, String> palette = PaletteTeaVM.getPalette(false);
-		this.combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt)
+		combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt)
 				.toArray();
-		this.combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(Integer::parseInt)
+		combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(Integer::parseInt)
 				.toArray();
-		this.linePaletteEven = decoder.decode(palette.get(LINE_PALETTE_EVEN));
-		this.linePaletteOdd = decoder.decode(palette.get(LINE_PALETTE_ODD));
+		linePaletteEven = decoder.decode(palette.get(LINE_PALETTE_EVEN));
+		linePaletteOdd = decoder.decode(palette.get(LINE_PALETTE_ODD));
 		n = 0;
 	}
 

@@ -120,8 +120,8 @@ public class JSIDPlay2TeaVM {
 						kernalRom, jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 				hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 				c64 = hardwareEnsemble.getC64();
-				c64.getVIC().setPalEmulation(
-						nthFrame > 0 ? new PalEmulationTeaVM(nthFrame, decoder) : PALEmulation.NONE);
+				c64.getVIC()
+						.setPalEmulation(nthFrame > 0 ? new PalEmulationTeaVM(nthFrame, decoder) : PALEmulation.NONE);
 				if (cartContents != null) {
 					try {
 						File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
@@ -162,7 +162,7 @@ public class JSIDPlay2TeaVM {
 							Event.of("PSID64 Detection", event2 -> autodetectPSID64(config, c64, tune, sidBuilder)),
 							(long) (c64.getClock().getCpuFrequency()));
 				}), SidTune.getInitDelay(tune));
-				
+
 				AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(new JavaScriptAudioDriver(), nthFrame);
 				audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 				sidBuilder.setAudioDriver(audioDriver);
