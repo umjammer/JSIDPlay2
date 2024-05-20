@@ -30,6 +30,9 @@ import sidplay.audio.VideoDriver;
  * data four bytes each pixel BGRA. Additionally the possibility to sniff for
  * SID writes helps to make USB hardware working in the browser and for debug
  * purposes.
+ * 
+ * <B>Note:</B> A lookup table is used for sample data conversion (short to
+ * float) for performance reasons
  */
 public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDListener {
 
@@ -37,10 +40,12 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	private ByteBuffer sampleBuffer;
 
 	private FloatBuffer resultL, resultR;
+	private final float[] lookupTable = new float[65536];
 	private final int nthFrame;
 	private int n;
 	private long sidWiteTime;
 
+	private byte[] array;
 	private int length;
 	private final IAudioDriverTeaVM audioDriver;
 	private ShortBuffer shortBuffer;
@@ -63,6 +68,9 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		n = 0;
 		sidWiteTime = 0;
+		for (int i = Short.MIN_VALUE; i <= Short.MAX_VALUE; i++) {
+			lookupTable[i + 32768] = (float) (i / 32768.0f);
+		}
 		length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
 	}
 
@@ -71,8 +79,8 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		int position = sampleBuffer.position();
 		((Buffer) shortBuffer).limit(position >> 1);
 		while (shortBuffer.hasRemaining()) {
-			resultL.put(shortBuffer.get() / 32768.0f);
-			resultR.put(shortBuffer.get() / 32768.0f);
+			resultL.put(lookupTable[shortBuffer.get() + 32768]);
+			resultR.put(lookupTable[shortBuffer.get() + 32768]);
 		}
 		audioDriver.processSamples(resultL.array(), resultR.array(), resultL.position());
 		((Buffer) resultL).clear();
@@ -84,7 +92,10 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	public void accept(VIC vic) {
 		if (++n == nthFrame) {
 			n = 0;
-			audioDriver.processPixels(vic.getPalEmulation().getPixels().array(), length);
+			if (array == null) {
+				array = vic.getPalEmulation().getPixels().array();
+			}
+			audioDriver.processPixels(array, length);
 		}
 	}
 
