@@ -462,7 +462,7 @@
           });
 
           worker.addEventListener("message", function (event) {
-            var { eventType, eventData, eventId } = event.data;
+            var { eventType, eventData } = event.data;
 
             if (eventType === "SAMPLES") {
               var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
@@ -528,7 +528,7 @@
               app.clearScreen();
               if (app.screen) {
                 (start = new Date().getTime()), (time = 0);
-                setTimeout(() => app.showFrame(), 0);
+                app.showFrame();
               }
             }
           });

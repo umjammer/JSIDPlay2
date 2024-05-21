@@ -21,7 +21,7 @@ function allocateTeaVMstring(str) {
 self.addEventListener(
   "message",
   function (event) {
-    var { eventType, eventData, eventId } = event.data;
+    var { eventType, eventData } = event.data;
 
     if (eventType === "CLOCK") {
       instance.exports.clock();
