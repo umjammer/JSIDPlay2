@@ -1,9 +1,5 @@
 importScripts("jsidplay2.js");
 
-function initialize(args) {
-  main(args);
-}
-
 // Handle incoming messages
 self.addEventListener(
   "message",
@@ -83,7 +79,7 @@ self.addEventListener(
         eventType: "KEY_TYPED",
       });
     } else if (eventType === "INITIALISE") {
-      initialize(
+      self.main(
         [
           eventData.palEmulation,
           eventData.bufferSize,
@@ -95,10 +91,9 @@ self.addEventListener(
           eventData.defaultEmulation,
           eventData.defaultSidModel,
           eventData.jiffyDosInstalled,
-        ].map(function (item) {
-          return "" + item;
-        })
+        ].map((item) => "" + item)
       );
+
       self.postMessage({
         eventType: "INITIALISED",
       });

@@ -160,7 +160,7 @@ self.addEventListener(
         .then((teavm) => {
           instance = teavm.instance;
 
-	      teavm.main();
+          teavm.main();
 
           self.postMessage({
             eventType: "INITIALISED",
