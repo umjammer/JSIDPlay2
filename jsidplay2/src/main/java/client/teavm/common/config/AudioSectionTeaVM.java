@@ -2,7 +2,6 @@ package client.teavm.common.config;
 
 import java.io.File;
 
-import client.teavm.common.IConfigResolverTeaVM;
 import libsidplay.common.SamplingMethod;
 import libsidplay.common.SamplingRate;
 import libsidplay.common.VideoCoderPreset;

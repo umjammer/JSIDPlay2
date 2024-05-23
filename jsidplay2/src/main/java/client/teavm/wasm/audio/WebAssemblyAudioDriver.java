@@ -2,7 +2,7 @@ package client.teavm.wasm.audio;
 
 import org.teavm.interop.Import;
 
-import client.teavm.common.IAudioDriverTeaVM;
+import client.teavm.common.audio.IAudioDriverTeaVM;
 
 public class WebAssemblyAudioDriver implements IAudioDriverTeaVM {
 

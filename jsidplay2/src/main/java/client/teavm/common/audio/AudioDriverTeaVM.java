@@ -1,4 +1,4 @@
-package client.teavm.common;
+package client.teavm.common.audio;
 
 import static libsidplay.common.CPUClock.PAL;
 import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;

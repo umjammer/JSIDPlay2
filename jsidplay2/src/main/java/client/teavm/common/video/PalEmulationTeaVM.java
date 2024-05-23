@@ -1,4 +1,4 @@
-package client.teavm.common;
+package client.teavm.common.video;
 
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
@@ -10,18 +10,18 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Map;
 
 import client.teavm.compiletime.PaletteTeaVM;
-import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.VIC;
 
 /**
  * JavaScript needs BGRA (MSB to LSB) big endian.
  */
-public class PalEmulationTeaVM implements IPALEmulation {
+public class PalEmulationTeaVM implements IPALEmulationTeaVM {
 
 	/**
 	 * RGBA pixel data (MSB to LSB). VIC colors without PAL emulation. Use this
@@ -52,21 +52,29 @@ public class PalEmulationTeaVM implements IPALEmulation {
 
 	private final ByteBuffer pixels = ByteBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT << 2)
 			.order(ByteOrder.BIG_ENDIAN);
-	private final int nthFrame;
+	private int nthFrame;
 	private int n;
 
 	private boolean palEmulationEnable;
 
-	public PalEmulationTeaVM(int nthFrame, Decoder decoder) {
-		this.nthFrame = nthFrame;
+	public PalEmulationTeaVM() {
+		Decoder decoder = Base64.getDecoder();
 		Map<String, String> palette = PaletteTeaVM.getPalette(false);
-		combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt)
-				.toArray();
-		combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(Integer::parseInt)
-				.toArray();
+		combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt).toArray();
+		combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(Integer::parseInt).toArray();
 		linePaletteEven = decoder.decode(palette.get(LINE_PALETTE_EVEN));
 		linePaletteOdd = decoder.decode(palette.get(LINE_PALETTE_ODD));
 		n = 0;
+	}
+
+	@Override
+	public int getNthFrame() {
+		return nthFrame;
+	}
+
+	@Override
+	public void setNthFrame(int nthFrame) {
+		this.nthFrame = nthFrame;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package client.teavm.common;
+package client.teavm.common.audio;
 
 /**
  * I/O interface to JavaScript

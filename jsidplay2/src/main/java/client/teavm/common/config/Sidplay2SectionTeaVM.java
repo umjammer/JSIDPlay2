@@ -2,7 +2,6 @@ package client.teavm.common.config;
 
 import java.io.File;
 
-import client.teavm.common.IConfigResolverTeaVM;
 import libsidplay.config.ISidPlay2Section;
 
 public final class Sidplay2SectionTeaVM implements ISidPlay2Section {

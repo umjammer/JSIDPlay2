@@ -2,7 +2,7 @@ package client.teavm.js.audio;
 
 import org.teavm.jso.JSBody;
 
-import client.teavm.common.IAudioDriverTeaVM;
+import client.teavm.common.audio.IAudioDriverTeaVM;
 
 public class JavaScriptAudioDriver implements IAudioDriverTeaVM {
 

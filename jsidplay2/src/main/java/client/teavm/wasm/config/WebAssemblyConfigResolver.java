@@ -2,7 +2,7 @@ package client.teavm.wasm.config;
 
 import org.teavm.interop.Import;
 
-import client.teavm.common.IConfigResolverTeaVM;
+import client.teavm.common.config.IConfigResolverTeaVM;
 
 /**
  * Web assembly version's configuration is handled reading methods from

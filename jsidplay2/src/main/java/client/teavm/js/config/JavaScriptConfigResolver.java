@@ -1,6 +1,6 @@
 package client.teavm.js.config;
 
-import client.teavm.common.IConfigResolverTeaVM;
+import client.teavm.common.config.IConfigResolverTeaVM;
 
 /**
  * JavaScript version's configuration is handled by main arguments for ease of
