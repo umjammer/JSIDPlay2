@@ -3,6 +3,7 @@ package client.teavm.common.config;
 import java.util.Arrays;
 import java.util.List;
 
+import client.teavm.common.IImportedApi;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
@@ -28,12 +29,12 @@ public class ConfigurationTeaVM implements IConfig {
 	private final List<IFilterSection> filterSections = Arrays.asList(new FilterAlankila6581R4AR_3789TeaVM(),
 			new FilterTrurl8580R5_3691TeaVM(), new FilterAverage6581TeaVM(), new FilterAverage8580TeaVM());
 
-	public ConfigurationTeaVM(IConfigResolverTeaVM resolver) {
-		sidplay2Section = new Sidplay2SectionTeaVM(resolver);
-		c1541Section = new C1541SectionTeaVM(resolver);
+	public ConfigurationTeaVM(IImportedApi importedApi) {
+		sidplay2Section = new Sidplay2SectionTeaVM(importedApi);
+		c1541Section = new C1541SectionTeaVM(importedApi);
 		printerSection = new PrinterSectionTeaVM();
-		audioSection = new AudioSectionTeaVM(resolver);
-		emulationSection = new EmulationSectionTeaVM(resolver);
+		audioSection = new AudioSectionTeaVM(importedApi);
+		emulationSection = new EmulationSectionTeaVM(importedApi);
 		whatsSidSection = new WhatsSidSectionTeaVM();
 	}
 

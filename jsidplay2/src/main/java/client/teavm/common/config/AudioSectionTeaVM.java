@@ -2,6 +2,7 @@ package client.teavm.common.config;
 
 import java.io.File;
 
+import client.teavm.common.IImportedApi;
 import libsidplay.common.SamplingMethod;
 import libsidplay.common.SamplingRate;
 import libsidplay.common.VideoCoderPreset;
@@ -10,10 +11,10 @@ import sidplay.audio.Audio;
 
 public final class AudioSectionTeaVM implements IAudioSection {
 
-	private IConfigResolverTeaVM resolver;
+	private IImportedApi importedApi;
 
-	public AudioSectionTeaVM(IConfigResolverTeaVM resolver) {
-		this.resolver = resolver;
+	public AudioSectionTeaVM(IImportedApi importedApi) {
+		this.importedApi = importedApi;
 	}
 
 	@Override
@@ -270,7 +271,7 @@ public final class AudioSectionTeaVM implements IAudioSection {
 
 	@Override
 	public SamplingRate getSamplingRate() {
-		switch (resolver.getSamplingRateAsInt()) {
+		switch (importedApi.getSamplingRateAsInt()) {
 		case 8000:
 			return SamplingRate.VERY_LOW;
 		case 44100:
@@ -285,7 +286,7 @@ public final class AudioSectionTeaVM implements IAudioSection {
 
 	@Override
 	public SamplingMethod getSampling() {
-		if (resolver.getSamplingMethodResample()) {
+		if (importedApi.getSamplingMethodResample()) {
 			return SamplingMethod.RESAMPLE;
 		} else {
 			return SamplingMethod.DECIMATE;
@@ -324,7 +325,7 @@ public final class AudioSectionTeaVM implements IAudioSection {
 
 	@Override
 	public boolean getReverbBypass() {
-		return resolver.getReverbBypass();
+		return importedApi.getReverbBypass();
 	}
 
 	@Override
@@ -394,7 +395,7 @@ public final class AudioSectionTeaVM implements IAudioSection {
 
 	@Override
 	public int getBufferSize() {
-		return resolver.getBufferSize();
+		return importedApi.getBufferSize();
 	}
 
 	@Override
@@ -409,7 +410,7 @@ public final class AudioSectionTeaVM implements IAudioSection {
 
 	@Override
 	public int getAudioBufferSize() {
-		return resolver.getAudioBufferSize();
+		return importedApi.getAudioBufferSize();
 	}
 
 	@Override

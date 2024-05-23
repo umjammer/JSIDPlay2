@@ -8,8 +8,6 @@ import org.teavm.interop.Export;
 
 import client.teavm.common.ExportedApi;
 import client.teavm.common.IExportedApi;
-import client.teavm.wasm.audio.WebAssemblyAudioDriver;
-import client.teavm.wasm.config.WebAssemblyConfigResolver;
 import libsidplay.sidtune.SidTuneError;
 
 /**
@@ -20,7 +18,7 @@ public class JSIDPlay2TeaVM {
 	private static IExportedApi jsidplay2;
 
 	public static void main(String[] args) {
-		jsidplay2 = new ExportedApi(new WebAssemblyConfigResolver(), new WebAssemblyAudioDriver());
+		jsidplay2 = new ExportedApi(new ImportedApi(args));
 	}
 
 	//

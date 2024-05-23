@@ -1,12 +1,10 @@
-package client.teavm.js.config;
+package client.teavm.js;
 
-import client.teavm.common.config.IConfigResolverTeaVM;
+import org.teavm.jso.JSBody;
 
-/**
- * JavaScript version's configuration is handled by main arguments for ease of
- * use. Maybe should be implemented a better way.
- */
-public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
+import client.teavm.common.IImportedApi;
+
+public class ImportedApi implements IImportedApi {
 
 	private boolean palEmulation;
 	private int bufferSize;
@@ -19,7 +17,7 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 	private boolean defaultSidModel8580;
 	private boolean jiffyDosInstalled;
 
-	public JavaScriptConfigResolver(String[] args) {
+	public ImportedApi(String[] args) {
 		this.palEmulation = Boolean.TRUE.equals(Boolean.valueOf(args[0]));
 		this.bufferSize = Integer.valueOf(args[1]);
 		this.audioBufferSize = Integer.valueOf(args[2]);
@@ -81,5 +79,33 @@ public class JavaScriptConfigResolver implements IConfigResolverTeaVM {
 	public boolean isJiffyDosInstalled() {
 		return jiffyDosInstalled;
 	}
+
+	@Override
+	public void processSamples(float[] resultL, float[] resultR, int length) {
+		processSamplesJS(resultL, resultR, length);
+	}
+
+	@Override
+	public void processPixels(byte[] pixels, int length) {
+		processPixelsJS(pixels, length);
+	}
+
+	@Override
+	public void processSidWrite(int relTime, int addr, int value) {
+		processSidWriteJS(relTime, addr, value);
+	}
+
+	/* This methods maps to JavaScript methods in a web page. */
+	@JSBody(params = { "lf", "ri", "le" }, script = "postMessage({eventType:'SAMPLES',"
+			+ "eventData:{left:lf,right:ri,length:le}})")
+	public static native void processSamplesJS(float[] lf, float[] ri, int le);
+
+	@JSBody(params = { "pi", "le" }, script = "postMessage({eventType:'FRAME',"
+			+ "eventData:{image:new Uint8Array(pi,0,le).slice()}})")
+	public static native void processPixelsJS(byte[] pi, int le);
+
+	@JSBody(params = { "ti", "ad", "va" }, script = "postMessage({eventType: 'SID_WRITE',"
+			+ "eventData:{relTime:ti,addr:ad,value:va}})")
+	public static native void processSidWriteJS(int ti, int ad, int va);
 
 }

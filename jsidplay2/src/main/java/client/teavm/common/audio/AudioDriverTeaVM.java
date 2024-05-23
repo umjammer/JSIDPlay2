@@ -12,6 +12,7 @@ import java.nio.ShortBuffer;
 
 import javax.sound.sampled.LineUnavailableException;
 
+import client.teavm.common.IImportedApi;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
@@ -47,11 +48,11 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 
 	private byte[] array;
 	private int length;
-	private final IAudioDriverTeaVM audioDriver;
+	private final IImportedApi importedApi;
 	private ShortBuffer shortBuffer;
 
-	public AudioDriverTeaVM(IAudioDriverTeaVM audioDriver, int nthFrame) {
-		this.audioDriver = audioDriver;
+	public AudioDriverTeaVM(IImportedApi importedApi, int nthFrame) {
+		this.importedApi = importedApi;
 		this.nthFrame = nthFrame;
 	}
 
@@ -82,7 +83,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 			resultL.put(lookupTable[shortBuffer.get() + 32768]);
 			resultR.put(lookupTable[shortBuffer.get() + 32768]);
 		}
-		audioDriver.processSamples(resultL.array(), resultR.array(), resultL.position());
+		importedApi.processSamples(resultL.array(), resultR.array(), resultL.position());
 		((Buffer) resultL).clear();
 		((Buffer) resultR).clear();
 		((Buffer) shortBuffer).rewind();
@@ -95,7 +96,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 			if (array == null) {
 				array = vic.getPalEmulation().getPixels().array();
 			}
-			audioDriver.processPixels(array, length);
+			importedApi.processPixels(array, length);
 		}
 	}
 
@@ -105,7 +106,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		if (sidWiteTime == 0) {
 			sidWiteTime = time;
 		}
-		audioDriver.processSidWrite((int) (time - sidWiteTime), addr, data & 0xff);
+		importedApi.processSidWrite((int) (time - sidWiteTime), addr, data & 0xff);
 		sidWiteTime = time;
 	}
 

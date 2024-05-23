@@ -3,6 +3,7 @@ package client.teavm.common.config;
 import java.util.Collections;
 import java.util.List;
 
+import client.teavm.common.IImportedApi;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
@@ -16,10 +17,10 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	private final OverrideSection overrideSection = new OverrideSection();
 
-	private IConfigResolverTeaVM resolver;
+	private IImportedApi importedApi;
 
-	public EmulationSectionTeaVM(IConfigResolverTeaVM resolver) {
-		this.resolver = resolver;
+	public EmulationSectionTeaVM(IImportedApi importedApi) {
+		this.importedApi = importedApi;
 	}
 
 	@Override
@@ -604,7 +605,7 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public ChipModel getDefaultSidModel() {
-		if (resolver.getDefaultSidModel8580()) {
+		if (importedApi.getDefaultSidModel8580()) {
 			return ChipModel.MOS8580;
 		} else {
 			return ChipModel.MOS6581;
@@ -613,7 +614,7 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public Emulation getDefaultEmulation() {
-		if (resolver.getDefaultEmulationReSid()) {
+		if (importedApi.getDefaultEmulationReSid()) {
 			return Emulation.RESID;
 		} else {
 			return Emulation.RESIDFP;
@@ -632,6 +633,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	public int getDefaultClockSpeedAsInt() {
-		return resolver.getDefaultClockSpeedAsInt();
+		return importedApi.getDefaultClockSpeedAsInt();
 	}
 }

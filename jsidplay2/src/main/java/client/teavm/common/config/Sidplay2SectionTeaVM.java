@@ -2,14 +2,15 @@ package client.teavm.common.config;
 
 import java.io.File;
 
+import client.teavm.common.IImportedApi;
 import libsidplay.config.ISidPlay2Section;
 
 public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 
-	private IConfigResolverTeaVM resolver;
+	private IImportedApi importedApi;
 
-	public Sidplay2SectionTeaVM(IConfigResolverTeaVM resolver) {
-		this.resolver = resolver;
+	public Sidplay2SectionTeaVM(IImportedApi importedApi) {
+		this.importedApi = importedApi;
 	}
 
 	@Override
@@ -112,7 +113,7 @@ public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 
 	@Override
 	public boolean isPalEmulation() {
-		return resolver.isPalEmulation();
+		return importedApi.isPalEmulation();
 	}
 
 	@Override

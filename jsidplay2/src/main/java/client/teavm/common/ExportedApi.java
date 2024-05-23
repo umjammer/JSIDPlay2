@@ -21,9 +21,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 import builder.resid.ReSIDBuilder;
 import client.teavm.common.audio.AudioDriverTeaVM;
-import client.teavm.common.audio.IAudioDriverTeaVM;
 import client.teavm.common.config.ConfigurationTeaVM;
-import client.teavm.common.config.IConfigResolverTeaVM;
 import client.teavm.common.video.IPALEmulationTeaVM;
 import client.teavm.common.video.PalEmulationTeaVM;
 import client.teavm.compiletime.RomsTeaVM;
@@ -70,20 +68,17 @@ public class ExportedApi implements IExportedApi {
 	private String command;
 	private int bufferSize;
 
-	private IConfigResolverTeaVM configResolver;
+	private IImportedApi importedApi;
 
-	private IAudioDriverTeaVM audioDriverTeaVM;
-
-	public ExportedApi(IConfigResolverTeaVM configResolver, IAudioDriverTeaVM audioDriverTeaVM) {
-		this.configResolver = configResolver;
-		this.audioDriverTeaVM = audioDriverTeaVM;
+	public ExportedApi(IImportedApi importedApi) {
+		this.importedApi = importedApi;
 	}
 
 	@Override
 	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
 			byte[] cartContents, String cartContentsName)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		config = new ConfigurationTeaVM(configResolver);
+		config = new ConfigurationTeaVM(importedApi);
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
@@ -170,7 +165,7 @@ public class ExportedApi implements IExportedApi {
 					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
 
-		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(audioDriverTeaVM, nthFrame);
+		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, nthFrame);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 

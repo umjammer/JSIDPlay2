@@ -1,5 +1,6 @@
 package client.teavm.common.config;
 
+import client.teavm.common.IImportedApi;
 import libsidplay.components.c1541.FloppyType;
 import libsidplay.config.IC1541Section;
 
@@ -7,10 +8,10 @@ public final class C1541SectionTeaVM implements IC1541Section {
 
 	private boolean driveOn;
 
-	private IConfigResolverTeaVM resolver;
+	private IImportedApi importedApi;
 
-	public C1541SectionTeaVM(IConfigResolverTeaVM resolver) {
-		this.resolver = resolver;
+	public C1541SectionTeaVM(IImportedApi importedApi) {
+		this.importedApi = importedApi;
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public final class C1541SectionTeaVM implements IC1541Section {
 
 	@Override
 	public boolean isJiffyDosInstalled() {
-		return resolver.isJiffyDosInstalled();
+		return importedApi.isJiffyDosInstalled();
 	}
 
 	@Override

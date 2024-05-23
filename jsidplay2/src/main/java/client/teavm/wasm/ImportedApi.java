@@ -1,14 +1,12 @@
-package client.teavm.wasm.config;
+package client.teavm.wasm;
 
 import org.teavm.interop.Import;
 
-import client.teavm.common.config.IConfigResolverTeaVM;
+import client.teavm.common.IImportedApi;
 
-/**
- * Web assembly version's configuration is handled reading methods from
- * JavaScript modules corresponding their INI section names.
- */
-public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
+public class ImportedApi implements IImportedApi {
+
+	private static final String AUDIO_DRIVER = "audiodriver";
 
 	private static final String SIDPLAY2_SECTION = "sidplay2section";
 
@@ -18,54 +16,72 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 
 	private static final String C1541_SECTION = "c1541section";
 
+	public ImportedApi(String[] args) {
+	}
+
 	@Override
 	public boolean isPalEmulation() {
-		return WebAssemblyConfigResolver.isPalEmulationJS();
+		return isPalEmulationJS();
 	}
 
 	@Override
 	public int getSamplingRateAsInt() {
-		return WebAssemblyConfigResolver.getSamplingRateAsIntJS();
+		return getSamplingRateAsIntJS();
 	}
 
 	@Override
 	public boolean getSamplingMethodResample() {
-		return WebAssemblyConfigResolver.getSamplingMethodResampleJS();
+		return getSamplingMethodResampleJS();
 	}
 
 	@Override
 	public boolean getReverbBypass() {
-		return WebAssemblyConfigResolver.getReverbBypassJS();
+		return getReverbBypassJS();
 	}
 
 	@Override
 	public int getBufferSize() {
-		return WebAssemblyConfigResolver.getBufferSizeJS();
+		return getBufferSizeJS();
 	}
 
 	@Override
 	public int getAudioBufferSize() {
-		return WebAssemblyConfigResolver.getAudioBufferSizeJS();
+		return getAudioBufferSizeJS();
 	}
 
 	@Override
 	public boolean getDefaultSidModel8580() {
-		return WebAssemblyConfigResolver.getDefaultSidModel8580JS();
+		return getDefaultSidModel8580JS();
 	}
 
 	@Override
 	public int getDefaultClockSpeedAsInt() {
-		return WebAssemblyConfigResolver.getDefaultClockSpeedAsIntJS();
+		return getDefaultClockSpeedAsIntJS();
 	}
 
 	@Override
 	public boolean isJiffyDosInstalled() {
-		return WebAssemblyConfigResolver.isJiffyDosInstalledJS();
+		return isJiffyDosInstalledJS();
 	}
 
 	@Override
 	public boolean getDefaultEmulationReSid() {
-		return WebAssemblyConfigResolver.getDefaultEmulationReSidJS();
+		return getDefaultEmulationReSidJS();
+	}
+
+	@Override
+	public void processSamples(float[] resultL, float[] resultR, int length) {
+		processSamplesJS(resultL, resultR, length);
+	}
+
+	@Override
+	public void processPixels(byte[] pixels, int length) {
+		processPixelsJS(pixels, length);
+	}
+
+	@Override
+	public void processSidWrite(int relTime, int addr, int value) {
+		processSidWriteJS(relTime, addr, value);
 	}
 
 	/* This methods maps to a JavaScript methods in a web page. */
@@ -98,5 +114,14 @@ public class WebAssemblyConfigResolver implements IConfigResolverTeaVM {
 
 	@Import(module = C1541_SECTION, name = "isJiffyDosInstalled")
 	public static native boolean isJiffyDosInstalledJS();
+
+	@Import(module = AUDIO_DRIVER, name = "processSamples")
+	public static native void processSamplesJS(float[] resultL, float[] resultR, int length);
+
+	@Import(module = AUDIO_DRIVER, name = "processPixels")
+	public static native void processPixelsJS(byte[] pixels, int length);
+
+	@Import(module = AUDIO_DRIVER, name = "processSidWrite")
+	public static native void processSidWriteJS(int relTime, int addr, int value);
 
 }
