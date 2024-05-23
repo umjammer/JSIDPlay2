@@ -1,7 +1,7 @@
 package client.teavm.common.config;
 
 /**
- * Interface to get configuration data from JavaScript
+ * Imports from JavaScript
  */
 public interface IConfigResolverTeaVM {
 

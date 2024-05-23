@@ -1,7 +1,7 @@
 package client.teavm.common.audio;
 
 /**
- * I/O interface to JavaScript
+ * Imports from JavaScript
  */
 public interface IAudioDriverTeaVM {
 
