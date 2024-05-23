@@ -22,7 +22,6 @@ import javax.sound.sampled.LineUnavailableException;
 import builder.resid.ReSIDBuilder;
 import client.teavm.common.audio.AudioDriverTeaVM;
 import client.teavm.common.config.ConfigurationTeaVM;
-import client.teavm.common.video.IPALEmulationTeaVM;
 import client.teavm.common.video.PalEmulationTeaVM;
 import client.teavm.compiletime.RomsTeaVM;
 import libsidplay.C64;
@@ -118,13 +117,7 @@ public class ExportedApi implements IExportedApi {
 				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		if (nthFrame > 0) {
-			IPALEmulationTeaVM palEmulation = new PalEmulationTeaVM();
-			palEmulation.setNthFrame(nthFrame);
-			c64.getVIC().setPalEmulation(palEmulation);
-		} else {
-			c64.getVIC().setPalEmulation(PALEmulation.NONE);
-		}
+		c64.getVIC().setPalEmulation(nthFrame > 0 ? new PalEmulationTeaVM(nthFrame) : PALEmulation.NONE);
 		if (cartContents != null) {
 			try {
 				File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);

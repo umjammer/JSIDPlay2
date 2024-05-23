@@ -15,7 +15,7 @@ import libsidplay.config.IWhatsSidSection;
 
 /**
  * Default configuration to be included and used in the JavaScript and web
- * assembly version builds. Everything is fix, except where a resolver gets
+ * assembly version builds. Everything is fix, except where imported API gets
  * asked for configuration values from the browser's JavaScript environment.
  */
 public class ConfigurationTeaVM implements IConfig {

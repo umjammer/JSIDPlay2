@@ -15,13 +15,14 @@ import java.util.Base64.Decoder;
 import java.util.Map;
 
 import client.teavm.compiletime.PaletteTeaVM;
+import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.VIC;
 
 /**
  * JavaScript needs BGRA (MSB to LSB) big endian.
  */
-public class PalEmulationTeaVM implements IPALEmulationTeaVM {
+public class PalEmulationTeaVM implements IPALEmulation {
 
 	/**
 	 * RGBA pixel data (MSB to LSB). VIC colors without PAL emulation. Use this
@@ -57,7 +58,9 @@ public class PalEmulationTeaVM implements IPALEmulationTeaVM {
 
 	private boolean palEmulationEnable;
 
-	public PalEmulationTeaVM() {
+	public PalEmulationTeaVM(int nthFrame) {
+		this.nthFrame = nthFrame;
+
 		Decoder decoder = Base64.getDecoder();
 		Map<String, String> palette = PaletteTeaVM.getPalette(false);
 		combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt).toArray();
@@ -65,16 +68,6 @@ public class PalEmulationTeaVM implements IPALEmulationTeaVM {
 		linePaletteEven = decoder.decode(palette.get(LINE_PALETTE_EVEN));
 		linePaletteOdd = decoder.decode(palette.get(LINE_PALETTE_ODD));
 		n = 0;
-	}
-
-	@Override
-	public int getNthFrame() {
-		return nthFrame;
-	}
-
-	@Override
-	public void setNthFrame(int nthFrame) {
-		this.nthFrame = nthFrame;
 	}
 
 	/**
