@@ -475,11 +475,6 @@
 
               if (nextTime == 0) {
                 fix = app.screen ? 0.005 : 0;
-                audioContext.close();
-                audioContext = new AudioContext({
-                  latencyHint: "interactive",
-                  sampleRate: 48000,
-                });
                 nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
               } else if (nextTime < audioContext.currentTime) {
                 nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
