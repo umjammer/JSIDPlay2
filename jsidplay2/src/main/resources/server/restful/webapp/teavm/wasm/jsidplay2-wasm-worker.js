@@ -30,7 +30,6 @@ self.addEventListener(
         eventType: "CLOCKED",
       });
     } else if (eventType === "IDLE") {
-
       self.postMessage({
         eventType: "CLOCKED",
       });
