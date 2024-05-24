@@ -425,8 +425,8 @@
 							<debugInformationGenerated>false</debugInformationGenerated>
 							<sourceMapsGenerated>false</sourceMapsGenerated>
 							<sourceFilesCopied>false</sourceFilesCopied>
-							<jsModuleType>UMD</jsModuleType>
 							<targetType>JAVASCRIPT</targetType>
+							<jsModuleType>UMD</jsModuleType>
 							<optimizationLevel>FULL</optimizationLevel>
 							<minifying>true</minifying>
 						</configuration>
