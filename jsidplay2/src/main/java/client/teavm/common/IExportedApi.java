@@ -1,6 +1,12 @@
 package client.teavm.common;
 
+import java.io.IOException;
+
+import javax.sound.sampled.LineUnavailableException;
+
 import org.teavm.jso.JSObject;
+
+import libsidplay.sidtune.SidTuneError;
 
 /**
  * Exports to JavaScript.
@@ -8,7 +14,8 @@ import org.teavm.jso.JSObject;
 public interface IExportedApi extends JSObject {
 
 	void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName);
+			byte[] cartContents, String cartContentsName)
+			throws IOException, SidTuneError, LineUnavailableException, InterruptedException;
 
 	void clock() throws InterruptedException;
 
@@ -23,7 +30,7 @@ public interface IExportedApi extends JSObject {
 	void pressPlayOnTape();
 
 	void typeInCommand(String command);
-	
+
 	void typeKey(String keyCode);
 
 	void delaySidBlaster(int cycles);

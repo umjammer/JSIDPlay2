@@ -75,114 +75,110 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName) {
-		try {
-			config = new ConfigurationTeaVM(importedApi);
-			final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
-			final IAudioSection audioSection = config.getAudioSection();
-			final IEmulationSection emulationSection = config.getEmulationSection();
-			final IC1541Section c1541Section = config.getC1541Section();
+			byte[] cartContents, String cartContentsName)
+			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+		config = new ConfigurationTeaVM(importedApi);
+		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
+		final IAudioSection audioSection = config.getAudioSection();
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		final IC1541Section c1541Section = config.getC1541Section();
 
-			doLog(sidplay2Section, audioSection, emulationSection, c1541Section);
+		doLog(sidplay2Section, audioSection, emulationSection, c1541Section);
 
-			if (sidContents != null) {
-				String url = jsStringToJavaString(sidContentsName);
-				LOG.finest("Load Tune, length=" + sidContents.length);
-				LOG.finest("Tune name: " + url);
-				LOG.finest("Song: " + song);
-				tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
-				tune.getInfo().setSelectedSong(song == 0 ? null : song);
-			} else {
-				LOG.finest("RESET");
-				tune = RESET;
-			}
-			LOG.finest("nthFrame: " + nthFrame);
-			LOG.finest("addSidListener: " + addSidListener);
-			String cartContentsUrl = jsStringToJavaString(cartContentsName);
-			if (cartContentsUrl != null) {
-				LOG.finest("Cart, length=: " + cartContents.length);
-				LOG.finest("Cart name: : " + cartContentsUrl);
-			}
-			Map<String, String> allRoms = RomsTeaVM.getJavaScriptRoms(false);
-			Decoder decoder = Base64.getDecoder();
-			byte[] charRom = decoder.decode(allRoms.get(RomsTeaVM.CHAR_ROM));
-			byte[] basicRom = decoder.decode(allRoms.get(RomsTeaVM.BASIC_ROM));
-			byte[] kernalRom = decoder.decode(allRoms.get(RomsTeaVM.KERNAL_ROM));
-			byte[] c1541Rom = decoder.decode(allRoms.get(RomsTeaVM.C1541_ROM));
-			byte[] psidDriverBin = decoder.decode(allRoms.get(RomsTeaVM.PSID_DRIVER_ROM));
-			byte[] jiffyDosC64Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C64_ROM));
-			byte[] jiffyDosC1541Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C1541_ROM));
-
-			hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom,
-					kernalRom, jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
-			hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
-			c64 = hardwareEnsemble.getC64();
-			c64.getVIC().setPalEmulation(nthFrame > 0 ? new PalEmulationTeaVM(nthFrame) : PALEmulation.NONE);
-			if (cartContents != null) {
-				try {
-					File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
-					c64.setCartridge(CartridgeType.CRT, cartFile);
-					LOG.fine("Cartridge: image attached: " + cartContentsUrl);
-				} catch (IOException e) {
-					System.err.println(e.getMessage());
-					System.err.println(String.format("Cannot insert media file '%s'.", cartContentsUrl));
-				}
-			}
-			hardwareEnsemble.reset();
-			emulationSection.getOverrideSection().reset();
-			sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
-			c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
-				if (tune != RESET) {
-					// for tunes: Install player into RAM
-					Integer driverAddress = tune.placeProgramInMemoryTeaVM(c64.getRAM(), psidDriverBin);
-					if (driverAddress != null) {
-						// Set play address to feedback call frames counter.
-						c64.setPlayAddr(tune.getInfo().getPlayAddr());
-						// Start SID player driver
-						c64.getCPU().forcedJump(driverAddress);
-					} else {
-						// No player: Start basic program or assembler code
-						final int loadAddr = tune.getInfo().getLoadAddr();
-						command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
-					}
-				}
-				if (command != null) {
-					if (command.startsWith(LOAD)) {
-						// Load from tape needs someone to press play
-						hardwareEnsemble.getDatasette().control(Control.START);
-					}
-					// Enter basic command
-					typeInCommand(command);
-				}
-				c64.getEventScheduler().schedule(Event.of("PSID64 Detection", event2 -> autodetectPSID64()),
-						(long) (c64.getClock().getCpuFrequency()));
-			}), SidTune.getInitDelay(tune));
-
-			AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, nthFrame);
-			audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
-			sidBuilder.setAudioDriver(audioDriver);
-
-			c64.insertSIDChips((sidNum, sidEmu) -> {
-				if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
-					return sidBuilder.lock(sidEmu, sidNum, tune);
-				} else if (sidEmu != NONE) {
-					sidBuilder.unlock(sidEmu);
-				}
-				return NONE;
-			}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
-			if (nthFrame > 0) {
-				c64.configureVICs(vic -> vic.setVideoDriver(audioDriver));
-			}
-			if (addSidListener) {
-				c64.setSIDListener(audioDriver);
-			}
-			sidBuilder.start();
-			bufferSize = audioSection.getBufferSize();
-			context = c64.getEventScheduler();
-		} catch (SidTuneError | IOException | LineUnavailableException | InterruptedException e) {
-			System.err.println(e.getMessage());
-			System.err.println(String.format("Can not open player"));
+		if (sidContents != null) {
+			String url = jsStringToJavaString(sidContentsName);
+			LOG.finest("Load Tune, length=" + sidContents.length);
+			LOG.finest("Tune name: " + url);
+			LOG.finest("Song: " + song);
+			tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
+			tune.getInfo().setSelectedSong(song == 0 ? null : song);
+		} else {
+			LOG.finest("RESET");
+			tune = RESET;
 		}
+		LOG.finest("nthFrame: " + nthFrame);
+		LOG.finest("addSidListener: " + addSidListener);
+		String cartContentsUrl = jsStringToJavaString(cartContentsName);
+		if (cartContentsUrl != null) {
+			LOG.finest("Cart, length=: " + cartContents.length);
+			LOG.finest("Cart name: : " + cartContentsUrl);
+		}
+		Map<String, String> allRoms = RomsTeaVM.getJavaScriptRoms(false);
+		Decoder decoder = Base64.getDecoder();
+		byte[] charRom = decoder.decode(allRoms.get(RomsTeaVM.CHAR_ROM));
+		byte[] basicRom = decoder.decode(allRoms.get(RomsTeaVM.BASIC_ROM));
+		byte[] kernalRom = decoder.decode(allRoms.get(RomsTeaVM.KERNAL_ROM));
+		byte[] c1541Rom = decoder.decode(allRoms.get(RomsTeaVM.C1541_ROM));
+		byte[] psidDriverBin = decoder.decode(allRoms.get(RomsTeaVM.PSID_DRIVER_ROM));
+		byte[] jiffyDosC64Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C64_ROM));
+		byte[] jiffyDosC1541Rom = decoder.decode(allRoms.get(RomsTeaVM.JIFFYDOS_C1541_ROM));
+
+		hardwareEnsemble = new HardwareEnsemble(config, context -> new MOS6510(context), charRom, basicRom, kernalRom,
+				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
+		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
+		c64 = hardwareEnsemble.getC64();
+		c64.getVIC().setPalEmulation(nthFrame > 0 ? new PalEmulationTeaVM(nthFrame) : PALEmulation.NONE);
+		if (cartContents != null) {
+			try {
+				File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
+				c64.setCartridge(CartridgeType.CRT, cartFile);
+				LOG.fine("Cartridge: image attached: " + cartContentsUrl);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+				System.err.println(String.format("Cannot insert media file '%s'.", cartContentsUrl));
+			}
+		}
+		hardwareEnsemble.reset();
+		emulationSection.getOverrideSection().reset();
+		sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
+		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
+			if (tune != RESET) {
+				// for tunes: Install player into RAM
+				Integer driverAddress = tune.placeProgramInMemoryTeaVM(c64.getRAM(), psidDriverBin);
+				if (driverAddress != null) {
+					// Set play address to feedback call frames counter.
+					c64.setPlayAddr(tune.getInfo().getPlayAddr());
+					// Start SID player driver
+					c64.getCPU().forcedJump(driverAddress);
+				} else {
+					// No player: Start basic program or assembler code
+					final int loadAddr = tune.getInfo().getLoadAddr();
+					command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
+				}
+			}
+			if (command != null) {
+				if (command.startsWith(LOAD)) {
+					// Load from tape needs someone to press play
+					hardwareEnsemble.getDatasette().control(Control.START);
+				}
+				// Enter basic command
+				typeInCommand(command);
+			}
+			c64.getEventScheduler().schedule(Event.of("PSID64 Detection", event2 -> autodetectPSID64()),
+					(long) (c64.getClock().getCpuFrequency()));
+		}), SidTune.getInitDelay(tune));
+
+		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, nthFrame);
+		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
+		sidBuilder.setAudioDriver(audioDriver);
+
+		c64.insertSIDChips((sidNum, sidEmu) -> {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				return sidBuilder.lock(sidEmu, sidNum, tune);
+			} else if (sidEmu != NONE) {
+				sidBuilder.unlock(sidEmu);
+			}
+			return NONE;
+		}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
+		if (nthFrame > 0) {
+			c64.configureVICs(vic -> vic.setVideoDriver(audioDriver));
+		}
+		if (addSidListener) {
+			c64.setSIDListener(audioDriver);
+		}
+		sidBuilder.start();
+		bufferSize = audioSection.getBufferSize();
+		context = c64.getEventScheduler();
 	}
 
 	@Override
