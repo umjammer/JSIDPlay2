@@ -428,6 +428,7 @@
 							<jsModuleType>UMD</jsModuleType>
 							<targetType>JAVASCRIPT</targetType>
 							<optimizationLevel>FULL</optimizationLevel>
+							<minifying>true</minifying>
 						</configuration>
 					</execution>
 					<execution>
