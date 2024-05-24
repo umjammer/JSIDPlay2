@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.HttpHeaders;
@@ -28,6 +29,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import libsidutils.IOUtils;
 import server.restful.common.ContentTypeAndFileExtensions;
 import server.restful.common.JSIDPlay2Servlet;
+import server.restful.common.TeaVMFormat;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
 
@@ -45,9 +47,20 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -2)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -3)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
+		}
+
+		private TeaVMFormat teaVMFormat = TeaVMFormat.JS;
+
+		public TeaVMFormat getTeaVMFormat() {
+			return teaVMFormat;
+		}
+
+		@Parameter(names = "--teavmFormat", arity = 1, descriptionKey = "TEAVM_FORMAT", order = -2)
+		public void setTeaVMFormat(TeaVMFormat teaVMFormat) {
+			this.teaVMFormat = teaVMFormat;
 		}
 
 	}
@@ -82,6 +95,8 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("convertMessagesDe", CONVERT_MESSAGES_DE);
 				replacements.put("assembly64Url", configuration.getOnlineSection().getAssembly64Url());
 				replacements.put("year", String.valueOf(LocalDate.now().getYear()));
+				replacements.put("teaVMFormat", servletParameters.getTeaVMFormat().name().toLowerCase(Locale.US));
+				replacements.put("teaVMFormatName", servletParameters.getTeaVMFormat().getTeaVMFormatName());
 				if (!ContentTypeAndFileExtensions.MIME_TYPE_JAVASCRIPT.isCompatible(mimeType.getMimeType())) {
 					replacements.put("min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
 					replacements.put("prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");

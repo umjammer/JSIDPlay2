@@ -18,11 +18,11 @@ This Demo requires JSIDPlay2 in server mode and streams content from my server t
 
 ...whilst this runs directly in the browser using JavaScript
 
-* link:https://haendel.ddns.net:8443/static/teavm/js/c64jukebox.vue[C64jukebox - using JavaScript^]
+* link:https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue[C64jukebox - using JavaScript^]
 
 ...this runs directly in the browser as well, but using web assembly (WASM) format, a standard by W3C
 
-* link:https://haendel.ddns.net:8443/static/teavm/wasm/c64jukebox.vue[C64jukebox - using WASM^] can play tunes directly in the browser (web assembly, experimental)
+* link:https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue?teavmFormat=WASM[C64jukebox - using WASM^] can play tunes directly in the browser (web assembly, experimental)
 
 == Introduction
 

@@ -2,7 +2,7 @@
 <html>
   <head>
     <style lang="scss" scoped>
-      @import "/static/teavm/js/c64jukebox.scss";
+      @import "/static/teavm/c64jukebox.scss";
     </style>
 
     <!-- favicon.ico -->
@@ -33,13 +33,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title>C64 Jukebox (JavaScript Version)</title>
+    <title>C64 Jukebox (${teaVMFormatName} Version)</title>
   </head>
   <body>
     <div id="app">
       <form enctype="multipart/form-data">
         <div class="locale-changer">
-          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (JavaScript Version)</h1>
+          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName} Version)</h1>
           <select
             id="localeselector"
             class="form-select form-select-sm"
@@ -368,9 +368,9 @@
               </div>
             </div>
           </div>
-          <p>JavaScript Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
+          <p>${teaVMFormatName} Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
           <ol>
-            <li>Run JSIDPlay2 in a browser in JavaScript (THIS IS NOT JAVA)</li>
+            <li>Run JSIDPlay2 in a browser in ${teaVMFormatName} (THIS IS NOT JAVA)</li>
             <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
             <li>Only 2MB in size, loads very quick</li>
             <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos on PC</li>
@@ -442,7 +442,7 @@
           worker.terminate();
           worker = undefined;
         }
-        worker = new Worker("jsidplay2-js-worker.js");
+        worker = new Worker("${teaVMFormat}/jsidplay2-${teaVMFormat}-worker.js");
 
         return new Promise((resolve, reject) => {
           worker.postMessage({

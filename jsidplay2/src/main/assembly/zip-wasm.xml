@@ -3,26 +3,28 @@
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
-	<id>bin</id>
+	<id>wasm-zip</id>
 	<formats>
 		<format>zip</format>
 	</formats>
 	<fileSets>
 		<fileSet>
 			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/wasm/</directory>
-			<outputDirectory></outputDirectory>
+			<outputDirectory>wasm</outputDirectory>
 			<filtered>false</filtered>
-			<excludes>
-				<exclude>c64jukebox.vue</exclude>
-			</excludes>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/wasm/</directory>
+			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/</directory>
 			<outputDirectory></outputDirectory>
 			<filtered>true</filtered>
 			<includes>
 				<include>c64jukebox.vue</include>
+				<include>c64jukebox.scss</include>
 			</includes>
+			<excludes>
+				<exclude>wasm</exclude>
+				<exclude>js</exclude>
+			</excludes>
 		</fileSet>
 	</fileSets>
 </assembly>
