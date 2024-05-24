@@ -6,7 +6,7 @@ import client.teavm.common.ExportedApi;
 import client.teavm.common.IExportedApi;
 
 /**
- * TeaVM version of JSIDPlay2 to generate JavaScript code.
+ * Main class of the TeaVM version of JSIDPlay2 to generate JavaScript code.
  */
 public class JSIDPlay2TeaVM {
 

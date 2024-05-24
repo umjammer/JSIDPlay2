@@ -11,7 +11,7 @@ import client.teavm.common.IExportedApi;
 import libsidplay.sidtune.SidTuneError;
 
 /**
- * TeaVM version of JSIDPlay2 to generate web assembly code.
+ * Main class of the TeaVM version of JSIDPlay2 to generate web assembly code.
  */
 public class JSIDPlay2TeaVM {
 

@@ -194,14 +194,14 @@
               <input type="button" id="toggle" value="Wake Lock is disabled" />
               <button
                 type="button"
-                v-on:click="setCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
+                v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
                 :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !screen"
               >
                 {{ $t("loadDisk") }}
               </button>
               <button
                 type="button"
-                v-on:click="setCommand('LOAD\rRUN\r')"
+                v-on:click="typeInCommand('LOAD\rRUN\r')"
                 :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
               >
                 {{ $t("loadTape") }}
@@ -760,26 +760,6 @@
             app.$refs.formDiskFileSm.value = "";
             app.msg = app.$t("diskEjected");
           },
-          setCommand(command) {
-            if (worker) {
-              worker.postMessage({
-                eventType: "SET_COMMAND",
-                eventData: {
-                  command: command,
-                },
-              });
-            }
-          },
-          typeKey(key) {
-            if (worker) {
-              worker.postMessage({
-                eventType: "TYPE_KEY",
-                eventData: {
-                  key: key,
-                },
-              });
-            }
-          },
           insertTape() {
             var reader = new FileReader();
             reader.onload = function () {
@@ -812,6 +792,26 @@
               worker.postMessage({
                 eventType: "PRESS_PLAY_ON_TAPE",
                 eventData: {},
+              });
+            }
+          },
+          typeInCommand(command) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "SET_COMMAND",
+                eventData: {
+                  command: command,
+                },
+              });
+            }
+          },
+          typeKey(key) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "TYPE_KEY",
+                eventData: {
+                  key: key,
+                },
               });
             }
           },
