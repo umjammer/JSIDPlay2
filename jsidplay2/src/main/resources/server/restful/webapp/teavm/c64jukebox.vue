@@ -375,7 +375,7 @@
             <li>Only 2MB in size, loads very quick</li>
             <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos on PC</li>
             <li>Runs near to native speed, performance only depends on your max. single core speed</li>
-            <li>Plays at least mono SIDs on a fast mobile phone</li>
+            <li>Plays at least mono SIDs on a mobile phone</li>
             <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
             <li>Full emulation quality, no compromises, C64, Floppy and more</li>
             <li>
