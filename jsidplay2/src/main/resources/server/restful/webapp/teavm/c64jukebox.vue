@@ -86,7 +86,7 @@
                       </div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" @click="stopTune()">{{ $t("stop") }}</a>
+                      <a class="dropdown-item" href="#" @click="stopTune(); screen=true;">{{ $t("stop") }}</a>
                     </li>
                   </ul>
                 </li>
@@ -191,7 +191,6 @@
         <div class="container">
           <div class="row">
             <div class="col">
-              <input type="button" id="toggle" value="Wake Lock is disabled" />
               <button
                 type="button"
                 v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
@@ -209,6 +208,7 @@
               <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing || !screen">
                 {{ $t("space") }}
               </button>
+              <input type="button" id="toggle" value="Wake Lock is disabled" />
             </div>
           </div>
 
@@ -217,9 +217,9 @@
               <div>
                 <p>{{ msg }}</p>
               </div>
-              <span>Frames in der Queue: {{ framesCounter }}</span>
               <div v-show="screen" style="width: 100%; margin: 0px auto">
-                <canvas id="c64Screen" style="border: 2px solid black" width="384" height="285" />
+                <span v-show="playing">Frames in der Queue: {{ framesCounter }}</span>
+                <canvas id="c64Screen" style="border: 2px solid black; background-color: black;" width="384" height="285" />
               </div>
             </div>
             <div class="col">
