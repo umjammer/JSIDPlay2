@@ -86,7 +86,15 @@
                       </div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" @click="stopTune(); screen=true;">{{ $t("stop") }}</a>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          screen = true;
+                        "
+                        >{{ $t("stop") }}</a
+                      >
                     </li>
                   </ul>
                 </li>
@@ -219,7 +227,12 @@
               </div>
               <div v-show="screen" style="width: 100%; margin: 0px auto">
                 <span v-show="playing">Frames in der Queue: {{ framesCounter }}</span>
-                <canvas id="c64Screen" style="border: 2px solid black; background-color: black;" width="384" height="285" />
+                <canvas
+                  id="c64Screen"
+                  style="border: 2px solid black; background-color: black"
+                  width="384"
+                  height="285"
+                />
               </div>
             </div>
             <div class="col">
