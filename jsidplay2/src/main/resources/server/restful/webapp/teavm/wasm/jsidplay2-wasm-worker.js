@@ -41,7 +41,8 @@ self.addEventListener(
         eventData.nthFrame,
         eventData.sidWrites,
         eventData.cartContents ? allocateTeaVMbyteArray(eventData.cartContents) : undefined,
-        eventData.cartName ? allocateTeaVMstring(eventData.cartName) : undefined
+        eventData.cartName ? allocateTeaVMstring(eventData.cartName) : undefined,
+        eventData.command ? allocateTeaVMstring(eventData.command) : undefined
       );
 
       self.postMessage({

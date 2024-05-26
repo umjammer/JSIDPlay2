@@ -75,7 +75,7 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName)
+			byte[] cartContents, String cartContentsName, String commandFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		config = new ConfigurationTeaVM(importedApi);
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
@@ -131,6 +131,9 @@ public class ExportedApi implements IExportedApi {
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
 		sidBuilder = new ReSIDBuilder(c64.getEventScheduler(), config, c64.getClock(), c64.getCartridge());
+		if (commandFromJS != null) {
+			this.command = jsStringToJavaString(commandFromJS);
+		}
 		c64.getEventScheduler().schedule(Event.of("Auto-start", event -> {
 			if (tune != RESET) {
 				// for tunes: Install player into RAM

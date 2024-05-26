@@ -14,7 +14,7 @@ import libsidplay.sidtune.SidTuneError;
 public interface IExportedApi extends JSObject {
 
 	void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName)
+			byte[] cartContents, String cartContentsName, String command)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException;
 
 	void clock() throws InterruptedException;

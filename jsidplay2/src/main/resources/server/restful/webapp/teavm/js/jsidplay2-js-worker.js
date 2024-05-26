@@ -24,7 +24,8 @@ self.addEventListener(
         eventData.nthFrame,
         eventData.sidWrites,
         eventData.cartContents ? eventData.cartContents : null,
-        eventData.cartName ? eventData.cartName : null
+        eventData.cartName ? eventData.cartName : null,
+        eventData.command ? eventData.command : null
       );
 
       self.postMessage({

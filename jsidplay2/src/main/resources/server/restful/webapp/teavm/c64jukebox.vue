@@ -33,13 +33,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title>C64 Jukebox (${teaVMFormatName} Version)</title>
+    <title>C64 Jukebox (${teaVMFormatName} beta Version)</title>
   </head>
   <body>
     <div id="app">
       <form enctype="multipart/form-data">
         <div class="locale-changer">
-          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName} Version)</h1>
+          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName} beta Version)</h1>
           <select
             id="localeselector"
             class="form-select form-select-sm"
@@ -235,6 +235,208 @@
                 />
               </div>
             </div>
+            <div class="col" style="margin-left: 100px">
+              <h2>Example Music</h2>
+              <ol>
+                <li>
+                  Mutetus - Only 299.99
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'Only 299.99',
+                        '/jsidplay2service/JSIDPlay2REST/download/Only_299_99.sid?itemId=3470375608&categoryId=18'
+                      )
+                    "
+                  >
+                    <i class="bi bi-download"></i>
+                  </button>
+                </li>
+                <li>
+                  LMan - Hi fi Sky
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'Hi Fi Sky',
+                        '/jsidplay2service/JSIDPlay2REST/download/Hi_Fi_Sky.sid?itemId=4064310083&categoryId=18'
+                      )
+                    "
+                  >
+                    <i class="bi bi-download"></i>
+                  </button>
+                </li>
+                <li>
+                  DJ Space - Monty is a Maniac
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'Monty is a Maniac',
+                        '/jsidplay2service/JSIDPlay2REST/download/djspace_monty_is_a_maniac.sid?itemId=239515&categoryId=4'
+                      )
+                    "
+                  >
+                    <i class="bi bi-download"></i>
+                  </button>
+                </li>
+              </ol>
+
+              <h2>Example Demos</h2>
+              <ol>
+                <li>
+                  Fairlight - 1337
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        '1337-a',
+                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        '1337-b',
+                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-b.d64?itemId=242855&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #2
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        '1337-c',
+                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-c.d64?itemId=242855&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #3
+                  </button>
+                </li>
+                <li>
+                  Performers - Next Level
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'image1',
+                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'image2',
+                        '/jsidplay2service/JSIDPlay2REST/download/image2.d64?itemId=232976&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #2
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'image3',
+                        '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=232976&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #3
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'image4',
+                        '/jsidplay2service/JSIDPlay2REST/download/image4.d64?itemId=232976&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #4
+                  </button>
+                </li>
+                <li>
+                  Bonzai,Pretzel Logic - Mojo
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'Side1',
+                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'Side2',
+                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side2.D64?itemId=232966&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #2
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'Side3',
+                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side3.D64?itemId=232966&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #3
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'Side4',
+                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side4.D64?itemId=232966&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i> #4
+                  </button>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <p>${teaVMFormatName} beta Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
+              <ol>
+                <li>Run JSIDPlay2 in a browser in ${teaVMFormatName} (THIS IS NOT JAVA)</li>
+                <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
+                <li>Only 2MB in size, loads very quick</li>
+                <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos on PC</li>
+                <li>Runs near to native speed, performance only depends on your max. single core speed</li>
+                <li>Plays at least mono SIDs on a mobile phone</li>
+                <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
+                <li>Full emulation quality, no compromises, C64, Floppy and more</li>
+                <li>
+                  Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
+                </li>
+                <li>For the first time, embed music or demos in YOUR web-site</li>
+              </ol>
+            </div>
             <div class="col">
               <div class="form-check" v-show="!playing">
                 <div class="settings-box">
@@ -381,21 +583,6 @@
               </div>
             </div>
           </div>
-          <p>${teaVMFormatName} Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
-          <ol>
-            <li>Run JSIDPlay2 in a browser in ${teaVMFormatName} (THIS IS NOT JAVA)</li>
-            <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
-            <li>Only 2MB in size, loads very quick</li>
-            <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos on PC</li>
-            <li>Runs near to native speed, performance only depends on your max. single core speed</li>
-            <li>Plays at least mono SIDs on a mobile phone</li>
-            <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
-            <li>Full emulation quality, no compromises, C64, Floppy and more</li>
-            <li>
-              Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
-            </li>
-            <li>For the first time, embed music or demos in YOUR web-site</li>
-          </ol>
         </div>
       </form>
     </div>
@@ -445,7 +632,7 @@
       var imageQueue = new Queue();
       var start, time;
 
-      function wasmWorker(contents, tuneName, cartContents, cartName) {
+      function wasmWorker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
           latencyHint: "interactive",
           sampleRate: 48000,
@@ -526,6 +713,7 @@
                   sidWrites: app.sidWrites,
                   cartContents: cartContents,
                   cartName: cartName,
+                  command: command,
                 },
               });
 
@@ -672,17 +860,23 @@
           updateLanguage() {
             localStorage.locale = this.$i18n.locale;
           },
-          reset() {
+          reset(command) {
             app.screen = true;
             app.stopTune();
             if (app.$refs.formCartFileSm.files[0]) {
               var reader = new FileReader();
               reader.onload = function () {
-                wasmWorker(undefined, undefined, new Uint8Array(this.result), app.$refs.formCartFileSm.files[0].name);
+                wasmWorker(
+                  undefined,
+                  undefined,
+                  new Uint8Array(this.result),
+                  app.$refs.formCartFileSm.files[0].name,
+                  command
+                );
               };
               reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
             } else {
-              wasmWorker();
+              wasmWorker(undefined, undefined, undefined, undefined, command);
             }
           },
           startTune() {
@@ -695,6 +889,21 @@
               };
               reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
             }
+          },
+          downloadAndStartTune(name, url) {
+            let headers = new Headers();
+            headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
+            fetch(url, { method: "GET", headers: headers })
+              .then((response) => response.blob())
+              .then((blob) => {
+                let file = new File([blob], name, {
+                  type: "application/octet-stream",
+                });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                app.$refs.formFileSm.files = dataTransfer.files;
+                app.startTune();
+              });
           },
           pauseTune() {
             if (app.playing) {
@@ -758,6 +967,25 @@
             if (app.$refs.formDiskFileSm && app.$refs.formDiskFileSm.files[0]) {
               reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
             }
+          },
+          downloadAndInsertDisk(name, url) {
+            let headers = new Headers();
+            headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
+            fetch(url, { method: "GET", headers: headers })
+              .then((response) => response.blob())
+              .then((blob) => {
+                let file = new File([blob], name, {
+                  type: "application/octet-stream",
+                });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                app.$refs.formDiskFileSm.files = dataTransfer.files;
+                if (app.playing && app.screen) {
+                  app.insertDisk();
+                } else {
+                  app.reset('LOAD"*",8,1\rRUN\r');
+                }
+              });
           },
           ejectDisk() {
             if (worker) {

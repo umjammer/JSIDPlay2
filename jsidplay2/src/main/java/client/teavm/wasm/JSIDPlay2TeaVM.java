@@ -27,9 +27,9 @@ public class JSIDPlay2TeaVM {
 
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName)
+			byte[] cartContents, String cartContentsName, String command)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName);
+		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName, command);
 	}
 
 	@Export(name = "setCommand")
