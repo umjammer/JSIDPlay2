@@ -464,7 +464,7 @@
               <div class="form-check">
                 <div class="settings-box">
                   <span class="setting">
-                    <h2 style="text-align: end; margin-right: 1rem;">{{ $t("settings") }}</h2>
+                    <h2 style="text-align: end; margin-right: 1rem">{{ $t("settings") }}</h2>
                     <label for="startSong"
                       >{{ $t("startSong") }}
                       <input class="right" type="number" id="startSong" class="form-control" v-model.number="startSong"
