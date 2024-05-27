@@ -35,14 +35,14 @@ self.addEventListener(
       });
     } else if (eventType === "OPEN") {
       instance.exports.open(
-        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
-        eventData.tuneName ? allocateTeaVMstring(eventData.tuneName) : undefined,
+        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : null,
+        eventData.tuneName ? allocateTeaVMstring(eventData.tuneName) : null,
         eventData.startSong,
         eventData.nthFrame,
         eventData.sidWrites,
-        eventData.cartContents ? allocateTeaVMbyteArray(eventData.cartContents) : undefined,
-        eventData.cartName ? allocateTeaVMstring(eventData.cartName) : undefined,
-        eventData.command ? allocateTeaVMstring(eventData.command) : undefined
+        eventData.cartContents ? allocateTeaVMbyteArray(eventData.cartContents) : null,
+        eventData.cartName ? allocateTeaVMstring(eventData.cartName) : null,
+        eventData.command ? allocateTeaVMstring(eventData.command) : null
       );
 
       self.postMessage({
@@ -50,8 +50,8 @@ self.addEventListener(
       });
     } else if (eventType === "INSERT_DISK") {
       instance.exports.insertDisk(
-        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
-        eventData.diskName ? allocateTeaVMstring(eventData.diskName) : undefined
+        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : null,
+        eventData.diskName ? allocateTeaVMstring(eventData.diskName) : null
       );
 
       self.postMessage({
@@ -65,8 +65,8 @@ self.addEventListener(
       });
     } else if (eventType === "INSERT_TAPE") {
       instance.exports.insertTape(
-        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : undefined,
-        eventData.tapeName ? allocateTeaVMstring(eventData.tapeName) : undefined
+        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : null,
+        eventData.tapeName ? allocateTeaVMstring(eventData.tapeName) : null
       );
 
       self.postMessage({
@@ -85,13 +85,13 @@ self.addEventListener(
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
     } else if (eventType === "SET_COMMAND") {
-      instance.exports.setCommand(eventData.command ? allocateTeaVMstring(eventData.command) : undefined);
+      instance.exports.setCommand(eventData.command ? allocateTeaVMstring(eventData.command) : null);
 
       self.postMessage({
         eventType: "COMMAND_SET",
       });
     } else if (eventType === "TYPE_KEY") {
-      instance.exports.typeKey(eventData.key ? allocateTeaVMstring(eventData.key) : undefined);
+      instance.exports.typeKey(eventData.key ? allocateTeaVMstring(eventData.key) : null);
 
       self.postMessage({
         eventType: "KEY_TYPED",

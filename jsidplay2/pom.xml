@@ -442,9 +442,9 @@
 							<targetDirectory>
 								${project.build.directory}/classes/server/restful/webapp/teavm/wasm</targetDirectory>
 							<targetFileName>${project.artifactId}.wasm</targetFileName>
-							<debugInformationGenerated>false</debugInformationGenerated>
-							<sourceMapsGenerated>false</sourceMapsGenerated>
-							<sourceFilesCopied>false</sourceFilesCopied>
+							<debugInformationGenerated>true</debugInformationGenerated>
+							<sourceMapsGenerated>true</sourceMapsGenerated>
+							<sourceFilesCopied>true</sourceFilesCopied>
 							<targetType>WEBASSEMBLY</targetType>
 							<optimizationLevel>SIMPLE</optimizationLevel>
 						</configuration>
