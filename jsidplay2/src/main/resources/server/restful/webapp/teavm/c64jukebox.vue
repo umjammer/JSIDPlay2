@@ -662,6 +662,53 @@
                     <i class="bi bi-floppy"></i>1
                   </button>
                 </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'e2ira_101_A.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_A.d64?itemId=218343&categoryId=1'
+                      );
+                    "
+                  >
+                    Arise - E2IRA
+                  </a>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'e2ira_101_A.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_A.d64?itemId=218343&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'e2ira_101_B.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_B.d64?itemId=218343&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>2
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'e2ira_101_C.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_C.d64?itemId=218343&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>3
+                  </button>
+                </li>
               </ol>
             </div>
           </div>
