@@ -329,7 +329,6 @@
                     Slaxx, Nordischsound - Running Up That Hill
                   </a>
                 </li>
-
               </ol>
 
               <h2>{{ $t("exampleDemos") }}</h2>
@@ -342,10 +341,10 @@
                       downloadAndInsertDisk(
                         '1337-a',
                         '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
-                      )
+                      );
                     "
                   >
-                  Fairlight - 1337
+                    Fairlight - 1337
                   </a>
                   <button
                     type="button"
@@ -389,10 +388,10 @@
                       downloadAndInsertDisk(
                         'NextLevelImage1.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
-                      )
+                      );
                     "
                   >
-                  Performers - Next Level
+                    Performers - Next Level
                   </a>
                   <button
                     type="button"
@@ -447,10 +446,10 @@
                       downloadAndInsertDisk(
                         'Mojo_Side1.D64',
                         '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
-                      )
+                      );
                     "
                   >
-                  Bonzai, Pretzel Logic - Mojo
+                    Bonzai, Pretzel Logic - Mojo
                   </a>
                   <button
                     type="button"
@@ -505,10 +504,10 @@
                       downloadAndInsertDisk(
                         'ComaLight13Side1',
                         '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
-                      )
+                      );
                     "
                   >
-                  Oxyron - Coma Light 13
+                    Oxyron - Coma Light 13
                   </a>
                   <button
                     type="button"
@@ -541,10 +540,10 @@
                       downloadAndInsertDisk(
                         'EdgeOfDisgrace_0.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_0.d64?itemId=72550&categoryId=1'
-                      )
+                      );
                     "
                   >
-                  Booze Design - Edge Of Disgrace
+                    Booze Design - Edge Of Disgrace
                   </a>
                   <button
                     type="button"
@@ -588,10 +587,10 @@
                       downloadAndInsertDisk(
                         'ComalandImage1.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=139278&categoryId=1'
-                      )
+                      );
                     "
                   >
-                  Oxyron, Censor Design - Comaland
+                    Oxyron, Censor Design - Comaland
                   </a>
                   <button
                     type="button"
@@ -646,10 +645,10 @@
                       downloadAndInsertDisk(
                         'Andropolis.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/Instinct%20BoozeDesign%20-%20Andropolis.d64?itemId=81157&categoryId=1'
-                      )
+                      );
                     "
                   >
-                  Booze Design - Andropolis
+                    Booze Design - Andropolis
                   </a>
                   <button
                     type="button"
