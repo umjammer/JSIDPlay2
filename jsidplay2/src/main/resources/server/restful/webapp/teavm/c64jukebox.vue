@@ -221,11 +221,11 @@
           </div>
 
           <div class="row">
-            <div class="col">
+            <div v-show="screen" class="col screen-parent">
               <div>
                 <p>{{ msg }}</p>
               </div>
-              <div v-show="screen" style="width: 100%; margin: 0px auto">
+              <div style="width: 100%; margin: 0px auto">
                 <span v-show="playing">Frames in der Queue: {{ framesCounter }}</span>
                 <canvas
                   id="c64Screen"
@@ -235,13 +235,25 @@
                 />
               </div>
             </div>
-            <div class="col" style="margin-left: 100px">
-              <h2>Example Music</h2>
+            <div class="col">
+              <h2>{{ $t("exampleMusic") }}</h2>
               <ol>
                 <li>
-                  Mutetus - Only 299.99
-                  <button
-                    type="button"
+                  <a
+                    href="#"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'Turrican Rise Of the Mashine',
+                        '/jsidplay2service/JSIDPlay2REST/download/turrican_rotm.sid?itemId=189430&categoryId=4'
+                      )
+                    "
+                  >
+                    Chris Huelsbeck &amp; Jason Page - Turrican Rise Of the Mashine
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
                     v-on:click="
                       downloadAndStartTune(
                         'Only 299.99',
@@ -249,13 +261,38 @@
                       )
                     "
                   >
-                    <i class="bi bi-download"></i>
-                  </button>
+                    Mutetus - Only 299.99
+                  </a>
                 </li>
                 <li>
-                  LMan - Hi fi Sky
-                  <button
-                    type="button"
+                  <a
+                    href="#"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'Banaanin Alle',
+                        '/jsidplay2service/JSIDPlay2REST/download/mutetus_banaaninalle.sid?itemId=209406&categoryId=4'
+                      )
+                    "
+                  >
+                    Mutetus - Banaanin Alle
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'So Grainy It Hertz',
+                        '/jsidplay2service/JSIDPlay2REST/download/sograinyithertz_25hz.sid?itemId=193534&categoryId=4'
+                      )
+                    "
+                  >
+                    Jammer - So Grainy It Hertz
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
                     v-on:click="
                       downloadAndStartTune(
                         'Hi Fi Sky',
@@ -263,26 +300,12 @@
                       )
                     "
                   >
-                    <i class="bi bi-download"></i>
-                  </button>
-                </li>
-                <li>
-                  DJ Space - Monty is a Maniac
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'Monty is a Maniac',
-                        '/jsidplay2service/JSIDPlay2REST/download/djspace_monty_is_a_maniac.sid?itemId=239515&categoryId=4'
-                      )
-                    "
-                  >
-                    <i class="bi bi-download"></i>
-                  </button>
+                    LMan - Hi fi Sky
+                  </a>
                 </li>
               </ol>
 
-              <h2>Example Demos</h2>
+              <h2>{{ $t("exampleDemos") }}</h2>
               <ol>
                 <li>
                   Fairlight - 1337
@@ -295,7 +318,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #1
+                    <i class="bi bi-floppy"></i>1
                   </button>
                   <button
                     type="button"
@@ -306,7 +329,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #2
+                    <i class="bi bi-floppy"></i>2
                   </button>
                   <button
                     type="button"
@@ -317,7 +340,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #3
+                    <i class="bi bi-floppy"></i>3
                   </button>
                 </li>
                 <li>
@@ -331,7 +354,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #1
+                    <i class="bi bi-floppy"></i>1
                   </button>
                   <button
                     type="button"
@@ -342,7 +365,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #2
+                    <i class="bi bi-floppy"></i>2
                   </button>
                   <button
                     type="button"
@@ -353,7 +376,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #3
+                    <i class="bi bi-floppy"></i>3
                   </button>
                   <button
                     type="button"
@@ -364,7 +387,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #4
+                    <i class="bi bi-floppy"></i>4
                   </button>
                 </li>
                 <li>
@@ -378,7 +401,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #1
+                    <i class="bi bi-floppy"></i>1
                   </button>
                   <button
                     type="button"
@@ -389,7 +412,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #2
+                    <i class="bi bi-floppy"></i>2
                   </button>
                   <button
                     type="button"
@@ -400,7 +423,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #3
+                    <i class="bi bi-floppy"></i>3
                   </button>
                   <button
                     type="button"
@@ -411,7 +434,7 @@
                       )
                     "
                   >
-                    <i class="bi bi-floppy"></i> #4
+                    <i class="bi bi-floppy"></i>4
                   </button>
                 </li>
               </ol>
@@ -421,7 +444,7 @@
         <div class="container">
           <div class="row">
             <div class="col">
-              <p>${teaVMFormatName} beta Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></p>
+              <h2>${teaVMFormatName} beta Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></h2>
               <ol>
                 <li>Run JSIDPlay2 in a browser in ${teaVMFormatName} (THIS IS NOT JAVA)</li>
                 <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
@@ -437,10 +460,11 @@
                 <li>For the first time, embed music or demos in YOUR web-site</li>
               </ol>
             </div>
-            <div class="col">
-              <div class="form-check" v-show="!playing">
+            <div v-show="!playing" class="col">
+              <div class="form-check">
                 <div class="settings-box">
                   <span class="setting">
+                    <h2 style="text-align: end; margin-right: 1rem;">{{ $t("settings") }}</h2>
                     <label for="startSong"
                       >{{ $t("startSong") }}
                       <input class="right" type="number" id="startSong" class="form-control" v-model.number="startSong"
@@ -783,6 +807,9 @@
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Space Key",
+            exampleMusic: "Example Music",
+            exampleDemos: "Example Demos",
+            settings: "Settings",
           },
           de: {
             FileMenu: "Datei",
@@ -824,6 +851,9 @@
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Leertaste",
+            exampleMusic: "Beispiel Musik",
+            exampleDemos: "Beispiel Demos",
+            settings: "Einstellungen",
           },
         },
       });
