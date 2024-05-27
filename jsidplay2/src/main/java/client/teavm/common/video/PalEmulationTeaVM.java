@@ -20,12 +20,12 @@ import libsidplay.components.mos656x.IPalette;
 import libsidplay.components.mos656x.VIC;
 
 /**
- * JavaScript needs BGRA (MSB to LSB) big endian.
+ * RGBA (MSB to LSB) pixel data big endian.
  */
 public class PalEmulationTeaVM implements IPALEmulation {
 
 	/**
-	 * RGBA pixel data (MSB to LSB). VIC colors without PAL emulation. Use this
+	 * RGBA pixel data (MSB to LSB) big endian. VIC colors without PAL emulation. Use this
 	 * palette for VIC colors 0-15. https://www.pepto.de/projects/colorvic/2001/
 	 */
 	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0x000000FF, 0xFFFFFFFF, 0x68372BFF, 0x70A4B2FF,

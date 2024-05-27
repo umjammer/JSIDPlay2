@@ -28,7 +28,7 @@ import sidplay.audio.VideoDriver;
  * Audio driver to be used in the JavaScript and web assembly version builds.
  * Browser needs float array for each channel with sound samples with a value
  * range of -1..1. And pixel data is required as a byte array containing color
- * data four bytes each pixel BGRA. Additionally the possibility to sniff for
+ * data four bytes each pixel RGBA. Additionally the possibility to sniff for
  * SID writes helps to make USB hardware working in the browser and for debug
  * purposes.
  * 
