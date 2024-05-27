@@ -300,15 +300,53 @@
                       )
                     "
                   >
-                    LMan - Hi fi Sky
+                    LMan - Hi Fi Sky
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'blindsided',
+                        '/jsidplay2service/JSIDPlay2REST/download/blindsided.sid?itemId=239345&categoryId=4'
+                      )
+                    "
+                  >
+                    Stinsen - blindsided
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'running_up_that_hill.sid',
+                        '/jsidplay2service/JSIDPlay2REST/download/running_up_that_hill.sid?itemId=238798&categoryId=4'
+                      )
+                    "
+                  >
+                    Slaxx, Nordischsound - Running Up That Hill
+                  </a>
+                </li>
+
               </ol>
 
               <h2>{{ $t("exampleDemos") }}</h2>
               <ol>
                 <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        '1337-a',
+                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
+                      )
+                    "
+                  >
                   Fairlight - 1337
+                  </a>
                   <button
                     type="button"
                     v-on:click="
@@ -344,12 +382,23 @@
                   </button>
                 </li>
                 <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'NextLevelImage1.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
+                      )
+                    "
+                  >
                   Performers - Next Level
+                  </a>
                   <button
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'image1',
+                        'NextLevelImage1.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
                       )
                     "
@@ -360,7 +409,7 @@
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'image2',
+                        'NextLevelImage2.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/image2.d64?itemId=232976&categoryId=1'
                       )
                     "
@@ -371,7 +420,7 @@
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'image3',
+                        'NextLevelImage3.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=232976&categoryId=1'
                       )
                     "
@@ -382,7 +431,7 @@
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'image4',
+                        'NextLevelImage4.d64',
                         '/jsidplay2service/JSIDPlay2REST/download/image4.d64?itemId=232976&categoryId=1'
                       )
                     "
@@ -391,12 +440,23 @@
                   </button>
                 </li>
                 <li>
-                  Bonzai,Pretzel Logic - Mojo
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'Mojo_Side1.D64',
+                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
+                      )
+                    "
+                  >
+                  Bonzai, Pretzel Logic - Mojo
+                  </a>
                   <button
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'Side1',
+                        'Mojo_Side1.D64',
                         '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
                       )
                     "
@@ -407,7 +467,7 @@
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'Side2',
+                        'Mojo_Side2.D64',
                         '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side2.D64?itemId=232966&categoryId=1'
                       )
                     "
@@ -418,7 +478,7 @@
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'Side3',
+                        'Mojo_Side3.D64',
                         '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side3.D64?itemId=232966&categoryId=1'
                       )
                     "
@@ -429,12 +489,178 @@
                     type="button"
                     v-on:click="
                       downloadAndInsertDisk(
-                        'Side4',
+                        'Mojo_Side4.D64',
                         '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side4.D64?itemId=232966&categoryId=1'
                       )
                     "
                   >
                     <i class="bi bi-floppy"></i>4
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'ComaLight13Side1',
+                        '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
+                      )
+                    "
+                  >
+                  Oxyron - Coma Light 13
+                  </a>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'ComaLight13Side1',
+                        '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'ComaLight13Side2',
+                        '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side2.d64?itemId=112378&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>2
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'EdgeOfDisgrace_0.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_0.d64?itemId=72550&categoryId=1'
+                      )
+                    "
+                  >
+                  Booze Design - Edge Of Disgrace
+                  </a>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'EdgeOfDisgrace_0.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_0.d64?itemId=72550&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'EdgeOfDisgrace_1a.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_1a.d64?itemId=72550&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>2
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'EdgeOfDisgrace_1b.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_1b.d64?itemId=72550&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>3
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'ComalandImage1.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=139278&categoryId=1'
+                      )
+                    "
+                  >
+                  Oxyron, Censor Design - Comaland
+                  </a>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'ComalandImage1.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=139278&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'ComalandImage2.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/image2.d64?itemId=139278&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>2
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'ComalandImage3.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=139278&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>3
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'ComalandImage4.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/image4.d64?itemId=139278&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>4
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'Andropolis.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/Instinct%20BoozeDesign%20-%20Andropolis.d64?itemId=81157&categoryId=1'
+                      )
+                    "
+                  >
+                  Booze Design - Andropolis
+                  </a>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'Andropolis.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/Instinct%20BoozeDesign%20-%20Andropolis.d64?itemId=81157&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>1
                   </button>
                 </li>
               </ol>
@@ -720,7 +946,7 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && size * app.nthFrame < 120) {
+              if (!app.paused && size * app.nthFrame < 60) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 worker.postMessage({ eventType: "IDLE" });
