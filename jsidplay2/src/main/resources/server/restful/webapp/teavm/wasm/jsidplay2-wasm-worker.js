@@ -18,7 +18,7 @@ function allocateTeaVMstring(str) {
 }
 
 // Handle incoming messages
-self.addEventListener(
+addEventListener(
   "message",
   function (event) {
     var { eventType, eventData } = event.data;
@@ -26,11 +26,11 @@ self.addEventListener(
     if (eventType === "CLOCK") {
       instance.exports.clock();
 
-      self.postMessage({
+      postMessage({
         eventType: "CLOCKED",
       });
     } else if (eventType === "IDLE") {
-      self.postMessage({
+      postMessage({
         eventType: "CLOCKED",
       });
     } else if (eventType === "OPEN") {
@@ -45,7 +45,7 @@ self.addEventListener(
         eventData.command ? allocateTeaVMstring(eventData.command) : null
       );
 
-      self.postMessage({
+      postMessage({
         eventType: "OPENED",
       });
     } else if (eventType === "INSERT_DISK") {
@@ -54,13 +54,13 @@ self.addEventListener(
         eventData.diskName ? allocateTeaVMstring(eventData.diskName) : null
       );
 
-      self.postMessage({
+      postMessage({
         eventType: "DISK_INSERTED",
       });
     } else if (eventType === "EJECT_DISK") {
       instance.exports.ejectDisk();
 
-      self.postMessage({
+      postMessage({
         eventType: "DISK_EJECTED",
       });
     } else if (eventType === "INSERT_TAPE") {
@@ -69,31 +69,31 @@ self.addEventListener(
         eventData.tapeName ? allocateTeaVMstring(eventData.tapeName) : null
       );
 
-      self.postMessage({
+      postMessage({
         eventType: "TAPE_INSERTED",
       });
     } else if (eventType === "EJECT_TAPE") {
       instance.exports.ejectTape();
 
-      self.postMessage({
+      postMessage({
         eventType: "TAPE_EJECTED",
       });
     } else if (eventType === "PRESS_PLAY_ON_TAPE") {
       instance.exports.pressPlayOnTape();
 
-      self.postMessage({
+      postMessage({
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
     } else if (eventType === "SET_COMMAND") {
       instance.exports.setCommand(eventData.command ? allocateTeaVMstring(eventData.command) : null);
 
-      self.postMessage({
+      postMessage({
         eventType: "COMMAND_SET",
       });
     } else if (eventType === "TYPE_KEY") {
       instance.exports.typeKey(eventData.key ? allocateTeaVMstring(eventData.key) : null);
 
-      self.postMessage({
+      postMessage({
         eventType: "KEY_TYPED",
       });
     } else if (eventType === "INITIALISE") {
@@ -117,7 +117,7 @@ self.addEventListener(
             };
             o.audiodriver = {
               processSamples: (leftChannelPtr, rightChannelPtr, length) =>
-                self.postMessage({
+                postMessage({
                   eventType: "SAMPLES",
                   eventData: {
                     left: new Float32Array(
@@ -133,7 +133,7 @@ self.addEventListener(
                   },
                 }),
               processPixels: (pixelsPtr, length) =>
-                self.postMessage({
+                postMessage({
                   eventType: "FRAME",
                   eventData: {
                     image: new Uint8Array(
@@ -144,7 +144,7 @@ self.addEventListener(
                   },
                 }),
               processSidWrite: (relTime, addr, value) =>
-                self.postMessage({
+                postMessage({
                   eventType: "SID_WRITE",
                   eventData: {
                     relTime: relTime,
@@ -163,7 +163,7 @@ self.addEventListener(
 
           teavm.main();
 
-          self.postMessage({
+          postMessage({
             eventType: "INITIALISED",
           });
         });
