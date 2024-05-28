@@ -66,7 +66,7 @@ public class PressKeyServlet extends JSIDPlay2Servlet {
 					webServlet);
 
 			if ((servletParameters.type == null && servletParameters.press == null && servletParameters.release == null)
-					|| parser.hasException()) {
+					|| servletParameters.getHelp() || parser.hasException()) {
 				parser.usage();
 				return;
 			}

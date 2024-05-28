@@ -12,6 +12,17 @@ import server.restful.common.parameter.requestpath.impl.FileRequestPathServletPa
  */
 public class FileRequestPathServletParameters extends FileRequestPathServletParametersImpl {
 
+	@Parameter(names = { "--help", "-h" }, arity = 1, descriptionKey = "USAGE", help = true, order = Integer.MIN_VALUE)
+	private Boolean help = Boolean.FALSE;
+	
+	public Boolean getHelp() {
+		return help;
+	}
+
+	public void setHelp(Boolean help) {
+		this.help = help;
+	}
+	
 	private String itemId;
 
 	@Override
@@ -19,7 +30,7 @@ public class FileRequestPathServletParameters extends FileRequestPathServletPara
 		return itemId;
 	}
 
-	@Parameter(names = { "--itemId" }, descriptionKey = "ITEM_ID", order = Integer.MIN_VALUE)
+	@Parameter(names = { "--itemId" }, descriptionKey = "ITEM_ID", order = Integer.MIN_VALUE + 1)
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
@@ -31,7 +42,7 @@ public class FileRequestPathServletParameters extends FileRequestPathServletPara
 		return categoryId;
 	}
 
-	@Parameter(names = { "--categoryId" }, descriptionKey = "CATEGORY_ID", order = Integer.MIN_VALUE + 1)
+	@Parameter(names = { "--categoryId" }, descriptionKey = "CATEGORY_ID", order = Integer.MIN_VALUE + 3)
 	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}

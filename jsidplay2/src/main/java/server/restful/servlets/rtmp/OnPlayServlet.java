@@ -64,7 +64,7 @@ public class OnPlayServlet extends JSIDPlay2Servlet {
 			/* ServletParameterParser parser = */new ServletParameterParser(request, response, servletParameters,
 					webServlet, true);
 
-			if (servletParameters.getUuid() == null /* || parser.hasException() */) {
+			if (servletParameters.getUuid() == null || servletParameters.getHelp() /* || parser.hasException() */) {
 				// Not every video has a valid UUID as it's name! e.g.
 				// https://haendel.ddns.net/live/jsidplay2
 				return;

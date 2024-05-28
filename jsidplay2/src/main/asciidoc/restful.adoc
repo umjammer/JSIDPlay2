@@ -522,7 +522,7 @@ That way filters can be grouped or sorted on the client side.
 
 ==== Get music collection directory
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/directory[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/directory?help=true[Usage]
 
 Example:
 
@@ -565,7 +565,7 @@ collections.
 
 ==== Get tune infos
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/info[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/info?help=true[Usage]
 
 Example:
 
@@ -575,7 +575,7 @@ Return a list of information of the specified tune file.
 
 ==== Get SID tune information list (STIL)
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/stil?help=true[Usage]
 
 Example:
 
@@ -585,7 +585,7 @@ Return a list of information of the specified tune file.
 
 ==== Get D64 disk directory
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/disk-directory[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/disk-directory?help=true[Usage]
 
 Example:
 
@@ -601,6 +601,10 @@ Return a list of favorite names.
 
 ==== Get favorites
 
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites?help=true[Usage]
+
+Example:
+
 link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites?favoritesNumber=0[{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/favorites?favoritesNumber=0]
 
 Return favorite tune files.
@@ -610,7 +614,7 @@ If this is called without a parameter, just the first favorites are fetched.
 
 ==== Get composer photo
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/photo[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/photo?help=true[Usage]
 
 Example:
 
@@ -620,7 +624,7 @@ Request a photo of a well-known tune composer to be displayed.
 
 ==== Download SID
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/download[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/download?help=true[Usage]
 
 Example:
 
@@ -636,7 +640,7 @@ Get a random tune file of your HVSC music collection.
 
 ==== Upload C64 content
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/upload[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/upload?help=true[Usage]
 
 Example:
 
@@ -646,7 +650,7 @@ Upload C64 content to JSIDPlay2Server, to play-back in the next step.
 
 ==== Get HardSID 4U, HardSID UPlay and HardSID Uno mapping information
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/hardsid-mapping[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/hardsid-mapping?help=true[Usage]
 
 Example:
 
@@ -656,7 +660,7 @@ Get HardSID 4U, HardSID UPlay and HardSID Uno SID mapping information.
 
 ==== Get ExSID(+) mapping information
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/exsid-mapping[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/exsid-mapping?help=true[Usage]
 
 Example:
 
@@ -666,7 +670,7 @@ Get ExSID(+) SID mapping information.
 
 ==== Get SIDBlaster mapping information
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/sidblaster-mapping[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/sidblaster-mapping?help=true[Usage]
 
 Example:
 
@@ -676,7 +680,7 @@ Get SIDBlaster SID mapping information.
 
 ==== Stream SID as MP3
 
-link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/convert[Usage]
+link:{protocol}://{hostname}:{port}/jsidplay2service/JSIDPlay2REST/convert?help=true[Usage]
 
 Example:
 
@@ -724,7 +728,7 @@ beware of a much bigger file size.
 
 ==== Insert next cartridge
 
-link:{protocol}://{hostname}:{port}/static/insert_next_cart[Usage]
+link:{protocol}://{hostname}:{port}/static/insert_next_cart?help=true[Usage]
 
 Example:
 
@@ -734,7 +738,7 @@ Insert next cart for a Player running as a RTMP live video stream.
 
 ==== Insert next disk
 
-link:{protocol}://{hostname}:{port}/static/insert_next_disk[Usage]
+link:{protocol}://{hostname}:{port}/static/insert_next_disk?help=true[Usage]
 
 Example:
 
@@ -744,7 +748,7 @@ Insert next disk for a Player running as a RTMP live video stream.
 
 ==== Press joystick button
 
-link:{protocol}://{hostname}:{port}/static/joystick[Usage]
+link:{protocol}://{hostname}:{port}/static/joystick?help=true[Usage]
 
 Example:
 
@@ -754,7 +758,7 @@ Press joystick 1/2 for Player running as a RTMP live video stream.
 
 ==== Press keyboard key
 
-link:{protocol}://{hostname}:{port}/static/press_key[Usage]
+link:{protocol}://{hostname}:{port}/static/press_key?help=true[Usage]
 
 Example:
 
@@ -764,11 +768,19 @@ Press key for Player running as a RTMP live video stream.
 
 ==== Set default emulation to RESIDfp
 
+link:{protocol}://{hostname}:{port}/static/set_default_emulation_residfp?help=true[Usage]
+
+Example:
+
 link:{protocol}://{hostname}:{port}/static/set_default_emulation_residfp?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_residfp]
 
 Set default emulation to RESIDFP for Player running as a RTMP live video stream.
 
 ==== Set default emulation to RESID
+
+link:{protocol}://{hostname}:{port}/static/set_default_emulation_resid?help=true[Usage]
+
+Example:
 
 link:{protocol}://{hostname}:{port}/static/set_default_emulation_resid?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_emulation_resid]
 
@@ -776,11 +788,19 @@ Set default emulation to RESID for Player running as a RTMP live video stream.
 
 ==== Set default SID model to 6581
 
+link:{protocol}://{hostname}:{port}/static/set_default_sid_model_6581?help=true[Usage]
+
+Example:
+
 link:{protocol}://{hostname}:{port}/static/set_default_sid_model_6581?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_6581]
 
 Set default chip model to MOS6581 for Player running as a RTMP live video stream.
 
 ==== Set default SID model to 8580
+
+link:{protocol}://{hostname}:{port}/static/set_default_sid_model_8580?help=true[Usage]
+
+Example:
 
 link:{protocol}://{hostname}:{port}/static/set_default_sid_model_8580?name=a19f569a-9cc3-11ee-8c90-0242ac120002[{protocol}://{hostname}:{port}/static?name=a19f569a-9cc3-11ee-8c90-0242ac120002&set_default_sid_model_8580]
 

@@ -12,6 +12,17 @@ import server.restful.common.parameter.requestpath.impl.DirectoryRequestPathServ
  */
 public class DirectoryRequestPathServletParameters extends DirectoryRequestPathServletParametersImpl {
 
+	private Boolean help = Boolean.FALSE;
+
+	public Boolean getHelp() {
+		return help;
+	}
+	
+	@Parameter(names = { "--help", "-h" }, arity = 1, descriptionKey = "USAGE", help = true, order = -3)
+	public void setHelp(Boolean help) {
+		this.help = help;
+	}
+	
 	private String filter = ".*\\.(sid|dat|mus|str|mp3|mp4|jpg|prg|d64)$";
 
 	@Override

@@ -41,9 +41,6 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
 	public static class StaticServletParameters extends WebResourceRequestPathServletParameters {
 
-		@Parameter(names = { "--help", "-h" }, arity = 1, descriptionKey = "USAGE", help = true, order = 0)
-		private Boolean help = Boolean.FALSE;
-
 		private Boolean useDevTools = Boolean.FALSE;
 
 		public Boolean getUseDevTools() {
@@ -84,7 +81,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					webServlet);
 
-			if (servletParameters.help || parser.hasException()) {
+			if (servletParameters.getHelp() || parser.hasException()) {
 				parser.usage();
 				return;
 			}

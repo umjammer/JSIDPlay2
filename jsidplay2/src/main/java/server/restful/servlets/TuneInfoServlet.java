@@ -67,7 +67,7 @@ public class TuneInfoServlet extends JSIDPlay2Servlet {
 
 			final File file = servletParameters.fetchFile(configuration, directoryProperties, parser, servletSecurity,
 					request.isUserInRole(ROLE_ADMIN));
-			if (file == null || parser.hasException()) {
+			if (file == null || servletParameters.getHelp() || parser.hasException()) {
 				parser.usage();
 				return;
 			}

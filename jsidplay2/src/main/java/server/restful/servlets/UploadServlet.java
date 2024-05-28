@@ -64,6 +64,18 @@ public class UploadServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.UploadServletParameters")
 	public static class UploadServletParameters {
 
+		@Parameter(names = { "--help",
+				"-h" }, arity = 1, descriptionKey = "USAGE", help = true, order = Integer.MIN_VALUE)
+		private Boolean help = Boolean.FALSE;
+
+		public Boolean getHelp() {
+			return help;
+		}
+
+		public void setHelp(Boolean help) {
+			this.help = help;
+		}
+
 		private String filePath;
 
 		public String getFilePath() {
@@ -114,7 +126,7 @@ public class UploadServlet extends JSIDPlay2Servlet {
 							webServlet);
 
 					final String filePath = servletParameters.getFilePath();
-					if (filePath == null || parser.hasException()) {
+					if (filePath == null || servletParameters.getHelp() || parser.hasException()) {
 						parser.usage();
 						return;
 					}

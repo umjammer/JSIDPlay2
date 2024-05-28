@@ -40,6 +40,17 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.FavoritesServletParameters")
 	public static class FavoritesServletParameters {
 
+		private Boolean help = Boolean.FALSE;
+
+		public Boolean getHelp() {
+			return help;
+		}
+
+		@Parameter(names = { "--help", "-h" }, arity = 1, descriptionKey = "USAGE", help = true, order = -3)
+		public void setHelp(Boolean help) {
+			this.help = help;
+		}
+
 		private Integer favoritesNumber = null;
 
 		public Integer getFavoritesNumber() {
@@ -78,7 +89,7 @@ public class FavoritesServlet extends JSIDPlay2Servlet {
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					webServlet);
 
-			if (parser.hasException()) {
+			if (servletParameters.getHelp() || parser.hasException()) {
 				parser.usage();
 				return;
 			}

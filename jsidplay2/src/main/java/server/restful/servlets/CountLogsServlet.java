@@ -49,7 +49,7 @@ public class CountLogsServlet extends JSIDPlay2Servlet {
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					webServlet);
 
-			if (parser.hasException()) {
+			if (servletParameters.getHelp() || parser.hasException()) {
 				parser.usage();
 				return;
 			}

@@ -52,7 +52,7 @@ public class DirectoryServlet extends JSIDPlay2Servlet {
 
 			final List<String> files = servletParameters.fetchDirectory(configuration, directoryProperties, parser,
 					servletSecurity, request.isUserInRole(ROLE_ADMIN));
-			if (files == null || parser.hasException()) {
+			if (files == null || servletParameters.getHelp() || parser.hasException()) {
 				parser.usage();
 				return;
 			}

@@ -14,6 +14,17 @@ import server.restful.common.converter.RequestPathURLConverter;
  */
 public class URLRequestPathServletParameters {
 
+	private Boolean help = Boolean.FALSE;
+
+	public Boolean getHelp() {
+		return help;
+	}
+
+	@Parameter(names = { "--help", "-h" }, arity = 1, descriptionKey = "USAGE", help = true, order = Integer.MIN_VALUE)
+	public void setHelp(Boolean help) {
+		this.help = help;
+	}
+
 	private URL url;
 
 	public URL getUrl() {
