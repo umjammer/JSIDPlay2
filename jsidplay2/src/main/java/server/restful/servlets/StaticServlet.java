@@ -41,13 +41,16 @@ public class StaticServlet extends JSIDPlay2Servlet {
 	@Parameters(resourceBundle = "server.restful.servlets.StaticServletParameters")
 	public static class StaticServletParameters extends WebResourceRequestPathServletParameters {
 
+		@Parameter(names = { "--help", "-h" }, arity = 1, descriptionKey = "USAGE", help = true, order = 0)
+		private Boolean help = Boolean.FALSE;
+
 		private Boolean useDevTools = Boolean.FALSE;
 
 		public Boolean getUseDevTools() {
 			return useDevTools;
 		}
 
-		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = -3)
+		@Parameter(names = "--devtools", arity = 1, descriptionKey = "USE_DEV_TOOLS", hidden = true, order = 1)
 		public void setUseDevTools(Boolean useDevTools) {
 			this.useDevTools = useDevTools;
 		}
@@ -58,7 +61,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			return teaVMFormat;
 		}
 
-		@Parameter(names = "--teavmFormat", arity = 1, descriptionKey = "TEAVM_FORMAT", order = -2)
+		@Parameter(names = "--teavmFormat", arity = 1, descriptionKey = "TEAVM_FORMAT", order = 2)
 		public void setTeaVMFormat(TeaVMFormat teaVMFormat) {
 			this.teaVMFormat = teaVMFormat;
 		}
@@ -81,7 +84,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			ServletParameterParser parser = new ServletParameterParser(request, response, servletParameters,
 					webServlet);
 
-			if (parser.hasException()) {
+			if (servletParameters.help || parser.hasException()) {
 				parser.usage();
 				return;
 			}
