@@ -446,7 +446,7 @@
 							<sourceMapsGenerated>false</sourceMapsGenerated>
 							<sourceFilesCopied>false</sourceFilesCopied>
 							<targetType>WEBASSEMBLY</targetType>
-							<optimizationLevel>SIMPLE</optimizationLevel>
+							<optimizationLevel>FULL</optimizationLevel>
 						</configuration>
 					</execution>
 				</executions>
