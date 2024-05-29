@@ -157,7 +157,7 @@ public class ToolBar extends C64VBox implements UIPart {
 			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, sidBlasterLatencyTimerLbl, sidBlasterReadLbl,
 			streamingIpAddress, streamingHostname;
 	@FXML
-	private Hyperlink appServerUsage, onlinePlayer, sidBlasterDoc;
+	private Hyperlink appServerUsage, onlinePlayer, sidBlasterDoc, offlinePlayerWasm, offlinePlayerJs;
 	@FXML
 	private ProgressBar progress;
 
@@ -342,11 +342,13 @@ public class ToolBar extends C64VBox implements UIPart {
 
 		bindBidirectional(playSourceGroup, audioSection.playOriginalProperty());
 
-		appHostname.setText(util.getBundle().getString("HOSTNAME") + " " + getHostname());
+		appHostname.setText(getHostname());
 		appIpAddress.setText(util.getBundle().getString("IP") + " " + getIpAddresses());
 		startAppServer.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			appServerUsage.setDisable(!newValue);
 			onlinePlayer.setDisable(!newValue);
+			offlinePlayerWasm.setDisable(!newValue);
+			offlinePlayerJs.setDisable(!newValue);
 		});
 
 		ultimate64StreamingTarget.textProperty()
@@ -355,7 +357,7 @@ public class ToolBar extends C64VBox implements UIPart {
 				emulationSection.ultimate64StreamingAudioPortProperty(), new IntegerStringConverter());
 		ultimate64StreamingVideoPort.textProperty().bindBidirectional(
 				emulationSection.ultimate64StreamingVideoPortProperty(), new IntegerStringConverter());
-		streamingHostname.setText(util.getBundle().getString("HOSTNAME") + " " + getHostname());
+		streamingHostname.setText(getHostname());
 		streamingIpAddress.setText(util.getBundle().getString("IP") + " " + getIpAddresses());
 
 		videoStreamingUrl.textProperty().bindBidirectional(audioSection.videoStreamingUrlProperty());
@@ -542,7 +544,41 @@ public class ToolBar extends C64VBox implements UIPart {
 			e.printStackTrace();
 		}
 	}
+	
+	@FXML
+	private void offlinePlayerWasm() {
+		try {
+			EmulationSection emulationSection = util.getConfig().getEmulationSection();
+			Connectors appServerConnectors = emulationSection.getAppServerConnectors();
+			int port = appServerConnectors.getPreferredProtocol().equals("http") ? emulationSection.getAppServerPort()
+					: emulationSection.getAppServerSecurePort();
 
+			URI uri = new URI(util.getConfig().getOnlineSection().getOfflinePlayerWasmUrl());
+			URI localURI = new URI(appServerConnectors.getPreferredProtocol(), null, "127.0.0.1", port, uri.getPath(),
+					uri.getQuery(), uri.getFragment());
+			DesktopUtil.browse(localURI.toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	private void offlinePlayerJs() {
+		try {
+			EmulationSection emulationSection = util.getConfig().getEmulationSection();
+			Connectors appServerConnectors = emulationSection.getAppServerConnectors();
+			int port = appServerConnectors.getPreferredProtocol().equals("http") ? emulationSection.getAppServerPort()
+					: emulationSection.getAppServerSecurePort();
+
+			URI uri = new URI(util.getConfig().getOnlineSection().getOfflinePlayerJsUrl());
+			URI localURI = new URI(appServerConnectors.getPreferredProtocol(), null, "127.0.0.1", port, uri.getPath(),
+					uri.getQuery(), uri.getFragment());
+			DesktopUtil.browse(localURI.toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@FXML
 	private void gotoSidBlasterDoc() {
 		DesktopUtil.browse(util.getConfig().getOnlineSection().getSidBlasterDocUrl());
