@@ -720,7 +720,7 @@
               <ol>
                 <li>Run JSIDPlay2 in a browser in ${teaVMFormatName} (THIS IS NOT JAVA)</li>
                 <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
-                <li>Only 2MB in size, loads very quick</li>
+                <li>Only ${teaVMFormatApproximateSize} in size, loads very quick</li>
                 <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos on PC</li>
                 <li>Runs near to native speed, performance only depends on your max. single core speed</li>
                 <li>Plays at least mono SIDs on a mobile phone</li>

@@ -52,7 +52,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			this.useDevTools = useDevTools;
 		}
 
-		private TeaVMFormat teaVMFormat = TeaVMFormat.JS;
+		private TeaVMFormat teaVMFormat = TeaVMFormat.WASM;
 
 		public TeaVMFormat getTeaVMFormat() {
 			return teaVMFormat;
@@ -97,6 +97,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("year", String.valueOf(LocalDate.now().getYear()));
 				replacements.put("teaVMFormat", servletParameters.getTeaVMFormat().name().toLowerCase(Locale.US));
 				replacements.put("teaVMFormatName", servletParameters.getTeaVMFormat().getTeaVMFormatName());
+				replacements.put("teaVMFormatApproximateSize", servletParameters.getTeaVMFormat().getApproximateSize());
 				if (!ContentTypeAndFileExtensions.MIME_TYPE_JAVASCRIPT.isCompatible(mimeType.getMimeType())) {
 					replacements.put("min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
 					replacements.put("prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");
