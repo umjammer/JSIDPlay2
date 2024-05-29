@@ -85,6 +85,7 @@ public class ServletParameterParser {
 				Collections.list(request.getParameterNames()).stream()
 						.flatMap(name -> asList(request.getParameterValues(name)).stream()
 								.filter(v -> VALUE_ABSENT.stream().noneMatch(v::equals))
+								.map(v -> v.endsWith("#") ? v.subSequence(0, v.length() - 1) : v)
 								.map(v -> of((name.length() > 1 ? "--" : "-") + name, v)))
 						.flatMap(Function.identity()),
 				ofNullable(request.getPathInfo()).map(Stream::of).orElse(empty())).toArray(String[]::new);
