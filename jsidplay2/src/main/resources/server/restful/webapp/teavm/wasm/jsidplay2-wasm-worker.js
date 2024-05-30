@@ -140,7 +140,7 @@ addEventListener(
                       instance.exports.memory.buffer,
                       instance.exports.teavm_intArrayData(pixelsPtr),
                       length
-                    ).slice(),
+                    ),
                   },
                 }),
               processSidWrite: (relTime, addr, value) =>

@@ -329,6 +329,32 @@
                     Slaxx, Nordischsound - Running Up That Hill
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'doublebass_v2.sid',
+                        '/jsidplay2service/JSIDPlay2REST/download/doublebass_v2.sid?itemId=212358&categoryId=4'
+                      )
+                    "
+                  >
+                    acrouzet - Doublebass (v2)
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      downloadAndStartTune(
+                        'generations.sid',
+                        '/jsidplay2service/JSIDPlay2REST/download/generations.sid?itemId=242010&categoryId=4'
+                      )
+                    "
+                  >
+                    Flotsam - Generations
+                  </a>
+                </li>
               </ol>
 
               <h2>{{ $t("exampleDemos") }}</h2>
