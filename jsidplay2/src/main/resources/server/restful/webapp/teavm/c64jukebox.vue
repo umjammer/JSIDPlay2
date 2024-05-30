@@ -33,13 +33,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title>C64 Jukebox (${teaVMFormatName} beta Version)</title>
+    <title>C64 Jukebox (${teaVMFormatName} Version)</title>
   </head>
   <body>
     <div id="app">
       <form enctype="multipart/form-data">
         <div class="locale-changer">
-          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName} beta Version)</h1>
+          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName} Version)</h1>
           <select
             id="localeselector"
             class="form-select form-select-sm"
@@ -742,7 +742,7 @@
         <div class="container">
           <div class="row">
             <div class="col">
-              <h2>${teaVMFormatName} beta Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></h2>
+              <h2>${teaVMFormatName} Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></h2>
               <ol>
                 <li>Run JSIDPlay2 in a browser in ${teaVMFormatName} (THIS IS NOT JAVA)</li>
                 <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
