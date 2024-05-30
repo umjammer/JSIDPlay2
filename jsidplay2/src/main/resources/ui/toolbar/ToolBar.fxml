@@ -382,11 +382,11 @@
 							<Hyperlink text="%APP_SERVER_USAGE" textFill="BLUE"
 								underline="true" onAction="#gotoRestApiUsage" fx:id="appServerUsage"
 								disable="true" />
-							<Hyperlink text="%OFFLINE_PLAYER_WASM" textFill="BLUE"
-								underline="true" onAction="#offlinePlayerWasm" fx:id="offlinePlayerWasm"
-								disable="true" />
 							<Hyperlink text="%OFFLINE_PLAYER_JS" textFill="BLUE"
 								underline="true" onAction="#offlinePlayerJs" fx:id="offlinePlayerJs"
+								disable="true" />
+							<Hyperlink text="%OFFLINE_PLAYER_WASM" textFill="BLUE"
+								underline="true" onAction="#offlinePlayerWasm" fx:id="offlinePlayerWasm"
 								disable="true" />
 						</VBox>
 					</HBox>

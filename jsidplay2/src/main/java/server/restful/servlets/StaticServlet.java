@@ -52,7 +52,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 			this.useDevTools = useDevTools;
 		}
 
-		private TeaVMFormat teaVMFormat = TeaVMFormat.WASM;
+		private TeaVMFormat teaVMFormat = TeaVMFormat.JS;
 
 		public TeaVMFormat getTeaVMFormat() {
 			return teaVMFormat;

@@ -1,9 +1,9 @@
 Release Notes:
 ==============
 
-C64Jukebox (Web Assembly and JavaScript Versions) added, powered by TeaVM (https://teavm.org/)
- - https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue
- - https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue?teavmFormat=JS
+C64Jukebox (JavaScript and Web Assembly Versions) added, powered by TeaVM (https://teavm.org/)
+ - https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue (JavaScript)
+ - https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue?teavmFormat=WASM (Web Assembly)
  - Run JSIDPlay2 in a browser in WASM or JavaScript (THIS IS NOT JAVA)
  - Runs out-of-the-box in all browsers (Chrome is faster than Firefox)
  - Only 2MB in size, loads very quick
