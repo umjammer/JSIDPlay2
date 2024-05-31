@@ -33,13 +33,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title>C64 Jukebox (${teaVMFormatName} Version)</title>
+    <title>C64 Jukebox (${teaVMFormatName})</title>
   </head>
   <body>
     <div id="app">
       <form enctype="multipart/form-data">
         <div class="locale-changer">
-          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName} Version)</h1>
+          <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName})</h1>
           <select
             id="localeselector"
             class="form-select form-select-sm"
@@ -546,7 +546,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Fairlight - 1337&raquo;
+                        >1337&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -633,7 +633,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Performers - Next Level&raquo;
+                        >Next Level&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -734,7 +734,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Bonzai, Pretzel Logic - Mojo&raquo;
+                        >Mojo&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -835,7 +835,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Oxyron - Coma Light 13&raquo;
+                        >Coma Light 13&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -908,7 +908,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Booze Design - Andropolis&raquo;
+                        >Andropolis&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -953,7 +953,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Oxyron, Censor Design - Comaland&raquo;
+                        >Comaland&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -1054,7 +1054,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Booze Design - Edge Of Disgrace&raquo;
+                        >Edge Of Disgrace&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -1141,7 +1141,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Arise - E2IRA&raquo;
+                        >E2IRA&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -1228,7 +1228,7 @@
                             showDemo10 =
                               false;
                         "
-                        >Fatzone - Partypopper&raquo;
+                        >Partypopper&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
@@ -1297,6 +1297,7 @@
             <div class="col">
               <button
                 type="button"
+                class="btn btn-secondary btn-sm"
                 v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
                 :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !screen"
               >
@@ -1304,24 +1305,34 @@
               </button>
               <button
                 type="button"
+                class="btn btn-secondary btn-sm"
                 v-on:click="typeInCommand('LOAD\rRUN\r')"
                 :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
               >
                 {{ $t("loadTape") }}
               </button>
-              <button type="button" v-on:click="typeKey('SPACE')" :disabled="!playing || !screen">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                v-on:click="typeKey('SPACE')"
+                :disabled="!playing || !screen"
+              >
                 {{ $t("space") }}
               </button>
-              <input type="button" id="toggle" value="Wake Lock is disabled" />
+              <input
+                type="button"
+                :class="wakeLockEnable ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'"
+                id="toggle"
+                value="Wake Lock Off"
+              />
+              <span class="p-1 fs-6 fst-italic"
+                >{{ msg }} <span v-show="playing"> / {{ $t("fiq") }} {{ framesCounter }}</span></span
+              >
             </div>
           </div>
 
           <div class="row">
-            <div v-show="screen" class="col screen-parent">
-              <div>
-                <p>{{ msg }}</p>
-                <span v-show="playing">{{ $t("queuedFrames") }} {{ framesCounter }}</span>
-              </div>
+            <div v-show="screen" class="col screen-parent p-0">
               <div style="width: 100%; margin: 0px auto">
                 <canvas
                   id="c64Screen"
@@ -1729,7 +1740,7 @@
             exampleOneFiler: "OneFiler",
             exampleDemos: "Demos",
             settings: "Settings",
-            queuedFrames: "Queued Frames",
+            fiq: "FIQ",
           },
           de: {
             FileMenu: "Datei",
@@ -1775,7 +1786,7 @@
             exampleOneFiler: "Programme",
             exampleDemos: "Demos",
             settings: "Einstellungen",
-            queuedFrames: "Frames in der Queue",
+            fiq: "FIQ",
           },
         },
       });
@@ -1815,6 +1826,7 @@
             showDemo10: false,
             showTape: false,
             showCart: false,
+            wakeLockEnable: false,
           };
         },
         computed: {},
@@ -2052,13 +2064,15 @@
           if (!wakeLockEnabled) {
             noSleep.enable(); // keep the screen on!
             wakeLockEnabled = true;
-            toggleEl.value = "Wake Lock is enabled";
+            toggleEl.value = "Wake Lock On";
             document.body.style.backgroundColor = "lightblue";
+            app.wakeLockEnable = true;
           } else {
             noSleep.disable(); // let the screen turn off.
             wakeLockEnabled = false;
-            toggleEl.value = "Wake Lock is disabled";
+            toggleEl.value = "Wake Lock Off";
             document.body.style.backgroundColor = "";
+            app.wakeLockEnable = false;
           }
         },
         false
