@@ -32,6 +32,7 @@ import server.restful.common.JSIDPlay2Servlet;
 import server.restful.common.TeaVMFormat;
 import server.restful.common.parameter.ServletParameterParser;
 import server.restful.common.parameter.requestpath.WebResourceRequestPathServletParameters;
+import ui.common.util.VersionUtil;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "StaticServlet", displayName = "StaticServlet", urlPatterns = CONTEXT_ROOT_STATIC
@@ -98,6 +99,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("teaVMFormat", servletParameters.getTeaVMFormat().name().toLowerCase(Locale.US));
 				replacements.put("teaVMFormatName", servletParameters.getTeaVMFormat().getTeaVMFormatName());
 				replacements.put("teaVMFormatApproximateSize", servletParameters.getTeaVMFormat().getApproximateSize());
+				replacements.put("version", VersionUtil.VERSION);
 				if (!ContentTypeAndFileExtensions.MIME_TYPE_JAVASCRIPT.isCompatible(mimeType.getMimeType())) {
 					replacements.put("min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");
 					replacements.put("prod", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".prod");

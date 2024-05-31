@@ -1383,6 +1383,10 @@
                   >http://hackerswithstyle.ddns.net/assembly/</a
                 ><br />
                 Thank you mate!<br /><br />
+
+                A file set with the source code of this site can be found here for
+                <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-js.zip">JavaScript</a> and
+                <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-wasm.zip">Web Assembly</a>. <br /><br />
                 This program is free software; you can redistribute it and/or modify<br />
                 it under the terms of the GNU General Public License as published by<br />
                 the Free Software Foundation; either version 2 of the License, or<br />
