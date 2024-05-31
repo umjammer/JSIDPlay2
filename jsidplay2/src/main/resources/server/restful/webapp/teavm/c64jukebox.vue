@@ -55,7 +55,7 @@
           <div class="container-fluid">
             <div class="collapse navbar-collapse" id="main_nav">
               <ul class="navbar-nav">
-                <li class="nav-item dropdown" id="myDropdown">
+                <li class="nav-item dropdown" id="myDropdown" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("file") }}</a>
                   <ul class="dropdown-menu" style="width: 200px !important">
                     <li>
@@ -67,7 +67,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="nav-item dropdown" id="myDropdown2">
+                <li class="nav-item dropdown" id="myDropdown2" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("player") }}</a>
                   <ul class="dropdown-menu" style="width: 200px !important">
                     <li>
@@ -98,14 +98,28 @@
                     </li>
                   </ul>
                 </li>
-                <li class="nav-item dropdown" id="myDropdown3">
+                <li class="nav-item dropdown" id="myDropdown3" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("devices") }}</a>
                   <ul class="dropdown-menu" style="width: 160px !important">
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showFloppy = !showFloppy;
+                          showTape = false;
+                          showCart = false;
+                        "
                         >{{ $t("floppy") }}&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showFloppy ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showFloppy
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a class="dropdown-item" href="#" @click="$refs.formDiskFileSm.click()">{{
                             $t("insertDisk")
@@ -141,10 +155,24 @@
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showTape = !showTape"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showTape = !showTape;
+                          showFloppy = false;
+                          showCart = false;
+                        "
                         >{{ $t("tape") }}&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showTape ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showTape
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a class="dropdown-item" href="#" @click="$refs.formTapeFileSm.click()">{{
                             $t("insertTape")
@@ -166,10 +194,24 @@
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showCart = !showCart"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showCart = !showCart;
+                          showTape = false;
+                          showFloppy = false;
+                        "
                         >{{ $t("cart") }}&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showCart ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showCart
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a class="dropdown-item" href="#" @click="$refs.formCartFileSm.click()">{{
                             $t("insertCart")
@@ -200,7 +242,7 @@
           <div class="container-fluid">
             <div class="collapse navbar-collapse" id="main_nav">
               <ul class="navbar-nav">
-                <li class="nav-item dropdown" id="myDropdown4">
+                <li class="nav-item dropdown" id="myDropdown4" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleMusic") }}</a>
                   <ul class="dropdown-menu" style="width: 480px !important">
                     <li>
@@ -343,7 +385,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="nav-item dropdown" id="myDropdow5">
+                <li class="nav-item dropdown" id="myDropdow5" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleOneFiler") }}</a>
                   <ul class="dropdown-menu" style="width: 480px !important">
                     <li>
@@ -483,12 +525,27 @@
                     </li>
                   </ul>
                 </li>
-                <li class="nav-item dropdown" id="myDropdown6">
+                <li class="nav-item dropdown" id="myDropdown6" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleDemos") }}</a>
 
                   <ul class="dropdown-menu" style="width: 340px !important">
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo1 = !showDemo1"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo1 = !showDemo1;
+                          showDemo2 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Fairlight - 1337&raquo;
                       </a>
                       <ul
@@ -560,7 +617,22 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo2 = !showDemo2"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo2 = !showDemo2;
+                          showDemo1 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Performers - Next Level&raquo;
                       </a>
                       <ul
@@ -646,7 +718,22 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo3 = !showDemo3"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo3 = !showDemo3;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Bonzai, Pretzel Logic - Mojo&raquo;
                       </a>
                       <ul
@@ -732,7 +819,22 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo4 = !showDemo4"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo4 = !showDemo4;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo3 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Oxyron - Coma Light 13&raquo;
                       </a>
                       <ul
@@ -790,7 +892,22 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo5 = !showDemo5"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo5 = !showDemo5;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Booze Design - Andropolis&raquo;
                       </a>
                       <ul
@@ -820,7 +937,22 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo6 = !showDemo6"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo6 = !showDemo6;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Oxyron, Censor Design - Comaland&raquo;
                       </a>
                       <ul
@@ -906,7 +1038,22 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo7 = !showDemo7"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo7 = !showDemo7;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo8 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Booze Design - Edge Of Disgrace&raquo;
                       </a>
                       <ul
@@ -978,13 +1125,28 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo7 = !showDemo7"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo8 = !showDemo8;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo9 =
+                            showDemo10 =
+                              false;
+                        "
                         >Arise - E2IRA&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
                         :style="
-                          showDemo7
+                          showDemo8
                             ? 'display: block !important; left: auto; right: 100% !important;'
                             : 'left: auto; right: 100% !important;'
                         "
@@ -1050,13 +1212,28 @@
                     </li>
 
                     <li>
-                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo4 = !showDemo4"
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo9 = !showDemo9;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo10 =
+                              false;
+                        "
                         >Fatzone - Partypopper&raquo;
                       </a>
                       <ul
                         class="submenu dropdown-menu"
                         :style="
-                          showDemo4
+                          showDemo9
                             ? 'display: block !important; left: auto; right: 100% !important;'
                             : 'left: auto; right: 100% !important;'
                         "
@@ -1143,12 +1320,12 @@
             <div v-show="screen" class="col screen-parent">
               <div>
                 <p>{{ msg }}</p>
-                <span v-show="playing">Frames in der Queue: {{ framesCounter }}</span>
+                <span v-show="playing">{{ $t("queuedFrames") }} {{ framesCounter }}</span>
               </div>
               <div style="width: 100%; margin: 0px auto">
                 <canvas
                   id="c64Screen"
-                  style="border: 2px solid black; background-color: black"
+                  style="border: 2px solid black; background-color: black; max-width: 100vw"
                   width="384"
                   height="285"
                 />
@@ -1552,6 +1729,7 @@
             exampleOneFiler: "OneFiler",
             exampleDemos: "Demos",
             settings: "Settings",
+            queuedFrames: "Queued Frames",
           },
           de: {
             FileMenu: "Datei",
@@ -1597,6 +1775,7 @@
             exampleOneFiler: "Programme",
             exampleDemos: "Demos",
             settings: "Einstellungen",
+            queuedFrames: "Frames in der Queue",
           },
         },
       });
