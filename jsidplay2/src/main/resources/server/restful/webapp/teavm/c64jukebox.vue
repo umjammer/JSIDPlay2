@@ -1359,7 +1359,7 @@
                 <li>Plays mono SIDs and ONEfilers on a middle class mobile phone and multi-disk demos on PC</li>
                 <li>Runs near to native speed, performance only depends on your max. single core speed</li>
                 <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
-                <li>Full emulation quality, no compromises, C64, Floppy and more</li>
+                <li>Full emulation quality, no compromise, C64, Floppy and more</li>
                 <li>
                   Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
                 </li>

@@ -11,7 +11,7 @@ C64Jukebox (JavaScript and Web Assembly Versions) added, powered by TeaVM (https
  - Plays mono SIDs and ONEfilers on a middle class mobile phone and multi-disk demos on PC
  - Runs near to native speed, performance only depends on your max. single core speed
  - Runs completely on the client side in a web worker (once in browser's cache)
- - Full emulation quality, no compromises, C64, Floppy and more
+ - Full emulation quality, no compromise, C64, Floppy and more
  - Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
  - For the first time, embed music or demos in YOUR web-site
 
