@@ -100,7 +100,7 @@
                 </li>
                 <li class="nav-item dropdown" id="myDropdown3">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("devices") }}</a>
-                  <ul class="dropdown-menu" style="width: 200px !important">
+                  <ul class="dropdown-menu" style="width: 160px !important">
                     <li>
                       <a class="dropdown-item" href="#" v-on:click.stop="showFloppy = !showFloppy"
                         >{{ $t("floppy") }}&raquo;
@@ -491,7 +491,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo1 = !showDemo1"
                         >Fairlight - 1337&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo1 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo1
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -556,7 +563,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo2 = !showDemo2"
                         >Performers - Next Level&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo2 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo2
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -635,7 +649,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo3 = !showDemo3"
                         >Bonzai, Pretzel Logic - Mojo&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo3 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo3
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -714,7 +735,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo4 = !showDemo4"
                         >Oxyron - Coma Light 13&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo4 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo4
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -765,7 +793,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo5 = !showDemo5"
                         >Booze Design - Andropolis&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo5 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo5
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -788,7 +823,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo6 = !showDemo6"
                         >Oxyron, Censor Design - Comaland&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo6 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo6
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -867,7 +909,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo7 = !showDemo7"
                         >Booze Design - Edge Of Disgrace&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo7 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo7
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -932,7 +981,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo7 = !showDemo7"
                         >Arise - E2IRA&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo7 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo7
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
@@ -997,7 +1053,14 @@
                       <a class="dropdown-item" href="#" v-on:click.stop="showDemo4 = !showDemo4"
                         >Fatzone - Partypopper&raquo;
                       </a>
-                      <ul class="submenu dropdown-menu" :style="showDemo4 ? 'display: block !important' : ''">
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo4
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
                         <li>
                           <a
                             class="dropdown-item"
