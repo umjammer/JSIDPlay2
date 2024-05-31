@@ -357,6 +357,84 @@
                 </li>
               </ol>
 
+            <div class="col">
+              <h2>{{ $t("exampleOneFiler") }}</h2>
+              <ol>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndStartProgram(
+                        'fppscroller.prg',
+                        '/jsidplay2service/JSIDPlay2REST/download/fppscroller.prg?itemId=230558&categoryId=1'
+                      )
+                    "
+                  >
+                    Booze Design - Party Elk 2
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndStartProgram(
+                        'copperbooze.prg',
+                        '/jsidplay2service/JSIDPlay2REST/download/copperbooze.prg?itemId=197429&categoryId=1'
+                      )
+                    "
+                  >
+                    Booze Design - Copper Booze
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndStartProgram(
+                        'foryourspritesonly.prg',
+                        '/jsidplay2service/JSIDPlay2REST/download/foryourspritesonly.prg?itemId=198971&categoryId=1'
+                      )
+                    "
+                  >
+                    Booze Design - For Your Sprites Only
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndStartProgram(
+                        'layers.prg',
+                        '/jsidplay2service/JSIDPlay2REST/download/layers.prg?itemId=242834&categoryId=1'
+                      )
+                    "
+                  >
+                    Finnish Gold - Layers
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndStartProgram(
+                        'atl-lovecats.prg',
+                        '/jsidplay2service/JSIDPlay2REST/download/atl-lovecats.prg?itemId=198558&categoryId=1'
+                      )
+                    "
+                  >
+                    Atlantis - Lovecats
+                  </a>
+                </li>
+                
+                
+                
+              </ol>
+
               <h2>{{ $t("exampleDemos") }}</h2>
               <ol>
                 <li>
@@ -735,6 +813,44 @@
                     <i class="bi bi-floppy"></i>3
                   </button>
                 </li>
+                <li>
+                  <a
+                    href="#"
+                    v-on:click="
+                      stopTune();
+                      downloadAndInsertDisk(
+                        'Partypopper-Disk1.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
+                      );
+                    "
+                  >
+                    Fatzone - Partypopper
+                  </a>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'Partypopper-Disk1.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>1
+                  </button>
+                  <button
+                    type="button"
+                    v-on:click="
+                      downloadAndInsertDisk(
+                        'Partypopper-Disk2.d64',
+                        '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
+                      )
+                    "
+                  >
+                    <i class="bi bi-floppy"></i>2
+                  </button>
+                </li>
+                
+                
               </ol>
             </div>
           </div>
@@ -744,12 +860,12 @@
             <div class="col">
               <h2>${teaVMFormatName} Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></h2>
               <ol>
-                <li>Run JSIDPlay2 in a browser in ${teaVMFormatName} (THIS IS NOT JAVA)</li>
+                <li>Run JSIDPlay2 in a browser in <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS">JavaScript</a> or <a href="/static/teavm/c64jukebox.vue?teavmFormat=WASM">Web Assembly</a> (THIS IS NOT JAVA)</li>
                 <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
                 <li>Only ${teaVMFormatApproximateSize} in size, loads very quick</li>
-                <li>Compatible with all SIDs (mono, stereo and 3-SID), can even run multi-disk demos on PC</li>
+                <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
+                <li>Plays at least mono SIDs on a middle class mobile phone, runs multi-disk demos on PC</li>
                 <li>Runs near to native speed, performance only depends on your max. single core speed</li>
-                <li>Plays at least mono SIDs on a mobile phone</li>
                 <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
                 <li>Full emulation quality, no compromises, C64, Floppy and more</li>
                 <li>
@@ -757,6 +873,29 @@
                 </li>
                 <li>For the first time, embed music or demos in YOUR web-site</li>
               </ol>
+              <p style="text-align: center; font-size: smaller; padding: 16px">
+                C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
+                JSIDPlay2 is copyrighted to:<br />
+                2007-${year} Ken H&#228;ndel,<br />
+                Antti S. Lankila and Wilfred Bos<br /><br />
+                Distortion Simulation and 6581/8580 emulation:<br />
+                Copyright &#169; 2005-2011 Antti S. Lankila<br />
+                ReSID engine and 6581/8580 emulation:<br />
+                Copyright &#169; 1999-2011 Dag Lem<br />
+                Source code of JSIDPlay2 and the built-in AppServer can be found at:<br />
+                <a href="https://sourceforge.net/projects/jsidplay2" target="_blank"
+                  >https://sourceforge.net/projects/jsidplay2</a
+                ><br /><br />
+                The search function of this web-site is powered by Assembly64 by Fredrik &Aring;berg.<br />
+                <a href="https://hackerswithstyle.se/assembly/" target="_blank"
+                  >http://hackerswithstyle.ddns.net/assembly/</a
+                ><br />
+                Thank you mate!<br /><br />
+                This program is free software; you can redistribute it and/or modify<br />
+                it under the terms of the GNU General Public License as published by<br />
+                the Free Software Foundation; either version 2 of the License, or<br />
+                (at your option) any later version.
+              </p>
             </div>
             <div v-show="!playing" class="col">
               <div class="form-check">
@@ -1106,6 +1245,7 @@
             loadTape: "Load",
             space: "Space Key",
             exampleMusic: "Example Music",
+            exampleOneFiler: "Example OneFiler",
             exampleDemos: "Example Demos",
             settings: "Settings",
           },
@@ -1150,6 +1290,7 @@
             loadTape: "Load",
             space: "Leertaste",
             exampleMusic: "Beispiel Musik",
+            exampleOneFiler: "Beispiel Programme",
             exampleDemos: "Beispiel Demos",
             settings: "Einstellungen",
           },
@@ -1207,8 +1348,8 @@
               wasmWorker(undefined, undefined, undefined, undefined, command);
             }
           },
-          startTune() {
-            app.screen = false;
+          startTune(screen) {
+            app.screen = screen? screen : false;
             app.stopTune();
             if (app.$refs.formFileSm.files[0]) {
               var reader = new FileReader();
@@ -1218,7 +1359,7 @@
               reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
             }
           },
-          downloadAndStartTune(name, url) {
+          downloadAndStartTune(name, url, screen) {
             let headers = new Headers();
             headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
             fetch(url, { method: "GET", headers: headers })
@@ -1230,7 +1371,7 @@
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(file);
                 app.$refs.formFileSm.files = dataTransfer.files;
-                app.startTune();
+                app.startTune(screen);
               });
           },
           pauseTune() {
@@ -1295,6 +1436,11 @@
             if (app.$refs.formDiskFileSm && app.$refs.formDiskFileSm.files[0]) {
               reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
             }
+          },
+          downloadAndStartProgram(name, url) {
+            app.ejectTape();
+            app.ejectDisk();
+            app.downloadAndStartTune(name, url, true);
           },
           downloadAndInsertDisk(name, url) {
             let headers = new Headers();
