@@ -357,7 +357,6 @@
                 </li>
               </ol>
 
-            <div class="col">
               <h2>{{ $t("exampleOneFiler") }}</h2>
               <ol>
                 <li>
@@ -368,7 +367,7 @@
                       downloadAndStartProgram(
                         'fppscroller.prg',
                         '/jsidplay2service/JSIDPlay2REST/download/fppscroller.prg?itemId=230558&categoryId=1'
-                      )
+                      );
                     "
                   >
                     Booze Design - Party Elk 2
@@ -382,7 +381,7 @@
                       downloadAndStartProgram(
                         'copperbooze.prg',
                         '/jsidplay2service/JSIDPlay2REST/download/copperbooze.prg?itemId=197429&categoryId=1'
-                      )
+                      );
                     "
                   >
                     Booze Design - Copper Booze
@@ -396,7 +395,7 @@
                       downloadAndStartProgram(
                         'foryourspritesonly.prg',
                         '/jsidplay2service/JSIDPlay2REST/download/foryourspritesonly.prg?itemId=198971&categoryId=1'
-                      )
+                      );
                     "
                   >
                     Booze Design - For Your Sprites Only
@@ -410,7 +409,7 @@
                       downloadAndStartProgram(
                         'layers.prg',
                         '/jsidplay2service/JSIDPlay2REST/download/layers.prg?itemId=242834&categoryId=1'
-                      )
+                      );
                     "
                   >
                     Finnish Gold - Layers
@@ -424,15 +423,12 @@
                       downloadAndStartProgram(
                         'atl-lovecats.prg',
                         '/jsidplay2service/JSIDPlay2REST/download/atl-lovecats.prg?itemId=198558&categoryId=1'
-                      )
+                      );
                     "
                   >
                     Atlantis - Lovecats
                   </a>
                 </li>
-                
-                
-                
               </ol>
 
               <h2>{{ $t("exampleDemos") }}</h2>
@@ -849,8 +845,6 @@
                     <i class="bi bi-floppy"></i>2
                   </button>
                 </li>
-                
-                
               </ol>
             </div>
           </div>
@@ -860,7 +854,10 @@
             <div class="col">
               <h2>${teaVMFormatName} Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></h2>
               <ol>
-                <li>Run JSIDPlay2 in a browser in <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS">JavaScript</a> or <a href="/static/teavm/c64jukebox.vue?teavmFormat=WASM">Web Assembly</a> (THIS IS NOT JAVA)</li>
+                <li>
+                  Run JSIDPlay2 in a browser in <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS">JavaScript</a> or
+                  <a href="/static/teavm/c64jukebox.vue?teavmFormat=WASM">Web Assembly</a> (THIS IS NOT JAVA)
+                </li>
                 <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
                 <li>Only ${teaVMFormatApproximateSize} in size, loads very quick</li>
                 <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
@@ -1349,7 +1346,7 @@
             }
           },
           startTune(screen) {
-            app.screen = screen? screen : false;
+            app.screen = screen ? screen : false;
             app.stopTune();
             if (app.$refs.formFileSm.files[0]) {
               var reader = new FileReader();
