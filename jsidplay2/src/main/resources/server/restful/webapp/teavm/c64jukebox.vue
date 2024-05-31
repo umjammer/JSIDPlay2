@@ -51,7 +51,7 @@
           </select>
         </div>
 
-        <nav class="navbar navbar-expand navbar-dark bg-primary">
+        <nav class="navbar navbar-expand navbar-dark bg-primary p-0">
           <div class="container-fluid">
             <div class="collapse navbar-collapse" id="main_nav">
               <ul class="navbar-nav">
@@ -67,7 +67,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="nav-item dropdown" id="myDropdown">
+                <li class="nav-item dropdown" id="myDropdown2">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("player") }}</a>
                   <ul class="dropdown-menu" style="width: 200px !important">
                     <li>
@@ -98,7 +98,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="nav-item dropdown" id="myDropdown">
+                <li class="nav-item dropdown" id="myDropdown3">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("devices") }}</a>
                   <ul class="dropdown-menu" style="width: 200px !important">
                     <li>
@@ -196,6 +196,862 @@
           <!-- container-fluid.// -->
         </nav>
 
+        <nav class="navbar navbar-expand navbar-dark bg-primary p-0">
+          <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="main_nav">
+              <ul class="navbar-nav">
+                <li class="nav-item dropdown" id="myDropdown4">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleMusic") }}</a>
+                  <ul class="dropdown-menu" style="width: 480px !important">
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'Turrican Rise Of the Mashine',
+                            '/jsidplay2service/JSIDPlay2REST/download/turrican_rotm.sid?itemId=189430&categoryId=4'
+                          )
+                        "
+                        >Chris Huelsbeck &amp; Jason Page - Turrican Rise Of the Mashine</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'Only 299.99',
+                            '/jsidplay2service/JSIDPlay2REST/download/Only_299_99.sid?itemId=3470375608&categoryId=18'
+                          )
+                        "
+                        >Mutetus - Only 299.99</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'Banaanin Alle',
+                            '/jsidplay2service/JSIDPlay2REST/download/mutetus_banaaninalle.sid?itemId=209406&categoryId=4'
+                          )
+                        "
+                      >
+                        Mutetus - Banaanin Alle
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'Rocco_Siffredi_Invades_1541_II.sid',
+                            '/jsidplay2service/JSIDPlay2REST/download/Rocco_Siffredi_Invades_1541_II.sid?itemId=73719&categoryId=4'
+                          )
+                        "
+                      >
+                        Jammer - Rocco Siffredi Invades 1541II
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'Hi Fi Sky',
+                            '/jsidplay2service/JSIDPlay2REST/download/Hi_Fi_Sky.sid?itemId=4064310083&categoryId=18'
+                          )
+                        "
+                      >
+                        LMan - Hi Fi Sky
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'blindsided',
+                            '/jsidplay2service/JSIDPlay2REST/download/blindsided.sid?itemId=239345&categoryId=4'
+                          )
+                        "
+                      >
+                        Stinsen - blindsided
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'running_up_that_hill.sid',
+                            '/jsidplay2service/JSIDPlay2REST/download/running_up_that_hill.sid?itemId=238798&categoryId=4'
+                          )
+                        "
+                      >
+                        Slaxx, Nordischsound - Running Up That Hill
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'stinsen_last_night_of_89.sid',
+                            '/jsidplay2service/JSIDPlay2REST/download/stinsen_last_night_of_89.sid?itemId=201399&categoryId=4'
+                          )
+                        "
+                      >
+                        Bonzai - Stinsens Last Night of 89
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'generations.sid',
+                            '/jsidplay2service/JSIDPlay2REST/download/generations.sid?itemId=242010&categoryId=4'
+                          )
+                        "
+                      >
+                        Flotsam - Generations
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          downloadAndStartTune(
+                            'Cauldron_II_Sinus_Milieu_Studie.sid',
+                            '/jsidplay2service/JSIDPlay2REST/download/Cauldron_II_Sinus_Milieu_Studie.sid?itemId=61763&categoryId=4'
+                          )
+                        "
+                      >
+                        Viruz - Cauldron II Sinus Milieu Studie
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown" id="myDropdow5">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleOneFiler") }}</a>
+                  <ul class="dropdown-menu" style="width: 480px !important">
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'fppscroller.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/fppscroller.prg?itemId=230558&categoryId=1'
+                          );
+                        "
+                      >
+                        Booze Design - Party Elk 2
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'copperbooze.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/copperbooze.prg?itemId=197429&categoryId=1'
+                          );
+                        "
+                      >
+                        Booze Design - Copper Booze
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'foryourspritesonly.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/foryourspritesonly.prg?itemId=198971&categoryId=1'
+                          );
+                        "
+                      >
+                        Booze Design - For Your Sprites Only
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'layers.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/layers.prg?itemId=242834&categoryId=1'
+                          );
+                        "
+                      >
+                        Finnish Gold - Layers
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'atl-lovecats.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/atl-lovecats.prg?itemId=198558&categoryId=1'
+                          );
+                        "
+                      >
+                        Atlantis - Lovecats
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'smile-to-the-sky.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/smile-to-the-sky.prg?itemId=172574&categoryId=1'
+                          );
+                        "
+                      >
+                        Offence - Smile to the Sky
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'Comajob.t64',
+                            '/jsidplay2service/JSIDPlay2REST/download/Comajob.t64?itemId=11653&categoryId=1'
+                          );
+                        "
+                      >
+                        Crest,Oxyron - Coma Job
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'X12Demo.t64',
+                            '/jsidplay2service/JSIDPlay2REST/download/X12Demo.t64?itemId=112416&categoryId=1'
+                          );
+                        "
+                      >
+                        Abnormal - X2012
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'whitelines2bh.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/whitelines2bh.prg?itemId=232984&categoryId=1'
+                          );
+                        "
+                      >
+                        Plush - White Lines
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown" id="myDropdown6">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleDemos") }}</a>
+
+                  <ul class="dropdown-menu" style="width: 340px !important">
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo1 = !showDemo1"
+                        >Fairlight - 1337&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo1 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                '1337-a',
+                                '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                '1337-a',
+                                '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                '1337-b',
+                                '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-b.d64?itemId=242855&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                '1337-c',
+                                '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-c.d64?itemId=242855&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 3
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo2 = !showDemo2"
+                        >Performers - Next Level&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo2 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'NextLevelImage1.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'NextLevelImage1.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'NextLevelImage2.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image2.d64?itemId=232976&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'NextLevelImage3.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=232976&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 3
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'NextLevelImage4.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image4.d64?itemId=232976&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 4
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo3 = !showDemo3"
+                        >Bonzai, Pretzel Logic - Mojo&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo3 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'Mojo_Side1.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Mojo_Side1.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Mojo_Side2.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side2.D64?itemId=232966&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Mojo_Side3.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side3.D64?itemId=232966&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 3
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Mojo_Side4.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side4.D64?itemId=232966&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 4
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo4 = !showDemo4"
+                        >Oxyron - Coma Light 13&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo4 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'ComaLight13Side1',
+                                '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'ComaLight13Side1',
+                                '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'ComaLight13Side2',
+                                '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side2.d64?itemId=112378&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo5 = !showDemo5"
+                        >Booze Design - Andropolis&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo5 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'Andropolis.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Instinct%20BoozeDesign%20-%20Andropolis.d64?itemId=81157&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo6 = !showDemo6"
+                        >Oxyron, Censor Design - Comaland&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo6 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'ComalandImage1.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=139278&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'ComalandImage1.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=139278&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Mojo_Side2.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side2.D64?itemId=232966&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Mojo_Side3.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side3.D64?itemId=232966&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 3
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Mojo_Side4.D64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side4.D64?itemId=232966&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 4
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo7 = !showDemo7"
+                        >Booze Design - Edge Of Disgrace&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo7 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'EdgeOfDisgrace_0.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_0.d64?itemId=72550&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'EdgeOfDisgrace_0.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_0.d64?itemId=72550&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 0
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'EdgeOfDisgrace_1a.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_1a.d64?itemId=72550&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1a
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'EdgeOfDisgrace_1b.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_1b.d64?itemId=72550&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1b
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo7 = !showDemo7"
+                        >Arise - E2IRA&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo7 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'e2ira_101_A.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_A.d64?itemId=218343&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'e2ira_101_A.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_A.d64?itemId=218343&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'e2ira_101_B.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_B.d64?itemId=218343&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'e2ira_101_C.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_C.d64?itemId=218343&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 3
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="#" v-on:click.stop="showDemo4 = !showDemo4"
+                        >Fatzone - Partypopper&raquo;
+                      </a>
+                      <ul class="submenu dropdown-menu" :style="showDemo4 ? 'display: block !important' : ''">
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'Partypopper-Disk1.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Partypopper-Disk1.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Partypopper-Disk2.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk2.d64?itemId=216277&categoryId=1'
+                              )
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <!-- navbar-collapse.// -->
+          </div>
+          <!-- container-fluid.// -->
+        </nav>
+
         <div class="container">
           <div class="row">
             <div class="col">
@@ -224,9 +1080,9 @@
             <div v-show="screen" class="col screen-parent">
               <div>
                 <p>{{ msg }}</p>
+                <span v-show="playing">Frames in der Queue: {{ framesCounter }}</span>
               </div>
               <div style="width: 100%; margin: 0px auto">
-                <span v-show="playing">Frames in der Queue: {{ framesCounter }}</span>
                 <canvas
                   id="c64Screen"
                   style="border: 2px solid black; background-color: black"
@@ -234,618 +1090,6 @@
                   height="285"
                 />
               </div>
-            </div>
-            <div class="col">
-              <h2>{{ $t("exampleMusic") }}</h2>
-              <ol>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'Turrican Rise Of the Mashine',
-                        '/jsidplay2service/JSIDPlay2REST/download/turrican_rotm.sid?itemId=189430&categoryId=4'
-                      )
-                    "
-                  >
-                    Chris Huelsbeck &amp; Jason Page - Turrican Rise Of the Mashine
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'Only 299.99',
-                        '/jsidplay2service/JSIDPlay2REST/download/Only_299_99.sid?itemId=3470375608&categoryId=18'
-                      )
-                    "
-                  >
-                    Mutetus - Only 299.99
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'Banaanin Alle',
-                        '/jsidplay2service/JSIDPlay2REST/download/mutetus_banaaninalle.sid?itemId=209406&categoryId=4'
-                      )
-                    "
-                  >
-                    Mutetus - Banaanin Alle
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'So Grainy It Hertz',
-                        '/jsidplay2service/JSIDPlay2REST/download/sograinyithertz_25hz.sid?itemId=193534&categoryId=4'
-                      )
-                    "
-                  >
-                    Jammer - So Grainy It Hertz
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'Hi Fi Sky',
-                        '/jsidplay2service/JSIDPlay2REST/download/Hi_Fi_Sky.sid?itemId=4064310083&categoryId=18'
-                      )
-                    "
-                  >
-                    LMan - Hi Fi Sky
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'blindsided',
-                        '/jsidplay2service/JSIDPlay2REST/download/blindsided.sid?itemId=239345&categoryId=4'
-                      )
-                    "
-                  >
-                    Stinsen - blindsided
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'running_up_that_hill.sid',
-                        '/jsidplay2service/JSIDPlay2REST/download/running_up_that_hill.sid?itemId=238798&categoryId=4'
-                      )
-                    "
-                  >
-                    Slaxx, Nordischsound - Running Up That Hill
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'doublebass_v2.sid',
-                        '/jsidplay2service/JSIDPlay2REST/download/doublebass_v2.sid?itemId=212358&categoryId=4'
-                      )
-                    "
-                  >
-                    acrouzet - Doublebass (v2)
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      downloadAndStartTune(
-                        'generations.sid',
-                        '/jsidplay2service/JSIDPlay2REST/download/generations.sid?itemId=242010&categoryId=4'
-                      )
-                    "
-                  >
-                    Flotsam - Generations
-                  </a>
-                </li>
-              </ol>
-
-              <h2>{{ $t("exampleOneFiler") }}</h2>
-              <ol>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndStartProgram(
-                        'fppscroller.prg',
-                        '/jsidplay2service/JSIDPlay2REST/download/fppscroller.prg?itemId=230558&categoryId=1'
-                      );
-                    "
-                  >
-                    Booze Design - Party Elk 2
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndStartProgram(
-                        'copperbooze.prg',
-                        '/jsidplay2service/JSIDPlay2REST/download/copperbooze.prg?itemId=197429&categoryId=1'
-                      );
-                    "
-                  >
-                    Booze Design - Copper Booze
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndStartProgram(
-                        'foryourspritesonly.prg',
-                        '/jsidplay2service/JSIDPlay2REST/download/foryourspritesonly.prg?itemId=198971&categoryId=1'
-                      );
-                    "
-                  >
-                    Booze Design - For Your Sprites Only
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndStartProgram(
-                        'layers.prg',
-                        '/jsidplay2service/JSIDPlay2REST/download/layers.prg?itemId=242834&categoryId=1'
-                      );
-                    "
-                  >
-                    Finnish Gold - Layers
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndStartProgram(
-                        'atl-lovecats.prg',
-                        '/jsidplay2service/JSIDPlay2REST/download/atl-lovecats.prg?itemId=198558&categoryId=1'
-                      );
-                    "
-                  >
-                    Atlantis - Lovecats
-                  </a>
-                </li>
-              </ol>
-
-              <h2>{{ $t("exampleDemos") }}</h2>
-              <ol>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        '1337-a',
-                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
-                      );
-                    "
-                  >
-                    Fairlight - 1337
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        '1337-a',
-                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        '1337-b',
-                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-b.d64?itemId=242855&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        '1337-c',
-                        '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-c.d64?itemId=242855&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>3
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'NextLevelImage1.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
-                      );
-                    "
-                  >
-                    Performers - Next Level
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'NextLevelImage1.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=232976&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'NextLevelImage2.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image2.d64?itemId=232976&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'NextLevelImage3.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=232976&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>3
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'NextLevelImage4.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image4.d64?itemId=232976&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>4
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'Mojo_Side1.D64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
-                      );
-                    "
-                  >
-                    Bonzai, Pretzel Logic - Mojo
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'Mojo_Side1.D64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side1.D64?itemId=232966&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'Mojo_Side2.D64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side2.D64?itemId=232966&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'Mojo_Side3.D64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side3.D64?itemId=232966&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>3
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'Mojo_Side4.D64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side4.D64?itemId=232966&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>4
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'ComaLight13Side1',
-                        '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
-                      );
-                    "
-                  >
-                    Oxyron - Coma Light 13
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'ComaLight13Side1',
-                        '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'ComaLight13Side2',
-                        '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side2.d64?itemId=112378&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'EdgeOfDisgrace_0.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_0.d64?itemId=72550&categoryId=1'
-                      );
-                    "
-                  >
-                    Booze Design - Edge Of Disgrace
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'EdgeOfDisgrace_0.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_0.d64?itemId=72550&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'EdgeOfDisgrace_1a.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_1a.d64?itemId=72550&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'EdgeOfDisgrace_1b.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/EdgeOfDisgrace_1b.d64?itemId=72550&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>3
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'ComalandImage1.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=139278&categoryId=1'
-                      );
-                    "
-                  >
-                    Oxyron, Censor Design - Comaland
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'ComalandImage1.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image1.d64?itemId=139278&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'ComalandImage2.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image2.d64?itemId=139278&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'ComalandImage3.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=139278&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>3
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'ComalandImage4.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/image4.d64?itemId=139278&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>4
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'Andropolis.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Instinct%20BoozeDesign%20-%20Andropolis.d64?itemId=81157&categoryId=1'
-                      );
-                    "
-                  >
-                    Booze Design - Andropolis
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'Andropolis.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Instinct%20BoozeDesign%20-%20Andropolis.d64?itemId=81157&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'e2ira_101_A.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_A.d64?itemId=218343&categoryId=1'
-                      );
-                    "
-                  >
-                    Arise - E2IRA
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'e2ira_101_A.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_A.d64?itemId=218343&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'e2ira_101_B.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_B.d64?itemId=218343&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'e2ira_101_C.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/e2ira_101_C.d64?itemId=218343&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>3
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    v-on:click="
-                      stopTune();
-                      downloadAndInsertDisk(
-                        'Partypopper-Disk1.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
-                      );
-                    "
-                  >
-                    Fatzone - Partypopper
-                  </a>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'Partypopper-Disk1.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>1
-                  </button>
-                  <button
-                    type="button"
-                    v-on:click="
-                      downloadAndInsertDisk(
-                        'Partypopper-Disk2.d64',
-                        '/jsidplay2service/JSIDPlay2REST/download/Partypopper-Disk1.d64?itemId=216277&categoryId=1'
-                      )
-                    "
-                  >
-                    <i class="bi bi-floppy"></i>2
-                  </button>
-                </li>
-              </ol>
             </div>
           </div>
         </div>
@@ -861,7 +1105,7 @@
                 <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
                 <li>Only ${teaVMFormatApproximateSize} in size, loads very quick</li>
                 <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
-                <li>Plays at least mono SIDs on a middle class mobile phone, runs multi-disk demos on PC</li>
+                <li>Plays mono SIDs and ONEfilers on a middle class mobile phone and multi-disk demos on PC</li>
                 <li>Runs near to native speed, performance only depends on your max. single core speed</li>
                 <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
                 <li>Full emulation quality, no compromises, C64, Floppy and more</li>
@@ -1241,9 +1485,9 @@
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Space Key",
-            exampleMusic: "Example Music",
-            exampleOneFiler: "Example OneFiler",
-            exampleDemos: "Example Demos",
+            exampleMusic: "Music",
+            exampleOneFiler: "OneFiler",
+            exampleDemos: "Demos",
             settings: "Settings",
           },
           de: {
@@ -1286,9 +1530,9 @@
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Leertaste",
-            exampleMusic: "Beispiel Musik",
-            exampleOneFiler: "Beispiel Programme",
-            exampleDemos: "Beispiel Demos",
+            exampleMusic: "Musik",
+            exampleOneFiler: "Programme",
+            exampleDemos: "Demos",
             settings: "Einstellungen",
           },
         },
@@ -1317,6 +1561,16 @@
             audioBufferSize: 48000,
             framesCounter: 0,
             showFloppy: false,
+            showDemo1: false,
+            showDemo2: false,
+            showDemo3: false,
+            showDemo4: false,
+            showDemo5: false,
+            showDemo6: false,
+            showDemo7: false,
+            showDemo8: false,
+            showDemo9: false,
+            showDemo10: false,
             showTape: false,
             showCart: false,
           };
