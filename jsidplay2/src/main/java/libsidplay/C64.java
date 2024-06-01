@@ -415,8 +415,7 @@ public abstract class C64 implements DatasetteEnvironment, C1541Environment, Use
 		context.reset();
 		keyboard.reset();
 		pla.reset();
-		cpu.setJmpJsrHandler(Register_ProgramCounter -> {
-		});
+		cpu.setJmpJsrHandler(null);
 		cpu.triggerRST();
 		cia1.reset();
 		cia2.reset();

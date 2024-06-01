@@ -112,8 +112,7 @@ public class MOS6510 {
 	protected boolean flagB;
 
 	protected Function<Boolean, Boolean> v = Function.identity();
-	protected Consumer<Integer> jmpJsr = Register_ProgramCounter -> {
-	};
+	protected Consumer<Integer> jmpJsr = null;
 	protected Function<Integer, Byte> cpuRead;
 	protected BiConsumer<Integer, Byte> cpuWrite;
 
@@ -1450,7 +1449,9 @@ public class MOS6510 {
 			case JMPi:
 				instrTable[buildCycle++] = () -> {
 					Register_ProgramCounter = Cycle_EffectiveAddress;
-					jmpJsr.accept(Register_ProgramCounter);
+					if (jmpJsr != null) {
+						jmpJsr.accept(Register_ProgramCounter);
+					}
 					interruptsAndNextOpcode();
 				};
 				break;
