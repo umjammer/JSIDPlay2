@@ -1374,10 +1374,12 @@
                 Copyright &#169; 2005-2011 Antti S. Lankila<br />
                 ReSID engine and 6581/8580 emulation:<br />
                 Copyright &#169; 1999-2011 Dag Lem<br />
-                Source code and how-to README  of C64jukebox ${teaVMFormatName} Version can be found at:<br />
+                Source code and how-to README of C64jukebox ${teaVMFormatName} Version can be found at:<br />
                 <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
                   >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
-                  > <br /> <br />
+                >
+                <br />
+                <br />
                 The search function of this web-site is powered by Assembly64 by Fredrik &Aring;berg.<br />
                 <a href="https://hackerswithstyle.se/assembly/" target="_blank"
                   >http://hackerswithstyle.ddns.net/assembly/</a
