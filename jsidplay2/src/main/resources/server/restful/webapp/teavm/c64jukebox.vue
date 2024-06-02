@@ -244,7 +244,7 @@
               <ul class="navbar-nav">
                 <li class="nav-item dropdown" id="myDropdown4" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleMusic") }}</a>
-                  <ul class="dropdown-menu" style="width: 480px !important">
+                  <ul class="dropdown-menu">
                     <li>
                       <a
                         class="dropdown-item"
@@ -255,7 +255,7 @@
                             '/jsidplay2service/JSIDPlay2REST/download/turrican_rotm.sid?itemId=189430&categoryId=4'
                           )
                         "
-                        >Chris Huelsbeck &amp; Jason Page - Turrican Rise Of the Mashine</a
+                        >Turrican Rise Of the Mashine - Jason Page</a
                       >
                     </li>
                     <li>
@@ -268,7 +268,7 @@
                             '/jsidplay2service/JSIDPlay2REST/download/Only_299_99.sid?itemId=3470375608&categoryId=18'
                           )
                         "
-                        >Mutetus - Only 299.99</a
+                        >Only 299.99 - Mutetus</a
                       >
                     </li>
                     <li>
@@ -282,7 +282,7 @@
                           )
                         "
                       >
-                        Mutetus - Banaanin Alle
+                        Banaanin Alle - Mutetus
                       </a>
                     </li>
                     <li>
@@ -296,7 +296,7 @@
                           )
                         "
                       >
-                        Jammer - Rocco Siffredi Invades 1541II
+                        Rocco Siffredi Invades 1541II - Jammer
                       </a>
                     </li>
                     <li>
@@ -310,7 +310,7 @@
                           )
                         "
                       >
-                        LMan - Hi Fi Sky
+                        Hi Fi Sky - LMan
                       </a>
                     </li>
                     <li>
@@ -324,7 +324,7 @@
                           )
                         "
                       >
-                        Stinsen - blindsided
+                        Blindsided - Stinsen
                       </a>
                     </li>
                     <li>
@@ -338,7 +338,7 @@
                           )
                         "
                       >
-                        Slaxx, Nordischsound - Running Up That Hill
+                        Running Up That Hill - Slaxx, Nordischsound
                       </a>
                     </li>
                     <li>
@@ -352,7 +352,7 @@
                           )
                         "
                       >
-                        Bonzai - Stinsens Last Night of 89
+                        Stinsens Last Night of 89 - Bonzai
                       </a>
                     </li>
                     <li>
@@ -366,7 +366,7 @@
                           )
                         "
                       >
-                        Flotsam - Generations
+                        Generations - Flotsam
                       </a>
                     </li>
                     <li>
@@ -380,14 +380,14 @@
                           )
                         "
                       >
-                        Viruz - Cauldron II Sinus Milieu Studie
+                        Cauldron II Sinus Milieu Studie - Viruz
                       </a>
                     </li>
                   </ul>
                 </li>
                 <li class="nav-item dropdown" id="myDropdow5" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleOneFiler") }}</a>
-                  <ul class="dropdown-menu" style="width: 480px !important">
+                  <ul class="dropdown-menu">
                     <li>
                       <a
                         class="dropdown-item"
@@ -400,7 +400,7 @@
                           );
                         "
                       >
-                        Booze Design - Party Elk 2
+                        Party Elk 2 - Booze Design
                       </a>
                     </li>
                     <li>
@@ -415,7 +415,7 @@
                           );
                         "
                       >
-                        Booze Design - Copper Booze
+                        Copper Booze - Booze Design
                       </a>
                     </li>
                     <li>
@@ -430,7 +430,7 @@
                           );
                         "
                       >
-                        Booze Design - For Your Sprites Only
+                        For Your Sprites Only - Booze
                       </a>
                     </li>
                     <li>
@@ -445,7 +445,7 @@
                           );
                         "
                       >
-                        Finnish Gold - Layers
+                        Layers - Finnish Gold
                       </a>
                     </li>
                     <li>
@@ -460,7 +460,7 @@
                           );
                         "
                       >
-                        Atlantis - Lovecats
+                        Lovecats - Atlantis
                       </a>
                     </li>
                     <li>
@@ -475,7 +475,7 @@
                           );
                         "
                       >
-                        Offence - Smile to the Sky
+                        Smile to the Sky - Offence
                       </a>
                     </li>
                     <li>
@@ -490,7 +490,7 @@
                           );
                         "
                       >
-                        Crest,Oxyron - Coma Job
+                        Coma Job - Crest,Oxyron
                       </a>
                     </li>
                     <li>
@@ -505,7 +505,7 @@
                           );
                         "
                       >
-                        Abnormal - X2012
+                        X2012 - Abnormal
                       </a>
                     </li>
                     <li>
@@ -520,15 +520,33 @@
                           );
                         "
                       >
-                        Plush - White Lines
+                        White Lines - Plush
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          downloadAndStartProgram(
+                            'daah_those_acid_pills.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/daah_those_acid_pills.prg?itemId=118639&categoryId=1'
+                          );
+                        "
+                      >
+                        Daah, Those Acid Pills - Censor
                       </a>
                     </li>
                   </ul>
                 </li>
+                
+                
+                
                 <li class="nav-item dropdown" id="myDropdown6" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleDemos") }}</a>
 
-                  <ul class="dropdown-menu" style="width: 340px !important">
+                  <ul class="dropdown-menu">
                     <li>
                       <a
                         class="dropdown-item"
@@ -1283,6 +1301,81 @@
                         </li>
                       </ul>
                     </li>
+                    
+                    
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        v-on:click.stop="
+                          showDemo10 = !showDemo10;
+                          showDemo1 =
+                            showDemo2 =
+                            showDemo3 =
+                            showDemo4 =
+                            showDemo5 =
+                            showDemo6 =
+                            showDemo7 =
+                            showDemo8 =
+                            showDemo9 =
+                              false;
+                        "
+                        >Amanita (80%)&raquo;
+                      </a>
+                      <ul
+                        class="submenu dropdown-menu"
+                        :style="
+                          showDemo10
+                            ? 'display: block !important; left: auto; right: 100% !important;'
+                            : 'left: auto; right: 100% !important;'
+                        "
+                      >
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              stopTune();
+                              downloadAndInsertDisk(
+                                'Amanita_by_Samar_Disk_A.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Amanita_by_Samar_Disk_A.d64?itemId=218357&categoryId=1'
+                              );
+                            "
+                          >
+                            Autostart
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Amanita_by_Samar_Disk_A.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Amanita_by_Samar_Disk_A.d64?itemId=218357&categoryId=1'
+                              );
+                            "
+                          >
+                            Disk 1
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              downloadAndInsertDisk(
+                                'Amanita_by_Samar_Disk_B.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/Amanita_by_Samar_Disk_B.d64?itemId=218357&categoryId=1'
+                              );
+                            "
+                          >
+                            Disk 2
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                    
                   </ul>
                 </li>
               </ul>
