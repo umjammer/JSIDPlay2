@@ -142,8 +142,6 @@
                   command: command,
                 },
               });
-
-              nextTime = 0;
             }
           });
 
@@ -151,6 +149,8 @@
             reject(error);
           });
 
+          nextTime = 0;
+          imageQueue.clear();
           playing = true;
           (start = new Date().getTime()), (time = 0);
           showFrame();
