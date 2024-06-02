@@ -1,3 +1,12 @@
+Quickstart:
+===========
+If you don't care how it works and just want to jump-start to add it into your web-page,
+just use the file set and upload to your web server.
+I have added example HTML code for different use-cases. Use it or add the code to your web-site HTML code.
+example-sound.html - Choose a tune and play a SID
+example-video.html - Choose a tune and play a SID while watching the video screen.
+example-disk.html - Choose a disk image, reset C64 and load first entry. For disk change, choose another disk
+
 What is this package all about?
 ===============================
 
@@ -15,16 +24,17 @@ The World Wide Web consortium (W3C) knows well about the problem and has created
 extend JavaScript by a new language called "Web Assembly". This must be executed by a stack based virtual machine.
 It can be executed near native speed.
 
-But they have learned from the past, you remember where Java got a browser plugin the Java JVM and the security risk was always high?
+But they have learned from the past, you remember where Java got a browser plugin the Java Virtual Machine and the security risk was always high?
 Web Assembly in contrast can only be used for computational tasks. There is zero I/O possibilities.
 That makes Web Assembly a safe technology. Where I/O operations should happen always JavaScript code is required to do it.
 
-Many programming languages can convert source code to web assembly including C/C++, Python, ... and Java of course, like GWT.
-But, there is a great project out there, that makes it possible to get Java code executed on the client side without a Java Virtual Machine.
+Many programming languages can convert source code to web assembly including C/C++, Python, ... and Java (using tools like  GWT, TeaVM or CherpJ).
+One of them TeaVM is a great project out there, that makes it possible to get Java code executed on the client side without a Java Virtual Machine.
 This magic is done using the intermediate language of Java, the class files, and executing by ahead-of-time compilation.
 The output is emitted as JavaScript or Web Assembly.
 This makes it possible to use it with other programming languages than Java as well, like Scala and Kotlin.
 A maven plugin is all that is required (od gradle of course) to do it.
+No other technology stack is required, just what we already use: maven and a Java IDE.
 
 If you want to learn more about that approach, please visit the fantastic TeaVM project "https://teavm.org/".
 
@@ -39,11 +49,11 @@ It took me some weeks, but fair to say, there was only minimum problems I got to
 4. Do I have bugs found in TeaVM? Very few. Take care of two dimensional arrays. TeaVM does not directly allocate the second dimension
    and the length is always 0 by the time being! And a method with a try-catch operation in a switch statement was a problem as well.
    But that's it.
-   There is nearly 0 other bugs at least I found. And there has been new releases to make it better and better even during my work.
+   There is nearly 0 other bugs at least I have found. And there has been new releases to make it better and better even during my work.
    Nearly every class of the JDK library is available, with some exceptions. Reflection is only partly implemented, though.
 5. Debugging of Web Assembly is currently unsupported. When I started by generating Web-Assembly, first, it was a wrong decision.
    I thought it would be a good idea, because it would be faster than JavaScript. But the opposite is the case and when I added JavaScript,
-   I made wide eyes finding debugging possibilities in the browser developer console and when we aretalking about the speed -
+   I made wide eyes finding debugging possibilities in the browser developer console and if we are talking about the speed -
    the speed is so incredible fast, you won't believe it at least in Google Chrome browser.
    Now you can directly compare both, JavaScript and Web Assembly of JSIDPlay2 to find out what works better for you.
 
@@ -56,7 +66,7 @@ even content from tape, disk or cartridge for your enjoyment.
 
 What files do I need?
 =====================
-ZIP file contains a demo HTML page on the root level just for you to learn how it works and a style sheet file (*.scss).
+ZIP file contains demo HTML pages on the root level just for you to learn how it works.
 The sub-directory js (or wasm) contains the generated emulator file jsidplay2.js (JavaScript) or jsidplay2.wasm (Web Assembly).
 Both releases have an additional web worker (*-worker*.js) and Web Assembly requires a runtime in JavaScript (*-runtime*.js).
 That's it.
