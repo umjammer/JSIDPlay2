@@ -1453,6 +1453,11 @@
                   Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
                 </li>
                 <li>For the first time, embed music or demos in YOUR web-site</li>
+                <li>Source code and a README of C64jukebox ${teaVMFormatName} Version can be found at:<br />
+                <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
+                  >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
+                >
+                <br />
               </ol>
               <p style="text-align: center; font-size: smaller; padding: 16px">
                 C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
@@ -1463,11 +1468,6 @@
                 Copyright &#169; 2005-2011 Antti S. Lankila<br />
                 ReSID engine and 6581/8580 emulation:<br />
                 Copyright &#169; 1999-2011 Dag Lem<br />
-                Source code and a README of C64jukebox ${teaVMFormatName} Version can be found at:<br />
-                <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
-                  >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
-                >
-                <br />
                 <br />
                 This program is free software; you can redistribute it and/or modify<br />
                 it under the terms of the GNU General Public License as published by<br />
