@@ -2,8 +2,9 @@
 <html>
   <head> </head>
   <body>
-    <input id="file" type="file" />
-    <button type="button" onclick="startTune()">Play</button>
+    <span>Disk:</span>
+    <input id="diskfile" type=file onchange="insertDisk()" />
+    <button type="button" onclick="reset()">Reset and Start</button>
     <button type="button" onclick="pauseTune()" id="pause">Pause</button>
     <button type="button" onclick="stopTune()">Stop</button>
 
@@ -92,7 +93,7 @@
               reverbBypass: true,
               defaultClockSpeed: 50,
               defaultSidModel: true,
-              jiffyDosInstalled: false,
+              jiffyDosInstalled: true,
               defaultEmulation: false,
             },
           });
@@ -122,12 +123,14 @@
               });
             } else if (eventType === "SID_WRITE") {
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
-              if (!pause) {
+              if (eventType === "OPENED") {
+                  insertDisk();
+              }
+              if (!pause && size * nthFrame < 60) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 worker.postMessage({ eventType: "IDLE" });
               }
-              worker.postMessage({ eventType: "CLOCK" });
             } else if (eventType === "INITIALISED") {
               worker.postMessage({
                 eventType: "OPEN",
@@ -144,30 +147,18 @@
               });
 
               nextTime = 0;
+              playing = true;
+              (start = new Date().getTime()), (time = 0);
+              showFrame();
             }
           });
 
           worker.addEventListener("error", function (error) {
             reject(error);
           });
-
-          playing = true;
-          (start = new Date().getTime()), (time = 0);
-          showFrame();
         });
       }
 
-      function startTune() {
-        stopTune();
-        var file = document.getElementById("file");
-        if (file.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function () {
-            wasmWorker(new Uint8Array(this.result), file.files[0].name);
-          };
-          reader.readAsArrayBuffer(file.files[0]);
-        }
-      }
       function stopTune() {
         if (worker) {
           worker.terminate();
@@ -205,6 +196,33 @@
         }
         var diff = new Date().getTime() - start - time;
         if (playing) setTimeout(() => showFrame(), timeSpan - diff);
+      }
+      function insertDisk() {
+        var diskfile = document.getElementById("diskfile");
+        var reader = new FileReader();
+        reader.onload = function () {
+          if (worker) {
+            worker.postMessage({
+              eventType: "INSERT_DISK",
+              eventData: {
+                contents: new Uint8Array(this.result),
+                diskName: diskfile.files[0].name,
+              },
+            });
+          }
+          //app.msg = "Disk inserted: " + diskfile.files[0].name;
+        };
+        if (diskfile && diskfile.files[0]) {
+          reader.readAsArrayBuffer(diskfile.files[0]);
+        }
+      }
+      function reset() {
+          var diskfile = document.getElementById("diskfile");
+          if (diskfile && diskfile.files[0]) {
+            wasmWorker(undefined, undefined, undefined, undefined, 'LOAD"*",8,1\rRUN\r');
+          } else {
+        	  wasmWorker();
+          }
       }
     </script>
   </body>
