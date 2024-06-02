@@ -57,8 +57,9 @@ public class Zaxxon extends Cartridge {
 
 		// second chip header contains ROM_H0
 		// third chip header contains ROM_H1
-		romh = new byte[2][0x2000];
+		romh = new byte[2][];
 		for (int i = 0; i < 2; i++) {
+			romh[i] = new byte[0x2000];
 			dis.readFully(chipHeader);
 			if (chipHeader[0xc] != (byte) 0xa0 || chipHeader[0xe] != 0x20) {
 				throw new RuntimeException("Unexpected Chip header!");

@@ -58,7 +58,7 @@ public class ExportedApi implements IExportedApi {
 	private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
 
 	private final IImportedApi importedApi;
-	
+
 	private IConfig config;
 	private EventScheduler context;
 	private SidTune tune;
@@ -76,9 +76,11 @@ public class ExportedApi implements IExportedApi {
 	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
 			byte[] cartContents, String cartContentsName, String commandFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		if (commandFromJS != null) {
-			this.command = jsStringToJavaString(commandFromJS);
-		}
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String url = sidContentsName != null ? "" + sidContentsName : null;
+		String cartContentsUrl = cartContentsName != null ? "" + cartContentsName : null;
+		command = commandFromJS != null ? "" + commandFromJS : null;
+
 		config = new ConfigurationTeaVM(importedApi);
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
@@ -88,7 +90,6 @@ public class ExportedApi implements IExportedApi {
 		doLog(sidplay2Section, audioSection, emulationSection, c1541Section);
 
 		if (sidContents != null) {
-			String url = jsStringToJavaString(sidContentsName);
 			LOG.finest("Load Tune, length=" + sidContents.length);
 			LOG.finest("Tune name: " + url);
 			LOG.finest("Song: " + song);
@@ -100,7 +101,6 @@ public class ExportedApi implements IExportedApi {
 		}
 		LOG.finest("nthFrame: " + nthFrame);
 		LOG.finest("addSidListener: " + addSidListener);
-		String cartContentsUrl = jsStringToJavaString(cartContentsName);
 		if (cartContentsUrl != null) {
 			LOG.finest("Cart, length=: " + cartContents.length);
 			LOG.finest("Cart name: : " + cartContentsUrl);
@@ -186,7 +186,9 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void typeInCommand(String nameFromJS) {
-		String multiLineCommand = jsStringToJavaString(nameFromJS);
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String multiLineCommand = nameFromJS != null ? "" + nameFromJS : null;
+
 		String command;
 		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
 			String[] lines = multiLineCommand.split("\r");
@@ -214,7 +216,9 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void insertDisk(byte[] diskContents, String diskContentsName) {
-		String diskContentsUrl = jsStringToJavaString(diskContentsName);
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String diskContentsUrl = diskContentsName != null ? "" + diskContentsName : null;
+
 		try {
 			File d64File = createReadOnlyFile(diskContents, diskContentsUrl);
 			config.getC1541Section().setDriveOn(true);
@@ -241,7 +245,9 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void insertTape(byte[] tapeContents, String tapeContentsName) {
-		String tapeContentsUrl = jsStringToJavaString(tapeContentsName);
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String tapeContentsUrl = tapeContentsName != null ? "" + tapeContentsName : null;
+
 		try {
 			File tapeFile = createReadOnlyFile(tapeContents, tapeContentsUrl);
 			hardwareEnsemble.getDatasette().insertTape(tapeFile);
@@ -268,7 +274,9 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void typeKey(String keyCode) {
-		String keyCodeStr = jsStringToJavaString(keyCode);
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String keyCodeStr = keyCode != null ? "" + keyCode : null;
+
 		LOG.fine("keyCodeStr: " + keyCodeStr);
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
 		LOG.fine("typeKey: " + key);
@@ -294,16 +302,6 @@ public class ExportedApi implements IExportedApi {
 	//
 	// Private methods
 	//
-
-	/**
-	 * JavaScript string cannot be used directly for some reason, therefore:
-	 */
-	private String jsStringToJavaString(String stringFromJS) {
-		if (stringFromJS != null) {
-			return new StringBuilder(stringFromJS).toString();
-		}
-		return null;
-	}
 
 	private void doLog(ISidPlay2Section sidplay2Section, IAudioSection audioSection, IEmulationSection emulationSection,
 			IC1541Section c1541Section) {

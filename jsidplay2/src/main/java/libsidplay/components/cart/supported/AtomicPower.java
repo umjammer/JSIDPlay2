@@ -47,8 +47,9 @@ public class AtomicPower extends Cartridge {
 		super(pla);
 		final byte[] chipHeader = new byte[0x10];
 
-		romLBanks = new byte[4][0x2000];
+		romLBanks = new byte[4][];
 		for (int i = 0; i < 4; i++) {
+			romLBanks[i] = new byte[0x2000];
 			dis.readFully(chipHeader);
 			if (chipHeader[0xc] != (byte) 0xa0 && chipHeader[0xe] != 0x40 && (chipHeader[0xb] & 0xff) > 3) {
 				throw new RuntimeException("Unexpected Chip header!");

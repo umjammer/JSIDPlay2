@@ -39,8 +39,9 @@ public class MagicDesk extends Cartridge {
 		super(pla);
 		final byte[] chipHeader = new byte[0x10];
 
-		romLBanks = new byte[16][0x2000];
+		romLBanks = new byte[16][];
 		for (int i = 0; i < 16 && dis.available() > 0; i++) {
+			romLBanks[i] = new byte[0x2000];
 			dis.readFully(chipHeader);
 			if (chipHeader[0xb] >= (byte) 0x40
 					|| (chipHeader[0xc] & 0xff) != 0x80 && (chipHeader[0xc] & 0xff) != 0xa0) {
