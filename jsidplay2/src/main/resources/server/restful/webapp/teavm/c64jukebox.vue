@@ -540,9 +540,7 @@
                     </li>
                   </ul>
                 </li>
-                
-                
-                
+
                 <li class="nav-item dropdown" id="myDropdown6" style="margin-right: 16px">
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ $t("exampleDemos") }}</a>
 
@@ -1301,8 +1299,7 @@
                         </li>
                       </ul>
                     </li>
-                    
-                    
+
                     <li>
                       <a
                         class="dropdown-item"
@@ -1353,7 +1350,7 @@
                               downloadAndInsertDisk(
                                 'Amanita_by_Samar_Disk_A.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/Amanita_by_Samar_Disk_A.d64?itemId=218357&categoryId=1'
-                              );
+                              )
                             "
                           >
                             Disk 1
@@ -1367,7 +1364,7 @@
                               downloadAndInsertDisk(
                                 'Amanita_by_Samar_Disk_B.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/Amanita_by_Samar_Disk_B.d64?itemId=218357&categoryId=1'
-                              );
+                              )
                             "
                           >
                             Disk 2
@@ -1375,7 +1372,6 @@
                         </li>
                       </ul>
                     </li>
-                    
                   </ul>
                 </li>
               </ul>
