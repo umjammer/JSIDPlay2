@@ -1454,7 +1454,8 @@
                 </li>
                 <li>For the first time, embed music or demos in YOUR web-site</li>
                 <li>
-                  Source code and a README of C64jukebox ${teaVMFormatName} Version can be found at:<br />
+                  If you plan to add C64 content to your web-space, a README and example HTML code of C64jukebox
+                  ${teaVMFormatName} Version can be found at:<br />
                   <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
                     >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
                   >
