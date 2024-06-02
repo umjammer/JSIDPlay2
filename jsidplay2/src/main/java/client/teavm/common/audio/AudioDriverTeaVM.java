@@ -52,8 +52,8 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 
 	public AudioDriverTeaVM(IImportedApi importedApi, PALEmulationTeaVM palEmulation) {
 		this.importedApi = importedApi;
-		this.nthFrame = palEmulation != null ? palEmulation.getNthFrame() : 0;
-		this.pixelsArray = palEmulation != null ? palEmulation.getPixels().array() : null;
+		nthFrame = palEmulation != null ? palEmulation.getNthFrame() : 0;
+		pixelsArray = palEmulation != null ? palEmulation.getPixels().array() : null;
 		lookupTable = new float[65536];
 		for (int i = Short.MIN_VALUE; i <= Short.MAX_VALUE; i++) {
 			lookupTable[i + 32768] = (float) (i / 32768.0f);
