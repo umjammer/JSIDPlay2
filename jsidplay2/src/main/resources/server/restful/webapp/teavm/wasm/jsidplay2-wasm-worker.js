@@ -85,7 +85,7 @@ addEventListener(
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
     } else if (eventType === "SET_COMMAND") {
-      instance.exports.setCommand(eventData.command ? allocateTeaVMstring(eventData.command) : null);
+      instance.exports.typeInCommand(eventData.command ? allocateTeaVMstring(eventData.command) : null);
 
       postMessage({
         eventType: "COMMAND_SET",

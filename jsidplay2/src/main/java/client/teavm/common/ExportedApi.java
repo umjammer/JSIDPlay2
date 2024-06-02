@@ -22,7 +22,7 @@ import javax.sound.sampled.LineUnavailableException;
 import builder.resid.ReSIDBuilder;
 import client.teavm.common.audio.AudioDriverTeaVM;
 import client.teavm.common.config.ConfigurationTeaVM;
-import client.teavm.common.video.PalEmulationTeaVM;
+import client.teavm.common.video.PALEmulationTeaVM;
 import client.teavm.compiletime.RomsTeaVM;
 import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
@@ -35,7 +35,6 @@ import libsidplay.components.c1541.DiskImage;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.components.mos6510.MOS6510;
-import libsidplay.components.mos656x.PALEmulation;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
@@ -58,6 +57,8 @@ public class ExportedApi implements IExportedApi {
 	private static final int RAM_COMMAND_SCREEN_ADDRESS = 1024 + 6 * 40 + 1;
 	private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
 
+	private final IImportedApi importedApi;
+	
 	private IConfig config;
 	private EventScheduler context;
 	private SidTune tune;
@@ -66,8 +67,6 @@ public class ExportedApi implements IExportedApi {
 	private ReSIDBuilder sidBuilder;
 	private String command;
 	private int bufferSize;
-
-	private IImportedApi importedApi;
 
 	public ExportedApi(IImportedApi importedApi) {
 		this.importedApi = importedApi;
@@ -120,7 +119,8 @@ public class ExportedApi implements IExportedApi {
 				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		c64.getVIC().setPalEmulation(nthFrame > 0 ? new PalEmulationTeaVM(nthFrame) : PALEmulation.NONE);
+		PALEmulationTeaVM palEmulationTeaVM = nthFrame > 0 ? new PALEmulationTeaVM(nthFrame) : null;
+		c64.getVIC().setPalEmulation(palEmulationTeaVM);
 		if (cartContents != null) {
 			try {
 				File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
@@ -161,7 +161,7 @@ public class ExportedApi implements IExportedApi {
 					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
 
-		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, nthFrame);
+		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, palEmulationTeaVM);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 

@@ -22,7 +22,7 @@ import libsidplay.components.mos656x.VIC;
 /**
  * RGBA (MSB to LSB) pixel data big endian.
  */
-public class PalEmulationTeaVM implements IPALEmulation {
+public class PALEmulationTeaVM implements IPALEmulation {
 
 	/**
 	 * RGBA pixel data (MSB to LSB) big endian. VIC colors without PAL emulation. Use this
@@ -32,6 +32,7 @@ public class PalEmulationTeaVM implements IPALEmulation {
 			0x6F3D86FF, 0x588D43FF, 0x352879FF, 0xB8C76FFF, 0x6F4F25FF, 0x433900FF, 0x9A6759FF, 0x444444FF, 0x6C6C6CFF,
 			0x9AD284FF, 0x6C5EB5FF, 0x959595FF, };
 
+	private final int nthFrame;
 	/** Table for looking up color using a packed 2x8 value for even rasterlines */
 	private final int[] combinedLinesEven;
 	/** Table for looking up color using a packed 2x8 value for odd rasterlines */
@@ -53,12 +54,11 @@ public class PalEmulationTeaVM implements IPALEmulation {
 
 	private final ByteBuffer pixels = ByteBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT << 2)
 			.order(ByteOrder.BIG_ENDIAN);
-	private int nthFrame;
 	private int n;
 
 	private boolean palEmulationEnable;
 
-	public PalEmulationTeaVM(int nthFrame) {
+	public PALEmulationTeaVM(int nthFrame) {
 		this.nthFrame = nthFrame;
 
 		Decoder decoder = Base64.getDecoder();
@@ -184,6 +184,10 @@ public class PalEmulationTeaVM implements IPALEmulation {
 			public void setBrightness(float brightness) {
 			}
 		};
+	}
+	
+	public int getNthFrame() {
+		return nthFrame;
 	}
 
 	/**

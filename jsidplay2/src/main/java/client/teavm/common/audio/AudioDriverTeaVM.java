@@ -13,6 +13,7 @@ import java.nio.ShortBuffer;
 import javax.sound.sampled.LineUnavailableException;
 
 import client.teavm.common.IImportedApi;
+import client.teavm.common.video.PALEmulationTeaVM;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
@@ -37,23 +38,26 @@ import sidplay.audio.VideoDriver;
  */
 public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDListener {
 
+	private final IImportedApi importedApi;
+	private final int nthFrame;
+	private final byte[] pixelsArray;
+	private final float[] lookupTable;
+
 	private EventScheduler context;
 	private ByteBuffer sampleBuffer;
-
+	private ShortBuffer shortBuffer;
 	private FloatBuffer resultL, resultR;
-	private final float[] lookupTable = new float[65536];
-	private final int nthFrame;
-	private int n;
+	private int n, pixelsLength;
 	private long sidWiteTime;
 
-	private byte[] array;
-	private int length;
-	private final IImportedApi importedApi;
-	private ShortBuffer shortBuffer;
-
-	public AudioDriverTeaVM(IImportedApi importedApi, int nthFrame) {
+	public AudioDriverTeaVM(IImportedApi importedApi, PALEmulationTeaVM palEmulation) {
 		this.importedApi = importedApi;
-		this.nthFrame = nthFrame;
+		this.nthFrame = palEmulation != null ? palEmulation.getNthFrame() : 0;
+		this.pixelsArray = palEmulation != null ? palEmulation.getPixels().array() : null;
+		lookupTable = new float[65536];
+		for (int i = Short.MIN_VALUE; i <= Short.MAX_VALUE; i++) {
+			lookupTable[i + 32768] = (float) (i / 32768.0f);
+		}
 	}
 
 	@Override
@@ -61,18 +65,16 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 			throws IOException, LineUnavailableException, InterruptedException {
 		this.context = context;
 		AudioConfig cfg = new AudioConfig(audioSection);
+
 		sampleBuffer = ByteBuffer.allocate(cfg.getChunkFrames() * Short.BYTES * cfg.getChannels())
 				.order(ByteOrder.LITTLE_ENDIAN);
 		shortBuffer = sampleBuffer.asShortBuffer();
-
 		resultL = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
+
 		n = 0;
-		sidWiteTime = 0;
-		for (int i = Short.MIN_VALUE; i <= Short.MAX_VALUE; i++) {
-			lookupTable[i + 32768] = (float) (i / 32768.0f);
-		}
-		length = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
+		sidWiteTime = 0L;
+		pixelsLength = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
 	}
 
 	@Override
@@ -93,10 +95,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	public void accept(VIC vic) {
 		if (++n == nthFrame) {
 			n = 0;
-			if (array == null) {
-				array = vic.getPalEmulation().getPixels().array();
-			}
-			importedApi.processPixels(array, length);
+			importedApi.processPixels(pixelsArray, pixelsLength);
 		}
 	}
 

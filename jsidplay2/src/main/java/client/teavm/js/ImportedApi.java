@@ -7,16 +7,16 @@ import client.teavm.common.IImportedApi;
 
 public class ImportedApi implements IImportedApi {
 
-	private boolean palEmulation;
-	private int bufferSize;
-	private int audioBufferSize;
-	private int samplingRateAsInt;
-	private boolean samplingMethodResample;
-	private boolean reverbBypass;
-	private int defaultClockSpeedAsInt;
-	private boolean defaultEmulationReSid;
-	private boolean defaultSidModel8580;
-	private boolean jiffyDosInstalled;
+	private final boolean palEmulation;
+	private final int bufferSize;
+	private final int audioBufferSize;
+	private final int samplingRateAsInt;
+	private final boolean samplingMethodResample;
+	private final boolean reverbBypass;
+	private final int defaultClockSpeedAsInt;
+	private final boolean defaultEmulationReSid;
+	private final boolean defaultSidModel8580;
+	private final boolean jiffyDosInstalled;
 
 	public ImportedApi(String[] args) {
 		this.palEmulation = Boolean.TRUE.equals(Boolean.valueOf(args[0]));

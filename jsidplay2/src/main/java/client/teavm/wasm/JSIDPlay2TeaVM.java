@@ -32,7 +32,7 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName, command);
 	}
 
-	@Export(name = "setCommand")
+	@Export(name = "typeInCommand")
 	public static void typeInCommand(final String nameFromJS) {
 		jsidplay2.typeInCommand(nameFromJS);
 	}
