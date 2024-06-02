@@ -1,17 +1,72 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  </head>
+  <head> </head>
   <body>
     <input id="file" type="file" />
-    <button type="button" onclick="startTune()" >Play</button>
-  
-    <script>
-      var worker;
+    <button type="button" onclick="startTune()">Play</button>
+    <button type="button" onclick="pauseTune()" id="pause">Pause</button>
+    <button type="button" onclick="stopTune()">Stop</button>
 
+    <div style="width: 100%; margin: 0px auto">
+      <canvas
+        id="c64Screen"
+        style="border: 2px solid black; background-color: black; max-width: 100vw"
+        width="384"
+        height="285"
+      />
+    </div>
+
+    <script>
+      var size = 0;
+      function Queue() {
+        var head, tail;
+        return Object.freeze({
+          enqueue(value) {
+            const link = { value, next: undefined };
+            tail = head ? (tail.next = link) : (head = link);
+            size++;
+          },
+          dequeue() {
+            if (head) {
+              var value = head.value;
+              head = head.next;
+              size--;
+              return value;
+            }
+            return undefined;
+          },
+          peek() {
+            return head?.value;
+          },
+          clear() {
+            tail = head = undefined;
+            size = 0;
+          },
+          isNotEmpty() {
+            return head;
+          },
+        });
+      }
+      const maxWidth = 384;
+      const maxHeight = 312;
+
+      var worker;
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
-      var nextTime, fix;
+      var nextTime, pause;
+
+      var canvasContext;
+      var imageData, data;
+      var imageQueue = new Queue();
+      var start, time;
+      var nthFrame = 2;
+
+      var playing;
+
+      var canvas = document.getElementById("c64Screen");
+      canvasContext = canvas.getContext("2d");
+      imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
+      data = imageData.data;
 
       function wasmWorker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
@@ -62,9 +117,15 @@
               sourceNode.start(nextTime);
               nextTime += eventData.left.length / audioContext.sampleRate;
             } else if (eventType === "FRAME") {
+              imageQueue.enqueue({
+                image: eventData.image,
+              });
             } else if (eventType === "SID_WRITE") {
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
-              if (eventType === "OPENED") {
+              if (!pause) {
+                worker.postMessage({ eventType: "CLOCK" });
+              } else {
+                worker.postMessage({ eventType: "IDLE" });
               }
               worker.postMessage({ eventType: "CLOCK" });
             } else if (eventType === "INITIALISED") {
@@ -74,7 +135,7 @@
                   contents: contents,
                   tuneName: tuneName,
                   startSong: 0,
-                  nthFrame: 0,
+                  nthFrame: nthFrame,
                   sidWrites: false,
                   cartContents: cartContents,
                   cartName: cartName,
@@ -89,12 +150,16 @@
           worker.addEventListener("error", function (error) {
             reject(error);
           });
+
+          playing = true;
+          (start = new Date().getTime()), (time = 0);
+          showFrame();
         });
       }
 
       function startTune() {
         stopTune();
-        var file = document.getElementById('file')
+        var file = document.getElementById("file");
         if (file.files[0]) {
           var reader = new FileReader();
           reader.onload = function () {
@@ -112,8 +177,35 @@
           audioContext.close();
           audioContext = undefined;
         }
+        pause = false;
+        var pauseBtn = document.getElementById("pause");
+        pauseBtn.style.color = "black";
+        playing = false;
       }
-
-      </script>
+      function pauseTune() {
+        pause = !pause;
+        var pauseBtn = document.getElementById("pause");
+        if (pause) {
+          audioContext.suspend();
+          pauseBtn.style.color = "red";
+        } else {
+          audioContext.resume();
+          pauseBtn.style.color = "black";
+        }
+      }
+      function showFrame() {
+        var timeSpan = (1000 * nthFrame) / 50;
+        time += timeSpan;
+        if (!pause) {
+          var elem = imageQueue.dequeue();
+          if (elem) {
+            data.set(elem.image);
+            canvasContext.putImageData(imageData, 0, 0);
+          }
+        }
+        var diff = new Date().getTime() - start - time;
+        if (playing) setTimeout(() => showFrame(), timeSpan - diff);
+      }
+    </script>
   </body>
 </html>

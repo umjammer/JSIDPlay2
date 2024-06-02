@@ -520,6 +520,8 @@
 						<inputGlob>
 							src/main/resources/server/restful/webapp/teavm/*.vue</inputGlob>
 						<inputGlob>
+							src/main/resources/server/restful/webapp/teavm/*.html</inputGlob>
+						<inputGlob>
 							src/main/resources/server/restful/webapp/teavm/wasm/*.js</inputGlob>
 						<inputGlob>
 							src/main/resources/server/restful/webapp/teavm/js/*.js</inputGlob>

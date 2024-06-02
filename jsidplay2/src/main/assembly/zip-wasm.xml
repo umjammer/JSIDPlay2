@@ -18,8 +18,7 @@
 			<outputDirectory></outputDirectory>
 			<filtered>true</filtered>
 			<includes>
-				<include>c64jukebox.vue</include>
-				<include>c64jukebox.scss</include>
+				<include>test-*.html</include>
 				<include>README</include>
 				<include>test.html</include>
 			</includes>
