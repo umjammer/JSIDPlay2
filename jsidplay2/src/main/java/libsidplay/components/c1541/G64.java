@@ -57,7 +57,7 @@ public class G64 extends DiskImage {
 			throw new IOException(String.format("Invalid number of tracks (%d).", tracks));
 		}
 		// Check GCR raw track size
-		final int rawTrackSize = fd.read() + (fd.read() << 8);
+		final int rawTrackSize = (fd.read() & 0xff) + ((fd.read() & 0xff) << 8);
 		if (rawTrackSize != GCR.NUM_MAX_BYTES_TRACK) {
 			throw new IOException(String.format("Unexpected GCR raw track size: %s (expected: %s)", rawTrackSize,
 					GCR.NUM_MAX_BYTES_TRACK));
@@ -84,7 +84,7 @@ public class G64 extends DiskImage {
 
 				// Determine track size
 				fd.seek(gcrTrackDataStart);
-				int trackLen = fd.read() + (fd.read() << 8);
+				int trackLen = (fd.read() & 0xff) + ((fd.read() & 0xff) << 8);
 				if (trackLen > GCR.NUM_MAX_BYTES_TRACK) {
 					throw new IOException(String.format("Track field length %d is not supported.", trackLen));
 				}
