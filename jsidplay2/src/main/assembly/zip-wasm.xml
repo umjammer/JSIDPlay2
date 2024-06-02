@@ -21,6 +21,7 @@
 				<include>c64jukebox.vue</include>
 				<include>c64jukebox.scss</include>
 				<include>README</include>
+				<include>test.html</include>
 			</includes>
 			<excludes>
 				<exclude>wasm</exclude>
