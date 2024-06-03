@@ -280,14 +280,42 @@ public class ExportedApi implements IExportedApi {
 		LOG.fine("keyCodeStr: " + keyCodeStr);
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
 		LOG.fine("typeKey: " + key);
+		if (key == KeyTableEntry.RESTORE) {
+			c64.getKeyboard().restore();
+		} else {
+			c64.getKeyboard().keyPressed(key);
+
+			c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
+
+				c64.getEventScheduler().scheduleThreadSafeKeyEvent(
+						Event.of("Virtual Keyboard Released", event3 -> c64.getKeyboard().keyReleased(key)));
+
+			}), c64.getClock().getCyclesPerFrame() << 2);
+		}
+	}
+
+	@Override
+	public void pressKey(String keyCode) {
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String keyCodeStr = keyCode != null ? "" + keyCode : null;
+
+		LOG.fine("keyCodeStr: " + keyCodeStr);
+		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
+		LOG.fine("pressKey: " + key);
+
 		c64.getKeyboard().keyPressed(key);
+	}
 
-		c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
+	@Override
+	public void releaseKey(String keyCode) {
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String keyCodeStr = keyCode != null ? "" + keyCode : null;
 
-			c64.getEventScheduler().scheduleThreadSafeKeyEvent(
-					Event.of("Virtual Keyboard Released", event3 -> c64.getKeyboard().keyReleased(key)));
+		LOG.fine("keyCodeStr: " + keyCodeStr);
+		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
+		LOG.fine("releaseKey: " + key);
 
-		}), c64.getClock().getCyclesPerFrame() << 2);
+		c64.getKeyboard().keyReleased(key);
 	}
 
 	@Override

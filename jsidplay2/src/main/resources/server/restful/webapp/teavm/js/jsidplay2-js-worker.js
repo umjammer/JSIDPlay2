@@ -79,6 +79,18 @@ addEventListener(
       postMessage({
         eventType: "KEY_TYPED",
       });
+    } else if (eventType === "PRESS_KEY") {
+      main.api.pressKey(eventData.key ? eventData.key : null);
+
+      postMessage({
+        eventType: "KEY_PRESSED",
+      });
+    } else if (eventType === "RELEASE_KEY") {
+      main.api.releaseKey(eventData.key ? eventData.key : null);
+
+      postMessage({
+        eventType: "KEY_RELEASED",
+      });
     } else if (eventType === "INITIALISE") {
       main(
         [

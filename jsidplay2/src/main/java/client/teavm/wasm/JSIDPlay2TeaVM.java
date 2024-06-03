@@ -29,7 +29,8 @@ public class JSIDPlay2TeaVM {
 	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
 			byte[] cartContents, String cartContentsName, String command)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName, command);
+		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName,
+				command);
 	}
 
 	@Export(name = "typeInCommand")
@@ -68,8 +69,18 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@Export(name = "typeKey")
-	public static void typeKey(final String keyCode) {
+	public static void typeKey(String keyCode) {
 		jsidplay2.typeKey(keyCode);
+	}
+
+	@Export(name = "pressKey")
+	public static void pressKey(String keyCode) {
+		jsidplay2.pressKey(keyCode);
+	}
+
+	@Export(name = "releaseKey")
+	public static void releaseKey(String keyCode) {
+		jsidplay2.releaseKey(keyCode);
 	}
 
 	@Export(name = "delaySidBlaster")

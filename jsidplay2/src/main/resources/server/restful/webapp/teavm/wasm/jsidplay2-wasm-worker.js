@@ -96,6 +96,18 @@ addEventListener(
       postMessage({
         eventType: "KEY_TYPED",
       });
+    } else if (eventType === "PRESS_KEY") {
+      instance.exports.pressKey(eventData.key ? allocateTeaVMstring(eventData.key) : null);
+
+      postMessage({
+        eventType: "KEY_PRESSED",
+      });
+    } else if (eventType === "RELEASE_KEY") {
+      instance.exports.releaseKey(eventData.key ? allocateTeaVMstring(eventData.key) : null);
+
+      postMessage({
+        eventType: "KEY_RELEASED",
+      });
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm
         .load("jsidplay2.wasm", {

@@ -33,5 +33,9 @@ public interface IExportedApi extends JSObject {
 
 	void typeKey(String keyCode);
 
+	void pressKey(String keyCode);
+
+	void releaseKey(String keyCode);
+
 	void delaySidBlaster(int cycles);
 }

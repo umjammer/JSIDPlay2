@@ -1410,6 +1410,13 @@
               </button>
               <input
                 type="button"
+                :class="keyboardEnable ? 'btn btn-danger btn-sm' : 'btn btn-secondary btn-sm'"
+                id="toggle2"
+                value="Keyboard Off"
+                style="margin-right: 0.1rem"
+              />
+              <input
+                type="button"
                 :class="wakeLockEnable ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'"
                 id="toggle"
                 value="Wake Lock Off"
@@ -1675,6 +1682,144 @@
       var imageQueue = new Queue();
       var start, time;
 
+      function toC64KeyTableEntry(code) {
+        switch (code) {
+          case "IntlBackslash":
+            return "ARROW_LEFT";
+          case "Digit1":
+            return "ONE";
+          case "Digit2":
+            return "TWO";
+          case "Digit3":
+            return "THREE";
+          case "Digit4":
+            return "FOUR";
+          case "Digit5":
+            return "FIVE";
+          case "Digit6":
+            return "SIX";
+          case "Digit7":
+            return "SEVEN";
+          case "Digit8":
+            return "EIGHT";
+          case "Digit9":
+            return "NINE";
+          case "Digit0":
+            return "ZERO";
+          case "NumpadAdd":
+            return "PLUS";
+          case "NumpadSubtract":
+            return "MINUS";
+          case "^":
+            return "POUND";
+          case "Delete":
+            return "CLEAR_HOME";
+          case "Backspace":
+            return "INS_DEL";
+          case "ControlRight":
+            return "CTRL";
+          case "KeyQ":
+            return "Q";
+          case "KeyW":
+            return "W";
+          case "KeyE":
+            return "E";
+          case "KeyR":
+            return "R";
+          case "KeyT":
+            return "T";
+          case "KeyZ":
+            return "Y";
+          case "KeyU":
+            return "U";
+          case "KeyI":
+            return "I";
+          case "KeyO":
+            return "O";
+          case "KeyP":
+            return "P";
+          case "@":
+            return "AT";
+          case "NumpadMultiply":
+            return "STAR";
+          case "ArrowUp":
+            return "ARROW_UP";
+          case "Escape":
+            return "RUN_STOP";
+          case "KeyA":
+            return "A";
+          case "KeyS":
+            return "S";
+          case "KeyD":
+            return "D";
+          case "KeyF":
+            return "F";
+          case "KeyG":
+            return "G";
+          case "KeyH":
+            return "H";
+          case "KeyJ":
+            return "J";
+          case "KeyK":
+            return "K";
+          case "KeyL":
+            return "L";
+          case "Semicolon":
+            return "SEMICOLON";
+          case "Equal":
+            return "EQUALS";
+          case "Enter":
+            return "RETURN";
+          case "ControlLeft":
+            return "COMMODORE";
+          case "ShiftLeft":
+            return "SHIFT_LEFT";
+          case "KeyY":
+            return "Z";
+          case "KeyX":
+            return "X";
+          case "KeyC":
+            return "C";
+          case "KeyV":
+            return "V";
+          case "KeyB":
+            return "B";
+          case "KeyN":
+            return "N";
+          case "KeyM":
+            return "M";
+          case "Comma":
+            return "COMMA";
+          case "Period":
+            return "PERIOD";
+          case "Slash":
+            return "SLASH";
+          case "ShiftRight":
+            return "SHIFT_RIGHT";
+          case "ArrowDown":
+            return "CURSOR_UP_DOWN";
+          case "ArrowRight":
+            return "CURSOR_LEFT_RIGHT";
+          case "Space":
+            return "SPACE";
+          case "Comma":
+            return "COMMA";
+          case "F1":
+            return "F1";
+          case "F3":
+            return "F3";
+          case "F5":
+            return "F5";
+          case "F7":
+            return "F7";
+          case "KeyI":
+            return "RESTORE";
+
+          default:
+            return "SPACE";
+        }
+      }
+
       function wasmWorker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
           latencyHint: "interactive",
@@ -1917,6 +2062,7 @@
             showTape: false,
             showCart: false,
             wakeLockEnable: false,
+            keyoardEnable: false,
           };
         },
         computed: {},
@@ -2120,6 +2266,26 @@
               });
             }
           },
+          pressKey(key) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "PRESS_KEY",
+                eventData: {
+                  key: key,
+                },
+              });
+            }
+          },
+          releaseKey(key) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "RELEASE_KEY",
+                eventData: {
+                  key: key,
+                },
+              });
+            }
+          },
           insertCart() {
             app.msg = app.$t("cartInserted") + ": " + app.$refs.formCartFileSm.files[0].name;
             app.reset();
@@ -2147,6 +2313,7 @@
       var noSleep = new NoSleep();
 
       var wakeLockEnabled = false;
+      var keyboardEnabled = false;
       var toggleEl = document.querySelector("#toggle");
       toggleEl.addEventListener(
         "click",
@@ -2167,6 +2334,67 @@
         },
         false
       );
+      var keyDownListener = (event) => {
+        var keyValue = event.key;
+
+        var codeValue = event.code;
+
+        //console.log("dwn: keyValue: " + keyValue);
+
+        //console.log("codeValue: " + codeValue);
+        app.pressKey(toC64KeyTableEntry(event.code));
+        event.preventDefault();
+      };
+      var keyUpListener = (event) => {
+        var keyValue = event.key;
+
+        var codeValue = event.code;
+
+        //console.log("up: keyValue: " + keyValue);
+
+        //console.log("codeValue: " + codeValue);
+        app.releaseKey(toC64KeyTableEntry(event.code));
+        event.preventDefault();
+      };
+      var toggleEl2 = document.querySelector("#toggle2");
+      toggleEl2.addEventListener(
+        "click",
+        function () {
+          if (!keyboardEnabled) {
+            document.addEventListener("keydown", keyDownListener, false);
+
+            document.addEventListener("keyup", keyUpListener, false);
+            keyboardEnabled = true;
+            toggleEl2.value = "Keyboard On";
+            var canvas = document.getElementById("c64Screen");
+            canvas.style.borderColor = "red";
+            app.keyboardEnable = true;
+          } else {
+            document.removeEventListener("keydown", keyDownListener, false);
+
+            document.removeEventListener("keyup", keyUpListener, false);
+            keyboardEnabled = false;
+            toggleEl2.value = "Keyboard Off";
+            var canvas = document.getElementById("c64Screen");
+            canvas.style.borderColor = "black";
+            app.keyboardEnable = false;
+          }
+        },
+        false
+      );
+      /*
+      document.addEventListener(
+        "keydown",
+        keyDownListener,
+        false
+      );
+
+      document.addEventListener(
+        "keyup",
+        keyUpListener,
+        false
+      );
+*/
     </script>
   </body>
 </html>
