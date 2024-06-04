@@ -99,6 +99,7 @@ public class StaticServlet extends JSIDPlay2Servlet {
 				replacements.put("teaVMFormat", servletParameters.getTeaVMFormat().name().toLowerCase(Locale.US));
 				replacements.put("teaVMFormatName", servletParameters.getTeaVMFormat().getTeaVMFormatName());
 				replacements.put("teaVMFormatApproximateSize", servletParameters.getTeaVMFormat().getApproximateSize());
+				replacements.put("teaVMWorkerAttrs", servletParameters.getTeaVMFormat().getWorkerAttributes());
 				replacements.put("version", VersionUtil.VERSION);
 				if (!ContentTypeAndFileExtensions.MIME_TYPE_JAVASCRIPT.isCompatible(mimeType.getMimeType())) {
 					replacements.put("min", Boolean.TRUE.equals(servletParameters.getUseDevTools()) ? "" : ".min");

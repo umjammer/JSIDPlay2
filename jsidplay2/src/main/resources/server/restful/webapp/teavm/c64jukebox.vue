@@ -1827,7 +1827,7 @@
           worker.terminate();
           worker = undefined;
         }
-        worker = new Worker("${teaVMFormat}/jsidplay2-${teaVMFormat}-worker.js");
+        worker = new Worker("${teaVMFormat}/jsidplay2-${teaVMFormat}-worker.js", ${teaVMWorkerAttrs});
 
         return new Promise((resolve, reject) => {
           worker.postMessage({

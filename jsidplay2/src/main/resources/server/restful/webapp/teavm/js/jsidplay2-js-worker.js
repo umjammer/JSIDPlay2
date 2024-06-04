@@ -1,9 +1,22 @@
-importScripts("jsidplay2.js");
+import {
+  main,
+  open,
+  typeInCommand,
+  clock,
+  insertDisk,
+  ejectDisk,
+  insertTape,
+  ejectTape,
+  pressPlayOnTape,
+  typeKey,
+  pressKey,
+  releaseKey,
+} from "./jsidplay2.js";
 
 // Handle incoming messages
 addEventListener(
   "message",
-  function (event) {
+  (event) => {
     var { eventType, eventData } = event.data;
 
     if (eventType === "CLOCK") {

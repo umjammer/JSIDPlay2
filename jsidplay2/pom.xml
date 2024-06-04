@@ -426,7 +426,7 @@
 							<sourceMapsGenerated>false</sourceMapsGenerated>
 							<sourceFilesCopied>false</sourceFilesCopied>
 							<targetType>JAVASCRIPT</targetType>
-							<jsModuleType>UMD</jsModuleType>
+							<jsModuleType>ES2015</jsModuleType>
 							<optimizationLevel>FULL</optimizationLevel>
 							<minifying>true</minifying>
 						</configuration>
