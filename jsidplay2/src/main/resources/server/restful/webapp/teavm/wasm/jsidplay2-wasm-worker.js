@@ -142,6 +142,7 @@ addEventListener(
                       instance.exports.teavm_floatArrayData(rightChannelPtr),
                       length
                     ),
+                    length: length,
                   },
                 }),
               processPixels: (pixelsPtr, length) =>

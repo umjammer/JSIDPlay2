@@ -1850,7 +1850,7 @@
             var { eventType, eventData } = event.data;
 
             if (eventType === "SAMPLES") {
-              var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
+              var buffer = audioContext.createBuffer(2, eventData.length, audioContext.sampleRate);
               buffer.getChannelData(0).set(eventData.left);
               buffer.getChannelData(1).set(eventData.right);
 
@@ -1865,7 +1865,7 @@
                 nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
-              nextTime += eventData.left.length / audioContext.sampleRate + fix;
+              nextTime += eventData.length / audioContext.sampleRate + fix;
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
