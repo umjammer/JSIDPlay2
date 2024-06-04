@@ -18,7 +18,6 @@ public interface IPALEmulation {
 	 *
 	 * @param graphicsDataBuffer eight pixels each of 4 bits (VIC color value range
 	 *                           0x0-0xF)
-	 * @param pixelConsumer      consumer of the corresponding RGBA pixels
 	 */
 	void drawPixels(int graphicsDataBuffer);
 

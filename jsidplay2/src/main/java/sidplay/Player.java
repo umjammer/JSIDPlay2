@@ -343,7 +343,7 @@ public class Player extends HardwareEnsemble implements VideoDriver, SIDListener
 	 * Create a Music Player.
 	 *
 	 * @param config   configuration
-	 * @param cpuClass CPU class implementation
+	 * @param cpuCreator creator of the CPU class implementation to be used
 	 */
 	public Player(final IConfig config, Function<EventScheduler, MOS6510> cpuCreator) {
 		super(config, cpuCreator, CHAR, BASIC, KERNAL, JIFFYDOS_C64, JIFFYDOS_C1541, C1541, C1541_II, MPS803_CHAR);
