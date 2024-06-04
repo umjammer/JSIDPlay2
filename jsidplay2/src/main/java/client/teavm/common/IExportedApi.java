@@ -17,6 +17,8 @@ public interface IExportedApi extends JSObject {
 			byte[] cartContents, String cartContentsName, String command)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException;
 
+	void typeInCommand(String multiLineCommand);
+
 	void clock() throws InterruptedException;
 
 	void insertDisk(byte[] diskContents, String diskContentsName);
@@ -28,8 +30,6 @@ public interface IExportedApi extends JSObject {
 	void ejectTape();
 
 	void pressPlayOnTape();
-
-	void typeInCommand(String command);
 
 	void typeKey(String keyCode);
 

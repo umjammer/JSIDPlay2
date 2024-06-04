@@ -73,12 +73,12 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName, String commandFromJS)
+	public void open(byte[] sidContents, String sidContentsNameFromJS, int song, int nthFrame, boolean addSidListener,
+			byte[] cartContents, String cartContentsNameFromJS, String commandFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String url = sidContentsName != null ? "" + sidContentsName : null;
-		String cartContentsUrl = cartContentsName != null ? "" + cartContentsName : null;
+		String sidContentsName = sidContentsNameFromJS != null ? "" + sidContentsNameFromJS : null;
+		String cartContentsName = cartContentsNameFromJS != null ? "" + cartContentsNameFromJS : null;
 		command = commandFromJS != null ? "" + commandFromJS : null;
 
 		config = new ConfigurationTeaVM(importedApi);
@@ -91,9 +91,10 @@ public class ExportedApi implements IExportedApi {
 
 		if (sidContents != null) {
 			LOG.finest("Load Tune, length=" + sidContents.length);
-			LOG.finest("Tune name: " + url);
+			LOG.finest("Tune name: " + sidContentsName);
 			LOG.finest("Song: " + song);
-			tune = SidTune.load(url, new ByteArrayInputStream(sidContents), SidTuneType.get(url));
+			tune = SidTune.load(sidContentsName, new ByteArrayInputStream(sidContents),
+					SidTuneType.get(sidContentsName));
 			tune.getInfo().setSelectedSong(song == 0 ? null : song);
 		} else {
 			LOG.finest("RESET");
@@ -101,10 +102,11 @@ public class ExportedApi implements IExportedApi {
 		}
 		LOG.finest("nthFrame: " + nthFrame);
 		LOG.finest("addSidListener: " + addSidListener);
-		if (cartContentsUrl != null) {
+		if (cartContentsName != null) {
 			LOG.finest("Cart, length=: " + cartContents.length);
-			LOG.finest("Cart name: : " + cartContentsUrl);
+			LOG.finest("Cart name: : " + cartContentsName);
 		}
+
 		Map<String, String> allRoms = RomsTeaVM.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
 		byte[] charRom = decoder.decode(allRoms.get(RomsTeaVM.CHAR_ROM));
@@ -123,12 +125,12 @@ public class ExportedApi implements IExportedApi {
 		c64.getVIC().setPalEmulation(palEmulationTeaVM);
 		if (cartContents != null) {
 			try {
-				File cartFile = createReadOnlyFile(cartContents, cartContentsUrl);
+				File cartFile = createReadOnlyFile(cartContents, cartContentsName);
 				c64.setCartridge(CartridgeType.CRT, cartFile);
-				LOG.fine("Cartridge: image attached: " + cartContentsUrl);
+				LOG.fine("Cartridge: image attached: " + cartContentsName);
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
-				System.err.println(String.format("Cannot insert media file '%s'.", cartContentsUrl));
+				System.err.println(String.format("Cannot insert media file '%s'.", cartContentsName));
 			}
 		}
 		hardwareEnsemble.reset();
@@ -185,9 +187,9 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void typeInCommand(String nameFromJS) {
+	public void typeInCommand(String multiLineCommandFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String multiLineCommand = nameFromJS != null ? "" + nameFromJS : null;
+		String multiLineCommand = multiLineCommandFromJS != null ? "" + multiLineCommandFromJS : null;
 
 		String command;
 		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
@@ -215,12 +217,12 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void insertDisk(byte[] diskContents, String diskContentsName) {
+	public void insertDisk(byte[] diskContents, String diskContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String diskContentsUrl = diskContentsName != null ? "" + diskContentsName : null;
+		String diskContentsName = diskContentsNameFromJS != null ? "" + diskContentsNameFromJS : null;
 
 		try {
-			File d64File = createReadOnlyFile(diskContents, diskContentsUrl);
+			File d64File = createReadOnlyFile(diskContents, diskContentsName);
 			config.getC1541Section().setDriveOn(true);
 			hardwareEnsemble.enableFloppyDiskDrives(true);
 			// attach selected disk into the first disk drive
@@ -229,7 +231,7 @@ public class ExportedApi implements IExportedApi {
 			installHack(d64File);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			System.err.println(String.format("Cannot insert media file '%s'.", diskContentsUrl));
+			System.err.println(String.format("Cannot insert media file '%s'.", diskContentsName));
 		}
 	}
 
@@ -244,16 +246,16 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void insertTape(byte[] tapeContents, String tapeContentsName) {
+	public void insertTape(byte[] tapeContents, String tapeContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String tapeContentsUrl = tapeContentsName != null ? "" + tapeContentsName : null;
+		String tapeContentsName = tapeContentsNameFromJS != null ? "" + tapeContentsNameFromJS : null;
 
 		try {
-			File tapeFile = createReadOnlyFile(tapeContents, tapeContentsUrl);
+			File tapeFile = createReadOnlyFile(tapeContents, tapeContentsName);
 			hardwareEnsemble.getDatasette().insertTape(tapeFile);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			System.err.println(String.format("Cannot insert media file '%s'.", tapeContentsUrl));
+			System.err.println(String.format("Cannot insert media file '%s'.", tapeContentsName));
 		}
 	}
 
@@ -273,12 +275,12 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void typeKey(String keyCode) {
+	public void typeKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCodeStr = keyCode != null ? "" + keyCode : null;
+		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
 
-		LOG.fine("keyCodeStr: " + keyCodeStr);
-		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
+		LOG.fine("keyCodeStr: " + keyCode);
+		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
 		LOG.fine("typeKey: " + key);
 		if (key == KeyTableEntry.RESTORE) {
 			c64.getKeyboard().restore();
@@ -295,24 +297,24 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void pressKey(String keyCode) {
+	public void pressKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCodeStr = keyCode != null ? "" + keyCode : null;
+		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
 
-		LOG.fine("keyCodeStr: " + keyCodeStr);
-		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
+		LOG.fine("keyCodeStr: " + keyCode);
+		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
 		LOG.fine("pressKey: " + key);
 
 		c64.getKeyboard().keyPressed(key);
 	}
 
 	@Override
-	public void releaseKey(String keyCode) {
+	public void releaseKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCodeStr = keyCode != null ? "" + keyCode : null;
+		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
 
-		LOG.fine("keyCodeStr: " + keyCodeStr);
-		KeyTableEntry key = KeyTableEntry.valueOf(keyCodeStr);
+		LOG.fine("keyCodeStr: " + keyCode);
+		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
 		LOG.fine("releaseKey: " + key);
 
 		c64.getKeyboard().keyReleased(key);
