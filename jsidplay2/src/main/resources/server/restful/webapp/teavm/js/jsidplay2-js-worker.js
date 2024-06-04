@@ -32,10 +32,7 @@ addEventListener(
         eventType: "OPENED",
       });
     } else if (eventType === "INSERT_DISK") {
-      insertDisk(
-        eventData.contents ? eventData.contents : null,
-        eventData.diskName ? eventData.diskName : null
-      );
+      insertDisk(eventData.contents ? eventData.contents : null, eventData.diskName ? eventData.diskName : null);
 
       postMessage({
         eventType: "DISK_INSERTED",
@@ -47,10 +44,7 @@ addEventListener(
         eventType: "DISK_EJECTED",
       });
     } else if (eventType === "INSERT_TAPE") {
-      insertTape(
-        eventData.contents ? eventData.contents : null,
-        eventData.tapeName ? eventData.tapeName : null
-      );
+      insertTape(eventData.contents ? eventData.contents : null, eventData.tapeName ? eventData.tapeName : null);
 
       postMessage({
         eventType: "TAPE_INSERTED",
