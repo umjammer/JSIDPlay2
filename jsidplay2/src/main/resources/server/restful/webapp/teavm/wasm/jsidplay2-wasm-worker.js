@@ -1,6 +1,9 @@
 importScripts("jsidplay2.wasm-runtime.js");
 
 function allocateTeaVMbyteArray(array) {
+  if (array === null) {
+    return undefined;
+  }
   let byteArrayPtr = instance.exports.teavm_allocateByteArray(array.length);
   let byteArrayData = instance.exports.teavm_byteArrayData(byteArrayPtr);
   new Uint8Array(instance.exports.memory.buffer, byteArrayData, array.length).set(array);
@@ -8,6 +11,9 @@ function allocateTeaVMbyteArray(array) {
 }
 
 function allocateTeaVMstring(str) {
+  if (str === null) {
+    return undefined;
+  }
   let stringPtr = instance.exports.teavm_allocateString(str.length);
   let objectArrayData = instance.exports.teavm_objectArrayData(instance.exports.teavm_stringData(stringPtr));
   let arrayView = new Uint16Array(instance.exports.memory.buffer, objectArrayData, str.length);
@@ -35,14 +41,14 @@ addEventListener(
       });
     } else if (eventType === "OPEN") {
       instance.exports.open(
-        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : null,
-        eventData.tuneName ? allocateTeaVMstring(eventData.tuneName) : null,
+        allocateTeaVMbyteArray(eventData.contents ?? null),
+        allocateTeaVMstring(eventData.tuneName ?? null),
         eventData.startSong,
         eventData.nthFrame,
         eventData.sidWrites,
-        eventData.cartContents ? allocateTeaVMbyteArray(eventData.cartContents) : null,
-        eventData.cartName ? allocateTeaVMstring(eventData.cartName) : null,
-        eventData.command ? allocateTeaVMstring(eventData.command) : null
+        allocateTeaVMbyteArray(eventData.cartContents ?? null),
+        allocateTeaVMstring(eventData.cartName ?? null),
+        allocateTeaVMstring(eventData.command ?? null)
       );
 
       postMessage({
@@ -50,8 +56,8 @@ addEventListener(
       });
     } else if (eventType === "INSERT_DISK") {
       instance.exports.insertDisk(
-        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : null,
-        eventData.diskName ? allocateTeaVMstring(eventData.diskName) : null
+        allocateTeaVMbyteArray(eventData.contents ?? null),
+        allocateTeaVMstring(eventData.diskName ?? null)
       );
 
       postMessage({
@@ -65,8 +71,8 @@ addEventListener(
       });
     } else if (eventType === "INSERT_TAPE") {
       instance.exports.insertTape(
-        eventData.contents ? allocateTeaVMbyteArray(eventData.contents) : null,
-        eventData.tapeName ? allocateTeaVMstring(eventData.tapeName) : null
+        allocateTeaVMbyteArray(eventData.contents ?? null),
+        allocateTeaVMstring(eventData.tapeName ?? null)
       );
 
       postMessage({
@@ -85,25 +91,25 @@ addEventListener(
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
     } else if (eventType === "SET_COMMAND") {
-      instance.exports.typeInCommand(eventData.command ? allocateTeaVMstring(eventData.command) : null);
+      instance.exports.typeInCommand(allocateTeaVMstring(eventData.command ?? null));
 
       postMessage({
         eventType: "COMMAND_SET",
       });
     } else if (eventType === "TYPE_KEY") {
-      instance.exports.typeKey(eventData.key ? allocateTeaVMstring(eventData.key) : null);
+      instance.exports.typeKey(allocateTeaVMstring(eventData.key ?? null));
 
       postMessage({
         eventType: "KEY_TYPED",
       });
     } else if (eventType === "PRESS_KEY") {
-      instance.exports.pressKey(eventData.key ? allocateTeaVMstring(eventData.key) : null);
+      instance.exports.pressKey(allocateTeaVMstring(eventData.key ?? null));
 
       postMessage({
         eventType: "KEY_PRESSED",
       });
     } else if (eventType === "RELEASE_KEY") {
-      instance.exports.releaseKey(eventData.key ? allocateTeaVMstring(eventData.key) : null);
+      instance.exports.releaseKey(allocateTeaVMstring(eventData.key ?? null));
 
       postMessage({
         eventType: "KEY_RELEASED",

@@ -18,21 +18,21 @@ addEventListener(
       });
     } else if (eventType === "OPEN") {
       open(
-        eventData.contents ? eventData.contents : null,
-        eventData.tuneName ? eventData.tuneName : null,
+        eventData.contents ?? null,
+        eventData.tuneName ?? null,
         eventData.startSong,
         eventData.nthFrame,
         eventData.sidWrites,
-        eventData.cartContents ? eventData.cartContents : null,
-        eventData.cartName ? eventData.cartName : null,
-        eventData.command ? eventData.command : null
+        eventData.cartContents ?? null,
+        eventData.cartName ?? null,
+        eventData.command ?? null
       );
 
       postMessage({
         eventType: "OPENED",
       });
     } else if (eventType === "INSERT_DISK") {
-      insertDisk(eventData.contents ? eventData.contents : null, eventData.diskName ? eventData.diskName : null);
+      insertDisk(eventData.contents ?? null, eventData.diskName ?? null);
 
       postMessage({
         eventType: "DISK_INSERTED",
@@ -44,7 +44,7 @@ addEventListener(
         eventType: "DISK_EJECTED",
       });
     } else if (eventType === "INSERT_TAPE") {
-      insertTape(eventData.contents ? eventData.contents : null, eventData.tapeName ? eventData.tapeName : null);
+      insertTape(eventData.contents ?? null, eventData.tapeName ?? null);
 
       postMessage({
         eventType: "TAPE_INSERTED",
@@ -62,25 +62,25 @@ addEventListener(
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
     } else if (eventType === "SET_COMMAND") {
-      typeInCommand(eventData.command ? eventData.command : null);
+      typeInCommand(eventData.command ?? null);
 
       postMessage({
         eventType: "COMMAND_SET",
       });
     } else if (eventType === "TYPE_KEY") {
-      typeKey(eventData.key ? eventData.key : null);
+      typeKey(eventData.key ?? null);
 
       postMessage({
         eventType: "KEY_TYPED",
       });
     } else if (eventType === "PRESS_KEY") {
-      pressKey(eventData.key ? eventData.key : null);
+      pressKey(eventData.key ?? null);
 
       postMessage({
         eventType: "KEY_PRESSED",
       });
     } else if (eventType === "RELEASE_KEY") {
-      releaseKey(eventData.key ? eventData.key : null);
+      releaseKey(eventData.key ?? null);
 
       postMessage({
         eventType: "KEY_RELEASED",
