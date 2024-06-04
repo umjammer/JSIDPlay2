@@ -44,12 +44,12 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
-	private static void insertDisk(byte[] diskContents, String diskContentsName) {
+	public static void insertDisk(byte[] diskContents, String diskContentsName) {
 		jsidplay2.insertDisk(diskContents, diskContentsName);
 	}
 
 	@JSExport
-	private static void ejectDisk() {
+	public static void ejectDisk() {
 		jsidplay2.ejectDisk();
 	}
 
@@ -59,7 +59,7 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
-	private static void ejectTape() {
+	public static void ejectTape() {
 		jsidplay2.ejectTape();
 	}
 
