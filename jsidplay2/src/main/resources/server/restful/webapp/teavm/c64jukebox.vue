@@ -1665,7 +1665,6 @@
         });
       }
 
-      var c64Screen = document.getElementById("c64Screen");
       const maxWidth = 384;
       const maxHeight = 312;
 
@@ -2358,6 +2357,7 @@
       toggleEl2.addEventListener(
         "click",
         function () {
+          var c64Screen = document.getElementById("c64Screen");
           if (!keyboardEnabled) {
             document.addEventListener("keydown", keyDownListener, false);
 
