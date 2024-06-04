@@ -1412,7 +1412,7 @@
                 type="button"
                 :class="keyboardEnable ? 'btn btn-danger btn-sm' : 'btn btn-secondary btn-sm'"
                 id="toggle2"
-                value="Keyboard Off"
+                value="Capture Keys Off"
                 style="margin-right: 0.1rem"
               />
               <input
@@ -1460,15 +1460,12 @@
                   Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
                 </li>
                 <li>For the first time, embed music or demos in YOUR web-site</li>
-                <li>
-                  If you plan to add C64 content to your web-space, a README and example HTML code of C64jukebox
-                  ${teaVMFormatName} Version can be found at:<br />
-                  <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
-                    >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
-                  >
-                  <br />
-                </li>
               </ol>
+              If you want to add C64 content to your web-space, a README and example HTML code of C64jukebox
+              ${teaVMFormatName} Version can be found at:<br />
+              <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
+                >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
+              >
 
               <p style="text-align: center; font-size: smaller; padding: 16px">
                 C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
@@ -1668,6 +1665,7 @@
         });
       }
 
+      var c64Screen = document.getElementById("c64Screen");
       const maxWidth = 384;
       const maxHeight = 312;
 
@@ -2365,36 +2363,21 @@
 
             document.addEventListener("keyup", keyUpListener, false);
             keyboardEnabled = true;
-            toggleEl2.value = "Keyboard On";
-            var canvas = document.getElementById("c64Screen");
-            canvas.style.borderColor = "red";
+            toggleEl2.value = "Capture Keys On";
+            c64Screen.style.borderColor = "red";
             app.keyboardEnable = true;
           } else {
             document.removeEventListener("keydown", keyDownListener, false);
 
             document.removeEventListener("keyup", keyUpListener, false);
             keyboardEnabled = false;
-            toggleEl2.value = "Keyboard Off";
-            var canvas = document.getElementById("c64Screen");
-            canvas.style.borderColor = "black";
+            toggleEl2.value = "Capture Keys Off";
+            c64Screen.style.borderColor = "black";
             app.keyboardEnable = false;
           }
         },
         false
       );
-      /*
-      document.addEventListener(
-        "keydown",
-        keyDownListener,
-        false
-      );
-
-      document.addEventListener(
-        "keyup",
-        keyUpListener,
-        false
-      );
-*/
     </script>
   </body>
 </html>
