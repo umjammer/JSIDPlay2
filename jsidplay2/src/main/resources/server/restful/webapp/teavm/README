@@ -7,7 +7,7 @@ Quickstart:
 ===========
 If you don't care how it works and just want to jump-start to add it into your web-page,
 just use the file set and upload to your web server.
-I have added example HTML code for different use-cases. Use it or add the code to your web-site HTML code.
+I have added example HTML code for different use-cases. Use it or add the code to your web-site's HTML code.
 example-sound.html - Choose a tune and play a SID
 example-video.html - Choose a tune and play a SID while watching the video screen.
 example-disk.html - Choose a disk image, reset C64 and load first entry. For disk swap just choose another disk
@@ -25,7 +25,7 @@ Even more modern frameworks are based on JavaScript.
 But web content uses more and more logic and JavaScript is quite often megabytes of code to be executed on the client side. 
 Web sites tend to get slower and slower due to this fact.
 The World Wide Web consortium (W3C) knows well about the problem and has created a new standard to not replace, but to
-extend JavaScript by a new language called "Web Assembly". It can be executed near native speed.
+extend JavaScript by a new language called "Web Assembly". It can be executed near native speed and is supported widely by all major browser vendors.
 
 But they have learned from the past. Do you remember where Java shipped with a browser plugin and the security risk was always high?
 Web Assembly in contrast can only be used for computational tasks. There is zero I/O possibilities.
@@ -36,10 +36,10 @@ Java is no exception here, even though it is not a trivial task, since a garbage
 For Java there are several tools out there like  GWT, TeaVM or CherpJ. Each of them with different possibilities.
 One of them - TeaVM - is a great project out there, that makes it possible to get Java code executed on the client side in a different form.
 This magic is done using the intermediate language of Java, the class files, and execution by ahead-of-time compilation.
-The output is emitted as JavaScript or Web Assembly.
+The output is then emitted as JavaScript or Web Assembly.
 
 Using class files, not Java source code - makes it possible to use it with other programming languages than Java as well, like Scala and Kotlin,
-that compiles to class files as well.
+these compiles to class files as well.
 
 TeaVM can be used with maven or gradle.
 No other technology stack is required, just what we already use: maven and a Java IDE is just fine.
@@ -62,13 +62,11 @@ It took me some weeks, but fair to say, there was only minimum problems I got to
    I thought it would be a good idea, because it would be faster than JavaScript. But against any expectations the opposite is the case
    at least for my use case. And then, when I added JavaScript,
    I made wide eyes finding debugging possibilities in the browser developer console.
-   Additionally if we are talking about the speed - the speed is so incredible fast, you won't believe it at least in Google Chrome browser.
+   Additionally if we are talking about the speed - the speed is so incredible fast, you won't believe it, at least in Google Chrome browser.
    Don't think that JavaScript is still an interpreted slow language, browser vendors do a fantastic job these days to get maximum speed out of it.
-4. Optimize your code for speed. Don't execute any unnecessary piece of code. This is the most important rule to get good results!
+4. But, the most important rule to get good results is to optimize code for speed. Don't execute any unnecessary piece of code!
 
 Now, as a result, you can directly compare both, JavaScript and Web Assembly version of JSIDPlay2 to find out what works better for you.
-
-Enough talking.
 
 What does the package of JSIDPlay2 contain:
 ===========================================
@@ -80,7 +78,7 @@ even content from tape, disk or cartridge for your enjoyment.
 
 What files do I need?
 =====================
-ZIP file contains several demo HTML pages on the root level just for you to learn how it works.
+This ZIP file contains several demo HTML pages on the root level just for you to learn how it works altogether with this README.
 The sub-directory js (or wasm) contains the generated emulator file jsidplay2.js (JavaScript) or jsidplay2.wasm (Web Assembly).
 Both releases have an additional web worker (*-worker*.js) and Web Assembly requires a runtime in JavaScript (*-runtime*.js).
 That's it.
@@ -97,12 +95,11 @@ jsidplay2-wasm-worker.js		web worker
 jsidplay2.wasm					generated JSIDPlay2 as Web Assembly
 jsidplay2.wasm-runtime.js		runtime JavaScript file to use the Web Assembly
 
-Upload this file set to your web server and then you need a bit JavaScript in your main page to start controlling the emulator.
+Upload this file-set to your web server and then you need a bit JavaScript in your main page to start controlling the emulator.
 
 What code do I need to control the emulator?
 ============================================
-Since the emulator runs as a web worker (to not block the main thread), you will setup this worker, first,
-calling wasmWorker(...).
+Since the emulator runs as a web worker (to not block the main thread), you will setup this worker, first, calling wasmWorker(...).
 
 Parameters of wasmWorker:
 What tune to play is answered by the first two parameters. "contents" and "tune name" are specifying a tune to play.
@@ -151,7 +148,7 @@ Code Snippet:
 
             if (eventType === "SAMPLES") {
               // the worker has produced a chunk of sound data. We create a stereo buffer and send it to the sound card
-              var buffer = audioContext.createBuffer(2, eventData.left.length, audioContext.sampleRate);
+              var buffer = audioContext.createBuffer(2, eventData.length, audioContext.sampleRate);
               buffer.getChannelData(0).set(eventData.left);
               buffer.getChannelData(1).set(eventData.right);
 
@@ -167,7 +164,7 @@ Code Snippet:
                 nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
-              nextTime += eventData.left.length / audioContext.sampleRate + fix;
+              nextTime += eventData.length / audioContext.sampleRate + fix;
             } else if (eventType === "FRAME") {
               // the worker has produced a video frame to display. Since it does it 50 times per second,
               // we need a queue here and display one frame every 1/50 (PAL) or 1/60 (NTSC) per second
@@ -254,7 +251,7 @@ Event Types:
 "CLOCK"      - The emulator clocks the C64 hardware (the buffer size denotes how many times).
                During that clocking it reports "SAMPLES" (with the size of audioBufferSize), "FRAME" (every generated video frame)
                and "SID_WRITE" events on each CPU write to the SID chip. If clocking is completed, the answer is "CLOCKED"
-               and the "CLOCK" event gets started again or the next round
+               and the "CLOCK" event gets started again for the next round
 "IDLE"       - This event does in fact nothing (no output is produced), since the queue is full and waiting until the viewer
                watches and listens recently created output. However, the answer is "CLOCKED" as well even though nothing advanced.
 These events from the emulation web worker have no answer and are called during clocking:
@@ -263,5 +260,6 @@ These events from the emulation web worker have no answer and are called during 
 "SID_WRITE"  - A SID write statement occurs, ignore it, print it or send it to an USB connected virtual SID device using some driver code
 
 That's the trick, easy eh?
-I hope it helps you.
+I hope this little explanation helps you.
+The example-*.html files are pretty small, so everybody can jump-start and get working results very quick.
 If you are missing features in the API or have further questions, please contact me by email: kschwiersch@yahoo.de

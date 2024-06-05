@@ -22,7 +22,8 @@
 				<include>c64jukebox.scss</include>
 				<include>test-*.html</include>
 				<include>README</include>
-				<include>test.html</include>
+				<include>COPYING</include>
+				<include>AUTHORS</include>
 			</includes>
 			<excludes>
 				<exclude>wasm</exclude>
