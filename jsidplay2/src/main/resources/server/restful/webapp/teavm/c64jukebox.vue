@@ -1447,7 +1447,7 @@
               <ol>
                 <li>
                   Run JSIDPlay2 in a browser in
-                  <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS">JavaScript UMD</a>,
+                  <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS">JavaScript UMD</a> or
                   <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS_EM2015">JavaScript ECMAScript 2015</a> or
                   <a href="/static/teavm/c64jukebox.vue?teavmFormat=WASM">Web Assembly</a> (THIS IS NOT JAVA)
                 </li>
