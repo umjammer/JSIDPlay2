@@ -82,10 +82,16 @@ This ZIP file contains several demo HTML pages on the root level just for you to
 The sub-directory js (or wasm) contains the generated emulator file jsidplay2.js (JavaScript) or jsidplay2.wasm (Web Assembly).
 Both releases have an additional web worker (*-worker*.js) and Web Assembly requires a runtime in JavaScript (*-runtime*.js).
 That's it.
-2 files for JavaScript or 3 for Web Assembly and thats all you need
+2 files for JavaScript or 3 for Web Assembly and thats all you need.
+For completeness i have added a third version: EM2015 JavaScript to the existing UMD JavaScript dialect.
 In any case you will need these files from the sub folder js/wasm for integration in your web site.
 
-Required Files for JavaScript version:
+Required Files for JavaScript (UMD) version:
+jsidplay2-js-worker.js			web worker
+jsidplay2.js					generated JSIDPlay2 as JavaScript
+
+...or as an alternative...
+Required Files for JavaScript (EM2015) version:
 jsidplay2-js-worker.js			web worker
 jsidplay2.js					generated JSIDPlay2 as JavaScript
 

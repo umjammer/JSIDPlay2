@@ -28,6 +28,7 @@
 			<excludes>
 				<exclude>wasm</exclude>
 				<exclude>js</exclude>
+				<exclude>js_em2015</exclude>
 			</excludes>
 		</fileSet>
 	</fileSets>

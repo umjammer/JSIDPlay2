@@ -1,7 +1,8 @@
 package server.restful.common;
 
 public enum TeaVMFormat {
-	JS("JavaScript", "2MB", "{ type: 'module' }"), WASM("WASM", "5MB", "");
+	JS("JavaScript UMD", "2MB", ""), JS_EM2015("JavaScript EM2015", "2MB", "{ type: 'module' }"),
+	WASM("WASM", "5MB", "");
 
 	private String teaVMFormatName;
 	private String approximateSize;

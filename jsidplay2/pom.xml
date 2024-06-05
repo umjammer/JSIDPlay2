@@ -426,6 +426,26 @@
 							<sourceMapsGenerated>false</sourceMapsGenerated>
 							<sourceFilesCopied>false</sourceFilesCopied>
 							<targetType>JAVASCRIPT</targetType>
+							<jsModuleType>UMD</jsModuleType>
+							<optimizationLevel>FULL</optimizationLevel>
+							<minifying>true</minifying>
+						</configuration>
+					</execution>
+					<execution>
+						<id>js_em2015</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<stopOnErrors>true</stopOnErrors>
+							<mainClass>client.teavm.js.JSIDPlay2TeaVM</mainClass>
+							<targetDirectory>
+								${project.build.directory}/classes/server/restful/webapp/teavm/js_em2015</targetDirectory>
+							<targetFileName>${project.artifactId}.js</targetFileName>
+							<debugInformationGenerated>false</debugInformationGenerated>
+							<sourceMapsGenerated>false</sourceMapsGenerated>
+							<sourceFilesCopied>false</sourceFilesCopied>
+							<targetType>JAVASCRIPT</targetType>
 							<jsModuleType>ES2015</jsModuleType>
 							<optimizationLevel>FULL</optimizationLevel>
 							<minifying>true</minifying>
@@ -1529,6 +1549,25 @@
 							<appendAssemblyId>false</appendAssemblyId>
 							<filters>
 								<filter>src/main/assembly/filter-js.properties</filter>
+							</filters>
+						</configuration>
+					</execution>
+					<execution>
+						<id>zip-js_em2015</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/zip-js_em2015.xml</descriptor>
+							</descriptors>
+							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
+							<finalName>
+								${project.artifactId}-${project.version}-js_em2015</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<filters>
+								<filter>src/main/assembly/filter-js_em2015.properties</filter>
 							</filters>
 						</configuration>
 					</execution>
