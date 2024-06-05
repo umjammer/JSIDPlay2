@@ -11,6 +11,7 @@ import {
   typeKey,
   pressKey,
   releaseKey,
+  joystick,
 } from "./jsidplay2.js";
 
 // Handle incoming messages
@@ -97,6 +98,12 @@ addEventListener(
 
       postMessage({
         eventType: "KEY_RELEASED",
+      });
+    } else if (eventType === "PRESS_JOYSTICK") {
+      joystick(eventData.number, eventData.value);
+
+      postMessage({
+        eventType: "JOYSTICK_PRESSED",
       });
     } else if (eventType === "INITIALISE") {
       main(

@@ -2310,6 +2310,17 @@
               });
             }
           },
+          joystick(number, value) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "PRESS_JOYSTICK",
+                eventData: {
+                  number: number,
+                  value: value,
+                },
+              });
+            }
+          },
           insertCart() {
             app.msg = app.$t("cartInserted") + ": " + app.$refs.formCartFileSm.files[0].name;
             app.reset();

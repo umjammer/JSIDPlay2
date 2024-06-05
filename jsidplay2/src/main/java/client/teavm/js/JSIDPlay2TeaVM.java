@@ -84,6 +84,11 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
+	public static void joystick(int number, int value) {
+		jsidplay2.joystick(number, value);
+	}
+
+	@JSExport
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);
 	}

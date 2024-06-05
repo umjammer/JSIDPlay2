@@ -38,4 +38,6 @@ public interface IExportedApi extends JSObject {
 	void releaseKey(String keyCode);
 
 	void delaySidBlaster(int cycles);
+
+	void joystick(int number, int value);
 }

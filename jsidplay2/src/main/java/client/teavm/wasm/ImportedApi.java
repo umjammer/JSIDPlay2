@@ -128,8 +128,7 @@ public class ImportedApi implements IImportedApi {
 
 	@Override
 	public String getReSIDfpThirdSIDFilter8580() {
-		// TODO Auto-generated method stub
-		return null;
+		return getReSIDfpThirdSIDFilter8580JS();
 	}
 
 	@Override

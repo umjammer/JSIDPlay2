@@ -28,6 +28,7 @@ import libsidplay.C64;
 import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
+import libsidplay.common.Emulation;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.Control;
@@ -35,6 +36,7 @@ import libsidplay.components.c1541.DiskImage;
 import libsidplay.components.cart.CartridgeType;
 import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.components.mos6510.MOS6510;
+import libsidplay.components.pla.PLA;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
@@ -105,6 +107,14 @@ public class ExportedApi implements IExportedApi {
 		if (cartContentsName != null) {
 			LOG.finest("Cart, length=: " + cartContents.length);
 			LOG.finest("Cart name: : " + cartContentsName);
+		}
+		for (int i = 0; i < PLA.MAX_SIDS; i++) {
+			if (SidTune.isSIDUsed(emulationSection, tune, i)) {
+				LOG.finest("SID " + i + ", filter: "
+						+ emulationSection.getFilterName(i, emulationSection.getEngine(),
+								Emulation.getEmulation(emulationSection, i),
+								ChipModel.getChipModel(emulationSection, tune, i)));
+			}
 		}
 
 		Map<String, String> allRoms = RomsTeaVM.getJavaScriptRoms(false);
@@ -318,6 +328,17 @@ public class ExportedApi implements IExportedApi {
 		LOG.fine("releaseKey: " + key);
 
 		c64.getKeyboard().keyReleased(key);
+	}
+
+	@Override
+	public void joystick(int number, int value) {
+		c64.setJoystick(number, () -> (byte) (0xff ^ value));
+
+		c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Joystick Released", event -> {
+
+			c64.setJoystick(number, () -> (byte) (0xff));
+
+		}), c64.getClock().getCyclesPerFrame() << 2);
 	}
 
 	@Override
