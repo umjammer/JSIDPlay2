@@ -168,7 +168,10 @@ public class PALEmulation implements IPALEmulation {
 	public void reset() {
 		// clear the screen
 		((Buffer) pixels).clear();
-		((Buffer) pixels.put(new byte[pixels.capacity()])).clear();
+		for (int i = 0; i < pixels.capacity() >> 2; i++) {
+			pixels.putInt(0xFF000000);
+		}
+		((Buffer) pixels).clear();
 	}
 
 }
