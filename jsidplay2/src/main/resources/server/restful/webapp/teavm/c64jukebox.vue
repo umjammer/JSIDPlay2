@@ -1400,20 +1400,12 @@
               >
                 {{ $t("loadTape") }}
               </button>
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                v-on:click="typeKey('SPACE')"
-                :disabled="!playing || !screen"
-              >
-                {{ $t("space") }}
-              </button>
               <input
                 type="button"
                 :class="keyboardEnable ? 'btn btn-danger btn-sm' : 'btn btn-secondary btn-sm'"
                 id="toggle2"
-                value="Capture Keys Off"
-                style="margin-right: 0.1rem"
+                value="Capture Keys On"
+                style="margin-right: 0.1rem;"
               />
               <input
                 type="button"
@@ -1432,7 +1424,7 @@
               <div style="width: 100%; margin: 0px auto">
                 <canvas
                   id="c64Screen"
-                  style="border: 2px solid black; background-color: black; max-width: 100vw"
+                  style="border: 2px solid black; background-color: black; max-width: 100vw;"
                   width="384"
                   height="285"
                 />
@@ -1982,7 +1974,6 @@
             cartEjected: "Cartridge ejected",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
-            space: "Space Key",
             exampleMusic: "Music",
             exampleOneFiler: "OneFiler",
             exampleDemos: "Demos",
@@ -2028,7 +2019,6 @@
             cartEjected: "Modul ausgeworfen",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
-            space: "Leertaste",
             exampleMusic: "Musik",
             exampleOneFiler: "Programme",
             exampleDemos: "Demos",
@@ -2074,7 +2064,7 @@
             showTape: false,
             showCart: false,
             wakeLockEnable: false,
-            keyoardEnable: false,
+            keyboardEnable: false,
             filter6581: 'FilterAverage6581',
             filter8580: 'FilterAverage8580',
             stereoFilter6581: 'FilterAverage6581',
@@ -2339,6 +2329,7 @@
           canvasContext = canvas.getContext("2d");
           imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
           data = imageData.data;
+          Vue.nextTick(() => app.reset());
         },
         watch: {},
       })
@@ -2347,24 +2338,20 @@
 
       var noSleep = new NoSleep();
 
-      var wakeLockEnabled = false;
-      var keyboardEnabled = false;
       var toggleEl = document.querySelector("#toggle");
       toggleEl.addEventListener(
         "click",
         function () {
-          if (!wakeLockEnabled) {
+          if (!app.wakeLockEnable) {
+            app.wakeLockEnable = true;
             noSleep.enable(); // keep the screen on!
-            wakeLockEnabled = true;
             toggleEl.value = "Wake Lock On";
             document.body.style.backgroundColor = "lightblue";
-            app.wakeLockEnable = true;
           } else {
+            app.wakeLockEnable = false;
             noSleep.disable(); // let the screen turn off.
-            wakeLockEnabled = false;
             toggleEl.value = "Wake Lock Off";
             document.body.style.backgroundColor = "";
-            app.wakeLockEnable = false;
           }
         },
         false
@@ -2396,26 +2383,25 @@
         "click",
         function () {
           var c64Screen = document.getElementById("c64Screen");
-          if (!keyboardEnabled) {
+          if (!app.keyboardEnable) {
+            app.keyboardEnable = true;
             document.addEventListener("keydown", keyDownListener, false);
 
             document.addEventListener("keyup", keyUpListener, false);
-            keyboardEnabled = true;
             toggleEl2.value = "Capture Keys On";
             c64Screen.style.borderColor = "red";
-            app.keyboardEnable = true;
           } else {
+            app.keyboardEnable = false;
             document.removeEventListener("keydown", keyDownListener, false);
 
             document.removeEventListener("keyup", keyUpListener, false);
-            keyboardEnabled = false;
             toggleEl2.value = "Capture Keys Off";
             c64Screen.style.borderColor = "black";
-            app.keyboardEnable = false;
           }
         },
         false
       );
+      document.querySelector("#toggle2").click();
     </script>
   </body>
 </html>
