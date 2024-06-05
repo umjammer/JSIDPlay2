@@ -435,12 +435,12 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public String getThirdSIDFilter8580() {
-		return "FilterAverage8580";
+		return importedApi.getThirdSIDFilter8580();
 	}
 
 	@Override
 	public String getThirdSIDFilter6581() {
-		return "FilterAverage6581";
+		return importedApi.getThirdSIDFilter6581();
 	}
 
 	@Override
@@ -460,12 +460,12 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public String getStereoFilter8580() {
-		return "FilterAverage8580";
+		return importedApi.getStereoFilter8580();
 	}
 
 	@Override
 	public String getStereoFilter6581() {
-		return "FilterAverage6581";
+		return importedApi.getStereoFilter6581();
 	}
 
 	@Override
@@ -500,32 +500,32 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public String getReSIDfpThirdSIDFilter8580() {
-		return "FilterTrurl8580R5_3691";
+		return importedApi.getReSIDfpThirdSIDFilter8580();
 	}
 
 	@Override
 	public String getReSIDfpThirdSIDFilter6581() {
-		return "FilterAlankila6581R4AR_3789";
+		return importedApi.getReSIDfpThirdSIDFilter6581();
 	}
 
 	@Override
 	public String getReSIDfpStereoFilter8580() {
-		return "FilterTrurl8580R5_3691";
+		return importedApi.getReSIDfpStereoFilter8580();
 	}
 
 	@Override
 	public String getReSIDfpStereoFilter6581() {
-		return "FilterAlankila6581R4AR_3789";
+		return importedApi.getReSIDfpStereoFilter6581();
 	}
 
 	@Override
 	public String getReSIDfpFilter8580() {
-		return "FilterTrurl8580R5_3691";
+		return importedApi.getReSIDfpFilter8580();
 	}
 
 	@Override
 	public String getReSIDfpFilter6581() {
-		return "FilterAlankila6581R4AR_3789";
+		return importedApi.getReSIDfpFilter6581();
 	}
 
 	@Override
@@ -585,12 +585,12 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public String getFilter8580() {
-		return "FilterAverage8580";
+		return importedApi.getFilter8580();
 	}
 
 	@Override
 	public String getFilter6581() {
-		return "FilterAverage6581";
+		return importedApi.getFilter6581();
 	}
 
 	@Override

@@ -145,6 +145,18 @@ Code Snippet:
               defaultSidModel: true,						// default MOS6581 (false) or MOS8580 (true)
               jiffyDosInstalled: false,						// Floppy speeder off/on
               defaultEmulation: false,						// default emulation engine RESIDFP (false) or RESID (true)
+              filter6581: 'FilterAverage6581',
+              filter8580: 'FilterAverage8580',
+              stereoFilter6581: 'FilterAverage6581',
+              stereoFilter8580: 'FilterAverage8580',
+              thirdSIDFilter6581: 'FilterAverage6581',
+              thirdSIDFilter8580: 'FilterAverage8580',
+              reSIDfpFilter6581: 'FilterAlankila6581R4AR_3789',
+              reSIDfpFilter8580: 'FilterTrurl8580R5_3691',
+              reSIDfpStereoFilter6581: 'FilterAlankila6581R4AR_3789',
+              reSIDfpStereoFilter8580: 'FilterTrurl8580R5_3691',
+              reSIDfpThirdFilter6581: 'FilterAlankila6581R4AR_3789',
+              reSIDfpThirdFilter8580: 'FilterTrurl8580R5_3691',
             },
           });
 

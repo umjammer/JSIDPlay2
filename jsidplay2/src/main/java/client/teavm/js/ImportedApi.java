@@ -17,6 +17,18 @@ public class ImportedApi implements IImportedApi {
 	private final boolean defaultEmulationReSid;
 	private final boolean defaultSidModel8580;
 	private final boolean jiffyDosInstalled;
+	private final String filter6581;
+	private final String filter8580;
+	private final String stereoFilter6581;
+	private final String stereoFilter8580;
+	private final String thirdSIDFilter6581;
+	private final String thirdSIDFilter8580;
+	private final String reSIDfpFilter6581;
+	private final String reSIDfpFilter8580;
+	private final String reSIDfpStereoFilter6581;
+	private final String reSIDfpStereoFilter8580;
+	private final String reSIDfpThirdFilter6581;
+	private final String reSIDfpThirdFilter8580;
 
 	public ImportedApi(String[] args) {
 		this.palEmulation = Boolean.TRUE.equals(Boolean.valueOf(args[0]));
@@ -29,6 +41,18 @@ public class ImportedApi implements IImportedApi {
 		this.defaultEmulationReSid = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
 		this.defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
 		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[9]));
+		this.filter6581 = "" + args[10];
+		this.filter8580 = "" + args[11];
+		this.stereoFilter6581 = "" + args[12];
+		this.stereoFilter8580 = "" + args[13];
+		this.thirdSIDFilter6581 = "" + args[14];
+		this.thirdSIDFilter8580 = "" + args[15];
+		this.reSIDfpFilter6581 = "" + args[16];
+		this.reSIDfpFilter8580 = "" + args[17];
+		this.reSIDfpStereoFilter6581 = "" + args[18];
+		this.reSIDfpStereoFilter8580 = "" + args[19];
+		this.reSIDfpThirdFilter6581 = "" + args[20];
+		this.reSIDfpThirdFilter8580 = "" + args[21];
 	}
 
 	@Override
@@ -79,6 +103,66 @@ public class ImportedApi implements IImportedApi {
 	@Override
 	public boolean isJiffyDosInstalled() {
 		return jiffyDosInstalled;
+	}
+
+	@Override
+	public String getFilter6581() {
+		return filter6581;
+	}
+
+	@Override
+	public String getFilter8580() {
+		return filter8580;
+	}
+
+	@Override
+	public String getStereoFilter6581() {
+		return stereoFilter6581;
+	}
+
+	@Override
+	public String getStereoFilter8580() {
+		return stereoFilter8580;
+	}
+
+	@Override
+	public String getThirdSIDFilter6581() {
+		return thirdSIDFilter6581;
+	}
+
+	@Override
+	public String getThirdSIDFilter8580() {
+		return thirdSIDFilter8580;
+	}
+
+	@Override
+	public String getReSIDfpFilter6581() {
+		return reSIDfpFilter6581;
+	}
+
+	@Override
+	public String getReSIDfpFilter8580() {
+		return reSIDfpFilter8580;
+	}
+
+	@Override
+	public String getReSIDfpStereoFilter6581() {
+		return reSIDfpStereoFilter6581;
+	}
+
+	@Override
+	public String getReSIDfpStereoFilter8580() {
+		return reSIDfpStereoFilter8580;
+	}
+
+	@Override
+	public String getReSIDfpThirdSIDFilter6581() {
+		return reSIDfpThirdFilter6581;
+	}
+
+	@Override
+	public String getReSIDfpThirdSIDFilter8580() {
+		return reSIDfpThirdFilter8580;
 	}
 
 	@Override

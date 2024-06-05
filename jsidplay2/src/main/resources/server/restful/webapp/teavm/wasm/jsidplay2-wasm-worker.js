@@ -133,6 +133,20 @@ addEventListener(
               getDefaultEmulationReSid: () => eventData.defaultEmulation,
               getDefaultSidModel8580: () => eventData.defaultSidModel,
             };
+            o.filtersection = {
+              getFilter6581: () => eventData.filter6581,
+              getFilter8580: () => eventData.filter8580,
+              getStereoFilter6581: () => eventData.stereoFilter6581,
+              getStereoFilter8580: () => eventData.stereoFilter8580,
+              getThirdSIDFilter6581: () => eventData.thirdSIDFilter6581,
+              getThirdSIDFilter8580: () => eventData.thirdSIDFilter8580,
+              getReSIDfpFilter6581: () => eventData.reSIDfpFilter6581,
+              getReSIDfpFilter8580: () => eventData.reSIDfpFilter8580,
+              getReSIDfpStereoFilter6581: () => eventData.reSIDfpStereoFilter6581,
+              getReSIDfpStereoFilter8580: () => eventData.reSIDfpStereoFilter8580,
+              getReSIDfpThirdSIDFilter6581: () => eventData.reSIDfpThirdSIDFilter6581,
+              getReSIDfpThirdSIDFilter8580: () => eventData.reSIDfpThirdSIDFilter8580,
+            };
             o.audiodriver = {
               processSamples: (leftChannelPtr, rightChannelPtr, length) =>
                 postMessage({

@@ -111,6 +111,18 @@ addEventListener(
           eventData.defaultEmulation,
           eventData.defaultSidModel,
           eventData.jiffyDosInstalled,
+          eventData.filter6581,
+          eventData.filter8580,
+          eventData.stereoFilter6581,
+          eventData.stereoFilter8580,
+          eventData.thirdSIDFilter6581,
+          eventData.thirdSIDFilter8580,
+          eventData.reSIDfpFilter6581,
+          eventData.reSIDfpFilter8580,
+          eventData.reSIDfpStereoFilter6581,
+          eventData.reSIDfpStereoFilter8580,
+          eventData.reSIDfpThirdFilter6581,
+          eventData.reSIDfpThirdFilter8580,
         ].map((item) => "" + item)
       );
 
