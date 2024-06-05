@@ -14,7 +14,9 @@ All Demos are using VUE3 and Bootstrap5.
 
 . This Demo requires JSIDPlay2 in server mode and streams content from JSIDPlay2 Server to the browser link:https://haendel.ddns.net:8443/static/c64jukebox.vue[C64jukebox - using RESTful API^]
 
-. ...and this demo runs directly in the browser as well but using JavaScript link:https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue?teavmFormat=JS[C64jukebox - using JavaScript^]
+. ...and this demo runs directly in the browser as well but using JavaScript link:https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue?teavmFormat=JS[C64jukebox - using JavaScript UMD^]
+
+. ...and this demo runs directly in the browser as well but using JavaScript link:https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue?teavmFormat=JS_EM2015[C64jukebox - using JavaScript EM2015^]
 
 . ...whilst this demo runs directly in the browser, using web assembly (WASM) format link:https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue?teavmFormat=WASM[C64jukebox - using WASM^]
 
