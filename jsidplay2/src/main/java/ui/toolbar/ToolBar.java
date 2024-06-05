@@ -157,7 +157,7 @@ public class ToolBar extends C64VBox implements UIPart {
 			appServerKeyPasswordLbl, sidBlasterWriteBufferSizeLbl, sidBlasterLatencyTimerLbl, sidBlasterReadLbl,
 			streamingIpAddress, streamingHostname;
 	@FXML
-	private Hyperlink appServerUsage, onlinePlayer, sidBlasterDoc, offlinePlayerWasm, offlinePlayerJs;
+	private Hyperlink appServerUsage, onlinePlayer, sidBlasterDoc, offlinePlayerWasm, offlinePlayerJs, offlinePlayerJsEm2015;
 	@FXML
 	private ProgressBar progress;
 
@@ -349,6 +349,7 @@ public class ToolBar extends C64VBox implements UIPart {
 			onlinePlayer.setDisable(!newValue);
 			offlinePlayerWasm.setDisable(!newValue);
 			offlinePlayerJs.setDisable(!newValue);
+			offlinePlayerJsEm2015.setDisable(!newValue);
 		});
 
 		ultimate64StreamingTarget.textProperty()
@@ -571,6 +572,23 @@ public class ToolBar extends C64VBox implements UIPart {
 					: emulationSection.getAppServerSecurePort();
 
 			URI uri = new URI(util.getConfig().getOnlineSection().getOfflinePlayerJsUrl());
+			URI localURI = new URI(appServerConnectors.getPreferredProtocol(), null, "127.0.0.1", port, uri.getPath(),
+					uri.getQuery(), uri.getFragment());
+			DesktopUtil.browse(localURI.toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	private void offlinePlayerJsEm2015() {
+		try {
+			EmulationSection emulationSection = util.getConfig().getEmulationSection();
+			Connectors appServerConnectors = emulationSection.getAppServerConnectors();
+			int port = appServerConnectors.getPreferredProtocol().equals("http") ? emulationSection.getAppServerPort()
+					: emulationSection.getAppServerSecurePort();
+
+			URI uri = new URI(util.getConfig().getOnlineSection().getOfflinePlayerJsEm2015Url());
 			URI localURI = new URI(appServerConnectors.getPreferredProtocol(), null, "127.0.0.1", port, uri.getPath(),
 					uri.getQuery(), uri.getFragment());
 			DesktopUtil.browse(localURI.toString());

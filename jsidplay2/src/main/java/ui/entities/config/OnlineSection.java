@@ -44,9 +44,13 @@ public class OnlineSection {
 
 	public static final String ONLINE_PLAYER_URL = APP_SERVER_URL + "/static/c64jukebox.vue";
 
-	public static final String OFFLINE_PLAYER_WASM_URL = APP_SERVER_URL + "/static/teavm/c64jukebox.vue?teavmFormat=WASM";
+	public static final String OFFLINE_PLAYER_WASM_URL = APP_SERVER_URL
+			+ "/static/teavm/c64jukebox.vue?teavmFormat=WASM";
 
 	public static final String OFFLINE_PLAYER_JS_URL = APP_SERVER_URL + "/static/teavm/c64jukebox.vue?teavmFormat=JS";
+
+	public static final String OFFLINE_PLAYER_JS_EM2015_URL = APP_SERVER_URL
+			+ "/static/teavm/c64jukebox.vue?teavmFormat=JS_EM2015";
 
 	/**
 	 * URL where SOASC downloads are located.
@@ -412,6 +416,21 @@ public class OnlineSection {
 
 	public final StringProperty offlinePlayerJsUrlProperty() {
 		return offlinePlayerJsUrl.property();
+	}
+
+	private ShadowField<StringProperty, String> offlinePlayerJsEm2015Url = new ShadowField<>(SimpleStringProperty::new,
+			OFFLINE_PLAYER_JS_EM2015_URL);
+
+	public String getOfflinePlayerJsEm2015Url() {
+		return offlinePlayerJsEm2015Url.get();
+	}
+
+	public void setOfflinePlayerJsEm2015Url(String offlinePlayerJsEm2015Url) {
+		this.offlinePlayerJsEm2015Url.set(offlinePlayerJsEm2015Url);
+	}
+
+	public final StringProperty offlinePlayerJsEm2015UrlProperty() {
+		return offlinePlayerJsEm2015Url.property();
 	}
 
 	private ShadowField<StringProperty, String> sidBlasterDocUrl = new ShadowField<>(SimpleStringProperty::new,

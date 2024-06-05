@@ -385,6 +385,9 @@
 							<Hyperlink text="%OFFLINE_PLAYER_JS" textFill="BLUE"
 								underline="true" onAction="#offlinePlayerJs" fx:id="offlinePlayerJs"
 								disable="true" />
+							<Hyperlink text="%OFFLINE_PLAYER_JS_EM2015" textFill="BLUE"
+								underline="true" onAction="#offlinePlayerJsEm2015" fx:id="offlinePlayerJsEm2015"
+								disable="true" />
 							<Hyperlink text="%OFFLINE_PLAYER_WASM" textFill="BLUE"
 								underline="true" onAction="#offlinePlayerWasm" fx:id="offlinePlayerWasm"
 								disable="true" />
