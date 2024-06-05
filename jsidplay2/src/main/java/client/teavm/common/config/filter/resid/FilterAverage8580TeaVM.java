@@ -1,8 +1,8 @@
-package client.teavm.common.config;
+package client.teavm.common.config.filter.resid;
 
 import libsidplay.config.IFilterSection;
 
-public final class FilterTrurl8580R5_3691TeaVM implements IFilterSection {
+public final class FilterAverage8580TeaVM implements IFilterSection {
 	@Override
 	public void setVoiceNonlinearity(float voiceNonlinearity) {
 	}
@@ -67,7 +67,7 @@ public final class FilterTrurl8580R5_3691TeaVM implements IFilterSection {
 
 	@Override
 	public float getResonanceFactor() {
-		return 1.0f;
+		return 0;
 	}
 
 	@Override
@@ -77,12 +77,12 @@ public final class FilterTrurl8580R5_3691TeaVM implements IFilterSection {
 
 	@Override
 	public float getNonlinearity() {
-		return 1.0f;
+		return 0;
 	}
 
 	@Override
 	public String getName() {
-		return "FilterTrurl8580R5_3691";
+		return "FilterAverage8580";
 	}
 
 	@Override
@@ -92,12 +92,12 @@ public final class FilterTrurl8580R5_3691TeaVM implements IFilterSection {
 
 	@Override
 	public float getK() {
-		return 6.55f;
+		return 0;
 	}
 
 	@Override
 	public float getFilter8580CurvePosition() {
-		return 0;
+		return 12500;
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public final class FilterTrurl8580R5_3691TeaVM implements IFilterSection {
 
 	@Override
 	public float getB() {
-		return 20;
+		return 0;
 	}
 
 	@Override

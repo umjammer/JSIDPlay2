@@ -1,8 +1,8 @@
-package client.teavm.common.config;
+package client.teavm.common.config.filter.residfp;
 
 import libsidplay.config.IFilterSection;
 
-public final class FilterAverage6581TeaVM implements IFilterSection {
+public final class FilterZrX6581R3_3684TeaVM implements IFilterSection {
 	@Override
 	public void setVoiceNonlinearity(float voiceNonlinearity) {
 	}
@@ -57,37 +57,37 @@ public final class FilterAverage6581TeaVM implements IFilterSection {
 
 	@Override
 	public float getVoiceNonlinearity() {
-		return 0;
+		return 0.96f;
 	}
 
 	@Override
 	public float getSteepness() {
-		return 0;
+		return 1.006f;
 	}
 
 	@Override
 	public float getResonanceFactor() {
-		return 0;
+		return 1.0f;
 	}
 
 	@Override
 	public float getOffset() {
-		return 0;
+		return 1.2e10f;
 	}
 
 	@Override
 	public float getNonlinearity() {
-		return 0;
+		return 3.3e6f;
 	}
 
 	@Override
 	public String getName() {
-		return "FilterAverage6581";
+		return "FilterZrx6581R3_3684";
 	}
 
 	@Override
 	public float getMinimumfetresistance() {
-		return 0;
+		return 1e4f;
 	}
 
 	@Override
@@ -102,12 +102,12 @@ public final class FilterAverage6581TeaVM implements IFilterSection {
 
 	@Override
 	public float getFilter6581CurvePosition() {
-		return 0.5f;
+		return 0;
 	}
 
 	@Override
 	public float getBaseresistance() {
-		return 0;
+		return 1.65e6f;
 	}
 
 	@Override
@@ -117,6 +117,6 @@ public final class FilterAverage6581TeaVM implements IFilterSection {
 
 	@Override
 	public float getAttenuation() {
-		return 0;
+		return 0.5f;
 	}
 }

@@ -1,8 +1,8 @@
-package client.teavm.common.config;
+package client.teavm.common.config.filter.residfp;
 
 import libsidplay.config.IFilterSection;
 
-public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
+public final class FilterZrX6581R3_1984TeaVM implements IFilterSection {
 	@Override
 	public void setVoiceNonlinearity(float voiceNonlinearity) {
 	}
@@ -57,12 +57,12 @@ public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
 
 	@Override
 	public float getVoiceNonlinearity() {
-		return 0.9613160610660189f;
+		return 0.96f;
 	}
 
 	@Override
 	public float getSteepness() {
-		return 1.0066634233403395f;
+		return 1.0064f;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
 
 	@Override
 	public float getOffset() {
-		return 274228796.97550374f;
+		return 2.6e9f;
 	}
 
 	@Override
@@ -82,12 +82,12 @@ public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
 
 	@Override
 	public String getName() {
-		return "FilterAlankila6581R4AR_3789";
+		return "FilterZrX6581R3_1984";
 	}
 
 	@Override
 	public float getMinimumfetresistance() {
-		return 16125.154840564108f;
+		return 2.5e4f;
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public final class FilterAlankila6581R4AR_3789TeaVM implements IFilterSection {
 
 	@Override
 	public float getBaseresistance() {
-		return 1147036.4394268463f;
+		return 1.83e6f;
 	}
 
 	@Override

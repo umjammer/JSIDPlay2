@@ -1,8 +1,8 @@
-package client.teavm.common.config;
+package client.teavm.common.config.filter.residfp;
 
 import libsidplay.config.IFilterSection;
 
-public final class FilterAverage8580TeaVM implements IFilterSection {
+public final class FilterAlankila6581R3_3984_2TeaVM implements IFilterSection {
 	@Override
 	public void setVoiceNonlinearity(float voiceNonlinearity) {
 	}
@@ -57,37 +57,37 @@ public final class FilterAverage8580TeaVM implements IFilterSection {
 
 	@Override
 	public float getVoiceNonlinearity() {
-		return 0;
+		return 0.96f;
 	}
 
 	@Override
 	public float getSteepness() {
-		return 0;
+		return 1.005727808339829f;
 	}
 
 	@Override
 	public float getResonanceFactor() {
-		return 0;
+		return 1.0f;
 	}
 
 	@Override
 	public float getOffset() {
-		return 0;
+		return 67122945.35403329f;
 	}
 
 	@Override
 	public float getNonlinearity() {
-		return 0;
+		return 3.3e6f;
 	}
 
 	@Override
 	public String getName() {
-		return "FilterAverage8580";
+		return "FilterAlankila6581R3_3984_2";
 	}
 
 	@Override
 	public float getMinimumfetresistance() {
-		return 0;
+		return 15462.006399118263f;
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public final class FilterAverage8580TeaVM implements IFilterSection {
 
 	@Override
 	public float getFilter8580CurvePosition() {
-		return 12500;
+		return 0;
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public final class FilterAverage8580TeaVM implements IFilterSection {
 
 	@Override
 	public float getBaseresistance() {
-		return 0;
+		return 1613349.4942964897f;
 	}
 
 	@Override
@@ -117,6 +117,6 @@ public final class FilterAverage8580TeaVM implements IFilterSection {
 
 	@Override
 	public float getAttenuation() {
-		return 0;
+		return 0.5f;
 	}
 }
