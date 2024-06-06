@@ -40,6 +40,12 @@
       <form enctype="multipart/form-data">
         <div class="locale-changer">
           <h1 class="c64jukebox" style="width: 100%">C64 Jukebox (${teaVMFormatName})</h1>
+          <input
+            type="button"
+            :class="wakeLockEnable ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'"
+            id="toggle"
+            value="Wake Lock Off"
+          />
           <select
             id="localeselector"
             class="form-select form-select-sm"
@@ -152,6 +158,20 @@
                         <li>
                           <a class="dropdown-item" href="#" @click="ejectDisk()">{{ $t("ejectDisk") }}</a>
                         </li>
+
+                        <li>
+                          <div class="dropdown-item form-check">
+                            <button
+                              v-show="screen"
+                              type="button"
+                              class="btn btn-secondary btn-sm"
+                              v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
+                              style="cursor: pointer"
+                            >
+                              {{ $t("loadDisk") }}
+                            </button>
+                          </div>
+                        </li>
                       </ul>
                     </li>
                     <li>
@@ -186,10 +206,23 @@
                           />
                         </li>
                         <li>
-                          <a class="dropdown-item" href="#" @click="pressPlayOnTape()">{{ $t("pressPlayOnTape") }}</a>
+                          <a class="dropdown-item" href="#" @click="ejectTape()">{{ $t("ejectTape") }}</a>
+                        </li>
+
+                        <li>
+                          <div class="dropdown-item form-check">
+                            <button
+                              v-show="screen"
+                              type="button"
+                              class="btn btn-secondary btn-sm"
+                              v-on:click="typeInCommand('LOAD\rRUN\r')"
+                            >
+                              {{ $t("loadTape") }}
+                            </button>
+                          </div>
                         </li>
                         <li>
-                          <a class="dropdown-item" href="#" @click="ejectTape()">{{ $t("ejectTape") }}</a>
+                          <a class="dropdown-item" href="#" @click="pressPlayOnTape()">{{ $t("pressPlayOnTape") }}</a>
                         </li>
                       </ul>
                     </li>
@@ -1452,24 +1485,9 @@
               </div>
               <div class="tab-pane fade show active" id="video" role="tabpanel" aria-labelledby="video-tab">
                 <div class="row">
-                  <div class="col">
+                  <div v-show="screen" class="col screen-parent p-0">
                     <button
-                      type="button"
-                      class="btn btn-secondary btn-sm"
-                      v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
-                      :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !screen"
-                    >
-                      {{ $t("loadDisk") }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-secondary btn-sm"
-                      v-on:click="typeInCommand('LOAD\rRUN\r')"
-                      :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
-                    >
-                      {{ $t("loadTape") }}
-                    </button>
-                    <button
+                      v-show="screen"
                       type="button"
                       class="btn btn-secondary btn-sm"
                       v-on:click="typeKey('SPACE')"
@@ -1477,19 +1495,12 @@
                     >
                       {{ $t("space") }}
                     </button>
-                    <input
-                      type="button"
-                      :class="wakeLockEnable ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'"
-                      id="toggle"
-                      value="Wake Lock Off"
-                    />
                     <span class="p-1 fs-6 fst-italic"
-                      >{{ msg }} <span v-show="playing"> / {{ $t("fiq") }} {{ framesCounter }}</span></span
+                      >{{ msg }}
+                      <span v-show="playing">
+                        <span v-show="framesCounter != 0">{{ $t("fiq") }} {{ framesCounter }}</span></span
+                      ></span
                     >
-                  </div>
-                </div>
-                <div class="row">
-                  <div v-show="screen" class="col screen-parent p-0">
                     <div style="width: 100%; margin: 0px auto">
                       <canvas
                         id="c64Screen"
@@ -1953,7 +1964,7 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && size * app.nthFrame < 60) {
+              if (!app.paused && size * app.nthFrame < 10) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 worker.postMessage({ eventType: "IDLE" });
@@ -2074,7 +2085,7 @@
             ejectDisk: "Diskette auswerfen",
             tape: "Datasette",
             insertTape: "Kasette einlegen",
-            pressPlayOnTape: "Drücke Play auf der Datasette",
+            pressPlayOnTape: "Drücke Play",
             ejectTape: "Kasette auswerfen",
             cart: "Modul",
             insertCart: "Modul einlegen",
@@ -2429,36 +2440,20 @@
         false
       );
       var keyDownListener = (event) => {
-        var keyValue = event.key;
-
-        var codeValue = event.code;
-
-        //console.log("dwn: keyValue: " + keyValue);
-
-        //console.log("codeValue: " + codeValue);
         let key = toC64KeyTableEntry(event.code);
         if (key) {
-        app.pressKey(key);
+          app.pressKey(key);
           event.preventDefault();
         }
       };
       var keyUpListener = (event) => {
-        var keyValue = event.key;
-
-        var codeValue = event.code;
-
-        //console.log("up: keyValue: " + keyValue);
-
-        //console.log("codeValue: " + codeValue);
         let key = toC64KeyTableEntry(event.code);
         if (key) {
-        app.releaseKey(key);
-          event.preventDefault();
+          app.releaseKey(key);
         }
       };
-            document.addEventListener("keydown", keyDownListener, false);
-
-            document.addEventListener("keyup", keyUpListener, false);
+      document.addEventListener("keydown", keyDownListener, false);
+      document.addEventListener("keyup", keyUpListener, false);
     </script>
   </body>
 </html>
