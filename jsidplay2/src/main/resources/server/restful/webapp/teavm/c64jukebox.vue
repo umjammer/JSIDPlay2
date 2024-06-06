@@ -1542,159 +1542,235 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="tab-content card-body" style="position: relative">
               <div class="tab-pane fade show" id="cfg" role="tabpanel" aria-labelledby="cfg-tab">
-                <div class="form-check">
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="startSong"
-                        >{{ $t("startSong") }}
-                        <input
-                          class="right"
-                          type="number"
-                          id="startSong"
-                          class="form-control"
-                          v-model.number="startSong"
-                      /></label>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <div class="form-check">
-                        <label class="form-check-label" for="palEmulation">
-                          {{ $t("palEmulation") }}
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="palEmulation"
-                            style="float: right; margin-left: 8px"
-                            v-model="palEmulation"
-                          />
-                        </label>
-                      </div>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="nthFrame">
-                        <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
-                          <option v-for="n in nthFrames" :value="n">{{ n }}</option>
-                        </select>
-                        {{ $t("nthFrame") }}
-                      </label>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="defaultClockSpeed">
-                        <select
-                          class="form-select form-select-sm right"
-                          id="defaultClockSpeed"
-                          v-model="defaultClockSpeed"
+                <div class="card">
+                  <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link active"
+                          id="audiocfg-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#audiocfg"
+                          type="button"
+                          role="tab"
+                          aria-controls="audiocfg"
+                          aria-selected="true"
                         >
-                          <option value="50">PAL</option>
-                          <option value="60">NTSC</option>
-                        </select>
-                        <span>{{ $t("defaultClockSpeed") }}</span>
-                      </label>
-                    </span>
-                  </div>
-
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="defaultEmulation">
-                        <select
-                          class="form-select form-select-sm right"
-                          id="defaultEmulation"
-                          v-model="defaultEmulation"
+                          {{ $t("audioCfgHeader") }}
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="videocfg-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#videocfg"
+                          type="button"
+                          role="tab"
+                          aria-controls="videocfg"
+                          aria-selected="false"
                         >
-                          <option value="RESID">Dag Lem's resid 1.0 beta</option>
-                          <option value="RESIDFP">Antti S. Lankila's resid-fp</option>
-                        </select>
-                        <span>{{ $t("defaultEmulation") }}</span>
-                      </label>
-                    </span>
+                          {{ $t("videoCfgHeader") }}
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="emulationcfg-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#emulationcfg"
+                          type="button"
+                          role="tab"
+                          aria-controls="emulationcfg"
+                          aria-selected="false"
+                        >
+                          {{ $t("emulationCfgHeader") }}
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="filtercfg-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#filtercfg"
+                          type="button"
+                          role="tab"
+                          aria-controls="filtercfg"
+                          aria-selected="false"
+                        >
+                          {{ $t("filterCfgHeader") }}
+                        </button>
+                      </li>
+                    </ul>
                   </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="defaultSidModel">
-                        <select class="form-select form-select-sm right" id="defaultSidModel" v-model="defaultSidModel">
-                          <option value="false">MOS6581</option>
-                          <option value="true">MOS8580</option>
-                        </select>
-                        <span>{{ $t("defaultSidModel") }}</span>
-                      </label>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="sampling">
-                        <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
-                          <option value="false">DECIMATE</option>
-                          <option value="true">RESAMPLE</option>
-                        </select>
-                        <span>{{ $t("sampling") }}</span>
-                      </label>
-                    </span>
-                  </div>
-
-                  <div class="settings-box">
-                    <span class="setting">
+                  <div class="tab-content card-body" style="position: relative">
+                    <div class="tab-pane fade show active" id="audiocfg" role="tabpanel" aria-labelledby="audiocfg-tab">
                       <div class="form-check">
-                        <label class="form-check-label" for="reverbBypass">
-                          {{ $t("reverbBypass") }}
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="reverbBypass"
-                            style="float: right; margin-left: 8px"
-                            v-model="reverbBypass"
-                          />
-                        </label>
-                      </div>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label class="form-check-label" for="sidWrites">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="sidWrites"
-                          style="float: right; margin-left: 8px"
-                          v-model="sidWrites"
-                        />
-                        {{ $t("sidWrites") }}
-                      </label>
-                    </span>
-                  </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="startSong"
+                              >{{ $t("startSong") }}
+                              <input
+                                class="right"
+                                type="number"
+                                id="startSong"
+                                class="form-control"
+                                v-model.number="startSong"
+                            /></label>
+                          </span>
+                        </div>
 
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="bufferSize"
-                        >{{ $t("bufferSize") }}
-                        <input
-                          class="right"
-                          type="number"
-                          id="bufferSize"
-                          class="form-control"
-                          v-model.number="bufferSize"
-                      /></label>
-                    </span>
-                  </div>
-                  <div class="settings-box">
-                    <span class="setting">
-                      <label for="audioBufferSize"
-                        >{{ $t("audioBufferSize") }}
-                        <input
-                          class="right"
-                          type="number"
-                          id="audioBufferSize"
-                          class="form-control"
-                          v-model.number="audioBufferSize"
-                      /></label>
-                    </span>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <div class="form-check">
+                              <label class="form-check-label" for="reverbBypass">
+                                {{ $t("reverbBypass") }}
+                                <input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  id="reverbBypass"
+                                  style="float: right; margin-left: 8px"
+                                  v-model="reverbBypass"
+                                />
+                              </label>
+                            </div>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label class="form-check-label" for="sidWrites">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="sidWrites"
+                                style="float: right; margin-left: 8px"
+                                v-model="sidWrites"
+                              />
+                              {{ $t("sidWrites") }}
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="videocfg" role="tabpanel" aria-labelledby="videocfg-tab">
+                      <div class="form-check">
+                        <div class="settings-box">
+                          <span class="setting">
+                            <div class="form-check">
+                              <label class="form-check-label" for="palEmulation">
+                                {{ $t("palEmulation") }}
+                                <input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  id="palEmulation"
+                                  style="float: right; margin-left: 8px"
+                                  v-model="palEmulation"
+                                />
+                              </label>
+                            </div>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="nthFrame">
+                              <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
+                                <option v-for="n in nthFrames" :value="n">{{ n }}</option>
+                              </select>
+                              {{ $t("nthFrame") }}
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="emulationcfg" role="tabpanel" aria-labelledby="emulationcfg-tab">
+                      <div class="settings-box">
+                        <span class="setting">
+                          <label for="defaultClockSpeed">
+                            <select
+                              class="form-select form-select-sm right"
+                              id="defaultClockSpeed"
+                              v-model="defaultClockSpeed"
+                            >
+                              <option value="50">PAL</option>
+                              <option value="60">NTSC</option>
+                            </select>
+                            <span>{{ $t("defaultClockSpeed") }}</span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="settings-box">
+                        <span class="setting">
+                          <label for="defaultEmulation">
+                            <select
+                              class="form-select form-select-sm right"
+                              id="defaultEmulation"
+                              v-model="defaultEmulation"
+                            >
+                              <option value="RESID">Dag Lem's resid 1.0 beta</option>
+                              <option value="RESIDFP">Antti S. Lankila's resid-fp</option>
+                            </select>
+                            <span>{{ $t("defaultEmulation") }}</span>
+                          </label>
+                        </span>
+                      </div>
+                      <div class="settings-box">
+                        <span class="setting">
+                          <label for="defaultSidModel">
+                            <select
+                              class="form-select form-select-sm right"
+                              id="defaultSidModel"
+                              v-model="defaultSidModel"
+                            >
+                              <option value="false">MOS6581</option>
+                              <option value="true">MOS8580</option>
+                            </select>
+                            <span>{{ $t("defaultSidModel") }}</span>
+                          </label>
+                        </span>
+                      </div>
+                      <div class="settings-box">
+                        <span class="setting">
+                          <label for="sampling">
+                            <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
+                              <option value="false">DECIMATE</option>
+                              <option value="true">RESAMPLE</option>
+                            </select>
+                            <span>{{ $t("sampling") }}</span>
+                          </label>
+                        </span>
+                      </div>
+                      <div class="settings-box">
+                        <span class="setting">
+                          <label for="bufferSize"
+                            >{{ $t("bufferSize") }}
+                            <input
+                              class="right"
+                              type="number"
+                              id="bufferSize"
+                              class="form-control"
+                              v-model.number="bufferSize"
+                          /></label>
+                        </span>
+                      </div>
+                      <div class="settings-box">
+                        <span class="setting">
+                          <label for="audioBufferSize"
+                            >{{ $t("audioBufferSize") }}
+                            <input
+                              class="right"
+                              type="number"
+                              id="audioBufferSize"
+                              class="form-control"
+                              v-model.number="audioBufferSize"
+                          /></label>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="filtercfg" role="tabpanel" aria-labelledby="filtercfg-tab">
+                      filter
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2058,6 +2134,10 @@
             ABOUT: "About",
             VIDEO: "Screen",
             CFG: "Configuration",
+            audioCfgHeader: "Audio",
+            videoCfgHeader: "Video",
+            emulationCfgHeader: "Emulation",
+            filterCfgHeader: "Filter",
           },
           de: {
             FileMenu: "Datei",
@@ -2106,6 +2186,10 @@
             ABOUT: "Über",
             VIDEO: "Bildschirm",
             CFG: "Konfiguration",
+            audioCfgHeader: "Audio",
+            videoCfgHeader: "Video",
+            emulationCfgHeader: "Emulation",
+            filterCfgHeader: "Filter",
           },
         },
       });
