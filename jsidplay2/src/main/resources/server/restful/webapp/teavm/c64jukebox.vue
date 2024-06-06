@@ -45,13 +45,14 @@
             :class="wakeLockEnable ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'"
             id="toggle"
             value="Wake Lock Off"
+            style="height: fit-content"
           />
           <select
             id="localeselector"
             class="form-select form-select-sm"
             @change="updateLanguage"
             v-model="$i18n.locale"
-            style="width: auto; margin: 1px"
+            style="width: auto; margin: 1px; height: fit-content"
           >
             <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
           </select>
