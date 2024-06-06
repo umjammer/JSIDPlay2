@@ -1,5 +1,6 @@
 package client.teavm.common.video;
 
+import static java.lang.Integer.parseInt;
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
 import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_EVEN;
@@ -25,8 +26,9 @@ import libsidplay.components.mos656x.VIC;
 public class PALEmulationTeaVM implements IPALEmulation {
 
 	/**
-	 * RGBA pixel data (MSB to LSB) big endian. VIC colors without PAL emulation. Use this
-	 * palette for VIC colors 0-15. https://www.pepto.de/projects/colorvic/2001/
+	 * RGBA pixel data (MSB to LSB) big endian. VIC colors without PAL emulation.
+	 * Use this palette for VIC colors 0-15.
+	 * https://www.pepto.de/projects/colorvic/2001/
 	 */
 	private static final int[] VIC_PALETTE_NO_PAL = new int[] { 0x000000FF, 0xFFFFFFFF, 0x68372BFF, 0x70A4B2FF,
 			0x6F3D86FF, 0x588D43FF, 0x352879FF, 0xB8C76FFF, 0x6F4F25FF, 0x433900FF, 0x9A6759FF, 0x444444FF, 0x6C6C6CFF,
@@ -63,8 +65,9 @@ public class PALEmulationTeaVM implements IPALEmulation {
 
 		Decoder decoder = Base64.getDecoder();
 		Map<String, String> palette = PaletteTeaVM.getPalette(false);
-		combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(Integer::parseInt).toArray();
-		combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(Integer::parseInt).toArray();
+		combinedLinesEven = stream(palette.get(COMBINED_LINES_EVEN).split(",")).mapToInt(s -> parseInt(s, 16))
+				.toArray();
+		combinedLinesOdd = stream(palette.get(COMBINED_LINES_ODD).split(",")).mapToInt(s -> parseInt(s, 16)).toArray();
 		linePaletteEven = decoder.decode(palette.get(LINE_PALETTE_EVEN));
 		linePaletteOdd = decoder.decode(palette.get(LINE_PALETTE_ODD));
 		n = 0;
@@ -184,7 +187,7 @@ public class PALEmulationTeaVM implements IPALEmulation {
 			}
 		};
 	}
-	
+
 	public int getNthFrame() {
 		return nthFrame;
 	}

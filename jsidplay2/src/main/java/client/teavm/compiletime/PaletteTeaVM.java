@@ -1,5 +1,6 @@
 package client.teavm.compiletime;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.of;
 import static org.teavm.metaprogramming.Metaprogramming.emit;
@@ -51,20 +52,20 @@ public class PaletteTeaVM {
 		palette.setDotCreep(sidplay2section.getBleed());
 		palette.calculatePalette(Palette.buildPaletteVariant(VIC_MODEL));
 
-		String combinedLinesEven = of(palette.getEvenLines()).mapToObj(Integer::toString).collect(joining(","));
-		String oddLinesEven = of(palette.getOddLines()).mapToObj(Integer::toString).collect(joining(","));
+		String combinedLinesEven = of(palette.getEvenLines()).mapToObj(i -> format("%X", i)).collect(joining(","));
+		String combinedLinesOdd = of(palette.getOddLines()).mapToObj(i -> format("%X", i)).collect(joining(","));
 		String linePaletteEven = new String(Base64.getEncoder().encode(palette.getEvenFiltered()));
 		String linePaletteOdd = new String(Base64.getEncoder().encode(palette.getOddFiltered()));
 
 		Value<Map<String, String>> result = emit(() -> new HashMap<>());
 
 		Value<String> combinedLinesEvenValue = emit(() -> combinedLinesEven);
-		Value<String> oddLinesEvenValue = emit(() -> oddLinesEven);
+		Value<String> combinedLinesOddValue = emit(() -> combinedLinesOdd);
 		Value<String> linePaletteEvenValue = emit(() -> linePaletteEven);
 		Value<String> linePaletteOddValue = emit(() -> linePaletteOdd);
 
 		emit(() -> result.get().put(COMBINED_LINES_EVEN, combinedLinesEvenValue.get()));
-		emit(() -> result.get().put(COMBINED_LINES_ODD, oddLinesEvenValue.get()));
+		emit(() -> result.get().put(COMBINED_LINES_ODD, combinedLinesOddValue.get()));
 		emit(() -> result.get().put(LINE_PALETTE_EVEN, linePaletteEvenValue.get()));
 		emit(() -> result.get().put(LINE_PALETTE_ODD, linePaletteOddValue.get()));
 
