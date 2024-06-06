@@ -92,7 +92,7 @@ jsidplay2.js					generated JSIDPlay2 as JavaScript
 
 ...or as an alternative...
 Required Files for JavaScript (EM2015) version:
-jsidplay2-js-worker.js			web worker
+jsidplay2-js_em2015-worker.js	web worker
 jsidplay2.js					generated JSIDPlay2 as JavaScript
 
 ...or as an alternative...
