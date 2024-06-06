@@ -1400,12 +1400,20 @@
               >
                 {{ $t("loadTape") }}
               </button>
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                v-on:click="typeKey('SPACE')"
+                :disabled="!playing || !screen"
+              >
+                {{ $t("space") }}
+              </button>
               <input
                 type="button"
                 :class="keyboardEnable ? 'btn btn-danger btn-sm' : 'btn btn-secondary btn-sm'"
                 id="toggle2"
                 value="Capture Keys On"
-                style="margin-right: 0.1rem;"
+                style="margin-right: 0.1rem"
               />
               <input
                 type="button"
@@ -1424,7 +1432,7 @@
               <div style="width: 100%; margin: 0px auto">
                 <canvas
                   id="c64Screen"
-                  style="border: 2px solid black; background-color: black; max-width: 100vw;"
+                  style="border: 2px solid black; background-color: black; max-width: 100vw"
                   width="384"
                   height="285"
                 />
@@ -1974,6 +1982,7 @@
             cartEjected: "Cartridge ejected",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
+            space: "Space Key",
             exampleMusic: "Music",
             exampleOneFiler: "OneFiler",
             exampleDemos: "Demos",
@@ -2019,6 +2028,7 @@
             cartEjected: "Modul ausgeworfen",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
+            space: "Leertaste",
             exampleMusic: "Musik",
             exampleOneFiler: "Programme",
             exampleDemos: "Demos",
