@@ -289,9 +289,7 @@ public class ExportedApi implements IExportedApi {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
 
-		LOG.fine("keyCodeStr: " + keyCode);
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
-		LOG.fine("typeKey: " + key);
 		if (key == KeyTableEntry.RESTORE) {
 			c64.getKeyboard().restore();
 		} else {
@@ -311,9 +309,7 @@ public class ExportedApi implements IExportedApi {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
 
-		LOG.fine("keyCodeStr: " + keyCode);
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
-		LOG.fine("pressKey: " + key);
 
 		c64.getKeyboard().keyPressed(key);
 	}
@@ -323,9 +319,7 @@ public class ExportedApi implements IExportedApi {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
 
-		LOG.fine("keyCodeStr: " + keyCode);
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
-		LOG.fine("releaseKey: " + key);
 
 		c64.getKeyboard().keyReleased(key);
 	}

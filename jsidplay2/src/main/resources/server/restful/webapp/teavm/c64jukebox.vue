@@ -1382,252 +1382,309 @@
         </nav>
 
         <div class="container">
-          <div class="row">
-            <div class="col">
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
-                :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !screen"
-              >
-                {{ $t("loadDisk") }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                v-on:click="typeInCommand('LOAD\rRUN\r')"
-                :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
-              >
-                {{ $t("loadTape") }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                v-on:click="typeKey('SPACE')"
-                :disabled="!playing || !screen"
-              >
-                {{ $t("space") }}
-              </button>
-              <input
-                type="button"
-                :class="keyboardEnable ? 'btn btn-danger btn-sm' : 'btn btn-secondary btn-sm'"
-                id="toggle2"
-                value="Capture Keys On"
-                style="margin-right: 0.1rem"
-              />
-              <input
-                type="button"
-                :class="wakeLockEnable ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'"
-                id="toggle"
-                value="Wake Lock Off"
-              />
-              <span class="p-1 fs-6 fst-italic"
-                >{{ msg }} <span v-show="playing"> / {{ $t("fiq") }} {{ framesCounter }}</span></span
-              >
+          <div class="card">
+            <div class="card-header">
+              <ul class="nav nav-pills card-header-pills mb-2" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="about-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#about"
+                    type="button"
+                    role="tab"
+                    aria-controls="about"
+                    aria-selected="false"
+                    @click="tabIndex = 0"
+                  >
+                    {{ $t("ABOUT") }}
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link active"
+                    id="video-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#video"
+                    type="button"
+                    role="tab"
+                    aria-controls="video"
+                    aria-selected="true"
+                    @click="tabIndex = 1"
+                  >
+                    {{ $t("VIDEO") }}
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="cfg-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#cfg"
+                    type="button"
+                    role="tab"
+                    aria-controls="cfg"
+                    aria-selected="false"
+                    @click="tabIndex = 2"
+                  >
+                    {{ $t("CFG") }}
+                  </button>
+                </li>
+              </ul>
             </div>
-          </div>
-
-          <div class="row">
-            <div v-show="screen" class="col screen-parent p-0">
-              <div style="width: 100%; margin: 0px auto">
-                <canvas
-                  id="c64Screen"
-                  style="border: 2px solid black; background-color: black; max-width: 100vw"
-                  width="384"
-                  height="285"
-                />
+            <div class="tab-content card-body" style="position: relative">
+              <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+                <p style="text-align: center; font-size: smaller; padding: 16px">
+                  C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
+                  JSIDPlay2 is copyrighted to:<br />
+                  2007-${year} Ken H&#228;ndel,<br />
+                  Antti S. Lankila and Wilfred Bos<br /><br />
+                  Distortion Simulation and 6581/8580 emulation:<br />
+                  Copyright &#169; 2005-2011 Antti S. Lankila<br />
+                  ReSID engine and 6581/8580 emulation:<br />
+                  Copyright &#169; 1999-2011 Dag Lem<br />
+                  <br />
+                  This program is free software; you can redistribute it and/or modify<br />
+                  it under the terms of the GNU General Public License as published by<br />
+                  the Free Software Foundation; either version 2 of the License, or<br />
+                  (at your option) any later version.
+                </p>
+              </div>
+              <div class="tab-pane fade show active" id="video" role="tabpanel" aria-labelledby="video-tab">
+                <div class="row">
+                  <div class="col">
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
+                      :disabled="!$refs.formDiskFileSm || !$refs.formDiskFileSm.files[0] || !playing || !screen"
+                    >
+                      {{ $t("loadDisk") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      v-on:click="typeInCommand('LOAD\rRUN\r')"
+                      :disabled="!$refs.formTapeFileSm || !$refs.formTapeFileSm.files[0] || !playing || !screen"
+                    >
+                      {{ $t("loadTape") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      v-on:click="typeKey('SPACE')"
+                      :disabled="!playing || !screen"
+                    >
+                      {{ $t("space") }}
+                    </button>
+                    <input
+                      type="button"
+                      :class="wakeLockEnable ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'"
+                      id="toggle"
+                      value="Wake Lock Off"
+                    />
+                    <span class="p-1 fs-6 fst-italic"
+                      >{{ msg }} <span v-show="playing"> / {{ $t("fiq") }} {{ framesCounter }}</span></span
+                    >
+                  </div>
+                </div>
+                <div class="row">
+                  <div v-show="screen" class="col screen-parent p-0">
+                    <div style="width: 100%; margin: 0px auto">
+                      <canvas
+                        id="c64Screen"
+                        style="border: 2px solid black; background-color: black; max-width: calc(100vw - 70px)"
+                        width="384"
+                        height="285"
+                      />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <h2>
+                      ${teaVMFormatName} Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a>
+                    </h2>
+                    <ol>
+                      <li>
+                        Run JSIDPlay2 in a browser in
+                        <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS">JavaScript UMD</a> or
+                        <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS_EM2015">JavaScript ECMAScript 2015</a> or
+                        <a href="/static/teavm/c64jukebox.vue?teavmFormat=WASM">Web Assembly</a> (THIS IS NOT JAVA)
+                      </li>
+                      <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
+                      <li>Only ${teaVMFormatApproximateSize} in size, loads very quick</li>
+                      <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
+                      <li>Plays mono SIDs and ONEfilers on a middle class mobile phone and multi-disk demos on PC</li>
+                      <li>Runs near to native speed, performance only depends on your max. single core speed</li>
+                      <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
+                      <li>Full emulation quality, no compromise, C64, Floppy and more</li>
+                      <li>
+                        Developed single source in JSIDPlay2 project, enhancements are automatically available in all
+                        versions
+                      </li>
+                      <li>For the first time, embed music or demos in YOUR web-site</li>
+                    </ol>
+                    If you want to add C64 content to your web-space, a README and example HTML code of C64jukebox
+                    ${teaVMFormatName} Version can be found at:<br />
+                    <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
+                      >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
+                    >
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <h2>${teaVMFormatName} Version powered by <a href="https://teavm.org/" target="_blank">TeaVM</a></h2>
-              <ol>
-                <li>
-                  Run JSIDPlay2 in a browser in
-                  <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS">JavaScript UMD</a> or
-                  <a href="/static/teavm/c64jukebox.vue?teavmFormat=JS_EM2015">JavaScript ECMAScript 2015</a> or
-                  <a href="/static/teavm/c64jukebox.vue?teavmFormat=WASM">Web Assembly</a> (THIS IS NOT JAVA)
-                </li>
-                <li>Runs out-of-the-box in all browsers (Chrome is faster than Firefox)</li>
-                <li>Only ${teaVMFormatApproximateSize} in size, loads very quick</li>
-                <li>Compatible with all SIDs (mono, stereo and 3-SID)</li>
-                <li>Plays mono SIDs and ONEfilers on a middle class mobile phone and multi-disk demos on PC</li>
-                <li>Runs near to native speed, performance only depends on your max. single core speed</li>
-                <li>Runs completely on the client side in a web worker (once in browser's cache)</li>
-                <li>Full emulation quality, no compromise, C64, Floppy and more</li>
-                <li>
-                  Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
-                </li>
-                <li>For the first time, embed music or demos in YOUR web-site</li>
-              </ol>
-              If you want to add C64 content to your web-space, a README and example HTML code of C64jukebox
-              ${teaVMFormatName} Version can be found at:<br />
-              <a href="https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip"
-                >https://haendel.ddns.net/~ken/jsidplay2-${version}-${teaVMFormat}.zip</a
-              >
+            <div class="tab-content card-body" style="position: relative">
+              <div class="tab-pane fade show" id="cfg" role="tabpanel" aria-labelledby="cfg-tab">
+                <div class="form-check">
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="startSong"
+                        >{{ $t("startSong") }}
+                        <input
+                          class="right"
+                          type="number"
+                          id="startSong"
+                          class="form-control"
+                          v-model.number="startSong"
+                      /></label>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <div class="form-check">
+                        <label class="form-check-label" for="palEmulation">
+                          {{ $t("palEmulation") }}
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="palEmulation"
+                            style="float: right; margin-left: 8px"
+                            v-model="palEmulation"
+                          />
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="nthFrame">
+                        <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
+                          <option v-for="n in nthFrames" :value="n">{{ n }}</option>
+                        </select>
+                        {{ $t("nthFrame") }}
+                      </label>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="defaultClockSpeed">
+                        <select
+                          class="form-select form-select-sm right"
+                          id="defaultClockSpeed"
+                          v-model="defaultClockSpeed"
+                        >
+                          <option value="50">PAL</option>
+                          <option value="60">NTSC</option>
+                        </select>
+                        <span>{{ $t("defaultClockSpeed") }}</span>
+                      </label>
+                    </span>
+                  </div>
 
-              <p style="text-align: center; font-size: smaller; padding: 16px">
-                C64 Jukebox of JSIDPlay2 - Music Player &amp; C64 SID Chip Emulator<br />
-                JSIDPlay2 is copyrighted to:<br />
-                2007-${year} Ken H&#228;ndel,<br />
-                Antti S. Lankila and Wilfred Bos<br /><br />
-                Distortion Simulation and 6581/8580 emulation:<br />
-                Copyright &#169; 2005-2011 Antti S. Lankila<br />
-                ReSID engine and 6581/8580 emulation:<br />
-                Copyright &#169; 1999-2011 Dag Lem<br />
-                <br />
-                This program is free software; you can redistribute it and/or modify<br />
-                it under the terms of the GNU General Public License as published by<br />
-                the Free Software Foundation; either version 2 of the License, or<br />
-                (at your option) any later version.
-              </p>
-            </div>
-            <div v-show="!playing" class="col">
-              <div class="form-check">
-                <div class="settings-box">
-                  <span class="setting">
-                    <h2 style="text-align: end; margin-right: 1rem">{{ $t("settings") }}</h2>
-                    <label for="startSong"
-                      >{{ $t("startSong") }}
-                      <input class="right" type="number" id="startSong" class="form-control" v-model.number="startSong"
-                    /></label>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <div class="form-check">
-                      <label class="form-check-label" for="palEmulation">
-                        {{ $t("palEmulation") }}
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="defaultEmulation">
+                        <select
+                          class="form-select form-select-sm right"
+                          id="defaultEmulation"
+                          v-model="defaultEmulation"
+                        >
+                          <option value="RESID">Dag Lem's resid 1.0 beta</option>
+                          <option value="RESIDFP">Antti S. Lankila's resid-fp</option>
+                        </select>
+                        <span>{{ $t("defaultEmulation") }}</span>
+                      </label>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="defaultSidModel">
+                        <select class="form-select form-select-sm right" id="defaultSidModel" v-model="defaultSidModel">
+                          <option value="false">MOS6581</option>
+                          <option value="true">MOS8580</option>
+                        </select>
+                        <span>{{ $t("defaultSidModel") }}</span>
+                      </label>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="sampling">
+                        <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
+                          <option value="false">DECIMATE</option>
+                          <option value="true">RESAMPLE</option>
+                        </select>
+                        <span>{{ $t("sampling") }}</span>
+                      </label>
+                    </span>
+                  </div>
+
+                  <div class="settings-box">
+                    <span class="setting">
+                      <div class="form-check">
+                        <label class="form-check-label" for="reverbBypass">
+                          {{ $t("reverbBypass") }}
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="reverbBypass"
+                            style="float: right; margin-left: 8px"
+                            v-model="reverbBypass"
+                          />
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label class="form-check-label" for="sidWrites">
                         <input
                           class="form-check-input"
                           type="checkbox"
-                          id="palEmulation"
+                          id="sidWrites"
                           style="float: right; margin-left: 8px"
-                          v-model="palEmulation"
+                          v-model="sidWrites"
                         />
+                        {{ $t("sidWrites") }}
                       </label>
-                    </div>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="nthFrame">
-                      <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
-                        <option v-for="n in nthFrames" :value="n">{{ n }}</option>
-                      </select>
-                      {{ $t("nthFrame") }}
-                    </label>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="defaultClockSpeed">
-                      <select
-                        class="form-select form-select-sm right"
-                        id="defaultClockSpeed"
-                        v-model="defaultClockSpeed"
-                      >
-                        <option value="50">PAL</option>
-                        <option value="60">NTSC</option>
-                      </select>
-                      <span>{{ $t("defaultClockSpeed") }}</span>
-                    </label>
-                  </span>
-                </div>
+                    </span>
+                  </div>
 
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="defaultEmulation">
-                      <select class="form-select form-select-sm right" id="defaultEmulation" v-model="defaultEmulation">
-                        <option value="RESID">Dag Lem's resid 1.0 beta</option>
-                        <option value="RESIDFP">Antti S. Lankila's resid-fp</option>
-                      </select>
-                      <span>{{ $t("defaultEmulation") }}</span>
-                    </label>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="defaultSidModel">
-                      <select class="form-select form-select-sm right" id="defaultSidModel" v-model="defaultSidModel">
-                        <option value="false">MOS6581</option>
-                        <option value="true">MOS8580</option>
-                      </select>
-                      <span>{{ $t("defaultSidModel") }}</span>
-                    </label>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="sampling">
-                      <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
-                        <option value="false">DECIMATE</option>
-                        <option value="true">RESAMPLE</option>
-                      </select>
-                      <span>{{ $t("sampling") }}</span>
-                    </label>
-                  </span>
-                </div>
-
-                <div class="settings-box">
-                  <span class="setting">
-                    <div class="form-check">
-                      <label class="form-check-label" for="reverbBypass">
-                        {{ $t("reverbBypass") }}
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="bufferSize"
+                        >{{ $t("bufferSize") }}
                         <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="reverbBypass"
-                          style="float: right; margin-left: 8px"
-                          v-model="reverbBypass"
-                        />
-                      </label>
-                    </div>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label class="form-check-label" for="sidWrites">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="sidWrites"
-                        style="float: right; margin-left: 8px"
-                        v-model="sidWrites"
-                      />
-                      {{ $t("sidWrites") }}
-                    </label>
-                  </span>
-                </div>
-
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="bufferSize"
-                      >{{ $t("bufferSize") }}
-                      <input
-                        class="right"
-                        type="number"
-                        id="bufferSize"
-                        class="form-control"
-                        v-model.number="bufferSize"
-                    /></label>
-                  </span>
-                </div>
-                <div class="settings-box">
-                  <span class="setting">
-                    <label for="audioBufferSize"
-                      >{{ $t("audioBufferSize") }}
-                      <input
-                        class="right"
-                        type="number"
-                        id="audioBufferSize"
-                        class="form-control"
-                        v-model.number="audioBufferSize"
-                    /></label>
-                  </span>
+                          class="right"
+                          type="number"
+                          id="bufferSize"
+                          class="form-control"
+                          v-model.number="bufferSize"
+                      /></label>
+                    </span>
+                  </div>
+                  <div class="settings-box">
+                    <span class="setting">
+                      <label for="audioBufferSize"
+                        >{{ $t("audioBufferSize") }}
+                        <input
+                          class="right"
+                          type="number"
+                          id="audioBufferSize"
+                          class="form-control"
+                          v-model.number="audioBufferSize"
+                      /></label>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1815,7 +1872,7 @@
             return "RESTORE";
 
           default:
-            return "SPACE";
+            return undefined;
         }
       }
 
@@ -1986,8 +2043,10 @@
             exampleMusic: "Music",
             exampleOneFiler: "OneFiler",
             exampleDemos: "Demos",
-            settings: "Settings",
             fiq: "FIQ",
+            ABOUT: "About",
+            VIDEO: "Screen",
+            CFG: "Configuration",
           },
           de: {
             FileMenu: "Datei",
@@ -2032,8 +2091,10 @@
             exampleMusic: "Musik",
             exampleOneFiler: "Programme",
             exampleDemos: "Demos",
-            settings: "Einstellungen",
             fiq: "FIQ",
+            ABOUT: "Über",
+            VIDEO: "Bildschirm",
+            CFG: "Konfiguration",
           },
         },
       });
@@ -2087,6 +2148,7 @@
             reSIDfpStereoFilter8580: 'FilterTrurl8580R5_3691',
             reSIDfpThirdFilter6581: 'FilterAlankila6581R4AR_3789',
             reSIDfpThirdFilter8580: 'FilterTrurl8580R5_3691',
+            tabIndex: 1,
           };
         },
         computed: {},
@@ -2374,8 +2436,11 @@
         //console.log("dwn: keyValue: " + keyValue);
 
         //console.log("codeValue: " + codeValue);
-        app.pressKey(toC64KeyTableEntry(event.code));
-        event.preventDefault();
+        let key = toC64KeyTableEntry(event.code);
+        app.pressKey(key);
+        if (key) {
+          event.preventDefault();
+        }
       };
       var keyUpListener = (event) => {
         var keyValue = event.key;
@@ -2385,33 +2450,15 @@
         //console.log("up: keyValue: " + keyValue);
 
         //console.log("codeValue: " + codeValue);
-        app.releaseKey(toC64KeyTableEntry(event.code));
-        event.preventDefault();
+        let key = toC64KeyTableEntry(event.code);
+        app.releaseKey(key);
+        if (key) {
+          event.preventDefault();
+        }
       };
-      var toggleEl2 = document.querySelector("#toggle2");
-      toggleEl2.addEventListener(
-        "click",
-        function () {
-          var c64Screen = document.getElementById("c64Screen");
-          if (!app.keyboardEnable) {
-            app.keyboardEnable = true;
             document.addEventListener("keydown", keyDownListener, false);
 
             document.addEventListener("keyup", keyUpListener, false);
-            toggleEl2.value = "Capture Keys On";
-            c64Screen.style.borderColor = "red";
-          } else {
-            app.keyboardEnable = false;
-            document.removeEventListener("keydown", keyDownListener, false);
-
-            document.removeEventListener("keyup", keyUpListener, false);
-            toggleEl2.value = "Capture Keys Off";
-            c64Screen.style.borderColor = "black";
-          }
-        },
-        false
-      );
-      document.querySelector("#toggle2").click();
     </script>
   </body>
 </html>

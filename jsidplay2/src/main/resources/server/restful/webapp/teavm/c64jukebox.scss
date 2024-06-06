@@ -205,11 +205,14 @@ ol.striped-list > li {
       display: block;
     }
     #c64Screen {
-	  scale: 2;
-	  margin: 150px;
-	}
+        scale: 2;
+        margin-left: 200px;
+        margin-top: 150px;
+        margin-bottom: 100px;
+    }
 	.screen-parent {
-		 margin-right: 100px
+		 margin-right: 200px;
+		 margin-bottom: 50px;
 	}
   }
   /* ============ desktop view .end// ============ */
