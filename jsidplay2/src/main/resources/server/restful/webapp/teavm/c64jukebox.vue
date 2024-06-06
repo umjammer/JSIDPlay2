@@ -2437,8 +2437,8 @@
 
         //console.log("codeValue: " + codeValue);
         let key = toC64KeyTableEntry(event.code);
-        app.pressKey(key);
         if (key) {
+        app.pressKey(key);
           event.preventDefault();
         }
       };
@@ -2451,8 +2451,8 @@
 
         //console.log("codeValue: " + codeValue);
         let key = toC64KeyTableEntry(event.code);
-        app.releaseKey(key);
         if (key) {
+        app.releaseKey(key);
           event.preventDefault();
         }
       };
