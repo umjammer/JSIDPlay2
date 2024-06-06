@@ -114,8 +114,8 @@ addEventListener(
           eventData.reSIDfpFilter8580,
           eventData.reSIDfpStereoFilter6581,
           eventData.reSIDfpStereoFilter8580,
-          eventData.reSIDfpThirdFilter6581,
-          eventData.reSIDfpThirdFilter8580,
+          eventData.reSIDfpThirdSIDFilter6581,
+          eventData.reSIDfpThirdSIDFilter8580,
         ].map((item) => "" + item)
       );
 

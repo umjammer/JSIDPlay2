@@ -6,7 +6,7 @@ public class FilterLightest6581TeaVM implements IFilterSection {
 
 	@Override
 	public String getName() {
-		return "FilterLightest6581TeaVM";
+		return "FilterLightest6581";
 	}
 
 	@Override

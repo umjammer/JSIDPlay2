@@ -28,6 +28,7 @@ import client.teavm.common.config.filter.residfp.FilterNata6581R3_2083TeaVM;
 import client.teavm.common.config.filter.residfp.FilterReSID6581TeaVM;
 import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_0486STeaVM;
 import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_0784TeaVM;
+import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_3384TeaVM;
 import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_4885TeaVM;
 import client.teavm.common.config.filter.residfp.FilterTrurl6581R4AR_3789TeaVM;
 import client.teavm.common.config.filter.residfp.FilterTrurl6581R4AR_4486TeaVM;
@@ -71,9 +72,9 @@ public class ConfigurationTeaVM implements IConfig {
 			new FilterZrX6581R3_0384TeaVM(), new FilterZrX6581R3_1984TeaVM(), new FilterZrX6581R3_3684TeaVM(),
 			new FilterZrX6581R3_3985TeaVM(), new FilterZrX6581R4AR_2286TeaVM(), new FilterTrurl6581R3_0784TeaVM(),
 			new FilterTrurl6581R3_0486STeaVM(), new FilterTrurl6581R3_0486STeaVM(), new FilterTrurl6581R3_4885TeaVM(),
-			new FilterTrurl6581R4AR_3789TeaVM(), new FilterTrurl6581R4AR_4486TeaVM(), new FilterNata6581R3_2083TeaVM(),
-			new FilterGrue6581R4AR_3488TeaVM(), new FilterKrulloTeaVM(), new FilterEnigma6581R3_4885TeaVM(),
-			new FilterEnigma6581R3_1585TeaVM());
+			new FilterTrurl6581R3_3384TeaVM(), new FilterTrurl6581R4AR_3789TeaVM(), new FilterTrurl6581R4AR_4486TeaVM(),
+			new FilterNata6581R3_2083TeaVM(), new FilterGrue6581R4AR_3488TeaVM(), new FilterKrulloTeaVM(),
+			new FilterEnigma6581R3_4885TeaVM(), new FilterEnigma6581R3_1585TeaVM());
 
 	public ConfigurationTeaVM(IImportedApi importedApi) {
 		sidplay2Section = new Sidplay2SectionTeaVM(importedApi);

@@ -339,12 +339,12 @@
                         href="#"
                         @click="
                           downloadAndStartTune(
-                            'Hi Fi Sky',
-                            '/jsidplay2service/JSIDPlay2REST/download/Hi_Fi_Sky.sid?itemId=4064310083&categoryId=18'
+                            'L_E_D_Storm.sid',
+                            '/jsidplay2service/JSIDPlay2REST/download/L_E_D_Storm.sid?itemId=2357526530&categoryId=18'
                           )
                         "
                       >
-                        Hi Fi Sky - LMan
+                        L_E_D_Storm - Tim Follin
                       </a>
                     </li>
                     <li>
@@ -1486,7 +1486,7 @@
               </div>
               <div class="tab-pane fade show active" id="video" role="tabpanel" aria-labelledby="video-tab">
                 <div class="row">
-                  <div v-show="screen" class="col screen-parent p-0">
+                  <div class="col screen-parent p-0">
                     <button
                       v-show="screen"
                       type="button"
@@ -1770,7 +1770,620 @@
                       </div>
                     </div>
                     <div class="tab-pane fade" id="filtercfg" role="tabpanel" aria-labelledby="filtercfg-tab">
-                      filter
+                      <div class="card">
+                        <div class="card-header">
+                          <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link active"
+                                id="residfpfilter-tab"
+                                data-bs-toggle="pill"
+                                data-bs-target="#residfpfilter"
+                                type="button"
+                                role="tab"
+                                aria-controls="residfpfilter"
+                                aria-selected="true"
+                              >
+                                {{ $t("residFpFilterCfgHeader") }}
+                              </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link"
+                                id="residfilter-tab"
+                                data-bs-toggle="pill"
+                                data-bs-target="#residfilter"
+                                type="button"
+                                role="tab"
+                                aria-controls="residfilter"
+                                aria-selected="false"
+                              >
+                                {{ $t("residFilterCfgHeader") }}
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="tab-content card-body" style="position: relative">
+                          <div
+                            class="tab-pane fade show active"
+                            id="residfpfilter"
+                            role="tabpanel"
+                            aria-labelledby="residfpfilter-tab"
+                          >
+                            <div class="card">
+                              <div class="card-header">
+                                <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                                  <li class="nav-item" role="presentation">
+                                    <button
+                                      class="nav-link active"
+                                      id="residfpfilter6581-tab"
+                                      data-bs-toggle="pill"
+                                      data-bs-target="#residfpfilter6581"
+                                      type="button"
+                                      role="tab"
+                                      aria-controls="residfpfilter6581"
+                                      aria-selected="true"
+                                    >
+                                      {{ $t("residFpFilter6581CfgHeader") }}
+                                    </button>
+                                  </li>
+                                  <li class="nav-item" role="presentation">
+                                    <button
+                                      class="nav-link"
+                                      id="residfilterfp8580-tab"
+                                      data-bs-toggle="pill"
+                                      data-bs-target="#residfpfilter8580"
+                                      type="button"
+                                      role="tab"
+                                      aria-controls="residfpfilter8580"
+                                      aria-selected="false"
+                                    >
+                                      {{ $t("residFpFilter8580CfgHeader") }}
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div class="tab-content card-body" style="position: relative">
+                                <div
+                                  class="tab-pane fade show active"
+                                  id="residfpfilter6581"
+                                  role="tabpanel"
+                                  aria-labelledby="residfpfilter6581-tab"
+                                >
+                                  <div class="card">
+                                    <div class="card-header">
+                                      <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link active"
+                                            id="reSIDfpFiltername6581-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDfpFiltername6581"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDfpFiltername6581"
+                                            aria-selected="true"
+                                          >
+                                            {{ $t("reSIDfpFilter6581Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDfpStereoFiltername6581-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDfpStereoFiltername6581"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDfpStereoFiltername6581"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDfpStereoFilter6581Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDfpThirdSIDFiltername6581-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDfpThirdSIDFiltername6581"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDfpThirdSIDFiltername6581"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDfpThirdSIDFilter6581Header") }}
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div class="tab-content card-body" style="position: relative">
+                                      <div
+                                        class="tab-pane fade show active"
+                                        id="reSIDfpFiltername6581"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDfpFiltername6581-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDfpFilter6581">
+                                              {{ $t("reSIDfpFilter6581") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDfpFilter6581"
+                                                v-model="reSIDfpFilter6581"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDfpStereoFiltername6581"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDfpStereoFiltername6581-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDfpStereoFilter6581">
+                                              {{ $t("reSIDfpStereoFilter6581") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDfpStereoFilter6581"
+                                                v-model="reSIDfpStereoFilter6581"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDfpThirdSIDFiltername6581"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDfpThirdSIDFiltername6581-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDfpThirdSIDFilter6581">
+                                              {{ $t("reSIDfpThirdSIDFilter6581") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDfpThirdSIDFilter6581"
+                                                v-model="reSIDfpThirdSIDFilter6581"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="tab-pane fade show"
+                                  id="residfpfilter8580"
+                                  role="tabpanel"
+                                  aria-labelledby="residfpfilter8580-tab"
+                                >
+                                  <div class="card">
+                                    <div class="card-header">
+                                      <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link active"
+                                            id="reSIDfpFiltername8580-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDfpFiltername8580"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDfpFiltername8580"
+                                            aria-selected="true"
+                                          >
+                                            {{ $t("reSIDfpFilter8580Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDfpStereoFiltername8580-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDfpStereoFiltername8580"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDfpStereoFiltername8580"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDfpStereoFilter8580Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDfpThirdSIDFiltername8580-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDfpThirdSIDFiltername8580"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDfpThirdSIDFiltername8580"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDfpThirdSIDFilter8580Header") }}
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div class="tab-content card-body" style="position: relative">
+                                      <div
+                                        class="tab-pane fade show active"
+                                        id="reSIDfpFiltername8580"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDfpFiltername8580-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDfpFilter8580">
+                                              {{ $t("reSIDfpFilter8580") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDfpFilter8580"
+                                                v-model="reSIDfpFilter8580"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDfpStereoFiltername8580"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDfpStereoFiltername8580-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDfpStereoFilter8580">
+                                              {{ $t("reSIDfpStereoFilter8580") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDfpStereoFilter8580"
+                                                v-model="reSIDfpStereoFilter8580"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDfpThirdSIDFiltername8580"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDfpThirdSIDFiltername8580-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDfpThirdSIDFilter8580">
+                                              {{ $t("reSIDfpThirdSIDFilter8580") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDfpThirdSIDFilter8580"
+                                                v-model="reSIDfpThirdSIDFilter8580"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="tab-pane fade show"
+                            id="residfilter"
+                            role="tabpanel"
+                            aria-labelledby="residfilter-tab"
+                          >
+                            <div class="card">
+                              <div class="card-header">
+                                <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                                  <li class="nav-item" role="presentation">
+                                    <button
+                                      class="nav-link active"
+                                      id="residfilter6581-tab"
+                                      data-bs-toggle="pill"
+                                      data-bs-target="#residfilter6581"
+                                      type="button"
+                                      role="tab"
+                                      aria-controls="residfilter6581"
+                                      aria-selected="true"
+                                    >
+                                      {{ $t("residFilter6581CfgHeader") }}
+                                    </button>
+                                  </li>
+                                  <li class="nav-item" role="presentation">
+                                    <button
+                                      class="nav-link"
+                                      id="residfilter8580-tab"
+                                      data-bs-toggle="pill"
+                                      data-bs-target="#residfilter8580"
+                                      type="button"
+                                      role="tab"
+                                      aria-controls="residfilter8580"
+                                      aria-selected="false"
+                                    >
+                                      {{ $t("residFilter8580CfgHeader") }}
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div class="tab-content card-body" style="position: relative">
+                                <div
+                                  class="tab-pane fade show active"
+                                  id="residfilter6581"
+                                  role="tabpanel"
+                                  aria-labelledby="residfilter6581-tab"
+                                >
+                                  <div class="card">
+                                    <div class="card-header">
+                                      <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link active"
+                                            id="reSIDFiltername6581-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDFiltername6581"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDFiltername6581"
+                                            aria-selected="true"
+                                          >
+                                            {{ $t("reSIDFilter6581Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDStereoFiltername6581-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDStereoFiltername6581"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDStereoFiltername6581"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDStereoFilter6581Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDThirdSIDFiltername6581-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDThirdSIDFiltername6581"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDThirdSIDFiltername6581"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDThirdSIDFilter6581Header") }}
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div class="tab-content card-body" style="position: relative">
+                                      <div
+                                        class="tab-pane fade show active"
+                                        id="reSIDFiltername6581"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDFiltername6581-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDFilter6581">
+                                              {{ $t("filter6581") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDFilter6581"
+                                                v-model="filter6581"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDStereoFiltername6581"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDStereoFiltername6581-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDStereoFilter6581">
+                                              {{ $t("stereoFilter6581") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDStereoFilter6581"
+                                                v-model="stereoFilter6581"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDThirdSIDFiltername6581"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDThirdSIDFiltername6581-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDThirdSIDFilter6581">
+                                              {{ $t("thirdSIDFilter6581") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDThirdSIDFilter6581"
+                                                v-model="thirdSIDFilter6581"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="tab-pane fade show"
+                                  id="residfilter8580"
+                                  role="tabpanel"
+                                  aria-labelledby="residfilter8580-tab"
+                                >
+                                  <div class="card">
+                                    <div class="card-header">
+                                      <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link active"
+                                            id="reSIDFiltername8580-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDFiltername8580"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDFiltername8580"
+                                            aria-selected="true"
+                                          >
+                                            {{ $t("reSIDFilter8580Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDStereoFiltername8580-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDStereoFiltername8580"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDStereoFiltername8580"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDStereoFilter8580Header") }}
+                                          </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button
+                                            class="nav-link"
+                                            id="reSIDThirdSIDFiltername8580-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#reSIDThirdSIDFiltername8580"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="reSIDThirdSIDFiltername8580"
+                                            aria-selected="false"
+                                          >
+                                            {{ $t("reSIDThirdSIDFilter8580Header") }}
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div class="tab-content card-body" style="position: relative">
+                                      <div
+                                        class="tab-pane fade show active"
+                                        id="reSIDFiltername8580"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDFiltername8580-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDFilter8580">
+                                              {{ $t("filter8580") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDFilter8580"
+                                                v-model="filter8580"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDStereoFiltername8580"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDStereoFiltername8580-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDStereoFilter8580">
+                                              {{ $t("stereoFilter8580") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDStereoFilter8580"
+                                                v-model="stereoFilter8580"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="tab-pane fade show"
+                                        id="reSIDThirdSIDFiltername8580"
+                                        role="tabpanel"
+                                        aria-labelledby="reSIDThirdSIDFiltername8580-tab"
+                                      >
+                                        <div class="settings-box">
+                                          <span class="setting"
+                                            ><label for="reSIDThirdSIDFilter8580">
+                                              {{ $t("thirdSIDFilter8580") }}
+                                              <select
+                                                class="form-select form-select-sm right"
+                                                id="reSIDThirdSIDFilter8580"
+                                                v-model="thirdSIDFilter8580"
+                                                size="3"
+                                              >
+                                                <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
+                                              </select></label
+                                            ></span
+                                          >
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2000,8 +2613,8 @@
               reSIDfpFilter8580: app.reSIDfpFilter8580,
               reSIDfpStereoFilter6581: app.reSIDfpStereoFilter6581,
               reSIDfpStereoFilter8580: app.reSIDfpStereoFilter8580,
-              reSIDfpThirdFilter6581: app.reSIDfpThirdFilter6581,
-              reSIDfpThirdFilter8580: app.reSIDfpThirdFilter8580,
+              reSIDfpThirdSIDFilter6581: app.reSIDfpThirdSIDFilter6581,
+              reSIDfpThirdSIDFilter8580: app.reSIDfpThirdSIDFilter8580,
 
             },
           });
@@ -2026,6 +2639,7 @@
               }
               sourceNode.start(nextTime);
               nextTime += eventData.length / audioContext.sampleRate + fix;
+              app.framesCounter = size;
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
@@ -2046,7 +2660,6 @@
               } else {
                 worker.postMessage({ eventType: "IDLE" });
               }
-              app.framesCounter = size;
             } else if (eventType === "INITIALISED") {
               worker.postMessage({
                 eventType: "OPEN",
@@ -2139,6 +2752,36 @@
             videoCfgHeader: "Video",
             emulationCfgHeader: "Emulation",
             filterCfgHeader: "Filter",
+            residFpFilterCfgHeader: "RESIDFP",
+            residFilterCfgHeader: "RESID",
+            residFpFilter6581CfgHeader: "MOS6581",
+            residFpFilter8580CfgHeader: "MOS8580",
+            residFilter6581CfgHeader: "MOS6581",
+            residFilter8580CfgHeader: "MOS8580",
+            reSIDfpFilter6581Header: "SID",
+            reSIDfpStereoFilter6581Header: "Stereo SID",
+            reSIDfpThirdSIDFilter6581Header: "3rd SID",
+            reSIDfpFilter8580Header: "SID",
+            reSIDfpStereoFilter8580Header: "Stereo SID",
+            reSIDfpThirdSIDFilter8580Header: "3rd SID",
+            reSIDFilter6581Header: "SID",
+            reSIDStereoFilter6581Header: "Stereo SID",
+            reSIDThirdSIDFilter6581Header: "3rd SID",
+            reSIDFilter8580Header: "SID",
+            reSIDStereoFilter8580Header: "Stereo SID",
+            reSIDThirdSIDFilter8580Header: "3rd SID",
+            reSIDfpFilter6581: "Filter name of SID 6581 (RESIDFP)",
+            reSIDfpFilter8580: "Filter name of SID 8580 (RESIDFP)",
+            reSIDfpStereoFilter6581: "Filter name of Stereo SID 6581 (RESIDFP)",
+            reSIDfpStereoFilter8580: "Filter name of Stereo SID 8580 (RESIDFP)",
+            reSIDfpThirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESIDFP)",
+            reSIDfpThirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESIDFP)",
+            filter6581: "Filter name of SID 6581 (RESID)",
+            filter8580: "Filter name of SID 8580 (RESID)",
+            stereoFilter6581: "Filter name of Stereo SID 6581 (RESID)",
+            stereoFilter8580: "Filter name of Stereo SID 8580 (RESID)",
+            thirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESID)",
+            thirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESID)",
           },
           de: {
             FileMenu: "Datei",
@@ -2191,6 +2834,36 @@
             videoCfgHeader: "Video",
             emulationCfgHeader: "Emulation",
             filterCfgHeader: "Filter",
+            residFpFilterCfgHeader: "RESIDFP",
+            residFilterCfgHeader: "RESID",
+            residFpFilter6581CfgHeader: "MOS6581",
+            residFpFilter8580CfgHeader: "MOS8580",
+            residFilter6581CfgHeader: "MOS6581",
+            residFilter8580CfgHeader: "MOS8580",
+            reSIDfpFilter6581Header: "SID",
+            reSIDfpStereoFilter6581Header: "Stereo SID",
+            reSIDfpThirdSIDFilter6581Header: "3. SID",
+            reSIDfpFilter8580Header: "SID",
+            reSIDfpStereoFilter8580Header: "Stereo SID",
+            reSIDfpThirdSIDFilter8580Header: "3. SID",
+            reSIDFilter6581Header: "SID",
+            reSIDStereoFilter6581Header: "Stereo SID",
+            reSIDThirdSIDFilter6581Header: "3. SID",
+            reSIDFilter8580Header: "SID",
+            reSIDStereoFilter8580Header: "Stereo SID",
+            reSIDThirdSIDFilter8580Header: "3. SID",
+            reSIDfpFilter6581: "Filter name des SID 6581 (RESIDFP)",
+            reSIDfpFilter8580: "Filter name des SID 8580 (RESIDFP)",
+            reSIDfpStereoFilter6581: "Filter name des Stereo SID 6581 (RESIDFP)",
+            reSIDfpStereoFilter8580: "Filter name des Stereo SID 8580 (RESIDFP)",
+            reSIDfpThirdSIDFilter6581: "Filter name des 3. SID 6581 (RESIDFP)",
+            reSIDfpThirdSIDFilter8580: "Filter name des 3. SID 8580 (RESIDFP)",
+            filter6581: "Filter name des SID 6581 (RESID)",
+            filter8580: "Filter name des SID 8580 (RESID)",
+            stereoFilter6581: "Filter name des Stereo SID 6581 (RESID)",
+            stereoFilter8580: "Filter name des Stereo SID 8580 (RESID)",
+            thirdSIDFilter6581: "Filter name des 3. SID 6581 (RESID)",
+            thirdSIDFilter8580: "Filter name des 3. SID 8580 (RESID)",
           },
         },
       });
@@ -2242,8 +2915,13 @@
             reSIDfpFilter8580: 'FilterTrurl8580R5_3691',
             reSIDfpStereoFilter6581: 'FilterAlankila6581R4AR_3789',
             reSIDfpStereoFilter8580: 'FilterTrurl8580R5_3691',
-            reSIDfpThirdFilter6581: 'FilterAlankila6581R4AR_3789',
-            reSIDfpThirdFilter8580: 'FilterTrurl8580R5_3691',
+            reSIDfpThirdSIDFilter6581: 'FilterAlankila6581R4AR_3789',
+            reSIDfpThirdSIDFilter8580: 'FilterTrurl8580R5_3691',
+            reSIDFilters6581: ['FilterLightest6581','FilterLighter6581','FilterLight6581','FilterAverage6581','FilterDark6581','FilterDarker6581','FilterDarkest6581'],
+            reSIDFilters8580: ['FilterLight8580','FilterAverage8580','FilterDark8580'],
+            reSIDfpFilters6581: ['FilterReSID6581','FilterAlankila6581R4AR_3789','FilterAlankila6581R3_3984_1','FilterAlankila6581R3_3984_2','FilterLordNightmare6581R3_4285','FilterLordNightmare6581R3_4485','FilterLordNightmare6581R4_1986S','FilterZrX6581R3_0384','FilterZrX6581R3_1984','FilterZrx6581R3_3684','FilterZrx6581R3_3985','FilterZrx6581R4AR_2286','FilterTrurl6581R3_0784','FilterTrurl6581R3_0486S','FilterTrurl6581R3_3384','FilterTrurl6581R3_4885','FilterTrurl6581R4AR_3789','FilterTrurl6581R4AR_4486','FilterNata6581R3_2083','FilterGrue6581R4AR_3488',
+            'FilterKruLLo','FilterEnigma6581R3_4885','FilterEnigma6581R3_1585'],
+            reSIDfpFilters8580: ['FilterTrurl8580R5_1489','FilterTrurl8580R5_3691'],
             tabIndex: 1,
           };
         },
@@ -2535,6 +3213,7 @@
         let key = toC64KeyTableEntry(event.code);
         if (key) {
           app.releaseKey(key);
+          event.preventDefault();
         }
       };
       document.addEventListener("keydown", keyDownListener, false);

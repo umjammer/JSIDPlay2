@@ -29,6 +29,7 @@ import libsidplay.HardwareEnsemble;
 import libsidplay.common.CPUClock;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
+import libsidplay.common.Engine;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.components.c1530.Datasette.Control;
@@ -108,12 +109,13 @@ public class ExportedApi implements IExportedApi {
 			LOG.finest("Cart, length=: " + cartContents.length);
 			LOG.finest("Cart name: : " + cartContentsName);
 		}
-		for (int i = 0; i < PLA.MAX_SIDS; i++) {
-			if (SidTune.isSIDUsed(emulationSection, tune, i)) {
-				LOG.finest("SID " + i + ", filter: "
-						+ emulationSection.getFilterName(i, emulationSection.getEngine(),
-								Emulation.getEmulation(emulationSection, i),
-								ChipModel.getChipModel(emulationSection, tune, i)));
+		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				Engine engine = Engine.getEngine(emulationSection, tune);
+				Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
+				ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
+				String filterName = emulationSection.getFilterName(sidNum, engine, emulation, chipModel);
+				LOG.finest(String.format("Filter %d : %s", sidNum + 1, filterName));
 			}
 		}
 
