@@ -1544,6 +1544,44 @@
                 </div>
               </div>
               <div class="tab-pane fade show" id="cfg" role="tabpanel" aria-labelledby="cfg-tab">
+                <div class="settings-box">
+                  <div class="button-box">
+                    <button
+                      type="button"
+                      class="btn btn-outline-success btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#setDefaultModal"
+                    >
+                      <span>{{ $t("setDefault") }}</span>
+                    </button>
+                    <!-- Modal -->
+                    <div
+                      class="modal fade"
+                      id="setDefaultModal"
+                      tabindex="-1"
+                      aria-labelledby="setDefaultModalLabel"
+                      aria-hidden="true"
+                    >
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="setDefaultModalLabel">{{ $t("confirmationTitle") }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>{{ $t("setDefaultReally") }}</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="setDefault">
+                              OK
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div class="card">
                   <div class="card-header">
                     <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
@@ -2782,6 +2820,9 @@
             stereoFilter8580: "Filter name of Stereo SID 8580 (RESID)",
             thirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESID)",
             thirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESID)",
+            confirmationTitle: "Confirmation Dialogue",
+            setDefault: "Restore Defaults",
+            setDefaultReally: "Do you really want to restore defaults?",
           },
           de: {
             FileMenu: "Datei",
@@ -2864,6 +2905,9 @@
             stereoFilter8580: "Filter name des Stereo SID 8580 (RESID)",
             thirdSIDFilter6581: "Filter name des 3. SID 6581 (RESID)",
             thirdSIDFilter8580: "Filter name des 3. SID 8580 (RESID)",
+            confirmationTitle: "Sicherheitsabfrage",
+            setDefault: "Standardeinstellungen wiederherstellen",
+            setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
           },
         },
       });
@@ -3166,10 +3210,104 @@
             app.msg = app.$t("cartEjected");
             app.reset();
           },
+          setDefault: function () {
+            this.filter6581 = 'FilterAverage6581';
+            this.filter8580 = 'FilterAverage8580';
+            this.stereoFilter6581 = 'FilterAverage6581';
+            this.stereoFilter8580 = 'FilterAverage8580';
+            this.thirdSIDFilter6581 = 'FilterAverage6581';
+            this.thirdSIDFilter8580 = 'FilterAverage8580';
+            this.reSIDfpFilter6581 = 'FilterAlankila6581R4AR_3789';
+            this.reSIDfpFilter8580 = 'FilterTrurl8580R5_3691';
+            this.reSIDfpStereoFilter6581 = 'FilterAlankila6581R4AR_3789';
+            this.reSIDfpStereoFilter8580 = 'FilterTrurl8580R5_3691';
+            this.reSIDfpThirdSIDFilter6581 = 'FilterAlankila6581R4AR_3789';
+            this.reSIDfpThirdSIDFilter8580 = 'FilterTrurl8580R5_3691';
+            this.palEmulation = true;
+            this.defaultClockSpeed = 50;
+            this.startSong = 0;
+            this.nthFrame = 2;
+            this.defaultEmulation = "RESIDFP";
+            this.defaultSidModel = true;
+            this.sampling = false;
+            this.reverbBypass = true;
+            this.sidWrites = false;
+            this.bufferSize = 3 * 48000;
+            this.audioBufferSize = 48000;
+          }
         },
         mounted: function () {
           if (localStorage.locale) {
             this.$i18n.locale = localStorage.locale;
+          }
+          if (localStorage.filter6581) {
+            this.filter6581 = JSON.parse(localStorage.filter6581);
+          }
+          if (localStorage.filter8580) {
+            this.filter8580 = JSON.parse(localStorage.filter8580);
+          }
+          if (localStorage.stereoFilter6581) {
+            this.stereoFilter6581 = JSON.parse(localStorage.stereoFilter6581);
+          }
+          if (localStorage.stereoFilter8580) {
+            this.stereoFilter8580 = JSON.parse(localStorage.stereoFilter8580);
+          }
+          if (localStorage.thirdSIDFilter6581) {
+            this.thirdSIDFilter6581 = JSON.parse(localStorage.thirdSIDFilter6581);
+          }
+          if (localStorage.thirdSIDFilter8580) {
+            this.thirdSIDFilter8580 = JSON.parse(localStorage.thirdSIDFilter8580);
+          }
+          if (localStorage.reSIDfpFilter6581) {
+            this.reSIDfpFilter6581 = JSON.parse(localStorage.reSIDfpFilter6581);
+          }
+          if (localStorage.reSIDfpFilter8580) {
+            this.reSIDfpFilter8580 = JSON.parse(localStorage.reSIDfpFilter8580);
+          }
+          if (localStorage.reSIDfpStereoFilter6581) {
+            this.reSIDfpStereoFilter6581 = JSON.parse(localStorage.reSIDfpStereoFilter6581);
+          }
+          if (localStorage.reSIDfpStereoFilter8580) {
+            this.reSIDfpStereoFilter8580 = JSON.parse(localStorage.reSIDfpStereoFilter8580);
+          }
+          if (localStorage.reSIDfpThirdSIDFilter6581) {
+            this.reSIDfpThirdSIDFilter6581 = JSON.parse(localStorage.reSIDfpThirdSIDFilter6581);
+          }
+          if (localStorage.reSIDfpThirdSIDFilter8580) {
+            this.reSIDfpThirdSIDFilter8580 = JSON.parse(localStorage.reSIDfpThirdSIDFilter8580);
+          }
+          if (localStorage.defaultClockSpeed) {
+            this.defaultClockSpeed = JSON.parse(localStorage.defaultClockSpeed);
+          }
+          if (localStorage.defaultEmulation) {
+            this.defaultEmulation = JSON.parse(localStorage.defaultEmulation);
+          }
+          if (localStorage.defaultSidModel) {
+            this.defaultSidModel = JSON.parse(localStorage.defaultSidModel);
+          }
+          if (localStorage.sampling) {
+            this.sampling = JSON.parse(localStorage.sampling);
+          }
+          if (localStorage.bufferSize) {
+            this.bufferSize = JSON.parse(localStorage.bufferSize);
+          }
+          if (localStorage.audioBufferSize) {
+            this.audioBufferSize = JSON.parse(localStorage.audioBufferSize);
+          }
+          if (localStorage.palEmulation) {
+            this.palEmulation = JSON.parse(localStorage.palEmulation);
+          }
+          if (localStorage.nthFrame) {
+            this.nthFrame = JSON.parse(localStorage.nthFrame);
+          }
+          if (localStorage.startSong) {
+            this.startSong = JSON.parse(localStorage.startSong);
+          }
+          if (localStorage.reverbBypass) {
+            this.reverbBypass = JSON.parse(localStorage.reverbBypass);
+          }
+          if (localStorage.sidWrites) {
+            this.sidWrites = JSON.parse(localStorage.sidWrites);
           }
           var canvas = document.getElementById("c64Screen");
           canvasContext = canvas.getContext("2d");
@@ -3177,7 +3315,77 @@
           data = imageData.data;
           Vue.nextTick(() => app.reset());
         },
-        watch: {},
+        watch: {
+          filter6581(newValue, oldValue) {
+            localStorage.filter6581 = JSON.stringify(newValue);
+          },
+          filter8580(newValue, oldValue) {
+            localStorage.filter8580 = JSON.stringify(newValue);
+          },
+          stereoFilter6581(newValue, oldValue) {
+            localStorage.stereoFilter6581 = JSON.stringify(newValue);
+          },
+          stereoFilter8580(newValue, oldValue) {
+            localStorage.stereoFilter8580 = JSON.stringify(newValue);
+          },
+          thirdSIDFilter6581(newValue, oldValue) {
+            localStorage.thirdSIDFilter6581 = JSON.stringify(newValue);
+          },
+          thirdSIDFilter8580(newValue, oldValue) {
+            localStorage.thirdSIDFilter8580 = JSON.stringify(newValue);
+          },
+          reSIDfpFilter6581(newValue, oldValue) {
+            localStorage.reSIDfpFilter6581 = JSON.stringify(newValue);
+          },
+          reSIDfpFilter8580(newValue, oldValue) {
+            localStorage.reSIDfpFilter8580 = JSON.stringify(newValue);
+          },
+          reSIDfpStereoFilter6581(newValue, oldValue) {
+            localStorage.reSIDfpStereoFilter6581 = JSON.stringify(newValue);
+          },
+          reSIDfpStereoFilter8580(newValue, oldValue) {
+            localStorage.reSIDfpStereoFilter8580 = JSON.stringify(newValue);
+          },
+          reSIDfpThirdSIDFilter6581(newValue, oldValue) {
+            localStorage.reSIDfpThirdSIDFilter6581 = JSON.stringify(newValue);
+          },
+          reSIDfpThirdSIDFilter8580(newValue, oldValue) {
+            localStorage.reSIDfpThirdSIDFilter8580 = JSON.stringify(newValue);
+          },
+          defaultClockSpeed(newValue, oldValue) {
+            localStorage.defaultClockSpeed = JSON.stringify(newValue);
+          },
+          defaultEmulation(newValue, oldValue) {
+            localStorage.defaultEmulation = JSON.stringify(newValue);
+          },
+          defaultSidModel(newValue, oldValue) {
+            localStorage.defaultSidModel = JSON.stringify(newValue);
+          },
+          sampling(newValue, oldValue) {
+            localStorage.sampling = JSON.stringify(newValue);
+          },
+          bufferSize(newValue, oldValue) {
+            localStorage.bufferSize = JSON.stringify(newValue);
+          },
+          audioBufferSize(newValue, oldValue) {
+            localStorage.audioBufferSize = JSON.stringify(newValue);
+          },
+          palEmulation(newValue, oldValue) {
+            localStorage.palEmulation = JSON.stringify(newValue);
+          },
+          nthFrame(newValue, oldValue) {
+            localStorage.nthFrame = JSON.stringify(newValue);
+          },
+          startSong(newValue, oldValue) {
+            localStorage.startSong = JSON.stringify(newValue);
+          },
+          reverbBypass(newValue, oldValue) {
+            localStorage.reverbBypass = JSON.stringify(newValue);
+          },
+          sidWrites(newValue, oldValue) {
+            localStorage.sidWrites = JSON.stringify(newValue);
+          },
+        },
       })
         .use(i18n)
         .mount("#app");
