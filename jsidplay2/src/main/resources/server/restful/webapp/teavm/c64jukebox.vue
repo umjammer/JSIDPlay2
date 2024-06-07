@@ -1487,19 +1487,23 @@
               <div class="tab-pane fade show active" id="video" role="tabpanel" aria-labelledby="video-tab">
                 <div class="row">
                   <div class="col screen-parent p-0">
-                    <button
-                      v-show="screen"
-                      type="button"
-                      class="btn btn-secondary btn-sm"
-                      v-on:click="typeKey('SPACE')"
-                      :disabled="!playing || !screen"
-                    >
-                      {{ $t("space") }}
-                    </button>
+                    <span v-if="$refs.formCartFileSm && $refs.formCartFileSm.files[0]">
+                      <span class="ms-2 me-2">{{ $refs.formCartFileSm.files[0].name }}</span>
+                      <i class="bi bi-badge-8k-fill"></i>
+                    </span>
+                    <span v-if="$refs.formTapeFileSm && $refs.formTapeFileSm.files[0]">
+                      <span class="ms-2 me-2">{{ $refs.formTapeFileSm.files[0].name }}</span>
+                      <i class="bi bi-cassette-fill"></i>
+                    </span>
+                    <span v-if="$refs.formDiskFileSm && $refs.formDiskFileSm.files[0]">
+                      <span class="ms-2 me-2">{{ $refs.formDiskFileSm.files[0].name }}</span>
+                      <i class="bi bi-floppy-fill"></i>
+                    </span>
+                    
                     <span class="p-1 fs-6 fst-italic"
                       >{{ msg }}
-                      <span v-show="playing">
-                        <span v-show="framesCounter != 0">{{ $t("fiq") }} {{ framesCounter }}</span></span
+                      <span v-show="playing && screen">
+                        <span>{{ framesCounter }} / {{ defaultClockSpeed / nthFrame }} {{ $t("fps") }}</span></span
                       ></span
                     >
                     <div style="width: 100%; margin: 0px auto">
@@ -1510,6 +1514,15 @@
                         height="285"
                       />
                     </div>
+                    <button
+                      v-show="screen"
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      v-on:click="typeKey('SPACE')"
+                      :disabled="!playing || !screen"
+                    >
+                      {{ $t("space") }}
+                    </button>
                   </div>
                   <div class="col">
                     <h2>
@@ -2475,7 +2488,8 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
-      var start, time;
+      let msPrev;
+      let frames;
 
       function toC64KeyTableEntry(code) {
         switch (code) {
@@ -2677,7 +2691,8 @@
               }
               sourceNode.start(nextTime);
               nextTime += eventData.length / audioContext.sampleRate + fix;
-              app.framesCounter = size;
+              app.framesCounter = frames;
+              frames= 0;
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
@@ -2719,8 +2734,9 @@
               app.paused = false;
               app.clearScreen();
               if (app.screen) {
-                (start = new Date().getTime()), (time = 0);
-                app.showFrame();
+                msPrev = window.performance.now()
+      			frames = 0
+                app.animate();
               }
             }
           });
@@ -2770,19 +2786,13 @@
             cart: "Cart",
             insertCart: "Insert Cartridge",
             ejectCart: "Eject Cartridge",
-            diskInserted: "Disk inserted",
-            diskEjected: "Disk ejected",
-            tapeInserted: "Tape inserted",
-            tapeEjected: "Tape ejected",
-            cartInserted: "Cartridge inserted",
-            cartEjected: "Cartridge ejected",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Space Key",
             exampleMusic: "Music",
             exampleOneFiler: "OneFiler",
             exampleDemos: "Demos",
-            fiq: "FIQ",
+            fps: "FPS",
             ABOUT: "About",
             VIDEO: "Screen",
             CFG: "Configuration",
@@ -2855,19 +2865,13 @@
             cart: "Modul",
             insertCart: "Modul einlegen",
             ejectCart: "Modul auswerfen",
-            diskInserted: "Diskette eingelegt",
-            diskEjected: "Diskette ausgeworfen",
-            tapeInserted: "Kasette eingelegt",
-            tapeEjected: "Kasette ausgeworfen",
-            cartInserted: "Modul eingesteckt",
-            cartEjected: "Modul ausgeworfen",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Leertaste",
             exampleMusic: "Musik",
             exampleOneFiler: "Programme",
             exampleDemos: "Demos",
-            fiq: "FIQ",
+            fps: "FPS",
             ABOUT: "Über",
             VIDEO: "Bildschirm",
             CFG: "Konfiguration",
@@ -3051,9 +3055,18 @@
             data.set(new Uint8Array((maxWidth * maxHeight) << 2));
             canvasContext.putImageData(imageData, 0, 0);
           },
-          showFrame: function () {
-            var timeSpan = (1000 * app.nthFrame) / (app.defaultClockSpeed - 1);
-            time += timeSpan;
+          animate: function () {
+            var msPerFrame = 1000 * app.nthFrame / app.defaultClockSpeed;
+            window.requestAnimationFrame(app.animate)
+
+            const msNow = window.performance.now()
+            const msPassed = msNow - msPrev
+
+            if (msPassed < msPerFrame) return
+
+            const excessTime = msPassed % msPerFrame
+            msPrev = msNow - excessTime
+
             if (!app.paused) {
               var elem = imageQueue.dequeue();
               if (elem) {
@@ -3061,8 +3074,7 @@
                 canvasContext.putImageData(imageData, 0, 0);
               }
             }
-            var diff = new Date().getTime() - start - time;
-            if (app.playing) setTimeout(() => app.showFrame(), timeSpan - diff);
+            frames++
           },
           insertDisk() {
             var reader = new FileReader();
@@ -3076,7 +3088,7 @@
                   },
                 });
               }
-              app.msg = app.$t("diskInserted") + ": " + app.$refs.formDiskFileSm.files[0].name;
+//              app.msg = app.$t("diskInserted") + ": " + app.$refs.formDiskFileSm.files[0].name;
             };
             if (app.$refs.formDiskFileSm && app.$refs.formDiskFileSm.files[0]) {
               reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
@@ -3113,7 +3125,6 @@
               });
             }
             app.$refs.formDiskFileSm.value = "";
-            app.msg = app.$t("diskEjected");
           },
           insertTape() {
             var reader = new FileReader();
@@ -3127,7 +3138,6 @@
                   },
                 });
               }
-              app.msg = app.$t("tapeInserted") + ": " + app.$refs.formTapeFileSm.files[0].name;
             };
             if (app.$refs.formTapeFileSm && app.$refs.formTapeFileSm.files[0]) {
               reader.readAsArrayBuffer(app.$refs.formTapeFileSm.files[0]);
@@ -3140,7 +3150,6 @@
               });
             }
             app.$refs.formTapeFileSm.value = "";
-            app.msg = app.$t("tapeEjected");
           },
           pressPlayOnTape() {
             if (worker) {
@@ -3202,12 +3211,10 @@
             }
           },
           insertCart() {
-            app.msg = app.$t("cartInserted") + ": " + app.$refs.formCartFileSm.files[0].name;
             app.reset();
           },
           ejectCart() {
             app.$refs.formCartFileSm.value = "";
-            app.msg = app.$t("cartEjected");
             app.reset();
           },
           setDefault: function () {
