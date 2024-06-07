@@ -2691,8 +2691,6 @@
                     }
                     sourceNode.start(nextTime);
                     nextTime += eventData.length / audioContext.sampleRate + fix;
-                    app.framesCounter = frames;
-                    frames= 0;
                   } else if (eventType === "FRAME") {
                     imageQueue.enqueue({
                       image: eventData.image,
@@ -2735,7 +2733,8 @@
                     app.clearScreen();
                     if (app.screen) {
                       msPrev = window.performance.now()
-            			frames = 0
+            		  frames = 0;
+            		  actualFrames = 0;
                       app.animate();
                     }
                   }
@@ -2938,6 +2937,7 @@
                   bufferSize: 3 * 48000,
                   audioBufferSize: 48000,
                   framesCounter: 0,
+                  actualFrames: 0,
                   showFloppy: false,
                   showDemo1: false,
                   showDemo2: false,
@@ -3073,9 +3073,15 @@
                     if (elem) {
                       data.set(elem.image);
                       canvasContext.putImageData(imageData, 0, 0);
+                      actualFrames++;
                     }
                   }
                   frames++
+                  if (frames * app.nthFrame >= app.defaultClockSpeed) {
+                    app.framesCounter = actualFrames;
+                    frames = 0;
+                    actualFrames = 0;
+                  }
                 },
                 insertDisk() {
                   var reader = new FileReader();
@@ -3089,7 +3095,6 @@
                         },
                       });
                     }
-      //              app.msg = app.$t("diskInserted") + ": " + app.$refs.formDiskFileSm.files[0].name;
                   };
                   if (app.$refs.formDiskFileSm && app.$refs.formDiskFileSm.files[0]) {
                     reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
