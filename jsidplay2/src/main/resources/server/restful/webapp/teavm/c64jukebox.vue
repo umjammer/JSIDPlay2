@@ -3057,8 +3057,9 @@
           },
           animate: function () {
             var msPerFrame = 1000 * app.nthFrame / app.defaultClockSpeed;
-            window.requestAnimationFrame(app.animate)
-
+            if (app.playing) {
+                window.requestAnimationFrame(app.animate)
+            }
             const msNow = window.performance.now()
             const msPassed = msNow - msPrev
 

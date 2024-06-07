@@ -59,7 +59,8 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
-      var start, time;
+      let msPrev;
+      let frames;
       var nthFrame = 2;
 
       var playing;
@@ -161,8 +162,9 @@
               nextTime = 0;
               imageQueue.clear();
               playing = true;
-              (start = new Date().getTime()), (time = 0);
-              showFrame();
+              msPrev = window.performance.now()
+    		  frames = 0
+              animate();
             }
           });
 
@@ -197,19 +199,28 @@
           pauseBtn.style.color = "black";
         }
       }
-      function showFrame() {
-        var timeSpan = (1000 * nthFrame) / 50;
-        time += timeSpan;
-        if (!pause) {
-          var elem = imageQueue.dequeue();
-          if (elem) {
-            data.set(elem.image);
-            canvasContext.putImageData(imageData, 0, 0);
+      function animate() {
+          var msPerFrame = 1000 * nthFrame / 50;
+          if (playing) {
+              window.requestAnimationFrame(animate)
           }
+          const msNow = window.performance.now()
+          const msPassed = msNow - msPrev
+
+          if (msPassed < msPerFrame) return
+
+          const excessTime = msPassed % msPerFrame
+          msPrev = msNow - excessTime
+
+          if (!pause) {
+            var elem = imageQueue.dequeue();
+            if (elem) {
+              data.set(elem.image);
+              canvasContext.putImageData(imageData, 0, 0);
+            }
+          }
+          frames++
         }
-        var diff = new Date().getTime() - start - time;
-        if (playing) setTimeout(() => showFrame(), timeSpan - diff);
-      }
       function insertDisk() {
         var diskfile = document.getElementById("diskfile");
         var reader = new FileReader();
