@@ -9,9 +9,13 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/js_em2015/</directory>
-			<outputDirectory>js_em2015</outputDirectory>
+			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/</directory>
+			<outputDirectory></outputDirectory>
 			<filtered>false</filtered>
+			<includes>
+				<include>js_em2015/*</include>
+				<include>sid/*</include>
+			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}/classes/server/restful/webapp/teavm/</directory>
@@ -29,6 +33,7 @@
 				<exclude>wasm</exclude>
 				<exclude>js</exclude>
 				<exclude>js_em2015</exclude>
+				<exclude>sid</exclude>
 			</excludes>
 		</fileSet>
 	</fileSets>

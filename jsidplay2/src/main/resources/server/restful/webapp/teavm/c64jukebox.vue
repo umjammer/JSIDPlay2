@@ -2445,1000 +2445,1000 @@
       </form>
     </div>
     <script>
-            var size = 0;
-            function Queue() {
-              var head, tail;
-              return Object.freeze({
-                enqueue(value) {
-                  const link = { value, next: undefined };
-                  tail = head ? (tail.next = link) : (head = link);
-                  size++;
-                },
-                dequeue() {
-                  if (head) {
-                    var value = head.value;
-                    head = head.next;
-                    size--;
-                    return value;
-                  }
-                  return undefined;
-                },
-                peek() {
-                  return head?.value;
-                },
-                clear() {
-                  tail = head = undefined;
-                  size = 0;
-                },
-                isNotEmpty() {
-                  return head;
+      var size = 0;
+      function Queue() {
+        var head, tail;
+        return Object.freeze({
+          enqueue(value) {
+            const link = { value, next: undefined };
+            tail = head ? (tail.next = link) : (head = link);
+            size++;
+          },
+          dequeue() {
+            if (head) {
+              var value = head.value;
+              head = head.next;
+              size--;
+              return value;
+            }
+            return undefined;
+          },
+          peek() {
+            return head?.value;
+          },
+          clear() {
+            tail = head = undefined;
+            size = 0;
+          },
+          isNotEmpty() {
+            return head;
+          },
+        });
+      }
+
+      const maxWidth = 384;
+      const maxHeight = 312;
+
+      var worker;
+
+      var AudioContext = window.AudioContext || window.webkitAudioContext;
+      var audioContext;
+      var nextTime, fix;
+
+      var canvasContext;
+      var imageData, data;
+      var imageQueue = new Queue();
+      let msPrev;
+      let frames;
+
+      function toC64KeyTableEntry(code) {
+        switch (code) {
+          case "IntlBackslash":
+            return "ARROW_LEFT";
+          case "Digit1":
+            return "ONE";
+          case "Digit2":
+            return "TWO";
+          case "Digit3":
+            return "THREE";
+          case "Digit4":
+            return "FOUR";
+          case "Digit5":
+            return "FIVE";
+          case "Digit6":
+            return "SIX";
+          case "Digit7":
+            return "SEVEN";
+          case "Digit8":
+            return "EIGHT";
+          case "Digit9":
+            return "NINE";
+          case "Digit0":
+            return "ZERO";
+          case "NumpadAdd":
+            return "PLUS";
+          case "NumpadSubtract":
+            return "MINUS";
+          case "^":
+            return "POUND";
+          case "Delete":
+            return "CLEAR_HOME";
+          case "Backspace":
+            return "INS_DEL";
+          case "ControlRight":
+            return "CTRL";
+          case "KeyQ":
+            return "Q";
+          case "KeyW":
+            return "W";
+          case "KeyE":
+            return "E";
+          case "KeyR":
+            return "R";
+          case "KeyT":
+            return "T";
+          case "KeyZ":
+            return "Y";
+          case "KeyU":
+            return "U";
+          case "KeyI":
+            return "I";
+          case "KeyO":
+            return "O";
+          case "KeyP":
+            return "P";
+          case "@":
+            return "AT";
+          case "NumpadMultiply":
+            return "STAR";
+          case "ArrowUp":
+            return "ARROW_UP";
+          case "Escape":
+            return "RUN_STOP";
+          case "KeyA":
+            return "A";
+          case "KeyS":
+            return "S";
+          case "KeyD":
+            return "D";
+          case "KeyF":
+            return "F";
+          case "KeyG":
+            return "G";
+          case "KeyH":
+            return "H";
+          case "KeyJ":
+            return "J";
+          case "KeyK":
+            return "K";
+          case "KeyL":
+            return "L";
+          case "Semicolon":
+            return "SEMICOLON";
+          case "Equal":
+            return "EQUALS";
+          case "Enter":
+            return "RETURN";
+          case "ControlLeft":
+            return "COMMODORE";
+          case "ShiftLeft":
+            return "SHIFT_LEFT";
+          case "KeyY":
+            return "Z";
+          case "KeyX":
+            return "X";
+          case "KeyC":
+            return "C";
+          case "KeyV":
+            return "V";
+          case "KeyB":
+            return "B";
+          case "KeyN":
+            return "N";
+          case "KeyM":
+            return "M";
+          case "Comma":
+            return "COMMA";
+          case "Period":
+            return "PERIOD";
+          case "Slash":
+            return "SLASH";
+          case "ShiftRight":
+            return "SHIFT_RIGHT";
+          case "ArrowDown":
+            return "CURSOR_UP_DOWN";
+          case "ArrowRight":
+            return "CURSOR_LEFT_RIGHT";
+          case "Space":
+            return "SPACE";
+          case "Comma":
+            return "COMMA";
+          case "F1":
+            return "F1";
+          case "F3":
+            return "F3";
+          case "F5":
+            return "F5";
+          case "F7":
+            return "F7";
+          case "KeyI":
+            return "RESTORE";
+
+          default:
+            return undefined;
+        }
+      }
+
+      function wasmWorker(contents, tuneName, cartContents, cartName, command) {
+        audioContext = new AudioContext({
+          latencyHint: "interactive",
+          sampleRate: 48000,
+        });
+
+        if (worker) {
+          worker.terminate();
+          worker = undefined;
+        }
+        worker = new Worker("${teaVMFormat}/jsidplay2-${teaVMFormat}-worker.js", ${teaVMWorkerAttrs});
+
+        return new Promise((resolve, reject) => {
+          worker.postMessage({
+            eventType: "INITIALISE",
+            eventData: {
+              palEmulation: app.palEmulation,
+              bufferSize: app.bufferSize,
+              audioBufferSize: app.audioBufferSize,
+              samplingRate: audioContext.sampleRate,
+              samplingMethodResample: "" + app.sampling === "true",
+              reverbBypass: app.reverbBypass,
+              defaultClockSpeed: app.defaultClockSpeed,
+              defaultSidModel: "" + app.defaultSidModel === "true",
+              jiffyDosInstalled: "" + app.jiffyDosInstalled === "true",
+              defaultEmulation: app.defaultEmulation === "RESID",
+              filter6581: app.filter6581,
+              filter8580: app.filter8580,
+              stereoFilter6581: app.stereoFilter6581,
+              stereoFilter8580: app.stereoFilter8580,
+              thirdSIDFilter6581: app.thirdSIDFilter6581,
+              thirdSIDFilter8580: app.thirdSIDFilter8580,
+              reSIDfpFilter6581: app.reSIDfpFilter6581,
+              reSIDfpFilter8580: app.reSIDfpFilter8580,
+              reSIDfpStereoFilter6581: app.reSIDfpStereoFilter6581,
+              reSIDfpStereoFilter8580: app.reSIDfpStereoFilter8580,
+              reSIDfpThirdSIDFilter6581: app.reSIDfpThirdSIDFilter6581,
+              reSIDfpThirdSIDFilter8580: app.reSIDfpThirdSIDFilter8580,
+
+            },
+          });
+
+          worker.addEventListener("message", function (event) {
+            var { eventType, eventData } = event.data;
+
+            if (eventType === "SAMPLES") {
+              var buffer = audioContext.createBuffer(2, eventData.length, audioContext.sampleRate);
+              buffer.getChannelData(0).set(eventData.left);
+              buffer.getChannelData(1).set(eventData.right);
+
+              var sourceNode = audioContext.createBufferSource();
+              sourceNode.buffer = buffer;
+              sourceNode.connect(audioContext.destination);
+
+              if (nextTime == 0) {
+                fix = app.screen ? 0.005 : 0;
+                nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
+              } else if (nextTime < audioContext.currentTime) {
+                nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
+              }
+              sourceNode.start(nextTime);
+              nextTime += eventData.length / audioContext.sampleRate + fix;
+            } else if (eventType === "FRAME") {
+              imageQueue.enqueue({
+                image: eventData.image,
+              });
+            } else if (eventType === "SID_WRITE") {
+              console.log("relTime=" + eventData.relTime + ", addr=" + eventData.addr + ", value=" + eventData.value);
+            } else if (eventType === "OPENED" || eventType === "CLOCKED") {
+              if (eventType === "OPENED") {
+                if (app.screen) {
+                  app.insertDisk();
+                }
+                if (app.screen) {
+                  app.insertTape();
+                }
+              }
+              if (!app.paused && size * app.nthFrame < 10) {
+                worker.postMessage({ eventType: "CLOCK" });
+              } else {
+                worker.postMessage({ eventType: "IDLE" });
+              }
+            } else if (eventType === "INITIALISED") {
+              worker.postMessage({
+                eventType: "OPEN",
+                eventData: {
+                  contents: contents,
+                  tuneName: tuneName,
+                  startSong: app.startSong,
+                  nthFrame: app.screen ? app.nthFrame : 0,
+                  sidWrites: app.sidWrites,
+                  cartContents: cartContents,
+                  cartName: cartName,
+                  command: command,
                 },
               });
-            }
 
-            const maxWidth = 384;
-            const maxHeight = 312;
-
-            var worker;
-
-            var AudioContext = window.AudioContext || window.webkitAudioContext;
-            var audioContext;
-            var nextTime, fix;
-
-            var canvasContext;
-            var imageData, data;
-            var imageQueue = new Queue();
-            let msPrev;
-            let frames;
-
-            function toC64KeyTableEntry(code) {
-              switch (code) {
-                case "IntlBackslash":
-                  return "ARROW_LEFT";
-                case "Digit1":
-                  return "ONE";
-                case "Digit2":
-                  return "TWO";
-                case "Digit3":
-                  return "THREE";
-                case "Digit4":
-                  return "FOUR";
-                case "Digit5":
-                  return "FIVE";
-                case "Digit6":
-                  return "SIX";
-                case "Digit7":
-                  return "SEVEN";
-                case "Digit8":
-                  return "EIGHT";
-                case "Digit9":
-                  return "NINE";
-                case "Digit0":
-                  return "ZERO";
-                case "NumpadAdd":
-                  return "PLUS";
-                case "NumpadSubtract":
-                  return "MINUS";
-                case "^":
-                  return "POUND";
-                case "Delete":
-                  return "CLEAR_HOME";
-                case "Backspace":
-                  return "INS_DEL";
-                case "ControlRight":
-                  return "CTRL";
-                case "KeyQ":
-                  return "Q";
-                case "KeyW":
-                  return "W";
-                case "KeyE":
-                  return "E";
-                case "KeyR":
-                  return "R";
-                case "KeyT":
-                  return "T";
-                case "KeyZ":
-                  return "Y";
-                case "KeyU":
-                  return "U";
-                case "KeyI":
-                  return "I";
-                case "KeyO":
-                  return "O";
-                case "KeyP":
-                  return "P";
-                case "@":
-                  return "AT";
-                case "NumpadMultiply":
-                  return "STAR";
-                case "ArrowUp":
-                  return "ARROW_UP";
-                case "Escape":
-                  return "RUN_STOP";
-                case "KeyA":
-                  return "A";
-                case "KeyS":
-                  return "S";
-                case "KeyD":
-                  return "D";
-                case "KeyF":
-                  return "F";
-                case "KeyG":
-                  return "G";
-                case "KeyH":
-                  return "H";
-                case "KeyJ":
-                  return "J";
-                case "KeyK":
-                  return "K";
-                case "KeyL":
-                  return "L";
-                case "Semicolon":
-                  return "SEMICOLON";
-                case "Equal":
-                  return "EQUALS";
-                case "Enter":
-                  return "RETURN";
-                case "ControlLeft":
-                  return "COMMODORE";
-                case "ShiftLeft":
-                  return "SHIFT_LEFT";
-                case "KeyY":
-                  return "Z";
-                case "KeyX":
-                  return "X";
-                case "KeyC":
-                  return "C";
-                case "KeyV":
-                  return "V";
-                case "KeyB":
-                  return "B";
-                case "KeyN":
-                  return "N";
-                case "KeyM":
-                  return "M";
-                case "Comma":
-                  return "COMMA";
-                case "Period":
-                  return "PERIOD";
-                case "Slash":
-                  return "SLASH";
-                case "ShiftRight":
-                  return "SHIFT_RIGHT";
-                case "ArrowDown":
-                  return "CURSOR_UP_DOWN";
-                case "ArrowRight":
-                  return "CURSOR_LEFT_RIGHT";
-                case "Space":
-                  return "SPACE";
-                case "Comma":
-                  return "COMMA";
-                case "F1":
-                  return "F1";
-                case "F3":
-                  return "F3";
-                case "F5":
-                  return "F5";
-                case "F7":
-                  return "F7";
-                case "KeyI":
-                  return "RESTORE";
-
-                default:
-                  return undefined;
+              nextTime = 0;
+              imageQueue.clear();
+              app.playing = true;
+              app.paused = false;
+              app.clearScreen();
+              if (app.screen) {
+                msPrev = window.performance.now()
+      		  frames = 0;
+      		  actualFrames = 0;
+                app.animate();
               }
             }
+          });
 
-            function wasmWorker(contents, tuneName, cartContents, cartName, command) {
-              audioContext = new AudioContext({
-                latencyHint: "interactive",
-                sampleRate: 48000,
+          worker.addEventListener("error", function (error) {
+            reject(error);
+          });
+        });
+      }
+
+      const { createApp, ref } = Vue;
+
+      const { createI18n } = VueI18n;
+
+      let i18n = createI18n({
+        legacy: false,
+        locale: "en",
+        messages: {
+          en: {
+            FileMenu: "File",
+            palEmulation: "PAL emulation",
+            defaultClockSpeed: "Default clock speed",
+            defaultEmulation: "Default Emulation",
+            defaultSidModel: "Default SID model",
+            jiffyDosInstalled: "JiffyDOS",
+            sampling: "Sampling Method",
+            reverbBypass: "Bypass Schroeder reverb",
+            sidWrites: "Print SID writes to console",
+            bufferSize: "Emulation buffer size",
+            audioBufferSize: "Audio buffer size",
+            startSong: "Start song",
+            nthFrame: "Show every nth frame",
+            file: "File",
+            play: "Load SID/PRG/P00/T64",
+            player: "Player",
+            pauseContinue: "Pause/Continue",
+            reset: "Reset C64",
+            stop: "Stop",
+            devices: "Devices",
+            floppy: "Floppy",
+            insertDisk: "Insert Disk",
+            ejectDisk: "Eject Disk",
+            tape: "Tape",
+            insertTape: "Insert Tape",
+            pressPlayOnTape: "Press Play on Tape",
+            ejectTape: "Eject Tape",
+            cart: "Cart",
+            insertCart: "Insert Cartridge",
+            ejectCart: "Eject Cartridge",
+            loadDisk: "Load *,8,1",
+            loadTape: "Load",
+            space: "Space Key",
+            exampleMusic: "Music",
+            exampleOneFiler: "OneFiler",
+            exampleDemos: "Demos",
+            fps: "FPS",
+            ABOUT: "About",
+            VIDEO: "Screen",
+            CFG: "Configuration",
+            audioCfgHeader: "Audio",
+            videoCfgHeader: "Video",
+            emulationCfgHeader: "Emulation",
+            filterCfgHeader: "Filter",
+            residFpFilterCfgHeader: "RESIDFP",
+            residFilterCfgHeader: "RESID",
+            residFpFilter6581CfgHeader: "MOS6581",
+            residFpFilter8580CfgHeader: "MOS8580",
+            residFilter6581CfgHeader: "MOS6581",
+            residFilter8580CfgHeader: "MOS8580",
+            reSIDfpFilter6581Header: "SID",
+            reSIDfpStereoFilter6581Header: "Stereo SID",
+            reSIDfpThirdSIDFilter6581Header: "3rd SID",
+            reSIDfpFilter8580Header: "SID",
+            reSIDfpStereoFilter8580Header: "Stereo SID",
+            reSIDfpThirdSIDFilter8580Header: "3rd SID",
+            reSIDFilter6581Header: "SID",
+            reSIDStereoFilter6581Header: "Stereo SID",
+            reSIDThirdSIDFilter6581Header: "3rd SID",
+            reSIDFilter8580Header: "SID",
+            reSIDStereoFilter8580Header: "Stereo SID",
+            reSIDThirdSIDFilter8580Header: "3rd SID",
+            reSIDfpFilter6581: "Filter name of SID 6581 (RESIDFP)",
+            reSIDfpFilter8580: "Filter name of SID 8580 (RESIDFP)",
+            reSIDfpStereoFilter6581: "Filter name of Stereo SID 6581 (RESIDFP)",
+            reSIDfpStereoFilter8580: "Filter name of Stereo SID 8580 (RESIDFP)",
+            reSIDfpThirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESIDFP)",
+            reSIDfpThirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESIDFP)",
+            filter6581: "Filter name of SID 6581 (RESID)",
+            filter8580: "Filter name of SID 8580 (RESID)",
+            stereoFilter6581: "Filter name of Stereo SID 6581 (RESID)",
+            stereoFilter8580: "Filter name of Stereo SID 8580 (RESID)",
+            thirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESID)",
+            thirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESID)",
+            confirmationTitle: "Confirmation Dialogue",
+            setDefault: "Restore Defaults",
+            setDefaultReally: "Do you really want to restore defaults?",
+          },
+          de: {
+            FileMenu: "Datei",
+            palEmulation: "PAL Emulation",
+            defaultClockSpeed: "Default Clock Speed",
+            defaultEmulation: "Default Emulation",
+            defaultSidModel: "Default SID Model",
+            jiffyDosInstalled: "JiffyDOS",
+            sampling: "Sampling Methode",
+            reverbBypass: "Schroeder Reverb überbrücken",
+            sidWrites: "SID writes in Konsole schreiben",
+            bufferSize: "Emulationspuffer Größe",
+            audioBufferSize: "Audio Puffer Größe",
+            startSong: "Start Song",
+            nthFrame: "Zeige jedes Nte Bild",
+            file: "Datei",
+            play: "Lade SID/PRG/P00/T64",
+            player: "Player",
+            pauseContinue: "Pause/Continue",
+            reset: "Reset C64",
+            stop: "Stop",
+            devices: "Geräte",
+            floppy: "Floppy",
+            insertDisk: "Diskette einlegen",
+            ejectDisk: "Diskette auswerfen",
+            tape: "Datasette",
+            insertTape: "Kasette einlegen",
+            pressPlayOnTape: "Drücke Play",
+            ejectTape: "Kasette auswerfen",
+            cart: "Modul",
+            insertCart: "Modul einlegen",
+            ejectCart: "Modul auswerfen",
+            loadDisk: "Load *,8,1",
+            loadTape: "Load",
+            space: "Leertaste",
+            exampleMusic: "Musik",
+            exampleOneFiler: "Programme",
+            exampleDemos: "Demos",
+            fps: "FPS",
+            ABOUT: "Über",
+            VIDEO: "Bildschirm",
+            CFG: "Konfiguration",
+            audioCfgHeader: "Audio",
+            videoCfgHeader: "Video",
+            emulationCfgHeader: "Emulation",
+            filterCfgHeader: "Filter",
+            residFpFilterCfgHeader: "RESIDFP",
+            residFilterCfgHeader: "RESID",
+            residFpFilter6581CfgHeader: "MOS6581",
+            residFpFilter8580CfgHeader: "MOS8580",
+            residFilter6581CfgHeader: "MOS6581",
+            residFilter8580CfgHeader: "MOS8580",
+            reSIDfpFilter6581Header: "SID",
+            reSIDfpStereoFilter6581Header: "Stereo SID",
+            reSIDfpThirdSIDFilter6581Header: "3. SID",
+            reSIDfpFilter8580Header: "SID",
+            reSIDfpStereoFilter8580Header: "Stereo SID",
+            reSIDfpThirdSIDFilter8580Header: "3. SID",
+            reSIDFilter6581Header: "SID",
+            reSIDStereoFilter6581Header: "Stereo SID",
+            reSIDThirdSIDFilter6581Header: "3. SID",
+            reSIDFilter8580Header: "SID",
+            reSIDStereoFilter8580Header: "Stereo SID",
+            reSIDThirdSIDFilter8580Header: "3. SID",
+            reSIDfpFilter6581: "Filter name des SID 6581 (RESIDFP)",
+            reSIDfpFilter8580: "Filter name des SID 8580 (RESIDFP)",
+            reSIDfpStereoFilter6581: "Filter name des Stereo SID 6581 (RESIDFP)",
+            reSIDfpStereoFilter8580: "Filter name des Stereo SID 8580 (RESIDFP)",
+            reSIDfpThirdSIDFilter6581: "Filter name des 3. SID 6581 (RESIDFP)",
+            reSIDfpThirdSIDFilter8580: "Filter name des 3. SID 8580 (RESIDFP)",
+            filter6581: "Filter name des SID 6581 (RESID)",
+            filter8580: "Filter name des SID 8580 (RESID)",
+            stereoFilter6581: "Filter name des Stereo SID 6581 (RESID)",
+            stereoFilter8580: "Filter name des Stereo SID 8580 (RESID)",
+            thirdSIDFilter6581: "Filter name des 3. SID 6581 (RESID)",
+            thirdSIDFilter8580: "Filter name des 3. SID 8580 (RESID)",
+            confirmationTitle: "Sicherheitsabfrage",
+            setDefault: "Standardeinstellungen wiederherstellen",
+            setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
+          },
+        },
+      });
+
+      let app = Vue.createApp({
+        data: function () {
+          return {
+            langs: ["de", "en"],
+            msg: "",
+            playing: false,
+            paused: false,
+            screen: true,
+            palEmulation: true,
+            defaultClockSpeed: 50,
+            startSong: 0,
+            nthFrame: 2,
+            nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
+            defaultEmulation: "RESIDFP",
+            defaultSidModel: true,
+            jiffyDosInstalled: false,
+            sampling: false,
+            reverbBypass: true,
+            sidWrites: false,
+            bufferSize: 3 * 48000,
+            audioBufferSize: 48000,
+            framesCounter: 0,
+            actualFrames: 0,
+            showFloppy: false,
+            showDemo1: false,
+            showDemo2: false,
+            showDemo3: false,
+            showDemo4: false,
+            showDemo5: false,
+            showDemo6: false,
+            showDemo7: false,
+            showDemo8: false,
+            showDemo9: false,
+            showDemo10: false,
+            showTape: false,
+            showCart: false,
+            wakeLockEnable: false,
+            keyboardEnable: false,
+            filter6581: 'FilterAverage6581',
+            filter8580: 'FilterAverage8580',
+            stereoFilter6581: 'FilterAverage6581',
+            stereoFilter8580: 'FilterAverage8580',
+            thirdSIDFilter6581: 'FilterAverage6581',
+            thirdSIDFilter8580: 'FilterAverage8580',
+            reSIDfpFilter6581: 'FilterAlankila6581R4AR_3789',
+            reSIDfpFilter8580: 'FilterTrurl8580R5_3691',
+            reSIDfpStereoFilter6581: 'FilterAlankila6581R4AR_3789',
+            reSIDfpStereoFilter8580: 'FilterTrurl8580R5_3691',
+            reSIDfpThirdSIDFilter6581: 'FilterAlankila6581R4AR_3789',
+            reSIDfpThirdSIDFilter8580: 'FilterTrurl8580R5_3691',
+            reSIDFilters6581: ['FilterLightest6581','FilterLighter6581','FilterLight6581','FilterAverage6581','FilterDark6581','FilterDarker6581','FilterDarkest6581'],
+            reSIDFilters8580: ['FilterLight8580','FilterAverage8580','FilterDark8580'],
+            reSIDfpFilters6581: ['FilterReSID6581','FilterAlankila6581R4AR_3789','FilterAlankila6581R3_3984_1','FilterAlankila6581R3_3984_2','FilterLordNightmare6581R3_4285','FilterLordNightmare6581R3_4485','FilterLordNightmare6581R4_1986S','FilterZrX6581R3_0384','FilterZrX6581R3_1984','FilterZrx6581R3_3684','FilterZrx6581R3_3985','FilterZrx6581R4AR_2286','FilterTrurl6581R3_0784','FilterTrurl6581R3_0486S','FilterTrurl6581R3_3384','FilterTrurl6581R3_4885','FilterTrurl6581R4AR_3789','FilterTrurl6581R4AR_4486','FilterNata6581R3_2083','FilterGrue6581R4AR_3488',
+            'FilterKruLLo','FilterEnigma6581R3_4885','FilterEnigma6581R3_1585'],
+            reSIDfpFilters8580: ['FilterTrurl8580R5_1489','FilterTrurl8580R5_3691'],
+            tabIndex: 1,
+          };
+        },
+        computed: {},
+        methods: {
+          updateLanguage() {
+            localStorage.locale = this.$i18n.locale;
+          },
+          reset(command) {
+            app.screen = true;
+            app.stopTune();
+            if (app.$refs.formCartFileSm.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function () {
+                wasmWorker(
+                  undefined,
+                  undefined,
+                  new Uint8Array(this.result),
+                  app.$refs.formCartFileSm.files[0].name,
+                  command
+                );
+              };
+              reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
+            } else {
+              wasmWorker(undefined, undefined, undefined, undefined, command);
+            }
+          },
+          startTune(screen) {
+            app.screen = screen ? screen : false;
+            app.stopTune();
+            if (app.$refs.formFileSm.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function () {
+                wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
+              };
+              reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
+            }
+          },
+          downloadAndStartTune(name, url, screen) {
+            let headers = new Headers();
+            headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
+            fetch(url, { method: "GET", headers: headers })
+              .then((response) => response.blob())
+              .then((blob) => {
+                let file = new File([blob], name, {
+                  type: "application/octet-stream",
+                });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                app.$refs.formFileSm.files = dataTransfer.files;
+                app.startTune(screen);
               });
+          },
+          pauseTune() {
+            if (app.playing) {
+              if (app.paused) {
+                audioContext.resume();
+                worker.postMessage({ eventType: "CLOCK" });
+              } else {
+                audioContext.suspend();
+              }
+              app.paused = !app.paused;
+            } else if (app.$refs.formFileSm.files[0]) {
+              app.startTune();
+            } else {
+              app.reset();
+            }
+          },
+          stopTune() {
+            if (worker) {
+              worker.terminate();
+              worker = undefined;
+            }
+            if (audioContext) {
+              audioContext.close();
+              audioContext = undefined;
+            }
+            imageQueue.clear();
+            app.playing = false;
+            app.paused = false;
+          },
+          clearScreen: function () {
+            data.set(new Uint8Array((maxWidth * maxHeight) << 2));
+            canvasContext.putImageData(imageData, 0, 0);
+          },
+          animate: function () {
+            var msPerFrame = 1000 * app.nthFrame / app.defaultClockSpeed;
+            if (app.playing) {
+                window.requestAnimationFrame(app.animate)
+            }
+            const msNow = window.performance.now()
+            const msPassed = msNow - msPrev
 
+            if (msPassed < msPerFrame) return
+
+            const excessTime = msPassed % msPerFrame
+            msPrev = msNow - excessTime
+
+            if (!app.paused) {
+              var elem = imageQueue.dequeue();
+              if (elem) {
+                data.set(elem.image);
+                canvasContext.putImageData(imageData, 0, 0);
+                actualFrames++;
+              }
+            }
+            frames++
+            if (frames * app.nthFrame >= app.defaultClockSpeed) {
+              app.framesCounter = actualFrames;
+              frames = 0;
+              actualFrames = 0;
+            }
+          },
+          insertDisk() {
+            var reader = new FileReader();
+            reader.onload = function () {
               if (worker) {
-                worker.terminate();
-                worker = undefined;
-              }
-              worker = new Worker("${teaVMFormat}/jsidplay2-${teaVMFormat}-worker.js", ${teaVMWorkerAttrs});
-
-              return new Promise((resolve, reject) => {
                 worker.postMessage({
-                  eventType: "INITIALISE",
+                  eventType: "INSERT_DISK",
                   eventData: {
-                    palEmulation: app.palEmulation,
-                    bufferSize: app.bufferSize,
-                    audioBufferSize: app.audioBufferSize,
-                    samplingRate: audioContext.sampleRate,
-                    samplingMethodResample: "" + app.sampling === "true",
-                    reverbBypass: app.reverbBypass,
-                    defaultClockSpeed: app.defaultClockSpeed,
-                    defaultSidModel: "" + app.defaultSidModel === "true",
-                    jiffyDosInstalled: "" + app.jiffyDosInstalled === "true",
-                    defaultEmulation: app.defaultEmulation === "RESID",
-                    filter6581: app.filter6581,
-                    filter8580: app.filter8580,
-                    stereoFilter6581: app.stereoFilter6581,
-                    stereoFilter8580: app.stereoFilter8580,
-                    thirdSIDFilter6581: app.thirdSIDFilter6581,
-                    thirdSIDFilter8580: app.thirdSIDFilter8580,
-                    reSIDfpFilter6581: app.reSIDfpFilter6581,
-                    reSIDfpFilter8580: app.reSIDfpFilter8580,
-                    reSIDfpStereoFilter6581: app.reSIDfpStereoFilter6581,
-                    reSIDfpStereoFilter8580: app.reSIDfpStereoFilter8580,
-                    reSIDfpThirdSIDFilter6581: app.reSIDfpThirdSIDFilter6581,
-                    reSIDfpThirdSIDFilter8580: app.reSIDfpThirdSIDFilter8580,
-
+                    contents: new Uint8Array(this.result),
+                    diskName: app.$refs.formDiskFileSm.files[0].name,
                   },
                 });
-
-                worker.addEventListener("message", function (event) {
-                  var { eventType, eventData } = event.data;
-
-                  if (eventType === "SAMPLES") {
-                    var buffer = audioContext.createBuffer(2, eventData.length, audioContext.sampleRate);
-                    buffer.getChannelData(0).set(eventData.left);
-                    buffer.getChannelData(1).set(eventData.right);
-
-                    var sourceNode = audioContext.createBufferSource();
-                    sourceNode.buffer = buffer;
-                    sourceNode.connect(audioContext.destination);
-
-                    if (nextTime == 0) {
-                      fix = app.screen ? 0.005 : 0;
-                      nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
-                    } else if (nextTime < audioContext.currentTime) {
-                      nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
-                    }
-                    sourceNode.start(nextTime);
-                    nextTime += eventData.length / audioContext.sampleRate + fix;
-                  } else if (eventType === "FRAME") {
-                    imageQueue.enqueue({
-                      image: eventData.image,
-                    });
-                  } else if (eventType === "SID_WRITE") {
-                    console.log("relTime=" + eventData.relTime + ", addr=" + eventData.addr + ", value=" + eventData.value);
-                  } else if (eventType === "OPENED" || eventType === "CLOCKED") {
-                    if (eventType === "OPENED") {
-                      if (app.screen) {
-                        app.insertDisk();
-                      }
-                      if (app.screen) {
-                        app.insertTape();
-                      }
-                    }
-                    if (!app.paused && size * app.nthFrame < 10) {
-                      worker.postMessage({ eventType: "CLOCK" });
-                    } else {
-                      worker.postMessage({ eventType: "IDLE" });
-                    }
-                  } else if (eventType === "INITIALISED") {
-                    worker.postMessage({
-                      eventType: "OPEN",
-                      eventData: {
-                        contents: contents,
-                        tuneName: tuneName,
-                        startSong: app.startSong,
-                        nthFrame: app.screen ? app.nthFrame : 0,
-                        sidWrites: app.sidWrites,
-                        cartContents: cartContents,
-                        cartName: cartName,
-                        command: command,
-                      },
-                    });
-
-                    nextTime = 0;
-                    imageQueue.clear();
-                    app.playing = true;
-                    app.paused = false;
-                    app.clearScreen();
-                    if (app.screen) {
-                      msPrev = window.performance.now()
-            		  frames = 0;
-            		  actualFrames = 0;
-                      app.animate();
-                    }
-                  }
+              }
+            };
+            if (app.$refs.formDiskFileSm && app.$refs.formDiskFileSm.files[0]) {
+              reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
+            }
+          },
+          downloadAndStartProgram(name, url) {
+            app.ejectTape();
+            app.ejectDisk();
+            app.downloadAndStartTune(name, url, true);
+          },
+          downloadAndInsertDisk(name, url) {
+            let headers = new Headers();
+            headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
+            fetch(url, { method: "GET", headers: headers })
+              .then((response) => response.blob())
+              .then((blob) => {
+                let file = new File([blob], name, {
+                  type: "application/octet-stream",
                 });
-
-                worker.addEventListener("error", function (error) {
-                  reject(error);
-                });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                app.$refs.formDiskFileSm.files = dataTransfer.files;
+                if (app.playing && app.screen) {
+                  app.insertDisk();
+                } else {
+                  app.reset('LOAD"*",8,1\rRUN\r');
+                }
+              });
+          },
+          ejectDisk() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "EJECT_DISK",
               });
             }
-
-            const { createApp, ref } = Vue;
-
-            const { createI18n } = VueI18n;
-
-            let i18n = createI18n({
-              legacy: false,
-              locale: "en",
-              messages: {
-                en: {
-                  FileMenu: "File",
-                  palEmulation: "PAL emulation",
-                  defaultClockSpeed: "Default clock speed",
-                  defaultEmulation: "Default Emulation",
-                  defaultSidModel: "Default SID model",
-                  jiffyDosInstalled: "JiffyDOS",
-                  sampling: "Sampling Method",
-                  reverbBypass: "Bypass Schroeder reverb",
-                  sidWrites: "Print SID writes to console",
-                  bufferSize: "Emulation buffer size",
-                  audioBufferSize: "Audio buffer size",
-                  startSong: "Start song",
-                  nthFrame: "Show every nth frame",
-                  file: "File",
-                  play: "Load SID/PRG/P00/T64",
-                  player: "Player",
-                  pauseContinue: "Pause/Continue",
-                  reset: "Reset C64",
-                  stop: "Stop",
-                  devices: "Devices",
-                  floppy: "Floppy",
-                  insertDisk: "Insert Disk",
-                  ejectDisk: "Eject Disk",
-                  tape: "Tape",
-                  insertTape: "Insert Tape",
-                  pressPlayOnTape: "Press Play on Tape",
-                  ejectTape: "Eject Tape",
-                  cart: "Cart",
-                  insertCart: "Insert Cartridge",
-                  ejectCart: "Eject Cartridge",
-                  loadDisk: "Load *,8,1",
-                  loadTape: "Load",
-                  space: "Space Key",
-                  exampleMusic: "Music",
-                  exampleOneFiler: "OneFiler",
-                  exampleDemos: "Demos",
-                  fps: "FPS",
-                  ABOUT: "About",
-                  VIDEO: "Screen",
-                  CFG: "Configuration",
-                  audioCfgHeader: "Audio",
-                  videoCfgHeader: "Video",
-                  emulationCfgHeader: "Emulation",
-                  filterCfgHeader: "Filter",
-                  residFpFilterCfgHeader: "RESIDFP",
-                  residFilterCfgHeader: "RESID",
-                  residFpFilter6581CfgHeader: "MOS6581",
-                  residFpFilter8580CfgHeader: "MOS8580",
-                  residFilter6581CfgHeader: "MOS6581",
-                  residFilter8580CfgHeader: "MOS8580",
-                  reSIDfpFilter6581Header: "SID",
-                  reSIDfpStereoFilter6581Header: "Stereo SID",
-                  reSIDfpThirdSIDFilter6581Header: "3rd SID",
-                  reSIDfpFilter8580Header: "SID",
-                  reSIDfpStereoFilter8580Header: "Stereo SID",
-                  reSIDfpThirdSIDFilter8580Header: "3rd SID",
-                  reSIDFilter6581Header: "SID",
-                  reSIDStereoFilter6581Header: "Stereo SID",
-                  reSIDThirdSIDFilter6581Header: "3rd SID",
-                  reSIDFilter8580Header: "SID",
-                  reSIDStereoFilter8580Header: "Stereo SID",
-                  reSIDThirdSIDFilter8580Header: "3rd SID",
-                  reSIDfpFilter6581: "Filter name of SID 6581 (RESIDFP)",
-                  reSIDfpFilter8580: "Filter name of SID 8580 (RESIDFP)",
-                  reSIDfpStereoFilter6581: "Filter name of Stereo SID 6581 (RESIDFP)",
-                  reSIDfpStereoFilter8580: "Filter name of Stereo SID 8580 (RESIDFP)",
-                  reSIDfpThirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESIDFP)",
-                  reSIDfpThirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESIDFP)",
-                  filter6581: "Filter name of SID 6581 (RESID)",
-                  filter8580: "Filter name of SID 8580 (RESID)",
-                  stereoFilter6581: "Filter name of Stereo SID 6581 (RESID)",
-                  stereoFilter8580: "Filter name of Stereo SID 8580 (RESID)",
-                  thirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESID)",
-                  thirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESID)",
-                  confirmationTitle: "Confirmation Dialogue",
-                  setDefault: "Restore Defaults",
-                  setDefaultReally: "Do you really want to restore defaults?",
-                },
-                de: {
-                  FileMenu: "Datei",
-                  palEmulation: "PAL Emulation",
-                  defaultClockSpeed: "Default Clock Speed",
-                  defaultEmulation: "Default Emulation",
-                  defaultSidModel: "Default SID Model",
-                  jiffyDosInstalled: "JiffyDOS",
-                  sampling: "Sampling Methode",
-                  reverbBypass: "Schroeder Reverb überbrücken",
-                  sidWrites: "SID writes in Konsole schreiben",
-                  bufferSize: "Emulationspuffer Größe",
-                  audioBufferSize: "Audio Puffer Größe",
-                  startSong: "Start Song",
-                  nthFrame: "Zeige jedes Nte Bild",
-                  file: "Datei",
-                  play: "Lade SID/PRG/P00/T64",
-                  player: "Player",
-                  pauseContinue: "Pause/Continue",
-                  reset: "Reset C64",
-                  stop: "Stop",
-                  devices: "Geräte",
-                  floppy: "Floppy",
-                  insertDisk: "Diskette einlegen",
-                  ejectDisk: "Diskette auswerfen",
-                  tape: "Datasette",
-                  insertTape: "Kasette einlegen",
-                  pressPlayOnTape: "Drücke Play",
-                  ejectTape: "Kasette auswerfen",
-                  cart: "Modul",
-                  insertCart: "Modul einlegen",
-                  ejectCart: "Modul auswerfen",
-                  loadDisk: "Load *,8,1",
-                  loadTape: "Load",
-                  space: "Leertaste",
-                  exampleMusic: "Musik",
-                  exampleOneFiler: "Programme",
-                  exampleDemos: "Demos",
-                  fps: "FPS",
-                  ABOUT: "Über",
-                  VIDEO: "Bildschirm",
-                  CFG: "Konfiguration",
-                  audioCfgHeader: "Audio",
-                  videoCfgHeader: "Video",
-                  emulationCfgHeader: "Emulation",
-                  filterCfgHeader: "Filter",
-                  residFpFilterCfgHeader: "RESIDFP",
-                  residFilterCfgHeader: "RESID",
-                  residFpFilter6581CfgHeader: "MOS6581",
-                  residFpFilter8580CfgHeader: "MOS8580",
-                  residFilter6581CfgHeader: "MOS6581",
-                  residFilter8580CfgHeader: "MOS8580",
-                  reSIDfpFilter6581Header: "SID",
-                  reSIDfpStereoFilter6581Header: "Stereo SID",
-                  reSIDfpThirdSIDFilter6581Header: "3. SID",
-                  reSIDfpFilter8580Header: "SID",
-                  reSIDfpStereoFilter8580Header: "Stereo SID",
-                  reSIDfpThirdSIDFilter8580Header: "3. SID",
-                  reSIDFilter6581Header: "SID",
-                  reSIDStereoFilter6581Header: "Stereo SID",
-                  reSIDThirdSIDFilter6581Header: "3. SID",
-                  reSIDFilter8580Header: "SID",
-                  reSIDStereoFilter8580Header: "Stereo SID",
-                  reSIDThirdSIDFilter8580Header: "3. SID",
-                  reSIDfpFilter6581: "Filter name des SID 6581 (RESIDFP)",
-                  reSIDfpFilter8580: "Filter name des SID 8580 (RESIDFP)",
-                  reSIDfpStereoFilter6581: "Filter name des Stereo SID 6581 (RESIDFP)",
-                  reSIDfpStereoFilter8580: "Filter name des Stereo SID 8580 (RESIDFP)",
-                  reSIDfpThirdSIDFilter6581: "Filter name des 3. SID 6581 (RESIDFP)",
-                  reSIDfpThirdSIDFilter8580: "Filter name des 3. SID 8580 (RESIDFP)",
-                  filter6581: "Filter name des SID 6581 (RESID)",
-                  filter8580: "Filter name des SID 8580 (RESID)",
-                  stereoFilter6581: "Filter name des Stereo SID 6581 (RESID)",
-                  stereoFilter8580: "Filter name des Stereo SID 8580 (RESID)",
-                  thirdSIDFilter6581: "Filter name des 3. SID 6581 (RESID)",
-                  thirdSIDFilter8580: "Filter name des 3. SID 8580 (RESID)",
-                  confirmationTitle: "Sicherheitsabfrage",
-                  setDefault: "Standardeinstellungen wiederherstellen",
-                  setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
-                },
-              },
-            });
-
-            let app = Vue.createApp({
-              data: function () {
-                return {
-                  langs: ["de", "en"],
-                  msg: "",
-                  playing: false,
-                  paused: false,
-                  screen: true,
-                  palEmulation: true,
-                  defaultClockSpeed: 50,
-                  startSong: 0,
-                  nthFrame: 2,
-                  nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
-                  defaultEmulation: "RESIDFP",
-                  defaultSidModel: true,
-                  jiffyDosInstalled: false,
-                  sampling: false,
-                  reverbBypass: true,
-                  sidWrites: false,
-                  bufferSize: 3 * 48000,
-                  audioBufferSize: 48000,
-                  framesCounter: 0,
-                  actualFrames: 0,
-                  showFloppy: false,
-                  showDemo1: false,
-                  showDemo2: false,
-                  showDemo3: false,
-                  showDemo4: false,
-                  showDemo5: false,
-                  showDemo6: false,
-                  showDemo7: false,
-                  showDemo8: false,
-                  showDemo9: false,
-                  showDemo10: false,
-                  showTape: false,
-                  showCart: false,
-                  wakeLockEnable: false,
-                  keyboardEnable: false,
-                  filter6581: 'FilterAverage6581',
-                  filter8580: 'FilterAverage8580',
-                  stereoFilter6581: 'FilterAverage6581',
-                  stereoFilter8580: 'FilterAverage8580',
-                  thirdSIDFilter6581: 'FilterAverage6581',
-                  thirdSIDFilter8580: 'FilterAverage8580',
-                  reSIDfpFilter6581: 'FilterAlankila6581R4AR_3789',
-                  reSIDfpFilter8580: 'FilterTrurl8580R5_3691',
-                  reSIDfpStereoFilter6581: 'FilterAlankila6581R4AR_3789',
-                  reSIDfpStereoFilter8580: 'FilterTrurl8580R5_3691',
-                  reSIDfpThirdSIDFilter6581: 'FilterAlankila6581R4AR_3789',
-                  reSIDfpThirdSIDFilter8580: 'FilterTrurl8580R5_3691',
-                  reSIDFilters6581: ['FilterLightest6581','FilterLighter6581','FilterLight6581','FilterAverage6581','FilterDark6581','FilterDarker6581','FilterDarkest6581'],
-                  reSIDFilters8580: ['FilterLight8580','FilterAverage8580','FilterDark8580'],
-                  reSIDfpFilters6581: ['FilterReSID6581','FilterAlankila6581R4AR_3789','FilterAlankila6581R3_3984_1','FilterAlankila6581R3_3984_2','FilterLordNightmare6581R3_4285','FilterLordNightmare6581R3_4485','FilterLordNightmare6581R4_1986S','FilterZrX6581R3_0384','FilterZrX6581R3_1984','FilterZrx6581R3_3684','FilterZrx6581R3_3985','FilterZrx6581R4AR_2286','FilterTrurl6581R3_0784','FilterTrurl6581R3_0486S','FilterTrurl6581R3_3384','FilterTrurl6581R3_4885','FilterTrurl6581R4AR_3789','FilterTrurl6581R4AR_4486','FilterNata6581R3_2083','FilterGrue6581R4AR_3488',
-                  'FilterKruLLo','FilterEnigma6581R3_4885','FilterEnigma6581R3_1585'],
-                  reSIDfpFilters8580: ['FilterTrurl8580R5_1489','FilterTrurl8580R5_3691'],
-                  tabIndex: 1,
-                };
-              },
-              computed: {},
-              methods: {
-                updateLanguage() {
-                  localStorage.locale = this.$i18n.locale;
-                },
-                reset(command) {
-                  app.screen = true;
-                  app.stopTune();
-                  if (app.$refs.formCartFileSm.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function () {
-                      wasmWorker(
-                        undefined,
-                        undefined,
-                        new Uint8Array(this.result),
-                        app.$refs.formCartFileSm.files[0].name,
-                        command
-                      );
-                    };
-                    reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
-                  } else {
-                    wasmWorker(undefined, undefined, undefined, undefined, command);
-                  }
-                },
-                startTune(screen) {
-                  app.screen = screen ? screen : false;
-                  app.stopTune();
-                  if (app.$refs.formFileSm.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function () {
-                      wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
-                    };
-                    reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
-                  }
-                },
-                downloadAndStartTune(name, url, screen) {
-                  let headers = new Headers();
-                  headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
-                  fetch(url, { method: "GET", headers: headers })
-                    .then((response) => response.blob())
-                    .then((blob) => {
-                      let file = new File([blob], name, {
-                        type: "application/octet-stream",
-                      });
-                      const dataTransfer = new DataTransfer();
-                      dataTransfer.items.add(file);
-                      app.$refs.formFileSm.files = dataTransfer.files;
-                      app.startTune(screen);
-                    });
-                },
-                pauseTune() {
-                  if (app.playing) {
-                    if (app.paused) {
-                      audioContext.resume();
-                      worker.postMessage({ eventType: "CLOCK" });
-                    } else {
-                      audioContext.suspend();
-                    }
-                    app.paused = !app.paused;
-                  } else if (app.$refs.formFileSm.files[0]) {
-                    app.startTune();
-                  } else {
-                    app.reset();
-                  }
-                },
-                stopTune() {
-                  if (worker) {
-                    worker.terminate();
-                    worker = undefined;
-                  }
-                  if (audioContext) {
-                    audioContext.close();
-                    audioContext = undefined;
-                  }
-                  imageQueue.clear();
-                  app.playing = false;
-                  app.paused = false;
-                },
-                clearScreen: function () {
-                  data.set(new Uint8Array((maxWidth * maxHeight) << 2));
-                  canvasContext.putImageData(imageData, 0, 0);
-                },
-                animate: function () {
-                  var msPerFrame = 1000 * app.nthFrame / app.defaultClockSpeed;
-                  if (app.playing) {
-                      window.requestAnimationFrame(app.animate)
-                  }
-                  const msNow = window.performance.now()
-                  const msPassed = msNow - msPrev
-
-                  if (msPassed < msPerFrame) return
-
-                  const excessTime = msPassed % msPerFrame
-                  msPrev = msNow - excessTime
-
-                  if (!app.paused) {
-                    var elem = imageQueue.dequeue();
-                    if (elem) {
-                      data.set(elem.image);
-                      canvasContext.putImageData(imageData, 0, 0);
-                      actualFrames++;
-                    }
-                  }
-                  frames++
-                  if (frames * app.nthFrame >= app.defaultClockSpeed) {
-                    app.framesCounter = actualFrames;
-                    frames = 0;
-                    actualFrames = 0;
-                  }
-                },
-                insertDisk() {
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    if (worker) {
-                      worker.postMessage({
-                        eventType: "INSERT_DISK",
-                        eventData: {
-                          contents: new Uint8Array(this.result),
-                          diskName: app.$refs.formDiskFileSm.files[0].name,
-                        },
-                      });
-                    }
-                  };
-                  if (app.$refs.formDiskFileSm && app.$refs.formDiskFileSm.files[0]) {
-                    reader.readAsArrayBuffer(app.$refs.formDiskFileSm.files[0]);
-                  }
-                },
-                downloadAndStartProgram(name, url) {
-                  app.ejectTape();
-                  app.ejectDisk();
-                  app.downloadAndStartTune(name, url, true);
-                },
-                downloadAndInsertDisk(name, url) {
-                  let headers = new Headers();
-                  headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
-                  fetch(url, { method: "GET", headers: headers })
-                    .then((response) => response.blob())
-                    .then((blob) => {
-                      let file = new File([blob], name, {
-                        type: "application/octet-stream",
-                      });
-                      const dataTransfer = new DataTransfer();
-                      dataTransfer.items.add(file);
-                      app.$refs.formDiskFileSm.files = dataTransfer.files;
-                      if (app.playing && app.screen) {
-                        app.insertDisk();
-                      } else {
-                        app.reset('LOAD"*",8,1\rRUN\r');
-                      }
-                    });
-                },
-                ejectDisk() {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "EJECT_DISK",
-                    });
-                  }
-                  app.$refs.formDiskFileSm.value = "";
-                },
-                insertTape() {
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    if (worker) {
-                      worker.postMessage({
-                        eventType: "INSERT_TAPE",
-                        eventData: {
-                          contents: new Uint8Array(this.result),
-                          tapeName: app.$refs.formTapeFileSm.files[0].name,
-                        },
-                      });
-                    }
-                  };
-                  if (app.$refs.formTapeFileSm && app.$refs.formTapeFileSm.files[0]) {
-                    reader.readAsArrayBuffer(app.$refs.formTapeFileSm.files[0]);
-                  }
-                },
-                ejectTape() {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "EJECT_TAPE",
-                    });
-                  }
-                  app.$refs.formTapeFileSm.value = "";
-                },
-                pressPlayOnTape() {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "PRESS_PLAY_ON_TAPE",
-                      eventData: {},
-                    });
-                  }
-                },
-                typeInCommand(command) {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "SET_COMMAND",
-                      eventData: {
-                        command: command,
-                      },
-                    });
-                  }
-                },
-                typeKey(key) {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "TYPE_KEY",
-                      eventData: {
-                        key: key,
-                      },
-                    });
-                  }
-                },
-                pressKey(key) {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "PRESS_KEY",
-                      eventData: {
-                        key: key,
-                      },
-                    });
-                  }
-                },
-                releaseKey(key) {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "RELEASE_KEY",
-                      eventData: {
-                        key: key,
-                      },
-                    });
-                  }
-                },
-                joystick(number, value) {
-                  if (worker) {
-                    worker.postMessage({
-                      eventType: "PRESS_JOYSTICK",
-                      eventData: {
-                        number: number,
-                        value: value,
-                      },
-                    });
-                  }
-                },
-                insertCart() {
-                  app.reset();
-                },
-                ejectCart() {
-                  app.$refs.formCartFileSm.value = "";
-                  app.reset();
-                },
-                setDefault: function () {
-                  this.filter6581 = 'FilterAverage6581';
-                  this.filter8580 = 'FilterAverage8580';
-                  this.stereoFilter6581 = 'FilterAverage6581';
-                  this.stereoFilter8580 = 'FilterAverage8580';
-                  this.thirdSIDFilter6581 = 'FilterAverage6581';
-                  this.thirdSIDFilter8580 = 'FilterAverage8580';
-                  this.reSIDfpFilter6581 = 'FilterAlankila6581R4AR_3789';
-                  this.reSIDfpFilter8580 = 'FilterTrurl8580R5_3691';
-                  this.reSIDfpStereoFilter6581 = 'FilterAlankila6581R4AR_3789';
-                  this.reSIDfpStereoFilter8580 = 'FilterTrurl8580R5_3691';
-                  this.reSIDfpThirdSIDFilter6581 = 'FilterAlankila6581R4AR_3789';
-                  this.reSIDfpThirdSIDFilter8580 = 'FilterTrurl8580R5_3691';
-                  this.palEmulation = true;
-                  this.defaultClockSpeed = 50;
-                  this.startSong = 0;
-                  this.nthFrame = 2;
-                  this.defaultEmulation = "RESIDFP";
-                  this.defaultSidModel = true;
-                  this.sampling = false;
-                  this.reverbBypass = true;
-                  this.sidWrites = false;
-                  this.bufferSize = 3 * 48000;
-                  this.audioBufferSize = 48000;
-                }
-              },
-              mounted: function () {
-                if (localStorage.locale) {
-                  this.$i18n.locale = localStorage.locale;
-                }
-                if (localStorage.filter6581) {
-                  this.filter6581 = JSON.parse(localStorage.filter6581);
-                }
-                if (localStorage.filter8580) {
-                  this.filter8580 = JSON.parse(localStorage.filter8580);
-                }
-                if (localStorage.stereoFilter6581) {
-                  this.stereoFilter6581 = JSON.parse(localStorage.stereoFilter6581);
-                }
-                if (localStorage.stereoFilter8580) {
-                  this.stereoFilter8580 = JSON.parse(localStorage.stereoFilter8580);
-                }
-                if (localStorage.thirdSIDFilter6581) {
-                  this.thirdSIDFilter6581 = JSON.parse(localStorage.thirdSIDFilter6581);
-                }
-                if (localStorage.thirdSIDFilter8580) {
-                  this.thirdSIDFilter8580 = JSON.parse(localStorage.thirdSIDFilter8580);
-                }
-                if (localStorage.reSIDfpFilter6581) {
-                  this.reSIDfpFilter6581 = JSON.parse(localStorage.reSIDfpFilter6581);
-                }
-                if (localStorage.reSIDfpFilter8580) {
-                  this.reSIDfpFilter8580 = JSON.parse(localStorage.reSIDfpFilter8580);
-                }
-                if (localStorage.reSIDfpStereoFilter6581) {
-                  this.reSIDfpStereoFilter6581 = JSON.parse(localStorage.reSIDfpStereoFilter6581);
-                }
-                if (localStorage.reSIDfpStereoFilter8580) {
-                  this.reSIDfpStereoFilter8580 = JSON.parse(localStorage.reSIDfpStereoFilter8580);
-                }
-                if (localStorage.reSIDfpThirdSIDFilter6581) {
-                  this.reSIDfpThirdSIDFilter6581 = JSON.parse(localStorage.reSIDfpThirdSIDFilter6581);
-                }
-                if (localStorage.reSIDfpThirdSIDFilter8580) {
-                  this.reSIDfpThirdSIDFilter8580 = JSON.parse(localStorage.reSIDfpThirdSIDFilter8580);
-                }
-                if (localStorage.defaultClockSpeed) {
-                  this.defaultClockSpeed = JSON.parse(localStorage.defaultClockSpeed);
-                }
-                if (localStorage.defaultEmulation) {
-                  this.defaultEmulation = JSON.parse(localStorage.defaultEmulation);
-                }
-                if (localStorage.defaultSidModel) {
-                  this.defaultSidModel = JSON.parse(localStorage.defaultSidModel);
-                }
-                if (localStorage.sampling) {
-                  this.sampling = JSON.parse(localStorage.sampling);
-                }
-                if (localStorage.bufferSize) {
-                  this.bufferSize = JSON.parse(localStorage.bufferSize);
-                }
-                if (localStorage.audioBufferSize) {
-                  this.audioBufferSize = JSON.parse(localStorage.audioBufferSize);
-                }
-                if (localStorage.palEmulation) {
-                  this.palEmulation = JSON.parse(localStorage.palEmulation);
-                }
-                if (localStorage.nthFrame) {
-                  this.nthFrame = JSON.parse(localStorage.nthFrame);
-                }
-                if (localStorage.startSong) {
-                  this.startSong = JSON.parse(localStorage.startSong);
-                }
-                if (localStorage.reverbBypass) {
-                  this.reverbBypass = JSON.parse(localStorage.reverbBypass);
-                }
-                if (localStorage.sidWrites) {
-                  this.sidWrites = JSON.parse(localStorage.sidWrites);
-                }
-                var canvas = document.getElementById("c64Screen");
-                canvasContext = canvas.getContext("2d");
-                imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
-                data = imageData.data;
-                Vue.nextTick(() => app.reset());
-              },
-              watch: {
-                filter6581(newValue, oldValue) {
-                  localStorage.filter6581 = JSON.stringify(newValue);
-                },
-                filter8580(newValue, oldValue) {
-                  localStorage.filter8580 = JSON.stringify(newValue);
-                },
-                stereoFilter6581(newValue, oldValue) {
-                  localStorage.stereoFilter6581 = JSON.stringify(newValue);
-                },
-                stereoFilter8580(newValue, oldValue) {
-                  localStorage.stereoFilter8580 = JSON.stringify(newValue);
-                },
-                thirdSIDFilter6581(newValue, oldValue) {
-                  localStorage.thirdSIDFilter6581 = JSON.stringify(newValue);
-                },
-                thirdSIDFilter8580(newValue, oldValue) {
-                  localStorage.thirdSIDFilter8580 = JSON.stringify(newValue);
-                },
-                reSIDfpFilter6581(newValue, oldValue) {
-                  localStorage.reSIDfpFilter6581 = JSON.stringify(newValue);
-                },
-                reSIDfpFilter8580(newValue, oldValue) {
-                  localStorage.reSIDfpFilter8580 = JSON.stringify(newValue);
-                },
-                reSIDfpStereoFilter6581(newValue, oldValue) {
-                  localStorage.reSIDfpStereoFilter6581 = JSON.stringify(newValue);
-                },
-                reSIDfpStereoFilter8580(newValue, oldValue) {
-                  localStorage.reSIDfpStereoFilter8580 = JSON.stringify(newValue);
-                },
-                reSIDfpThirdSIDFilter6581(newValue, oldValue) {
-                  localStorage.reSIDfpThirdSIDFilter6581 = JSON.stringify(newValue);
-                },
-                reSIDfpThirdSIDFilter8580(newValue, oldValue) {
-                  localStorage.reSIDfpThirdSIDFilter8580 = JSON.stringify(newValue);
-                },
-                defaultClockSpeed(newValue, oldValue) {
-                  localStorage.defaultClockSpeed = JSON.stringify(newValue);
-                },
-                defaultEmulation(newValue, oldValue) {
-                  localStorage.defaultEmulation = JSON.stringify(newValue);
-                },
-                defaultSidModel(newValue, oldValue) {
-                  localStorage.defaultSidModel = JSON.stringify(newValue);
-                },
-                sampling(newValue, oldValue) {
-                  localStorage.sampling = JSON.stringify(newValue);
-                },
-                bufferSize(newValue, oldValue) {
-                  localStorage.bufferSize = JSON.stringify(newValue);
-                },
-                audioBufferSize(newValue, oldValue) {
-                  localStorage.audioBufferSize = JSON.stringify(newValue);
-                },
-                palEmulation(newValue, oldValue) {
-                  localStorage.palEmulation = JSON.stringify(newValue);
-                },
-                nthFrame(newValue, oldValue) {
-                  localStorage.nthFrame = JSON.stringify(newValue);
-                },
-                startSong(newValue, oldValue) {
-                  localStorage.startSong = JSON.stringify(newValue);
-                },
-                reverbBypass(newValue, oldValue) {
-                  localStorage.reverbBypass = JSON.stringify(newValue);
-                },
-                sidWrites(newValue, oldValue) {
-                  localStorage.sidWrites = JSON.stringify(newValue);
-                },
-              },
-            })
-              .use(i18n)
-              .mount("#app");
-
-            var noSleep = new NoSleep();
-
-            var toggleEl = document.querySelector("#toggle");
-            toggleEl.addEventListener(
-              "click",
-              function () {
-                if (!app.wakeLockEnable) {
-                  app.wakeLockEnable = true;
-                  noSleep.enable(); // keep the screen on!
-                  toggleEl.value = "Wake Lock On";
-                  document.body.style.backgroundColor = "lightblue";
-                } else {
-                  app.wakeLockEnable = false;
-                  noSleep.disable(); // let the screen turn off.
-                  toggleEl.value = "Wake Lock Off";
-                  document.body.style.backgroundColor = "";
-                }
-              },
-              false
-            );
-            var keyDownListener = (event) => {
-              let key = toC64KeyTableEntry(event.code);
-              if (key) {
-                app.pressKey(key);
-                event.preventDefault();
+            app.$refs.formDiskFileSm.value = "";
+          },
+          insertTape() {
+            var reader = new FileReader();
+            reader.onload = function () {
+              if (worker) {
+                worker.postMessage({
+                  eventType: "INSERT_TAPE",
+                  eventData: {
+                    contents: new Uint8Array(this.result),
+                    tapeName: app.$refs.formTapeFileSm.files[0].name,
+                  },
+                });
               }
             };
-            var keyUpListener = (event) => {
-              let key = toC64KeyTableEntry(event.code);
-              if (key) {
-                app.releaseKey(key);
-                event.preventDefault();
-              }
-            };
-            document.addEventListener("keydown", keyDownListener, false);
-            document.addEventListener("keyup", keyUpListener, false);
+            if (app.$refs.formTapeFileSm && app.$refs.formTapeFileSm.files[0]) {
+              reader.readAsArrayBuffer(app.$refs.formTapeFileSm.files[0]);
+            }
+          },
+          ejectTape() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "EJECT_TAPE",
+              });
+            }
+            app.$refs.formTapeFileSm.value = "";
+          },
+          pressPlayOnTape() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "PRESS_PLAY_ON_TAPE",
+                eventData: {},
+              });
+            }
+          },
+          typeInCommand(command) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "SET_COMMAND",
+                eventData: {
+                  command: command,
+                },
+              });
+            }
+          },
+          typeKey(key) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "TYPE_KEY",
+                eventData: {
+                  key: key,
+                },
+              });
+            }
+          },
+          pressKey(key) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "PRESS_KEY",
+                eventData: {
+                  key: key,
+                },
+              });
+            }
+          },
+          releaseKey(key) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "RELEASE_KEY",
+                eventData: {
+                  key: key,
+                },
+              });
+            }
+          },
+          joystick(number, value) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "PRESS_JOYSTICK",
+                eventData: {
+                  number: number,
+                  value: value,
+                },
+              });
+            }
+          },
+          insertCart() {
+            app.reset();
+          },
+          ejectCart() {
+            app.$refs.formCartFileSm.value = "";
+            app.reset();
+          },
+          setDefault: function () {
+            this.filter6581 = 'FilterAverage6581';
+            this.filter8580 = 'FilterAverage8580';
+            this.stereoFilter6581 = 'FilterAverage6581';
+            this.stereoFilter8580 = 'FilterAverage8580';
+            this.thirdSIDFilter6581 = 'FilterAverage6581';
+            this.thirdSIDFilter8580 = 'FilterAverage8580';
+            this.reSIDfpFilter6581 = 'FilterAlankila6581R4AR_3789';
+            this.reSIDfpFilter8580 = 'FilterTrurl8580R5_3691';
+            this.reSIDfpStereoFilter6581 = 'FilterAlankila6581R4AR_3789';
+            this.reSIDfpStereoFilter8580 = 'FilterTrurl8580R5_3691';
+            this.reSIDfpThirdSIDFilter6581 = 'FilterAlankila6581R4AR_3789';
+            this.reSIDfpThirdSIDFilter8580 = 'FilterTrurl8580R5_3691';
+            this.palEmulation = true;
+            this.defaultClockSpeed = 50;
+            this.startSong = 0;
+            this.nthFrame = 2;
+            this.defaultEmulation = "RESIDFP";
+            this.defaultSidModel = true;
+            this.sampling = false;
+            this.reverbBypass = true;
+            this.sidWrites = false;
+            this.bufferSize = 3 * 48000;
+            this.audioBufferSize = 48000;
+          }
+        },
+        mounted: function () {
+          if (localStorage.locale) {
+            this.$i18n.locale = localStorage.locale;
+          }
+          if (localStorage.filter6581) {
+            this.filter6581 = JSON.parse(localStorage.filter6581);
+          }
+          if (localStorage.filter8580) {
+            this.filter8580 = JSON.parse(localStorage.filter8580);
+          }
+          if (localStorage.stereoFilter6581) {
+            this.stereoFilter6581 = JSON.parse(localStorage.stereoFilter6581);
+          }
+          if (localStorage.stereoFilter8580) {
+            this.stereoFilter8580 = JSON.parse(localStorage.stereoFilter8580);
+          }
+          if (localStorage.thirdSIDFilter6581) {
+            this.thirdSIDFilter6581 = JSON.parse(localStorage.thirdSIDFilter6581);
+          }
+          if (localStorage.thirdSIDFilter8580) {
+            this.thirdSIDFilter8580 = JSON.parse(localStorage.thirdSIDFilter8580);
+          }
+          if (localStorage.reSIDfpFilter6581) {
+            this.reSIDfpFilter6581 = JSON.parse(localStorage.reSIDfpFilter6581);
+          }
+          if (localStorage.reSIDfpFilter8580) {
+            this.reSIDfpFilter8580 = JSON.parse(localStorage.reSIDfpFilter8580);
+          }
+          if (localStorage.reSIDfpStereoFilter6581) {
+            this.reSIDfpStereoFilter6581 = JSON.parse(localStorage.reSIDfpStereoFilter6581);
+          }
+          if (localStorage.reSIDfpStereoFilter8580) {
+            this.reSIDfpStereoFilter8580 = JSON.parse(localStorage.reSIDfpStereoFilter8580);
+          }
+          if (localStorage.reSIDfpThirdSIDFilter6581) {
+            this.reSIDfpThirdSIDFilter6581 = JSON.parse(localStorage.reSIDfpThirdSIDFilter6581);
+          }
+          if (localStorage.reSIDfpThirdSIDFilter8580) {
+            this.reSIDfpThirdSIDFilter8580 = JSON.parse(localStorage.reSIDfpThirdSIDFilter8580);
+          }
+          if (localStorage.defaultClockSpeed) {
+            this.defaultClockSpeed = JSON.parse(localStorage.defaultClockSpeed);
+          }
+          if (localStorage.defaultEmulation) {
+            this.defaultEmulation = JSON.parse(localStorage.defaultEmulation);
+          }
+          if (localStorage.defaultSidModel) {
+            this.defaultSidModel = JSON.parse(localStorage.defaultSidModel);
+          }
+          if (localStorage.sampling) {
+            this.sampling = JSON.parse(localStorage.sampling);
+          }
+          if (localStorage.bufferSize) {
+            this.bufferSize = JSON.parse(localStorage.bufferSize);
+          }
+          if (localStorage.audioBufferSize) {
+            this.audioBufferSize = JSON.parse(localStorage.audioBufferSize);
+          }
+          if (localStorage.palEmulation) {
+            this.palEmulation = JSON.parse(localStorage.palEmulation);
+          }
+          if (localStorage.nthFrame) {
+            this.nthFrame = JSON.parse(localStorage.nthFrame);
+          }
+          if (localStorage.startSong) {
+            this.startSong = JSON.parse(localStorage.startSong);
+          }
+          if (localStorage.reverbBypass) {
+            this.reverbBypass = JSON.parse(localStorage.reverbBypass);
+          }
+          if (localStorage.sidWrites) {
+            this.sidWrites = JSON.parse(localStorage.sidWrites);
+          }
+          var canvas = document.getElementById("c64Screen");
+          canvasContext = canvas.getContext("2d");
+          imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
+          data = imageData.data;
+          Vue.nextTick(() => app.reset());
+        },
+        watch: {
+          filter6581(newValue, oldValue) {
+            localStorage.filter6581 = JSON.stringify(newValue);
+          },
+          filter8580(newValue, oldValue) {
+            localStorage.filter8580 = JSON.stringify(newValue);
+          },
+          stereoFilter6581(newValue, oldValue) {
+            localStorage.stereoFilter6581 = JSON.stringify(newValue);
+          },
+          stereoFilter8580(newValue, oldValue) {
+            localStorage.stereoFilter8580 = JSON.stringify(newValue);
+          },
+          thirdSIDFilter6581(newValue, oldValue) {
+            localStorage.thirdSIDFilter6581 = JSON.stringify(newValue);
+          },
+          thirdSIDFilter8580(newValue, oldValue) {
+            localStorage.thirdSIDFilter8580 = JSON.stringify(newValue);
+          },
+          reSIDfpFilter6581(newValue, oldValue) {
+            localStorage.reSIDfpFilter6581 = JSON.stringify(newValue);
+          },
+          reSIDfpFilter8580(newValue, oldValue) {
+            localStorage.reSIDfpFilter8580 = JSON.stringify(newValue);
+          },
+          reSIDfpStereoFilter6581(newValue, oldValue) {
+            localStorage.reSIDfpStereoFilter6581 = JSON.stringify(newValue);
+          },
+          reSIDfpStereoFilter8580(newValue, oldValue) {
+            localStorage.reSIDfpStereoFilter8580 = JSON.stringify(newValue);
+          },
+          reSIDfpThirdSIDFilter6581(newValue, oldValue) {
+            localStorage.reSIDfpThirdSIDFilter6581 = JSON.stringify(newValue);
+          },
+          reSIDfpThirdSIDFilter8580(newValue, oldValue) {
+            localStorage.reSIDfpThirdSIDFilter8580 = JSON.stringify(newValue);
+          },
+          defaultClockSpeed(newValue, oldValue) {
+            localStorage.defaultClockSpeed = JSON.stringify(newValue);
+          },
+          defaultEmulation(newValue, oldValue) {
+            localStorage.defaultEmulation = JSON.stringify(newValue);
+          },
+          defaultSidModel(newValue, oldValue) {
+            localStorage.defaultSidModel = JSON.stringify(newValue);
+          },
+          sampling(newValue, oldValue) {
+            localStorage.sampling = JSON.stringify(newValue);
+          },
+          bufferSize(newValue, oldValue) {
+            localStorage.bufferSize = JSON.stringify(newValue);
+          },
+          audioBufferSize(newValue, oldValue) {
+            localStorage.audioBufferSize = JSON.stringify(newValue);
+          },
+          palEmulation(newValue, oldValue) {
+            localStorage.palEmulation = JSON.stringify(newValue);
+          },
+          nthFrame(newValue, oldValue) {
+            localStorage.nthFrame = JSON.stringify(newValue);
+          },
+          startSong(newValue, oldValue) {
+            localStorage.startSong = JSON.stringify(newValue);
+          },
+          reverbBypass(newValue, oldValue) {
+            localStorage.reverbBypass = JSON.stringify(newValue);
+          },
+          sidWrites(newValue, oldValue) {
+            localStorage.sidWrites = JSON.stringify(newValue);
+          },
+        },
+      })
+        .use(i18n)
+        .mount("#app");
+
+      var noSleep = new NoSleep();
+
+      var toggleEl = document.querySelector("#toggle");
+      toggleEl.addEventListener(
+        "click",
+        function () {
+          if (!app.wakeLockEnable) {
+            app.wakeLockEnable = true;
+            noSleep.enable(); // keep the screen on!
+            toggleEl.value = "Wake Lock On";
+            document.body.style.backgroundColor = "lightblue";
+          } else {
+            app.wakeLockEnable = false;
+            noSleep.disable(); // let the screen turn off.
+            toggleEl.value = "Wake Lock Off";
+            document.body.style.backgroundColor = "";
+          }
+        },
+        false
+      );
+      var keyDownListener = (event) => {
+        let key = toC64KeyTableEntry(event.code);
+        if (key) {
+          app.pressKey(key);
+          event.preventDefault();
+        }
+      };
+      var keyUpListener = (event) => {
+        let key = toC64KeyTableEntry(event.code);
+        if (key) {
+          app.releaseKey(key);
+          event.preventDefault();
+        }
+      };
+      document.addEventListener("keydown", keyDownListener, false);
+      document.addEventListener("keyup", keyUpListener, false);
     </script>
   </body>
 </html>

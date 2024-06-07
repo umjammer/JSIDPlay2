@@ -2,10 +2,20 @@
 <html>
   <head> </head>
   <body>
-    <input id="file" type="file" />
-    <button type="button" onclick="startTune()">Play</button>
-    <button type="button" onclick="pauseTune()" id="pause">Pause</button>
-    <button type="button" onclick="stopTune()">Stop</button>
+    <div>
+      <input id="file" type="file" />
+      <button type="button" onclick="startTune()">Play</button>
+      <button type="button" onclick="pauseTune()" id="pause">Pause</button>
+      <button type="button" onclick="stopTune()">Stop</button>
+    </div>
+    <div>
+      <button
+        type="button"
+        onclick="startTuneFromServer('/static/teavm/sid/Turrican_2-The_Final_Fight.sid', 'Turrican_2-The_Final_Fight.sid')"
+      >
+        HTTP-GET /static/teavm/sid/Turrican_2-The_Final_Fight.sid
+      </button>
+    </div>
 
     <script>
       var worker;
@@ -108,16 +118,33 @@
       }
 
       function startTune() {
-        stopTune();
-        var file = document.getElementById("file");
-        if (file.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function () {
-            wasmWorker(new Uint8Array(this.result), file.files[0].name);
-          };
-          reader.readAsArrayBuffer(file.files[0]);
+          stopTune();
+          var file = document.getElementById("file");
+          if (file.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function () {
+              wasmWorker(new Uint8Array(this.result), file.files[0].name);
+            };
+            reader.readAsArrayBuffer(file.files[0]);
+          }
         }
-      }
+      function startTuneFromServer(url, name) {
+          stopTune();
+          let headers = new Headers();
+       // optional: headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
+          fetch(url, { method: "GET", headers: headers })
+            .then((response) => response.blob())
+            .then((blob) => {
+              let fileToPlay = new File([blob], name, {
+                type: "application/octet-stream",
+              });
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(fileToPlay);
+              var file = document.getElementById("file");
+              file.files = dataTransfer.files;
+              startTune();
+            });
+        }
       function stopTune() {
         if (worker) {
           worker.terminate();
