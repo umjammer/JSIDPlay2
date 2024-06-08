@@ -398,9 +398,9 @@ public class ExportedApi implements IExportedApi {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setMuteVoice(sidNum, voice, value);
 		if (isOpen()) {
-			c64.configureSID(sidNum, sid -> sid.setVoiceMute(sidNum, value));
+			c64.configureSID(sidNum, sid -> sid.setVoiceMute(voice, value));
 		}
-		LOG.finest("mute SID" + (sidNum + 1) + ", voice" + voice + ": " + value);
+		LOG.finest("mute SID" + sidNum + ", voice" + voice + ": " + value);
 	}
 
 	@Override

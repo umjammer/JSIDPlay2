@@ -3004,7 +3004,7 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && size * app.nthFrame < 10) {
+              if (!app.paused && (size * app.nthFrame < 25) && (nextTime - audioContext.currentTime < 0.5)) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 worker.postMessage({ eventType: "IDLE" });
@@ -3674,6 +3674,33 @@
             this.sidWrites = false;
             this.bufferSize = 3 * 48000;
             this.audioBufferSize = 48000;
+
+              app.setDefaultEmulation(app.defaultEmulation);
+              app.setDefaultSidModel(app.defaultSidModel);
+              app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
+              app.setFilterName('RESID', 'MOS6581', 1, app.stereoFilter6581);
+              app.setFilterName('RESID', 'MOS6581', 2, app.thirdSIDFilter6581);
+              app.setFilterName('RESID', 'MOS8580', 0, app.filter8580);
+              app.setFilterName('RESID', 'MOS8580', 1, app.stereoFilter8580);
+              app.setFilterName('RESID', 'MOS8580', 2, app.thirdSIDFilter8580);
+              app.setFilterName('RESIDFP', 'MOS6581', 0, app.reSIDfpFilter6581);
+              app.setFilterName('RESIDFP', 'MOS6581', 1, app.reSIDfpStereoFilter6581);
+              app.setFilterName('RESIDFP', 'MOS6581', 2, app.reSIDfpThirdSIDFilter6581);
+              app.setFilterName('RESIDFP', 'MOS8580', 0, app.reSIDfpFilter8580);
+              app.setFilterName('RESIDFP', 'MOS8580', 1, app.reSIDfpStereoFilter8580);
+              app.setFilterName('RESIDFP', 'MOS8580', 2, app.reSIDfpThirdSIDFilter8580);
+              app.setMute(0, 0, app.muteVoice1);
+              app.setMute(0, 1, app.muteVoice2);
+              app.setMute(0, 2, app.muteVoice3);
+              app.setMute(0, 3, app.muteVoice4);
+              app.setMute(1, 0, app.muteStereoVoice1);
+              app.setMute(1, 1, app.muteStereoVoice2);
+              app.setMute(1, 2, app.muteStereoVoice3);
+              app.setMute(1, 3, app.muteStereoVoice4);
+              app.setMute(2, 0, app.muteThirdSIDVoice1);
+              app.setMute(2, 1, app.muteThirdSIDVoice2);
+              app.setMute(2, 2, app.muteThirdSIDVoice3);
+              app.setMute(2, 3, app.muteThirdSIDVoice4);
           }
         },
         mounted: function () {
