@@ -3151,6 +3151,7 @@
               }
             } else if (eventType === "INITIALISED") {
 
+              app.setStereo();
               app.setDefaultEmulation(app.defaultEmulation);
               app.setDefaultSidModel(app.defaultSidModel);
               app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
@@ -3855,6 +3856,7 @@
             this.reverbBypass = true;
             this.sidWrites = false;
 
+            app.setStereo();
             app.setDefaultEmulation(app.defaultEmulation);
             app.setDefaultSidModel(app.defaultSidModel);
             app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
@@ -3881,7 +3883,6 @@
             app.setMute(2, 1, app.muteThirdSIDVoice2);
             app.setMute(2, 2, app.muteThirdSIDVoice3);
             app.setMute(2, 3, app.muteThirdSIDVoice4);
-            app.setStereo();
           }
         },
         mounted: function () {
