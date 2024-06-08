@@ -88,6 +88,19 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.joystick(number, value);
 	}
 
+	@Export(name = "volumeLevels")
+	public static void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
+			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+		jsidplay2.volumeLevels(mainVolume, secondVolume, thirdVolume, mainBalance, secondBalance, thirdBalance,
+				mainDelay, secondDelay, thirdDelay);
+	}
+
+	@Export(name = "stereo")
+	public static void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
+			String sidToRead) {
+		jsidplay2.stereo(stereoMode, dualSidBase, thirdSIDBase, fakeStereo, sidToRead);
+	}
+
 	@Export(name = "defaultEmulation")
 	public static void defaultEmulation(String emulation) {
 		jsidplay2.defaultEmulation(emulation);
@@ -106,12 +119,6 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "mute")
 	public static void mute(int sidNum, int voice, boolean value) {
 		jsidplay2.mute(sidNum, voice, value);
-	}
-
-	@Export(name = "stereo")
-	public static void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-			String sidToRead) {
-		jsidplay2.stereo(stereoMode, dualSidBase, thirdSIDBase, fakeStereo, sidToRead);
 	}
 
 	@Export(name = "delaySidBlaster")

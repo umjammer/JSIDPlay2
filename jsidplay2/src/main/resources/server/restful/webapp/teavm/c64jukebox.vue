@@ -1601,29 +1601,29 @@
                       <li class="nav-item" role="presentation">
                         <button
                           class="nav-link active"
-                          id="audiocfg-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#audiocfg"
-                          type="button"
-                          role="tab"
-                          aria-controls="audiocfg"
-                          aria-selected="true"
-                        >
-                          {{ $t("audioCfgHeader") }}
-                        </button>
-                      </li>
-                      <li class="nav-item" role="presentation">
-                        <button
-                          class="nav-link"
                           id="videocfg-tab"
                           data-bs-toggle="pill"
                           data-bs-target="#videocfg"
                           type="button"
                           role="tab"
                           aria-controls="videocfg"
-                          aria-selected="false"
+                          aria-selected="true"
                         >
                           {{ $t("videoCfgHeader") }}
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="audiocfg-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#audiocfg"
+                          type="button"
+                          role="tab"
+                          aria-controls="audiocfg"
+                          aria-selected="false"
+                        >
+                          {{ $t("audioCfgHeader") }}
                         </button>
                       </li>
                       <li class="nav-item" role="presentation">
@@ -1671,7 +1671,7 @@
                     </ul>
                   </div>
                   <div class="tab-content card-body" style="position: relative">
-                    <div class="tab-pane fade show active" id="audiocfg" role="tabpanel" aria-labelledby="audiocfg-tab">
+                    <div class="tab-pane fade" id="audiocfg" role="tabpanel" aria-labelledby="audiocfg-tab">
                       <div class="form-check">
                         <div class="settings-box">
                           <span class="setting">
@@ -1707,6 +1707,195 @@
 
                         <div class="settings-box">
                           <span class="setting">
+                            <label for="mainVolume"
+                              >{{ $t("mainVolume") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="mainVolume"
+                                  class="form-control"
+                                  min="-6"
+                                  max="6"
+                                  v-model.number="mainVolume"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text"> db</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="secondVolume"
+                              >{{ $t("secondVolume") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="secondVolume"
+                                  class="form-control"
+                                  min="-6"
+                                  max="6"
+                                  v-model.number="secondVolume"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text"> db</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="thirdVolume"
+                              >{{ $t("thirdVolume") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="thirdVolume"
+                                  class="form-control"
+                                  min="-6"
+                                  max="6"
+                                  v-model.number="thirdVolume"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text"> db</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="mainBalance"
+                              >{{ $t("mainBalance") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <span class="input-group-text">l(0) ... </span>
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="mainBalance"
+                                  class="form-control"
+                                  min="0"
+                                  max="1"
+                                  step="0.1"
+                                  v-model.number="mainBalance"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text"> ... r(1)</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="secondBalance"
+                              >{{ $t("secondBalance") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <span class="input-group-text">l(0) ... </span>
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="secondBalance"
+                                  class="form-control"
+                                  min="0"
+                                  max="1"
+                                  step="0.1"
+                                  v-model.number="secondBalance"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text"> ... r(1)</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="thirdBalance"
+                              >{{ $t("thirdBalance") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <span class="input-group-text">l(0) ... </span>
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="thirdBalance"
+                                  class="form-control"
+                                  min="0"
+                                  max="1"
+                                  step="0.1"
+                                  v-model.number="thirdBalance"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text"> ... r(1)</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="mainDelay"
+                              >{{ $t("mainDelay") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="mainDelay"
+                                  class="form-control"
+                                  min="0"
+                                  max="100"
+                                  step="10"
+                                  v-model.number="mainDelay"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text">ms</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="secondDelay"
+                              >{{ $t("secondDelay") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="secondDelay"
+                                  class="form-control"
+                                  min="0"
+                                  max="100"
+                                  step="10"
+                                  v-model.number="secondDelay"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text">ms</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="thirdDelay"
+                              >{{ $t("thirdDelay") }}
+                              <div class="input-group input-group-sm mb-2">
+                                <input
+                                  class="form-control right"
+                                  type="number"
+                                  id="thirdDelay"
+                                  class="form-control"
+                                  min="0"
+                                  max="100"
+                                  step="10"
+                                  v-model.number="thirdDelay"
+                                  @change="setVolumeLevels()"
+                                />
+                                <span class="input-group-text">ms</span>
+                              </div>
+                            </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
                             <label class="form-check-label" for="sidWrites">
                               <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                               <input
@@ -1732,7 +1921,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="tab-pane fade" id="videocfg" role="tabpanel" aria-labelledby="videocfg-tab">
+                    <div class="tab-pane fade show active" id="videocfg" role="tabpanel" aria-labelledby="videocfg-tab">
                       <div class="form-check">
                         <div class="settings-box">
                           <span class="setting">
@@ -3197,6 +3386,7 @@
               }
             } else if (eventType === "INITIALISED") {
 
+              app.setVolumeLevels();
               app.setStereo();
               app.setDefaultEmulation(app.defaultEmulation);
               app.setDefaultSidModel(app.defaultSidModel);
@@ -3366,6 +3556,15 @@
             thirdSid: "3-SID",
             bufferSize: "Emulation Buffer Size",
             audioBufferSize: "Audio Buffer Size",
+            mainVolume: "Volume of SID in db (-6db..+6db)",
+            secondVolume: "Volume of Stereo SID in db (-6db..+6db)",
+            thirdVolume: "Volume of 3rd SID in db (-6db..+6db)",
+            mainBalance: "Balance of SID l(0)..r(1)",
+            secondBalance: "Balance of Stereo SID l(0)..r(1)",
+            thirdBalance: "Balance of 3rd SID l(0)..r(1)",
+            mainDelay: "Delay of SID in ms (0ms..50ms)",
+            secondDelay: "Delay of Stereo SID in ms (0ms..50ms)",
+            thirdDelay: "Delay of 3rd SID in ms (0ms..50ms)",
             confirmationTitle: "Confirmation Dialogue",
             setDefault: "Restore Defaults",
             setDefaultReally: "Do you really want to restore defaults?",
@@ -3469,6 +3668,15 @@
             thirdSid: "3-SID",
             bufferSize: "Emulations Puffer Grösse",
             audioBufferSize: "Audio Puffer Grösse",
+            mainVolume: "Lautstärke des SID in db (-6db..+6db)",
+            secondVolume: "Lautstärke des Stereo SID in db (-6db..+6db)",
+            thirdVolume: "Lautstärke des 3. SID in db (-6db..+6db)",
+            mainBalance: "Balance des SID l(0)..r(1)",
+            secondBalance: "Balance des Stereo SID l(0)..r(1)",
+            thirdBalance: "Balance des 3. SID l(0)..r(1)",
+            mainDelay: "Verzögerung des SID in ms (0ms..50ms)",
+            secondDelay: "Verzögerung des Stereo SID in ms (0ms..50ms)",
+            thirdDelay: "Verzögerung des 3. SID in ms (0ms..50ms)",
             confirmationTitle: "Sicherheitsabfrage",
             setDefault: "Standardeinstellungen wiederherstellen",
             setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
@@ -3485,18 +3693,13 @@
             paused: false,
             screen: true,
             palEmulation: true,
-            defaultClockSpeed: 50,
             startSong: 0,
             nthFrame: 2,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
-            defaultEmulation: "RESIDFP",
-            defaultSidModel: "MOS8580",
             jiffyDosInstalled: false,
             sampling: false,
             reverbBypass: true,
             sidWrites: false,
-            bufferSize: 3 * 48000,
-            audioBufferSize: 48000,
             framesCounter: 0,
             actualFrames: 0,
             showFloppy: false,
@@ -3514,6 +3717,25 @@
             showCart: false,
             wakeLockEnable: false,
             keyboardEnable: false,
+            mainVolume: 0,
+            secondVolume: 0,
+            thirdVolume: 0,
+            mainBalance: 0.5,
+            secondBalance: 0.5,
+            thirdBalance: 0.5,
+            mainDelay: 0,
+            secondDelay: 0,
+            thirdDelay: 0,
+            stereoMode: "AUTO",
+            dualSidBase: 54304,
+            thirdSIDBase: 54336,
+            defaultClockSpeed: 50,
+            defaultEmulation: "RESIDFP",
+            defaultSidModel: "MOS8580",
+            fakeStereo: false,
+            sidToRead: "FIRST_SID",
+            bufferSize: 3 * 48000,
+            audioBufferSize: 48000,
             filter6581: 'FilterAverage6581',
             filter8580: 'FilterAverage8580',
             stereoFilter6581: 'FilterAverage6581',
@@ -3543,11 +3765,6 @@
             muteThirdSIDVoice2: false,
             muteThirdSIDVoice3: false,
             muteThirdSIDVoice4: false,
-            dualSidBase: 54304,
-            thirdSIDBase: 54336,
-            stereoMode: "AUTO",
-            fakeStereo: false,
-            sidToRead: "FIRST_SID",
             tabIndex: 1,
           };
         },
@@ -3860,7 +4077,40 @@
               });
             }
           },
+          setVolumeLevels() {
+            if (worker) {
+              worker.postMessage({
+                eventType: "SET_VOLUME_LEVELS",
+                eventData: {
+                  mainVolume: app.mainVolume,
+                  secondVolume: app.secondVolume,
+                  thirdVolume: app.thirdVolume,
+                  mainBalance: app.mainBalance,
+                  secondBalance: app.secondBalance,
+                  thirdBalance: app.thirdBalance,
+                  mainDelay: app.mainDelay,
+                  secondDelay: app.secondDelay,
+                  thirdDelay: app.thirdDelay,
+                },
+              });
+            }
+          },
           setDefault() {
+            this.palEmulation = true;
+            this.startSong = 0;
+            this.nthFrame = 2;
+            this.reverbBypass = true;
+            this.sidWrites = false;
+
+            this.mainVolume = 0;
+            this.secondVolume = 0;
+            this.thirdVolume = 0;
+            this.mainBalance = 0.5;
+            this.secondBalance = 0.5;
+            this.thirdBalance = 0.5;
+            this.mainDelay = 0;
+            this.secondDelay = 0;
+            this.thirdDelay = 0;
             this.stereoMode = "AUTO";
             this.dualSidBase = 54304;
             this.thirdSIDBase = 54336;
@@ -3896,12 +4146,8 @@
             this.muteThirdSIDVoice2 = false;
             this.muteThirdSIDVoice3 = false;
             this.muteThirdSIDVoice4 = false;
-            this.palEmulation = true;
-            this.startSong = 0;
-            this.nthFrame = 2;
-            this.reverbBypass = true;
-            this.sidWrites = false;
 
+            app.setVolumeLevels();
             app.setStereo();
             app.setDefaultEmulation(app.defaultEmulation);
             app.setDefaultSidModel(app.defaultSidModel);
@@ -3934,6 +4180,33 @@
         mounted: function () {
           if (localStorage.locale) {
             this.$i18n.locale = localStorage.locale;
+          }
+          if (localStorage.mainVolume) {
+            this.mainVolume = JSON.parse(localStorage.mainVolume);
+          }
+          if (localStorage.secondVolume) {
+            this.secondVolume = JSON.parse(localStorage.secondVolume);
+          }
+          if (localStorage.thirdVolume) {
+            this.thirdVolume = JSON.parse(localStorage.thirdVolume);
+          }
+          if (localStorage.mainBalance) {
+            this.mainBalance = JSON.parse(localStorage.mainBalance);
+          }
+          if (localStorage.secondBalance) {
+            this.secondBalance = JSON.parse(localStorage.secondBalance);
+          }
+          if (localStorage.thirdBalance) {
+            this.thirdBalance = JSON.parse(localStorage.thirdBalance);
+          }
+          if (localStorage.mainDelay) {
+            this.mainDelay = JSON.parse(localStorage.mainDelay);
+          }
+          if (localStorage.secondDelay) {
+            this.secondDelay = JSON.parse(localStorage.secondDelay);
+          }
+          if (localStorage.thirdDelay) {
+            this.thirdDelay = JSON.parse(localStorage.thirdDelay);
           }
           if (localStorage.stereoMode) {
             this.stereoMode = JSON.parse(localStorage.stereoMode);
@@ -4062,6 +4335,33 @@
           Vue.nextTick(() => app.reset());
         },
         watch: {
+          mainVolume(newValue, oldValue) {
+            localStorage.mainVolume = JSON.stringify(newValue);
+          },
+          secondVolume(newValue, oldValue) {
+            localStorage.secondVolume = JSON.stringify(newValue);
+          },
+          thirdVolume(newValue, oldValue) {
+            localStorage.thirdVolume = JSON.stringify(newValue);
+          },
+          mainBalance(newValue, oldValue) {
+            localStorage.mainBalance = JSON.stringify(newValue);
+          },
+          secondBalance(newValue, oldValue) {
+            localStorage.secondBalance = JSON.stringify(newValue);
+          },
+          thirdBalance(newValue, oldValue) {
+            localStorage.thirdBalance = JSON.stringify(newValue);
+          },
+          mainDelay(newValue, oldValue) {
+            localStorage.mainDelay = JSON.stringify(newValue);
+          },
+          secondDelay(newValue, oldValue) {
+            localStorage.secondDelay = JSON.stringify(newValue);
+          },
+          thirdDelay(newValue, oldValue) {
+            localStorage.thirdDelay = JSON.stringify(newValue);
+          },
           stereoMode(newValue, oldValue) {
             localStorage.stereoMode = JSON.stringify(newValue);
           },

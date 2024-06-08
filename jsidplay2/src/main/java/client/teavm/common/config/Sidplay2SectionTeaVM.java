@@ -9,8 +9,32 @@ public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 
 	private IImportedApi importedApi;
 
+	private double fadeInTime;
+
+	private double fadeOutTime;
+
 	public Sidplay2SectionTeaVM(IImportedApi importedApi) {
 		this.importedApi = importedApi;
+	}
+
+	@Override
+	public double getFadeInTime() {
+		return fadeInTime;
+	}
+
+	@Override
+	public void setFadeInTime(double fadeInTime) {
+		this.fadeInTime = fadeInTime;
+	}
+
+	@Override
+	public double getFadeOutTime() {
+		return fadeOutTime;
+	}
+
+	@Override
+	public void setFadeOutTime(double fadeOutTime) {
+		this.fadeOutTime = fadeOutTime;
 	}
 
 	@Override
@@ -67,14 +91,6 @@ public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 
 	@Override
 	public void setGamma(float gamma) {
-	}
-
-	@Override
-	public void setFadeOutTime(double fadeOutTime) {
-	}
-
-	@Override
-	public void setFadeInTime(double fadeInTime) {
 	}
 
 	@Override
@@ -174,16 +190,6 @@ public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 	@Override
 	public float getGamma() {
 		return 2;
-	}
-
-	@Override
-	public double getFadeOutTime() {
-		return 0;
-	}
-
-	@Override
-	public double getFadeInTime() {
-		return 0;
 	}
 
 	@Override

@@ -50,4 +50,8 @@ public interface IExportedApi extends JSObject {
 	void mute(int sidNum, int voice, boolean value);
 
 	void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo, String sidToRead);
+
+	void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance, float secondBalance,
+			float thirdBalance, int mainDelay, int secondDelay, int thirdDelay);
+
 }

@@ -127,6 +127,22 @@ addEventListener(
       postMessage({
         eventType: "STEREO_SET",
       });
+    } else if (eventType === "SET_VOLUME_LEVELS") {
+      volumeLevels(
+        eventData.mainVolume,
+        eventData.secondVolume,
+        eventData.thirdVolume,
+        eventData.mainBalance,
+        eventData.secondBalance,
+        eventData.thirdBalance,
+        eventData.mainDelay,
+        eventData.secondDelay,
+        eventData.thirdDelay
+      );
+
+      postMessage({
+        eventType: "VOLUME_LEVELS_SET",
+      });
     } else if (eventType === "INITIALISE") {
       main(
         [

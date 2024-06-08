@@ -89,6 +89,19 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
+	public static void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
+			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+		jsidplay2.volumeLevels(mainVolume, secondVolume, thirdVolume, mainBalance, secondBalance, thirdBalance,
+				mainDelay, secondDelay, thirdDelay);
+	}
+
+	@JSExport
+	public static void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
+			String sidToRead) {
+		jsidplay2.stereo(stereoMode, dualSidBase, thirdSIDBase, fakeStereo, sidToRead);
+	}
+
+	@JSExport
 	public static void defaultEmulation(String emulation) {
 		jsidplay2.defaultEmulation(emulation);
 	}
@@ -106,12 +119,6 @@ public class JSIDPlay2TeaVM {
 	@JSExport
 	public static void mute(int sidNum, int voice, boolean value) {
 		jsidplay2.mute(sidNum, voice, value);
-	}
-
-	@JSExport
-	public static void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-			String sidToRead) {
-		jsidplay2.stereo(stereoMode, dualSidBase, thirdSIDBase, fakeStereo, sidToRead);
 	}
 
 	@JSExport

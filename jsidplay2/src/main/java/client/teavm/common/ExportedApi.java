@@ -354,6 +354,38 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
+	public void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
+			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+		final IAudioSection audioSection = config.getAudioSection();
+		audioSection.setMainVolume(mainVolume);
+		audioSection.setSecondVolume(secondVolume);
+		audioSection.setThirdVolume(thirdVolume);
+		audioSection.setMainBalance(mainBalance);
+		audioSection.setSecondBalance(secondBalance);
+		audioSection.setThirdBalance(thirdBalance);
+		audioSection.setMainDelay(mainDelay);
+		audioSection.setSecondDelay(secondDelay);
+		audioSection.setThirdDelay(thirdDelay);
+		if (isOpen()) {
+			sidBuilder.setVolume(0, mainVolume);
+			sidBuilder.setVolume(1, secondVolume);
+			sidBuilder.setVolume(2, thirdVolume);
+			sidBuilder.setBalance(0, mainBalance);
+			sidBuilder.setBalance(1, secondBalance);
+			sidBuilder.setBalance(2, thirdBalance);
+			sidBuilder.setDelay(0, mainDelay);
+			sidBuilder.setDelay(1, secondDelay);
+			sidBuilder.setDelay(2, thirdDelay);
+		}
+		LOG.finest("volumeLevels, mainVolume=" + mainVolume + ", secondVolume:" + secondVolume + ", thirdVolume:"
+				+ thirdVolume);
+		LOG.finest("volumeLevels, mainBalance=" + mainBalance + ", secondBalance:" + secondBalance + ", thirdBalance:"
+				+ thirdBalance);
+		LOG.finest(
+				"volumeLevels, mainDelay=" + mainDelay + ", secondDelay:" + secondDelay + ", thirdDelay:" + thirdDelay);
+	}
+
+	@Override
 	public void stereo(String stereoModeFromJS, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
 			String sidToReadFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:

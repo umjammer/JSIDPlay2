@@ -12,9 +12,108 @@ import sidplay.audio.Audio;
 public final class AudioSectionTeaVM implements IAudioSection {
 
 	private IImportedApi importedApi;
+	private float mainVolume;
+	private float secondVolume;
+	private float thirdVolume;
+	private float mainBalance = 0.5f;
+	private float secondBalance = 0.5f;
+	private float thirdBalance = 0.5f;
+	private int mainDelay;
+	private int secondDelay;
+	private int thirdDelay;
 
 	public AudioSectionTeaVM(IImportedApi importedApi) {
 		this.importedApi = importedApi;
+	}
+
+	@Override
+	public float getMainVolume() {
+		return mainVolume;
+	}
+
+	@Override
+	public void setMainVolume(float volume) {
+		mainVolume = volume;
+	}
+
+	@Override
+	public float getSecondVolume() {
+		return secondVolume;
+	}
+
+	@Override
+	public void setSecondVolume(float volume) {
+		secondVolume = volume;
+	}
+
+	@Override
+	public float getThirdVolume() {
+		return thirdVolume;
+	}
+
+	@Override
+	public void setThirdVolume(float volume) {
+		thirdVolume = volume;
+	}
+
+	@Override
+	public float getMainBalance() {
+		return mainBalance;
+	}
+
+	@Override
+	public void setMainBalance(float balance) {
+		mainBalance = balance;
+	}
+
+	@Override
+	public float getSecondBalance() {
+		return secondBalance;
+	}
+
+	@Override
+	public void setSecondBalance(float balance) {
+		secondBalance = balance;
+	}
+
+	@Override
+	public float getThirdBalance() {
+		return thirdBalance;
+	}
+
+	@Override
+	public void setThirdBalance(float balance) {
+		thirdBalance = balance;
+	}
+
+	@Override
+	public int getMainDelay() {
+		return mainDelay;
+	}
+
+	@Override
+	public void setMainDelay(int delay) {
+		mainDelay = delay;
+	}
+
+	@Override
+	public int getSecondDelay() {
+		return secondDelay;
+	}
+
+	@Override
+	public void setSecondDelay(int delay) {
+		secondDelay = delay;
+	}
+
+	@Override
+	public int getThirdDelay() {
+		return thirdDelay;
+	}
+
+	@Override
+	public void setThirdDelay(int delay) {
+		thirdDelay = delay;
 	}
 
 	@Override
@@ -54,27 +153,7 @@ public final class AudioSectionTeaVM implements IAudioSection {
 	}
 
 	@Override
-	public void setThirdVolume(float volume) {
-	}
-
-	@Override
-	public void setThirdDelay(int delay) {
-	}
-
-	@Override
-	public void setThirdBalance(float balance) {
-	}
-
-	@Override
-	public void setSecondVolume(float volume) {
-	}
-
-	@Override
-	public void setSecondDelay(int delay) {
-	}
-
-	@Override
-	public void setSecondBalance(float balance) {
+	public void setDelay(int delay) {
 	}
 
 	@Override
@@ -130,18 +209,6 @@ public final class AudioSectionTeaVM implements IAudioSection {
 	}
 
 	@Override
-	public void setMainVolume(float volume) {
-	}
-
-	@Override
-	public void setMainDelay(int delay) {
-	}
-
-	@Override
-	public void setMainBalance(float balance) {
-	}
-
-	@Override
 	public void setDevice(int device) {
 	}
 
@@ -159,10 +226,6 @@ public final class AudioSectionTeaVM implements IAudioSection {
 
 	@Override
 	public void setDelayBypass(boolean delayBypass) {
-	}
-
-	@Override
-	public void setDelay(int delay) {
 	}
 
 	@Override
@@ -240,36 +303,6 @@ public final class AudioSectionTeaVM implements IAudioSection {
 	}
 
 	@Override
-	public float getThirdVolume() {
-		return 0;
-	}
-
-	@Override
-	public int getThirdDelay() {
-		return 0;
-	}
-
-	@Override
-	public float getThirdBalance() {
-		return 0.5f;
-	}
-
-	@Override
-	public float getSecondVolume() {
-		return 0;
-	}
-
-	@Override
-	public int getSecondDelay() {
-		return 0;
-	}
-
-	@Override
-	public float getSecondBalance() {
-		return 0.5f;
-	}
-
-	@Override
 	public SamplingRate getSamplingRate() {
 		switch (importedApi.getSamplingRateAsInt()) {
 		case 8000:
@@ -341,21 +374,6 @@ public final class AudioSectionTeaVM implements IAudioSection {
 	@Override
 	public File getMp3() {
 		return null;
-	}
-
-	@Override
-	public float getMainVolume() {
-		return 0;
-	}
-
-	@Override
-	public int getMainDelay() {
-		return 0;
-	}
-
-	@Override
-	public float getMainBalance() {
-		return 0.5f;
 	}
 
 	@Override
