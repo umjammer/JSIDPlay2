@@ -16,6 +16,7 @@ import {
   defaultChipModel,
   filterName,
   mute,
+  stereo,
 } from "./jsidplay2.js";
 
 // Handle incoming messages
@@ -132,6 +133,12 @@ addEventListener(
 
       postMessage({
         eventType: "MUTE_SET",
+      });
+    } else if (eventType === "SET_STEREO") {
+      stereo(eventData.stereoMode, eventData.dualSidBase, eventData.thirdSIDBase, eventData.fakeStereo, eventData.sidToRead);
+
+      postMessage({
+        eventType: "STEREO_SET",
       });
     } else if (eventType === "INITIALISE") {
       main(

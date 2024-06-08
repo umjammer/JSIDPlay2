@@ -108,6 +108,12 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.mute(sidNum, voice, value);
 	}
 
+	@Export(name = "stereo")
+	public static void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
+			String sidToRead) {
+		jsidplay2.stereo(stereoMode, dualSidBase, thirdSIDBase, fakeStereo, sidToRead);
+	}
+
 	@Export(name = "delaySidBlaster")
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);

@@ -79,6 +79,14 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	private boolean muteThirdSIDVoice4;
 
+	private int dualSidBase = 0xd420;
+
+	private int thirdSIDBase = 0xd440;
+
+	private boolean fakeStereo;
+
+	private SidReads sidToRead = SidReads.FIRST_SID;
+
 	public EmulationSectionTeaVM(IImportedApi importedApi) {
 		this.importedApi = importedApi;
 	}
@@ -344,6 +352,46 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
+	public int getDualSidBase() {
+		return dualSidBase;
+	}
+
+	@Override
+	public void setDualSidBase(int base) {
+		dualSidBase = base;
+	}
+
+	@Override
+	public int getThirdSIDBase() {
+		return thirdSIDBase;
+	}
+
+	@Override
+	public void setThirdSIDBase(int base) {
+		thirdSIDBase = base;
+	}
+
+	@Override
+	public boolean isFakeStereo() {
+		return fakeStereo;
+	}
+
+	@Override
+	public void setFakeStereo(boolean fakeStereo) {
+		this.fakeStereo = fakeStereo;
+	}
+
+	@Override
+	public SidReads getSidToRead() {
+		return sidToRead;
+	}
+
+	@Override
+	public void setSidToRead(SidReads sidToRead) {
+		this.sidToRead = sidToRead;
+	}
+
+	@Override
 	public void setUserSidModel(ChipModel model) {
 	}
 
@@ -380,10 +428,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
-	public void setThirdSIDBase(int base) {
-	}
-
-	@Override
 	public void setThirdEmulation(Emulation emulation) {
 	}
 
@@ -397,10 +441,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public void setStereoEmulation(Emulation emulation) {
-	}
-
-	@Override
-	public void setSidToRead(SidReads sidRead) {
 	}
 
 	@Override
@@ -472,19 +512,11 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
-	public void setFakeStereo(boolean fakeStereo) {
-	}
-
-	@Override
 	public void setExsidFakeStereo(boolean exsidFakeStereo) {
 	}
 
 	@Override
 	public void setEngine(Engine engine) {
-	}
-
-	@Override
-	public void setDualSidBase(int base) {
 	}
 
 	@Override
@@ -527,11 +559,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	@Override
 	public boolean isFilter() {
 		return true;
-	}
-
-	@Override
-	public boolean isFakeStereo() {
-		return false;
 	}
 
 	@Override
@@ -590,11 +617,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
-	public int getThirdSIDBase() {
-		return 0xd440;
-	}
-
-	@Override
 	public Emulation getThirdEmulation() {
 		return Emulation.DEFAULT;
 	}
@@ -607,11 +629,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	@Override
 	public Emulation getStereoEmulation() {
 		return Emulation.DEFAULT;
-	}
-
-	@Override
-	public SidReads getSidToRead() {
-		return SidReads.FIRST_SID;
 	}
 
 	@Override
@@ -692,11 +709,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	@Override
 	public Engine getEngine() {
 		return Engine.EMULATION;
-	}
-
-	@Override
-	public int getDualSidBase() {
-		return 0xd420;
 	}
 
 	@Override

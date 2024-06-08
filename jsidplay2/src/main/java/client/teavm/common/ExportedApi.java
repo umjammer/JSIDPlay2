@@ -32,6 +32,8 @@ import libsidplay.common.Emulation;
 import libsidplay.common.Engine;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
+import libsidplay.common.SidReads;
+import libsidplay.common.StereoMode;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.c1541.DiskImage;
 import libsidplay.components.cart.CartridgeType;
@@ -349,6 +351,26 @@ public class ExportedApi implements IExportedApi {
 
 			}), c64.getClock().getCyclesPerFrame() << 2);
 		}
+	}
+
+	@Override
+	public void stereo(String stereoModeFromJS, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
+			String sidToReadFromJS) {
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String stereoStr = stereoModeFromJS != null ? "" + stereoModeFromJS : null;
+		String sidToReadStr = sidToReadFromJS != null ? "" + sidToReadFromJS : null;
+
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		emulationSection.setStereoMode(StereoMode.valueOf(stereoStr));
+		emulationSection.setDualSidBase(dualSidBase);
+		emulationSection.setThirdSIDBase(thirdSIDBase);
+		emulationSection.setFakeStereo(fakeStereo);
+		emulationSection.setSidToRead(SidReads.valueOf(sidToReadStr));
+		if (isOpen()) {
+			updateSids(emulationSection);
+		}
+		LOG.finest("stereo, mode: " + stereoStr + ", dualSidBase=" + dualSidBase + ", thirdSIDBase=" + thirdSIDBase
+				+ ", fakeStereo:" + fakeStereo + ", sidToRead:" + sidToReadStr);
 	}
 
 	@Override

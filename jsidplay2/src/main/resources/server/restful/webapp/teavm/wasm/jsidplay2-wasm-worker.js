@@ -149,6 +149,18 @@ addEventListener(
       postMessage({
         eventType: "MUTE_SET",
       });
+    } else if (eventType === "SET_STEREO") {
+      instance.exports.stereo(
+        allocateTeaVMstring(eventData.stereoMode ?? null),
+        eventData.dualSidBase,
+        eventData.thirdSIDBase,
+        eventData.fakeStereo,
+        allocateTeaVMstring(eventData.sidToRead ?? null)
+      );
+
+      postMessage({
+        eventType: "STEREO_SET",
+      });
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm
         .load("jsidplay2.wasm", {
