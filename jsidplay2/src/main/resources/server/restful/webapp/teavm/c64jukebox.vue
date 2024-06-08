@@ -1438,6 +1438,7 @@
                   <button
                     class="nav-link active"
                     id="video-tab"
+                    ref="videoTab"
                     data-bs-toggle="pill"
                     data-bs-target="#video"
                     type="button"
@@ -1675,38 +1676,6 @@
                       <div class="form-check">
                         <div class="settings-box">
                           <span class="setting">
-                            <div class="form-check">
-                              <label class="form-check-label" for="reverbBypass">
-                                {{ $t("reverbBypass") }}
-                                <input
-                                  class="form-check-input"
-                                  type="checkbox"
-                                  id="reverbBypass"
-                                  style="float: right; margin-left: 8px"
-                                  v-model="reverbBypass"
-                                />
-                              </label>
-                            </div>
-                          </span>
-                        </div>
-                        <div class="settings-box">
-                          <span class="setting">
-                            <label for="startSong"
-                              >{{ $t("startSong") }}
-                              <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
-                              <input
-                                class="right"
-                                type="number"
-                                id="startSong"
-                                class="form-control"
-                                v-model.number="startSong"
-                                @change="reset()"
-                            /></label>
-                          </span>
-                        </div>
-
-                        <div class="settings-box">
-                          <span class="setting">
                             <label for="mainVolume"
                               >{{ $t("mainVolume") }}
                               <div class="input-group input-group-sm mb-2">
@@ -1896,6 +1865,41 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting">
+                            <div class="form-check">
+                              <label class="form-check-label" for="reverbBypass">
+                                {{ $t("reverbBypass") }}
+                                <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
+                                <input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  id="reverbBypass"
+                                  style="float: right; margin-left: 8px"
+                                  v-model="reverbBypass"
+                                  @change="reset()"
+                                />
+                              </label>
+                            </div>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="startSong"
+                              >{{ $t("startSong") }}
+                              <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
+                              <select
+                                class="form-select form-select-sm right"
+                                id="startSong"
+                                v-model="startSong"
+                                @change="reset()"
+                              >
+                                <option v-for="n in startSongs" :value="n">{{ n }}</option>
+                              </select>
+                            </label>
+                          </span>
+                        </div>
+
+                        <div class="settings-box">
+                          <span class="setting">
                             <label class="form-check-label" for="sidWrites">
                               <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                               <input
@@ -1928,12 +1932,14 @@
                             <div class="form-check">
                               <label class="form-check-label" for="palEmulation">
                                 {{ $t("palEmulation") }}
+                                <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                                 <input
                                   class="form-check-input"
                                   type="checkbox"
                                   id="palEmulation"
                                   style="float: right; margin-left: 8px"
                                   v-model="palEmulation"
+                                  @change="reset()"
                                 />
                               </label>
                             </div>
@@ -3694,6 +3700,7 @@
             screen: true,
             palEmulation: true,
             startSong: 0,
+            startSongs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
             nthFrame: 2,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
             jiffyDosInstalled: false,
@@ -3775,6 +3782,7 @@
           },
           reset(command) {
             app.screen = true;
+            app.$refs.videoTab.click();
             app.stopTune();
             if (app.$refs.formCartFileSm.files[0]) {
               var reader = new FileReader();
@@ -3793,6 +3801,9 @@
             }
           },
           startTune(screen) {
+            if (screen) {
+              app.$refs.videoTab.click();
+            }
             app.screen = screen ? screen : false;
             app.stopTune();
             if (app.$refs.formFileSm.files[0]) {
