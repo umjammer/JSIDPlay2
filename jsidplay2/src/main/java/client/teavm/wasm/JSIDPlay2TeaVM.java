@@ -88,6 +88,11 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.joystick(number, value);
 	}
 
+	@Export(name = "filterName")
+	public static void filterName(String emulation, String chipModel, int sidNum, String filterName) {
+		jsidplay2.filterName(emulation, chipModel, sidNum, filterName);
+	}
+
 	@Export(name = "delaySidBlaster")
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);

@@ -15,12 +15,165 @@ import libsidplay.config.IEmulationSection;
 
 public final class EmulationSectionTeaVM implements IEmulationSection {
 
+	private static final String FILTER_AVERAGE6581 = "FilterAverage6581";
+	
+	private static final String FILTER_AVERAGE8580 = "FilterAverage8580";
+	
+	private static final String FILTER_ALANKILA6581R4AR_3789 = "FilterAlankila6581R4AR_3789";
+	
+	private static final String FILTER_TRURL8580R5_3691 = "FilterTrurl8580R5_3691";
+
+	
 	private final OverrideSection overrideSection = new OverrideSection();
 
 	private IImportedApi importedApi;
 
+	private String filter6581 = FILTER_AVERAGE6581;
+
+	private String filter8580 = FILTER_AVERAGE8580;
+
+	private String stereoFilter6581 = FILTER_AVERAGE6581;
+
+	private String stereoFilter8580 = FILTER_AVERAGE8580;
+
+	private String thirdSIDFilter6581 = FILTER_AVERAGE6581;
+
+	private String thirdSIDFilter8580 = FILTER_AVERAGE8580;
+
+	private String reSIDfpFilter6581 = FILTER_ALANKILA6581R4AR_3789;
+
+	private String reSIDfpFilter8580 = FILTER_TRURL8580R5_3691;
+
+	private String reSIDfpStereoFilter6581 = FILTER_ALANKILA6581R4AR_3789;
+
+	private String reSIDfpStereoFilter8580 = FILTER_TRURL8580R5_3691;
+
+	private String reSIDfpThirdSIDFilter6581 = FILTER_ALANKILA6581R4AR_3789;
+
+	private String reSIDfpThirdSIDFilter8580 = FILTER_TRURL8580R5_3691;
+
 	public EmulationSectionTeaVM(IImportedApi importedApi) {
 		this.importedApi = importedApi;
+	}
+
+	@Override
+	public String getFilter6581() {
+		return filter6581;
+	}
+
+	@Override
+	public void setFilter6581(String filterName) {
+		filter6581 = filterName;
+	}
+
+	@Override
+	public String getFilter8580() {
+		return filter8580;
+	}
+	
+	@Override
+	public void setFilter8580(String filterName) {
+		filter8580 = filterName;
+	}
+	
+	@Override
+	public String getStereoFilter6581() {
+		return stereoFilter6581;
+	}
+
+	@Override
+	public void setStereoFilter6581(String filterName) {
+		stereoFilter6581 = filterName;
+	}
+
+	@Override
+	public String getStereoFilter8580() {
+		return stereoFilter8580;
+	}
+
+	@Override
+	public void setStereoFilter8580(String filterName) {
+		stereoFilter8580 = filterName;
+	}
+
+	@Override
+	public String getThirdSIDFilter6581() {
+		return thirdSIDFilter6581;
+	}
+
+	@Override
+	public void setThirdSIDFilter6581(String filterName) {
+		thirdSIDFilter6581 = filterName;
+	}
+
+	@Override
+	public String getThirdSIDFilter8580() {
+		return thirdSIDFilter8580;
+	}
+
+	@Override
+	public void setThirdSIDFilter8580(String filterName) {
+		thirdSIDFilter8580 = filterName;
+	}
+
+	@Override
+	public String getReSIDfpFilter6581() {
+		return reSIDfpFilter6581;
+	}
+
+	@Override
+	public void setReSIDfpFilter6581(String filterName) {
+		reSIDfpFilter6581 = filterName;
+	}
+
+	@Override
+	public String getReSIDfpFilter8580() {
+		return reSIDfpFilter8580;
+	}
+
+	@Override
+	public void setReSIDfpFilter8580(String filterName) {
+		reSIDfpFilter8580 = filterName;
+	}
+
+	@Override
+	public String getReSIDfpStereoFilter6581() {
+		return reSIDfpStereoFilter6581;
+	}
+
+	@Override
+	public void setReSIDfpStereoFilter6581(String filterName) {
+		reSIDfpStereoFilter6581 = filterName;
+	}
+
+	@Override
+	public String getReSIDfpStereoFilter8580() {
+		return reSIDfpStereoFilter8580;
+	}
+
+	@Override
+	public void setReSIDfpStereoFilter8580(String filterName) {
+		reSIDfpStereoFilter8580 = filterName;
+	}
+
+	@Override
+	public String getReSIDfpThirdSIDFilter6581() {
+		return reSIDfpThirdSIDFilter6581;
+	}
+
+	@Override
+	public void setReSIDfpThirdSIDFilter6581(String filterName) {
+		reSIDfpThirdSIDFilter6581 = filterName;
+	}
+
+	@Override
+	public String getReSIDfpThirdSIDFilter8580() {
+		return reSIDfpThirdSIDFilter8580;
+	}
+
+	@Override
+	public void setReSIDfpThirdSIDFilter8580(String filterName) {
+		reSIDfpThirdSIDFilter8580 = filterName;
 	}
 
 	@Override
@@ -56,14 +209,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
-	public void setThirdSIDFilter8580(String filterName) {
-	}
-
-	@Override
-	public void setThirdSIDFilter6581(String filterName) {
-	}
-
-	@Override
 	public void setThirdSIDFilter(boolean enable) {
 	}
 
@@ -77,14 +222,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public void setStereoSidModel(ChipModel model) {
-	}
-
-	@Override
-	public void setStereoFilter8580(String filterName) {
-	}
-
-	@Override
-	public void setStereoFilter6581(String filterName) {
 	}
 
 	@Override
@@ -113,30 +250,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public void setSidBlasterLatencyTimer(short sidBlasterLatencyTimer) {
-	}
-
-	@Override
-	public void setReSIDfpThirdSIDFilter8580(String filterName) {
-	}
-
-	@Override
-	public void setReSIDfpThirdSIDFilter6581(String filterName) {
-	}
-
-	@Override
-	public void setReSIDfpStereoFilter8580(String filterName) {
-	}
-
-	@Override
-	public void setReSIDfpStereoFilter6581(String filterName) {
-	}
-
-	@Override
-	public void setReSIDfpFilter8580(String filterName) {
-	}
-
-	@Override
-	public void setReSIDfpFilter6581(String filterName) {
 	}
 
 	@Override
@@ -233,14 +346,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public void setForce3SIDTune(boolean force) {
-	}
-
-	@Override
-	public void setFilter8580(String filterName) {
-	}
-
-	@Override
-	public void setFilter6581(String filterName) {
 	}
 
 	@Override
@@ -434,16 +539,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
-	public String getThirdSIDFilter8580() {
-		return importedApi.getThirdSIDFilter8580();
-	}
-
-	@Override
-	public String getThirdSIDFilter6581() {
-		return importedApi.getThirdSIDFilter6581();
-	}
-
-	@Override
 	public int getThirdSIDBase() {
 		return 0xd440;
 	}
@@ -456,16 +551,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	@Override
 	public ChipModel getStereoSidModel() {
 		return ChipModel.AUTO;
-	}
-
-	@Override
-	public String getStereoFilter8580() {
-		return importedApi.getStereoFilter8580();
-	}
-
-	@Override
-	public String getStereoFilter6581() {
-		return importedApi.getStereoFilter6581();
 	}
 
 	@Override
@@ -496,36 +581,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	@Override
 	public List<? extends IDeviceMapping> getSidBlasterDeviceList() {
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String getReSIDfpThirdSIDFilter8580() {
-		return importedApi.getReSIDfpThirdSIDFilter8580();
-	}
-
-	@Override
-	public String getReSIDfpThirdSIDFilter6581() {
-		return importedApi.getReSIDfpThirdSIDFilter6581();
-	}
-
-	@Override
-	public String getReSIDfpStereoFilter8580() {
-		return importedApi.getReSIDfpStereoFilter8580();
-	}
-
-	@Override
-	public String getReSIDfpStereoFilter6581() {
-		return importedApi.getReSIDfpStereoFilter6581();
-	}
-
-	@Override
-	public String getReSIDfpFilter8580() {
-		return importedApi.getReSIDfpFilter8580();
-	}
-
-	@Override
-	public String getReSIDfpFilter6581() {
-		return importedApi.getReSIDfpFilter6581();
 	}
 
 	@Override
@@ -581,16 +636,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	@Override
 	public int getHardsid6581() {
 		return 0;
-	}
-
-	@Override
-	public String getFilter8580() {
-		return importedApi.getFilter8580();
-	}
-
-	@Override
-	public String getFilter6581() {
-		return importedApi.getFilter6581();
 	}
 
 	@Override

@@ -89,6 +89,11 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
+	public static void filterName(String emulation, String chipModel, int sidNum, String filterName) {
+		jsidplay2.filterName(emulation, chipModel, sidNum, filterName);
+	}
+
+	@JSExport
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);
 	}

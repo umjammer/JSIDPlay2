@@ -73,6 +73,7 @@ public class ExportedApi implements IExportedApi {
 
 	public ExportedApi(IImportedApi importedApi) {
 		this.importedApi = importedApi;
+		config = new ConfigurationTeaVM(importedApi);
 	}
 
 	@Override
@@ -84,7 +85,6 @@ public class ExportedApi implements IExportedApi {
 		String cartContentsName = cartContentsNameFromJS != null ? "" + cartContentsNameFromJS : null;
 		command = commandFromJS != null ? "" + commandFromJS : null;
 
-		config = new ConfigurationTeaVM(importedApi);
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
 		final IEmulationSection emulationSection = config.getEmulationSection();
@@ -335,6 +335,32 @@ public class ExportedApi implements IExportedApi {
 			c64.setJoystick(number, () -> (byte) (0xff));
 
 		}), c64.getClock().getCyclesPerFrame() << 2);
+	}
+
+	@Override
+	public void filterName(String emulationFromJS, String chipModelFromJS, int sidNumber, String filterNameFromJS) {
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String emulationStr = emulationFromJS != null ? "" + emulationFromJS : null;
+		String chipModelStr = chipModelFromJS != null ? "" + chipModelFromJS : null;
+		String filterName = filterNameFromJS != null ? "" + filterNameFromJS : null;
+
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		emulationSection.setFilterName(sidNumber, Engine.EMULATION, Emulation.valueOf(emulationStr),
+				ChipModel.valueOf(chipModelStr), filterName);
+		if (c64 != null) {
+			c64.insertSIDChips((sidNum, sidEmu) -> {
+				if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+					return sidBuilder.lock(sidEmu, sidNum, tune);
+				} else if (sidEmu != NONE) {
+					sidBuilder.unlock(sidEmu);
+				}
+				return NONE;
+			}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
+			
+		}
+		String newFilterName = emulationSection.getFilterName(sidNumber, Engine.EMULATION,
+				Emulation.valueOf(emulationStr), ChipModel.valueOf(chipModelStr));
+		LOG.finest(String.format("Filter %d : %s", sidNumber + 1, newFilterName));
 	}
 
 	@Override

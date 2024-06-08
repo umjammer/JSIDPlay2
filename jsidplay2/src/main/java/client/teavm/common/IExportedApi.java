@@ -40,4 +40,6 @@ public interface IExportedApi extends JSObject {
 	void delaySidBlaster(int cycles);
 
 	void joystick(int number, int value);
+
+	void filterName(String emulation, String chipModel, int sidNum, String filterName);
 }

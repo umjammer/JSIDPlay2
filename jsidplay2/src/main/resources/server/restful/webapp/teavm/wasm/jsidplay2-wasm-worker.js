@@ -120,6 +120,17 @@ addEventListener(
       postMessage({
         eventType: "JOYSTICK_PRESSED",
       });
+    } else if (eventType === "SET_FILTER_NAME") {
+      instance.exports.filterName(
+        allocateTeaVMstring(eventData.emulation ?? null),
+        allocateTeaVMstring(eventData.chipModel ?? null),
+        eventData.sidNum,
+        allocateTeaVMstring(eventData.filterName ?? null)
+      );
+
+      postMessage({
+        eventType: "FILTER_NAME_SET",
+      });
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm
         .load("jsidplay2.wasm", {
@@ -138,20 +149,6 @@ addEventListener(
               getDefaultClockSpeed: () => eventData.defaultClockSpeed,
               getDefaultEmulationReSid: () => eventData.defaultEmulation,
               getDefaultSidModel8580: () => eventData.defaultSidModel,
-            };
-            o.filtersection = {
-              getFilter6581: () => allocateTeaVMstring(eventData.filter6581 ?? null),
-              getFilter8580: () => allocateTeaVMstring(eventData.filter8580 ?? null),
-              getStereoFilter6581: () => allocateTeaVMstring(eventData.stereoFilter6581 ?? null),
-              getStereoFilter8580: () => allocateTeaVMstring(eventData.stereoFilter8580 ?? null),
-              getThirdSIDFilter6581: () => allocateTeaVMstring(eventData.thirdSIDFilter6581 ?? null),
-              getThirdSIDFilter8580: () => allocateTeaVMstring(eventData.thirdSIDFilter8580 ?? null),
-              getReSIDfpFilter6581: () => allocateTeaVMstring(eventData.reSIDfpFilter6581 ?? null),
-              getReSIDfpFilter8580: () => allocateTeaVMstring(eventData.reSIDfpFilter8580 ?? null),
-              getReSIDfpStereoFilter6581: () => allocateTeaVMstring(eventData.reSIDfpStereoFilter6581 ?? null),
-              getReSIDfpStereoFilter8580: () => allocateTeaVMstring(eventData.reSIDfpStereoFilter8580 ?? null),
-              getReSIDfpThirdSIDFilter6581: () => allocateTeaVMstring(eventData.reSIDfpThirdSIDFilter6581 ?? null),
-              getReSIDfpThirdSIDFilter8580: () => allocateTeaVMstring(eventData.reSIDfpThirdSIDFilter8580 ?? null),
             };
             o.audiodriver = {
               processSamples: (leftChannelPtr, rightChannelPtr, length) =>

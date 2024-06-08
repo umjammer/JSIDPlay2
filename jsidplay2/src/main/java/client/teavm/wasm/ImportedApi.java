@@ -72,66 +72,6 @@ public class ImportedApi implements IImportedApi {
 	}
 
 	@Override
-	public String getFilter6581() {
-		return getFilter6581JS();
-	}
-
-	@Override
-	public String getFilter8580() {
-		return getFilter8580JS();
-	}
-
-	@Override
-	public String getStereoFilter6581() {
-		return getStereoFilter6581JS();
-	}
-
-	@Override
-	public String getStereoFilter8580() {
-		return getStereoFilter8580JS();
-	}
-
-	@Override
-	public String getThirdSIDFilter6581() {
-		return getThirdSIDFilter6581JS();
-	}
-
-	@Override
-	public String getThirdSIDFilter8580() {
-		return getThirdSIDFilter8580JS();
-	}
-
-	@Override
-	public String getReSIDfpFilter6581() {
-		return getReSIDfpFilter6581JS();
-	}
-
-	@Override
-	public String getReSIDfpFilter8580() {
-		return getReSIDfpFilter8580JS();
-	}
-
-	@Override
-	public String getReSIDfpStereoFilter6581() {
-		return getReSIDfpStereoFilter6581JS();
-	}
-
-	@Override
-	public String getReSIDfpStereoFilter8580() {
-		return getReSIDfpStereoFilter8580JS();
-	}
-
-	@Override
-	public String getReSIDfpThirdSIDFilter6581() {
-		return getReSIDfpThirdSIDFilter6581JS();
-	}
-
-	@Override
-	public String getReSIDfpThirdSIDFilter8580() {
-		return getReSIDfpThirdSIDFilter8580JS();
-	}
-
-	@Override
 	public void processSamples(float[] resultL, float[] resultR, int length) {
 		processSamplesJS(resultL, resultR, length);
 	}
@@ -176,42 +116,6 @@ public class ImportedApi implements IImportedApi {
 
 	@Import(module = C1541_SECTION, name = "isJiffyDosInstalled")
 	public static native boolean isJiffyDosInstalledJS();
-
-	@Import(module = FILTER_SECTION, name = "getFilter6581")
-	public static native String getFilter6581JS();
-
-	@Import(module = FILTER_SECTION, name = "getFilter8580")
-	public static native String getFilter8580JS();
-
-	@Import(module = FILTER_SECTION, name = "getStereoFilter6581")
-	public static native String getStereoFilter6581JS();
-
-	@Import(module = FILTER_SECTION, name = "getStereoFilter8580")
-	public static native String getStereoFilter8580JS();
-
-	@Import(module = FILTER_SECTION, name = "getThirdSIDFilter6581")
-	public static native String getThirdSIDFilter6581JS();
-
-	@Import(module = FILTER_SECTION, name = "getThirdSIDFilter8580")
-	public static native String getThirdSIDFilter8580JS();
-
-	@Import(module = FILTER_SECTION, name = "getReSIDfpFilter6581")
-	public static native String getReSIDfpFilter6581JS();
-
-	@Import(module = FILTER_SECTION, name = "getReSIDfpFilter8580")
-	public static native String getReSIDfpFilter8580JS();
-
-	@Import(module = FILTER_SECTION, name = "getReSIDfpStereoFilter6581")
-	public static native String getReSIDfpStereoFilter6581JS();
-
-	@Import(module = FILTER_SECTION, name = "getReSIDfpStereoFilter8580")
-	public static native String getReSIDfpStereoFilter8580JS();
-
-	@Import(module = FILTER_SECTION, name = "getReSIDfpThirdSIDFilter6581")
-	public static native String getReSIDfpThirdSIDFilter6581JS();
-
-	@Import(module = FILTER_SECTION, name = "getReSIDfpThirdSIDFilter8580")
-	public static native String getReSIDfpThirdSIDFilter8580JS();
 
 	@Import(module = AUDIO_DRIVER, name = "processSamples")
 	public static native void processSamplesJS(float[] resultL, float[] resultR, int length);

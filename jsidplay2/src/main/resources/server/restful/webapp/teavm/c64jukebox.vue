@@ -1963,6 +1963,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDfpFilter6581"
                                                 v-model="reSIDfpFilter6581"
+                                                @change="setFilterName('RESIDFP', 'MOS6581', 0, reSIDfpFilter6581)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
@@ -1985,6 +1986,9 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDfpStereoFilter6581"
                                                 v-model="reSIDfpStereoFilter6581"
+                                                @change="
+                                                  setFilterName('RESIDFP', 'MOS6581', 1, reSIDfpStereoFilter6581)
+                                                "
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
@@ -2007,6 +2011,9 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDfpThirdSIDFilter6581"
                                                 v-model="reSIDfpThirdSIDFilter6581"
+                                                @change="
+                                                  setFilterName('RESIDFP', 'MOS6581', 2, reSIDfpThirdSIDFilter6581)
+                                                "
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDfpFilters6581">{{ filter }}</option>
@@ -2086,6 +2093,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDfpFilter8580"
                                                 v-model="reSIDfpFilter8580"
+                                                @change="setFilterName('RESIDFP', 'MOS8580', 0, reSIDfpFilter8580)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
@@ -2108,6 +2116,9 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDfpStereoFilter8580"
                                                 v-model="reSIDfpStereoFilter8580"
+                                                @change="
+                                                  setFilterName('RESIDFP', 'MOS8580', 1, reSIDfpStereoFilter8580)
+                                                "
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
@@ -2130,6 +2141,9 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDfpThirdSIDFilter8580"
                                                 v-model="reSIDfpThirdSIDFilter8580"
+                                                @change="
+                                                  setFilterName('RESIDFP', 'MOS8580', 2, reSIDfpThirdSIDFilter8580)
+                                                "
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDfpFilters8580">{{ filter }}</option>
@@ -2252,6 +2266,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDFilter6581"
                                                 v-model="filter6581"
+                                                @change="setFilterName('RESID', 'MOS6581', 0, filter6581)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
@@ -2274,6 +2289,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDStereoFilter6581"
                                                 v-model="stereoFilter6581"
+                                                @change="setFilterName('RESID', 'MOS6581', 1, stereoFilter6581)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
@@ -2296,6 +2312,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDThirdSIDFilter6581"
                                                 v-model="thirdSIDFilter6581"
+                                                @change="setFilterName('RESID', 'MOS6581', 2, thirdSIDFilter6581)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDFilters6581">{{ filter }}</option>
@@ -2375,6 +2392,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDFilter8580"
                                                 v-model="filter8580"
+                                                @change="setFilterName('RESID', 'MOS8580', 0, filter8580)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
@@ -2397,6 +2415,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDStereoFilter8580"
                                                 v-model="stereoFilter8580"
+                                                @change="setFilterName('RESID', 'MOS8580', 1, stereoFilter8580)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
@@ -2419,6 +2438,7 @@
                                                 class="form-select form-select-sm right"
                                                 id="reSIDThirdSIDFilter8580"
                                                 v-model="thirdSIDFilter8580"
+                                                @change="setFilterName('RESID', 'MOS8580', 2, thirdSIDFilter8580)"
                                                 size="3"
                                               >
                                                 <option v-for="filter in reSIDFilters8580">{{ filter }}</option>
@@ -2655,19 +2675,6 @@
               defaultSidModel: "" + app.defaultSidModel === "true",
               jiffyDosInstalled: "" + app.jiffyDosInstalled === "true",
               defaultEmulation: app.defaultEmulation === "RESID",
-              filter6581: app.filter6581,
-              filter8580: app.filter8580,
-              stereoFilter6581: app.stereoFilter6581,
-              stereoFilter8580: app.stereoFilter8580,
-              thirdSIDFilter6581: app.thirdSIDFilter6581,
-              thirdSIDFilter8580: app.thirdSIDFilter8580,
-              reSIDfpFilter6581: app.reSIDfpFilter6581,
-              reSIDfpFilter8580: app.reSIDfpFilter8580,
-              reSIDfpStereoFilter6581: app.reSIDfpStereoFilter6581,
-              reSIDfpStereoFilter8580: app.reSIDfpStereoFilter8580,
-              reSIDfpThirdSIDFilter6581: app.reSIDfpThirdSIDFilter6581,
-              reSIDfpThirdSIDFilter8580: app.reSIDfpThirdSIDFilter8580,
-
             },
           });
 
@@ -2712,6 +2719,20 @@
                 worker.postMessage({ eventType: "IDLE" });
               }
             } else if (eventType === "INITIALISED") {
+
+              app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
+              app.setFilterName('RESID', 'MOS6581', 1, app.stereoFilter6581);
+              app.setFilterName('RESID', 'MOS6581', 2, app.thirdSIDFilter6581);
+              app.setFilterName('RESID', 'MOS8580', 0, app.filter8580);
+              app.setFilterName('RESID', 'MOS8580', 1, app.stereoFilter8580);
+              app.setFilterName('RESID', 'MOS8580', 2, app.thirdSIDFilter8580);
+              app.setFilterName('RESIDFP', 'MOS6581', 0, app.reSIDfpFilter6581);
+              app.setFilterName('RESIDFP', 'MOS6581', 1, app.reSIDfpStereoFilter6581);
+              app.setFilterName('RESIDFP', 'MOS6581', 2, app.reSIDfpThirdSIDFilter6581);
+              app.setFilterName('RESIDFP', 'MOS8580', 0, app.reSIDfpFilter8580);
+              app.setFilterName('RESIDFP', 'MOS8580', 1, app.reSIDfpStereoFilter8580);
+              app.setFilterName('RESIDFP', 'MOS8580', 2, app.reSIDfpThirdSIDFilter8580);
+
               worker.postMessage({
                 eventType: "OPEN",
                 eventData: {
@@ -3223,6 +3244,17 @@
             app.$refs.formCartFileSm.value = "";
             app.reset();
           },
+          setFilterName(emulation, chipModel, sidNum, filterName) {
+              worker.postMessage({
+                eventType: "SET_FILTER_NAME",
+                eventData: {
+                  emulation: emulation,
+                  chipModel: chipModel,
+                  sidNum: sidNum,
+                  filterName: filterName,
+                },
+              });
+          },
           setDefault: function () {
             this.filter6581 = 'FilterAverage6581';
             this.filter8580 = 'FilterAverage8580';
@@ -3424,6 +3456,9 @@
         false
       );
       var keyDownListener = (event) => {
+        if (app.tabIndex != 1) {
+          return;
+        }
         let key = toC64KeyTableEntry(event.code);
         if (key) {
           app.pressKey(key);
@@ -3431,6 +3466,9 @@
         }
       };
       var keyUpListener = (event) => {
+        if (app.tabIndex != 1) {
+          return;
+        }
         let key = toC64KeyTableEntry(event.code);
         if (key) {
           app.releaseKey(key);

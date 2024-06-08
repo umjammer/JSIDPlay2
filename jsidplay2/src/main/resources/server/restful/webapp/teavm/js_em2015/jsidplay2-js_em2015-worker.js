@@ -12,6 +12,7 @@ import {
   pressKey,
   releaseKey,
   joystick,
+  filterName,
 } from "./jsidplay2.js";
 
 // Handle incoming messages
@@ -105,6 +106,12 @@ addEventListener(
       postMessage({
         eventType: "JOYSTICK_PRESSED",
       });
+    } else if (eventType === "SET_FILTER_NAME") {
+      filterName(eventData.emulation, eventData.chipModel, eventData.sidNum, eventData.filterName);
+
+      postMessage({
+        eventType: "FILTER_NAME_SET",
+      });
     } else if (eventType === "INITIALISE") {
       main(
         [
@@ -118,18 +125,6 @@ addEventListener(
           eventData.defaultEmulation,
           eventData.defaultSidModel,
           eventData.jiffyDosInstalled,
-          eventData.filter6581,
-          eventData.filter8580,
-          eventData.stereoFilter6581,
-          eventData.stereoFilter8580,
-          eventData.thirdSIDFilter6581,
-          eventData.thirdSIDFilter8580,
-          eventData.reSIDfpFilter6581,
-          eventData.reSIDfpFilter8580,
-          eventData.reSIDfpStereoFilter6581,
-          eventData.reSIDfpStereoFilter8580,
-          eventData.reSIDfpThirdSIDFilter6581,
-          eventData.reSIDfpThirdSIDFilter8580,
         ].map((item) => "" + item)
       );
 

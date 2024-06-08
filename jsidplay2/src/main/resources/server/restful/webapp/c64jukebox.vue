@@ -4765,20 +4765,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               getDefaultEmulationReSid: () => {},
               getDefaultSidModel8580: () => {},
             };
-            o.filtersection = {
-              getFilter6581: () => {},
-              getFilter8580: () => {},
-              getStereoFilter6581: () => {},
-              getStereoFilter8580: () => {},
-              getThirdSIDFilter6581: () => {},
-              getThirdSIDFilter8580: () => {},
-              getReSIDfpFilter6581: () => {},
-              getReSIDfpFilter8580: () => {},
-              getReSIDfpStereoFilter6581: () => {},
-              getReSIDfpStereoFilter8580: () => {},
-              getReSIDfpThirdSIDFilter6581: () => {},
-              getReSIDfpThirdSIDFilter8580: () => {},
-            };
             o.audiodriver = {
               processSamples: () => {},
               processPixels: () => {},
