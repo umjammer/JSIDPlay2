@@ -121,12 +121,11 @@
                 });
               } else if (eventType === "SID_WRITE") {
               } else if (eventType === "OPENED" || eventType === "CLOCKED") {
-                if (!pause) {
-                  worker.postMessage({ eventType: "CLOCK" });
-                } else {
-                  worker.postMessage({ eventType: "IDLE" });
-                }
-                worker.postMessage({ eventType: "CLOCK" });
+                  if (!pause && (size * nthFrame < 25) && (nextTime - audioContext.currentTime <= 1)) {
+                      worker.postMessage({ eventType: "CLOCK" });
+                    } else {
+                      worker.postMessage({ eventType: "IDLE" });
+                    }
               } else if (eventType === "INITIALISED") {
                 worker.postMessage({
                   eventType: "OPEN",

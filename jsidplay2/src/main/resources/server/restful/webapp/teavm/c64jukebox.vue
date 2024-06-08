@@ -3004,7 +3004,7 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && (size * app.nthFrame < 25) && (nextTime - audioContext.currentTime < 0.5)) {
+              if (!app.paused && (size * app.nthFrame < 25) && (nextTime - audioContext.currentTime <= 1)) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 worker.postMessage({ eventType: "IDLE" });
