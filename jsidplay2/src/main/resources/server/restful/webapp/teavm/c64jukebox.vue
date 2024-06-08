@@ -3379,6 +3379,12 @@
           Vue.nextTick(() => app.reset());
         },
         watch: {
+          defaultEmulation(newValue, oldValue) {
+            localStorage.defaultEmulation = JSON.stringify(newValue);
+          },
+          defaultSidModel(newValue, oldValue) {
+            localStorage.defaultSidModel = JSON.stringify(newValue);
+          },
           filter6581(newValue, oldValue) {
             localStorage.filter6581 = JSON.stringify(newValue);
           },
@@ -3417,12 +3423,6 @@
           },
           defaultClockSpeed(newValue, oldValue) {
             localStorage.defaultClockSpeed = JSON.stringify(newValue);
-          },
-          defaultEmulation(newValue, oldValue) {
-            localStorage.defaultEmulation = JSON.stringify(newValue);
-          },
-          defaultSidModel(newValue, oldValue) {
-            localStorage.defaultSidModel = JSON.stringify(newValue);
           },
           sampling(newValue, oldValue) {
             localStorage.sampling = JSON.stringify(newValue);
