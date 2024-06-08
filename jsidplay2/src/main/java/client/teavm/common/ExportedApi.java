@@ -115,7 +115,7 @@ public class ExportedApi implements IExportedApi {
 				Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
 				ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
 				String filterName = emulationSection.getFilterName(sidNum, engine, emulation, chipModel);
-				LOG.finest(String.format("Filter %d : %s", sidNum + 1, filterName));
+				LOG.finest(getFilterName(sidNum) + ": " + filterName);
 			}
 		}
 
@@ -379,9 +379,7 @@ public class ExportedApi implements IExportedApi {
 			}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
 
 		}
-		String newFilterName = emulationSection.getFilterName(sidNumber, Engine.EMULATION,
-				Emulation.valueOf(emulationStr), ChipModel.valueOf(chipModelStr));
-		LOG.finest(String.format("Filter %d : %s", sidNumber + 1, newFilterName));
+		LOG.finest(getFilterName(sidNumber) + ": " + filterName);
 	}
 
 	@Override
@@ -448,6 +446,17 @@ public class ExportedApi implements IExportedApi {
 
 	private boolean isOpen() {
 		return c64 != null;
+	}
+
+	private String getFilterName(int sidNumber) {
+		switch (sidNumber) {
+		case 1:
+			return "StereoFilter";
+		case 2:
+			return "3-SIDFilter";
+		default:
+			return "Filter";
+		}
 	}
 
 	private void installHack(File d64File) {
