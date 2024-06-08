@@ -1524,6 +1524,16 @@
                     >
                       {{ $t("space") }}
                     </button>
+                    <button
+                      v-show="screen"
+                      type="button"
+                      class="btn btn-secondary btn-sm"
+                      v-on:click="reset()"
+                      :disabled="!screen"
+                      style="float: right"
+                    >
+                      {{ $t("reset") }}
+                    </button>
                   </div>
                   <div class="col">
                     <h2>
@@ -3385,10 +3395,12 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && (size * app.nthFrame < 25) && (nextTime - audioContext.currentTime <= 1)) {
+              if (!app.paused && (nextTime - audioContext.currentTime <= 1 || (app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
                 worker.postMessage({ eventType: "CLOCK" });
+                //document.body.style.backgroundColor = "red";
               } else {
                 worker.postMessage({ eventType: "IDLE" });
+                //document.body.style.backgroundColor = "yellow";
               }
             } else if (eventType === "INITIALISED") {
 
