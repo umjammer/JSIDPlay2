@@ -203,22 +203,24 @@ public class ExportedApi implements IExportedApi {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String multiLineCommand = multiLineCommandFromJS != null ? "" + multiLineCommandFromJS : null;
 
-		String command;
-		if (multiLineCommand.length() > MAX_COMMAND_LEN) {
-			String[] lines = multiLineCommand.split("\r");
-			for (String line : lines) {
-				byte[] screenRam = petsciiToScreenRam(line);
-				System.arraycopy(screenRam, 0, c64.getRAM(), RAM_COMMAND_SCREEN_ADDRESS, screenRam.length);
-				break;
+		if (isOpen()) {
+			String command;
+			if (multiLineCommand.length() > MAX_COMMAND_LEN) {
+				String[] lines = multiLineCommand.split("\r");
+				for (String line : lines) {
+					byte[] screenRam = petsciiToScreenRam(line);
+					System.arraycopy(screenRam, 0, c64.getRAM(), RAM_COMMAND_SCREEN_ADDRESS, screenRam.length);
+					break;
+				}
+				int indexOf = multiLineCommand.indexOf('\r');
+				command = indexOf != -1 ? multiLineCommand.substring(indexOf) : "\r";
+			} else {
+				command = multiLineCommand;
 			}
-			int indexOf = multiLineCommand.indexOf('\r');
-			command = indexOf != -1 ? multiLineCommand.substring(indexOf) : "\r";
-		} else {
-			command = multiLineCommand;
+			final int length = Math.min(command.length(), MAX_COMMAND_LEN);
+			System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
+			c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
 		}
-		final int length = Math.min(command.length(), MAX_COMMAND_LEN);
-		System.arraycopy(command.getBytes(US_ASCII), 0, c64.getRAM(), RAM_COMMAND, length);
-		c64.getRAM()[RAM_COMMAND_LEN] = (byte) length;
 	}
 
 	@Override
@@ -234,13 +236,15 @@ public class ExportedApi implements IExportedApi {
 		String diskContentsName = diskContentsNameFromJS != null ? "" + diskContentsNameFromJS : null;
 
 		try {
-			File d64File = createReadOnlyFile(diskContents, diskContentsName);
-			config.getC1541Section().setDriveOn(true);
-			hardwareEnsemble.enableFloppyDiskDrives(true);
-			// attach selected disk into the first disk drive
-			DiskImage disk = hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
-			disk.setExtendImagePolicy(() -> true);
-			installHack(d64File);
+			if (isOpen()) {
+				File d64File = createReadOnlyFile(diskContents, diskContentsName);
+				config.getC1541Section().setDriveOn(true);
+				hardwareEnsemble.enableFloppyDiskDrives(true);
+				// attach selected disk into the first disk drive
+				DiskImage disk = hardwareEnsemble.getFloppies()[0].getDiskController().insertDisk(d64File);
+				disk.setExtendImagePolicy(() -> true);
+				installHack(d64File);
+			}
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			System.err.println(String.format("Cannot insert media file '%s'.", diskContentsName));
@@ -250,7 +254,9 @@ public class ExportedApi implements IExportedApi {
 	@Override
 	public void ejectDisk() {
 		try {
-			hardwareEnsemble.getFloppies()[0].getDiskController().ejectDisk();
+			if (isOpen()) {
+				hardwareEnsemble.getFloppies()[0].getDiskController().ejectDisk();
+			}
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			System.err.println("Cannot eject disk.");
@@ -263,8 +269,10 @@ public class ExportedApi implements IExportedApi {
 		String tapeContentsName = tapeContentsNameFromJS != null ? "" + tapeContentsNameFromJS : null;
 
 		try {
-			File tapeFile = createReadOnlyFile(tapeContents, tapeContentsName);
-			hardwareEnsemble.getDatasette().insertTape(tapeFile);
+			if (isOpen()) {
+				File tapeFile = createReadOnlyFile(tapeContents, tapeContentsName);
+				hardwareEnsemble.getDatasette().insertTape(tapeFile);
+			}
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			System.err.println(String.format("Cannot insert media file '%s'.", tapeContentsName));
@@ -274,7 +282,9 @@ public class ExportedApi implements IExportedApi {
 	@Override
 	public void ejectTape() {
 		try {
-			hardwareEnsemble.getDatasette().ejectTape();
+			if (isOpen()) {
+				hardwareEnsemble.getDatasette().ejectTape();
+			}
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			System.err.println("Cannot eject tape.");
@@ -283,7 +293,9 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void pressPlayOnTape() {
-		hardwareEnsemble.getDatasette().control(Control.START);
+		if (isOpen()) {
+			hardwareEnsemble.getDatasette().control(Control.START);
+		}
 	}
 
 	@Override
@@ -292,17 +304,20 @@ public class ExportedApi implements IExportedApi {
 		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
 
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
-		if (key == KeyTableEntry.RESTORE) {
-			c64.getKeyboard().restore();
-		} else {
-			c64.getKeyboard().keyPressed(key);
 
-			c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
+		if (isOpen()) {
+			if (key == KeyTableEntry.RESTORE) {
+				c64.getKeyboard().restore();
+			} else {
+				c64.getKeyboard().keyPressed(key);
 
-				c64.getEventScheduler().scheduleThreadSafeKeyEvent(
-						Event.of("Virtual Keyboard Released", event3 -> c64.getKeyboard().keyReleased(key)));
+				c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
 
-			}), c64.getClock().getCyclesPerFrame() << 2);
+					c64.getEventScheduler().scheduleThreadSafeKeyEvent(
+							Event.of("Virtual Keyboard Released", event3 -> c64.getKeyboard().keyReleased(key)));
+
+				}), c64.getClock().getCyclesPerFrame() << 2);
+			}
 		}
 	}
 
@@ -313,7 +328,9 @@ public class ExportedApi implements IExportedApi {
 
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
 
-		c64.getKeyboard().keyPressed(key);
+		if (isOpen()) {
+			c64.getKeyboard().keyPressed(key);
+		}
 	}
 
 	@Override
@@ -323,18 +340,22 @@ public class ExportedApi implements IExportedApi {
 
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
 
-		c64.getKeyboard().keyReleased(key);
+		if (isOpen()) {
+			c64.getKeyboard().keyReleased(key);
+		}
 	}
 
 	@Override
 	public void joystick(int number, int value) {
-		c64.setJoystick(number, () -> (byte) (0xff ^ value));
+		if (isOpen()) {
+			c64.setJoystick(number, () -> (byte) (0xff ^ value));
 
-		c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Joystick Released", event -> {
+			c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Joystick Released", event -> {
 
-			c64.setJoystick(number, () -> (byte) (0xff));
+				c64.setJoystick(number, () -> (byte) (0xff));
 
-		}), c64.getClock().getCyclesPerFrame() << 2);
+			}), c64.getClock().getCyclesPerFrame() << 2);
+		}
 	}
 
 	@Override
@@ -347,7 +368,7 @@ public class ExportedApi implements IExportedApi {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setFilterName(sidNumber, Engine.EMULATION, Emulation.valueOf(emulationStr),
 				ChipModel.valueOf(chipModelStr), filterName);
-		if (c64 != null) {
+		if (isOpen()) {
 			c64.insertSIDChips((sidNum, sidEmu) -> {
 				if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
 					return sidBuilder.lock(sidEmu, sidNum, tune);
@@ -356,7 +377,7 @@ public class ExportedApi implements IExportedApi {
 				}
 				return NONE;
 			}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
-			
+
 		}
 		String newFilterName = emulationSection.getFilterName(sidNumber, Engine.EMULATION,
 				Emulation.valueOf(emulationStr), ChipModel.valueOf(chipModelStr));
@@ -423,6 +444,10 @@ public class ExportedApi implements IExportedApi {
 				}
 			}
 		}
+	}
+
+	private boolean isOpen() {
+		return c64 != null;
 	}
 
 	private void installHack(File d64File) {
