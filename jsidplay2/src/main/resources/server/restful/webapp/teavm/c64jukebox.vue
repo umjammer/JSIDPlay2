@@ -1675,20 +1675,6 @@
                       <div class="form-check">
                         <div class="settings-box">
                           <span class="setting">
-                            <label for="startSong"
-                              >{{ $t("startSong") }}
-                              <input
-                                class="right"
-                                type="number"
-                                id="startSong"
-                                class="form-control"
-                                v-model.number="startSong"
-                            /></label>
-                          </span>
-                        </div>
-
-                        <div class="settings-box">
-                          <span class="setting">
                             <div class="form-check">
                               <label class="form-check-label" for="reverbBypass">
                                 {{ $t("reverbBypass") }}
@@ -1705,16 +1691,43 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting">
+                            <label for="startSong"
+                              >{{ $t("startSong") }}
+                              <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
+                              <input
+                                class="right"
+                                type="number"
+                                id="startSong"
+                                class="form-control"
+                                v-model.number="startSong"
+                                @change="reset()"
+                            /></label>
+                          </span>
+                        </div>
+
+                        <div class="settings-box">
+                          <span class="setting">
                             <label class="form-check-label" for="sidWrites">
+                              <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                               <input
                                 class="form-check-input"
                                 type="checkbox"
                                 id="sidWrites"
                                 style="float: right; margin-left: 8px"
                                 v-model="sidWrites"
+                                @change="reset()"
                               />
                               {{ $t("sidWrites") }}
                             </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <span class="text-danger">Note: To apply those changes, we must reset!</span>
+                            <i
+                              class="bi bi-exclamation btn btn-sm fw-bold btn-warning fw-bolder"
+                              style="float: left"
+                            ></i>
                           </span>
                         </div>
                       </div>
@@ -1740,11 +1753,26 @@
                         <div class="settings-box">
                           <span class="setting">
                             <label for="nthFrame">
-                              <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
+                              <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
+                              <select
+                                class="form-select form-select-sm right"
+                                id="nthFrame"
+                                v-model="nthFrame"
+                                @change="reset()"
+                              >
                                 <option v-for="n in nthFrames" :value="n">{{ n }}</option>
                               </select>
                               {{ $t("nthFrame") }}
                             </label>
+                          </span>
+                        </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <span class="text-danger">Note: To apply those changes, we must reset!</span>
+                            <i
+                              class="bi bi-exclamation btn btn-sm fw-bold btn-warning fw-bolder"
+                              style="float: left"
+                            ></i>
                           </span>
                         </div>
                       </div>
@@ -1833,10 +1861,12 @@
                       <div class="settings-box">
                         <span class="setting">
                           <label for="defaultClockSpeed">
+                            <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                             <select
                               class="form-select form-select-sm right"
                               id="defaultClockSpeed"
                               v-model="defaultClockSpeed"
+                              @change="reset()"
                             >
                               <option value="50">PAL</option>
                               <option value="60">NTSC</option>
@@ -1881,7 +1911,13 @@
                       <div class="settings-box">
                         <span class="setting">
                           <label for="sampling">
-                            <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
+                            <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
+                            <select
+                              class="form-select form-select-sm right"
+                              id="sampling"
+                              v-model="sampling"
+                              @change="reset()"
+                            >
                               <option value="false">DECIMATE</option>
                               <option value="true">RESAMPLE</option>
                             </select>
@@ -1953,12 +1989,14 @@
                         <span class="setting">
                           <label for="bufferSize"
                             >{{ $t("bufferSize") }}
+                            <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                             <input
                               class="right"
                               type="number"
                               id="bufferSize"
                               class="form-control"
                               v-model.number="bufferSize"
+                              @change="reset()"
                           /></label>
                         </span>
                       </div>
@@ -1966,13 +2004,21 @@
                         <span class="setting">
                           <label for="audioBufferSize"
                             >{{ $t("audioBufferSize") }}
+                            <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                             <input
                               class="right"
                               type="number"
                               id="audioBufferSize"
                               class="form-control"
                               v-model.number="audioBufferSize"
+                              @change="reset()"
                           /></label>
+                        </span>
+                      </div>
+                      <div class="settings-box">
+                        <span class="setting">
+                          <span class="text-danger">Note: To apply those changes, we must reset!</span>
+                          <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                         </span>
                       </div>
                     </div>
