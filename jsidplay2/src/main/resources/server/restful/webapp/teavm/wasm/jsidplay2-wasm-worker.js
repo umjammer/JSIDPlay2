@@ -120,6 +120,18 @@ addEventListener(
       postMessage({
         eventType: "JOYSTICK_PRESSED",
       });
+    } else if (eventType === "SET_DEFAULT_EMULATION") {
+      instance.exports.defaultEmulation(allocateTeaVMstring(eventData.emulation ?? null));
+
+      postMessage({
+        eventType: "DEFAULT_EMULATION_SET",
+      });
+    } else if (eventType === "SET_DEFAULT_CHIP_MODEL") {
+      instance.exports.defaultChipModel(allocateTeaVMstring(eventData.chipModel ?? null));
+
+      postMessage({
+        eventType: "DEFAULT_CHIP_MODEL_SET",
+      });
     } else if (eventType === "SET_FILTER_NAME") {
       instance.exports.filterName(
         allocateTeaVMstring(eventData.emulation ?? null),

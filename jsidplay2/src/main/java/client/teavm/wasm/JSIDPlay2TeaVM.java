@@ -88,6 +88,16 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.joystick(number, value);
 	}
 
+	@Export(name = "defaultEmulation")
+	public static void defaultEmulation(String emulation) {
+		jsidplay2.defaultEmulation(emulation);
+	}
+
+	@Export(name = "defaultChipModel")
+	public static void defaultChipModel(String chipModel) {
+		jsidplay2.defaultChipModel(chipModel);
+	}
+
 	@Export(name = "filterName")
 	public static void filterName(String emulation, String chipModel, int sidNum, String filterName) {
 		jsidplay2.filterName(emulation, chipModel, sidNum, filterName);

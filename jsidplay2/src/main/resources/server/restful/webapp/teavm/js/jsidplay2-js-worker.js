@@ -91,6 +91,18 @@ addEventListener(
       postMessage({
         eventType: "JOYSTICK_PRESSED",
       });
+    } else if (eventType === "SET_DEFAULT_EMULATION") {
+      defaultEmulation(eventData.emulation);
+
+      postMessage({
+        eventType: "DEFAULT_EMULATION_SET",
+      });
+    } else if (eventType === "SET_DEFAULT_CHIP_MODEL") {
+      defaultChipModel(eventData.chipModel);
+
+      postMessage({
+        eventType: "DEFAULT_CHIP_MODEL_SET",
+      });
     } else if (eventType === "SET_FILTER_NAME") {
       filterName(eventData.emulation, eventData.chipModel, eventData.sidNum, eventData.filterName);
 
@@ -107,8 +119,6 @@ addEventListener(
           eventData.samplingMethodResample,
           eventData.reverbBypass,
           eventData.defaultClockSpeed,
-          eventData.defaultEmulation,
-          eventData.defaultSidModel,
           eventData.jiffyDosInstalled,
         ].map((item) => "" + item)
       );

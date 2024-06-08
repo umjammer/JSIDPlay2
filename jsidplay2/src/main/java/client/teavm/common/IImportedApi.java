@@ -17,10 +17,6 @@ public interface IImportedApi {
 
 	boolean isJiffyDosInstalled();
 
-	boolean getDefaultEmulationReSid();
-
-	boolean getDefaultSidModel8580();
-
 	int getDefaultClockSpeedAsInt();
 
 	boolean isPalEmulation();

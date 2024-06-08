@@ -16,17 +16,20 @@ import libsidplay.config.IEmulationSection;
 public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	private static final String FILTER_AVERAGE6581 = "FilterAverage6581";
-	
+
 	private static final String FILTER_AVERAGE8580 = "FilterAverage8580";
-	
+
 	private static final String FILTER_ALANKILA6581R4AR_3789 = "FilterAlankila6581R4AR_3789";
-	
+
 	private static final String FILTER_TRURL8580R5_3691 = "FilterTrurl8580R5_3691";
 
-	
 	private final OverrideSection overrideSection = new OverrideSection();
 
 	private IImportedApi importedApi;
+
+	private Emulation defaultEmulation = Emulation.RESIDFP;
+
+	private ChipModel defaultSidModel = ChipModel.MOS8580;
 
 	private String filter6581 = FILTER_AVERAGE6581;
 
@@ -57,6 +60,26 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
+	public Emulation getDefaultEmulation() {
+		return defaultEmulation;
+	}
+
+	@Override
+	public void setDefaultEmulation(Emulation emulation) {
+		defaultEmulation = emulation;
+	}
+
+	@Override
+	public ChipModel getDefaultSidModel() {
+		return defaultSidModel;
+	}
+
+	@Override
+	public void setDefaultSidModel(ChipModel model) {
+		defaultSidModel = model;
+	}
+
+	@Override
 	public String getFilter6581() {
 		return filter6581;
 	}
@@ -70,12 +93,12 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	public String getFilter8580() {
 		return filter8580;
 	}
-	
+
 	@Override
 	public void setFilter8580(String filterName) {
 		filter8580 = filterName;
 	}
-	
+
 	@Override
 	public String getStereoFilter6581() {
 		return stereoFilter6581;
@@ -377,14 +400,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
-	public void setDefaultSidModel(ChipModel model) {
-	}
-
-	@Override
-	public void setDefaultEmulation(Emulation emulation) {
-	}
-
-	@Override
 	public void setDefaultClockSpeed(CPUClock speed) {
 	}
 
@@ -646,24 +661,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	@Override
 	public int getDualSidBase() {
 		return 0xd420;
-	}
-
-	@Override
-	public ChipModel getDefaultSidModel() {
-		if (importedApi.getDefaultSidModel8580()) {
-			return ChipModel.MOS8580;
-		} else {
-			return ChipModel.MOS6581;
-		}
-	}
-
-	@Override
-	public Emulation getDefaultEmulation() {
-		if (importedApi.getDefaultEmulationReSid()) {
-			return Emulation.RESID;
-		} else {
-			return Emulation.RESIDFP;
-		}
 	}
 
 	@Override

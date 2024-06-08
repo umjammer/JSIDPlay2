@@ -179,14 +179,7 @@ public class ExportedApi implements IExportedApi {
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 
-		c64.insertSIDChips((sidNum, sidEmu) -> {
-			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
-				return sidBuilder.lock(sidEmu, sidNum, tune);
-			} else if (sidEmu != NONE) {
-				sidBuilder.unlock(sidEmu);
-			}
-			return NONE;
-		}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
+		updateSids(emulationSection);
 		if (nthFrame > 0) {
 			c64.configureVICs(vic -> vic.setVideoDriver(audioDriver));
 		}
@@ -359,6 +352,32 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
+	public void defaultEmulation(String emulationFromJS) {
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String emulationStr = emulationFromJS != null ? "" + emulationFromJS : null;
+
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		emulationSection.setDefaultEmulation(Emulation.valueOf(emulationStr));
+		if (isOpen()) {
+			updateSids(emulationSection);
+		}
+		LOG.finest("defaultEmulation: " + emulationStr);
+	}
+
+	@Override
+	public void defaultChipModel(String chipModelFromJS) {
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String chipModelStr = chipModelFromJS != null ? "" + chipModelFromJS : null;
+
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		emulationSection.setDefaultSidModel(ChipModel.valueOf(chipModelStr));
+		if (isOpen()) {
+			updateSids(emulationSection);
+		}
+		LOG.finest("defaultChipModel: " + chipModelStr);
+	}
+
+	@Override
 	public void filterName(String emulationFromJS, String chipModelFromJS, int sidNumber, String filterNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String emulationStr = emulationFromJS != null ? "" + emulationFromJS : null;
@@ -369,15 +388,7 @@ public class ExportedApi implements IExportedApi {
 		emulationSection.setFilterName(sidNumber, Engine.EMULATION, Emulation.valueOf(emulationStr),
 				ChipModel.valueOf(chipModelStr), filterName);
 		if (isOpen()) {
-			c64.insertSIDChips((sidNum, sidEmu) -> {
-				if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
-					return sidBuilder.lock(sidEmu, sidNum, tune);
-				} else if (sidEmu != NONE) {
-					sidBuilder.unlock(sidEmu);
-				}
-				return NONE;
-			}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
-
+			updateSids(emulationSection);
 		}
 		LOG.finest(getFilterName(sidNumber) + ": " + filterName);
 	}
@@ -431,14 +442,7 @@ public class ExportedApi implements IExportedApi {
 					update = true;
 				}
 				if (update) {
-					c64.insertSIDChips((sidNum, sidEmu) -> {
-						if (SidTune.isSIDUsed(config.getEmulationSection(), tune, sidNum)) {
-							return sidBuilder.lock(sidEmu, sidNum, tune);
-						} else if (sidEmu != NONE) {
-							sidBuilder.unlock(sidEmu);
-						}
-						return NONE;
-					}, sidNum -> SidTune.getSIDAddress(config.getEmulationSection(), tune, sidNum));
+					updateSids(emulationSection);
 				}
 			}
 		}
@@ -457,6 +461,17 @@ public class ExportedApi implements IExportedApi {
 		default:
 			return "Filter";
 		}
+	}
+
+	private void updateSids(final IEmulationSection emulationSection) {
+		c64.insertSIDChips((sidNum, sidEmu) -> {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				return sidBuilder.lock(sidEmu, sidNum, tune);
+			} else if (sidEmu != NONE) {
+				sidBuilder.unlock(sidEmu);
+			}
+			return NONE;
+		}, sidNum -> SidTune.getSIDAddress(emulationSection, tune, sidNum));
 	}
 
 	private void installHack(File d64File) {

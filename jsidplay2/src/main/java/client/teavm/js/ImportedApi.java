@@ -14,8 +14,6 @@ public class ImportedApi implements IImportedApi {
 	private final boolean samplingMethodResample;
 	private final boolean reverbBypass;
 	private final int defaultClockSpeedAsInt;
-	private final boolean defaultEmulationReSid;
-	private final boolean defaultSidModel8580;
 	private final boolean jiffyDosInstalled;
 
 	public ImportedApi(String[] args) {
@@ -26,9 +24,7 @@ public class ImportedApi implements IImportedApi {
 		this.samplingMethodResample = Boolean.TRUE.equals(Boolean.valueOf(args[4]));
 		this.reverbBypass = Boolean.TRUE.equals(Boolean.valueOf(args[5]));
 		this.defaultClockSpeedAsInt = Integer.valueOf(args[6]);
-		this.defaultEmulationReSid = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
-		this.defaultSidModel8580 = Boolean.TRUE.equals(Boolean.valueOf(args[8]));
-		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[9]));
+		this.jiffyDosInstalled = Boolean.TRUE.equals(Boolean.valueOf(args[7]));
 	}
 
 	@Override
@@ -59,16 +55,6 @@ public class ImportedApi implements IImportedApi {
 	@Override
 	public int getAudioBufferSize() {
 		return audioBufferSize;
-	}
-
-	@Override
-	public boolean getDefaultEmulationReSid() {
-		return defaultEmulationReSid;
-	}
-
-	@Override
-	public boolean getDefaultSidModel8580() {
-		return defaultSidModel8580;
 	}
 
 	@Override

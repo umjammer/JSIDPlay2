@@ -41,5 +41,9 @@ public interface IExportedApi extends JSObject {
 
 	void joystick(int number, int value);
 
+	void defaultEmulation(String emulation);
+
+	void defaultChipModel(String chipModel);
+
 	void filterName(String emulation, String chipModel, int sidNum, String filterName);
 }

@@ -52,11 +52,6 @@ public class ImportedApi implements IImportedApi {
 	}
 
 	@Override
-	public boolean getDefaultSidModel8580() {
-		return getDefaultSidModel8580JS();
-	}
-
-	@Override
 	public int getDefaultClockSpeedAsInt() {
 		return getDefaultClockSpeedAsIntJS();
 	}
@@ -64,11 +59,6 @@ public class ImportedApi implements IImportedApi {
 	@Override
 	public boolean isJiffyDosInstalled() {
 		return isJiffyDosInstalledJS();
-	}
-
-	@Override
-	public boolean getDefaultEmulationReSid() {
-		return getDefaultEmulationReSidJS();
 	}
 
 	@Override
@@ -104,12 +94,6 @@ public class ImportedApi implements IImportedApi {
 
 	@Import(module = AUDIO_SECTION, name = "getAudioBufferSize")
 	public static native int getAudioBufferSizeJS();
-
-	@Import(module = EMULATION_SECTION, name = "getDefaultEmulationReSid")
-	public static native boolean getDefaultEmulationReSidJS();
-
-	@Import(module = EMULATION_SECTION, name = "getDefaultSidModel8580")
-	public static native boolean getDefaultSidModel8580JS();
 
 	@Import(module = EMULATION_SECTION, name = "getDefaultClockSpeed")
 	public static native int getDefaultClockSpeedAsIntJS();

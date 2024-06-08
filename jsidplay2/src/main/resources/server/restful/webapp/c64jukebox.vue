@@ -4762,8 +4762,6 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
             };
             o.emulationsection = {
               getDefaultClockSpeed: () => {},
-              getDefaultEmulationReSid: () => {},
-              getDefaultSidModel8580: () => {},
             };
             o.audiodriver = {
               processSamples: () => {},

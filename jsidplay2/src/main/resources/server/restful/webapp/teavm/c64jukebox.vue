@@ -1759,6 +1759,7 @@
                               class="form-select form-select-sm right"
                               id="defaultEmulation"
                               v-model="defaultEmulation"
+                              @change="setDefaultEmulation(defaultEmulation)"
                             >
                               <option value="RESID">Dag Lem's resid 1.0 beta</option>
                               <option value="RESIDFP">Antti S. Lankila's resid-fp</option>
@@ -1774,9 +1775,10 @@
                               class="form-select form-select-sm right"
                               id="defaultSidModel"
                               v-model="defaultSidModel"
+                              @change="setDefaultSidModel(defaultSidModel)"
                             >
-                              <option value="false">MOS6581</option>
-                              <option value="true">MOS8580</option>
+                              <option value="MOS6581">MOS6581</option>
+                              <option value="MOS8580">MOS8580</option>
                             </select>
                             <span>{{ $t("defaultSidModel") }}</span>
                           </label>
@@ -2672,9 +2674,7 @@
               samplingMethodResample: "" + app.sampling === "true",
               reverbBypass: app.reverbBypass,
               defaultClockSpeed: app.defaultClockSpeed,
-              defaultSidModel: "" + app.defaultSidModel === "true",
               jiffyDosInstalled: "" + app.jiffyDosInstalled === "true",
-              defaultEmulation: app.defaultEmulation === "RESID",
             },
           });
 
@@ -2720,6 +2720,8 @@
               }
             } else if (eventType === "INITIALISED") {
 
+              app.setDefaultEmulation(app.defaultEmulation);
+              app.setDefaultSidModel(app.defaultSidModel);
               app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
               app.setFilterName('RESID', 'MOS6581', 1, app.stereoFilter6581);
               app.setFilterName('RESID', 'MOS6581', 2, app.thirdSIDFilter6581);
@@ -2950,7 +2952,7 @@
             nthFrame: 2,
             nthFrames: [1, 2, 4, 10, 25, 30, 50, 60],
             defaultEmulation: "RESIDFP",
-            defaultSidModel: true,
+            defaultSidModel: "MOS8580",
             jiffyDosInstalled: false,
             sampling: false,
             reverbBypass: true,
@@ -3244,6 +3246,22 @@
             app.$refs.formCartFileSm.value = "";
             app.reset();
           },
+          setDefaultEmulation(emulation) {
+              worker.postMessage({
+                eventType: "SET_DEFAULT_EMULATION",
+                eventData: {
+                  emulation: emulation,
+                },
+              });
+          },
+          setDefaultSidModel(chipModel) {
+              worker.postMessage({
+                eventType: "SET_DEFAULT_CHIP_MODEL",
+                eventData: {
+                  chipModel: chipModel,
+                },
+              });
+          },
           setFilterName(emulation, chipModel, sidNum, filterName) {
               worker.postMessage({
                 eventType: "SET_FILTER_NAME",
@@ -3255,7 +3273,7 @@
                 },
               });
           },
-          setDefault: function () {
+          setDefault() {
             this.filter6581 = 'FilterAverage6581';
             this.filter8580 = 'FilterAverage8580';
             this.stereoFilter6581 = 'FilterAverage6581';
@@ -3273,7 +3291,7 @@
             this.startSong = 0;
             this.nthFrame = 2;
             this.defaultEmulation = "RESIDFP";
-            this.defaultSidModel = true;
+            this.defaultSidModel = "MOS8580";
             this.sampling = false;
             this.reverbBypass = true;
             this.sidWrites = false;
