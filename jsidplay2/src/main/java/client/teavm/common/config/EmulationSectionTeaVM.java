@@ -55,6 +55,30 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	private String reSIDfpThirdSIDFilter8580 = FILTER_TRURL8580R5_3691;
 
+	private boolean muteVoice1;
+
+	private boolean muteVoice2;
+
+	private boolean muteVoice3;
+
+	private boolean muteVoice4;
+
+	private boolean muteStereoVoice1;
+
+	private boolean muteStereoVoice2;
+
+	private boolean muteStereoVoice3;
+
+	private boolean muteStereoVoice4;
+
+	private boolean muteThirdSIDVoice1;
+
+	private boolean muteThirdSIDVoice2;
+
+	private boolean muteThirdSIDVoice3;
+
+	private boolean muteThirdSIDVoice4;
+
 	public EmulationSectionTeaVM(IImportedApi importedApi) {
 		this.importedApi = importedApi;
 	}
@@ -200,6 +224,126 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
+	public boolean isMuteVoice1() {
+		return muteVoice1;
+	}
+
+	@Override
+	public void setMuteVoice1(boolean mute) {
+		muteVoice1 = mute;
+	}
+
+	@Override
+	public boolean isMuteVoice2() {
+		return muteVoice2;
+	}
+
+	@Override
+	public void setMuteVoice2(boolean mute) {
+		muteVoice2 = mute;
+	}
+
+	@Override
+	public boolean isMuteVoice3() {
+		return muteVoice3;
+	}
+
+	@Override
+	public void setMuteVoice3(boolean mute) {
+		muteVoice3 = mute;
+	}
+
+	@Override
+	public boolean isMuteVoice4() {
+		return muteVoice4;
+	}
+
+	@Override
+	public void setMuteVoice4(boolean mute) {
+		muteVoice4 = mute;
+	}
+
+	@Override
+	public boolean isMuteStereoVoice1() {
+		return muteStereoVoice1;
+	}
+
+	@Override
+	public void setMuteStereoVoice1(boolean mute) {
+		muteStereoVoice1 = mute;
+	}
+
+	@Override
+	public boolean isMuteStereoVoice2() {
+		return muteStereoVoice2;
+	}
+
+	@Override
+	public void setMuteStereoVoice2(boolean mute) {
+		muteStereoVoice2 = mute;
+	}
+
+	@Override
+	public boolean isMuteStereoVoice3() {
+		return muteStereoVoice3;
+	}
+
+	@Override
+	public void setMuteStereoVoice3(boolean mute) {
+		muteStereoVoice3 = mute;
+	}
+
+	@Override
+	public boolean isMuteStereoVoice4() {
+		return muteStereoVoice4;
+	}
+
+	@Override
+	public void setMuteStereoVoice4(boolean mute) {
+		muteStereoVoice4 = mute;
+	}
+
+	@Override
+	public boolean isMuteThirdSIDVoice1() {
+		return muteThirdSIDVoice1;
+	}
+
+	@Override
+	public void setMuteThirdSIDVoice1(boolean mute) {
+		muteThirdSIDVoice1 = mute;
+	}
+
+	@Override
+	public boolean isMuteThirdSIDVoice2() {
+		return muteThirdSIDVoice2;
+	}
+
+	@Override
+	public void setMuteThirdSIDVoice2(boolean mute) {
+		muteThirdSIDVoice2 = mute;
+	}
+
+	@Override
+	public boolean isMuteThirdSIDVoice3() {
+		return muteThirdSIDVoice3;
+	}
+
+	@Override
+	public void setMuteThirdSIDVoice3(boolean mute) {
+		muteThirdSIDVoice3 = mute;
+	}
+
+	@Override
+	public boolean isMuteThirdSIDVoice4() {
+		return muteThirdSIDVoice4;
+	}
+
+	@Override
+	public void setMuteThirdSIDVoice4(boolean mute) {
+		muteThirdSIDVoice4 = mute;
+	}
+
+	@Override
 	public void setUserSidModel(ChipModel model) {
 	}
 
@@ -308,54 +452,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 	}
 
 	@Override
-	public void setMuteVoice4(boolean mute) {
-	}
-
-	@Override
-	public void setMuteVoice3(boolean mute) {
-	}
-
-	@Override
-	public void setMuteVoice2(boolean mute) {
-	}
-
-	@Override
-	public void setMuteVoice1(boolean mute) {
-	}
-
-	@Override
-	public void setMuteThirdSIDVoice4(boolean mute) {
-	}
-
-	@Override
-	public void setMuteThirdSIDVoice3(boolean mute) {
-	}
-
-	@Override
-	public void setMuteThirdSIDVoice2(boolean mute) {
-	}
-
-	@Override
-	public void setMuteThirdSIDVoice1(boolean mute) {
-	}
-
-	@Override
-	public void setMuteStereoVoice4(boolean mute) {
-	}
-
-	@Override
-	public void setMuteStereoVoice3(boolean mute) {
-	}
-
-	@Override
-	public void setMuteStereoVoice2(boolean mute) {
-	}
-
-	@Override
-	public void setMuteStereoVoice1(boolean mute) {
-	}
-
-	@Override
 	public void setHardsid8580(int chip) {
 	}
 
@@ -415,66 +511,6 @@ public final class EmulationSectionTeaVM implements IEmulationSection {
 
 	@Override
 	public boolean isSidBlasterRead() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteVoice4() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteVoice3() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteVoice2() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteVoice1() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteThirdSIDVoice4() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteThirdSIDVoice3() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteThirdSIDVoice2() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteThirdSIDVoice1() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteStereoVoice4() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteStereoVoice3() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteStereoVoice2() {
-		return false;
-	}
-
-	@Override
-	public boolean isMuteStereoVoice1() {
 		return false;
 	}
 

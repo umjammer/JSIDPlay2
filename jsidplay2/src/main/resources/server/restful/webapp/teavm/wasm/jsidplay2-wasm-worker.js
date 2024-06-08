@@ -143,6 +143,12 @@ addEventListener(
       postMessage({
         eventType: "FILTER_NAME_SET",
       });
+    } else if (eventType === "SET_MUTE") {
+      instance.exports.mute(eventData.sidNum, eventData.voice, eventData.value);
+
+      postMessage({
+        eventType: "MUTE_SET",
+      });
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm
         .load("jsidplay2.wasm", {

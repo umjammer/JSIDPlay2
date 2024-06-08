@@ -104,6 +104,11 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
+	public static void mute(int sidNum, int voice, boolean value) {
+		jsidplay2.mute(sidNum, voice, value);
+	}
+
+	@JSExport
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);
 	}

@@ -15,6 +15,7 @@ import {
   defaultEmulation,
   defaultChipModel,
   filterName,
+  mute,
 } from "./jsidplay2.js";
 
 // Handle incoming messages
@@ -125,6 +126,12 @@ addEventListener(
 
       postMessage({
         eventType: "FILTER_NAME_SET",
+      });
+    } else if (eventType === "SET_MUTE") {
+      mute(eventData.sidNum, eventData.voice, eventData.value);
+
+      postMessage({
+        eventType: "MUTE_SET",
       });
     } else if (eventType === "INITIALISE") {
       main(

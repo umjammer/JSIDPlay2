@@ -394,6 +394,16 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
+	public void mute(int sidNum, int voice, boolean value) {
+		final IEmulationSection emulationSection = config.getEmulationSection();
+		emulationSection.setMuteVoice(sidNum, voice, value);
+		if (isOpen()) {
+			c64.configureSID(sidNum, sid -> sid.setVoiceMute(sidNum, value));
+		}
+		LOG.finest("mute SID" + (sidNum + 1) + ", voice" + voice + ": " + value);
+	}
+
+	@Override
 	public void delaySidBlaster(int cycles) {
 		// some hackery for SIDBlaster USB to support delayed writes
 		long delay = (long) (cycles / CPUClock.PAL.getCpuFrequency() * 1000000000L);

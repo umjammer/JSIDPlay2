@@ -1408,4 +1408,65 @@ public interface IEmulationSection {
 			throw new RuntimeException(String.format("Maximum SIDs exceeded: %d!", sidNum));
 		}
 	}
+
+	default void setMuteVoice(int sidNum, int voice, boolean value) {
+		switch (sidNum) {
+		case 0:
+			switch (voice) {
+			case 0:
+				setMuteVoice1(value);
+				break;
+			case 1:
+				setMuteVoice2(value);
+				break;
+			case 2:
+				setMuteVoice3(value);
+				break;
+			case 3:
+				setMuteVoice4(value);
+				break;
+			default:
+				throw new RuntimeException(String.format("Unknown voice: %d!", voice));
+			}
+			break;
+		case 1:
+			switch (voice) {
+			case 0:
+				setMuteStereoVoice1(value);
+				break;
+			case 1:
+				setMuteStereoVoice2(value);
+				break;
+			case 2:
+				setMuteStereoVoice3(value);
+				break;
+			case 3:
+				setMuteStereoVoice4(value);
+				break;
+			default:
+				throw new RuntimeException(String.format("Unknown voice: %d!", voice));
+			}
+			break;
+		case 2:
+			switch (voice) {
+			case 0:
+				setMuteThirdSIDVoice1(value);
+				break;
+			case 1:
+				setMuteThirdSIDVoice2(value);
+				break;
+			case 2:
+				setMuteThirdSIDVoice3(value);
+				break;
+			case 3:
+				setMuteThirdSIDVoice4(value);
+				break;
+			default:
+				throw new RuntimeException(String.format("Unknown voice: %d!", voice));
+			}
+			break;
+		default:
+			throw new RuntimeException(String.format("Maximum SIDs exceeded: %d!", sidNum));
+		}
+	}
 }

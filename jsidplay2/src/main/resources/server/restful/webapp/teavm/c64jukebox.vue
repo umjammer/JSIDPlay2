@@ -1654,6 +1654,20 @@
                           {{ $t("filterCfgHeader") }}
                         </button>
                       </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="mute-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#mute"
+                          type="button"
+                          role="tab"
+                          aria-controls="mute"
+                          aria-selected="false"
+                        >
+                          {{ $t("mutingCfgHeader") }}
+                        </button>
+                      </li>
                     </ul>
                   </div>
                   <div class="tab-content card-body" style="position: relative">
@@ -2458,6 +2472,283 @@
                         </div>
                       </div>
                     </div>
+                    <div class="tab-pane fade show" id="mute" role="tabpanel" aria-labelledby="mute-tab">
+                      <div class="card">
+                        <div class="card-header">
+                          <ul class="nav nav-pills card-header-pills mb-2 right" role="tablist">
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link active"
+                                id="muteSid-tab"
+                                data-bs-toggle="pill"
+                                data-bs-target="#muteSid"
+                                type="button"
+                                role="tab"
+                                aria-controls="muteSid"
+                                aria-selected="true"
+                              >
+                                {{ $t("muteSidHeader") }}
+                              </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link"
+                                id="muteStereoSid-tab"
+                                data-bs-toggle="pill"
+                                data-bs-target="#muteStereoSid"
+                                type="button"
+                                role="tab"
+                                aria-controls="muteStereoSid"
+                                aria-selected="false"
+                              >
+                                {{ $t("muteStereoSidHeader") }}
+                              </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link"
+                                id="muteThirdSID-tab"
+                                data-bs-toggle="pill"
+                                data-bs-target="#muteThirdSID"
+                                type="button"
+                                role="tab"
+                                aria-controls="muteThirdSID"
+                                aria-selected="false"
+                              >
+                                {{ $t("muteThirdSidHeader") }}
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="tab-content card-body" style="position: relative">
+                          <div
+                            class="tab-pane fade show active"
+                            id="muteSid"
+                            role="tabpanel"
+                            aria-labelledby="muteSid-tab"
+                          >
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteVoice1">
+                                    {{ $t("muteVoice1") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteVoice1"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteVoice1"
+                                      @change="setMute(0, 0, muteVoice1)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteVoice2">
+                                    {{ $t("muteVoice2") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteVoice2"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteVoice2"
+                                      @change="setMute(0, 1, muteVoice2)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteVoice3">
+                                    {{ $t("muteVoice3") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteVoice3"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteVoice3"
+                                      @change="setMute(0, 2, muteVoice3)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteVoice4">
+                                    {{ $t("muteVoice4") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteVoice4"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteVoice4"
+                                      @change="setMute(0, 3, muteVoice4)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="tab-pane fade show"
+                            id="muteStereoSid"
+                            role="tabpanel"
+                            aria-labelledby="muteStereoSid-tab"
+                          >
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteStereoVoice1">
+                                    {{ $t("muteStereoVoice1") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteStereoVoice1"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteStereoVoice1"
+                                      @change="setMute(1, 0, muteStereoVoice1)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteStereoVoice2">
+                                    {{ $t("muteStereoVoice2") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteStereoVoice2"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteStereoVoice2"
+                                      @change="setMute(1, 1, muteStereoVoice2)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteStereoVoice3">
+                                    {{ $t("muteStereoVoice3") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteStereoVoice3"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteStereoVoice3"
+                                      @change="setMute(1, 2, muteStereoVoice3)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteStereoVoice4">
+                                    {{ $t("muteStereoVoice4") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteStereoVoice4"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteStereoVoice4"
+                                      @change="setMute(1, 3, muteStereoVoice4)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="tab-pane fade show"
+                            id="muteThirdSID"
+                            role="tabpanel"
+                            aria-labelledby="muteThirdSID-tab"
+                          >
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteThirdSIDVoice1">
+                                    {{ $t("muteThirdSIDVoice1") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteThirdSIDVoice1"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteThirdSIDVoice1"
+                                      @change="setMute(2, 0, muteThirdSIDVoice1)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteThirdSIDVoice2">
+                                    {{ $t("muteThirdSIDVoice2") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteThirdSIDVoice2"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteThirdSIDVoice2"
+                                      @change="setMute(2, 1, muteThirdSIDVoice2)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteThirdSIDVoice3">
+                                    {{ $t("muteThirdSIDVoice3") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteThirdSIDVoice3"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteThirdSIDVoice3"
+                                      @change="setMute(2, 2, muteThirdSIDVoice3)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                            <div class="settings-box">
+                              <span class="setting">
+                                <div class="form-check">
+                                  <label class="form-check-label" for="muteThirdSIDVoice4">
+                                    {{ $t("muteThirdSIDVoice4") }}
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="muteThirdSIDVoice4"
+                                      style="float: right; margin-left: 8px"
+                                      v-model="muteThirdSIDVoice4"
+                                      @change="setMute(2, 3, muteThirdSIDVoice4)"
+                                    />
+                                  </label>
+                                </div>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2734,6 +3025,18 @@
               app.setFilterName('RESIDFP', 'MOS8580', 0, app.reSIDfpFilter8580);
               app.setFilterName('RESIDFP', 'MOS8580', 1, app.reSIDfpStereoFilter8580);
               app.setFilterName('RESIDFP', 'MOS8580', 2, app.reSIDfpThirdSIDFilter8580);
+              app.setMute(0, 0, app.muteVoice1);
+              app.setMute(0, 1, app.muteVoice2);
+              app.setMute(0, 2, app.muteVoice3);
+              app.setMute(0, 3, app.muteVoice4);
+              app.setMute(1, 0, app.muteStereoVoice1);
+              app.setMute(1, 1, app.muteStereoVoice2);
+              app.setMute(1, 2, app.muteStereoVoice3);
+              app.setMute(1, 3, app.muteStereoVoice4);
+              app.setMute(2, 0, app.muteThirdSIDVoice1);
+              app.setMute(2, 1, app.muteThirdSIDVoice2);
+              app.setMute(2, 2, app.muteThirdSIDVoice3);
+              app.setMute(2, 3, app.muteThirdSIDVoice4);
 
               worker.postMessage({
                 eventType: "OPEN",
@@ -2852,6 +3155,22 @@
             stereoFilter8580: "Filter name of Stereo SID 8580 (RESID)",
             thirdSIDFilter6581: "Filter name of 3rd SID 6581 (RESID)",
             thirdSIDFilter8580: "Filter name of 3rd SID 8580 (RESID)",
+            mutingCfgHeader: "Muting",
+            muteSidHeader: "SID",
+            muteStereoSidHeader: "Stereo SID",
+            muteThirdSidHeader: "3rd SID",
+            muteVoice1: "mute voice 1",
+            muteVoice2: "mute voice 2",
+            muteVoice3: "mute voice 3",
+            muteVoice4: "mute samples",
+            muteStereoVoice1: "mute voice 1 (stereo-SID)",
+            muteStereoVoice2: "mute voice 2 (stereo-SID)",
+            muteStereoVoice3: "mute voice 3 (stereo-SID)",
+            muteStereoVoice4: "mute samples (stereo-SID)",
+            muteThirdSIDVoice1: "mute voice 1 (3-SID)",
+            muteThirdSIDVoice2: "mute voice 2 (3-SID)",
+            muteThirdSIDVoice3: "mute voice 3 (3-SID)",
+            muteThirdSIDVoice4: "mute samples (3-SID)",
             confirmationTitle: "Confirmation Dialogue",
             setDefault: "Restore Defaults",
             setDefaultReally: "Do you really want to restore defaults?",
@@ -2931,6 +3250,22 @@
             stereoFilter8580: "Filter name des Stereo SID 8580 (RESID)",
             thirdSIDFilter6581: "Filter name des 3. SID 6581 (RESID)",
             thirdSIDFilter8580: "Filter name des 3. SID 8580 (RESID)",
+            mutingCfgHeader: "Stummschalten",
+            muteSidHeader: "SID",
+            muteStereoSidHeader: "Stereo SID",
+            muteThirdSidHeader: "3. SID",
+            muteVoice1: "Stimme 1 stumm schalten",
+            muteVoice2: "Stimme 2 stumm schalten",
+            muteVoice3: "Stimme 3 stumm schalten",
+            muteVoice4: "Samples stumm schalten",
+            muteStereoVoice1: "Stimme 1 stumm schalten  (Stereo-SID)",
+            muteStereoVoice2: "Stimme 2 stumm schalten  (Stereo-SID)",
+            muteStereoVoice3: "Stimme 3 stumm schalten  (Stereo-SID)",
+            muteStereoVoice4: "Samples stumm schalten  (Stereo-SID)",
+            muteThirdSIDVoice1: "Stimme 1 stumm schalten (3-SID)",
+            muteThirdSIDVoice2: "Stimme 2 stumm schalten (3-SID)",
+            muteThirdSIDVoice3: "Stimme 3 stumm schalten (3-SID)",
+            muteThirdSIDVoice4: "Samples stumm schalten (3-SID)",
             confirmationTitle: "Sicherheitsabfrage",
             setDefault: "Standardeinstellungen wiederherstellen",
             setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
@@ -2993,6 +3328,18 @@
             reSIDfpFilters6581: ['FilterReSID6581','FilterAlankila6581R4AR_3789','FilterAlankila6581R3_3984_1','FilterAlankila6581R3_3984_2','FilterLordNightmare6581R3_4285','FilterLordNightmare6581R3_4485','FilterLordNightmare6581R4_1986S','FilterZrX6581R3_0384','FilterZrX6581R3_1984','FilterZrx6581R3_3684','FilterZrx6581R3_3985','FilterZrx6581R4AR_2286','FilterTrurl6581R3_0784','FilterTrurl6581R3_0486S','FilterTrurl6581R3_3384','FilterTrurl6581R3_4885','FilterTrurl6581R4AR_3789','FilterTrurl6581R4AR_4486','FilterNata6581R3_2083','FilterGrue6581R4AR_3488',
             'FilterKruLLo','FilterEnigma6581R3_4885','FilterEnigma6581R3_1585'],
             reSIDfpFilters8580: ['FilterTrurl8580R5_1489','FilterTrurl8580R5_3691'],
+            muteVoice1: false,
+            muteVoice2: false,
+            muteVoice3: false,
+            muteVoice4: false,
+            muteStereoVoice1: false,
+            muteStereoVoice2: false,
+            muteStereoVoice3: false,
+            muteStereoVoice4: false,
+            muteThirdSIDVoice1: false,
+            muteThirdSIDVoice2: false,
+            muteThirdSIDVoice3: false,
+            muteThirdSIDVoice4: false,
             tabIndex: 1,
           };
         },
@@ -3247,22 +3594,27 @@
             app.reset();
           },
           setDefaultEmulation(emulation) {
+            if (worker) {
               worker.postMessage({
                 eventType: "SET_DEFAULT_EMULATION",
                 eventData: {
                   emulation: emulation,
                 },
               });
+            }
           },
           setDefaultSidModel(chipModel) {
+            if (worker) {
               worker.postMessage({
                 eventType: "SET_DEFAULT_CHIP_MODEL",
                 eventData: {
                   chipModel: chipModel,
                 },
               });
+            }
           },
           setFilterName(emulation, chipModel, sidNum, filterName) {
+            if (worker) {
               worker.postMessage({
                 eventType: "SET_FILTER_NAME",
                 eventData: {
@@ -3272,8 +3624,23 @@
                   filterName: filterName,
                 },
               });
+            }
+          },
+          setMute(sidNum, voice, value) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "SET_MUTE",
+                eventData: {
+                  sidNum: sidNum,
+                  voice: voice,
+                  value: value,
+                },
+              });
+            }
           },
           setDefault() {
+            this.defaultEmulation = "RESIDFP";
+            this.defaultSidModel = "MOS8580";
             this.filter6581 = 'FilterAverage6581';
             this.filter8580 = 'FilterAverage8580';
             this.stereoFilter6581 = 'FilterAverage6581';
@@ -3286,12 +3653,22 @@
             this.reSIDfpStereoFilter8580 = 'FilterTrurl8580R5_3691';
             this.reSIDfpThirdSIDFilter6581 = 'FilterAlankila6581R4AR_3789';
             this.reSIDfpThirdSIDFilter8580 = 'FilterTrurl8580R5_3691';
+            this.muteVoice1 = false;
+            this.muteVoice2 = false;
+            this.muteVoice3 = false;
+            this.muteVoice4 = false;
+            this.muteStereoVoice1 = false;
+            this.muteStereoVoice2 = false;
+            this.muteStereoVoice3 = false;
+            this.muteStereoVoice4 = false;
+            this.muteThirdSIDVoice1 = false;
+            this.muteThirdSIDVoice2 = false;
+            this.muteThirdSIDVoice3 = false;
+            this.muteThirdSIDVoice4 = false;
             this.palEmulation = true;
             this.defaultClockSpeed = 50;
             this.startSong = 0;
             this.nthFrame = 2;
-            this.defaultEmulation = "RESIDFP";
-            this.defaultSidModel = "MOS8580";
             this.sampling = false;
             this.reverbBypass = true;
             this.sidWrites = false;
@@ -3302,6 +3679,12 @@
         mounted: function () {
           if (localStorage.locale) {
             this.$i18n.locale = localStorage.locale;
+          }
+          if (localStorage.defaultEmulation) {
+            this.defaultEmulation = JSON.parse(localStorage.defaultEmulation);
+          }
+          if (localStorage.defaultSidModel) {
+            this.defaultSidModel = JSON.parse(localStorage.defaultSidModel);
           }
           if (localStorage.filter6581) {
             this.filter6581 = JSON.parse(localStorage.filter6581);
@@ -3339,14 +3722,44 @@
           if (localStorage.reSIDfpThirdSIDFilter8580) {
             this.reSIDfpThirdSIDFilter8580 = JSON.parse(localStorage.reSIDfpThirdSIDFilter8580);
           }
+          if (localStorage.muteVoice1) {
+            this.muteVoice1 = JSON.parse(localStorage.muteVoice1);
+          }
+          if (localStorage.muteVoice2) {
+            this.muteVoice2 = JSON.parse(localStorage.muteVoice2);
+          }
+          if (localStorage.muteVoice3) {
+            this.muteVoice3 = JSON.parse(localStorage.muteVoice3);
+          }
+          if (localStorage.muteVoice4) {
+            this.muteVoice4 = JSON.parse(localStorage.muteVoice4);
+          }
+          if (localStorage.muteStereoVoice1) {
+            this.muteStereoVoice1 = JSON.parse(localStorage.muteStereoVoice1);
+          }
+          if (localStorage.muteStereoVoice2) {
+            this.muteStereoVoice2 = JSON.parse(localStorage.muteStereoVoice2);
+          }
+          if (localStorage.muteStereoVoice3) {
+            this.muteStereoVoice3 = JSON.parse(localStorage.muteStereoVoice3);
+          }
+          if (localStorage.muteStereoVoice4) {
+            this.muteStereoVoice4 = JSON.parse(localStorage.muteStereoVoice4);
+          }
+          if (localStorage.muteThirdSIDVoice1) {
+            this.muteThirdSIDVoice1 = JSON.parse(localStorage.muteThirdSIDVoice1);
+          }
+          if (localStorage.muteThirdSIDVoice2) {
+            this.muteThirdSIDVoice2 = JSON.parse(localStorage.muteThirdSIDVoice2);
+          }
+          if (localStorage.muteThirdSIDVoice3) {
+            this.muteThirdSIDVoice3 = JSON.parse(localStorage.muteThirdSIDVoice3);
+          }
+          if (localStorage.muteThirdSIDVoice4) {
+            this.muteThirdSIDVoice4 = JSON.parse(localStorage.muteThirdSIDVoice4);
+          }
           if (localStorage.defaultClockSpeed) {
             this.defaultClockSpeed = JSON.parse(localStorage.defaultClockSpeed);
-          }
-          if (localStorage.defaultEmulation) {
-            this.defaultEmulation = JSON.parse(localStorage.defaultEmulation);
-          }
-          if (localStorage.defaultSidModel) {
-            this.defaultSidModel = JSON.parse(localStorage.defaultSidModel);
           }
           if (localStorage.sampling) {
             this.sampling = JSON.parse(localStorage.sampling);
@@ -3420,6 +3833,42 @@
           },
           reSIDfpThirdSIDFilter8580(newValue, oldValue) {
             localStorage.reSIDfpThirdSIDFilter8580 = JSON.stringify(newValue);
+          },
+          muteVoice1(newValue, oldValue) {
+            localStorage.muteVoice1 = JSON.stringify(newValue);
+          },
+          muteVoice2(newValue, oldValue) {
+            localStorage.muteVoice2 = JSON.stringify(newValue);
+          },
+          muteVoice3(newValue, oldValue) {
+            localStorage.muteVoice3 = JSON.stringify(newValue);
+          },
+          muteVoice4(newValue, oldValue) {
+            localStorage.muteVoice4 = JSON.stringify(newValue);
+          },
+          muteStereoVoice1(newValue, oldValue) {
+            localStorage.muteStereoVoice1 = JSON.stringify(newValue);
+          },
+          muteStereoVoice2(newValue, oldValue) {
+            localStorage.muteStereoVoice2 = JSON.stringify(newValue);
+          },
+          muteStereoVoice3(newValue, oldValue) {
+            localStorage.muteStereoVoice3 = JSON.stringify(newValue);
+          },
+          muteStereoVoice4(newValue, oldValue) {
+            localStorage.muteStereoVoice4 = JSON.stringify(newValue);
+          },
+          muteThirdSIDVoice1(newValue, oldValue) {
+            localStorage.muteThirdSIDVoice1 = JSON.stringify(newValue);
+          },
+          muteThirdSIDVoice2(newValue, oldValue) {
+            localStorage.muteThirdSIDVoice2 = JSON.stringify(newValue);
+          },
+          muteThirdSIDVoice3(newValue, oldValue) {
+            localStorage.muteThirdSIDVoice3 = JSON.stringify(newValue);
+          },
+          muteThirdSIDVoice4(newValue, oldValue) {
+            localStorage.muteThirdSIDVoice4 = JSON.stringify(newValue);
           },
           defaultClockSpeed(newValue, oldValue) {
             localStorage.defaultClockSpeed = JSON.stringify(newValue);

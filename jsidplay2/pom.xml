@@ -422,13 +422,13 @@
 							<targetDirectory>
 								${project.build.directory}/classes/server/restful/webapp/teavm/js</targetDirectory>
 							<targetFileName>${project.artifactId}.js</targetFileName>
-							<debugInformationGenerated>false</debugInformationGenerated>
-							<sourceMapsGenerated>false</sourceMapsGenerated>
-							<sourceFilesCopied>false</sourceFilesCopied>
+							<debugInformationGenerated>true</debugInformationGenerated>
+							<sourceMapsGenerated>true</sourceMapsGenerated>
+							<sourceFilesCopied>true</sourceFilesCopied>
 							<targetType>JAVASCRIPT</targetType>
 							<jsModuleType>UMD</jsModuleType>
 							<optimizationLevel>FULL</optimizationLevel>
-							<minifying>true</minifying>
+							<minifying>false</minifying>
 						</configuration>
 					</execution>
 					<execution>

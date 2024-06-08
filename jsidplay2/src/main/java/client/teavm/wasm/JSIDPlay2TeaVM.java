@@ -103,6 +103,11 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.filterName(emulation, chipModel, sidNum, filterName);
 	}
 
+	@Export(name = "mute")
+	public static void mute(int sidNum, int voice, boolean value) {
+		jsidplay2.mute(sidNum, voice, value);
+	}
+
 	@Export(name = "delaySidBlaster")
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);

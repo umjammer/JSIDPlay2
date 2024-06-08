@@ -46,4 +46,6 @@ public interface IExportedApi extends JSObject {
 	void defaultChipModel(String chipModel);
 
 	void filterName(String emulation, String chipModel, int sidNum, String filterName);
+
+	void mute(int sidNum, int voice, boolean value);
 }
