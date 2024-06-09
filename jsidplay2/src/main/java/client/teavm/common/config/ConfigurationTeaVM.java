@@ -69,10 +69,10 @@ public class ConfigurationTeaVM implements IConfig {
 			new FilterLordNightmare6581R3_4285(), new FilterLordNightmare6581R3_4485(),
 			new FilterLordNightmare6581R4_1986S(), new FilterZrX6581R3_0384(), new FilterZrX6581R3_1984(),
 			new FilterZrX6581R3_3684(), new FilterZrX6581R3_3985(), new FilterZrX6581R4AR_2286(),
-			new FilterTrurl6581R3_0784(), new FilterTrurl6581R3_0486S(), new FilterTrurl6581R3_0486S(),
-			new FilterTrurl6581R3_4885(), new FilterTrurl6581R3_3384(), new FilterTrurl6581R4AR_3789(),
-			new FilterTrurl6581R4AR_4486(), new FilterNata6581R3_2083(), new FilterGrue6581R4AR_3488(),
-			new FilterKrullo(), new FilterEnigma6581R3_4885(), new FilterEnigma6581R3_1585());
+			new FilterTrurl6581R3_0784(), new FilterTrurl6581R3_0486S(), new FilterTrurl6581R3_4885(),
+			new FilterTrurl6581R3_3384(), new FilterTrurl6581R4AR_3789(), new FilterTrurl6581R4AR_4486(),
+			new FilterNata6581R3_2083(), new FilterGrue6581R4AR_3488(), new FilterKrullo(),
+			new FilterEnigma6581R3_4885(), new FilterEnigma6581R3_1585());
 
 	public ConfigurationTeaVM(IImportedApi importedApi) {
 		sidplay2Section = new Sidplay2SectionTeaVM(importedApi);
