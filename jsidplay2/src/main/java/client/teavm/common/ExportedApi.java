@@ -324,7 +324,10 @@ public class ExportedApi implements IExportedApi {
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
 
 		if (isOpen()) {
-			c64.getKeyboard().keyPressed(key);
+			c64.getEventScheduler()
+					.scheduleThreadSafeKeyEvent(Event.of("Wait Until Virtual Keyboard Pressed", event2 -> {
+						c64.getKeyboard().keyPressed(key);
+					}));
 		}
 	}
 
@@ -336,7 +339,10 @@ public class ExportedApi implements IExportedApi {
 		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
 
 		if (isOpen()) {
-			c64.getKeyboard().keyReleased(key);
+			c64.getEventScheduler()
+					.scheduleThreadSafeKeyEvent(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
+						c64.getKeyboard().keyReleased(key);
+					}));
 		}
 	}
 
