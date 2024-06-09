@@ -534,12 +534,12 @@
                         @click="
                           stopTune();
                           downloadAndStartProgram(
-                            'X12Demo.t64',
-                            '/jsidplay2service/JSIDPlay2REST/download/X12Demo.t64?itemId=112416&categoryId=1'
+                            'rewind...tempest.prg',
+                            '/jsidplay2service/JSIDPlay2REST/download/rewind...tempest.prg?itemId=170949&categoryId=1'
                           );
                         "
                       >
-                        X2012 - Abnormal
+                        Rewind - TempesT
                       </a>
                     </li>
                     <li>
