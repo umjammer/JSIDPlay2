@@ -13,7 +13,7 @@ public abstract class ReSIDFilter8580TeaVM implements IFilterSection {
 
 		@Override
 		public float getFilter8580CurvePosition() {
-			return 13400;
+			return 13400f;
 		}
 	}
 
@@ -26,7 +26,7 @@ public abstract class ReSIDFilter8580TeaVM implements IFilterSection {
 
 		@Override
 		public float getFilter8580CurvePosition() {
-			return 12500;
+			return 12500f;
 		}
 	}
 
@@ -39,7 +39,7 @@ public abstract class ReSIDFilter8580TeaVM implements IFilterSection {
 
 		@Override
 		public float getFilter8580CurvePosition() {
-			return 11700;
+			return 11700f;
 		}
 	}
 

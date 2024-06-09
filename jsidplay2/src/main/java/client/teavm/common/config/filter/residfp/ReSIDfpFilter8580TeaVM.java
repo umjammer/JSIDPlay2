@@ -148,11 +148,6 @@ public abstract class ReSIDfpFilter8580TeaVM implements IFilterSection {
 	}
 
 	@Override
-	public float getVoiceNonlinearity() {
-		return 1.0f;
-	}
-
-	@Override
 	public final float getAttenuation() {
 		return 0f;
 	}

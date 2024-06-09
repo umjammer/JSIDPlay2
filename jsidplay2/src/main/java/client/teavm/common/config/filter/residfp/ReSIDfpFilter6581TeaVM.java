@@ -1184,27 +1184,27 @@ public abstract class ReSIDfpFilter6581TeaVM implements IFilterSection {
 	public abstract String getName();
 
 	@Override
-	public abstract float getVoiceNonlinearity();
-
-	@Override
-	public abstract float getSteepness();
-
-	@Override
-	public abstract float getResonanceFactor();
-
-	@Override
-	public abstract float getOffset();
+	public abstract float getAttenuation();
 
 	@Override
 	public abstract float getNonlinearity();
 
 	@Override
-	public abstract float getMinimumfetresistance();
+	public abstract float getVoiceNonlinearity();
 
 	@Override
 	public abstract float getBaseresistance();
 
 	@Override
-	public abstract float getAttenuation();
+	public abstract float getOffset();
+
+	@Override
+	public abstract float getSteepness();
+
+	@Override
+	public abstract float getMinimumfetresistance();
+
+	@Override
+	public abstract float getResonanceFactor();
 
 }
