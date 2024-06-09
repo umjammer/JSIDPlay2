@@ -4,41 +4,41 @@ import java.util.Arrays;
 import java.util.List;
 
 import client.teavm.common.IImportedApi;
-import client.teavm.common.config.filter.resid.FilterAverage6581TeaVM;
-import client.teavm.common.config.filter.resid.FilterAverage8580TeaVM;
-import client.teavm.common.config.filter.resid.FilterDark6581TeaVM;
-import client.teavm.common.config.filter.resid.FilterDark8580TeaVM;
-import client.teavm.common.config.filter.resid.FilterDarker6581TeaVM;
-import client.teavm.common.config.filter.resid.FilterDarkest6581TeaVM;
-import client.teavm.common.config.filter.resid.FilterLight6581TeaVM;
-import client.teavm.common.config.filter.resid.FilterLight8580TeaVM;
-import client.teavm.common.config.filter.resid.FilterLighter6581TeaVM;
-import client.teavm.common.config.filter.resid.FilterLightest6581TeaVM;
-import client.teavm.common.config.filter.residfp.FilterAlankila6581R3_3984_1TeaVM;
-import client.teavm.common.config.filter.residfp.FilterAlankila6581R3_3984_2TeaVM;
-import client.teavm.common.config.filter.residfp.FilterAlankila6581R4AR_3789TeaVM;
-import client.teavm.common.config.filter.residfp.FilterEnigma6581R3_1585TeaVM;
-import client.teavm.common.config.filter.residfp.FilterEnigma6581R3_4885TeaVM;
-import client.teavm.common.config.filter.residfp.FilterGrue6581R4AR_3488TeaVM;
-import client.teavm.common.config.filter.residfp.FilterKrulloTeaVM;
-import client.teavm.common.config.filter.residfp.FilterLordNightmare6581R3_4285TeaVM;
-import client.teavm.common.config.filter.residfp.FilterLordNightmare6581R3_4485TeaVM;
-import client.teavm.common.config.filter.residfp.FilterLordNightmare6581R4_1986STeaVM;
-import client.teavm.common.config.filter.residfp.FilterNata6581R3_2083TeaVM;
-import client.teavm.common.config.filter.residfp.FilterReSID6581TeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_0486STeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_0784TeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_3384TeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl6581R3_4885TeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl6581R4AR_3789TeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl6581R4AR_4486TeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl8580R5_1489TeaVM;
-import client.teavm.common.config.filter.residfp.FilterTrurl8580R5_3691TeaVM;
-import client.teavm.common.config.filter.residfp.FilterZrX6581R3_0384TeaVM;
-import client.teavm.common.config.filter.residfp.FilterZrX6581R3_1984TeaVM;
-import client.teavm.common.config.filter.residfp.FilterZrX6581R3_3684TeaVM;
-import client.teavm.common.config.filter.residfp.FilterZrX6581R3_3985TeaVM;
-import client.teavm.common.config.filter.residfp.FilterZrX6581R4AR_2286TeaVM;
+import client.teavm.common.config.filter.resid.ReSIDFilter6581TeaVM.FilterAverage6581;
+import client.teavm.common.config.filter.resid.ReSIDFilter6581TeaVM.FilterDark6581;
+import client.teavm.common.config.filter.resid.ReSIDFilter6581TeaVM.FilterDarker6581;
+import client.teavm.common.config.filter.resid.ReSIDFilter6581TeaVM.FilterDarkest6581;
+import client.teavm.common.config.filter.resid.ReSIDFilter6581TeaVM.FilterLight6581;
+import client.teavm.common.config.filter.resid.ReSIDFilter6581TeaVM.FilterLighter6581;
+import client.teavm.common.config.filter.resid.ReSIDFilter6581TeaVM.FilterLightest6581;
+import client.teavm.common.config.filter.resid.ReSIDFilter8580TeaVM.FilterAverage8580;
+import client.teavm.common.config.filter.resid.ReSIDFilter8580TeaVM.FilterDark8580;
+import client.teavm.common.config.filter.resid.ReSIDFilter8580TeaVM.FilterLight8580;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterAlankila6581R3_3984_1;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterAlankila6581R3_3984_2;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterAlankila6581R4AR_3789;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterEnigma6581R3_1585;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterEnigma6581R3_4885;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterGrue6581R4AR_3488;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterKrullo;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterLordNightmare6581R3_4285;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterLordNightmare6581R3_4485;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterLordNightmare6581R4_1986S;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterNata6581R3_2083;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterReSID6581;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterTrurl6581R3_0486S;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterTrurl6581R3_0784;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterTrurl6581R3_3384;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterTrurl6581R3_4885;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterTrurl6581R4AR_3789;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterTrurl6581R4AR_4486;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterZrX6581R3_0384;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterZrX6581R3_1984;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterZrX6581R3_3684;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterZrX6581R3_3985;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter6581TeaVM.FilterZrX6581R4AR_2286;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter8580TeaVM.FilterTrurl8580R5_1489;
+import client.teavm.common.config.filter.residfp.ReSIDfpFilter8580TeaVM.FilterTrurl8580R5_3691;
 import libsidplay.config.IAudioSection;
 import libsidplay.config.IC1541Section;
 import libsidplay.config.IConfig;
@@ -61,20 +61,18 @@ public class ConfigurationTeaVM implements IConfig {
 	private final AudioSectionTeaVM audioSection;
 	private final EmulationSectionTeaVM emulationSection;
 	private final WhatsSidSectionTeaVM whatsSidSection;
-	private final List<IFilterSection> filterSections = Arrays.asList(new FilterLight8580TeaVM(),
-			new FilterAverage8580TeaVM(), new FilterDark8580TeaVM(), new FilterLightest6581TeaVM(),
-			new FilterLighter6581TeaVM(), new FilterLight6581TeaVM(), new FilterAverage6581TeaVM(),
-			new FilterDark6581TeaVM(), new FilterDarker6581TeaVM(), new FilterDarkest6581TeaVM(),
-			new FilterTrurl8580R5_1489TeaVM(), new FilterTrurl8580R5_3691TeaVM(), new FilterReSID6581TeaVM(),
-			new FilterAlankila6581R4AR_3789TeaVM(), new FilterAlankila6581R3_3984_1TeaVM(),
-			new FilterAlankila6581R3_3984_2TeaVM(), new FilterLordNightmare6581R3_4285TeaVM(),
-			new FilterLordNightmare6581R3_4485TeaVM(), new FilterLordNightmare6581R4_1986STeaVM(),
-			new FilterZrX6581R3_0384TeaVM(), new FilterZrX6581R3_1984TeaVM(), new FilterZrX6581R3_3684TeaVM(),
-			new FilterZrX6581R3_3985TeaVM(), new FilterZrX6581R4AR_2286TeaVM(), new FilterTrurl6581R3_0784TeaVM(),
-			new FilterTrurl6581R3_0486STeaVM(), new FilterTrurl6581R3_0486STeaVM(), new FilterTrurl6581R3_4885TeaVM(),
-			new FilterTrurl6581R3_3384TeaVM(), new FilterTrurl6581R4AR_3789TeaVM(), new FilterTrurl6581R4AR_4486TeaVM(),
-			new FilterNata6581R3_2083TeaVM(), new FilterGrue6581R4AR_3488TeaVM(), new FilterKrulloTeaVM(),
-			new FilterEnigma6581R3_4885TeaVM(), new FilterEnigma6581R3_1585TeaVM());
+	private final List<IFilterSection> filterSections = Arrays.asList(new FilterLight8580(), new FilterAverage8580(),
+			new FilterDark8580(), new FilterLightest6581(), new FilterLighter6581(), new FilterLight6581(),
+			new FilterAverage6581(), new FilterDark6581(), new FilterDarker6581(), new FilterDarkest6581(),
+			new FilterTrurl8580R5_1489(), new FilterTrurl8580R5_3691(), new FilterReSID6581(),
+			new FilterAlankila6581R4AR_3789(), new FilterAlankila6581R3_3984_1(), new FilterAlankila6581R3_3984_2(),
+			new FilterLordNightmare6581R3_4285(), new FilterLordNightmare6581R3_4485(),
+			new FilterLordNightmare6581R4_1986S(), new FilterZrX6581R3_0384(), new FilterZrX6581R3_1984(),
+			new FilterZrX6581R3_3684(), new FilterZrX6581R3_3985(), new FilterZrX6581R4AR_2286(),
+			new FilterTrurl6581R3_0784(), new FilterTrurl6581R3_0486S(), new FilterTrurl6581R3_0486S(),
+			new FilterTrurl6581R3_4885(), new FilterTrurl6581R3_3384(), new FilterTrurl6581R4AR_3789(),
+			new FilterTrurl6581R4AR_4486(), new FilterNata6581R3_2083(), new FilterGrue6581R4AR_3488(),
+			new FilterKrullo(), new FilterEnigma6581R3_4885(), new FilterEnigma6581R3_1585());
 
 	public ConfigurationTeaVM(IImportedApi importedApi) {
 		sidplay2Section = new Sidplay2SectionTeaVM(importedApi);

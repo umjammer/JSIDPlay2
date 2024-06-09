@@ -12,6 +12,7 @@ import sidplay.audio.Audio;
 public final class AudioSectionTeaVM implements IAudioSection {
 
 	private IImportedApi importedApi;
+
 	private float mainVolume;
 	private float secondVolume;
 	private float thirdVolume;

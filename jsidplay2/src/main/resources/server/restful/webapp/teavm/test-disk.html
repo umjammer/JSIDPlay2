@@ -118,12 +118,12 @@
               }
               sourceNode.start(nextTime);
               nextTime += eventData.length / audioContext.sampleRate + 0.005;
-            
+
             } else if (eventType === "FRAME") {
               imageQueue.enqueue({
                 image: eventData.image,
               });
-              
+
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
               if (eventType === "OPENED") {
                 insertDisk();
