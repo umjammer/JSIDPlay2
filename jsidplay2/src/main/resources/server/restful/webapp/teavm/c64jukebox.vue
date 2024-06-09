@@ -3395,7 +3395,7 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && (nextTime - audioContext.currentTime <= 1 || (app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
+              if (!app.paused && (nextTime - audioContext.currentTime <= 1 || (app.screen && app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
                 worker.postMessage({ eventType: "CLOCK" });
                 //document.body.style.backgroundColor = "red";
               } else {
@@ -3449,13 +3449,14 @@
 
               nextTime = 0;
               imageQueue.clear();
+              app.framesCounter = app.defaultClockSpeed / app.nthFrame;
               app.playing = true;
               app.paused = false;
               app.clearScreen();
               if (app.screen) {
                 msPrev = window.performance.now()
-      		  frames = 0;
-      		  actualFrames = 0;
+      		    frames = 0;
+      		    actualFrames = 0;
                 app.animate();
               }
             }

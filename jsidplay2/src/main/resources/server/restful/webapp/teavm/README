@@ -229,7 +229,7 @@ Code Snippet:
               // the emulator must not run and produce frames and samples faster than a person can watch, therefore the braking here.
               // To do so, please check the frames per second or sound generation's current time.
               // In pause mode we just send idle events as well.
-              if (!paused && (nextTime - audioContext.currentTime <= 1 || (framesCounter < (defaultClockSpeed / nthFrame)))) {
+              if (!paused && (nextTime - audioContext.currentTime <= 1 || (screen && framesCounter < (defaultClockSpeed / nthFrame)))) {
                 // clock the emulator to produce more samples and frames
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
@@ -264,6 +264,7 @@ Code Snippet:
               paused = false;
               clearScreen();
               // If you want to capture and show frames, start a timer and pull the queued elements at a rate of 50 (PAL) or 60 (NTSC) per second
+              framesCounter = defaultClockSpeed / nthFrame;
               msPrev = window.performance.now()
       		  frames = 0;
       		  actualFrames = 0;
