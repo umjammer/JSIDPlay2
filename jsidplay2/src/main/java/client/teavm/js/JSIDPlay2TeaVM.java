@@ -5,11 +5,9 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 
 import org.teavm.jso.JSExport;
-import org.teavm.jso.JSObject;
 
 import client.teavm.common.ExportedApi;
 import client.teavm.common.IExportedApi;
-import client.teavm.common.IImportedApi;
 import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
 import libsidplay.common.SidReads;
@@ -22,16 +20,10 @@ import libsidplay.sidtune.SidTuneError;
  */
 public class JSIDPlay2TeaVM {
 
-	private static final class ExportedApiAsJavaScript extends ExportedApi implements JSObject {
-		public ExportedApiAsJavaScript(IImportedApi importedApi) {
-			super(importedApi);
-		}
-	}
-
 	private static IExportedApi jsidplay2;
 
 	public static void main(String[] args) {
-		jsidplay2 = new ExportedApiAsJavaScript(new ImportedApi(args));
+		jsidplay2 = new ExportedApi(new ImportedApi(args));
 	}
 
 	//
@@ -40,8 +32,8 @@ public class JSIDPlay2TeaVM {
 
 	@JSExport
 	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-		byte[] cartContents, String cartContentsName, String command)
-		throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+			byte[] cartContents, String cartContentsName, String command)
+			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName,
 				command);
 	}
@@ -103,14 +95,14 @@ public class JSIDPlay2TeaVM {
 
 	@JSExport
 	public static void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
-		float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
 		jsidplay2.volumeLevels(mainVolume, secondVolume, thirdVolume, mainBalance, secondBalance, thirdBalance,
 				mainDelay, secondDelay, thirdDelay);
 	}
 
 	@JSExport
 	public static void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-		String sidToRead) {
+			String sidToRead) {
 		jsidplay2.stereo(StereoMode.valueOf(stereoMode), dualSidBase, thirdSIDBase, fakeStereo,
 				SidReads.valueOf(sidToRead));
 	}
