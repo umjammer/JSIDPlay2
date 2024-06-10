@@ -63,8 +63,8 @@ public class ExportedApi implements IExportedApi {
 	private static final String RUN = "RUN\r", SYS = "SYS%d\r", LOAD = "LOAD\r";
 
 	private final IImportedApi importedApi;
+	private final IConfig config;
 
-	private IConfig config;
 	private EventScheduler context;
 	private SidTune tune;
 	private HardwareEnsemble hardwareEnsemble;
@@ -111,15 +111,7 @@ public class ExportedApi implements IExportedApi {
 			LOG.finest("Cart, length=: " + cartContents.length);
 			LOG.finest("Cart name: : " + cartContentsName);
 		}
-		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
-			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
-				Engine engine = Engine.getEngine(emulationSection, tune);
-				Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
-				ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
-				String filterName = emulationSection.getFilterName(sidNum, engine, emulation, chipModel);
-				LOG.finest(getFilterName(sidNum) + ": " + filterName);
-			}
-		}
+		doLogFilterNames(emulationSection, tune);
 
 		Map<String, String> allRoms = RomsTeaVM.getJavaScriptRoms(false);
 		Decoder decoder = Base64.getDecoder();
@@ -135,17 +127,10 @@ public class ExportedApi implements IExportedApi {
 				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		PALEmulationTeaVM palEmulationTeaVM = nthFrame > 0 ? new PALEmulationTeaVM(nthFrame) : null;
-		c64.getVIC().setPalEmulation(palEmulationTeaVM);
+		PALEmulationTeaVM palEmulation = nthFrame > 0 ? new PALEmulationTeaVM(nthFrame) : null;
+		c64.getVIC().setPalEmulation(palEmulation);
 		if (cartContents != null) {
-			try {
-				File cartFile = createReadOnlyFile(cartContents, cartContentsName);
-				c64.setCartridge(CartridgeType.CRT, cartFile);
-				LOG.fine("Cartridge: image attached: " + cartContentsName);
-			} catch (IOException e) {
-				System.err.println(e.getMessage());
-				System.err.println(String.format("Cannot insert media file '%s'.", cartContentsName));
-			}
+			insertCart(cartContents, cartContentsName);
 		}
 		hardwareEnsemble.reset();
 		emulationSection.getOverrideSection().reset();
@@ -177,7 +162,7 @@ public class ExportedApi implements IExportedApi {
 					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
 
-		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, palEmulationTeaVM);
+		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, palEmulation);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 
@@ -229,7 +214,6 @@ public class ExportedApi implements IExportedApi {
 	public void insertDisk(byte[] diskContents, String diskContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String diskContentsName = diskContentsNameFromJS != null ? "" + diskContentsNameFromJS : null;
-
 		try {
 			if (isOpen()) {
 				File d64File = createReadOnlyFile(diskContents, diskContentsName);
@@ -262,7 +246,6 @@ public class ExportedApi implements IExportedApi {
 	public void insertTape(byte[] tapeContents, String tapeContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String tapeContentsName = tapeContentsNameFromJS != null ? "" + tapeContentsNameFromJS : null;
-
 		try {
 			if (isOpen()) {
 				File tapeFile = createReadOnlyFile(tapeContents, tapeContentsName);
@@ -353,7 +336,8 @@ public class ExportedApi implements IExportedApi {
 
 			c64.getEventScheduler().schedule(Event.of("Wait Until Virtual Joystick Released", event -> {
 
-				c64.setJoystick(number, () -> (byte) (0xff));
+				c64.getEventScheduler().scheduleThreadSafeKeyEvent(
+						Event.of("Virtual Joystick Released", event2 -> c64.setJoystick(number, null)));
 
 			}), c64.getClock().getCyclesPerFrame() << 2);
 		}
@@ -404,10 +388,11 @@ public class ExportedApi implements IExportedApi {
 		emulationSection.setThirdSIDBase(thirdSIDBase);
 		emulationSection.setFakeStereo(fakeStereo);
 		emulationSection.setSidToRead(SidReads.valueOf(sidToReadStr));
+
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
-		LOG.finest("stereo, mode: " + stereoStr + ", dualSidBase=" + dualSidBase + ", thirdSIDBase=" + thirdSIDBase
+		LOG.finest("stereoMode: " + stereoStr + ", dualSidBase=" + dualSidBase + ", thirdSIDBase=" + thirdSIDBase
 				+ ", fakeStereo:" + fakeStereo + ", sidToRead:" + sidToReadStr);
 	}
 
@@ -418,6 +403,7 @@ public class ExportedApi implements IExportedApi {
 
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setDefaultEmulation(Emulation.valueOf(emulationStr));
+
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
@@ -431,6 +417,7 @@ public class ExportedApi implements IExportedApi {
 
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setDefaultSidModel(ChipModel.valueOf(chipModelStr));
+
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
@@ -447,6 +434,7 @@ public class ExportedApi implements IExportedApi {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setFilterName(sidNumber, Engine.EMULATION, Emulation.valueOf(emulationStr),
 				ChipModel.valueOf(chipModelStr), filterName);
+
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
@@ -457,6 +445,7 @@ public class ExportedApi implements IExportedApi {
 	public void mute(int sidNum, int voice, boolean value) {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setMuteVoice(sidNum, voice, value);
+
 		if (isOpen()) {
 			c64.configureSID(sidNum, sid -> sid.setVoiceMute(voice, value));
 		}
@@ -479,15 +468,36 @@ public class ExportedApi implements IExportedApi {
 	private void doLog(ISidPlay2Section sidplay2Section, IAudioSection audioSection, IEmulationSection emulationSection,
 			IC1541Section c1541Section) {
 		LOG.finest("palEmulation: " + sidplay2Section.isPalEmulation());
-		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
-		LOG.finest("defaultEmulation: " + emulationSection.getDefaultEmulation());
-		LOG.finest("defaultSidModel: " + emulationSection.getDefaultSidModel());
-		LOG.finest("sampling: " + audioSection.getSampling());
-		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
-		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
+		LOG.finest("samplingRate: " + audioSection.getSamplingRate());
+		LOG.finest("sampling: " + audioSection.getSampling());
+		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
+		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
 		LOG.finest("isJiffyDosInstalled: " + c1541Section.isJiffyDosInstalled());
+	}
+
+	private void doLogFilterNames(final IEmulationSection emulationSection, SidTune tune) {
+		for (int sidNum = 0; sidNum < PLA.MAX_SIDS; sidNum++) {
+			if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
+				Engine engine = Engine.getEngine(emulationSection, tune);
+				Emulation emulation = Emulation.getEmulation(emulationSection, sidNum);
+				ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
+				String filterName = emulationSection.getFilterName(sidNum, engine, emulation, chipModel);
+				LOG.finest(getFilterName(sidNum) + ": " + filterName);
+			}
+		}
+	}
+
+	private void insertCart(byte[] cartContents, String cartContentsName) {
+		try {
+			File cartFile = createReadOnlyFile(cartContents, cartContentsName);
+			c64.setCartridge(CartridgeType.CRT, cartFile);
+			LOG.fine("Cartridge: image attached: " + cartContentsName);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println(String.format("Cannot insert media file '%s'.", cartContentsName));
+		}
 	}
 
 	private void autodetectPSID64() {

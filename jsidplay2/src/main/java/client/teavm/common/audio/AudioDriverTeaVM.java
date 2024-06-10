@@ -48,7 +48,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	private ShortBuffer shortBuffer;
 	private FloatBuffer resultL, resultR;
 	private int n, pixelsLength;
-	private long sidWiteTime;
+	private long sidWriteTime;
 
 	public AudioDriverTeaVM(IImportedApi importedApi, PALEmulationTeaVM palEmulation) {
 		this.importedApi = importedApi;
@@ -73,7 +73,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		resultR = FloatBuffer.wrap(new float[cfg.getChunkFrames()]);
 
 		n = 0;
-		sidWiteTime = 0L;
+		sidWriteTime = 0L;
 		pixelsLength = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
 	}
 
@@ -102,11 +102,11 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	@Override
 	public void write(int addr, byte data) {
 		final long time = context.getTime(Event.Phase.PHI2);
-		if (sidWiteTime == 0) {
-			sidWiteTime = time;
+		if (sidWriteTime == 0) {
+			sidWriteTime = time;
 		}
-		importedApi.processSidWrite((int) (time - sidWiteTime), addr, data & 0xff);
-		sidWiteTime = time;
+		importedApi.processSidWrite((int) (time - sidWriteTime), addr, data & 0xff);
+		sidWriteTime = time;
 	}
 
 	@Override

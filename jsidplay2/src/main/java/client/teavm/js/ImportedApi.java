@@ -33,6 +33,16 @@ public class ImportedApi implements IImportedApi {
 	}
 
 	@Override
+	public int getBufferSize() {
+		return bufferSize;
+	}
+
+	@Override
+	public int getAudioBufferSize() {
+		return audioBufferSize;
+	}
+
+	@Override
 	public int getSamplingRateAsInt() {
 		return samplingRateAsInt;
 	}
@@ -45,16 +55,6 @@ public class ImportedApi implements IImportedApi {
 	@Override
 	public boolean getReverbBypass() {
 		return reverbBypass;
-	}
-
-	@Override
-	public int getBufferSize() {
-		return bufferSize;
-	}
-
-	@Override
-	public int getAudioBufferSize() {
-		return audioBufferSize;
 	}
 
 	@Override
