@@ -54,7 +54,7 @@
       var worker;
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
-      var nextTime, pause;
+      var nextTime, paused;
 
       var canvasContext;
       var imageData, data;
@@ -128,11 +128,12 @@
               if (eventType === "OPENED") {
                 insertDisk();
               }
-              if (!pause && (nextTime - audioContext.currentTime <= 1 || (framesCounter < (defaultClockSpeed / nthFrame)))) {
+              if (!paused && (lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (framesCounter < (defaultClockSpeed / nthFrame)))) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 worker.postMessage({ eventType: "IDLE" });
               }
+              lastTotalFrames = totalFrames;
             } else if (eventType === "INITIALISED") {
               worker.postMessage({
                 eventType: "OPEN",
@@ -156,7 +157,7 @@
           framesCounter = defaultClockSpeed / nthFrame;
           playing = true;
           msPrev = window.performance.now()
-          frames = 0
+  		  frames = totalFrames = lastTotalFrames = actualFrames = 0;
           animate();
 
           worker.addEventListener("error", function (error) {
@@ -174,15 +175,15 @@
           audioContext.close();
           audioContext = undefined;
         }
-        pause = false;
+        paused = false;
         var pauseBtn = document.getElementById("pause");
         pauseBtn.style.color = "black";
         playing = false;
       }
       function pauseTune() {
-        pause = !pause;
+        paused = !paused;
         var pauseBtn = document.getElementById("pause");
-        if (pause) {
+        if (paused) {
           audioContext.suspend();
           pauseBtn.style.color = "red";
         } else {
@@ -203,13 +204,14 @@
           const excessTime = msPassed % msPerFrame
           msPrev = msNow - excessTime
 
-          if (!pause) {
+          if (!paused) {
             var elem = imageQueue.dequeue();
             if (elem) {
               data.set(elem.image);
               canvasContext.putImageData(imageData, 0, 0);
             }
           }
+          totalFrames++;
           frames++
         }
       function insertDisk() {

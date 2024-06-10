@@ -21,7 +21,7 @@
       var worker;
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
-      var nextTime, pause;
+      var nextTime, paused;
 
       function wasmWorker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
@@ -71,7 +71,7 @@
               nextTime += eventData.length / audioContext.sampleRate;
 
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
-                if (!pause && nextTime - audioContext.currentTime <= 1) {
+                if (!paused && nextTime - audioContext.currentTime <= 1) {
                     worker.postMessage({ eventType: "CLOCK" });
                   } else {
                     worker.postMessage({ eventType: "IDLE" });
@@ -138,14 +138,14 @@
           audioContext.close();
           audioContext = undefined;
         }
-        pause = false;
+        paused = false;
         var pauseBtn = document.getElementById("pause");
         pauseBtn.style.color = "black";
       }
       function pauseTune() {
-        pause = !pause;
+        paused = !paused;
         var pauseBtn = document.getElementById("pause");
-        if (pause) {
+        if (paused) {
           audioContext.suspend();
           pauseBtn.style.color = "red";
         } else {

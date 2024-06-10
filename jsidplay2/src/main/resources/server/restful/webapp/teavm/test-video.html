@@ -53,7 +53,7 @@
       var worker;
       var AudioContext = window.AudioContext || window.webkitAudioContext;
       var audioContext;
-      var nextTime, pause;
+      var nextTime, paused;
 
       var canvasContext;
       var imageData, data;
@@ -124,11 +124,12 @@
               });
 
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
-              if (!pause && (nextTime - audioContext.currentTime <= 1 || (framesCounter < (defaultClockSpeed / nthFrame)))) {
+              if (!paused && (lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (framesCounter < (defaultClockSpeed / nthFrame)))) {
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 worker.postMessage({ eventType: "IDLE" });
               }
+              lastTotalFrames = totalFrames;
             } else if (eventType === "INITIALISED") {
               worker.postMessage({
                 eventType: "OPEN",
@@ -151,7 +152,7 @@
           framesCounter = defaultClockSpeed / nthFrame;
           playing = true;
           msPrev = window.performance.now()
-          frames = 0
+  		  frames = totalFrames = lastTotalFrames = actualFrames = 0;
           animate();
 
           worker.addEventListener("error", function (error) {
@@ -182,6 +183,7 @@
             actualFrames++;
           }
         }
+        totalFrames++;
         frames++
         if (frames * nthFrame >= defaultClockSpeed) {
           framesCounter = actualFrames;
@@ -189,7 +191,6 @@
           actualFrames = 0;
         }
       }
-
       function startTune() {
         stopTune();
         var file = document.getElementById("file");
@@ -210,15 +211,15 @@
           audioContext.close();
           audioContext = undefined;
         }
-        pause = false;
+        paused = false;
         var pauseBtn = document.getElementById("pause");
         pauseBtn.style.color = "black";
         playing = false;
       }
       function pauseTune() {
-        pause = !pause;
+        paused = !paused;
         var pauseBtn = document.getElementById("pause");
-        if (pause) {
+        if (paused) {
           audioContext.suspend();
           pauseBtn.style.color = "red";
         } else {
@@ -226,28 +227,6 @@
           pauseBtn.style.color = "black";
         }
       }
-      function animate() {
-          var msPerFrame = 1000 * nthFrame / defaultClockSpeed;
-          if (playing) {
-              window.requestAnimationFrame(animate)
-          }
-          const msNow = window.performance.now()
-          const msPassed = msNow - msPrev
-
-          if (msPassed < msPerFrame) return
-
-          const excessTime = msPassed % msPerFrame
-          msPrev = msNow - excessTime
-
-          if (!pause) {
-            var elem = imageQueue.dequeue();
-            if (elem) {
-              data.set(elem.image);
-              canvasContext.putImageData(imageData, 0, 0);
-            }
-          }
-          frames++
-        }
     </script>
   </body>
 </html>

@@ -228,14 +228,15 @@ Code Snippet:
               // The idea of sending IDLE states, where NO clocking is done at all is simple:
               // the emulator must not run and produce frames and samples faster than a person can watch, therefore the braking here.
               // To do so, please check the frames per second or sound generation's current time.
-              // In pause mode we just send idle events as well.
-              if (!paused && (nextTime - audioContext.currentTime <= 1 || (screen && framesCounter < (defaultClockSpeed / nthFrame)))) {
+              // In pause mode we just send idle events as well as when tab is in the background and requestAnimationFrame stops.
+              if (!paused && (lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (screen && framesCounter < (defaultClockSpeed / nthFrame)))) {
                 // clock the emulator to produce more samples and frames
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
                 // get on the brakes
                 worker.postMessage({ eventType: "IDLE" });
               }
+              lastTotalFrames = totalFrames;
 
             } else if (eventType === "INITIALISED") {
               // If the emulation instance is initialized, the tune can be opened to play. This is required before clocking.
@@ -266,8 +267,7 @@ Code Snippet:
               // If you want to capture and show frames, start a timer and pull the queued elements at a rate of 50 (PAL) or 60 (NTSC) per second
               framesCounter = defaultClockSpeed / nthFrame;
               msPrev = window.performance.now()
-      		  frames = 0;
-      		  actualFrames = 0;
+      		  frames = totalFrames = lastTotalFrames = actualFrames = 0;
               animate();
             }
           });
@@ -300,6 +300,7 @@ Code Snippet:
             actualFrames++;
           }
         }
+        totalFrames++;
         frames++
         if (frames * nthFrame >= defaultClockSpeed) {
           framesCounter = actualFrames;

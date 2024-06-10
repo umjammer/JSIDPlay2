@@ -3395,13 +3395,14 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && (nextTime - audioContext.currentTime <= 1 || (app.screen && app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
+              if (!app.paused && (lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (app.screen && app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
                 worker.postMessage({ eventType: "CLOCK" });
                 //document.body.style.backgroundColor = "red";
               } else {
                 worker.postMessage({ eventType: "IDLE" });
                 //document.body.style.backgroundColor = "yellow";
               }
+              lastTotalFrames = totalFrames;
             } else if (eventType === "INITIALISED") {
 
               app.setVolumeLevels();
@@ -3455,8 +3456,7 @@
               app.clearScreen();
               if (app.screen) {
                 msPrev = window.performance.now()
-      		    frames = 0;
-      		    actualFrames = 0;
+      		    frames = totalFrames = lastTotalFrames = actualFrames = 0;
                 app.animate();
               }
             }
@@ -3895,6 +3895,7 @@
                 actualFrames++;
               }
             }
+            totalFrames++;
             frames++
             if (frames * app.nthFrame >= app.defaultClockSpeed) {
               app.framesCounter = actualFrames;
