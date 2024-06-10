@@ -3395,7 +3395,7 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && (lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (app.screen && app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
+              if (!app.paused && (!app.screen || lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (app.screen && app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
                 worker.postMessage({ eventType: "CLOCK" });
                 //document.body.style.backgroundColor = "red";
               } else {
