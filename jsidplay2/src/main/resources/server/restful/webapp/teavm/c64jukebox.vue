@@ -3740,8 +3740,8 @@
             mainVolume: 0,
             secondVolume: 0,
             thirdVolume: 0,
-            mainBalance: 0.5,
-            secondBalance: 0.5,
+            mainBalance: 0.3,
+            secondBalance: 0.7,
             thirdBalance: 0.5,
             mainDelay: 0,
             secondDelay: 0,
@@ -4130,8 +4130,8 @@
             this.mainVolume = 0;
             this.secondVolume = 0;
             this.thirdVolume = 0;
-            this.mainBalance = 0.5;
-            this.secondBalance = 0.5;
+            this.mainBalance = 0.3;
+            this.secondBalance = 0.7;
             this.thirdBalance = 0.5;
             this.mainDelay = 0;
             this.secondDelay = 0;
