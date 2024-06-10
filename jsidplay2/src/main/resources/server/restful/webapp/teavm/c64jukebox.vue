@@ -1612,29 +1612,29 @@
                       <li class="nav-item" role="presentation">
                         <button
                           class="nav-link active"
-                          id="videocfg-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#videocfg"
-                          type="button"
-                          role="tab"
-                          aria-controls="videocfg"
-                          aria-selected="true"
-                        >
-                          {{ $t("videoCfgHeader") }}
-                        </button>
-                      </li>
-                      <li class="nav-item" role="presentation">
-                        <button
-                          class="nav-link"
                           id="audiocfg-tab"
                           data-bs-toggle="pill"
                           data-bs-target="#audiocfg"
                           type="button"
                           role="tab"
                           aria-controls="audiocfg"
-                          aria-selected="false"
+                          aria-selected="true"
                         >
                           {{ $t("audioCfgHeader") }}
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="videocfg-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#videocfg"
+                          type="button"
+                          role="tab"
+                          aria-controls="videocfg"
+                          aria-selected="false"
+                        >
+                          {{ $t("videoCfgHeader") }}
                         </button>
                       </li>
                       <li class="nav-item" role="presentation">
@@ -1682,7 +1682,7 @@
                     </ul>
                   </div>
                   <div class="tab-content card-body" style="position: relative">
-                    <div class="tab-pane fade" id="audiocfg" role="tabpanel" aria-labelledby="audiocfg-tab">
+                    <div class="tab-pane fade show active" id="audiocfg" role="tabpanel" aria-labelledby="audiocfg-tab">
                       <div class="form-check">
                         <div class="settings-box">
                           <span class="setting">
@@ -1935,7 +1935,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="tab-pane fade show active" id="videocfg" role="tabpanel" aria-labelledby="videocfg-tab">
+                    <div class="tab-pane fade" id="videocfg" role="tabpanel" aria-labelledby="videocfg-tab">
                       <div class="form-check">
                         <div class="settings-box">
                           <span class="setting">
