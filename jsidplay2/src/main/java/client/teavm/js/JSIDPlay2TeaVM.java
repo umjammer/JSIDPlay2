@@ -5,9 +5,16 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 
 import org.teavm.jso.JSExport;
+import org.teavm.jso.JSObject;
 
 import client.teavm.common.ExportedApi;
 import client.teavm.common.IExportedApi;
+import client.teavm.common.IImportedApi;
+import libsidplay.common.ChipModel;
+import libsidplay.common.Emulation;
+import libsidplay.common.SidReads;
+import libsidplay.common.StereoMode;
+import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.sidtune.SidTuneError;
 
 /**
@@ -15,10 +22,16 @@ import libsidplay.sidtune.SidTuneError;
  */
 public class JSIDPlay2TeaVM {
 
+	private static final class ExportedApiAsJavaScript extends ExportedApi implements JSObject {
+		public ExportedApiAsJavaScript(IImportedApi importedApi) {
+			super(importedApi);
+		}
+	}
+
 	private static IExportedApi jsidplay2;
 
 	public static void main(String[] args) {
-		jsidplay2 = new ExportedApi(new ImportedApi(args));
+		jsidplay2 = new ExportedApiAsJavaScript(new ImportedApi(args));
 	}
 
 	//
@@ -27,8 +40,8 @@ public class JSIDPlay2TeaVM {
 
 	@JSExport
 	public static void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName, String command)
-			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+		byte[] cartContents, String cartContentsName, String command)
+		throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName,
 				command);
 	}
@@ -70,17 +83,17 @@ public class JSIDPlay2TeaVM {
 
 	@JSExport
 	public static void typeKey(String keyCode) {
-		jsidplay2.typeKey(keyCode);
+		jsidplay2.typeKey(KeyTableEntry.valueOf(keyCode));
 	}
 
 	@JSExport
 	public static void pressKey(String keyCode) {
-		jsidplay2.pressKey(keyCode);
+		jsidplay2.pressKey(KeyTableEntry.valueOf(keyCode));
 	}
 
 	@JSExport
 	public static void releaseKey(String keyCode) {
-		jsidplay2.releaseKey(keyCode);
+		jsidplay2.releaseKey(KeyTableEntry.valueOf(keyCode));
 	}
 
 	@JSExport
@@ -90,30 +103,31 @@ public class JSIDPlay2TeaVM {
 
 	@JSExport
 	public static void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
-			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+		float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
 		jsidplay2.volumeLevels(mainVolume, secondVolume, thirdVolume, mainBalance, secondBalance, thirdBalance,
 				mainDelay, secondDelay, thirdDelay);
 	}
 
 	@JSExport
 	public static void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-			String sidToRead) {
-		jsidplay2.stereo(stereoMode, dualSidBase, thirdSIDBase, fakeStereo, sidToRead);
+		String sidToRead) {
+		jsidplay2.stereo(StereoMode.valueOf(stereoMode), dualSidBase, thirdSIDBase, fakeStereo,
+				SidReads.valueOf(sidToRead));
 	}
 
 	@JSExport
 	public static void defaultEmulation(String emulation) {
-		jsidplay2.defaultEmulation(emulation);
+		jsidplay2.defaultEmulation(Emulation.valueOf(emulation));
 	}
 
 	@JSExport
 	public static void defaultChipModel(String chipModel) {
-		jsidplay2.defaultChipModel(chipModel);
+		jsidplay2.defaultChipModel(ChipModel.valueOf(chipModel));
 	}
 
 	@JSExport
 	public static void filterName(String emulation, String chipModel, int sidNum, String filterName) {
-		jsidplay2.filterName(emulation, chipModel, sidNum, filterName);
+		jsidplay2.filterName(Emulation.valueOf(emulation), ChipModel.valueOf(chipModel), sidNum, filterName);
 	}
 
 	@JSExport

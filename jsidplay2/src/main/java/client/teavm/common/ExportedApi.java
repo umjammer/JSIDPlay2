@@ -79,13 +79,10 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void open(byte[] sidContents, String sidContentsNameFromJS, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsNameFromJS, String commandFromJS)
-			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String sidContentsName = sidContentsNameFromJS != null ? "" + sidContentsNameFromJS : null;
-		String cartContentsName = cartContentsNameFromJS != null ? "" + cartContentsNameFromJS : null;
-		command = commandFromJS != null ? "" + commandFromJS : null;
+	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
+		byte[] cartContents, String cartContentsName, String command)
+		throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+		this.command = command;
 
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
 		final IAudioSection audioSection = config.getAudioSection();
@@ -147,16 +144,16 @@ public class ExportedApi implements IExportedApi {
 				} else {
 					// No player: Start basic program or assembler code
 					final int loadAddr = tune.getInfo().getLoadAddr();
-					command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
+					this.command = loadAddr == 0x0801 ? RUN : String.format(SYS, loadAddr);
 				}
 			}
-			if (command != null) {
-				if (command.startsWith(LOAD)) {
+			if (this.command != null) {
+				if (this.command.startsWith(LOAD)) {
 					// Load from tape needs someone to press play
 					hardwareEnsemble.getDatasette().control(Control.START);
 				}
 				// Enter basic command
-				typeInCommand(command);
+				typeInCommand(this.command);
 			}
 			c64.getEventScheduler().schedule(Event.of("PSID64 Detection", event2 -> autodetectPSID64()),
 					(long) (c64.getClock().getCpuFrequency()));
@@ -179,10 +176,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void typeInCommand(String multiLineCommandFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String multiLineCommand = multiLineCommandFromJS != null ? "" + multiLineCommandFromJS : null;
-
+	public void typeInCommand(String multiLineCommand) {
 		if (isOpen()) {
 			String command;
 			if (multiLineCommand.length() > MAX_COMMAND_LEN) {
@@ -211,9 +205,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void insertDisk(byte[] diskContents, String diskContentsNameFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String diskContentsName = diskContentsNameFromJS != null ? "" + diskContentsNameFromJS : null;
+	public void insertDisk(byte[] diskContents, String diskContentsName) {
 		try {
 			if (isOpen()) {
 				File d64File = createReadOnlyFile(diskContents, diskContentsName);
@@ -243,9 +235,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void insertTape(byte[] tapeContents, String tapeContentsNameFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String tapeContentsName = tapeContentsNameFromJS != null ? "" + tapeContentsNameFromJS : null;
+	public void insertTape(byte[] tapeContents, String tapeContentsName) {
 		try {
 			if (isOpen()) {
 				File tapeFile = createReadOnlyFile(tapeContents, tapeContentsName);
@@ -277,12 +267,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void typeKey(String keyCodeFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
-
-		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
-
+	public void typeKey(KeyTableEntry key) {
 		if (isOpen()) {
 			if (key == KeyTableEntry.RESTORE) {
 				c64.getKeyboard().restore();
@@ -300,12 +285,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void pressKey(String keyCodeFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
-
-		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
-
+	public void pressKey(KeyTableEntry key) {
 		if (isOpen()) {
 			c64.getEventScheduler()
 					.scheduleThreadSafeKeyEvent(Event.of("Wait Until Virtual Keyboard Pressed", event2 -> {
@@ -315,12 +295,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void releaseKey(String keyCodeFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
-
-		KeyTableEntry key = KeyTableEntry.valueOf(keyCode);
-
+	public void releaseKey(KeyTableEntry key) {
 		if (isOpen()) {
 			c64.getEventScheduler()
 					.scheduleThreadSafeKeyEvent(Event.of("Wait Until Virtual Keyboard Released", event2 -> {
@@ -345,7 +320,7 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
-			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+		float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
 		final IAudioSection audioSection = config.getAudioSection();
 		audioSection.setMainVolume(mainVolume);
 		audioSection.setSecondVolume(secondVolume);
@@ -376,69 +351,53 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
-	public void stereo(String stereoModeFromJS, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-			String sidToReadFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String stereoStr = stereoModeFromJS != null ? "" + stereoModeFromJS : null;
-		String sidToReadStr = sidToReadFromJS != null ? "" + sidToReadFromJS : null;
-
+	public void stereo(StereoMode stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
+		SidReads sidToRead) {
 		final IEmulationSection emulationSection = config.getEmulationSection();
-		emulationSection.setStereoMode(StereoMode.valueOf(stereoStr));
+		emulationSection.setStereoMode(stereoMode);
 		emulationSection.setDualSidBase(dualSidBase);
 		emulationSection.setThirdSIDBase(thirdSIDBase);
 		emulationSection.setFakeStereo(fakeStereo);
-		emulationSection.setSidToRead(SidReads.valueOf(sidToReadStr));
+		emulationSection.setSidToRead(sidToRead);
 
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
-		LOG.finest("stereoMode: " + stereoStr + ", dualSidBase=" + dualSidBase + ", thirdSIDBase=" + thirdSIDBase
-				+ ", fakeStereo:" + fakeStereo + ", sidToRead:" + sidToReadStr);
+		LOG.finest("stereoMode: " + sidToRead + ", dualSidBase=" + dualSidBase + ", thirdSIDBase=" + thirdSIDBase
+				+ ", fakeStereo:" + fakeStereo + ", sidToRead:" + sidToRead);
 	}
 
 	@Override
-	public void defaultEmulation(String emulationFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String emulationStr = emulationFromJS != null ? "" + emulationFromJS : null;
-
+	public void defaultEmulation(Emulation emulation) {
 		final IEmulationSection emulationSection = config.getEmulationSection();
-		emulationSection.setDefaultEmulation(Emulation.valueOf(emulationStr));
+		emulationSection.setDefaultEmulation(emulation);
 
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
-		LOG.finest("defaultEmulation: " + emulationStr);
+		LOG.finest("defaultEmulation: " + emulation);
 	}
 
 	@Override
-	public void defaultChipModel(String chipModelFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String chipModelStr = chipModelFromJS != null ? "" + chipModelFromJS : null;
-
+	public void defaultChipModel(ChipModel chipModel) {
 		final IEmulationSection emulationSection = config.getEmulationSection();
-		emulationSection.setDefaultSidModel(ChipModel.valueOf(chipModelStr));
+		emulationSection.setDefaultSidModel(chipModel);
 
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
-		LOG.finest("defaultChipModel: " + chipModelStr);
+		LOG.finest("defaultChipModel: " + chipModel);
 	}
 
 	@Override
-	public void filterName(String emulationFromJS, String chipModelFromJS, int sidNumber, String filterNameFromJS) {
-		// JavaScript string cannot be used directly for some reason, therefore:
-		String emulationStr = emulationFromJS != null ? "" + emulationFromJS : null;
-		String chipModelStr = chipModelFromJS != null ? "" + chipModelFromJS : null;
-		String filterName = filterNameFromJS != null ? "" + filterNameFromJS : null;
-
+	public void filterName(Emulation emulation, ChipModel chipModel, int sidNum, String filterName) {
 		final IEmulationSection emulationSection = config.getEmulationSection();
-		emulationSection.setFilterName(sidNumber, Engine.EMULATION, Emulation.valueOf(emulationStr),
-				ChipModel.valueOf(chipModelStr), filterName);
+		emulationSection.setFilterName(sidNum, Engine.EMULATION, emulation, chipModel, filterName);
 
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
-		LOG.finest(getFilterName(sidNumber) + ": " + filterName);
+		LOG.finest(getFilterName(sidNum) + ": " + filterName);
 	}
 
 	@Override
@@ -466,7 +425,7 @@ public class ExportedApi implements IExportedApi {
 	//
 
 	private void doLog(ISidPlay2Section sidplay2Section, IAudioSection audioSection, IEmulationSection emulationSection,
-			IC1541Section c1541Section) {
+		IC1541Section c1541Section) {
 		LOG.finest("palEmulation: " + sidplay2Section.isPalEmulation());
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
@@ -559,7 +518,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	private File createReadOnlyFile(byte[] fileContents, String fileContentsUrl)
-			throws IOException, FileNotFoundException {
+		throws IOException, FileNotFoundException {
 		File tmp = File.createTempFile(IOUtils.getFilenameWithoutSuffix(fileContentsUrl),
 				IOUtils.getFilenameSuffix(fileContentsUrl));
 		try (OutputStream os = new FileOutputStream(tmp)) {

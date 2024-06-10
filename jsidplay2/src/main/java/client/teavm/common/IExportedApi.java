@@ -4,18 +4,21 @@ import java.io.IOException;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import org.teavm.jso.JSObject;
-
+import libsidplay.common.ChipModel;
+import libsidplay.common.Emulation;
+import libsidplay.common.SidReads;
+import libsidplay.common.StereoMode;
+import libsidplay.components.keyboard.KeyTableEntry;
 import libsidplay.sidtune.SidTuneError;
 
 /**
  * Exports to JavaScript.
  */
-public interface IExportedApi extends JSObject {
+public interface IExportedApi {
 
 	void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName, String command)
-			throws IOException, SidTuneError, LineUnavailableException, InterruptedException;
+		byte[] cartContents, String cartContentsName, String command)
+		throws IOException, SidTuneError, LineUnavailableException, InterruptedException;
 
 	void typeInCommand(String multiLineCommand);
 
@@ -31,27 +34,27 @@ public interface IExportedApi extends JSObject {
 
 	void pressPlayOnTape();
 
-	void typeKey(String keyCode);
+	void typeKey(KeyTableEntry keyTableEntry);
 
-	void pressKey(String keyCode);
+	void pressKey(KeyTableEntry keyTableEntry);
 
-	void releaseKey(String keyCode);
+	void releaseKey(KeyTableEntry keyTableEntry);
 
 	void delaySidBlaster(int cycles);
 
 	void joystick(int number, int value);
 
-	void defaultEmulation(String emulation);
+	void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance, float secondBalance,
+		float thirdBalance, int mainDelay, int secondDelay, int thirdDelay);
 
-	void defaultChipModel(String chipModel);
+	void stereo(StereoMode stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo, SidReads sidToRead);
 
-	void filterName(String emulation, String chipModel, int sidNum, String filterName);
+	void defaultEmulation(Emulation emulation);
+
+	void defaultChipModel(ChipModel chipModel);
+
+	void filterName(Emulation emulation, ChipModel chipModel, int sidNum, String filterName);
 
 	void mute(int sidNum, int voice, boolean value);
-
-	void stereo(String stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo, String sidToRead);
-
-	void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance, float secondBalance,
-			float thirdBalance, int mainDelay, int secondDelay, int thirdDelay);
 
 }
