@@ -40,8 +40,6 @@ public interface IExportedApi {
 
 	void releaseKey(KeyTableEntry keyTableEntry);
 
-	void delaySidBlaster(int cycles);
-
 	void joystick(int number, int value);
 
 	void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance, float secondBalance,
@@ -56,5 +54,7 @@ public interface IExportedApi {
 	void filterName(Emulation emulation, ChipModel chipModel, int sidNum, String filterName);
 
 	void mute(int sidNum, int voice, boolean value);
+
+	void delaySidBlaster(int cycles);
 
 }

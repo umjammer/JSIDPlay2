@@ -27,6 +27,16 @@ public class ImportedApi implements IImportedApi {
 	}
 
 	@Override
+	public int getBufferSize() {
+		return getBufferSizeJS();
+	}
+	
+	@Override
+	public int getAudioBufferSize() {
+		return getAudioBufferSizeJS();
+	}
+	
+	@Override
 	public int getSamplingRateAsInt() {
 		return getSamplingRateAsIntJS();
 	}
@@ -39,16 +49,6 @@ public class ImportedApi implements IImportedApi {
 	@Override
 	public boolean getReverbBypass() {
 		return getReverbBypassJS();
-	}
-
-	@Override
-	public int getBufferSize() {
-		return getBufferSizeJS();
-	}
-
-	@Override
-	public int getAudioBufferSize() {
-		return getAudioBufferSizeJS();
 	}
 
 	@Override
