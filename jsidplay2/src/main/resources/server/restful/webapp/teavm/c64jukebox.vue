@@ -3374,7 +3374,7 @@
                 worker.postMessage({ eventType: "IDLE" });
                 //document.body.style.backgroundColor = "yellow";
               }
-              lastTotalFrames = totalFrames;
+              lastTotalFrames = (typeof totalFrames === 'undefined') ? 0 : totalFrames;
             } else if (eventType === "INITIALISED") {
 
               app.setVolumeLevels();

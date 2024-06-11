@@ -236,7 +236,7 @@ Code Snippet:
                 // get on the brakes
                 worker.postMessage({ eventType: "IDLE" });
               }
-              lastTotalFrames = totalFrames;
+              lastTotalFrames = (typeof totalFrames === 'undefined') ? 0 : totalFrames;
 
             } else if (eventType === "INITIALISED") {
               // If the emulation instance is initialized, the tune can be opened to play. This is required before clocking.
