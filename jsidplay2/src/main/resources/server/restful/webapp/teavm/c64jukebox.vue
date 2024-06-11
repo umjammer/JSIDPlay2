@@ -1527,7 +1527,7 @@
                     <button
                       v-show="screen"
                       type="button"
-                      class="btn btn-secondary btn-sm"
+                      class="btn btn-success btn-sm"
                       v-on:click="reset()"
                       :disabled="!screen"
                       style="float: right"
@@ -3479,7 +3479,7 @@
             play: "Load SID/PRG/P00/T64",
             player: "Player",
             pauseContinue: "Pause/Continue",
-            reset: "Reset C64",
+            reset: "Power On",
             stop: "Stop",
             devices: "Devices",
             floppy: "Floppy",
@@ -3592,7 +3592,7 @@
             play: "Lade SID/PRG/P00/T64",
             player: "Player",
             pauseContinue: "Pause/Continue",
-            reset: "Reset C64",
+            reset: "C64 Anschalten",
             stop: "Stop",
             devices: "Geräte",
             floppy: "Floppy",
@@ -4350,7 +4350,6 @@
           canvasContext = canvas.getContext("2d");
           imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
           data = imageData.data;
-          Vue.nextTick(() => app.reset());
         },
         watch: {
           mainVolume(newValue, oldValue) {
