@@ -1524,11 +1524,7 @@
                     >
                       {{ $t("space") }}
                     </button>
-                    <button
-                      type="button"
-                      class="btn btn-success btn-sm"
-                      v-on:click="reset()"
-                    >
+                    <button type="button" class="btn btn-success btn-sm" v-on:click="reset()">
                       {{ $t("reset") }}
                     </button>
                   </div>
@@ -1892,11 +1888,7 @@
                             <label for="startSong"
                               >{{ $t("startSong") }}
                               <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
-                              <select
-                                class="form-select form-select-sm right"
-                                id="startSong"
-                                v-model="startSong"
-                              >
+                              <select class="form-select form-select-sm right" id="startSong" v-model="startSong">
                                 <option v-for="n in startSongs" :value="n">{{ n }}</option>
                               </select>
                             </label>
@@ -1952,11 +1944,7 @@
                           <span class="setting">
                             <label for="nthFrame">
                               <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
-                              <select
-                                class="form-select form-select-sm right"
-                                id="nthFrame"
-                                v-model="nthFrame"
-                              >
+                              <select class="form-select form-select-sm right" id="nthFrame" v-model="nthFrame">
                                 <option v-for="n in nthFrames" :value="n">{{ n }}</option>
                               </select>
                               {{ $t("nthFrame") }}
@@ -2108,11 +2096,7 @@
                         <span class="setting">
                           <label for="sampling">
                             <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
-                            <select
-                              class="form-select form-select-sm right"
-                              id="sampling"
-                              v-model="sampling"
-                            >
+                            <select class="form-select form-select-sm right" id="sampling" v-model="sampling">
                               <option value="false">DECIMATE</option>
                               <option value="true">RESAMPLE</option>
                             </select>
