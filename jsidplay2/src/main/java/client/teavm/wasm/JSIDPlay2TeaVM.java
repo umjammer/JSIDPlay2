@@ -1,5 +1,7 @@
 package client.teavm.wasm;
 
+import static java.util.Optional.ofNullable;
+
 import java.io.IOException;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -32,12 +34,12 @@ public class JSIDPlay2TeaVM {
 
 	@Export(name = "open")
 	public static void open(byte[] sidContents, String sidContentsNameFromJS, int song, int nthFrame,
-		boolean addSidListener, byte[] cartContents, String cartContentsNameFromJS, String commandFromJS)
-		throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+			boolean addSidListener, byte[] cartContents, String cartContentsNameFromJS, String commandFromJS)
+			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String sidContentsName = sidContentsNameFromJS != null ? "" + sidContentsNameFromJS : null;
-		String cartContentsName = cartContentsNameFromJS != null ? "" + cartContentsNameFromJS : null;
-		String command = commandFromJS != null ? "" + commandFromJS : null;
+		String sidContentsName = ofNullable(sidContentsNameFromJS).map(String::valueOf).orElse(null);
+		String cartContentsName = ofNullable(cartContentsNameFromJS).map(String::valueOf).orElse(null);
+		String command = ofNullable(commandFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.open(sidContents, sidContentsName, song, nthFrame, addSidListener, cartContents, cartContentsName,
 				command);
@@ -46,7 +48,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "typeInCommand")
 	public static void typeInCommand(final String multiLineCommandFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String multiLineCommand = multiLineCommandFromJS != null ? "" + multiLineCommandFromJS : null;
+		String multiLineCommand = ofNullable(multiLineCommandFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.typeInCommand(multiLineCommand);
 	}
@@ -59,7 +61,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "insertDisk")
 	public static void insertDisk(byte[] diskContents, String diskContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String diskContentsName = diskContentsNameFromJS != null ? "" + diskContentsNameFromJS : null;
+		String diskContentsName = ofNullable(diskContentsNameFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.insertDisk(diskContents, diskContentsName);
 	}
@@ -72,7 +74,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "insertTape")
 	public static void insertTape(byte[] tapeContents, String tapeContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String tapeContentsName = tapeContentsNameFromJS != null ? "" + tapeContentsNameFromJS : null;
+		String tapeContentsName = ofNullable(tapeContentsNameFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.insertTape(tapeContents, tapeContentsName);
 	}
@@ -90,7 +92,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "typeKey")
 	public static void typeKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
+		String keyCode = ofNullable(keyCodeFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.typeKey(KeyTableEntry.valueOf(keyCode));
 	}
@@ -98,7 +100,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "pressKey")
 	public static void pressKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
+		String keyCode = ofNullable(keyCodeFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.pressKey(KeyTableEntry.valueOf(keyCode));
 	}
@@ -106,7 +108,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "releaseKey")
 	public static void releaseKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String keyCode = keyCodeFromJS != null ? "" + keyCodeFromJS : null;
+		String keyCode = ofNullable(keyCodeFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.releaseKey(KeyTableEntry.valueOf(keyCode));
 	}
@@ -118,17 +120,17 @@ public class JSIDPlay2TeaVM {
 
 	@Export(name = "volumeLevels")
 	public static void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
-		float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
 		jsidplay2.volumeLevels(mainVolume, secondVolume, thirdVolume, mainBalance, secondBalance, thirdBalance,
 				mainDelay, secondDelay, thirdDelay);
 	}
 
 	@Export(name = "stereo")
 	public static void stereo(String stereoModeFromJS, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-		String sidToReadFromJS) {
+			String sidToReadFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String stereoMode = stereoModeFromJS != null ? "" + stereoModeFromJS : null;
-		String sidToRead = sidToReadFromJS != null ? "" + sidToReadFromJS : null;
+		String stereoMode = ofNullable(stereoModeFromJS).map(String::valueOf).orElse(null);
+		String sidToRead = ofNullable(sidToReadFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.stereo(StereoMode.valueOf(stereoMode), dualSidBase, thirdSIDBase, fakeStereo,
 				SidReads.valueOf(sidToRead));
@@ -137,7 +139,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "defaultEmulation")
 	public static void defaultEmulation(String emulationFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String emulation = emulationFromJS != null ? "" + emulationFromJS : null;
+		String emulation = ofNullable(emulationFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.defaultEmulation(Emulation.valueOf(emulation));
 	}
@@ -145,7 +147,7 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "defaultChipModel")
 	public static void defaultChipModel(String chipModelFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String chipModel = chipModelFromJS != null ? "" + chipModelFromJS : null;
+		String chipModel = ofNullable(chipModelFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.defaultChipModel(ChipModel.valueOf(chipModel));
 	}
@@ -153,9 +155,9 @@ public class JSIDPlay2TeaVM {
 	@Export(name = "filterName")
 	public static void filterName(String emulationFromJS, String chipModelFromJS, int sidNum, String filterNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
-		String emulation = emulationFromJS != null ? "" + emulationFromJS : null;
-		String chipModel = chipModelFromJS != null ? "" + chipModelFromJS : null;
-		String filterName = filterNameFromJS != null ? "" + filterNameFromJS : null;
+		String emulation = ofNullable(emulationFromJS).map(String::valueOf).orElse(null);
+		String chipModel = ofNullable(chipModelFromJS).map(String::valueOf).orElse(null);
+		String filterName = ofNullable(filterNameFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.filterName(Emulation.valueOf(emulation), ChipModel.valueOf(chipModel), sidNum, filterName);
 	}

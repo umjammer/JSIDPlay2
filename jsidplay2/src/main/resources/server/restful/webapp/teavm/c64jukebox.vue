@@ -163,7 +163,6 @@
                         <li>
                           <div class="dropdown-item form-check">
                             <button
-                              v-show="screen"
                               type="button"
                               class="btn btn-secondary btn-sm"
                               v-on:click="typeInCommand('LOAD&quot;*&quot;,8,1\rRUN\r')"
@@ -213,7 +212,6 @@
                         <li>
                           <div class="dropdown-item form-check">
                             <button
-                              v-show="screen"
                               type="button"
                               class="btn btn-secondary btn-sm"
                               v-on:click="typeInCommand('LOAD\rRUN\r')"
