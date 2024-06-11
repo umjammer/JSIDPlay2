@@ -1516,21 +1516,18 @@
                       />
                     </div>
                     <button
-                      v-show="screen"
+                      v-show="screen && playing"
                       type="button"
                       class="btn btn-secondary btn-sm"
                       v-on:click="typeKey('SPACE')"
-                      :disabled="!playing || !screen"
+                      style="float: right"
                     >
                       {{ $t("space") }}
                     </button>
                     <button
-                      v-show="screen"
                       type="button"
                       class="btn btn-success btn-sm"
                       v-on:click="reset()"
-                      :disabled="!screen"
-                      style="float: right"
                     >
                       {{ $t("reset") }}
                     </button>
@@ -3479,7 +3476,7 @@
             play: "Load SID/PRG/P00/T64",
             player: "Player",
             pauseContinue: "Pause/Continue",
-            reset: "Power On",
+            reset: "Power On / Reset",
             stop: "Stop",
             devices: "Devices",
             floppy: "Floppy",
@@ -3592,7 +3589,7 @@
             play: "Lade SID/PRG/P00/T64",
             player: "Player",
             pauseContinue: "Pause/Continue",
-            reset: "C64 Anschalten",
+            reset: "C64 Anschalten / Reset",
             stop: "Stop",
             devices: "Geräte",
             floppy: "Floppy",
