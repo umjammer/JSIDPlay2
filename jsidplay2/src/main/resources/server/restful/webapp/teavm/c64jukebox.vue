@@ -3374,7 +3374,7 @@
                 worker.postMessage({ eventType: "IDLE" });
                 //document.body.style.backgroundColor = "yellow";
               }
-              lastTotalFrames = (typeof totalFrames === 'undefined') ? 0 : totalFrames;
+              lastTotalFrames = totalFrames;
             } else if (eventType === "INITIALISED") {
 
               app.setVolumeLevels();
@@ -3426,9 +3426,9 @@
               app.playing = true;
               app.paused = false;
               app.clearScreen();
+              frames = totalFrames = lastTotalFrames = actualFrames = 0;
               if (app.screen) {
                 msPrev = window.performance.now()
-      		    frames = totalFrames = lastTotalFrames = actualFrames = 0;
                 app.animate();
               }
             }
