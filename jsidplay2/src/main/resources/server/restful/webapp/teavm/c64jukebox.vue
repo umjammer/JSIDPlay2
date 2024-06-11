@@ -1885,7 +1885,6 @@
                                   id="reverbBypass"
                                   style="float: right; margin-left: 8px"
                                   v-model="reverbBypass"
-                                  @change="reset()"
                                 />
                               </label>
                             </div>
@@ -1900,7 +1899,6 @@
                                 class="form-select form-select-sm right"
                                 id="startSong"
                                 v-model="startSong"
-                                @change="reset()"
                               >
                                 <option v-for="n in startSongs" :value="n">{{ n }}</option>
                               </select>
@@ -1918,7 +1916,6 @@
                                 id="sidWrites"
                                 style="float: right; margin-left: 8px"
                                 v-model="sidWrites"
-                                @change="reset()"
                               />
                               {{ $t("sidWrites") }}
                             </label>
@@ -1926,7 +1923,7 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting">
-                            <span class="text-danger">Note: To apply those changes, we must reset!</span>
+                            <span class="text-warning">{{ $t("warningRestart") }}</span>
                             <i
                               class="bi bi-exclamation btn btn-sm fw-bold btn-warning fw-bolder"
                               style="float: left"
@@ -1949,7 +1946,6 @@
                                   id="palEmulation"
                                   style="float: right; margin-left: 8px"
                                   v-model="palEmulation"
-                                  @change="reset()"
                                 />
                               </label>
                             </div>
@@ -1963,7 +1959,6 @@
                                 class="form-select form-select-sm right"
                                 id="nthFrame"
                                 v-model="nthFrame"
-                                @change="reset()"
                               >
                                 <option v-for="n in nthFrames" :value="n">{{ n }}</option>
                               </select>
@@ -1973,7 +1968,7 @@
                         </div>
                         <div class="settings-box">
                           <span class="setting">
-                            <span class="text-danger">Note: To apply those changes, we must reset!</span>
+                            <span class="text-warning">{{ $t("warningRestart") }}</span>
                             <i
                               class="bi bi-exclamation btn btn-sm fw-bold btn-warning fw-bolder"
                               style="float: left"
@@ -2071,7 +2066,6 @@
                               class="form-select form-select-sm right"
                               id="defaultClockSpeed"
                               v-model="defaultClockSpeed"
-                              @change="reset()"
                             >
                               <option value="50">PAL</option>
                               <option value="60">NTSC</option>
@@ -2121,7 +2115,6 @@
                               class="form-select form-select-sm right"
                               id="sampling"
                               v-model="sampling"
-                              @change="reset()"
                             >
                               <option value="false">DECIMATE</option>
                               <option value="true">RESAMPLE</option>
@@ -2201,7 +2194,6 @@
                               id="bufferSize"
                               class="form-control"
                               v-model.number="bufferSize"
-                              @change="reset()"
                           /></label>
                         </span>
                       </div>
@@ -2216,13 +2208,12 @@
                               id="audioBufferSize"
                               class="form-control"
                               v-model.number="audioBufferSize"
-                              @change="reset()"
                           /></label>
                         </span>
                       </div>
                       <div class="settings-box">
                         <span class="setting">
-                          <span class="text-danger">Note: To apply those changes, we must reset!</span>
+                          <span class="text-warning">{{ $t("warningRestart") }}</span>
                           <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
                         </span>
                       </div>
@@ -3587,6 +3578,7 @@
             confirmationTitle: "Confirmation Dialogue",
             setDefault: "Restore Defaults",
             setDefaultReally: "Do you really want to restore defaults?",
+            warningRestart: "Note: To apply those changes, please restart tune!",
           },
           de: {
             FileMenu: "Datei",
@@ -3699,6 +3691,7 @@
             confirmationTitle: "Sicherheitsabfrage",
             setDefault: "Standardeinstellungen wiederherstellen",
             setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
+            warningRestart: "Achtung: Damit diesen Einstellungen angewendet werden können, bitte den Tune neu starten!",
           },
         },
       });
