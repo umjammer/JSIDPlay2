@@ -3743,7 +3743,7 @@
             mainBalance: 0.3,
             secondBalance: 0.7,
             thirdBalance: 0.5,
-            mainDelay: 0,
+            mainDelay: 10,
             secondDelay: 0,
             thirdDelay: 0,
             stereoMode: "AUTO",
@@ -4133,7 +4133,7 @@
             this.mainBalance = 0.3;
             this.secondBalance = 0.7;
             this.thirdBalance = 0.5;
-            this.mainDelay = 0;
+            this.mainDelay = 10;
             this.secondDelay = 0;
             this.thirdDelay = 0;
             this.stereoMode = "AUTO";

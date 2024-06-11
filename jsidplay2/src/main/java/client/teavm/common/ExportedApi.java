@@ -363,7 +363,7 @@ public class ExportedApi implements IExportedApi {
 		if (isOpen()) {
 			updateSids(emulationSection);
 		}
-		LOG.finest("stereoMode: " + sidToRead + ", dualSidBase=" + dualSidBase + ", thirdSIDBase=" + thirdSIDBase
+		LOG.finest("stereoMode: " + stereoMode + ", dualSidBase=" + dualSidBase + ", thirdSIDBase=" + thirdSIDBase
 				+ ", fakeStereo:" + fakeStereo + ", sidToRead:" + sidToRead);
 	}
 

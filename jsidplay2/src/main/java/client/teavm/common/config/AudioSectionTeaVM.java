@@ -16,10 +16,10 @@ public final class AudioSectionTeaVM implements IAudioSection {
 	private float mainVolume;
 	private float secondVolume;
 	private float thirdVolume;
-	private float mainBalance = 0.5f;
-	private float secondBalance = 0.5f;
+	private float mainBalance = 0.3f;
+	private float secondBalance = 0.7f;
 	private float thirdBalance = 0.5f;
-	private int mainDelay;
+	private int mainDelay = 10;
 	private int secondDelay;
 	private int thirdDelay;
 
