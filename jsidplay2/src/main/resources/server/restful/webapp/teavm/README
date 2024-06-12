@@ -317,28 +317,29 @@ The events can be imagined as a request and response ping pong protocol between 
 Nearly every command event has an answer event to report fullfillment.
 
 Event Types:
-"INITIALISE" - Every emulation instance starts calling that first event with some configuration. The worker answers with INITIALISED
-"INITIALISED"- Now we open a tune calling the OPEN event with details of the tune
-"OPEN"       - Open a tune file (load it, setup the emulator to play it), the answer will be "OPENED"
-"OPENED"     - The emulator has opened a tune and is ready to get clocked. During clocking it produces output (samples and frames)
-"CLOCK"      - The emulator clocks the C64 hardware (the buffer size denotes how many times).
-               During that clocking it reports "SAMPLES" (with the size of audioBufferSize), "FRAME" (every generated video frame)
-               and "SID_WRITE" events on each CPU write to the SID chip. If clocking is completed, the answer is "CLOCKED"
-               and the "CLOCK" event gets started again for the next round
-"IDLE"       - This event does in fact nothing (no output is produced), since the emulator has produces enough samples/frames to be consumed by a viewer
-               However, the answer is "CLOCKED" as well even though nothing advanced.
+"INITIALISE"           - Every emulation instance starts calling that first event with some configuration. The worker answers with INITIALISED
+"INITIALISED"          - Now we open a tune calling the OPEN event with details of the tune
+"OPEN"                 - Open a tune file (load it, setup the emulator to play it), the answer will be "OPENED"
+"OPENED"               - The emulator has opened a tune and is ready to get clocked. During clocking it produces output (samples and frames)
+"CLOCK"                - The emulator clocks the C64 hardware (the buffer size denotes how many times).
+                         During that clocking it reports "SAMPLES" (with the size of audioBufferSize), "FRAME" (every generated video frame)
+                         and "SID_WRITE" events on each CPU write to the SID chip. If clocking is completed, the answer is "CLOCKED"
+                         and the "CLOCK" event gets started again for the next round
+"IDLE"                 - This event does in fact nothing (no output is produced), since the emulator has produces enough samples/frames to be consumed by a viewer
+                         However, the answer is "CLOCKED" as well even though nothing advanced.
+
 These events from the emulation web worker have no answer and are called during clocking:
-"SAMPLES"    - the worker has produced a chunk of sound data (size of audioBufferSize). You can send it further to the JavaScript Audio API
-"FRAME"      - A video frame has been produced. Send it to a queue and pull it every 1/50s to a canvas for watching.
-"SID_WRITE"  - A SID write statement occurs, ignore it, print it or use it for a virtual SID device
+"SAMPLES"              - the worker has produced a chunk of sound data (size of audioBufferSize). You can send it further to the JavaScript Audio API
+"FRAME"                - A video frame has been produced. Send it to a queue and pull it every 1/50s to a canvas for watching.
+"SID_WRITE"            - A SID write statement occurs, ignore it, print it or use it for a virtual SID device
 That's the trick, easy eh?
 
 Immediately after a tune gets opened, you can optionally insert required media like disk/tape and such:
-INSERT_DISK        - Insert a floppy disk
-INSERT_TAPE        - Insert a tape into datasette
-PRESS_PLAY_ON_TAPE - Press play button on datasette
-EJECT_DISK         - eject current disk  from floppy
-EJECT_TAPE         - eject tape from datasette
+INSERT_DISK            - Insert a floppy disk
+INSERT_TAPE            - Insert a tape into datasette
+PRESS_PLAY_ON_TAPE     - Press play button on datasette
+EJECT_DISK             - eject current disk  from floppy
+EJECT_TAPE             - eject tape from datasette
 
 Immediately before call of OPEN, you can request further optional configuration:
 SET_DEFAULT_EMULATION  - choose default software emulation (RESID or RESIDFP)
@@ -349,10 +350,13 @@ SET_STEREO             - set stereo modes to be used
 SET_VOLUME_LEVELS      - lower or raise volume levels, balance sound output or delay specific SID output.
 
 When the emulator is running and being clocked, you can send some key strokes as well and such:
-TYPE_KEY       - type a key (press and release short after)
-PRESS_KEY      - hold down a key until it gets released again by the next command
-RELEASE_KEY    - release a recently pressed key
-PRESS_JOYSTICK - set a joystick input for the emulator (button press or left/right/bottom/up)
+TYPE_KEY               - type a key (press and release short after)
+PRESS_KEY              - hold down a key until it gets released again by the next command
+RELEASE_KEY            - release a recently pressed key
+PRESS_JOYSTICK         - set a joystick input for the emulator (button press or left/right/bottom/up)
+FAST_FORWARD           - Fast forward tune (double the speed)
+NORMAL_SPEED           - Normal speed
+FREEZE_CARTRIDGE       - Cartrige freeze
 
 For the parameters, have a look in c64jukebox.vue
 
