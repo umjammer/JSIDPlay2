@@ -143,6 +143,24 @@ addEventListener(
       postMessage({
         eventType: "VOLUME_LEVELS_SET",
       });
+    } else if (eventType === "FAST_FORWARD") {
+      fastForward();
+
+      postMessage({
+        eventType: "FAST_FORWARD_SET",
+      });
+    } else if (eventType === "NORMAL_SPEED") {
+      normalSpeed();
+
+      postMessage({
+        eventType: "NORMAL_SPEED_SET",
+      });
+    } else if (eventType === "FREEZE_CARTRIDGE") {
+      freezeCartridge();
+
+      postMessage({
+        eventType: "CARTRIDGE_FREEZED",
+      });
     } else if (eventType === "INITIALISE") {
       main(
         [

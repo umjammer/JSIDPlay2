@@ -128,6 +128,21 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
+	public static void fastForward() {
+		jsidplay2.fastForward();
+	}
+
+	@JSExport
+	public static void normalSpeed() {
+		jsidplay2.normalSpeed();
+	}
+
+	@JSExport
+	public static void freezeCartridge() {
+		jsidplay2.freezeCartridge();
+	}
+
+	@JSExport
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);
 	}

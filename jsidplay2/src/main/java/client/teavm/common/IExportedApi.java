@@ -55,6 +55,12 @@ public interface IExportedApi {
 
 	void mute(int sidNum, int voice, boolean value);
 
+	void fastForward();
+	
+	void normalSpeed();
+
+	void freezeCartridge();
+	
 	void delaySidBlaster(int cycles);
 
 }

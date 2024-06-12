@@ -18,6 +18,9 @@ import {
   defaultChipModel,
   filterName,
   mute,
+  fastForward,
+  normalSpeed,
+  freezeCartridge,
 } from "./jsidplay2.js";
 
 // Handle incoming messages
@@ -111,28 +114,6 @@ addEventListener(
       postMessage({
         eventType: "JOYSTICK_PRESSED",
       });
-    } else if (eventType === "SET_VOLUME_LEVELS") {
-      volumeLevels(
-        eventData.mainVolume,
-        eventData.secondVolume,
-        eventData.thirdVolume,
-        eventData.mainBalance,
-        eventData.secondBalance,
-        eventData.thirdBalance,
-        eventData.mainDelay,
-        eventData.secondDelay,
-        eventData.thirdDelay,
-      );
-
-      postMessage({
-        eventType: "VOLUME_LEVELS_SET",
-      });
-    } else if (eventType === "SET_STEREO") {
-      stereo(eventData.stereoMode, eventData.dualSidBase, eventData.thirdSIDBase, eventData.fakeStereo, eventData.sidToRead);
-
-      postMessage({
-        eventType: "STEREO_SET",
-      });
     } else if (eventType === "SET_DEFAULT_EMULATION") {
       defaultEmulation(eventData.emulation);
 
@@ -156,6 +137,46 @@ addEventListener(
 
       postMessage({
         eventType: "MUTE_SET",
+      });
+    } else if (eventType === "SET_STEREO") {
+      stereo(eventData.stereoMode, eventData.dualSidBase, eventData.thirdSIDBase, eventData.fakeStereo, eventData.sidToRead);
+
+      postMessage({
+        eventType: "STEREO_SET",
+      });
+    } else if (eventType === "SET_VOLUME_LEVELS") {
+      volumeLevels(
+        eventData.mainVolume,
+        eventData.secondVolume,
+        eventData.thirdVolume,
+        eventData.mainBalance,
+        eventData.secondBalance,
+        eventData.thirdBalance,
+        eventData.mainDelay,
+        eventData.secondDelay,
+        eventData.thirdDelay
+      );
+
+      postMessage({
+        eventType: "VOLUME_LEVELS_SET",
+      });
+    } else if (eventType === "FAST_FORWARD") {
+      fastForward();
+
+      postMessage({
+        eventType: "FAST_FORWARD_SET",
+      });
+    } else if (eventType === "NORMAL_SPEED") {
+      normalSpeed();
+
+      postMessage({
+        eventType: "NORMAL_SPEED_SET",
+      });
+    } else if (eventType === "FREEZE_CARTRIDGE") {
+      freezeCartridge();
+
+      postMessage({
+        eventType: "CARTRIDGE_FREEZED",
       });
     } else if (eventType === "INITIALISE") {
       main(

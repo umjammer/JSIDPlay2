@@ -32,6 +32,7 @@ import libsidplay.common.Emulation;
 import libsidplay.common.Engine;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
+import libsidplay.common.Mixer;
 import libsidplay.common.SidReads;
 import libsidplay.common.StereoMode;
 import libsidplay.components.c1530.Datasette.Control;
@@ -80,8 +81,8 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-		byte[] cartContents, String cartContentsName, String command)
-		throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+			byte[] cartContents, String cartContentsName, String command)
+			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		this.command = command;
 
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
@@ -320,7 +321,7 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
-		float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
 		final IAudioSection audioSection = config.getAudioSection();
 		audioSection.setMainVolume(mainVolume);
 		audioSection.setSecondVolume(secondVolume);
@@ -331,6 +332,7 @@ public class ExportedApi implements IExportedApi {
 		audioSection.setMainDelay(mainDelay);
 		audioSection.setSecondDelay(secondDelay);
 		audioSection.setThirdDelay(thirdDelay);
+
 		if (isOpen()) {
 			sidBuilder.setVolume(0, mainVolume);
 			sidBuilder.setVolume(1, secondVolume);
@@ -352,7 +354,7 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void stereo(StereoMode stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-		SidReads sidToRead) {
+			SidReads sidToRead) {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setStereoMode(stereoMode);
 		emulationSection.setDualSidBase(dualSidBase);
@@ -412,6 +414,31 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
+	public void fastForward() {
+		if (isOpen()) {
+			if (sidBuilder instanceof Mixer) {
+				((Mixer) sidBuilder).fastForward();
+			}
+		}
+	}
+
+	@Override
+	public void normalSpeed() {
+		if (isOpen()) {
+			if (sidBuilder instanceof Mixer) {
+				((Mixer) sidBuilder).normalSpeed();
+			}
+		}
+	}
+
+	@Override
+	public void freezeCartridge() {
+		if (isOpen()) {
+			c64.getCartridge().freeze();
+		}
+	}
+
+	@Override
 	public void delaySidBlaster(int cycles) {
 		// some hackery for SIDBlaster USB to support delayed writes
 		long delay = (long) (cycles / CPUClock.PAL.getCpuFrequency() * 1000000000L);
@@ -425,7 +452,7 @@ public class ExportedApi implements IExportedApi {
 	//
 
 	private void doLog(ISidPlay2Section sidplay2Section, IAudioSection audioSection, IEmulationSection emulationSection,
-		IC1541Section c1541Section) {
+			IC1541Section c1541Section) {
 		LOG.finest("palEmulation: " + sidplay2Section.isPalEmulation());
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
@@ -518,7 +545,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	private File createReadOnlyFile(byte[] fileContents, String fileContentsUrl)
-		throws IOException, FileNotFoundException {
+			throws IOException, FileNotFoundException {
 		File tmp = File.createTempFile(IOUtils.getFilenameWithoutSuffix(fileContentsUrl),
 				IOUtils.getFilenameSuffix(fileContentsUrl));
 		try (OutputStream os = new FileOutputStream(tmp)) {

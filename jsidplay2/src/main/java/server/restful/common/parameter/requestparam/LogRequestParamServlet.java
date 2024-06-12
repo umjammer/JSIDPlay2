@@ -13,7 +13,7 @@ import server.restful.common.Order;
 public class LogRequestParamServlet {
 
 	private Boolean help = Boolean.FALSE;
-	
+
 	public Boolean getHelp() {
 		return help;
 	}
@@ -22,14 +22,14 @@ public class LogRequestParamServlet {
 	public void setHelp(Boolean help) {
 		this.help = help;
 	}
-	
+
 	private Long instant = 0L;
 
 	public Long getInstant() {
 		return instant;
 	}
 
-	@Parameter(names = { "--instant" }, descriptionKey = "INSTANT", order = Integer.MIN_VALUE+1)
+	@Parameter(names = { "--instant" }, descriptionKey = "INSTANT", order = Integer.MIN_VALUE + 1)
 	public void setInstant(Long instant) {
 		this.instant = instant;
 	}

@@ -93,6 +93,12 @@
                       </div>
                     </li>
                     <li>
+                      <a class="dropdown-item" href="#" @click="fastForward()">{{ $t("fastForward") }}</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" @click="normalSpeed()">{{ $t("normalSpeed") }}</a>
+                    </li>
+                    <li>
                       <a
                         class="dropdown-item"
                         href="#"
@@ -101,6 +107,17 @@
                           screen = true;
                         "
                         >{{ $t("stop") }}</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="
+                          stopTune();
+                          startTune(screen);
+                        "
+                        >{{ $t("restart") }}</a
                       >
                     </li>
                   </ul>
@@ -258,6 +275,9 @@
                         </li>
                         <li>
                           <a class="dropdown-item" href="#" @click="ejectCart()">{{ $t("ejectCart") }}</a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" @click="freezeCartridge()">{{ $t("freezeCartridge") }}</a>
                         </li>
                       </ul>
                     </li>
@@ -1813,7 +1833,7 @@
                                   class="form-control"
                                   min="0"
                                   max="100"
-                                  step="10"
+                                  step="1"
                                   v-model.number="mainDelay"
                                   @change="setVolumeLevels()"
                                 />
@@ -1834,7 +1854,7 @@
                                   class="form-control"
                                   min="0"
                                   max="100"
-                                  step="10"
+                                  step="1"
                                   v-model.number="secondDelay"
                                   @change="setVolumeLevels()"
                                 />
@@ -1855,7 +1875,7 @@
                                   class="form-control"
                                   min="0"
                                   max="100"
-                                  step="10"
+                                  step="1"
                                   v-model.number="thirdDelay"
                                   @change="setVolumeLevels()"
                                 />
@@ -3375,8 +3395,8 @@
               lastTotalFrames = totalFrames;
             } else if (eventType === "INITIALISED") {
 
-              app.setVolumeLevels();
               app.setStereo();
+              app.setVolumeLevels();
               app.setDefaultEmulation(app.defaultEmulation);
               app.setDefaultSidModel(app.defaultSidModel);
               app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
@@ -3458,8 +3478,11 @@
             play: "Load SID/PRG/P00/T64",
             player: "Player",
             pauseContinue: "Pause/Continue",
+            fastForward: "Fast Forward",
+            normalSpeed: "Normal Speed",
             reset: "Power On / Reset",
             stop: "Stop",
+            restart: "Restart",
             devices: "Devices",
             floppy: "Floppy",
             insertDisk: "Insert Disk",
@@ -3471,6 +3494,7 @@
             cart: "Cart",
             insertCart: "Insert Cartridge",
             ejectCart: "Eject Cartridge",
+            freezeCartridge: "Freeze Cartridge",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Space Key",
@@ -3570,9 +3594,12 @@
             file: "Datei",
             play: "Lade SID/PRG/P00/T64",
             player: "Player",
-            pauseContinue: "Pause/Continue",
+            pauseContinue: "Pause/Weiter",
+            fastForward: "Schnellvorlauf",
+            normalSpeed: "Normale Geschw.",
             reset: "C64 Anschalten / Reset",
             stop: "Stop",
+            restart: "Restart",
             devices: "Geräte",
             floppy: "Floppy",
             insertDisk: "Diskette einlegen",
@@ -3584,6 +3611,7 @@
             cart: "Modul",
             insertCart: "Modul einlegen",
             ejectCart: "Modul auswerfen",
+            freezeCartridge: "Modul einfrieren",
             loadDisk: "Load *,8,1",
             loadTape: "Load",
             space: "Leertaste",
@@ -3829,6 +3857,22 @@
               app.reset();
             }
           },
+          fastForward() {
+              if (worker) {
+                worker.postMessage({
+                  eventType: "FAST_FORWARD",
+                  eventData: { },
+                });
+              }
+          },
+          normalSpeed() {
+              if (worker) {
+                worker.postMessage({
+                  eventType: "NORMAL_SPEED",
+                  eventData: { },
+                });
+              }
+          },
           stopTune() {
             if (worker) {
               worker.terminate();
@@ -4015,6 +4059,14 @@
             app.$refs.formCartFileSm.value = "";
             app.reset();
           },
+          freezeCartridge() {
+              if (worker) {
+                worker.postMessage({
+                  eventType: "FREEZE_CARTRIDGE",
+                  eventData: { },
+                });
+              }
+          },
           setDefaultEmulation(emulation) {
             if (worker) {
               worker.postMessage({
@@ -4144,8 +4196,8 @@
             this.muteThirdSIDVoice3 = false;
             this.muteThirdSIDVoice4 = false;
 
-            app.setVolumeLevels();
             app.setStereo();
+            app.setVolumeLevels();
             app.setDefaultEmulation(app.defaultEmulation);
             app.setDefaultSidModel(app.defaultSidModel);
             app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);

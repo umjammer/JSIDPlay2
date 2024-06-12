@@ -120,34 +120,6 @@ addEventListener(
       postMessage({
         eventType: "JOYSTICK_PRESSED",
       });
-    } else if (eventType === "SET_VOLUME_LEVELS") {
-      instance.exports.volumeLevels(
-        eventData.mainVolume,
-        eventData.secondVolume,
-        eventData.thirdVolume,
-        eventData.mainBalance,
-        eventData.secondBalance,
-        eventData.thirdBalance,
-        eventData.mainDelay,
-        eventData.secondDelay,
-        eventData.thirdDelay
-      );
-
-      postMessage({
-        eventType: "VOLUME_LEVELS_SET",
-      });
-    } else if (eventType === "SET_STEREO") {
-      instance.exports.stereo(
-        allocateTeaVMstring(eventData.stereoMode ?? null),
-        eventData.dualSidBase,
-        eventData.thirdSIDBase,
-        eventData.fakeStereo,
-        allocateTeaVMstring(eventData.sidToRead ?? null)
-      );
-
-      postMessage({
-        eventType: "STEREO_SET",
-      });
     } else if (eventType === "SET_DEFAULT_EMULATION") {
       instance.exports.defaultEmulation(allocateTeaVMstring(eventData.emulation ?? null));
 
@@ -176,6 +148,52 @@ addEventListener(
 
       postMessage({
         eventType: "MUTE_SET",
+      });
+    } else if (eventType === "SET_STEREO") {
+      instance.exports.stereo(
+        allocateTeaVMstring(eventData.stereoMode ?? null),
+        eventData.dualSidBase,
+        eventData.thirdSIDBase,
+        eventData.fakeStereo,
+        allocateTeaVMstring(eventData.sidToRead ?? null)
+      );
+
+      postMessage({
+        eventType: "STEREO_SET",
+      });
+    } else if (eventType === "SET_VOLUME_LEVELS") {
+      instance.exports.volumeLevels(
+        eventData.mainVolume,
+        eventData.secondVolume,
+        eventData.thirdVolume,
+        eventData.mainBalance,
+        eventData.secondBalance,
+        eventData.thirdBalance,
+        eventData.mainDelay,
+        eventData.secondDelay,
+        eventData.thirdDelay
+      );
+
+      postMessage({
+        eventType: "VOLUME_LEVELS_SET",
+      });
+    } else if (eventType === "FAST_FORWARD") {
+      instance.exports.fastForward();
+
+      postMessage({
+        eventType: "FAST_FORWARD_SET",
+      });
+    } else if (eventType === "NORMAL_SPEED") {
+      instance.exports.normalSpeed();
+
+      postMessage({
+        eventType: "NORMAL_SPEED_SET",
+      });
+    } else if (eventType === "FREEZE_CARTRIDGE") {
+      instance.exports.freezeCartridge();
+
+      postMessage({
+        eventType: "CARTRIDGE_FREEZED",
       });
     } else if (eventType === "INITIALISE") {
       TeaVM.wasm

@@ -167,6 +167,21 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.mute(sidNum, voice, value);
 	}
 
+	@Export(name = "fastForward")
+	public static void fastForward() {
+		jsidplay2.fastForward();
+	}
+
+	@Export(name = "normalSpeed")
+	public static void normalSpeed() {
+		jsidplay2.normalSpeed();
+	}
+
+	@Export(name = "freezeCartridge")
+	public static void freezeCartridge() {
+		jsidplay2.freezeCartridge();
+	}
+
 	@Export(name = "delaySidBlaster")
 	public static void delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);
