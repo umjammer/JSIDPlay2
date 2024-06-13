@@ -3323,7 +3323,7 @@
         }
       }
 
-      function wasmWorker(contents, tuneName, cartContents, cartName, command) {
+      function jsidplay2Worker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
           latencyHint: "interactive",
           sampleRate: 48000,
@@ -3800,7 +3800,7 @@
             if (app.$refs.formCartFileSm.files[0]) {
               var reader = new FileReader();
               reader.onload = function () {
-                wasmWorker(
+                jsidplay2Worker(
                   undefined,
                   undefined,
                   new Uint8Array(this.result),
@@ -3810,7 +3810,7 @@
               };
               reader.readAsArrayBuffer(app.$refs.formCartFileSm.files[0]);
             } else {
-              wasmWorker(undefined, undefined, undefined, undefined, command);
+              jsidplay2Worker(undefined, undefined, undefined, undefined, command);
             }
           },
           startTune(screen) {
@@ -3822,7 +3822,7 @@
             if (app.$refs.formFileSm.files[0]) {
               var reader = new FileReader();
               reader.onload = function () {
-                wasmWorker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
+                jsidplay2Worker(new Uint8Array(this.result), app.$refs.formFileSm.files[0].name);
               };
               reader.readAsArrayBuffer(app.$refs.formFileSm.files[0]);
             }

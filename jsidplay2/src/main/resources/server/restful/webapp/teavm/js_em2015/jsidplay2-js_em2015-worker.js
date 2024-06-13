@@ -139,7 +139,13 @@ addEventListener(
         eventType: "MUTE_SET",
       });
     } else if (eventType === "SET_STEREO") {
-      stereo(eventData.stereoMode, eventData.dualSidBase, eventData.thirdSIDBase, eventData.fakeStereo, eventData.sidToRead);
+      stereo(
+        eventData.stereoMode,
+        eventData.dualSidBase,
+        eventData.thirdSIDBase,
+        eventData.fakeStereo,
+        eventData.sidToRead
+      );
 
       postMessage({
         eventType: "STEREO_SET",

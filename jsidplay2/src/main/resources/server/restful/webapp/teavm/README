@@ -10,20 +10,20 @@ just use the file set and upload to your web server.
 I have added example HTML code for different use-cases. Use it or add the code to your web-site's HTML code.
 example-sound.html - Choose a tune and play a SID
 example-video.html - Choose a tune and play a SID while watching the video screen.
-example-disk.html - Choose a disk image, reset C64 and load first entry. For disk swap just choose another disk
-c64jukebox.vue and c64jukebox.scss - Is a complex example using VUE and Bootstrap dependencies for web developers just for completeness
+example-disk.html -  Choose a disk image, reset C64 and load first entry. For disk swap just choose another disk.
+c64jukebox.vue and c64jukebox.scss - Is a complex example using VUE and Bootstrap dependencies for web developers, that is the actual page you are watching.
 
 Background Story:
 =================
 
 JSIDPlay2 is a Java based C64 emulator and since Java is not popular to be installed on the client side
-for security reasons or taste, i have therefore presumably a small user base.
+for security reasons, taste or because it is not user friendly enough, i have therefore presumably a small user base.
 
-On the client side in a browser JavaScript dominates since the beginning as a de-facto standard for web development.
+On the client side in a browser, JavaScript dominates since the beginning as a de-facto standard for web development.
 Even more modern frameworks are based on JavaScript.
 
 But web content uses more and more logic and JavaScript is quite often megabytes of code to be executed on the client side. 
-Web sites tend to get slower and slower due to this fact.
+Web sites tend to get slower and slower due to this fact. Browser vendors have a lot of work to speed things up and are doing a great job.
 The World Wide Web consortium (W3C) knows well about the problem and has created a new standard to not replace, but to
 extend JavaScript by a new language called "Web Assembly". It can be executed near native speed and is supported widely by all major browser vendors.
 
@@ -33,45 +33,51 @@ That makes Web Assembly a safe technology. Whenever I/O operations must happen, 
 
 Many programming languages can convert source code to web assembly including C/C++, Python and so on.
 Java is no exception here, even though it is not a trivial task, since a garbage collector is always required to free memory during execution.
-For Java there are several tools out there like  GWT, TeaVM or CherpJ. Each of them with different possibilities.
+For Java there are several tools out there like  GWT, TeaVM or CherpJ. Each of them with different approaches to generate web content from Java.
 One of them - TeaVM - is a great project out there, that makes it possible to get Java code executed on the client side in a different form.
-This magic is done using the intermediate language of Java, the class files, and execution by ahead-of-time compilation.
-The output is then emitted as JavaScript or Web Assembly.
+This magic is done using the intermediate language of Java, the class files, and execution by ahead-of-time compilation, that emits
+output as JavaScript or Web Assembly.
 
 Using class files, not Java source code - makes it possible to use it with other programming languages than Java as well, like Scala and Kotlin,
-these compiles to class files as well.
+since these compiles to class files like Java. No source code is required with that approach.
 
 TeaVM can be used with maven or gradle.
 No other technology stack is required, just what we already use: maven and a Java IDE is just fine.
 
-If you want to learn more about TeaVM, please visit the project at "https://teavm.org/".
+If you want to learn more about this fantastic project called TeaVM, please visit their web-site at "https://teavm.org/".
 
-I got curious about the idea to make use of this project, even though the documentation is sparse.
+I got curious about the possibility to make use of this project, even though the documentation is sparse.
 Is it able to use my emulation core and push a decent Java emulator like JSIDPlay2 to the client side?
 It took me some weeks, but fair to say, there was only minimum problems I got to solve for my code base to make that happen.
-1. If you need resources like ROMs, you need to read it during compilation phase and put it in the resulting JavaScript,
-   since you can't just read a file from hard disk in a browser like in Java.
+Some of the problems:
+1. If you need resources like ROMs, you need to read it during compilation phase and put it in the resulting JavaScript.
    Same for the PAL emulation color palette. It is 2MB big and calculation would be just too slow for the client side.
    Therefore it's pre-calculated.
-2. Are there bugs in TeaVM? Very few. Take care of two dimensional arrays. TeaVM does not directly allocate the second dimension
+2. Are there bugs in TeaVM? Very few. Take care of two dimensional arrays. TeaVM does not directly allocate the second dimension in a variable definition
    and the length is always 0 by the time being! And a method with a try-catch operation in a switch statement was a problem as well.
-   Some JDK class library code is not 100% compatible, but it gets better and better and is still actively developed.
+   For WASM there is different bugs like using strings from JavaScript without copying can kill the program.
+   Additionally some JDK class library code is not 100% compatible, yet, but it gets better and better and TeaVM is still actively developed and supported.
    There is nearly 0 other bugs at least I have found.
    Nearly every class of the JDK library is available, with some exceptions. Reflection is only partly implemented, though.
-3. Debugging of Web Assembly is currently unsupported. When I started by generating Web-Assembly, first, it was a bad decision.
+3. Debugging of Web Assembly is currently unsupported. When I started by generating Web-Assembly code, first, it was a bad decision.
    I thought it would be a good idea, because it would be faster than JavaScript. But against any expectations the opposite is the case
    at least for my use case. And then, when I added JavaScript,
    I made wide eyes finding debugging possibilities in the browser developer console.
    Additionally if we are talking about the speed - the speed is so incredible fast, you won't believe it, at least in Google Chrome browser.
+   Firefox makes some trouble, at least for the time being.
    Don't think that JavaScript is still an interpreted slow language, browser vendors do a fantastic job these days to get maximum speed out of it.
+   The reason why WebAssembly is slow here, is because of the many context switches from and to JavaScript, required to produce audio and video.
+   Normally WebAssembly should be faster than JavaScript for CPU intensive calculations by design. Hopefully it will get faster in the future.
 4. But, the most important rule to get good results is to optimize code for speed. Don't execute any unnecessary piece of code!
+   This is the most important rule.
 
-Now, as a result, you can directly compare both, JavaScript and Web Assembly version of JSIDPlay2 to find out what works better for you.
+Now, as a result, you can directly compare both, JavaScript and Web Assembly version of JSIDPlay2 to find out what works better for you, JavaScript I bet!
 
 What does the package of JSIDPlay2 contain:
 ===========================================
 So, the package contains the basic functionality of JSIDPlay2 (namely the package libsidplay).
 A complete hardware setup with C64, Floppy, Datasette, Cartridge support and more.
+It adds some glue code to import/export I/O from or to JavaScript.
    
 It can play C64 content like SID music, executable programs (PRG) or
 even content from tape, disk or cartridge for your enjoyment.
@@ -83,7 +89,7 @@ The sub-directory js (or wasm) contains the generated emulator file jsidplay2.js
 Both releases have an additional web worker (*-worker*.js) and Web Assembly requires a runtime in JavaScript (*-runtime*.js).
 That's it.
 2 files for JavaScript or 3 for Web Assembly and thats all you need.
-For completeness i have added a third version: EM2015 JavaScript to the existing UMD JavaScript dialect.
+For completeness i have added a different JavaScript version: EM2015 to the existing UMD JavaScript dialect.
 In any case you will need these files from the sub folder js/wasm for integration in your web site.
 
 Required Files for JavaScript (UMD) version:
@@ -105,9 +111,9 @@ Upload this file-set to your web server and then you need a bit JavaScript in yo
 
 What code do I need to control the emulator?
 ============================================
-Since the emulator runs as a web worker (to not block the main thread), you will setup this worker, first, calling wasmWorker(...).
+Since the emulator runs as a web worker (to not block the main thread), you will setup this worker, first, calling jsidplay2Worker(...).
 
-Parameters of wasmWorker:
+Parameters of jsidplay2Worker:
 What tune to play is answered by the first two parameters. "contents" and "tune name" are specifying a tune to play.
 1. contents - Uint8Array with the PSID, PRG, P00 or T64
 2. tuneName - the tune name must be present and contain a file extension one of ".sid", ".prg", ".p00", ".t64"
@@ -153,7 +159,7 @@ Code Snippet:
       }
       var imageQueue = new Queue();
 
-      function wasmWorker(contents, tuneName, cartContents, cartName, command) {
+      function jsidplay2Worker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
           latencyHint: "interactive",
           sampleRate: 48000,
@@ -202,7 +208,7 @@ Code Snippet:
                 fix = screen ? 0.005 : 0;
                 nextTime = audioContext.currentTime + 0.05; // add 50ms latency to work well across systems
               } else if (nextTime < audioContext.currentTime) {
-                nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
+                nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough, add small hick-up and hope for better times
               }
               sourceNode.start(nextTime);
               nextTime += eventData.length / audioContext.sampleRate + fix;
@@ -228,12 +234,12 @@ Code Snippet:
               // The idea of sending IDLE states, where NO clocking is done at all is simple:
               // the emulator must not run and produce frames and samples faster than a person can watch, therefore the braking here.
               // To do so, please check the frames per second or sound generation's current time.
-              // In pause mode we just send idle events as well as when tab is in the background and requestAnimationFrame stops.
+              // In pause mode we just send idle events as well as when tab is in the background and requestAnimationFrame stops we do the same.
               if (!paused && (lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (screen && framesCounter < (defaultClockSpeed / nthFrame)))) {
                 // clock the emulator to produce more samples and frames
                 worker.postMessage({ eventType: "CLOCK" });
               } else {
-                // get on the brakes
+                // get on the brakes, do nothing
                 worker.postMessage({ eventType: "IDLE" });
               }
               lastTotalFrames = totalFrames;
@@ -242,14 +248,15 @@ Code Snippet:
               // If the emulation instance is initialized, the tune can be opened to play. This is required before clocking.
               
               // if you need additional configuration (set volume level, stereo mode, etc), this is the right place before the tune is opened
-              
+
+              // when we are done, we open the tune to start playing              
               worker.postMessage({
                 eventType: "OPEN",
                 eventData: {
                   contents: contents,						// tune as Uint8Array
                   tuneName: tuneName,						// tune name with extension for type detection
                   startSong: 0,								// a tune can contain several songs, you can specify the song to play here
-                  nthFrame: 0,								// we capture every Nth frame for performance reasons. 0 means no frame output at all (only audio)
+                  nthFrame: 0,								// we capture every Nth frame for performance reasons. 0 means no frame output at all (that means only audio)
                   sidWrites: false,							// If SID writes should be captured, set to true here
                   cartContents: cartContents,				// cartridge data as Uint8Array
                   cartName: cartName,						// cartridge name
@@ -264,7 +271,7 @@ Code Snippet:
               playing = true;
               paused = false;
               clearScreen();
-              // If you want to capture and show frames, start a timer and pull the queued elements at a rate of 50 (PAL) or 60 (NTSC) per second
+              // If you want to capture and show frames, start a timer and pull the queued elements at a rate of 50 (PAL) or 60 (NTSC) per second:
               framesCounter = defaultClockSpeed / nthFrame;
               msPrev = window.performance.now()
       		  frames = totalFrames = lastTotalFrames = actualFrames = 0;
@@ -325,10 +332,10 @@ Event Types:
                          During that clocking it reports "SAMPLES" (with the size of audioBufferSize), "FRAME" (every generated video frame)
                          and "SID_WRITE" events on each CPU write to the SID chip. If clocking is completed, the answer is "CLOCKED"
                          and the "CLOCK" event gets started again for the next round
-"IDLE"                 - This event does in fact nothing (no output is produced), since the emulator has produces enough samples/frames to be consumed by a viewer
+"IDLE"                 - This event as an alternative to "CLOCK" does in fact nothing (no output is produced), since the emulator has produces enough samples/frames to be consumed by a viewer
                          However, the answer is "CLOCKED" as well even though nothing advanced.
 
-These events from the emulation web worker have no answer and are called during clocking:
+These events from the emulation web worker have no answer and are called during clocking. Their implementation must be done in JavaScript to process emulator output:
 "SAMPLES"              - the worker has produced a chunk of sound data (size of audioBufferSize). You can send it further to the JavaScript Audio API
 "FRAME"                - A video frame has been produced. Send it to a queue and pull it every 1/50s to a canvas for watching.
 "SID_WRITE"            - A SID write statement occurs, ignore it, print it or use it for a virtual SID device
@@ -358,7 +365,7 @@ FAST_FORWARD           - Fast forward tune (double the speed)
 NORMAL_SPEED           - Normal speed
 FREEZE_CARTRIDGE       - Cartrige freeze
 
-For the parameters, have a look in c64jukebox.vue
+For the parameters of these events have a look inside c64jukebox.vue
 
 I hope this little explanation helps you to understand the basics.
 The example-*.html files are pretty small, so everybody can jump-start and get a working result very quick.

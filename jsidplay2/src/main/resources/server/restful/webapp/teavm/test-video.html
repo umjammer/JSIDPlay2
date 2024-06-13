@@ -71,7 +71,7 @@
       imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
       data = imageData.data;
 
-      function wasmWorker(contents, tuneName, cartContents, cartName, command) {
+      function jsidplay2Worker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
           latencyHint: "interactive",
           sampleRate: 48000,
@@ -197,7 +197,7 @@
         if (file.files[0]) {
           var reader = new FileReader();
           reader.onload = function () {
-            wasmWorker(new Uint8Array(this.result), file.files[0].name);
+        	  jsidplay2Worker(new Uint8Array(this.result), file.files[0].name);
           };
           reader.readAsArrayBuffer(file.files[0]);
         }

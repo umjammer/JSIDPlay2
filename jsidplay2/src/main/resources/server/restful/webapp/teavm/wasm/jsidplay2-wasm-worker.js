@@ -214,6 +214,9 @@ addEventListener(
               getDefaultEmulationReSid: () => eventData.defaultEmulation,
               getDefaultSidModel8580: () => eventData.defaultSidModel,
             };
+            o.c1541section = {
+              isJiffyDosInstalled: () => eventData.jiffyDosInstalled,
+            };
             o.audiodriver = {
               processSamples: (leftChannelPtr, rightChannelPtr, length) =>
                 postMessage({
@@ -252,9 +255,6 @@ addEventListener(
                     value: value,
                   },
                 }),
-            };
-            o.c1541section = {
-              isJiffyDosInstalled: () => eventData.jiffyDosInstalled,
             };
           },
         })

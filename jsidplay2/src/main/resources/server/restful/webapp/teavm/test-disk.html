@@ -72,7 +72,7 @@
       imageData = canvasContext.getImageData(0, 0, maxWidth, maxHeight);
       data = imageData.data;
 
-      function wasmWorker(contents, tuneName, cartContents, cartName, command) {
+      function jsidplay2Worker(contents, tuneName, cartContents, cartName, command) {
         audioContext = new AudioContext({
           latencyHint: "interactive",
           sampleRate: 48000,
@@ -236,9 +236,9 @@
       function reset() {
         var diskfile = document.getElementById("diskfile");
         if (diskfile && diskfile.files[0]) {
-          wasmWorker(undefined, undefined, undefined, undefined, 'LOAD"*",8,1\rRUN\r');
+          jsidplay2Worker(undefined, undefined, undefined, undefined, 'LOAD"*",8,1\rRUN\r');
         } else {
-          wasmWorker();
+          jsidplay2Worker();
         }
       }
     </script>

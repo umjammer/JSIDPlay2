@@ -545,6 +545,8 @@
 							src/main/resources/server/restful/webapp/teavm/wasm/*.js</inputGlob>
 						<inputGlob>
 							src/main/resources/server/restful/webapp/teavm/js/*.js</inputGlob>
+						<inputGlob>
+							src/main/resources/server/restful/webapp/teavm/js_em2015/*.js</inputGlob>
 					</inputGlobs>
 				</configuration>
 				<executions>
