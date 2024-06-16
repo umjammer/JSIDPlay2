@@ -9,10 +9,9 @@ TODO:
 - the ability to have music playback occur alongside your SID dump feature. This would look a bit like a tracker,
   and would allow a listener to see the connections between register values and sounds.
 - Drag and Drop of HVSC zip file
-- SID Reg should report reads as well.
 - freely configurable filter definitions
 - Support of executable .command files on MACOSX
 - Maximize oscilloscope view on demand
 - Feature Ideas by Aidan Crouzet-Pascal regarding oscilloscope view, sent by email at 4.7.23
-C64 Jukebox:
-- show current number of videos created in parallel on the server side
+JavaScript version:
+. setting a delay in ms, when to be notified, if a play time has reached the end
