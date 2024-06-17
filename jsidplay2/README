@@ -33,6 +33,10 @@ Open Preferences/Run/Debug/StringSubstitution or at command line: using -D
 -Dhvmec.zip=<pathToHVMEC.zip>
 -Dupx.exe=<pathToUPX>
 
+Launch JSIDPlay2Server:
+=======================
+mvn exec:java -Dexec.mainClass=server.restful.JSIDPlay2Server
+
 Eclipse JavaFX support:
 =======================
 1. Install e(fx)clipse
