@@ -1095,7 +1095,7 @@
                             @click="
                               downloadAndInsertDisk(
                                 'ComalandImage4.d64',
-                                '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=139278&categoryId=1'
+                                '/jsidplay2service/JSIDPlay2REST/download/image4.d64?itemId=139278&categoryId=1'
                               )
                             "
                           >
@@ -3146,6 +3146,14 @@
             const link = { value, next: undefined };
             tail = head ? (tail.next = link) : (head = link);
           },
+          enqueueAll(queue) {
+            if (head) {
+              tail.next = queue.head;
+            } else {
+              head = queue.head;
+            }
+            tail = queue.tail;
+          },
           dequeue() {
             if (head) {
               var value = head.value;
@@ -3153,6 +3161,14 @@
               return value;
             }
             return undefined;
+          },
+          dequeueAll() {
+            var dequeued = {
+              head: head,
+              tail: tail
+            };
+            tail = head = undefined;
+            return dequeued;
           },
           peek() {
             return head?.value;
@@ -3366,12 +3382,7 @@
                 nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
-              var elem;
-              while (elem = internalImageQueue.dequeue()) {
-                imageQueue.enqueue({
-                  image: elem.image,
-                });
-              }
+              imageQueue.enqueueAll(internalImageQueue.dequeueAll());
               nextTime += eventData.length / audioContext.sampleRate + fix;
             } else if (eventType === "FRAME") {
               internalImageQueue.enqueue({
