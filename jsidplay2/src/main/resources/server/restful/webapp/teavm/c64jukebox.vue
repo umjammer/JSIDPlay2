@@ -3139,20 +3139,17 @@
       </form>
     </div>
     <script>
-      var size = 0;
       function Queue() {
         var head, tail;
         return Object.freeze({
           enqueue(value) {
             const link = { value, next: undefined };
             tail = head ? (tail.next = link) : (head = link);
-            size++;
           },
           dequeue() {
             if (head) {
               var value = head.value;
               head = head.next;
-              size--;
               return value;
             }
             return undefined;
@@ -3162,7 +3159,6 @@
           },
           clear() {
             tail = head = undefined;
-            size = 0;
           },
           isNotEmpty() {
             return head;
@@ -3182,6 +3178,7 @@
       var canvasContext;
       var imageData, data;
       var imageQueue = new Queue();
+      var internalImageQueue = new Queue();
       let msPrev;
       let frames;
 
@@ -3369,9 +3366,15 @@
                 nextTime = audioContext.currentTime + 0.005; // if samples are not produced fast enough
               }
               sourceNode.start(nextTime);
+              var elem;
+              while (elem = internalImageQueue.dequeue()) {
+                imageQueue.enqueue({
+                  image: elem.image,
+                });
+              }
               nextTime += eventData.length / audioContext.sampleRate + fix;
             } else if (eventType === "FRAME") {
-              imageQueue.enqueue({
+              internalImageQueue.enqueue({
                 image: eventData.image,
               });
             } else if (eventType === "SID_WRITE") {
@@ -3440,6 +3443,7 @@
 
               nextTime = 0;
               imageQueue.clear();
+              internalImageQueue.clear();
               app.framesCounter = app.defaultClockSpeed / app.nthFrame;
               app.playing = true;
               app.paused = false;
@@ -3883,6 +3887,7 @@
               audioContext = undefined;
             }
             imageQueue.clear();
+            internalImageQueue.clear();
             app.playing = false;
             app.paused = false;
           },
