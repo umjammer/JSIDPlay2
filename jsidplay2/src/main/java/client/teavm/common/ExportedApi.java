@@ -160,7 +160,7 @@ public class ExportedApi implements IExportedApi {
 					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
 
-		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, palEmulation);
+		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, sidBuilder, palEmulation);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 

@@ -17,6 +17,8 @@ import client.teavm.common.video.PALEmulationTeaVM;
 import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
+import libsidplay.common.Mixer;
+import libsidplay.common.SIDBuilder;
 import libsidplay.common.SIDListener;
 import libsidplay.components.mos656x.MOS6567;
 import libsidplay.components.mos656x.VIC;
@@ -39,6 +41,7 @@ import sidplay.audio.VideoDriver;
 public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDListener {
 
 	private final IImportedApi importedApi;
+	private final SIDBuilder sidBuilder;
 	private final int nthFrame;
 	private final byte[] pixelsArray;
 	private final float[] lookupTable;
@@ -49,10 +52,13 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	private FloatBuffer resultL, resultR;
 	private int n, pixelsLength;
 	private long sidWriteTime;
+	private int fastForwardVICFrames;
 
-	public AudioDriverTeaVM(IImportedApi importedApi, PALEmulationTeaVM palEmulation) {
+	public AudioDriverTeaVM(IImportedApi importedApi, SIDBuilder sidBuilder, PALEmulationTeaVM palEmulation) {
 		this.importedApi = importedApi;
+		this.sidBuilder = sidBuilder;
 		nthFrame = palEmulation != null ? palEmulation.getNthFrame() : 0;
+		fastForwardVICFrames = 0;
 		pixelsArray = palEmulation != null ? palEmulation.getPixels().array() : null;
 		lookupTable = new float[65536];
 		for (int i = Short.MIN_VALUE; i <= Short.MAX_VALUE; i++) {
@@ -93,9 +99,12 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 
 	@Override
 	public void accept(VIC vic) {
-		if (++n == nthFrame) {
-			n = 0;
-			importedApi.processPixels(pixelsArray, pixelsLength);
+		int fastForwardBitMask = ((Mixer) sidBuilder).getFastForwardBitMask();
+		if ((fastForwardVICFrames++ & fastForwardBitMask) == fastForwardBitMask) {
+			if (++n == nthFrame) {
+				n = 0;
+				importedApi.processPixels(pixelsArray, pixelsLength);
+			}
 		}
 	}
 
