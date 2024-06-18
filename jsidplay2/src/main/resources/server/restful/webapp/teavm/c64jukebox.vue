@@ -1066,8 +1066,8 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                'Mojo_Side2.D64',
-                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side2.D64?itemId=232966&categoryId=1'
+                                'ComalandImage2.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image2.d64?itemId=139278&categoryId=1'
                               )
                             "
                           >
@@ -1080,8 +1080,8 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                'Mojo_Side3.D64',
-                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side3.D64?itemId=232966&categoryId=1'
+                                'ComalandImage3.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=139278&categoryId=1'
                               )
                             "
                           >
@@ -1094,8 +1094,8 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                'Mojo_Side4.D64',
-                                '/jsidplay2service/JSIDPlay2REST/download/Mojo_Side4.D64?itemId=232966&categoryId=1'
+                                'ComalandImage4.d64',
+                                '/jsidplay2service/JSIDPlay2REST/download/image3.d64?itemId=139278&categoryId=1'
                               )
                             "
                           >
