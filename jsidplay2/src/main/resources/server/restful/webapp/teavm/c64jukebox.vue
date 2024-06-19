@@ -303,7 +303,7 @@
                         href="#"
                         @click="
                           downloadAndStartTune(
-                            'Turrican Rise Of the Mashine',
+                            'Turrican Rise Of the Mashine.sid',
                             '/jsidplay2service/JSIDPlay2REST/download/turrican_rotm.sid?itemId=189430&categoryId=4'
                           )
                         "
@@ -316,7 +316,7 @@
                         href="#"
                         @click="
                           downloadAndStartTune(
-                            'Only 299.99',
+                            'Only 299.99.sid',
                             '/jsidplay2service/JSIDPlay2REST/download/Only_299_99.sid?itemId=3470375608&categoryId=18'
                           )
                         "
@@ -329,7 +329,7 @@
                         href="#"
                         @click="
                           downloadAndStartTune(
-                            'Banaanin Alle',
+                            'Banaanin Alle.sid',
                             '/jsidplay2service/JSIDPlay2REST/download/mutetus_banaaninalle.sid?itemId=209406&categoryId=4'
                           )
                         "
@@ -371,7 +371,7 @@
                         href="#"
                         @click="
                           downloadAndStartTune(
-                            'blindsided',
+                            'blindsided.sid',
                             '/jsidplay2service/JSIDPlay2REST/download/blindsided.sid?itemId=239345&categoryId=4'
                           )
                         "
@@ -631,7 +631,7 @@
                             @click="
                               stopTune();
                               downloadAndInsertDisk(
-                                '1337-a',
+                                '1337-a.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
                               );
                             "
@@ -645,7 +645,7 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                '1337-a',
+                                '1337-a.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-a.d64?itemId=242855&categoryId=1'
                               )
                             "
@@ -659,7 +659,7 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                '1337-b',
+                                '1337-b.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-b.d64?itemId=242855&categoryId=1'
                               )
                             "
@@ -673,7 +673,7 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                '1337-c',
+                                '1337-c.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/fairlight-1337-58679b69-c.d64?itemId=242855&categoryId=1'
                               )
                             "
@@ -920,7 +920,7 @@
                             @click="
                               stopTune();
                               downloadAndInsertDisk(
-                                'ComaLight13Side1',
+                                'ComaLight13Side1.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
                               );
                             "
@@ -934,7 +934,7 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                'ComaLight13Side1',
+                                'ComaLight13Side1.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side1.d64?itemId=112378&categoryId=1'
                               )
                             "
@@ -948,7 +948,7 @@
                             href="#"
                             @click="
                               downloadAndInsertDisk(
-                                'ComaLight13Side2',
+                                'ComaLight13Side2.d64',
                                 '/jsidplay2service/JSIDPlay2REST/download/coma-light-13-by-oxyron/side2.d64?itemId=112378&categoryId=1'
                               )
                             "
