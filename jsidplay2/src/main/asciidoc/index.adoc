@@ -55,7 +55,8 @@ JSidplay2 is able to
 * be configured by an INI file containing emulation and player settings
 * be integrated into Java enabled platforms
 * being used like a real C64 (watching demos, playing games etc.)
-* being used as an HTML5 web version to stream emulator content (listening music, watching demos etc.), please refer to the demo page
+* being used as an ONLINE web version to stream emulator content (listening music, watching demos etc.), please refer to the demo page
+* being used as an OFFLINE web version to launch emulator content inside the browser (listening music, watching demos etc.), please refer to the demo page
 
 == User Guide
 Please read manual here:
@@ -66,7 +67,7 @@ Please read manual here:
 Java is required and must be installed separately. You can choose to install OpenJDK or as an alternative Oracle Java
 |===
 | *Platform*        | *OpenJDK Java* | *Oracle Java*
-| Windows/Linux/MacOSX   | link:https://adoptium.net[https://adoptium.net^] | link:https://www.oracle.com/java/technologies/downloads/[https://www.oracle.com/java/technologies/downloads/^]
+| Windows/Linux/MacOSX   | link:https://adoptium.net[https://adoptium.net^] | link:https://www.oracle.com/java/technologies/[https://www.oracle.com/java/technologies/^]
 |===
 
 == Java version compatibility
