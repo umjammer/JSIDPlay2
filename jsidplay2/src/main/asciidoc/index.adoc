@@ -8,7 +8,7 @@
 
 link:https://sourceforge.net/projects/jsidplay2/[JSIDPlay2@Sourceforge^]
 
-== Online Demos
+== Available Demos
 
 All Demos are using VUE3 and Bootstrap5.
 
