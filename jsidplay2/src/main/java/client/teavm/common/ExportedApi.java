@@ -268,6 +268,33 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	@Override
+	public void insertREUfile(byte[] cartContents, String cartContentsName) {
+		try {
+			if (isOpen()) {
+				File cartFile = createReadOnlyFile(cartContents, cartContentsName);
+				c64.setCartridge(CartridgeType.REU, cartFile);
+				LOG.fine("REU: image attached: " + cartContentsName);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println(String.format("Cannot insert media file '%s'.", cartContentsName));
+		}
+	}
+
+	@Override
+	public void insertREU(int sizeKb) {
+		try {
+			if (isOpen()) {
+				c64.setCartridge(CartridgeType.REU, sizeKb);
+				LOG.fine("REU: image attached: sizeKb=" + sizeKb);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err.println(String.format("Cannot insert media sizeKb=%d.", sizeKb));
+		}
+	}
+
+	@Override
 	public void typeKey(KeyTableEntry key) {
 		if (isOpen()) {
 			if (key == KeyTableEntry.RESTORE) {

@@ -74,6 +74,16 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
+	public static void insertREUfile(byte[] cartContents, String cartContentsName) {
+		jsidplay2.insertREUfile(cartContents, cartContentsName);
+	}
+
+	@JSExport
+	public static void insertREU(int sizeKb) {
+		jsidplay2.insertREU(sizeKb);
+	}
+
+	@JSExport
 	public static void typeKey(String keyCode) {
 		jsidplay2.typeKey(KeyTableEntry.valueOf(keyCode));
 	}

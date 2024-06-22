@@ -61,6 +61,18 @@ addEventListener(
       postMessage({
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
+    } else if (eventType === "INSERT_REU_FILE") {
+      insertREUfile(eventData.contents ?? null, eventData.reuName ?? null);
+
+      postMessage({
+        eventType: "REU_FILE_INSERTED",
+      });
+    } else if (eventType === "INSERT_REU") {
+      insertREU(eventData.sizeKb);
+
+      postMessage({
+        eventType: "REU_INSERTED",
+      });
     } else if (eventType === "SET_COMMAND") {
       typeInCommand(eventData.command ?? null);
 

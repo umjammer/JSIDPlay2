@@ -34,6 +34,10 @@ public interface IExportedApi {
 
 	void pressPlayOnTape();
 
+	void insertREUfile(byte[] cartContents, String cartContentsName);
+
+	void insertREU(int sizeKb);
+
 	void typeKey(KeyTableEntry keyTableEntry);
 
 	void pressKey(KeyTableEntry keyTableEntry);

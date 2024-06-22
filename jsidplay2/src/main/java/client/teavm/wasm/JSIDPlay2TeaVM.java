@@ -89,6 +89,19 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.pressPlayOnTape();
 	}
 
+	@Export(name = "insertREUfile")
+	public static void insertREUfile(byte[] cartContents, String cartContentsNameFromJS) {
+		// JavaScript string cannot be used directly for some reason, therefore:
+		String cartContentsName = ofNullable(cartContentsNameFromJS).map(String::valueOf).orElse(null);
+
+		jsidplay2.insertREUfile(cartContents, cartContentsName);
+	}
+
+	@Export(name = "insertREU")
+	public static void insertREU(int sizeKb) {
+		jsidplay2.insertREU(sizeKb);
+	}
+
 	@Export(name = "typeKey")
 	public static void typeKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:

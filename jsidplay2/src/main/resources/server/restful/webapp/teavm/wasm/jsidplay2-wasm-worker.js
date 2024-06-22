@@ -90,6 +90,21 @@ addEventListener(
       postMessage({
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
+    } else if (eventType === "INSERT_REU_FILE") {
+      instance.exports.insertREUfile(
+        allocateTeaVMbyteArray(eventData.contents ?? null),
+        allocateTeaVMstring(eventData.reuName ?? null)
+      );
+
+      postMessage({
+        eventType: "REU_FILE_INSERTED",
+      });
+    } else if (eventType === "INSERT_REU") {
+      instance.exports.insertREU(eventData.sizeKb);
+
+      postMessage({
+        eventType: "REU_INSERTED",
+      });
     } else if (eventType === "SET_COMMAND") {
       instance.exports.typeInCommand(allocateTeaVMstring(eventData.command ?? null));
 

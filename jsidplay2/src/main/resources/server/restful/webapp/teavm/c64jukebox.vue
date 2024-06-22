@@ -274,6 +274,38 @@
                           />
                         </li>
                         <li>
+                          <a class="dropdown-item" href="#" v-on:click.stop="showREU = !showREU">REU&raquo; </a>
+                          <ul class="submenu dropdown-menu" :style="showREU ? 'display: block !important;' : ''">
+                            <li>
+                              <a class="dropdown-item" href="#" @click="$refs.formREUFileSm.click()">{{
+                                $t("insertREU")
+                              }}</a>
+                              <input
+                                ref="formREUFileSm"
+                                id="reuFile"
+                                type="file"
+                                @input="insertREUImage()"
+                                style="display: none"
+                              />
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#" @click="insertREUSizeKb(128)"> REU 1700 (128Kb) </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#" @click="insertREUSizeKb(512)"> REU 1750 (512Kb) </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#" @click="insertREUSizeKb(256)"> REU 1764 (256Kb) </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#" @click="insertREUSizeKb(2048)"> REU 1750 XL (2Mb) </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#" @click="insertREUSizeKb(16384)"> REU (16Mb) </a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li>
                           <a class="dropdown-item" href="#" @click="ejectCart()">{{ $t("ejectCart") }}</a>
                         </li>
                         <li>
@@ -1506,6 +1538,14 @@
               <div class="tab-pane fade show active" id="video" role="tabpanel" aria-labelledby="video-tab">
                 <div class="row">
                   <div class="col screen-parent p-0">
+                    <span v-if="$refs.formREUFileSm && $refs.formREUFileSm.files[0]">
+                      <span class="ms-2 me-2">{{ $refs.formREUFileSm.files[0].name }}</span>
+                      <i class="bi bi-badge-8k-fill"></i>
+                    </span>
+                    <span v-if="sizeKb">
+                      <span class="ms-2 me-2">REU: {{ sizeKb }}Kb</span>
+                      <i class="bi bi-badge-8k-fill"></i>
+                    </span>
                     <span v-if="$refs.formCartFileSm && $refs.formCartFileSm.files[0]">
                       <span class="ms-2 me-2">{{ $refs.formCartFileSm.files[0].name }}</span>
                       <i class="bi bi-badge-8k-fill"></i>
@@ -3409,6 +3449,7 @@
               lastTotalFrames = totalFrames;
             } else if (eventType === "INITIALISED") {
 
+              app.insertREU();
               app.setStereo();
               app.setVolumeLevels();
               app.setDefaultEmulation(app.defaultEmulation);
@@ -3508,6 +3549,7 @@
             ejectTape: "Eject Tape",
             cart: "Cart",
             insertCart: "Insert Cartridge",
+            insertREU: "Insert REU",
             ejectCart: "Eject Cartridge",
             freezeCartridge: "Freeze Cartridge",
             loadDisk: "Load *,8,1",
@@ -3625,6 +3667,7 @@
             ejectTape: "Kasette auswerfen",
             cart: "Modul",
             insertCart: "Modul einlegen",
+            insertREU: "Insert REU",
             ejectCart: "Modul auswerfen",
             freezeCartridge: "Modul einfrieren",
             loadDisk: "Load *,8,1",
@@ -3748,6 +3791,8 @@
             showDemo8: false,
             showDemo9: false,
             showDemo10: false,
+            showREU: false,
+            sizeKb: undefined,
             showTape: false,
             showCart: false,
             wakeLockEnable: false,
@@ -3829,10 +3874,14 @@
             }
           },
           startTune(screen) {
-            if (screen) {
-              app.$refs.videoTab.click();
+            if (app.$refs.formREUFileSm && app.$refs.formREUFileSm.files[0]) {
+              app.screen = true;
+            } else {
+              app.screen = screen ? screen : false;
             }
-            app.screen = screen ? screen : false;
+			if (app.screen) {
+			  app.$refs.videoTab.click();
+			}
             app.stopTune();
             if (app.$refs.formFileSm.files[0]) {
               var reader = new FileReader();
@@ -4017,6 +4066,32 @@
               });
             }
           },
+          insertREU() {
+            var reader = new FileReader();
+            reader.onload = function () {
+              if (worker) {
+                worker.postMessage({
+                  eventType: "INSERT_REU_FILE",
+                  eventData: {
+                    contents: new Uint8Array(this.result),
+                    reuName: app.$refs.formREUFileSm.files[0].name,
+                  },
+                });
+              }
+            };
+            if (app.$refs.formREUFileSm && app.$refs.formREUFileSm.files[0]) {
+              reader.readAsArrayBuffer(app.$refs.formREUFileSm.files[0]);
+            } else if (app.sizeKb) {
+              if (worker) {
+                worker.postMessage({
+                  eventType: "INSERT_REU",
+                  eventData: {
+                    sizeKb: app.sizeKb,
+                  },
+                });
+              }
+            }
+          },
           typeInCommand(command) {
             if (worker) {
               worker.postMessage({
@@ -4069,10 +4144,24 @@
             }
           },
           insertCart() {
+			app.$refs.formREUFileSm.value = "";
+            app.sizeKb = undefined;
             app.reset();
+          },
+          insertREUImage() {
+			app.$refs.formCartFileSm.value = "";
+            app.sizeKb = undefined;
+          },
+          insertREUSizeKb(sizeKb) {
+			app.$refs.formCartFileSm.value = "";
+  			app.$refs.formREUFileSm.value = "";
+            app.sizeKb = sizeKb;
+	  		app.reset();
           },
           ejectCart() {
             app.$refs.formCartFileSm.value = "";
+            app.$refs.formREUFileSm.value = "";
+            app.sizeKb = undefined;
             app.reset();
           },
           freezeCartridge() {
