@@ -364,6 +364,8 @@ EJECT_DISK             - eject current disk  from floppy
 EJECT_TAPE             - eject tape from datasette
 
 Immediately before call of OPEN, you can request further optional configuration:
+INSERT_REU_FILE        - Insert RAM Expansion Unit(REU) image file
+INSERT_REU             - Insert RAM Expansion Unit(REU) of certain size in KB
 SET_DEFAULT_EMULATION  - choose default software emulation (RESID or RESIDFP)
 SET_DEFAULT_CHIP_MODEL - choose default chip model (MOS6581 or MOS8085)
 SET_FILTER_NAME        - choose a filter name to be used for the SID. All filters of JSIDPlay2 can be used.
