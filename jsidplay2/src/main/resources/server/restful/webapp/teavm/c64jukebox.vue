@@ -3929,6 +3929,9 @@
             }
           },
           downloadAndStartTune(name, url, screen) {
+            app.ejectTape();
+            app.ejectDisk();
+            app.ejectCart();
             let headers = new Headers();
             headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
             fetch(url, { method: "GET", headers: headers })
@@ -4039,11 +4042,11 @@
             }
           },
           downloadAndStartProgram(name, url) {
-            app.ejectTape();
-            app.ejectDisk();
             app.downloadAndStartTune(name, url, true);
           },
           downloadAndInsertDisk(name, url) {
+            app.ejectTape();
+            app.ejectCart();
             let headers = new Headers();
             headers.set("Authorization", "Basic " + window.btoa("jsidplay2:jsidplay2!"));
             fetch(url, { method: "GET", headers: headers })
