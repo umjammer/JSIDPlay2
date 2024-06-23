@@ -3205,7 +3205,7 @@
           dequeueAll() {
             var dequeued = {
               head: head,
-              tail: tail
+              tail: tail,
             };
             tail = head = undefined;
             return dequeued;
@@ -3386,7 +3386,7 @@
           worker.terminate();
           worker = undefined;
         }
-        worker = new Worker("${teaVMFormat}/jsidplay2-${teaVMFormat}-worker.js", ${teaVMWorkerAttrs});
+        worker = new Worker("${teaVMFormat}/jsidplay2-${teaVMFormat}-worker.js", { type: "${teaVMWorkerAttrs}" });
 
         return new Promise((resolve, reject) => {
           worker.postMessage({
@@ -3439,7 +3439,12 @@
                   app.insertTape();
                 }
               }
-              if (!app.paused && (!app.screen || lastTotalFrames != totalFrames) && (nextTime - audioContext.currentTime <= 1 || (app.screen && app.framesCounter < (app.defaultClockSpeed / app.nthFrame)))) {
+              if (
+                !app.paused &&
+                (!app.screen || lastTotalFrames != totalFrames) &&
+                (nextTime - audioContext.currentTime <= 1 ||
+                  (app.screen && app.framesCounter < app.defaultClockSpeed / app.nthFrame))
+              ) {
                 worker.postMessage({ eventType: "CLOCK" });
                 //document.body.style.backgroundColor = "red";
               } else {
@@ -3448,24 +3453,23 @@
               }
               lastTotalFrames = totalFrames;
             } else if (eventType === "INITIALISED") {
-
               app.insertREU();
               app.setStereo();
               app.setVolumeLevels();
               app.setDefaultEmulation(app.defaultEmulation);
               app.setDefaultSidModel(app.defaultSidModel);
-              app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
-              app.setFilterName('RESID', 'MOS6581', 1, app.stereoFilter6581);
-              app.setFilterName('RESID', 'MOS6581', 2, app.thirdSIDFilter6581);
-              app.setFilterName('RESID', 'MOS8580', 0, app.filter8580);
-              app.setFilterName('RESID', 'MOS8580', 1, app.stereoFilter8580);
-              app.setFilterName('RESID', 'MOS8580', 2, app.thirdSIDFilter8580);
-              app.setFilterName('RESIDFP', 'MOS6581', 0, app.reSIDfpFilter6581);
-              app.setFilterName('RESIDFP', 'MOS6581', 1, app.reSIDfpStereoFilter6581);
-              app.setFilterName('RESIDFP', 'MOS6581', 2, app.reSIDfpThirdSIDFilter6581);
-              app.setFilterName('RESIDFP', 'MOS8580', 0, app.reSIDfpFilter8580);
-              app.setFilterName('RESIDFP', 'MOS8580', 1, app.reSIDfpStereoFilter8580);
-              app.setFilterName('RESIDFP', 'MOS8580', 2, app.reSIDfpThirdSIDFilter8580);
+              app.setFilterName("RESID", "MOS6581", 0, app.filter6581);
+              app.setFilterName("RESID", "MOS6581", 1, app.stereoFilter6581);
+              app.setFilterName("RESID", "MOS6581", 2, app.thirdSIDFilter6581);
+              app.setFilterName("RESID", "MOS8580", 0, app.filter8580);
+              app.setFilterName("RESID", "MOS8580", 1, app.stereoFilter8580);
+              app.setFilterName("RESID", "MOS8580", 2, app.thirdSIDFilter8580);
+              app.setFilterName("RESIDFP", "MOS6581", 0, app.reSIDfpFilter6581);
+              app.setFilterName("RESIDFP", "MOS6581", 1, app.reSIDfpStereoFilter6581);
+              app.setFilterName("RESIDFP", "MOS6581", 2, app.reSIDfpThirdSIDFilter6581);
+              app.setFilterName("RESIDFP", "MOS8580", 0, app.reSIDfpFilter8580);
+              app.setFilterName("RESIDFP", "MOS8580", 1, app.reSIDfpStereoFilter8580);
+              app.setFilterName("RESIDFP", "MOS8580", 2, app.reSIDfpThirdSIDFilter8580);
               app.setMute(0, 0, app.muteVoice1);
               app.setMute(0, 1, app.muteVoice2);
               app.setMute(0, 2, app.muteVoice3);
@@ -3502,7 +3506,7 @@
               app.clearScreen();
               frames = totalFrames = lastTotalFrames = actualFrames = 0;
               if (app.screen) {
-                msPrev = window.performance.now()
+                msPrev = window.performance.now();
                 app.animate();
               }
             }
@@ -3617,7 +3621,8 @@
             thirdSIDBase: "third SID adress",
             defaultClockSpeed: "Set default VIC clock speed PAL or NTSC (to be used, if UNKNOWN)",
             defaultEmulation: "Default Emulation (RESID, RESIDFP)",
-            sampling: "Sampling Method (DECIMATE=linear interpolation, RESAMPLE=more efficient SINC from chaining two other SINCs)",
+            sampling:
+              "Sampling Method (DECIMATE=linear interpolation, RESAMPLE=more efficient SINC from chaining two other SINCs)",
             defaultSidModel: "Default chip model MOS8580 or MOS6581 (to be used, if UNKNOWN)",
             fakeStereo: "Fake stereo",
             sidToRead: "Fake stereo: SID number to process READs",
@@ -3735,7 +3740,8 @@
             thirdSIDBase: "3. SID Adresse",
             defaultClockSpeed: "Default VIC Takt PAL oder NTSC, falls nicht aus der Musikdatei ermittelbar",
             defaultEmulation: "Default Emulation (RESID, RESIDFP)",
-            sampling: "Sampling Methode (DECIMATE=lineare Interpolation, RESAMPLE=effizienterer SINC durch Verkettung zwei anderer SINCs)",
+            sampling:
+              "Sampling Methode (DECIMATE=lineare Interpolation, RESAMPLE=effizienterer SINC durch Verkettung zwei anderer SINCs)",
             defaultSidModel: "Default SID Chip MOS8580 oder MOS6581, falls nicht aus der Musikdatei ermittelbar",
             fakeStereo: "Fake Stereo",
             sidToRead: "Fake stereo: SID der Lesezugriffe ausführt",
@@ -3816,23 +3822,54 @@
             sidToRead: "FIRST_SID",
             bufferSize: 3 * 48000,
             audioBufferSize: 48000,
-            filter6581: 'FilterAverage6581',
-            filter8580: 'FilterAverage8580',
-            stereoFilter6581: 'FilterAverage6581',
-            stereoFilter8580: 'FilterAverage8580',
-            thirdSIDFilter6581: 'FilterAverage6581',
-            thirdSIDFilter8580: 'FilterAverage8580',
-            reSIDfpFilter6581: 'FilterAlankila6581R4AR_3789',
-            reSIDfpFilter8580: 'FilterTrurl8580R5_3691',
-            reSIDfpStereoFilter6581: 'FilterAlankila6581R4AR_3789',
-            reSIDfpStereoFilter8580: 'FilterTrurl8580R5_3691',
-            reSIDfpThirdSIDFilter6581: 'FilterAlankila6581R4AR_3789',
-            reSIDfpThirdSIDFilter8580: 'FilterTrurl8580R5_3691',
-            reSIDFilters6581: ['FilterLightest6581','FilterLighter6581','FilterLight6581','FilterAverage6581','FilterDark6581','FilterDarker6581','FilterDarkest6581'],
-            reSIDFilters8580: ['FilterLight8580','FilterAverage8580','FilterDark8580'],
-            reSIDfpFilters6581: ['FilterReSID6581','FilterAlankila6581R4AR_3789','FilterAlankila6581R3_3984_1','FilterAlankila6581R3_3984_2','FilterLordNightmare6581R3_4285','FilterLordNightmare6581R3_4485','FilterLordNightmare6581R4_1986S','FilterZrX6581R3_0384','FilterZrX6581R3_1984','FilterZrx6581R3_3684','FilterZrx6581R3_3985','FilterZrx6581R4AR_2286','FilterTrurl6581R3_0784','FilterTrurl6581R3_0486S','FilterTrurl6581R3_3384','FilterTrurl6581R3_4885','FilterTrurl6581R4AR_3789','FilterTrurl6581R4AR_4486','FilterNata6581R3_2083','FilterGrue6581R4AR_3488',
-            'FilterKruLLo','FilterEnigma6581R3_4885','FilterEnigma6581R3_1585'],
-            reSIDfpFilters8580: ['FilterTrurl8580R5_1489','FilterTrurl8580R5_3691'],
+            filter6581: "FilterAverage6581",
+            filter8580: "FilterAverage8580",
+            stereoFilter6581: "FilterAverage6581",
+            stereoFilter8580: "FilterAverage8580",
+            thirdSIDFilter6581: "FilterAverage6581",
+            thirdSIDFilter8580: "FilterAverage8580",
+            reSIDfpFilter6581: "FilterAlankila6581R4AR_3789",
+            reSIDfpFilter8580: "FilterTrurl8580R5_3691",
+            reSIDfpStereoFilter6581: "FilterAlankila6581R4AR_3789",
+            reSIDfpStereoFilter8580: "FilterTrurl8580R5_3691",
+            reSIDfpThirdSIDFilter6581: "FilterAlankila6581R4AR_3789",
+            reSIDfpThirdSIDFilter8580: "FilterTrurl8580R5_3691",
+            reSIDFilters6581: [
+              "FilterLightest6581",
+              "FilterLighter6581",
+              "FilterLight6581",
+              "FilterAverage6581",
+              "FilterDark6581",
+              "FilterDarker6581",
+              "FilterDarkest6581",
+            ],
+            reSIDFilters8580: ["FilterLight8580", "FilterAverage8580", "FilterDark8580"],
+            reSIDfpFilters6581: [
+              "FilterReSID6581",
+              "FilterAlankila6581R4AR_3789",
+              "FilterAlankila6581R3_3984_1",
+              "FilterAlankila6581R3_3984_2",
+              "FilterLordNightmare6581R3_4285",
+              "FilterLordNightmare6581R3_4485",
+              "FilterLordNightmare6581R4_1986S",
+              "FilterZrX6581R3_0384",
+              "FilterZrX6581R3_1984",
+              "FilterZrx6581R3_3684",
+              "FilterZrx6581R3_3985",
+              "FilterZrx6581R4AR_2286",
+              "FilterTrurl6581R3_0784",
+              "FilterTrurl6581R3_0486S",
+              "FilterTrurl6581R3_3384",
+              "FilterTrurl6581R3_4885",
+              "FilterTrurl6581R4AR_3789",
+              "FilterTrurl6581R4AR_4486",
+              "FilterNata6581R3_2083",
+              "FilterGrue6581R4AR_3488",
+              "FilterKruLLo",
+              "FilterEnigma6581R3_4885",
+              "FilterEnigma6581R3_1585",
+            ],
+            reSIDfpFilters8580: ["FilterTrurl8580R5_1489", "FilterTrurl8580R5_3691"],
             muteVoice1: false,
             muteVoice2: false,
             muteVoice3: false,
@@ -3879,9 +3916,9 @@
             } else {
               app.screen = screen ? screen : false;
             }
-			if (app.screen) {
-			  app.$refs.videoTab.click();
-			}
+            if (app.screen) {
+              app.$refs.videoTab.click();
+            }
             app.stopTune();
             if (app.$refs.formFileSm.files[0]) {
               var reader = new FileReader();
@@ -3922,20 +3959,20 @@
             }
           },
           fastForward() {
-              if (worker) {
-                worker.postMessage({
-                  eventType: "FAST_FORWARD",
-                  eventData: { },
-                });
-              }
+            if (worker) {
+              worker.postMessage({
+                eventType: "FAST_FORWARD",
+                eventData: {},
+              });
+            }
           },
           normalSpeed() {
-              if (worker) {
-                worker.postMessage({
-                  eventType: "NORMAL_SPEED",
-                  eventData: { },
-                });
-              }
+            if (worker) {
+              worker.postMessage({
+                eventType: "NORMAL_SPEED",
+                eventData: {},
+              });
+            }
           },
           stopTune() {
             if (worker) {
@@ -3956,17 +3993,17 @@
             canvasContext.putImageData(imageData, 0, 0);
           },
           animate: function () {
-            var msPerFrame = 1000 * app.nthFrame / app.defaultClockSpeed;
+            var msPerFrame = (1000 * app.nthFrame) / app.defaultClockSpeed;
             if (app.playing) {
-                window.requestAnimationFrame(app.animate)
+              window.requestAnimationFrame(app.animate);
             }
-            const msNow = window.performance.now()
-            const msPassed = msNow - msPrev
+            const msNow = window.performance.now();
+            const msPassed = msNow - msPrev;
 
-            if (msPassed < msPerFrame) return
+            if (msPassed < msPerFrame) return;
 
-            const excessTime = msPassed % msPerFrame
-            msPrev = msNow - excessTime
+            const excessTime = msPassed % msPerFrame;
+            msPrev = msNow - excessTime;
 
             if (!app.paused) {
               var elem = imageQueue.dequeue();
@@ -3977,7 +4014,7 @@
               }
             }
             totalFrames++;
-            frames++
+            frames++;
             if (frames * app.nthFrame >= app.defaultClockSpeed) {
               app.framesCounter = actualFrames;
               frames = 0;
@@ -4144,19 +4181,19 @@
             }
           },
           insertCart() {
-			app.$refs.formREUFileSm.value = "";
+            app.$refs.formREUFileSm.value = "";
             app.sizeKb = undefined;
             app.reset();
           },
           insertREUImage() {
-			app.$refs.formCartFileSm.value = "";
+            app.$refs.formCartFileSm.value = "";
             app.sizeKb = undefined;
           },
           insertREUSizeKb(sizeKb) {
-			app.$refs.formCartFileSm.value = "";
-  			app.$refs.formREUFileSm.value = "";
+            app.$refs.formCartFileSm.value = "";
+            app.$refs.formREUFileSm.value = "";
             app.sizeKb = sizeKb;
-	  		app.reset();
+            app.reset();
           },
           ejectCart() {
             app.$refs.formCartFileSm.value = "";
@@ -4165,12 +4202,12 @@
             app.reset();
           },
           freezeCartridge() {
-              if (worker) {
-                worker.postMessage({
-                  eventType: "FREEZE_CARTRIDGE",
-                  eventData: { },
-                });
-              }
+            if (worker) {
+              worker.postMessage({
+                eventType: "FREEZE_CARTRIDGE",
+                eventData: {},
+              });
+            }
           },
           setDefaultEmulation(emulation) {
             if (worker) {
@@ -4276,18 +4313,18 @@
             this.sidToRead = "FIRST_SID";
             this.bufferSize = 3 * 48000;
             this.audioBufferSize = 48000;
-            this.filter6581 = 'FilterAverage6581';
-            this.filter8580 = 'FilterAverage8580';
-            this.stereoFilter6581 = 'FilterAverage6581';
-            this.stereoFilter8580 = 'FilterAverage8580';
-            this.thirdSIDFilter6581 = 'FilterAverage6581';
-            this.thirdSIDFilter8580 = 'FilterAverage8580';
-            this.reSIDfpFilter6581 = 'FilterAlankila6581R4AR_3789';
-            this.reSIDfpFilter8580 = 'FilterTrurl8580R5_3691';
-            this.reSIDfpStereoFilter6581 = 'FilterAlankila6581R4AR_3789';
-            this.reSIDfpStereoFilter8580 = 'FilterTrurl8580R5_3691';
-            this.reSIDfpThirdSIDFilter6581 = 'FilterAlankila6581R4AR_3789';
-            this.reSIDfpThirdSIDFilter8580 = 'FilterTrurl8580R5_3691';
+            this.filter6581 = "FilterAverage6581";
+            this.filter8580 = "FilterAverage8580";
+            this.stereoFilter6581 = "FilterAverage6581";
+            this.stereoFilter8580 = "FilterAverage8580";
+            this.thirdSIDFilter6581 = "FilterAverage6581";
+            this.thirdSIDFilter8580 = "FilterAverage8580";
+            this.reSIDfpFilter6581 = "FilterAlankila6581R4AR_3789";
+            this.reSIDfpFilter8580 = "FilterTrurl8580R5_3691";
+            this.reSIDfpStereoFilter6581 = "FilterAlankila6581R4AR_3789";
+            this.reSIDfpStereoFilter8580 = "FilterTrurl8580R5_3691";
+            this.reSIDfpThirdSIDFilter6581 = "FilterAlankila6581R4AR_3789";
+            this.reSIDfpThirdSIDFilter8580 = "FilterTrurl8580R5_3691";
             this.muteVoice1 = false;
             this.muteVoice2 = false;
             this.muteVoice3 = false;
@@ -4305,18 +4342,18 @@
             app.setVolumeLevels();
             app.setDefaultEmulation(app.defaultEmulation);
             app.setDefaultSidModel(app.defaultSidModel);
-            app.setFilterName('RESID', 'MOS6581', 0, app.filter6581);
-            app.setFilterName('RESID', 'MOS6581', 1, app.stereoFilter6581);
-            app.setFilterName('RESID', 'MOS6581', 2, app.thirdSIDFilter6581);
-            app.setFilterName('RESID', 'MOS8580', 0, app.filter8580);
-            app.setFilterName('RESID', 'MOS8580', 1, app.stereoFilter8580);
-            app.setFilterName('RESID', 'MOS8580', 2, app.thirdSIDFilter8580);
-            app.setFilterName('RESIDFP', 'MOS6581', 0, app.reSIDfpFilter6581);
-            app.setFilterName('RESIDFP', 'MOS6581', 1, app.reSIDfpStereoFilter6581);
-            app.setFilterName('RESIDFP', 'MOS6581', 2, app.reSIDfpThirdSIDFilter6581);
-            app.setFilterName('RESIDFP', 'MOS8580', 0, app.reSIDfpFilter8580);
-            app.setFilterName('RESIDFP', 'MOS8580', 1, app.reSIDfpStereoFilter8580);
-            app.setFilterName('RESIDFP', 'MOS8580', 2, app.reSIDfpThirdSIDFilter8580);
+            app.setFilterName("RESID", "MOS6581", 0, app.filter6581);
+            app.setFilterName("RESID", "MOS6581", 1, app.stereoFilter6581);
+            app.setFilterName("RESID", "MOS6581", 2, app.thirdSIDFilter6581);
+            app.setFilterName("RESID", "MOS8580", 0, app.filter8580);
+            app.setFilterName("RESID", "MOS8580", 1, app.stereoFilter8580);
+            app.setFilterName("RESID", "MOS8580", 2, app.thirdSIDFilter8580);
+            app.setFilterName("RESIDFP", "MOS6581", 0, app.reSIDfpFilter6581);
+            app.setFilterName("RESIDFP", "MOS6581", 1, app.reSIDfpStereoFilter6581);
+            app.setFilterName("RESIDFP", "MOS6581", 2, app.reSIDfpThirdSIDFilter6581);
+            app.setFilterName("RESIDFP", "MOS8580", 0, app.reSIDfpFilter8580);
+            app.setFilterName("RESIDFP", "MOS8580", 1, app.reSIDfpStereoFilter8580);
+            app.setFilterName("RESIDFP", "MOS8580", 2, app.reSIDfpThirdSIDFilter8580);
             app.setMute(0, 0, app.muteVoice1);
             app.setMute(0, 1, app.muteVoice2);
             app.setMute(0, 2, app.muteVoice3);
@@ -4329,7 +4366,7 @@
             app.setMute(2, 1, app.muteThirdSIDVoice2);
             app.setMute(2, 2, app.muteThirdSIDVoice3);
             app.setMute(2, 3, app.muteThirdSIDVoice4);
-          }
+          },
         },
         mounted: function () {
           if (localStorage.locale) {
