@@ -39,8 +39,8 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
-	public static void typeInCommand(final String nameFromJS) {
-		jsidplay2.typeInCommand(nameFromJS);
+	public static void typeInCommand(final String multiLineCommand) {
+		jsidplay2.typeInCommand(multiLineCommand);
 	}
 
 	@JSExport
