@@ -306,7 +306,7 @@
                           </ul>
                         </li>
                         <li>
-                          <a class="dropdown-item" href="#" @click="ejectCart()">{{ $t("ejectCart") }}</a>
+                          <a class="dropdown-item" href="#" @click="ejectCart(); reset();">{{ $t("ejectCart") }}</a>
                         </li>
                         <li>
                           <a class="dropdown-item" href="#" @click="freezeCartridge()">{{ $t("freezeCartridge") }}</a>
@@ -4202,7 +4202,6 @@
             app.$refs.formCartFileSm.value = "";
             app.$refs.formREUFileSm.value = "";
             app.sizeKb = undefined;
-            app.reset();
           },
           freezeCartridge() {
             if (worker) {
