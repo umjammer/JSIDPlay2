@@ -610,12 +610,9 @@ public class ExportedApi implements IExportedApi {
 		return tmp;
 	}
 
-	private void end() {
+	private void end() throws InterruptedException {
 		if (isOpen()) {
-			// save still unwritten sound data
-			if (audioDriver != null) {
-				((AudioDriverTeaVM) audioDriver).writeRemaining();
-			}
+			((AudioDriverTeaVM) audioDriver).writeRemaining();
 			importedApi.timerEnd();
 		}
 	}
