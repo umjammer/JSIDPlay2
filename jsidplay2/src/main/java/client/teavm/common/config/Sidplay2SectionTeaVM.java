@@ -9,6 +9,8 @@ public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 
 	private IImportedApi importedApi;
 
+	private double defaultPlayLength;
+
 	private double fadeInTime;
 
 	private double fadeOutTime;
@@ -98,7 +100,8 @@ public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 	}
 
 	@Override
-	public void setDefaultPlayLength(double playLength) {
+	public void setDefaultPlayLength(double defaultPlayLength) {
+		this.defaultPlayLength = defaultPlayLength;
 	}
 
 	@Override
@@ -194,7 +197,7 @@ public final class Sidplay2SectionTeaVM implements ISidPlay2Section {
 
 	@Override
 	public double getDefaultPlayLength() {
-		return 300;
+		return defaultPlayLength;
 	}
 
 	@Override

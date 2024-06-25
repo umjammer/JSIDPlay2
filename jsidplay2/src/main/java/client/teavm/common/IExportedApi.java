@@ -24,6 +24,8 @@ public interface IExportedApi {
 
 	void clock() throws InterruptedException;
 
+	void setDefaultPlayLength(double timeInS);
+
 	void insertDisk(byte[] diskContents, String diskContentsName);
 
 	void ejectDisk();

@@ -49,6 +49,11 @@ public class JSIDPlay2TeaVM {
 	}
 
 	@JSExport
+	public static void setDefaultPlayLength(double timeInS) {
+		jsidplay2.setDefaultPlayLength(timeInS);
+	}
+	
+	@JSExport
 	public static void insertDisk(byte[] diskContents, String diskContentsName) {
 		jsidplay2.insertDisk(diskContents, diskContentsName);
 	}

@@ -82,6 +82,11 @@ public class ImportedApi implements IImportedApi {
 		processSidWriteJS(relTime, addr, value);
 	}
 
+	@Override
+	public void timerEnd() {
+		processTimerEndJS();
+	}
+
 	/* This methods maps to JavaScript methods in a web page. */
 
 	@JSBody(params = { "lf", "ri", "le" }, script = "postMessage({eventType:'SAMPLES',"
@@ -96,4 +101,6 @@ public class ImportedApi implements IImportedApi {
 			+ "eventData:{relTime:ti,addr:ad,value:va}})")
 	public static native void processSidWriteJS(int ti, int ad, int va);
 
+	@JSBody(script = "postMessage({ eventType: 'TIMER_END' })")
+	public static native void processTimerEndJS();
 }

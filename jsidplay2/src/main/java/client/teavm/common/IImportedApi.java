@@ -6,11 +6,11 @@ package client.teavm.common;
 public interface IImportedApi {
 
 	boolean isPalEmulation();
-	
+
 	int getBufferSize();
-	
+
 	int getAudioBufferSize();
-	
+
 	int getSamplingRateAsInt();
 
 	boolean getSamplingMethodResample();
@@ -18,8 +18,10 @@ public interface IImportedApi {
 	boolean getReverbBypass();
 
 	int getDefaultClockSpeedAsInt();
-	
+
 	boolean isJiffyDosInstalled();
+
+	void timerEnd();
 
 	void processSamples(float[] resultL, float[] resultR, int length);
 

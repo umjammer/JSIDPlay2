@@ -54,6 +54,12 @@ addEventListener(
       postMessage({
         eventType: "OPENED",
       });
+    } else if (eventType === "SET_DEFAULT_PLAY_LENGTH") {
+      instance.exports.setDefaultPlayLength(eventData.timeInS);
+
+      postMessage({
+        eventType: "DEFAULT_PLAY_LENGTH_SET",
+      });
     } else if (eventType === "INSERT_DISK") {
       instance.exports.insertDisk(
         allocateTeaVMbyteArray(eventData.contents ?? null),
@@ -269,6 +275,10 @@ addEventListener(
                     addr: addr,
                     value: value,
                   },
+                }),
+              timerEnd: () =>
+                postMessage({
+                  eventType: "TIMER_END",
                 }),
             };
           },

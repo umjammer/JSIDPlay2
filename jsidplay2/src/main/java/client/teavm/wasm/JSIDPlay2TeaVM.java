@@ -58,6 +58,11 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.clock();
 	}
 
+	@Export(name = "setDefaultPlayLength")
+	public static void setDefaultPlayLength(double timeInS) {
+		jsidplay2.setDefaultPlayLength(timeInS);
+	}
+
 	@Export(name = "insertDisk")
 	public static void insertDisk(byte[] diskContents, String diskContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:

@@ -4767,6 +4767,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               processSamples: () => {},
               processPixels: () => {},
               processSidWrite: () => {},
+              timerEnd: () => {},
             };
             o.c1541section = {
               isJiffyDosInstalled: () => {},

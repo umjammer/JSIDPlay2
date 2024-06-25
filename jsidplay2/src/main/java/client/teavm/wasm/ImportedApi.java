@@ -76,6 +76,11 @@ public class ImportedApi implements IImportedApi {
 		processSidWriteJS(relTime, addr, value);
 	}
 
+	@Override
+	public void timerEnd() {
+		processTimerEndJS();
+	}
+	
 	/* This methods maps to a JavaScript methods in a web page. */
 	@Import(module = SIDPLAY2_SECTION, name = "getPalEmulation")
 	public static native boolean isPalEmulationJS();
@@ -110,4 +115,8 @@ public class ImportedApi implements IImportedApi {
 	@Import(module = AUDIO_DRIVER, name = "processSidWrite")
 	public static native void processSidWriteJS(int relTime, int addr, int value);
 
+	/* This methods maps to a JavaScript methods in a web page. */
+	@Import(module = AUDIO_DRIVER, name = "timerEnd")
+	public static native void processTimerEndJS();
+	
 }

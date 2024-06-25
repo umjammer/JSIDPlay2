@@ -35,6 +35,7 @@ import libsidplay.common.EventScheduler;
 import libsidplay.common.Mixer;
 import libsidplay.common.SidReads;
 import libsidplay.common.StereoMode;
+import libsidplay.common.Event.Phase;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.c1541.DiskImage;
 import libsidplay.components.cart.CartridgeType;
@@ -171,6 +172,10 @@ public class ExportedApi implements IExportedApi {
 		if (addSidListener) {
 			c64.setSIDListener(audioDriver);
 		}
+		double end = sidplay2Section.getDefaultPlayLength();
+		if (end > 0) {
+			end = schedule(end, Event.of("Timer End", event -> importedApi.timerEnd()));
+		}
 		sidBuilder.start();
 		bufferSize = audioSection.getBufferSize();
 		context = c64.getEventScheduler();
@@ -203,6 +208,11 @@ public class ExportedApi implements IExportedApi {
 		for (int i = 0; i < bufferSize; i++) {
 			context.clock();
 		}
+	}
+
+	@Override
+	public void setDefaultPlayLength(double timeInS) {
+		config.getSidplay2Section().setDefaultPlayLength(timeInS);
 	}
 
 	@Override
@@ -488,6 +498,7 @@ public class ExportedApi implements IExportedApi {
 		LOG.finest("reverbBypass: " + audioSection.getReverbBypass());
 		LOG.finest("defaultClockSpeed: " + emulationSection.getDefaultClockSpeed());
 		LOG.finest("isJiffyDosInstalled: " + c1541Section.isJiffyDosInstalled());
+		LOG.finest("defaultPlayLength: " + sidplay2Section.getDefaultPlayLength());
 	}
 
 	private void doLogFilterNames(final IEmulationSection emulationSection, SidTune tune) {
@@ -500,6 +511,22 @@ public class ExportedApi implements IExportedApi {
 				LOG.finest(getFilterName(sidNum) + ": " + filterName);
 			}
 		}
+	}
+
+	private double schedule(final double seconds, final Event event) {
+		EventScheduler eventScheduler = c64.getEventScheduler();
+
+		long initDelay = SidTune.getInitDelay(tune);
+
+		long absoluteCycles = (long) (initDelay + seconds * eventScheduler.getCyclesPerSecond());
+		if (absoluteCycles < eventScheduler.getTime(Phase.PHI1)) {
+			// event is in the past? Trigger immediately!
+			eventScheduler.scheduleAbsolute(event, 0, Phase.PHI1);
+		} else {
+			// event is in the future
+			eventScheduler.scheduleAbsolute(event, absoluteCycles, Phase.PHI1);
+		}
+		return seconds;
 	}
 
 	private void insertCart(byte[] cartContents, String cartContentsName) {

@@ -306,7 +306,15 @@
                           </ul>
                         </li>
                         <li>
-                          <a class="dropdown-item" href="#" @click="ejectCart(); reset();">{{ $t("ejectCart") }}</a>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            @click="
+                              ejectCart();
+                              reset();
+                            "
+                            >{{ $t("ejectCart") }}</a
+                          >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#" @click="freezeCartridge()">{{ $t("freezeCartridge") }}</a>
@@ -1735,6 +1743,23 @@
                   <div class="tab-content card-body" style="position: relative">
                     <div class="tab-pane fade show active" id="audiocfg" role="tabpanel" aria-labelledby="audiocfg-tab">
                       <div class="form-check">
+                    <div class="settings-box">
+                      <span class="setting">
+                        <label for="defaultPlayLength">
+                          {{ $t("defaultPlayLength") }}
+                          <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
+                          <input
+                            class="right"
+                            type="text"
+                            id="defaultPlayLength"
+                            class="form-control"
+                            min="0"
+                            max="10"
+                            v-model="defaultPlayLength"
+                          />
+                        </label>
+                      </span>
+                    </div>
                         <div class="settings-box">
                           <span class="setting">
                             <label for="mainVolume"
@@ -3452,7 +3477,10 @@
                 //document.body.style.backgroundColor = "yellow";
               }
               lastTotalFrames = totalFrames;
+            } else if (eventType === "TIMER_END") {
+              app.stopTune();
             } else if (eventType === "INITIALISED") {
+              app.setDefaultPlayLength(app.defaultPlayLength);
               app.insertREU();
               app.setStereo();
               app.setVolumeLevels();
@@ -3640,6 +3668,7 @@
             mainDelay: "Delay of SID in ms (0ms..50ms)",
             secondDelay: "Delay of Stereo SID in ms (0ms..50ms)",
             thirdDelay: "Delay of 3rd SID in ms (0ms..50ms)",
+            defaultPlayLength: "Set default play length in seconds, format: mm:ss.SSS (00:00 is endless)",
             confirmationTitle: "Confirmation Dialogue",
             setDefault: "Restore Defaults",
             setDefaultReally: "Do you really want to restore defaults?",
@@ -3759,6 +3788,7 @@
             mainDelay: "Verzögerung des SID in ms (0ms..50ms)",
             secondDelay: "Verzögerung des Stereo SID in ms (0ms..50ms)",
             thirdDelay: "Verzögerung des 3. SID in ms (0ms..50ms)",
+            defaultPlayLength: "Default Song Länge in Sekunden, Format: mm:ss.SSS (00:00 bedeutet endlos)",
             confirmationTitle: "Sicherheitsabfrage",
             setDefault: "Standardeinstellungen wiederherstellen",
             setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
@@ -3812,6 +3842,7 @@
             mainDelay: 10,
             secondDelay: 0,
             thirdDelay: 0,
+            defaultPlayLength: 500,
             stereoMode: "AUTO",
             dualSidBase: 54304,
             thirdSIDBase: 54336,
@@ -4022,6 +4053,16 @@
               app.framesCounter = actualFrames;
               frames = 0;
               actualFrames = 0;
+            }
+          },
+          setDefaultPlayLength(timeInS) {
+            if (worker) {
+              worker.postMessage({
+                eventType: "SET_DEFAULT_PLAY_LENGTH",
+                eventData: {
+                  timeInS: timeInS,
+                },
+              });
             }
           },
           insertDisk() {

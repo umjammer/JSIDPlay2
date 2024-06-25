@@ -354,6 +354,7 @@ These events from the emulation web worker have no answer and are called during 
 "SAMPLES"              - the worker has produced a chunk of sound data (size of audioBufferSize). You can send it further to the JavaScript Audio API
 "FRAME"                - A video frame has been produced. Send it to a queue and pull it every 1/50s to a canvas for watching.
 "SID_WRITE"            - A SID write statement occurs, ignore it, print it or use it for a virtual SID device
+"TIMER_END"	           - The default play length has been reached (set with SET_DEFAULT_PLAY_LENGTH). Now you can stop the playback or switch to the next song or tune.
 That's the trick, easy eh?
 
 Immediately after a tune gets opened, you can optionally insert required media like disk/tape and such:
@@ -364,6 +365,7 @@ EJECT_DISK             - eject current disk  from floppy
 EJECT_TAPE             - eject tape from datasette
 
 Immediately before call of OPEN, you can request further optional configuration:
+SET_DEFAULT_PLAY_LENGTH- Set the tune length in seconds to get notified, if a tune ends
 INSERT_REU_FILE        - Insert RAM Expansion Unit(REU) image file
 INSERT_REU             - Insert RAM Expansion Unit(REU) of certain size in KB
 SET_DEFAULT_EMULATION  - choose default software emulation (RESID or RESIDFP)

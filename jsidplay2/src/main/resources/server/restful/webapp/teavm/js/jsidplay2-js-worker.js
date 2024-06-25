@@ -31,6 +31,12 @@ addEventListener(
       postMessage({
         eventType: "OPENED",
       });
+    } else if (eventType === "SET_DEFAULT_PLAY_LENGTH") {
+      setDefaultPlayLength(eventData.timeInS);
+
+      postMessage({
+        eventType: "DEFAULT_PLAY_LENGTH_SET",
+      });
     } else if (eventType === "INSERT_DISK") {
       insertDisk(eventData.contents ?? null, eventData.diskName ?? null);
 
