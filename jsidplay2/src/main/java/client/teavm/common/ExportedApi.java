@@ -612,7 +612,7 @@ public class ExportedApi implements IExportedApi {
 
 	private void end() throws InterruptedException {
 		if (isOpen()) {
-			((AudioDriverTeaVM) audioDriver).writeRemaining();
+			audioDriver.writeRemaining();
 			importedApi.timerEnd();
 		}
 	}
