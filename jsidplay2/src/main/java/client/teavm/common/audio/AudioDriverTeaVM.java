@@ -97,6 +97,23 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		((Buffer) shortBuffer).rewind();
 	}
 
+	public void writeRemaining() {
+		int position = sampleBuffer.position();
+		((Buffer) shortBuffer).limit(position >> 1);
+		if (sampleBuffer.position() < sampleBuffer.capacity()) {
+			resultL = FloatBuffer.wrap(new float[position >> 2]);
+			resultR = FloatBuffer.wrap(new float[position >> 2]);
+		}
+		while (shortBuffer.hasRemaining()) {
+			resultL.put(lookupTable[shortBuffer.get() + 32768]);
+			resultR.put(lookupTable[shortBuffer.get() + 32768]);
+		}
+		importedApi.processSamples(resultL.array(), resultR.array(), resultL.position());
+		((Buffer) resultL).clear();
+		((Buffer) resultR).clear();
+		((Buffer) shortBuffer).rewind();
+	}
+
 	@Override
 	public void accept(VIC vic) {
 		int fastForwardBitMask = ((Mixer) sidBuilder).getFastForwardBitMask();

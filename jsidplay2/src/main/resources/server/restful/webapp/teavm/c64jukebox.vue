@@ -1743,23 +1743,23 @@
                   <div class="tab-content card-body" style="position: relative">
                     <div class="tab-pane fade show active" id="audiocfg" role="tabpanel" aria-labelledby="audiocfg-tab">
                       <div class="form-check">
-                    <div class="settings-box">
-                      <span class="setting">
-                        <label for="defaultPlayLength">
-                          {{ $t("defaultPlayLength") }}
-                          <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
-                          <input
-                            class="right"
-                            type="text"
-                            id="defaultPlayLength"
-                            class="form-control"
-                            min="0"
-                            max="10"
-                            v-model="defaultPlayLength"
-                          />
-                        </label>
-                      </span>
-                    </div>
+                        <div class="settings-box">
+                          <span class="setting">
+                            <label for="defaultPlayLength">
+                              {{ $t("defaultPlayLength") }}
+                              <i class="bi bi-exclamation btn btn-sm btn-warning fw-bolder" style="float: left"></i>
+                              <input
+                                class="right"
+                                type="text"
+                                id="defaultPlayLength"
+                                class="form-control"
+                                min="0"
+                                max="10"
+                                v-model="defaultPlayLength"
+                              />
+                            </label>
+                          </span>
+                        </div>
                         <div class="settings-box">
                           <span class="setting">
                             <label for="mainVolume"
@@ -4442,6 +4442,9 @@
           if (localStorage.thirdDelay) {
             this.thirdDelay = JSON.parse(localStorage.thirdDelay);
           }
+          if (localStorage.defaultPlayLength) {
+            this.defaultPlayLength = JSON.parse(localStorage.defaultPlayLength);
+          }
           if (localStorage.stereoMode) {
             this.stereoMode = JSON.parse(localStorage.stereoMode);
           }
@@ -4594,6 +4597,9 @@
           },
           thirdDelay(newValue, oldValue) {
             localStorage.thirdDelay = JSON.stringify(newValue);
+          },
+          defaultPlayLength(newValue, oldValue) {
+            localStorage.defaultPlayLength = JSON.stringify(newValue);
           },
           stereoMode(newValue, oldValue) {
             localStorage.stereoMode = JSON.stringify(newValue);

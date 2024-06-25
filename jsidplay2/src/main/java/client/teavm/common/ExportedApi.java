@@ -31,11 +31,11 @@ import libsidplay.common.ChipModel;
 import libsidplay.common.Emulation;
 import libsidplay.common.Engine;
 import libsidplay.common.Event;
+import libsidplay.common.Event.Phase;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.Mixer;
 import libsidplay.common.SidReads;
 import libsidplay.common.StereoMode;
-import libsidplay.common.Event.Phase;
 import libsidplay.components.c1530.Datasette.Control;
 import libsidplay.components.c1541.DiskImage;
 import libsidplay.components.cart.CartridgeType;
@@ -72,6 +72,7 @@ public class ExportedApi implements IExportedApi {
 	private HardwareEnsemble hardwareEnsemble;
 	private C64 c64;
 	private ReSIDBuilder sidBuilder;
+	private AudioDriverTeaVM audioDriver;
 	private String command;
 	private int bufferSize;
 
@@ -161,7 +162,7 @@ public class ExportedApi implements IExportedApi {
 					(long) (c64.getClock().getCpuFrequency()));
 		}), SidTune.getInitDelay(tune));
 
-		AudioDriverTeaVM audioDriver = new AudioDriverTeaVM(importedApi, sidBuilder, palEmulation);
+		audioDriver = new AudioDriverTeaVM(importedApi, sidBuilder, palEmulation);
 		audioDriver.open(audioSection, null, c64.getClock(), c64.getEventScheduler());
 		sidBuilder.setAudioDriver(audioDriver);
 
@@ -174,7 +175,7 @@ public class ExportedApi implements IExportedApi {
 		}
 		double end = sidplay2Section.getDefaultPlayLength();
 		if (end > 0) {
-			end = schedule(end, Event.of("Timer End", event -> importedApi.timerEnd()));
+			end = schedule(end, Event.of("Timer End", event -> end()));
 		}
 		sidBuilder.start();
 		bufferSize = audioSection.getBufferSize();
@@ -607,6 +608,16 @@ public class ExportedApi implements IExportedApi {
 		}
 		tmp.setWritable(false);
 		return tmp;
+	}
+
+	private void end() {
+		if (isOpen()) {
+			// save still unwritten sound data
+			if (audioDriver != null) {
+				((AudioDriverTeaVM) audioDriver).writeRemaining();
+			}
+			importedApi.timerEnd();
+		}
 	}
 
 }
