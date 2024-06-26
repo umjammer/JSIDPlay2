@@ -173,9 +173,11 @@ public class ExportedApi implements IExportedApi {
 		if (addSidListener) {
 			c64.setSIDListener(audioDriver);
 		}
-		double end = sidplay2Section.getDefaultPlayLength();
-		if (end > 0) {
-			end = schedule(end, Event.of("Timer End", event -> end()));
+		if (tune != RESET) {
+			double end = sidplay2Section.getDefaultPlayLength();
+			if (end > 0) {
+				end = schedule(end, Event.of("Timer End", event -> end()));
+			}
 		}
 		sidBuilder.start();
 		bufferSize = audioSection.getBufferSize();
@@ -611,10 +613,8 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	private void end() throws InterruptedException {
-		if (tune != RESET) {
-			audioDriver.writeRemaining();
-			importedApi.timerEnd();
-		}
+		audioDriver.writeRemaining();
+		importedApi.timerEnd();
 	}
 
 }
