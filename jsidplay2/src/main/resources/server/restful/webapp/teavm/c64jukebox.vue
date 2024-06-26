@@ -3472,6 +3472,7 @@
                 if (app.screen) {
                   app.insertTape();
                 }
+                app.insertREU();
               }
               if (
                 !app.paused &&
@@ -3490,7 +3491,6 @@
               app.stopTune();
             } else if (eventType === "INITIALISED") {
               app.setDefaultPlayLength(app.defaultPlayLength);
-              app.insertREU();
               app.setStereo();
               app.setVolumeLevels();
               app.setDefaultEmulation(app.defaultEmulation);
@@ -4246,7 +4246,6 @@
             app.$refs.formCartFileSm.value = "";
             app.$refs.formREUFileSm.value = "";
             app.sizeKb = sizeKb;
-            app.reset();
           },
           ejectCart() {
             app.$refs.formCartFileSm.value = "";

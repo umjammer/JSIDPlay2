@@ -299,7 +299,7 @@ public class ExportedApi implements IExportedApi {
 		try {
 			if (isOpen()) {
 				c64.setCartridge(CartridgeType.REU, sizeKb);
-				LOG.fine("REU: image attached: sizeKb=" + sizeKb);
+				LOG.fine(String.format("REU: image attached: sizeKb=%d", sizeKb));
 			}
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
