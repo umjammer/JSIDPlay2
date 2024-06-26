@@ -611,8 +611,10 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	private void end() throws InterruptedException {
-		audioDriver.writeRemaining();
-		importedApi.timerEnd();
+		if (tune != RESET) {
+			audioDriver.writeRemaining();
+			importedApi.timerEnd();
+		}
 	}
 
 }
