@@ -123,7 +123,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		if (sidWriteTime == 0) {
 			sidWriteTime = time;
 		}
-		importedApi.processSidWrite((int) (time - sidWriteTime), addr, data & 0xff);
+		importedApi.processSidWrite(time, (int) (time - sidWriteTime), addr, data & 0xff);
 		sidWriteTime = time;
 	}
 

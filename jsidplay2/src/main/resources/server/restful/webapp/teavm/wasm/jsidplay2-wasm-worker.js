@@ -267,10 +267,11 @@ addEventListener(
                     ),
                   },
                 }),
-              processSidWrite: (relTime, addr, value) =>
+              processSidWrite: (absTime, relTime, addr, value) =>
                 postMessage({
                   eventType: "SID_WRITE",
                   eventData: {
+                    absTime: absTime,
                     relTime: relTime,
                     addr: addr,
                     value: value,

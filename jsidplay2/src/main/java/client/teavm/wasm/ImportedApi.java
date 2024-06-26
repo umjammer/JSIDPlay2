@@ -30,12 +30,12 @@ public class ImportedApi implements IImportedApi {
 	public int getBufferSize() {
 		return getBufferSizeJS();
 	}
-	
+
 	@Override
 	public int getAudioBufferSize() {
 		return getAudioBufferSizeJS();
 	}
-	
+
 	@Override
 	public int getSamplingRateAsInt() {
 		return getSamplingRateAsIntJS();
@@ -72,15 +72,15 @@ public class ImportedApi implements IImportedApi {
 	}
 
 	@Override
-	public void processSidWrite(int relTime, int addr, int value) {
-		processSidWriteJS(relTime, addr, value);
+	public void processSidWrite(double absTime, int relTime, int addr, int value) {
+		processSidWriteJS(absTime, relTime, addr, value);
 	}
 
 	@Override
 	public void timerEnd() {
 		processTimerEndJS();
 	}
-	
+
 	/* This methods maps to a JavaScript methods in a web page. */
 	@Import(module = SIDPLAY2_SECTION, name = "getPalEmulation")
 	public static native boolean isPalEmulationJS();
@@ -113,10 +113,10 @@ public class ImportedApi implements IImportedApi {
 	public static native void processPixelsJS(byte[] pixels, int length);
 
 	@Import(module = AUDIO_DRIVER, name = "processSidWrite")
-	public static native void processSidWriteJS(int relTime, int addr, int value);
+	public static native void processSidWriteJS(double absTime, int relTime, int addr, int value);
 
 	/* This methods maps to a JavaScript methods in a web page. */
 	@Import(module = AUDIO_DRIVER, name = "timerEnd")
 	public static native void processTimerEndJS();
-	
+
 }

@@ -3454,7 +3454,16 @@
                 image: eventData.image,
               });
             } else if (eventType === "SID_WRITE") {
-              console.log("relTime=" + eventData.relTime + ", addr=" + eventData.addr + ", value=" + eventData.value);
+              console.log(
+                "absTime=" +
+                  eventData.absTime +
+                  ", relTime=" +
+                  eventData.relTime +
+                  ", addr=" +
+                  eventData.addr +
+                  ", value=" +
+                  eventData.value
+              );
             } else if (eventType === "OPENED" || eventType === "CLOCKED") {
               if (eventType === "OPENED") {
                 if (app.screen) {

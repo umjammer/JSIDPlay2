@@ -78,8 +78,8 @@ public class ImportedApi implements IImportedApi {
 	}
 
 	@Override
-	public void processSidWrite(int relTime, int addr, int value) {
-		processSidWriteJS(relTime, addr, value);
+	public void processSidWrite(double absTime, int relTime, int addr, int value) {
+		processSidWriteJS(absTime, relTime, addr, value);
 	}
 
 	@Override
@@ -97,9 +97,9 @@ public class ImportedApi implements IImportedApi {
 			+ "eventData:{image:new Uint8Array(pi,0,le)}})")
 	public static native void processPixelsJS(@JSByRef byte[] pi, int le);
 
-	@JSBody(params = { "ti", "ad", "va" }, script = "postMessage({eventType: 'SID_WRITE',"
-			+ "eventData:{relTime:ti,addr:ad,value:va}})")
-	public static native void processSidWriteJS(int ti, int ad, int va);
+	@JSBody(params = { "at", "ti", "ad", "va" }, script = "postMessage({eventType: 'SID_WRITE',"
+			+ "eventData:{absTime:at,relTime:ti,addr:ad,value:va}})")
+	public static native void processSidWriteJS(double absTime, int ti, int ad, int va);
 
 	@JSBody(script = "postMessage({ eventType: 'TIMER_END' })")
 	public static native void processTimerEndJS();

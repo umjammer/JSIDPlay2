@@ -27,6 +27,6 @@ public interface IImportedApi {
 
 	void processPixels(byte[] array, int length);
 
-	void processSidWrite(int relTime, int addr, int value);
+	void processSidWrite(double absTime, int relTime, int addr, int value);
 
 }
