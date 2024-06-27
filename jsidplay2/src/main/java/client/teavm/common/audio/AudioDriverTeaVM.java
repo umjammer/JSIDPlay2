@@ -18,7 +18,6 @@ import libsidplay.common.CPUClock;
 import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.Mixer;
-import libsidplay.common.SIDBuilder;
 import libsidplay.common.SIDListener;
 import libsidplay.components.mos656x.MOS6567;
 import libsidplay.components.mos656x.VIC;
@@ -41,7 +40,7 @@ import sidplay.audio.VideoDriver;
 public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDListener {
 
 	private final IImportedApi importedApi;
-	private final SIDBuilder sidBuilder;
+	private final Mixer mixer;
 	private final int nthFrame;
 	private final byte[] pixelsArray;
 	private final float[] lookupTable;
@@ -54,9 +53,9 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	private long sidWriteTime;
 	private int fastForwardVICFrames;
 
-	public AudioDriverTeaVM(IImportedApi importedApi, SIDBuilder sidBuilder, PALEmulationTeaVM palEmulation) {
+	public AudioDriverTeaVM(IImportedApi importedApi, Mixer mixer, PALEmulationTeaVM palEmulation) {
 		this.importedApi = importedApi;
-		this.sidBuilder = sidBuilder;
+		this.mixer = mixer;
 		nthFrame = palEmulation != null ? palEmulation.getNthFrame() : 0;
 		fastForwardVICFrames = 0;
 		pixelsArray = palEmulation != null ? palEmulation.getPixels().array() : null;
@@ -108,7 +107,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 
 	@Override
 	public void accept(VIC vic) {
-		int fastForwardBitMask = ((Mixer) sidBuilder).getFastForwardBitMask();
+		int fastForwardBitMask = mixer.getFastForwardBitMask();
 		if ((fastForwardVICFrames++ & fastForwardBitMask) == fastForwardBitMask) {
 			if (++n == nthFrame) {
 				n = 0;
