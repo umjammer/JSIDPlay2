@@ -119,9 +119,6 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	@Override
 	public void write(int addr, byte data) {
 		final long time = context.getTime(Event.Phase.PHI2);
-		if (sidWriteTime == 0) {
-			sidWriteTime = time;
-		}
 		importedApi.processSidWrite(time, (int) (time - sidWriteTime), addr, data & 0xff);
 		sidWriteTime = time;
 	}
