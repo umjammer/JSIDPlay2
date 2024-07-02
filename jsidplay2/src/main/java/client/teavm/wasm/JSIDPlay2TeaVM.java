@@ -32,8 +32,8 @@ public class JSIDPlay2TeaVM {
 	// Exports to JavaScript
 	//
 
-	@Export(name = "open")
-	public static void open(byte[] sidContents, String sidContentsNameFromJS, int song, int nthFrame,
+	@Export(name = "js2open")
+	public static void js2open(byte[] sidContents, String sidContentsNameFromJS, int song, int nthFrame,
 			boolean addSidListener, byte[] cartContents, String cartContentsNameFromJS, String commandFromJS)
 			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		// JavaScript string cannot be used directly for some reason, therefore:
@@ -45,106 +45,106 @@ public class JSIDPlay2TeaVM {
 				command);
 	}
 
-	@Export(name = "typeInCommand")
-	public static void typeInCommand(final String multiLineCommandFromJS) {
+	@Export(name = "js2typeInCommand")
+	public static void js2typeInCommand(final String multiLineCommandFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String multiLineCommand = ofNullable(multiLineCommandFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.typeInCommand(multiLineCommand);
 	}
 
-	@Export(name = "clock")
-	public static void clock() throws InterruptedException {
+	@Export(name = "js2clock")
+	public static void js2clock() throws InterruptedException {
 		jsidplay2.clock();
 	}
 
-	@Export(name = "setDefaultPlayLength")
-	public static void setDefaultPlayLength(double timeInS) {
+	@Export(name = "js2setDefaultPlayLength")
+	public static void js2setDefaultPlayLength(double timeInS) {
 		jsidplay2.setDefaultPlayLength(timeInS);
 	}
 
-	@Export(name = "insertDisk")
-	public static void insertDisk(byte[] diskContents, String diskContentsNameFromJS) {
+	@Export(name = "js2insertDisk")
+	public static void js2insertDisk(byte[] diskContents, String diskContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String diskContentsName = ofNullable(diskContentsNameFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.insertDisk(diskContents, diskContentsName);
 	}
 
-	@Export(name = "ejectDisk")
-	public static void ejectDisk() {
+	@Export(name = "js2ejectDisk")
+	public static void js2ejectDisk() {
 		jsidplay2.ejectDisk();
 	}
 
-	@Export(name = "insertTape")
-	public static void insertTape(byte[] tapeContents, String tapeContentsNameFromJS) {
+	@Export(name = "js2insertTape")
+	public static void js2insertTape(byte[] tapeContents, String tapeContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String tapeContentsName = ofNullable(tapeContentsNameFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.insertTape(tapeContents, tapeContentsName);
 	}
 
-	@Export(name = "ejectTape")
-	public static void ejectTape() {
+	@Export(name = "js2ejectTape")
+	public static void js2ejectTape() {
 		jsidplay2.ejectTape();
 	}
 
-	@Export(name = "pressPlayOnTape")
-	public static void pressPlayOnTape() {
+	@Export(name = "js2pressPlayOnTape")
+	public static void js2pressPlayOnTape() {
 		jsidplay2.pressPlayOnTape();
 	}
 
-	@Export(name = "insertREUfile")
-	public static void insertREUfile(byte[] cartContents, String cartContentsNameFromJS) {
+	@Export(name = "js2insertREUfile")
+	public static void js2insertREUfile(byte[] cartContents, String cartContentsNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String cartContentsName = ofNullable(cartContentsNameFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.insertREUfile(cartContents, cartContentsName);
 	}
 
-	@Export(name = "insertREU")
-	public static void insertREU(int sizeKb) {
+	@Export(name = "js2insertREU")
+	public static void js2insertREU(int sizeKb) {
 		jsidplay2.insertREU(sizeKb);
 	}
 
-	@Export(name = "typeKey")
-	public static void typeKey(String keyCodeFromJS) {
+	@Export(name = "js2typeKey")
+	public static void js2typeKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String keyCode = ofNullable(keyCodeFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.typeKey(KeyTableEntry.valueOf(keyCode));
 	}
 
-	@Export(name = "pressKey")
-	public static void pressKey(String keyCodeFromJS) {
+	@Export(name = "js2pressKey")
+	public static void js2pressKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String keyCode = ofNullable(keyCodeFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.pressKey(KeyTableEntry.valueOf(keyCode));
 	}
 
-	@Export(name = "releaseKey")
-	public static void releaseKey(String keyCodeFromJS) {
+	@Export(name = "js2releaseKey")
+	public static void js2releaseKey(String keyCodeFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String keyCode = ofNullable(keyCodeFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.releaseKey(KeyTableEntry.valueOf(keyCode));
 	}
 
-	@Export(name = "joystick")
-	public static void joystick(int number, int value) {
+	@Export(name = "js2joystick")
+	public static void js2joystick(int number, int value) {
 		jsidplay2.joystick(number, value);
 	}
 
-	@Export(name = "volumeLevels")
-	public static void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
+	@Export(name = "js2volumeLevels")
+	public static void js2volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
 			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
 		jsidplay2.volumeLevels(mainVolume, secondVolume, thirdVolume, mainBalance, secondBalance, thirdBalance,
 				mainDelay, secondDelay, thirdDelay);
 	}
 
-	@Export(name = "stereo")
-	public static void stereo(String stereoModeFromJS, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
+	@Export(name = "js2stereo")
+	public static void js2stereo(String stereoModeFromJS, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
 			String sidToReadFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String stereoMode = ofNullable(stereoModeFromJS).map(String::valueOf).orElse(null);
@@ -154,24 +154,24 @@ public class JSIDPlay2TeaVM {
 				SidReads.valueOf(sidToRead));
 	}
 
-	@Export(name = "defaultEmulation")
-	public static void defaultEmulation(String emulationFromJS) {
+	@Export(name = "js2defaultEmulation")
+	public static void js2defaultEmulation(String emulationFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String emulation = ofNullable(emulationFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.defaultEmulation(Emulation.valueOf(emulation));
 	}
 
-	@Export(name = "defaultChipModel")
-	public static void defaultChipModel(String chipModelFromJS) {
+	@Export(name = "js2defaultChipModel")
+	public static void js2defaultChipModel(String chipModelFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String chipModel = ofNullable(chipModelFromJS).map(String::valueOf).orElse(null);
 
 		jsidplay2.defaultChipModel(ChipModel.valueOf(chipModel));
 	}
 
-	@Export(name = "filterName")
-	public static void filterName(String emulationFromJS, String chipModelFromJS, int sidNum, String filterNameFromJS) {
+	@Export(name = "js2filterName")
+	public static void js2filterName(String emulationFromJS, String chipModelFromJS, int sidNum, String filterNameFromJS) {
 		// JavaScript string cannot be used directly for some reason, therefore:
 		String emulation = ofNullable(emulationFromJS).map(String::valueOf).orElse(null);
 		String chipModel = ofNullable(chipModelFromJS).map(String::valueOf).orElse(null);
@@ -180,28 +180,28 @@ public class JSIDPlay2TeaVM {
 		jsidplay2.filterName(Emulation.valueOf(emulation), ChipModel.valueOf(chipModel), sidNum, filterName);
 	}
 
-	@Export(name = "mute")
-	public static void mute(int sidNum, int voice, boolean value) {
+	@Export(name = "js2mute")
+	public static void js2mute(int sidNum, int voice, boolean value) {
 		jsidplay2.mute(sidNum, voice, value);
 	}
 
-	@Export(name = "fastForward")
-	public static void fastForward() {
+	@Export(name = "js2fastForward")
+	public static void js2fastForward() {
 		jsidplay2.fastForward();
 	}
 
-	@Export(name = "normalSpeed")
-	public static void normalSpeed() {
+	@Export(name = "js2normalSpeed")
+	public static void js2normalSpeed() {
 		jsidplay2.normalSpeed();
 	}
 
-	@Export(name = "freezeCartridge")
-	public static void freezeCartridge() {
+	@Export(name = "js2freezeCartridge")
+	public static void js2freezeCartridge() {
 		jsidplay2.freezeCartridge();
 	}
 
-	@Export(name = "delaySidBlaster")
-	public static void delaySidBlaster(int cycles) {
+	@Export(name = "js2delaySidBlaster")
+	public static void js2delaySidBlaster(int cycles) {
 		jsidplay2.delaySidBlaster(cycles);
 	}
 

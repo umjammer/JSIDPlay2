@@ -30,7 +30,7 @@ addEventListener(
     var { eventType, eventData } = event.data;
 
     if (eventType === "CLOCK") {
-      instance.exports.clock();
+      instance.exports.js2clock();
 
       postMessage({
         eventType: "CLOCKED",
@@ -40,7 +40,7 @@ addEventListener(
         eventType: "CLOCKED",
       });
     } else if (eventType === "OPEN") {
-      instance.exports.open(
+      instance.exports.js2open(
         allocateTeaVMbyteArray(eventData.contents ?? null),
         allocateTeaVMstring(eventData.tuneName ?? null),
         eventData.startSong,
@@ -55,13 +55,13 @@ addEventListener(
         eventType: "OPENED",
       });
     } else if (eventType === "SET_DEFAULT_PLAY_LENGTH") {
-      instance.exports.setDefaultPlayLength(eventData.timeInS);
+      instance.exports.js2setDefaultPlayLength(eventData.timeInS);
 
       postMessage({
         eventType: "DEFAULT_PLAY_LENGTH_SET",
       });
     } else if (eventType === "INSERT_DISK") {
-      instance.exports.insertDisk(
+      instance.exports.js2insertDisk(
         allocateTeaVMbyteArray(eventData.contents ?? null),
         allocateTeaVMstring(eventData.diskName ?? null)
       );
@@ -70,13 +70,13 @@ addEventListener(
         eventType: "DISK_INSERTED",
       });
     } else if (eventType === "EJECT_DISK") {
-      instance.exports.ejectDisk();
+      instance.exports.js2ejectDisk();
 
       postMessage({
         eventType: "DISK_EJECTED",
       });
     } else if (eventType === "INSERT_TAPE") {
-      instance.exports.insertTape(
+      instance.exports.js2insertTape(
         allocateTeaVMbyteArray(eventData.contents ?? null),
         allocateTeaVMstring(eventData.tapeName ?? null)
       );
@@ -85,19 +85,19 @@ addEventListener(
         eventType: "TAPE_INSERTED",
       });
     } else if (eventType === "EJECT_TAPE") {
-      instance.exports.ejectTape();
+      instance.exports.js2ejectTape();
 
       postMessage({
         eventType: "TAPE_EJECTED",
       });
     } else if (eventType === "PRESS_PLAY_ON_TAPE") {
-      instance.exports.pressPlayOnTape();
+      instance.exports.js2pressPlayOnTape();
 
       postMessage({
         eventType: "PRESSED_PLAY_ON_TAPE",
       });
     } else if (eventType === "INSERT_REU_FILE") {
-      instance.exports.insertREUfile(
+      instance.exports.js2insertREUfile(
         allocateTeaVMbyteArray(eventData.contents ?? null),
         allocateTeaVMstring(eventData.reuName ?? null)
       );
@@ -106,55 +106,55 @@ addEventListener(
         eventType: "REU_FILE_INSERTED",
       });
     } else if (eventType === "INSERT_REU") {
-      instance.exports.insertREU(eventData.sizeKb);
+      instance.exports.js2insertREU(eventData.sizeKb);
 
       postMessage({
         eventType: "REU_INSERTED",
       });
     } else if (eventType === "SET_COMMAND") {
-      instance.exports.typeInCommand(allocateTeaVMstring(eventData.command ?? null));
+      instance.exports.js2typeInCommand(allocateTeaVMstring(eventData.command ?? null));
 
       postMessage({
         eventType: "COMMAND_SET",
       });
     } else if (eventType === "TYPE_KEY") {
-      instance.exports.typeKey(allocateTeaVMstring(eventData.key ?? null));
+      instance.exports.js2typeKey(allocateTeaVMstring(eventData.key ?? null));
 
       postMessage({
         eventType: "KEY_TYPED",
       });
     } else if (eventType === "PRESS_KEY") {
-      instance.exports.pressKey(allocateTeaVMstring(eventData.key ?? null));
+      instance.exports.js2pressKey(allocateTeaVMstring(eventData.key ?? null));
 
       postMessage({
         eventType: "KEY_PRESSED",
       });
     } else if (eventType === "RELEASE_KEY") {
-      instance.exports.releaseKey(allocateTeaVMstring(eventData.key ?? null));
+      instance.exports.js2releaseKey(allocateTeaVMstring(eventData.key ?? null));
 
       postMessage({
         eventType: "KEY_RELEASED",
       });
     } else if (eventType === "PRESS_JOYSTICK") {
-      instance.exports.joystick(eventData.number, eventData.value);
+      instance.exports.js2joystick(eventData.number, eventData.value);
 
       postMessage({
         eventType: "JOYSTICK_PRESSED",
       });
     } else if (eventType === "SET_DEFAULT_EMULATION") {
-      instance.exports.defaultEmulation(allocateTeaVMstring(eventData.emulation ?? null));
+      instance.exports.js2defaultEmulation(allocateTeaVMstring(eventData.emulation ?? null));
 
       postMessage({
         eventType: "DEFAULT_EMULATION_SET",
       });
     } else if (eventType === "SET_DEFAULT_CHIP_MODEL") {
-      instance.exports.defaultChipModel(allocateTeaVMstring(eventData.chipModel ?? null));
+      instance.exports.js2defaultChipModel(allocateTeaVMstring(eventData.chipModel ?? null));
 
       postMessage({
         eventType: "DEFAULT_CHIP_MODEL_SET",
       });
     } else if (eventType === "SET_FILTER_NAME") {
-      instance.exports.filterName(
+      instance.exports.js2filterName(
         allocateTeaVMstring(eventData.emulation ?? null),
         allocateTeaVMstring(eventData.chipModel ?? null),
         eventData.sidNum,
@@ -165,13 +165,13 @@ addEventListener(
         eventType: "FILTER_NAME_SET",
       });
     } else if (eventType === "SET_MUTE") {
-      instance.exports.mute(eventData.sidNum, eventData.voice, eventData.value);
+      instance.exports.js2mute(eventData.sidNum, eventData.voice, eventData.value);
 
       postMessage({
         eventType: "MUTE_SET",
       });
     } else if (eventType === "SET_STEREO") {
-      instance.exports.stereo(
+      instance.exports.js2stereo(
         allocateTeaVMstring(eventData.stereoMode ?? null),
         eventData.dualSidBase,
         eventData.thirdSIDBase,
@@ -183,7 +183,7 @@ addEventListener(
         eventType: "STEREO_SET",
       });
     } else if (eventType === "SET_VOLUME_LEVELS") {
-      instance.exports.volumeLevels(
+      instance.exports.js2volumeLevels(
         eventData.mainVolume,
         eventData.secondVolume,
         eventData.thirdVolume,
@@ -199,19 +199,19 @@ addEventListener(
         eventType: "VOLUME_LEVELS_SET",
       });
     } else if (eventType === "FAST_FORWARD") {
-      instance.exports.fastForward();
+      instance.exports.js2fastForward();
 
       postMessage({
         eventType: "FAST_FORWARD_SET",
       });
     } else if (eventType === "NORMAL_SPEED") {
-      instance.exports.normalSpeed();
+      instance.exports.js2normalSpeed();
 
       postMessage({
         eventType: "NORMAL_SPEED_SET",
       });
     } else if (eventType === "FREEZE_CARTRIDGE") {
-      instance.exports.freezeCartridge();
+      instance.exports.js2freezeCartridge();
 
       postMessage({
         eventType: "CARTRIDGE_FREEZED",
