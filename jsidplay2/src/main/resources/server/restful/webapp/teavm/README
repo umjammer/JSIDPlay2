@@ -118,7 +118,7 @@ What tune to play is answered by the first two parameters. "contents" and "tune 
 1. contents - Uint8Array with the PSID, PRG, P00 or T64
 2. tuneName - the tune name must be present and contain a file extension one of ".sid", ".prg", ".p00", ".t64"
 If a cartridge is required, please specify the next similar two parameters.
-The cartridge can be a multi purpose cartridge like EasyFlash, Action Replay and more. GeoRAM and REU is currently not supported
+The cartridge can be a multi purpose cartridge like EasyFlash, Action Replay and more. GeoRAM is currently not supported
 3. cartContents - Uint8Array with the cartridge
 4. cartName - the cartridge name
 Some content needs a start command to load from disk or tape. Therefore you can set it with the next parameter.
