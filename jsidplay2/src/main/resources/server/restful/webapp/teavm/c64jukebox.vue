@@ -70,6 +70,20 @@
                       <input ref="formFileSm" id="file" type="file" @input="startTune()" style="display: none" />
                     </li>
                     <li>
+                      <div class="dropdown-item form-check">
+                        <label class="form-check-label" for="withVideo" style="cursor: pointer">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="withVideo"
+                            style="float: right; margin-left: 8px"
+                            v-model="withVideo"
+                          />
+                          {{ $t("withVideo") }}
+                        </label>
+                      </div>
+                    </li>
+                    <li>
                       <a class="dropdown-item" href="#" @click="reset()"> {{ $t("reset") }} </a>
                     </li>
                   </ul>
@@ -3682,6 +3696,7 @@
             setDefault: "Restore Defaults",
             setDefaultReally: "Do you really want to restore defaults?",
             warningRestart: "Note: To apply those changes, please restart tune!",
+            withVideo: "Video Screen",
           },
           de: {
             FileMenu: "Datei",
@@ -3802,6 +3817,7 @@
             setDefault: "Standardeinstellungen wiederherstellen",
             setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
             warningRestart: "Achtung: Damit diesen Einstellungen angewendet werden können, bitte den Tune neu starten!",
+            withVideo: "Bildschirm",
           },
         },
       });
@@ -3923,6 +3939,7 @@
             muteThirdSIDVoice3: false,
             muteThirdSIDVoice4: false,
             tabIndex: 1,
+            withVideo: false,
           };
         },
         computed: {},
@@ -3954,7 +3971,7 @@
             if (app.$refs.formREUFileSm && app.$refs.formREUFileSm.files[0]) {
               app.screen = true;
             } else {
-              app.screen = screen ? screen : false;
+              app.screen = screen ? screen : app.withVideo;
             }
             if (app.screen) {
               app.$refs.videoTab.click();
