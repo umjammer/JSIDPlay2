@@ -1,6 +1,5 @@
 package server.restful.servlets.sidmapping;
 
-import static libsidplay.components.pla.PLA.MAX_SIDS;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
@@ -9,22 +8,17 @@ import static server.restful.common.ServletUtil.error;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import builder.jexsid.JExSIDMapping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import libsidplay.common.CPUClock;
-import libsidplay.common.ChipModel;
 import libsidplay.config.IEmulationSection;
 import libsidplay.sidtune.SidTune;
 import server.restful.common.JSIDPlay2Servlet;
@@ -68,51 +62,13 @@ public class ExSIDMappingServlet extends JSIDPlay2Servlet {
 
 			SidTune tune = SidTune.load(file);
 
-			CPUClock cpuClock = CPUClock.getCPUClock(emulationSection, tune);
-
-			Set<ChipModel> alreadyInUse = new HashSet<>();
-			Map<Integer, String> result = new HashMap<>();
-			for (int sidNum = 0; sidNum < MAX_SIDS; sidNum++) {
-				if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
-
-					int address = SidTune.getSIDAddress(emulationSection, tune, sidNum);
-
-					ChipModel chipModel = ChipModel.getChipModel(emulationSection, tune, sidNum);
-
-					if (sidNum == 1 && SidTune.isFakeStereoSid(emulationSection, tune, 1)) {
-						continue;
-					}
-					// stereo SIDs with same chipmodel must be forced to use a different device,
-					// therefore:
-					if (sidNum == 1 && isChipNumAlreadyUsed(alreadyInUse, chipModel)) {
-						chipModel = chipModel == ChipModel.MOS6581 ? ChipModel.MOS8580 : ChipModel.MOS6581;
-					}
-					// chipModel
-					result.put(sidNum, String.valueOf(chipModel));
-					// base address
-					result.put(address, String.valueOf(sidNum));
-					alreadyInUse.add(chipModel);
-				}
-			}
-			// stereo
-			result.put(-1, String.valueOf(SidTune.isSIDUsed(emulationSection, tune, 1)));
-			// fake-stereo
-			result.put(-2, String.valueOf(
-					emulationSection.isExsidFakeStereo() && SidTune.isFakeStereoSid(emulationSection, tune, 1)));
-			// CPUClock
-			result.put(-3, cpuClock.name());
-
-			setOutput(MIME_TYPE_JSON, response, result);
+			setOutput(MIME_TYPE_JSON, response, JExSIDMapping.mapping(emulationSection, tune));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			error(getServletContext(), t);
 			setOutput(response, t);
 		}
-	}
-
-	private boolean isChipNumAlreadyUsed(Set<ChipModel> alreadyInUse, final ChipModel chipModel) {
-		return alreadyInUse.contains(chipModel);
 	}
 
 }

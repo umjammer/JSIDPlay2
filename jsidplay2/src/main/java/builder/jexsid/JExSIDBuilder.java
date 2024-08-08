@@ -115,7 +115,7 @@ public class JExSIDBuilder implements HardwareSIDBuilder, Mixer {
 		System.err.println("$ sudo vi /etc/udev/rules.d/93-exsid.rules");
 		System.err.println(
 				"ACTION==\"add\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", MODE=\"0666\", RUN+=\"/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'\"");
-		System.err.println("$ sudo udevadm control --reload-rules && udevadm trigger");
+		System.err.println("$ sudo udevadm control --reload-rules && sudo udevadm trigger");
 		System.err.println("For ExSID+ you have to replace idProduct 6001 with 6015!");
 		System.err.println();
 		System.err.println("... and on Fedora you do:");

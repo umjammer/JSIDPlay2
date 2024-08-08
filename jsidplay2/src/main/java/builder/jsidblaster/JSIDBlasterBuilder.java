@@ -113,7 +113,7 @@ public class JSIDBlasterBuilder implements HardwareSIDBuilder, Mixer {
 		System.err.println("$ sudo vi /etc/udev/rules.d/91-sidblaster.rules");
 		System.err.println(
 				"ACTION==\"add\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", MODE=\"0666\", RUN+=\"/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'\"");
-		System.err.println("$ sudo udevadm control --reload-rules && udevadm trigger");
+		System.err.println("$ sudo udevadm control --reload-rules && sudo udevadm trigger");
 		System.err.println();
 		System.err.println("... and on Fedora you do:");
 		System.err.println("$ sudo vi /etc/udev/rules.d/91-sidblaster.rules");

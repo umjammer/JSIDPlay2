@@ -1,6 +1,5 @@
 package server.restful.servlets.sidmapping;
 
-import static libsidplay.components.pla.PLA.MAX_SIDS;
 import static server.restful.JSIDPlay2Server.CONTEXT_ROOT_SERVLET;
 import static server.restful.JSIDPlay2Server.ROLE_ADMIN;
 import static server.restful.JSIDPlay2Server.ROLE_USER;
@@ -9,12 +8,11 @@ import static server.restful.common.ServletUtil.error;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
+import builder.jsidblaster.JSIDBlasterMapping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -64,17 +62,7 @@ public class SIDBlasterMappingServlet extends JSIDPlay2Servlet {
 
 			SidTune tune = SidTune.load(file);
 
-			Map<Integer, String> result = new HashMap<>();
-			for (int sidNum = 0; sidNum < MAX_SIDS; sidNum++) {
-				if (SidTune.isSIDUsed(emulationSection, tune, sidNum)) {
-
-					int address = SidTune.getSIDAddress(emulationSection, tune, sidNum);
-					// base address
-					result.put(address, String.valueOf(sidNum));
-					break;
-				}
-			}
-			setOutput(MIME_TYPE_JSON, response, result);
+			setOutput(MIME_TYPE_JSON, response, JSIDBlasterMapping.mapping(emulationSection, tune));
 
 		} catch (Throwable t) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

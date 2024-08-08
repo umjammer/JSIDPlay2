@@ -131,7 +131,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 			} else if (MIME_TYPE_XML.isCompatible(optionalContentType.get())) {
 				setOutput(MIME_TYPE_XML, response, result);
 			} else {
-				throw new IOException(String.format("Unsupported content type: $s!", optionalContentType.get()));
+				throw new IOException(String.format("Unsupported content type: %s!", optionalContentType.get()));
 			}
 		} catch (IOException e) {
 			ServletUtil.error(getServletContext(), e);
@@ -150,7 +150,7 @@ public abstract class JSIDPlay2Servlet extends HttpServlet {
 				response.setContentType(MIME_TYPE_XML.toString());
 				JAXBContext.newInstance(result.getClass()).createMarshaller().marshal(result, out);
 			} else {
-				throw new IOException(String.format("Unsupported content type: $s!", ct));
+				throw new IOException(String.format("Unsupported content type: %s!", ct));
 			}
 		} catch (IOException | JAXBException e) {
 			ServletUtil.error(getServletContext(), e);
