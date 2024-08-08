@@ -1593,7 +1593,8 @@
                         style="border: 2px solid black; background-color: black; max-width: calc(100vw - 70px)"
                         width="384"
                         height="285"
-                      />
+                      >
+                      </canvas>
                     </div>
                     <button
                       v-show="screen && playing"
