@@ -83,8 +83,8 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void open(byte[] sidContents, String sidContentsName, int song, int nthFrame, boolean addSidListener,
-			byte[] cartContents, String cartContentsName, String command)
-			throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
+		byte[] cartContents, String cartContentsName, String command)
+		throws IOException, SidTuneError, LineUnavailableException, InterruptedException {
 		this.command = command;
 
 		final ISidPlay2Section sidplay2Section = config.getSidplay2Section();
@@ -127,7 +127,7 @@ public class ExportedApi implements IExportedApi {
 				jiffyDosC64Rom, jiffyDosC1541Rom, c1541Rom, new byte[0], new byte[0]);
 		hardwareEnsemble.setClock(CPUClock.getCPUClock(emulationSection, tune));
 		c64 = hardwareEnsemble.getC64();
-		PALEmulationTeaVM palEmulation = nthFrame > 0 ? new PALEmulationTeaVM(nthFrame) : null;
+		PALEmulationTeaVM palEmulation = nthFrame > 0 ? new PALEmulationTeaVM(nthFrame, c64.getClock()) : null;
 		c64.getVIC().setPalEmulation(palEmulation);
 		if (cartContents != null) {
 			insertCart(cartContents, cartContentsName);
@@ -361,7 +361,7 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void volumeLevels(float mainVolume, float secondVolume, float thirdVolume, float mainBalance,
-			float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
+		float secondBalance, float thirdBalance, int mainDelay, int secondDelay, int thirdDelay) {
 		final IAudioSection audioSection = config.getAudioSection();
 		audioSection.setMainVolume(mainVolume);
 		audioSection.setSecondVolume(secondVolume);
@@ -394,7 +394,7 @@ public class ExportedApi implements IExportedApi {
 
 	@Override
 	public void stereo(StereoMode stereoMode, int dualSidBase, int thirdSIDBase, boolean fakeStereo,
-			SidReads sidToRead) {
+		SidReads sidToRead) {
 		final IEmulationSection emulationSection = config.getEmulationSection();
 		emulationSection.setStereoMode(stereoMode);
 		emulationSection.setDualSidBase(dualSidBase);
@@ -492,7 +492,7 @@ public class ExportedApi implements IExportedApi {
 	//
 
 	private void doLog(ISidPlay2Section sidplay2Section, IAudioSection audioSection, IEmulationSection emulationSection,
-			IC1541Section c1541Section) {
+		IC1541Section c1541Section) {
 		LOG.finest("palEmulation: " + sidplay2Section.isPalEmulation());
 		LOG.finest("bufferSize: " + audioSection.getBufferSize());
 		LOG.finest("audioBufferSize: " + audioSection.getAudioBufferSize());
@@ -602,7 +602,7 @@ public class ExportedApi implements IExportedApi {
 	}
 
 	private File createReadOnlyFile(byte[] fileContents, String fileContentsUrl)
-			throws IOException, FileNotFoundException {
+		throws IOException, FileNotFoundException {
 		File tmp = File.createTempFile(IOUtils.getFilenameWithoutSuffix(fileContentsUrl),
 				IOUtils.getFilenameSuffix(fileContentsUrl));
 		try (OutputStream os = new FileOutputStream(tmp)) {

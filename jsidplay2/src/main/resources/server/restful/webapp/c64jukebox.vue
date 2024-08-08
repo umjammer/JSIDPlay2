@@ -5693,7 +5693,7 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
               "&autostart=" +
               uriEncode(autostart) +
               "&devtools=" +
-              ("$min" !== ".min")
+              ("${min}" !== ".min")
             );
           },
           createSIDMappingUrl: function (entry, itemId, categoryId) {

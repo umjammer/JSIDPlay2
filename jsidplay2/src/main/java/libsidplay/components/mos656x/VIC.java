@@ -566,7 +566,7 @@ public abstract class VIC extends Bank {
 				showBorderMain = showBorderVertical || renderCycle == 40;
 			}
 		}
-		if (palEmulation != PALEmulation.NONE) {
+		if (palEmulation != PALEmulation.NONE && rasterY < getLastDisplayLine()) {
 			/* Pixels arrive in 0x12345678 order. */
 			palEmulation.drawPixels(graphicsDataBuffer);
 		}
@@ -1134,6 +1134,8 @@ public abstract class VIC extends Bank {
 	}
 
 	public abstract int getBorderHeight();
+
+	public abstract int getLastDisplayLine();
 
 	public byte[] getRegisters() {
 		return registers;

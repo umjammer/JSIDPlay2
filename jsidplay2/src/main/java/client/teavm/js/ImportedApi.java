@@ -94,7 +94,7 @@ public class ImportedApi implements IImportedApi {
 	public static native void processSamplesJS(@JSByRef float[] lf, @JSByRef float[] ri, int le);
 
 	@JSBody(params = { "pi", "le" }, script = "postMessage({eventType:'FRAME',"
-			+ "eventData:{image:new Uint8Array(pi,0,le)}})")
+			+ "eventData:{image:new Uint8Array(pi.buffer,0,le)}})")
 	public static native void processPixelsJS(@JSByRef byte[] pi, int le);
 
 	@JSBody(params = { "at", "ti", "ad", "va" }, script = "postMessage({eventType: 'SID_WRITE',"

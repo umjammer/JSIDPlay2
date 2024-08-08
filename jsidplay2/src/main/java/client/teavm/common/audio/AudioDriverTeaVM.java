@@ -1,8 +1,5 @@
 package client.teavm.common.audio;
 
-import static libsidplay.common.CPUClock.PAL;
-import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;
-
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -19,7 +16,6 @@ import libsidplay.common.Event;
 import libsidplay.common.EventScheduler;
 import libsidplay.common.Mixer;
 import libsidplay.common.SIDListener;
-import libsidplay.components.mos656x.MOS6567;
 import libsidplay.components.mos656x.VIC;
 import libsidplay.config.IAudioSection;
 import sidplay.audio.AudioConfig;
@@ -49,7 +45,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 	private ByteBuffer sampleBuffer;
 	private ShortBuffer shortBuffer;
 	private FloatBuffer resultL, resultR;
-	private int n, pixelsLength;
+	private int n;
 	private long sidWriteTime;
 	private int fastForwardVICFrames;
 
@@ -79,7 +75,6 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 
 		n = 0;
 		sidWriteTime = 0L;
-		pixelsLength = VIC.MAX_WIDTH * (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.BORDER_HEIGHT) << 2;
 	}
 
 	@Override
@@ -111,7 +106,7 @@ public final class AudioDriverTeaVM implements AudioDriver, VideoDriver, SIDList
 		if ((fastForwardVICFrames++ & fastForwardBitMask) == fastForwardBitMask) {
 			if (++n == nthFrame) {
 				n = 0;
-				importedApi.processPixels(pixelsArray, pixelsLength);
+				importedApi.processPixels(pixelsArray, pixelsArray.length);
 			}
 		}
 	}

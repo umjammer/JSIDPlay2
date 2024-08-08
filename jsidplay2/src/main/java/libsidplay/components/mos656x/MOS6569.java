@@ -413,4 +413,8 @@ public final class MOS6569 extends VIC {
 		return BORDER_HEIGHT;
 	}
 
+	@Override
+	public int getLastDisplayLine() {
+		return LAST_DISPLAY_LINE;
+	}
 }

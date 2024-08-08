@@ -398,4 +398,8 @@ public class MOS6567 extends VIC {
 		return BORDER_HEIGHT;
 	}
 
+	@Override
+	public int getLastDisplayLine() {
+		return MAX_RASTERS;
+	}
 }

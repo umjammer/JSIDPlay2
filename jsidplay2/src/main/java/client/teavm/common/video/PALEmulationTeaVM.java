@@ -1,11 +1,13 @@
 package client.teavm.common.video;
 
-import static java.lang.Integer.parseInt;
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_EVEN;
 import static client.teavm.compiletime.PaletteTeaVM.COMBINED_LINES_ODD;
 import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_EVEN;
 import static client.teavm.compiletime.PaletteTeaVM.LINE_PALETTE_ODD;
+import static java.lang.Integer.parseInt;
 import static java.util.Arrays.stream;
+import static libsidplay.common.CPUClock.PAL;
+import static libsidplay.components.mos656x.MOS6569.BORDER_HEIGHT;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -16,8 +18,10 @@ import java.util.Base64.Decoder;
 import java.util.Map;
 
 import client.teavm.compiletime.PaletteTeaVM;
+import libsidplay.common.CPUClock;
 import libsidplay.components.mos656x.IPALEmulation;
 import libsidplay.components.mos656x.IPalette;
+import libsidplay.components.mos656x.MOS6567;
 import libsidplay.components.mos656x.VIC;
 
 /**
@@ -54,13 +58,12 @@ public class PALEmulationTeaVM implements IPALEmulation {
 	/** Previous sequencer data */
 	private int oldGraphicsData;
 
-	private final ByteBuffer pixels = ByteBuffer.allocate(VIC.MAX_WIDTH * VIC.MAX_HEIGHT << 2)
-			.order(ByteOrder.BIG_ENDIAN);
+	private ByteBuffer pixels;
 	private int n;
 
 	private boolean palEmulationEnable;
 
-	public PALEmulationTeaVM(int nthFrame) {
+	public PALEmulationTeaVM(int nthFrame, CPUClock cpuClock) {
 		this.nthFrame = nthFrame;
 
 		Decoder decoder = Base64.getDecoder();
@@ -71,6 +74,8 @@ public class PALEmulationTeaVM implements IPALEmulation {
 		linePaletteEven = decoder.decode(palette.get(LINE_PALETTE_EVEN));
 		linePaletteOdd = decoder.decode(palette.get(LINE_PALETTE_ODD));
 		n = 0;
+		int maxHeight = (cpuClock == PAL ? BORDER_HEIGHT : MOS6567.MAX_RASTERS);
+		pixels = ByteBuffer.allocate(VIC.MAX_WIDTH * maxHeight << 2).order(ByteOrder.BIG_ENDIAN);
 	}
 
 	/**

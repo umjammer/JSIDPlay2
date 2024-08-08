@@ -3262,7 +3262,7 @@
       }
 
       const maxWidth = 384;
-      const maxHeight = 312;
+      const maxHeight = 285;
 
       var worker;
 
