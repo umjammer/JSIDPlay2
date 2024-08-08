@@ -137,7 +137,7 @@ whenever a SIDBlaster card is plugged-in, therefore:
 ----
 sudo vi /etc/udev/rules.d/91-sidblaster.rules
 ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666",  RUN+="/bin/sh -c 'rmmod ftdi_sio && rmmod usbserial'"
-sudo udevadm control --reload-rules && udevadm trigger
+sudo udevadm control --reload-rules && sudo udevadm trigger
 ----
 
 [source,subs="attributes+"]
