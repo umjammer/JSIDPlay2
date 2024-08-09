@@ -399,7 +399,7 @@ public class MOS6567 extends VIC {
 	}
 
 	@Override
-	public int getLastDisplayLine() {
-		return MAX_RASTERS;
+	public int getRasterYMax() {
+		return (FIRST_DISPLAY_LINE - LAST_DISPLAY_LINE) + BORDER_HEIGHT;
 	}
 }

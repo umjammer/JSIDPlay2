@@ -414,7 +414,7 @@ public final class MOS6569 extends VIC {
 	}
 
 	@Override
-	public int getLastDisplayLine() {
+	public int getRasterYMax() {
 		return LAST_DISPLAY_LINE;
 	}
 }
