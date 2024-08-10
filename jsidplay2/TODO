@@ -10,7 +10,6 @@ TODO:
   and would allow a listener to see the connections between register values and sounds.
 - Drag and Drop of HVSC zip file
 - freely configurable filter definitions
-- Support of executable .command files on MACOSX
 - Maximize oscilloscope view on demand
 - Feature Ideas by Aidan Crouzet-Pascal regarding oscilloscope view, sent by email at 4.7.23
 JavaScript version:

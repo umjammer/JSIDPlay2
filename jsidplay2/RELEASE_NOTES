@@ -1,14 +1,4 @@
 Release Notes:
 ==============
 
-JSIDPlay2 goes JavaScript (https://haendel.ddns.net:8443/static/teavm/c64jukebox.vue)
- - Run JSIDPlay2 in a browser in JavaScript or Web Assembly (THIS IS NOT JAVA)
- - Runs out-of-the-box in all browsers (Chrome is faster than Firefox)
- - Only 2MB in size, loads very quick
- - Compatible with all SIDs (mono, stereo and 3-SID)
- - Plays mono SIDs and ONEfilers on a middle class mobile phone and multi-disk demos on a PC
- - Runs near to native speed, performance only depends on your max. single core speed
- - Runs completely on the client side in a web worker (once in browser's cache)
- - Full emulation quality, no compromise, C64, Floppy and more
- - Developed single source in JSIDPlay2 project, enhancements are automatically available in all versions
- - For the first time, embed music or demos in YOUR web-site with JSIDPlay2
+- Support of executable .command files on MACOSX

@@ -960,11 +960,25 @@
 									</includes>
 								</resource>
 								<resource>
+									<directory>src/main/osx/jsidplay2</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>**/*.command</include>
+									</includes>
+								</resource>
+								<resource>
 									<directory>src/main/linux/jsidplay2</directory>
 									<filtering>false</filtering>
 									<excludes>
 										<exclude>**/*.desktop</exclude>
 										<exclude>**/*.sh</exclude>
+									</excludes>
+								</resource>
+								<resource>
+									<directory>src/main/osx/jsidplay2</directory>
+									<filtering>false</filtering>
+									<excludes>
+										<exclude>**/*.command</exclude>
 									</excludes>
 								</resource>
 							</resources>

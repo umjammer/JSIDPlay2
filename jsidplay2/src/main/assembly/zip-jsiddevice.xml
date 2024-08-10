@@ -18,6 +18,15 @@
 			<fileMode>0755</fileMode>
 		</fileSet>
 		<fileSet>
+			<directory>${basedir}/src/main/osx/jsiddevice</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+                <include>*.command</include>
+            </includes>
+			<filtered>true</filtered>
+			<fileMode>0755</fileMode>
+		</fileSet>
+		<fileSet>
 			<directory>${project.build.directory}/deploy</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
