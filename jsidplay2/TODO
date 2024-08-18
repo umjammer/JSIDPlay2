@@ -12,5 +12,4 @@ TODO:
 - freely configurable filter definitions
 - Maximize oscilloscope view on demand
 - Feature Ideas by Aidan Crouzet-Pascal regarding oscilloscope view, sent by email at 4.7.23
-JavaScript version:
-. setting a delay in ms, when to be notified, if a play time has reached the end
+- Use playlists as a main argument for ConsolePlayer
