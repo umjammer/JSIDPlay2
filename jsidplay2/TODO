@@ -13,3 +13,6 @@ TODO:
 - Maximize oscilloscope view on demand
 - Feature Ideas by Aidan Crouzet-Pascal regarding oscilloscope view, sent by email at 4.7.23
 - Use playlists as a main argument for ConsolePlayer
+- Console Player, use playlist as command line argument
+- App: Disable text to speech
+- Midibox mir Arm2Sid Unterstützung (http://midibox.org/forums/topic/26599-using-arm2sid-with-mb6582/)
