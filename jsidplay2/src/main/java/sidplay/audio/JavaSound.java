@@ -13,6 +13,8 @@ import java.util.stream.IntStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.FloatControl.Type;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
@@ -22,8 +24,12 @@ import javax.sound.sampled.SourceDataLine;
 import libsidplay.common.CPUClock;
 import libsidplay.common.EventScheduler;
 import libsidplay.config.IAudioSection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaSound implements AudioDriver {
+
+	private static final Logger logger = LoggerFactory.getLogger(JavaSound.class.getName());
 
 	private AudioConfig cfg;
 	private AudioFormat audioFormat;
@@ -59,6 +65,10 @@ public class JavaSound implements AudioDriver {
 			dataLine.open(dataLine.getFormat(), cfg.getBufferFrames() * Short.BYTES * cfg.getChannels());
 
 			dataLine.start();
+
+			FloatControl gainControl = (FloatControl) dataLine.getControl(Type.MASTER_GAIN);
+logger.debug("MainVolume: {}", cfg.getMainVolume());
+			gainControl.setValue(cfg.getMainVolume());
 
 			// The actual buffer size for the open line may differ from the
 			// requested buffer size, therefore

@@ -29,6 +29,7 @@ public class AudioConfig {
 	private final int frameRate;
 	private final int channels;
 	private int audioBufferSize, bufferFrames;
+	private float mainVolume;
 
 	/**
 	 * Return a detached AudioConfig instance corresponding to current
@@ -40,7 +41,7 @@ public class AudioConfig {
 	 *
 	 */
 	public AudioConfig(final IAudioSection audioSection) {
-		this(audioSection.getSamplingRate().getFrequency(), 2, audioSection.getAudioBufferSize());
+		this(audioSection.getSamplingRate().getFrequency(), 2, audioSection.getAudioBufferSize(), audioSection.getMainVolume());
 	}
 
 	/**
@@ -51,9 +52,21 @@ public class AudioConfig {
 	 * @param audioBufferSize The audio buffer size.
 	 */
 	public AudioConfig(final int frameRate, final int channels, Integer audioBufferSize) {
+		this(frameRate, channels, audioBufferSize, 0);
+	}
+
+	/**
+	 * This instance represents the requested audio configuration.<BR>
+	 *
+	 * @param frameRate       The desired audio frame rate.
+	 * @param channels        The number of audio channels to use.
+	 * @param audioBufferSize The audio buffer size.
+	 */
+	public AudioConfig(final int frameRate, final int channels, Integer audioBufferSize, float mainVolume) {
 		this.frameRate = frameRate;
 		this.channels = channels;
 		this.bufferFrames = this.audioBufferSize = audioBufferSize;
+		this.mainVolume = mainVolume;
 	}
 
 	/**
@@ -116,6 +129,15 @@ public class AudioConfig {
 	 */
 	public final int getChannels() {
 		return channels;
+	}
+
+	/**
+	 * Get main volume
+	 *
+	 * @return main volume
+	 */
+	public final float getMainVolume() {
+		return mainVolume;
 	}
 
 	/**

@@ -133,7 +133,7 @@ public class VideoPlayer extends C64VBox implements UIPart {
 					});
 
 					javaSound.open(new AudioConfig(videoInfo.getSampleRate(), videoInfo.getChannels(),
-							audioSection.getAudioBufferSize()), JavaSound.getDeviceInfo(audioSection));
+							audioSection.getAudioBufferSize(), audioSection.getMainVolume()), JavaSound.getDeviceInfo(audioSection));
 
 					super.run();
 				} catch (Exception e) {
