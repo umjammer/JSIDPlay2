@@ -24,7 +24,7 @@
  * probably we could save a few bytes of memory, because the 
  * smaller tables are often the part of a bigger table
  * 
- * @author Ken Händel
+ * @author Ken Hèˆ…del
  */
 
 package mpg;

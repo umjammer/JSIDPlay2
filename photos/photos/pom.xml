@@ -12,7 +12,6 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<debug>false</debug>
 		<debuglevel>lines,vars,source</debuglevel>
 	</properties>
@@ -22,16 +21,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.12.1</version>
 				<configuration>
 					<debug>${debug}</debug>
-					<encoding>UTF-8</encoding>
 					<debuglevel>${debuglevel}</debuglevel>
-					<source>1.8</source>
-					<target>1.8</target>
+					<release>17</release>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>

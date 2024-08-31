@@ -1,31 +1,3 @@
-[![Release](https://jitpack.io/v/umjammer/JSIDPlay2.svg)](https://jitpack.io/#umjammer/JSIDPlay2)
-[![Java CI](https://github.com/umjammer/JSIDPlay2/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/JSIDPlay2/actions/workflows/maven.yml)
-[![CodeQL](https://github.com/umjammer/JSIDPlay2/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/JSIDPlay2/actions/workflows/codeql-analysis.yml)
-![Java](https://img.shields.io/badge/Java-17-b07219)
-
-# JSIDPlay2
-
-## Usage
-
-```shell
- $ mvn clean javafx:run
-```
-
-## References
-
-* https://github.com/PotcFdk/JSIDPlay2
-* https://www.hvsc.c64.org/
-
-## TODO
-
-* audio driver which passes data not to audio device but to program (see sidplay.audio.JavaSound etc.)
-* extract oscilloscope ui
-
-
----
-
-# [Original](https://sourceforge.net/projects/jsidplay2/)
-
 Java requirements:
 ==================
 Use Java 17 or newer (Java 11 is NOT supported) or as an alternative Oracle-Java8 (we are still compatible) 

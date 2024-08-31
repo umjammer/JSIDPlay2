@@ -4134,2326 +4134,2326 @@ ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0666", R
     </div>
 
     <script>
-      const { createApp, ref } = Vue;
+        const { createApp, ref } = Vue;
 
-      const { createI18n } = VueI18n;
+        const { createI18n } = VueI18n;
 
-      var gumStream; //stream from getUserMedia()
-      var recorder; //WebAudioRecorder object
+        var gumStream; //stream from getUserMedia()
+        var recorder; //WebAudioRecorder object
 
-      async function init_hardsid() {
-        await hardsid_usb_init(true, SysMode.SIDPLAY);
-        deviceCount = hardsid_usb_getdevcount();
-        console.log("Device count: " + deviceCount);
-        if (deviceCount > 0) {
-          chipCount = hardsid_usb_getsidcount(0);
-          console.log("Chip count: " + chipCount);
-          return 0;
-        }
-        return -1;
-      }
-      async function init_exsid() {
-        var ok = await exSID_init();
-        if (ok != -1) {
-          deviceCount = 1;
-          return 0;
-        }
-        return -1;
-      }
-      async function init_sidblaster() {
-        var ok = await sidblaster_init();
-        if (ok != -1) {
-          deviceCount = 1;
-          return 0;
-        }
-        return -1;
-      }
-      async function reset_hardsid() {
-        await hardsid_usb_abortplay(0);
-        for (let chipNum = 0; chipNum < chipCount; chipNum++) {
-          await hardsid_usb_reset(0, chipNum, 0x00);
-        }
-      }
-      async function reset_exsid() {
-        if (mapping) {
-          const chipModel = mapping[0];
-          const stereo = mapping[-1] === "true";
-          const fakeStereo = mapping[-2] === "true";
-          const cpuClock = mapping[-3];
-
-          if (fakeStereo) {
-            lastChipModel = chipModel;
-            exSID_chipselect(ChipSelect.XS_CS_BOTH);
+        async function init_hardsid() {
+          await hardsid_usb_init(true, SysMode.SIDPLAY);
+          deviceCount = hardsid_usb_getdevcount();
+          console.log("Device count: " + deviceCount);
+          if (deviceCount > 0) {
+            chipCount = hardsid_usb_getsidcount(0);
+            console.log("Chip count: " + chipCount);
+            return 0;
           }
-          exSID_audio_op(AudioOp.XS_AU_MUTE);
-          exSID_clockselect(cpuClock === "PAL" ? ClockSelect.XS_CL_PAL : ClockSelect.XS_CL_NTSC);
-          if (stereo) {
-            exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_8580 : AudioOp.XS_AU_8580_6581);
-          } else {
-            exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_6581 : AudioOp.XS_AU_8580_8580);
-          }
-          exSID_audio_op(AudioOp.XS_AU_UNMUTE);
-        }
-        exSID_reset(0);
-      }
-      async function reset_sidblaster() {
-        sidblaster_reset(0);
-      }
-      async function write_hardsid(write) {
-        while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
-        while ((await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) == WState.BUSY) {}
-      }
-      async function write_exsid(write) {
-        if (write.reg <= 0x18) {
-          // "Ragga Run.sid" denies to work!
-
-          const chipModel = mapping[write.chip];
-          if (lastChipModel !== chipModel) {
-            exSID_chipselect(chipModel === "MOS8580" ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
-            lastChipModel = chipModel;
-          }
-          exSID_clkdwrite(write.cycles, write.reg, write.value);
-        }
-      }
-      async function write_sidblaster(write) {
-        sidblaster_write(write.cycles, write.reg, write.value);
-      }
-      async function quit_hardsid() {}
-      async function quit_exsid() {
-        await exSID_exit();
-      }
-      async function quit_sidblaster() {
-        await sidblaster_exit();
-      }
-      async function next_hardsid() {
-        await hardsid_usb_sync(0);
-        while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
-        return 0;
-      }
-      async function next_exsid() {
-        if (exSID_is_playing()) {
           return -1;
-        } else {
+        }
+        async function init_exsid() {
+          var ok = await exSID_init();
+          if (ok != -1) {
+            deviceCount = 1;
+            return 0;
+          }
+          return -1;
+        }
+        async function init_sidblaster() {
+          var ok = await sidblaster_init();
+          if (ok != -1) {
+            deviceCount = 1;
+            return 0;
+          }
+          return -1;
+        }
+        async function reset_hardsid() {
+          await hardsid_usb_abortplay(0);
+          for (let chipNum = 0; chipNum < chipCount; chipNum++) {
+            await hardsid_usb_reset(0, chipNum, 0x00);
+          }
+        }
+        async function reset_exsid() {
+          if (mapping) {
+            const chipModel = mapping[0];
+            const stereo = mapping[-1] === "true";
+            const fakeStereo = mapping[-2] === "true";
+            const cpuClock = mapping[-3];
+
+            if (fakeStereo) {
+              lastChipModel = chipModel;
+              exSID_chipselect(ChipSelect.XS_CS_BOTH);
+            }
+            exSID_audio_op(AudioOp.XS_AU_MUTE);
+            exSID_clockselect(cpuClock === "PAL" ? ClockSelect.XS_CL_PAL : ClockSelect.XS_CL_NTSC);
+            if (stereo) {
+              exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_8580 : AudioOp.XS_AU_8580_6581);
+            } else {
+              exSID_audio_op(chipModel === "MOS6581" ? AudioOp.XS_AU_6581_6581 : AudioOp.XS_AU_8580_8580);
+            }
+            exSID_audio_op(AudioOp.XS_AU_UNMUTE);
+          }
           exSID_reset(0);
-          return 0;
         }
-      }
-      async function next_sidblaster() {
-        if (sidblaster_is_playing()) {
-          return -1;
-        } else {
-          sidblaster_reset();
-          return 0;
+        async function reset_sidblaster() {
+          sidblaster_reset(0);
         }
-      }
-      const HardwareFunctions = {
-        init: undefined,
-        write: undefined,
-        next: undefined,
-        reset: undefined,
-        quit: undefined,
-        mapping: undefined,
-      };
-      const Chip = {
-        NEXT: -1,
-        RESET: -2,
-        QUIT: -3,
-      };
-      var deviceCount = 0;
-      var chipCount = 0;
-      var ajaxRequest;
-      var timer;
-      var write;
+        async function write_hardsid(write) {
+          while ((await hardsid_usb_delay(0, write.cycles)) == WState.BUSY) {}
+          while ((await hardsid_usb_write(0, (write.chip << 5) | write.reg, write.value)) == WState.BUSY) {}
+        }
+        async function write_exsid(write) {
+          if (write.reg <= 0x18) {
+            // "Ragga Run.sid" denies to work!
 
-      function Queue() {
-        var head, tail;
-        return Object.freeze({
-          enqueue(value) {
-            const link = { value, next: undefined };
-            tail = head ? (tail.next = link) : (head = link);
-          },
-          dequeue() {
-            if (head) {
-              const value = head.value;
-              head = head.next;
-              return value;
+            const chipModel = mapping[write.chip];
+            if (lastChipModel !== chipModel) {
+              exSID_chipselect(chipModel === "MOS8580" ? ChipSelect.XS_CS_CHIP1 : ChipSelect.XS_CS_CHIP0);
+              lastChipModel = chipModel;
             }
-          },
-          peek() {
-            return head?.value;
-          },
-          clear() {
-            tail = head = undefined;
-          },
-          isNotEmpty() {
-            return head;
-          },
-        });
-      }
-      var sidWriteQueue = new Queue();
-      var mapping, lastChipModel;
-
-      function uriEncode(entry) {
-        // escape is deprecated and cannot handle utf8
-        // encodeURI() will not encode: ~!@#$&*()=:/,;?+'
-        // untested characters: !*=,
-        // tested characters: /~@#$&():;+''?
-        return encodeURI(entry)
-          .replace(/\+/g, "%2B")
-          .replace(/#/g, "%23")
-          .replace(/&/g, "%26")
-          .replace(/\?/g, "%3F")
-          .replace(/;/g, "%3B");
-      }
-      function petsciiToFont(str, fontSet) {
-        var original = str;
-        var result = "";
-        for (var i = 0; i < original.length; i++) {
-          let c = original.charCodeAt(i);
-          if ((c & 0x60) == 0) {
-            result = result + String.fromCharCode(c | 0x40 | (fontSet ^ 0x0200));
+            exSID_clkdwrite(write.cycles, write.reg, write.value);
+          }
+        }
+        async function write_sidblaster(write) {
+          sidblaster_write(write.cycles, write.reg, write.value);
+        }
+        async function quit_hardsid() {}
+        async function quit_exsid() {
+          await exSID_exit();
+        }
+        async function quit_sidblaster() {
+          await sidblaster_exit();
+        }
+        async function next_hardsid() {
+          await hardsid_usb_sync(0);
+          while ((await hardsid_usb_flush(0)) == WState.BUSY) {}
+          return 0;
+        }
+        async function next_exsid() {
+          if (exSID_is_playing()) {
+            return -1;
           } else {
-            result = result + String.fromCharCode(c | fontSet);
+            exSID_reset(0);
+            return 0;
           }
         }
-        return result;
-      }
-      /**
-       * Returns a random integer between min (inclusive) and max (inclusive).
-       * The value is no lower than min (or the next integer greater than min
-       * if min isn't an integer) and no greater than max (or the next integer
-       * lower than max if max isn't an integer).
-       * Using Math.round() will give you a non-uniform distribution!
-       */
-      function getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
-      // Month in JavaScript is 0-indexed (January is 0, February is 1, etc),
-      // but by using 0 as the day it will give us the last day of the prior
-      // month. So passing in 1 as the month number will return the last day
-      // of January, not February
-      function daysInMonth(month, year) {
-        return new Date(year, month, 0).getDate();
-      }
-      function timeConverter(time) {
-        if (("" + time).includes(":")) {
-          // HH:MM:SS -> MM:SS
-          return time.split(":").slice(0, 2).join(":");
-        } else {
-          // SS -> MM:SS
-          return new Date(time * 1000).toISOString().slice(14, 19);
-        }
-      }
-      function messageListener(event) {
-        if (event.origin !== "${baseUrl}") {
-          console.log("Ignored: Got a message from bad origin: " + event.origin);
-        } else {
-          var myMsg = event.data;
-          if (myMsg == "1") {
-            var iframe = document.getElementById("c64");
-            iframe.setAttribute("data-isloaded", "1");
+        async function next_sidblaster() {
+          if (sidblaster_is_playing()) {
+            return -1;
+          } else {
+            sidblaster_reset();
+            return 0;
           }
         }
-      }
-      function download(filename, contentType, text) {
-        var pom = document.createElement("a");
-        pom.setAttribute("href", "data:" + contentType + "," + encodeURIComponent(text));
-        pom.setAttribute("download", filename);
+        const HardwareFunctions = {
+          init: undefined,
+          write: undefined,
+          next: undefined,
+          reset: undefined,
+          quit: undefined,
+          mapping: undefined,
+        };
+        const Chip = {
+          NEXT: -1,
+          RESET: -2,
+          QUIT: -3,
+        };
+        var deviceCount = 0;
+        var chipCount = 0;
+        var ajaxRequest;
+        var timer;
+        var write;
 
-        if (document.createEvent) {
-          var event = document.createEvent("MouseEvents");
-          event.initEvent("click", true, true);
-          pom.dispatchEvent(event);
-        } else {
-          pom.click();
+        function Queue() {
+          var head, tail;
+          return Object.freeze({
+            enqueue(value) {
+              const link = { value, next: undefined };
+              tail = head ? (tail.next = link) : (head = link);
+            },
+            dequeue() {
+              if (head) {
+                const value = head.value;
+                head = head.next;
+                return value;
+              }
+            },
+            peek() {
+              return head?.value;
+            },
+            clear() {
+              tail = head = undefined;
+            },
+            isNotEmpty() {
+              return head;
+            },
+          });
         }
-      }
-      function closeiframe() {
-        var iframe = document.getElementById("c64");
-        if (iframe) {
-          document.getElementById("app").removeChild(iframe);
-          document.getElementById("main").classList.remove("hide");
+        var sidWriteQueue = new Queue();
+        var mapping, lastChipModel;
+
+        function uriEncode(entry) {
+          // escape is deprecated and cannot handle utf8
+          // encodeURI() will not encode: ~!@#$&*()=:/,;?+'
+          // untested characters: !*=,
+          // tested characters: /~@#$&():;+''?
+          return encodeURI(entry)
+            .replace(/\+/g, "%2B")
+            .replace(/#/g, "%23")
+            .replace(/&/g, "%26")
+            .replace(/\?/g, "%3F")
+            .replace(/;/g, "%3B");
         }
-      }
+        function petsciiToFont(str, fontSet) {
+          var original = str;
+          var result = "";
+          for (var i = 0; i < original.length; i++) {
+            let c = original.charCodeAt(i);
+            if ((c & 0x60) == 0) {
+              result = result + String.fromCharCode(c | 0x40 | (fontSet ^ 0x0200));
+            } else {
+              result = result + String.fromCharCode(c | fontSet);
+            }
+          }
+          return result;
+        }
+        /**
+         * Returns a random integer between min (inclusive) and max (inclusive).
+         * The value is no lower than min (or the next integer greater than min
+         * if min isn't an integer) and no greater than max (or the next integer
+         * lower than max if max isn't an integer).
+         * Using Math.round() will give you a non-uniform distribution!
+         */
+        function getRandomInt(min, max) {
+          min = Math.ceil(min);
+          max = Math.floor(max);
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        // Month in JavaScript is 0-indexed (January is 0, February is 1, etc),
+        // but by using 0 as the day it will give us the last day of the prior
+        // month. So passing in 1 as the month number will return the last day
+        // of January, not February
+        function daysInMonth(month, year) {
+          return new Date(year, month, 0).getDate();
+        }
+        function timeConverter(time) {
+          if (("" + time).includes(":")) {
+            // HH:MM:SS -> MM:SS
+            return time.split(":").slice(0, 2).join(":");
+          } else {
+            // SS -> MM:SS
+            return new Date(time * 1000).toISOString().slice(14, 19);
+          }
+        }
+        function messageListener(event) {
+          if (event.origin !== "${baseUrl}") {
+            console.log("Ignored: Got a message from bad origin: " + event.origin);
+          } else {
+            var myMsg = event.data;
+            if (myMsg == "1") {
+              var iframe = document.getElementById("c64");
+              iframe.setAttribute("data-isloaded", "1");
+            }
+          }
+        }
+        function download(filename, contentType, text) {
+          var pom = document.createElement("a");
+          pom.setAttribute("href", "data:" + contentType + "," + encodeURIComponent(text));
+          pom.setAttribute("download", filename);
 
-      var i18n = createI18n({
-        legacy: false, // You might need to set this option to true if you're using Vue 2 syntax
-        locale: "en", // default locale
-        messages: {
-          en: {
-            LOGS: "Logs",
-            ABOUT: "About",
-            SIDS: "Directory",
-            ASSEMBLY64: "Search",
-            SID: "SID",
-            STIL: "Info",
-            STILINFO: {
-              SUBTUNE: "Song",
-              NAME: "Name",
-              AUTHOR: "Author",
-              TITLE: "Title",
-              ARTIST: "Artist",
-            },
-            PL: "Playlist",
-            CFG: "Configuration",
-            HARDWARE: "Hardware",
-            USE_REAL_HARDWARE:
-              "You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device.",
-            HARDWARE_PREPARATION_1: "On MacOSX it works out-of-the-box.",
-            HARDWARE_PREPARATION_2: "On a Windows-PC WinUSB is required, download from",
-            HARDWARE_PREPARATION_3: "On Linux proper permission is required",
-            HERE: "here",
-            HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
-            EXSID: "ExSID, ExSID+",
-            SIDBLASTER: "SIDBlaster",
-            CONNECT: "Connect...",
-            USE_MOBILE_DEVICES_1: "To use mobile devices, please use an",
-            USE_MOBILE_DEVICES_2: "USBC to USB adapter",
-            STREAMING_NOTES:
-              "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
-            CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
-            theaterMode: "Random Play",
-            currentlyPlaying: "Playing: ",
-            parentDirectoryHint: "Go up one Level",
-            sidInfoKey: "Name",
-            sidInfoValue: "Value",
-            HVSCEntry: {
-              path: "Full Path",
-              name: "File Name",
-              title: "Title",
-              author: "Author",
-              released: "Release",
-              format: "Format",
-              playerId: "Player ID",
-              noOfSongs: "No. of Songs",
-              startSong: "Start Song",
-              clockFreq: "Clock Freq.",
-              speed: "Speed",
-              sidModel1: "SID Model 1",
-              sidModel2: "SID Model 2",
-              sidModel3: "SID Model 3",
-              compatibility: "Compatibility",
-              tuneLength: "Tune Length (s)",
-              audio: "Audio",
-              sidChipBase1: "SID Chip Base 1",
-              sidChipBase2: "SID Chip Base 2",
-              sidChipBase3: "SID Chip Base 3",
-              driverAddress: "Driver Address",
-              loadAddress: "Load Address",
-              loadLength: "Load Length",
-              initAddress: "Init Address",
-              playerAddress: "Player Address",
-              fileDate: "File Date",
-              fileSizeKb: "File Size (kb)",
-              tuneSizeB: "Tune Size (b)",
-              relocStartPage: "Reloc. Start Page",
-              relocNoPages: "Reloc. no. Pages",
-              stilGlbComment: "Tune Size (b)",
-            },
-            Search: {
-              category: "Content",
-              name: "Name",
-              event: "Event",
-              release: "Release",
-              handle: "Handle",
-              rating: "Rating",
-            },
-            Logs: {
-              instant: "Date Time",
-              sourceClassName: "Class Name",
-              sourceMethodName: "Method Name",
-              level: "Level",
-              message: "Message",
-            },
-            results: "results",
-            username: "Username",
-            password: "Password",
-            maxResults: "Max. Results",
-            tooMuchLogging: "Show LOG messages normally filtered",
-            ASC: "As from",
-            DESC: "Until",
-            filter: "Top",
-            onefilerTop200: "Onefiler",
-            toolsTop100: "Tools",
-            gamesTop200: "Games",
-            top200: "Demos",
-            musicTop200: "Music",
-            graphicsTop200: "Graphics",
-            addAllToPlaylist: "All",
-            downloadMP3: "MP3",
-            remove: "Remove last tune",
-            removeReally: "Do you really want to remove the playlist tune?",
-            next: "Next",
-            reset: "Reset",
-            importExport: "Import/Export",
-            startImport: "Import",
-            fetchFavorites: "Examples:",
-            removePlaylist: "Remove All",
-            confirmationTitle: "Confirmation Dialogue",
-            removePlaylistReally: "Do you really want to remove ALL playlist entries?",
-            browse: "Import...",
-            exportPlaylist: "Export",
-            importPlaceholder: "",
-            importDropPlaceholder: "Drop here...",
-            searchPlaceholder: "Quick filter",
-            random: "Random Playback",
-            mobileProfile: "Mobile profile",
-            wifiProfile: "WiFi profile",
-            stereoMode: "Stereo Mode",
-            streamingCfgHeader: "Streaming",
-            audioStreamingCfgHeader: "Audio",
-            textToSpeechTypeOff: "Off",
-            textToSpeechLocaleAuto: "Auto",
-            videoStreamingCfgHeader: "Video",
-            playbackCfgHeader: "Playback",
-            emulationCfgHeader: "Emulation",
-            audioCfgHeader: "Audio",
-            filterCfgHeader: "Filter",
-            residFpFilterCfgHeader: "RESIDFP",
-            residFilterCfgHeader: "RESID",
-            residFpFilter6581CfgHeader: "MOS6581",
-            residFpFilter8580CfgHeader: "MOS8580",
-            residFilter6581CfgHeader: "MOS6581",
-            residFilter8580CfgHeader: "MOS8580",
-            reSIDfpFilter6581Header: "SID",
-            reSIDfpStereoFilter6581Header: "Stereo SID",
-            reSIDfpThirdSIDFilter6581Header: "3rd SID",
-            reSIDfpFilter8580Header: "SID",
-            reSIDfpStereoFilter8580Header: "Stereo SID",
-            reSIDfpThirdSIDFilter8580Header: "3rd SID",
-            reSIDFilter6581Header: "SID",
-            reSIDStereoFilter6581Header: "Stereo SID",
-            reSIDThirdSIDFilter6581Header: "3rd SID",
-            reSIDFilter8580Header: "SID",
-            reSIDStereoFilter8580Header: "Stereo SID",
-            reSIDThirdSIDFilter8580Header: "3rd SID",
-            mutingCfgHeader: "Muting",
-            muteSidHeader: "SID",
-            muteStereoSidHeader: "Stereo SID",
-            muteThirdSidHeader: "3rd SID",
-            floppyCartCfgHeader: "Floppy/Cart",
-            firstSid: "Main SID",
-            secondSid: "Stereo SID",
-            thirdSid: "3-SID",
-            setDefault: "Restore Defaults",
-            setDefaultUser: "Restore Default User",
-            setDefaultReally: "Do you really want to restore defaults?",
-            setDefaultUserReally: "Do you really want to restore default user?",
-            firstCategory: "",
-            pleaseWait: "Please wait...",
+          if (document.createEvent) {
+            var event = document.createEvent("MouseEvents");
+            event.initEvent("click", true, true);
+            pom.dispatchEvent(event);
+          } else {
+            pom.click();
+          }
+        }
+        function closeiframe() {
+          var iframe = document.getElementById("c64");
+          if (iframe) {
+            document.getElementById("app").removeChild(iframe);
+            document.getElementById("main").classList.remove("hide");
+          }
+        }
 
-            convertMessages: ${convertMessagesEn},
+        var i18n = createI18n({
+          legacy: false, // You might need to set this option to true if you're using Vue 2 syntax
+          locale: "en", // default locale
+          messages: {
+            en: {
+              LOGS: "Logs",
+              ABOUT: "About",
+              SIDS: "Directory",
+              ASSEMBLY64: "Search",
+              SID: "SID",
+              STIL: "Info",
+              STILINFO: {
+                SUBTUNE: "Song",
+                NAME: "Name",
+                AUTHOR: "Author",
+                TITLE: "Title",
+                ARTIST: "Artist",
+              },
+              PL: "Playlist",
+              CFG: "Configuration",
+              HARDWARE: "Hardware",
+              USE_REAL_HARDWARE:
+                "You can use real Hardware connected with USB directly inside your Browser whether on a PC or on a mobile device.",
+              HARDWARE_PREPARATION_1: "On MacOSX it works out-of-the-box.",
+              HARDWARE_PREPARATION_2: "On a Windows-PC WinUSB is required, download from",
+              HARDWARE_PREPARATION_3: "On Linux proper permission is required",
+              HERE: "here",
+              HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
+              EXSID: "ExSID, ExSID+",
+              SIDBLASTER: "SIDBlaster",
+              CONNECT: "Connect...",
+              USE_MOBILE_DEVICES_1: "To use mobile devices, please use an",
+              USE_MOBILE_DEVICES_2: "USBC to USB adapter",
+              STREAMING_NOTES:
+                "This function requires intensive streaming of SID register writes from the server to the browser! Please make sure you are connected to a free WLAN. I will not take responsibility for any costs, that arise from streaming from the internet!",
+              CART_NOTES: "Important: Only one cartridge can be plugged-in at the same time!",
+              theaterMode: "Random Play",
+              currentlyPlaying: "Playing: ",
+              parentDirectoryHint: "Go up one Level",
+              sidInfoKey: "Name",
+              sidInfoValue: "Value",
+              HVSCEntry: {
+                path: "Full Path",
+                name: "File Name",
+                title: "Title",
+                author: "Author",
+                released: "Release",
+                format: "Format",
+                playerId: "Player ID",
+                noOfSongs: "No. of Songs",
+                startSong: "Start Song",
+                clockFreq: "Clock Freq.",
+                speed: "Speed",
+                sidModel1: "SID Model 1",
+                sidModel2: "SID Model 2",
+                sidModel3: "SID Model 3",
+                compatibility: "Compatibility",
+                tuneLength: "Tune Length (s)",
+                audio: "Audio",
+                sidChipBase1: "SID Chip Base 1",
+                sidChipBase2: "SID Chip Base 2",
+                sidChipBase3: "SID Chip Base 3",
+                driverAddress: "Driver Address",
+                loadAddress: "Load Address",
+                loadLength: "Load Length",
+                initAddress: "Init Address",
+                playerAddress: "Player Address",
+                fileDate: "File Date",
+                fileSizeKb: "File Size (kb)",
+                tuneSizeB: "Tune Size (b)",
+                relocStartPage: "Reloc. Start Page",
+                relocNoPages: "Reloc. no. Pages",
+                stilGlbComment: "Tune Size (b)",
+              },
+              Search: {
+                category: "Content",
+                name: "Name",
+                event: "Event",
+                release: "Release",
+                handle: "Handle",
+                rating: "Rating",
+              },
+              Logs: {
+                instant: "Date Time",
+                sourceClassName: "Class Name",
+                sourceMethodName: "Method Name",
+                level: "Level",
+                message: "Message",
+              },
+              results: "results",
+              username: "Username",
+              password: "Password",
+              maxResults: "Max. Results",
+              tooMuchLogging: "Show LOG messages normally filtered",
+              ASC: "As from",
+              DESC: "Until",
+              filter: "Top",
+              onefilerTop200: "Onefiler",
+              toolsTop100: "Tools",
+              gamesTop200: "Games",
+              top200: "Demos",
+              musicTop200: "Music",
+              graphicsTop200: "Graphics",
+              addAllToPlaylist: "All",
+              downloadMP3: "MP3",
+              remove: "Remove last tune",
+              removeReally: "Do you really want to remove the playlist tune?",
+              next: "Next",
+              reset: "Reset",
+              importExport: "Import/Export",
+              startImport: "Import",
+              fetchFavorites: "Examples:",
+              removePlaylist: "Remove All",
+              confirmationTitle: "Confirmation Dialogue",
+              removePlaylistReally: "Do you really want to remove ALL playlist entries?",
+              browse: "Import...",
+              exportPlaylist: "Export",
+              importPlaceholder: "",
+              importDropPlaceholder: "Drop here...",
+              searchPlaceholder: "Quick filter",
+              random: "Random Playback",
+              mobileProfile: "Mobile profile",
+              wifiProfile: "WiFi profile",
+              stereoMode: "Stereo Mode",
+              streamingCfgHeader: "Streaming",
+              audioStreamingCfgHeader: "Audio",
+              textToSpeechTypeOff: "Off",
+              textToSpeechLocaleAuto: "Auto",
+              videoStreamingCfgHeader: "Video",
+              playbackCfgHeader: "Playback",
+              emulationCfgHeader: "Emulation",
+              audioCfgHeader: "Audio",
+              filterCfgHeader: "Filter",
+              residFpFilterCfgHeader: "RESIDFP",
+              residFilterCfgHeader: "RESID",
+              residFpFilter6581CfgHeader: "MOS6581",
+              residFpFilter8580CfgHeader: "MOS8580",
+              residFilter6581CfgHeader: "MOS6581",
+              residFilter8580CfgHeader: "MOS8580",
+              reSIDfpFilter6581Header: "SID",
+              reSIDfpStereoFilter6581Header: "Stereo SID",
+              reSIDfpThirdSIDFilter6581Header: "3rd SID",
+              reSIDfpFilter8580Header: "SID",
+              reSIDfpStereoFilter8580Header: "Stereo SID",
+              reSIDfpThirdSIDFilter8580Header: "3rd SID",
+              reSIDFilter6581Header: "SID",
+              reSIDStereoFilter6581Header: "Stereo SID",
+              reSIDThirdSIDFilter6581Header: "3rd SID",
+              reSIDFilter8580Header: "SID",
+              reSIDStereoFilter8580Header: "Stereo SID",
+              reSIDThirdSIDFilter8580Header: "3rd SID",
+              mutingCfgHeader: "Muting",
+              muteSidHeader: "SID",
+              muteStereoSidHeader: "Stereo SID",
+              muteThirdSidHeader: "3rd SID",
+              floppyCartCfgHeader: "Floppy/Cart",
+              firstSid: "Main SID",
+              secondSid: "Stereo SID",
+              thirdSid: "3-SID",
+              setDefault: "Restore Defaults",
+              setDefaultUser: "Restore Default User",
+              setDefaultReally: "Do you really want to restore defaults?",
+              setDefaultUserReally: "Do you really want to restore default user?",
+              firstCategory: "",
+              pleaseWait: "Please wait...",
+
+              convertMessages: ${convertMessagesEn},
+            },
+            de: {
+              LOGS: "Logs",
+              ABOUT: "\u00dcber",
+              SIDS: "Verzeichnis",
+              ASSEMBLY64: "Suche",
+              SID: "SID",
+              STIL: "Info",
+              STILINFO: {
+                SUBTUNE: "Song",
+                NAME: "Name",
+                AUTHOR: "Autor",
+                TITLE: "Titel",
+                ARTIST: "K\u00fcnstler",
+              },
+              PL: "Favoriten",
+              CFG: "Konfiguration",
+              HARDWARE: "Hardware",
+
+              USE_REAL_HARDWARE:
+                "Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy.",
+              HARDWARE_PREPARATION_1: "Auf MacOSX funktioniert es einfach so.",
+              HARDWARE_PREPARATION_2: "Auf einem Windows-PC ist WinUSB erforderlich",
+              HARDWARE_PREPARATION_3: "Auf Linux sind Berechtigungen erforderlich",
+              HERE: "download",
+              HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
+              EXSID: "ExSID, ExSID+",
+              SIDBLASTER: "SIDBlaster",
+              CONNECT: "Verbinden...",
+              USE_MOBILE_DEVICES_1: "Um Mobilger\u00e4te zu verwenden, verwenden Sie bitte einen",
+              USE_MOBILE_DEVICES_2: "USBC nach USB adapter",
+              STREAMING_NOTES:
+                "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
+              CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
+              theaterMode: "Zufalls-Mix",
+              currentlyPlaying: "Es spielt: ",
+              parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
+              sidInfoKey: "Name",
+              sidInfoValue: "Wert",
+              HVSCEntry: {
+                path: "Dateipfad",
+                name: "Dateiname",
+                title: "Titel",
+                author: "Autor",
+                released: "Release",
+                format: "Format",
+                playerId: "Player ID",
+                noOfSongs: "Song Anzahl",
+                startSong: "Start Song",
+                clockFreq: "Takt Frequenz",
+                speed: "Geschwindigkeit",
+                sidModel1: "SID Model 1",
+                sidModel2: "SID Model 2",
+                sidModel3: "SID Model 3",
+                compatibility: "Kompatibilit\u00e4t",
+                tuneLength: "Tune L\u00e4nge (s)",
+                audio: "Ton",
+                sidChipBase1: "SID Chip Basisadresse 1",
+                sidChipBase2: "SID Chip Basisadresse 2",
+                sidChipBase3: "SID Chip Basisadresse 3",
+                driverAddress: "Treiberaddresse",
+                loadAddress: "Lade-Addresse",
+                loadLength: "Ladel\u00e4nge",
+                initAddress: "Init-Addresse",
+                playerAddress: "Player-Addresse",
+                fileDate: "File Datum",
+                fileSizeKb: "File Gr\u00f6sse (kb)",
+                tuneSizeB: "Tune Gr\u00f6sse (b)",
+                relocStartPage: "Reloc. Start Seite",
+                relocNoPages: "Reloc. Seitenanzahl",
+                stilGlbComment: "STIL glb. Kommentar",
+              },
+              Search: {
+                category: "Inhalt",
+                name: "Name",
+                event: "Event",
+                release: "Release",
+                handle: "Handle",
+                rating: "Wertung",
+              },
+              Logs: {
+                instant: "Datum Uhrzeit",
+                sourceClassName: "Klasse",
+                sourceMethodName: "Methode",
+                level: "Level",
+                message: "Meldung",
+              },
+              results: "Ergebnisse",
+              username: "Benutzername",
+              password: "Passwort",
+              maxResults: "Max. Ergebnisse",
+              tooMuchLogging: "Zeige auch Log Nachrichten, die normalerweise gefiltert werden",
+              ASC: "Ab dem",
+              DESC: "Bis zum",
+              filter: "Top",
+              onefilerTop200: "Onefiler",
+              toolsTop100: "Tools",
+              gamesTop200: "Games",
+              top200: "Demos",
+              musicTop200: "Music",
+              graphicsTop200: "Graphics",
+              addAllToPlaylist: "Alle",
+              downloadMP3: "MP3",
+              remove: "Letzten Tune l\u00f6schen",
+              removeReally: "Wollen sie wirklich den Favoriten l\u00f6schen?",
+              next: "N\u00e4chster",
+              reset: "Zur\u00fccksetzen",
+              importExport: "Import/Export",
+              startImport: "Importieren",
+              fetchFavorites: "Beispiele:",
+              removePlaylist: "L\u00f6schen",
+              confirmationTitle: "Sicherheitsabfrage",
+              removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
+              browse: "Importieren...",
+              exportPlaylist: "Exportieren",
+              importPlaceholder: "",
+              importDropPlaceholder: "DnD hier...",
+              searchPlaceholder: "Schnellfilter",
+              random: "Zuf\u00e4llige Wiedergabe",
+              mobileProfile: "Mobiles Profil",
+              wifiProfile: "WiFi Profil",
+              stereoMode: "Stereo Mode",
+              streamingCfgHeader: "Streaming",
+              audioStreamingCfgHeader: "Audio",
+              textToSpeechTypeOff: "Aus",
+              textToSpeechLocaleAuto: "Auto",
+              videoStreamingCfgHeader: "Video",
+              playbackCfgHeader: "Wiedergabe",
+              emulationCfgHeader: "Emulation",
+              audioCfgHeader: "Audio",
+              filterCfgHeader: "Filter",
+              residFpFilterCfgHeader: "RESIDFP",
+              residFilterCfgHeader: "RESID",
+              residFpFilter6581CfgHeader: "MOS6581",
+              residFpFilter8580CfgHeader: "MOS8580",
+              residFilter6581CfgHeader: "MOS6581",
+              residFilter8580CfgHeader: "MOS8580",
+              reSIDfpFilter6581Header: "SID",
+              reSIDfpStereoFilter6581Header: "Stereo SID",
+              reSIDfpThirdSIDFilter6581Header: "3. SID",
+              reSIDfpFilter8580Header: "SID",
+              reSIDfpStereoFilter8580Header: "Stereo SID",
+              reSIDfpThirdSIDFilter8580Header: "3. SID",
+              reSIDFilter6581Header: "SID",
+              reSIDStereoFilter6581Header: "Stereo SID",
+              reSIDThirdSIDFilter6581Header: "3. SID",
+              reSIDFilter8580Header: "SID",
+              reSIDStereoFilter8580Header: "Stereo SID",
+              reSIDThirdSIDFilter8580Header: "3. SID",
+              mutingCfgHeader: "Stummschalten",
+              muteSidHeader: "SID",
+              muteStereoSidHeader: "Stereo SID",
+              muteThirdSidHeader: "3. SID",
+              floppyCartCfgHeader: "Floppy/Cart",
+              firstSid: "Haupt SID",
+              secondSid: "Stereo SID",
+              thirdSid: "3-SID",
+              setDefault: "Standardeinstellungen wiederherstellen",
+              setDefaultUser: "Standardbenutzer wiederherstellen",
+              setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
+              setDefaultUserReally: "Wollen sie wirklich den Standardbenutzer wiederherstellen?",
+              firstCategory: "",
+              pleaseWait: "Bitte warten...",
+              DateLabels: {
+                labelPrevDecade: "Vorheriges Jahrzehnt",
+                labelPrevYear: "Vorheriges Jahr",
+                labelPrevMonth: "Vorheriger Monat",
+                labelCurrentMonth: "Aktueller Monat",
+                labelNextMonth: "Nächster Monat",
+                labelNextYear: "Nächstes Jahr",
+                labelNextDecade: "Nächstes Jahrzehnt",
+                labelToday: "Heute",
+                labelSelected: "Ausgewähltes Datum",
+                labelNoDateSelected: "Kein Datum gewählt",
+                labelCalendar: "Kalender",
+                labelNav: "Kalendernavigation",
+                labelHelp: "Mit den Pfeiltasten durch den Kalender navigieren",
+                labelResetButton: "Zurücksetzen",
+              },
+              TimeLabels: {
+                labelHours: "Stunden",
+                labelMinutes: "Minuten",
+                labelSeconds: "Sekunden",
+                labelIncrement: "Erhöhen",
+                labelDecrement: "Verringern",
+                labelSelected: "Ausgewählte Zeit",
+                labelNoTimeSelected: "Keine Zeit ausgewählt",
+                labelNowButton: "Aktuelle Zeit",
+                labelResetButton: "Zurücksetzen",
+                labelCloseButton: "Schließen",
+              },
+
+              convertMessages: ${convertMessagesDe},
+            },
           },
-          de: {
-            LOGS: "Logs",
-            ABOUT: "\u00dcber",
-            SIDS: "Verzeichnis",
-            ASSEMBLY64: "Suche",
-            SID: "SID",
-            STIL: "Info",
-            STILINFO: {
-              SUBTUNE: "Song",
-              NAME: "Name",
-              AUTHOR: "Autor",
-              TITLE: "Titel",
-              ARTIST: "K\u00fcnstler",
-            },
-            PL: "Favoriten",
-            CFG: "Konfiguration",
-            HARDWARE: "Hardware",
-
-            USE_REAL_HARDWARE:
-              "Sie k\u00f6nnen echte Hardware, die per USB angeschlossen ist, direkt in ihrem Browser verwenden und zwar entweder am PC oder an ihrem Handy.",
-            HARDWARE_PREPARATION_1: "Auf MacOSX funktioniert es einfach so.",
-            HARDWARE_PREPARATION_2: "Auf einem Windows-PC ist WinUSB erforderlich",
-            HARDWARE_PREPARATION_3: "Auf Linux sind Berechtigungen erforderlich",
-            HERE: "download",
-            HARDSID: "HardSID 4U, HardSID UPlay and HardSID Uno",
-            EXSID: "ExSID, ExSID+",
-            SIDBLASTER: "SIDBlaster",
-            CONNECT: "Verbinden...",
-            USE_MOBILE_DEVICES_1: "Um Mobilger\u00e4te zu verwenden, verwenden Sie bitte einen",
-            USE_MOBILE_DEVICES_2: "USBC nach USB adapter",
-            STREAMING_NOTES:
-              "Diese Funktion macht von intensivem Streaming der SID-Register Schreibbefehle vom Server zum Browser gebrauch! Bitte stellen Sie sicher, dass sie mit einem freien WLAN verbunden sind. Ich \u00fcbernehme keine Verantwortung f\u00fcr jegliche Kosten, die f\u00fcr das Streaming \u00fcber das Internet entstehen k\u00f6nnten!",
-            CART_NOTES: "Wichtig: Es es kann nur eine Cartridge zur selben Zeit eingesteckt sein!",
-            theaterMode: "Zufalls-Mix",
-            currentlyPlaying: "Es spielt: ",
-            parentDirectoryHint: "Gehe eine Ebene h\u00f6her",
-            sidInfoKey: "Name",
-            sidInfoValue: "Wert",
-            HVSCEntry: {
-              path: "Dateipfad",
-              name: "Dateiname",
-              title: "Titel",
-              author: "Autor",
-              released: "Release",
-              format: "Format",
-              playerId: "Player ID",
-              noOfSongs: "Song Anzahl",
-              startSong: "Start Song",
-              clockFreq: "Takt Frequenz",
-              speed: "Geschwindigkeit",
-              sidModel1: "SID Model 1",
-              sidModel2: "SID Model 2",
-              sidModel3: "SID Model 3",
-              compatibility: "Kompatibilit\u00e4t",
-              tuneLength: "Tune L\u00e4nge (s)",
-              audio: "Ton",
-              sidChipBase1: "SID Chip Basisadresse 1",
-              sidChipBase2: "SID Chip Basisadresse 2",
-              sidChipBase3: "SID Chip Basisadresse 3",
-              driverAddress: "Treiberaddresse",
-              loadAddress: "Lade-Addresse",
-              loadLength: "Ladel\u00e4nge",
-              initAddress: "Init-Addresse",
-              playerAddress: "Player-Addresse",
-              fileDate: "File Datum",
-              fileSizeKb: "File Gr\u00f6sse (kb)",
-              tuneSizeB: "Tune Gr\u00f6sse (b)",
-              relocStartPage: "Reloc. Start Seite",
-              relocNoPages: "Reloc. Seitenanzahl",
-              stilGlbComment: "STIL glb. Kommentar",
-            },
-            Search: {
-              category: "Inhalt",
-              name: "Name",
-              event: "Event",
-              release: "Release",
-              handle: "Handle",
-              rating: "Wertung",
-            },
-            Logs: {
-              instant: "Datum Uhrzeit",
-              sourceClassName: "Klasse",
-              sourceMethodName: "Methode",
-              level: "Level",
-              message: "Meldung",
-            },
-            results: "Ergebnisse",
-            username: "Benutzername",
-            password: "Passwort",
-            maxResults: "Max. Ergebnisse",
-            tooMuchLogging: "Zeige auch Log Nachrichten, die normalerweise gefiltert werden",
-            ASC: "Ab dem",
-            DESC: "Bis zum",
-            filter: "Top",
-            onefilerTop200: "Onefiler",
-            toolsTop100: "Tools",
-            gamesTop200: "Games",
-            top200: "Demos",
-            musicTop200: "Music",
-            graphicsTop200: "Graphics",
-            addAllToPlaylist: "Alle",
-            downloadMP3: "MP3",
-            remove: "Letzten Tune l\u00f6schen",
-            removeReally: "Wollen sie wirklich den Favoriten l\u00f6schen?",
-            next: "N\u00e4chster",
-            reset: "Zur\u00fccksetzen",
-            importExport: "Import/Export",
-            startImport: "Importieren",
-            fetchFavorites: "Beispiele:",
-            removePlaylist: "L\u00f6schen",
-            confirmationTitle: "Sicherheitsabfrage",
-            removePlaylistReally: "Wollen sie wirklich ALL Favoriten l\u00f6schen?",
-            browse: "Importieren...",
-            exportPlaylist: "Exportieren",
-            importPlaceholder: "",
-            importDropPlaceholder: "DnD hier...",
-            searchPlaceholder: "Schnellfilter",
-            random: "Zuf\u00e4llige Wiedergabe",
-            mobileProfile: "Mobiles Profil",
-            wifiProfile: "WiFi Profil",
-            stereoMode: "Stereo Mode",
-            streamingCfgHeader: "Streaming",
-            audioStreamingCfgHeader: "Audio",
-            textToSpeechTypeOff: "Aus",
-            textToSpeechLocaleAuto: "Auto",
-            videoStreamingCfgHeader: "Video",
-            playbackCfgHeader: "Wiedergabe",
-            emulationCfgHeader: "Emulation",
-            audioCfgHeader: "Audio",
-            filterCfgHeader: "Filter",
-            residFpFilterCfgHeader: "RESIDFP",
-            residFilterCfgHeader: "RESID",
-            residFpFilter6581CfgHeader: "MOS6581",
-            residFpFilter8580CfgHeader: "MOS8580",
-            residFilter6581CfgHeader: "MOS6581",
-            residFilter8580CfgHeader: "MOS8580",
-            reSIDfpFilter6581Header: "SID",
-            reSIDfpStereoFilter6581Header: "Stereo SID",
-            reSIDfpThirdSIDFilter6581Header: "3. SID",
-            reSIDfpFilter8580Header: "SID",
-            reSIDfpStereoFilter8580Header: "Stereo SID",
-            reSIDfpThirdSIDFilter8580Header: "3. SID",
-            reSIDFilter6581Header: "SID",
-            reSIDStereoFilter6581Header: "Stereo SID",
-            reSIDThirdSIDFilter6581Header: "3. SID",
-            reSIDFilter8580Header: "SID",
-            reSIDStereoFilter8580Header: "Stereo SID",
-            reSIDThirdSIDFilter8580Header: "3. SID",
-            mutingCfgHeader: "Stummschalten",
-            muteSidHeader: "SID",
-            muteStereoSidHeader: "Stereo SID",
-            muteThirdSidHeader: "3. SID",
-            floppyCartCfgHeader: "Floppy/Cart",
-            firstSid: "Haupt SID",
-            secondSid: "Stereo SID",
-            thirdSid: "3-SID",
-            setDefault: "Standardeinstellungen wiederherstellen",
-            setDefaultUser: "Standardbenutzer wiederherstellen",
-            setDefaultReally: "Wollen sie wirklich die Standardeinstellungen wiederherstellen?",
-            setDefaultUserReally: "Wollen sie wirklich den Standardbenutzer wiederherstellen?",
-            firstCategory: "",
-            pleaseWait: "Bitte warten...",
-            DateLabels: {
-              labelPrevDecade: "Vorheriges Jahrzehnt",
-              labelPrevYear: "Vorheriges Jahr",
-              labelPrevMonth: "Vorheriger Monat",
-              labelCurrentMonth: "Aktueller Monat",
-              labelNextMonth: "Nächster Monat",
-              labelNextYear: "Nächstes Jahr",
-              labelNextDecade: "Nächstes Jahrzehnt",
-              labelToday: "Heute",
-              labelSelected: "Ausgewähltes Datum",
-              labelNoDateSelected: "Kein Datum gewählt",
-              labelCalendar: "Kalender",
-              labelNav: "Kalendernavigation",
-              labelHelp: "Mit den Pfeiltasten durch den Kalender navigieren",
-              labelResetButton: "Zurücksetzen",
-            },
-            TimeLabels: {
-              labelHours: "Stunden",
-              labelMinutes: "Minuten",
-              labelSeconds: "Sekunden",
-              labelIncrement: "Erhöhen",
-              labelDecrement: "Verringern",
-              labelSelected: "Ausgewählte Zeit",
-              labelNoTimeSelected: "Keine Zeit ausgewählt",
-              labelNowButton: "Aktuelle Zeit",
-              labelResetButton: "Zurücksetzen",
-              labelCloseButton: "Schließen",
-            },
-
-            convertMessages: ${convertMessagesDe},
-          },
-        },
-      });
-
-      // Define the 'fromJava' function (mapped to the Java method)
-      function fromJava(message) {
-        console.log("Received message from Java:", message);
-      }
-
-      TeaVM.wasm
-        .load("/static/teavm/wasm/jsidplay2.wasm", {
-          installImports(o, controller) {
-            o.sidplay2section = {
-              getPalEmulation: () => {},
-            };
-            o.audiosection = {
-              getBufferSize: () => {},
-              getAudioBufferSize: () => {},
-              getSamplingRate: () => {},
-              getSamplingMethodResample: () => {},
-              getReverbBypass: () => {},
-            };
-            o.emulationsection = {
-              getDefaultClockSpeed: () => {},
-            };
-            o.audiodriver = {
-              processSamples: () => {},
-              processPixels: () => {},
-              processSidWrite: () => {},
-              timerEnd: () => {},
-            };
-            o.c1541section = {
-              isJiffyDosInstalled: () => {},
-            };
-          },
-        })
-        .then((teavm) => {
-          window.instance = teavm.instance;
-		  teavm.main();
         });
 
-      let app = Vue.createApp({
-        data: function () {
-          return {
-            modalIndex: 0,
-            modalFavoriteIndex: 0,
-            msg: "",
-            timeoutId: undefined,
-            theaterMode: false,
-            carouselImageHeight:
-              window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
-            showAudio: false,
-            showHardwarePlayer: false,
-            langs: ["de", "en"],
-            // ABOUT
-            username: "jsidplay2",
-            password: "jsidplay2!",
-            // SIDS (directories containing SIDS)
-            directory: [],
-            rootDir: {
-              filename: "/",
-              loading: false,
-            },
-            top200Dir: {
-              filename: "/Assembly64/Demos/CSDB/Top200",
-              loading: false,
-            },
-            oneFilerTop200Dir: {
-              filename: "/Assembly64/Demos/CSDB/Onefile-top200",
-              loading: false,
-            },
-            toolsTop200Dir: {
-              filename: "/Assembly64/Tools/CSDB/Top100",
-              loading: false,
-            },
-            musicTop200Dir: {
-              filename: "/Assembly64/Music/CSDB/Top200",
-              loading: false,
-            },
-            graphicsTop200Dir: {
-              filename: "/Assembly64/Graphics/CSDB/Top200",
-              loading: false,
-            },
-            gamesTop200Dir: {
-              filename: "/Assembly64/Games/CSDB/Top200",
-              loading: false,
-            },
-            // SID (info + picture)
-            infos: "",
-            stil: [],
-            maxResults: 100,
-            tooMuchLogging: false,
-            order: "ASC",
-            logs: [],
-            logsCount: 0,
-            hasHardware: false,
-            picture: "",
-            currentSid: "",
-            // ASSEMBLY64
-            category: "",
-            categories: [],
-            searchResults: [],
-            searchFields: [
-              {
-                key: "category",
-              },
-              {
-                key: "name",
-              },
-              {
-                key: "event",
-              },
-              {
-                key: "released",
-              },
-              {
-                key: "handle",
-              },
-              {
-                key: "rating",
-              },
-              { key: "actions" },
-            ],
-            name: "",
-            event: "",
-            released: "",
-            rating: "",
-            handle: "",
-            Logs: {
-              date: "",
-              time: "",
-              sourceClassName: "",
-              sourceMethodName: "",
-              level: "",
-              message: "",
-            },
-            // PL (Playlist)
-            importFile: null,
-            importExportVisible: false,
-            playlist: [],
-            playlistIndex: 0,
-            favoritesNames: [],
-            random: true,
-            filterText: "",
-            filterText2: "",
-            // CFG (configuration)
-            // pre-fetched filter definitions
-            reSIDFilters6581: [],
-            reSIDFilters8580: [],
-            reSIDfpFilters6581: [],
-            reSIDfpFilters8580: [],
-            cbrs: [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
-            vbrQualities: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            // Misc.
-            tabIndex: 0,
-            loadingSid: false,
-            loadingStil: false,
-            loadingLogs: false,
-            loadingAssembly64: false,
-            loadingPl: false,
-            loadingCfg: false,
-            convertOptions: ${convertOptions},
-            defaultConvertOptions: ${convertOptions},
-          };
-        },
-        computed: {
-          instant: {
-            get: function () {
-              try {
-                var date;
-                if (this.Logs.date && this.Logs.time) {
-                  date = new Date(this.Logs.date + "T" + this.Logs.time);
-                } else if (this.Logs.date) {
-                  date = new Date(this.Logs.date + "T00:00:00");
-                } else if (this.Logs.time) {
-                  date = new Date("1070-01-01T" + this.Logs.time);
-                }
-                return date.getTime();
-              } catch (e) {
-                return 0;
-              }
-            },
-          },
-          stereoMode: {
-            set: function (val) {
-              if (val === "FORCE_3SID") {
-                this.convertOptions.config.emulationSection.forceStereoTune = true;
-                this.convertOptions.config.emulationSection.force3SIDTune = true;
-              } else if (val === "FORCE_2SID") {
-                this.convertOptions.config.emulationSection.forceStereoTune = true;
-                this.convertOptions.config.emulationSection.force3SIDTune = false;
-              } else {
-                this.convertOptions.config.emulationSection.forceStereoTune = false;
-                this.convertOptions.config.emulationSection.force3SIDTune = false;
-              }
-            },
-            get: function () {
-              if (this.convertOptions.config.emulationSection.force3SIDTune) {
-                return "FORCE_3SID";
-              } else if (this.convertOptions.config.emulationSection.forceStereoTune) {
-                return "FORCE_2SID";
-              } else {
-                return "AUTO";
-              }
-            },
-          },
-          translatedInfos: function () {
-            if (!this.infos) {
-              return [];
-            }
-            let outer = this;
-            return this.infos.map(function (obj) {
-              return {
-                Name: outer.$t(obj.Name),
-                Value: obj.Value,
-                opacity: obj.Name == "HVSCEntry.path",
+        // Define the 'fromJava' function (mapped to the Java method)
+        function fromJava(message) {
+          console.log("Received message from Java:", message);
+        }
+
+        TeaVM.wasm
+          .load("/static/teavm/wasm/jsidplay2.wasm", {
+            installImports(o, controller) {
+              o.sidplay2section = {
+                getPalEmulation: () => {},
               };
-            });
-          },
-        },
-        methods: {
-          toDateTime: function (millis) {
-            return new Date(millis * 1000).toLocaleString(this.$i18n.locale);
-          },
-          startRecording: function () {
-            let outer = this;
-            navigator.mediaDevices
-              .getUserMedia({
-                audio: true,
-                video: false,
-              })
-              .then(function (stream) {
-                var AudioContext = window.AudioContext || window.webkitAudioContext;
-                var audioContext = new AudioContext();
-
-                //assign to gumStream for later use
-                gumStream = stream;
-                /* use the stream */
-                var input = audioContext.createMediaStreamSource(stream);
-                //stop the input from playing back through the speakers
-                input.connect(audioContext.destination);
-
-                recorder = new WebAudioRecorder(input, {
-                  workerDir: "../webjars/web-audio-recorder-js/0.0.2/${lib}/",
-                  encoding: "wav",
-                });
-                recorder.onComplete = function (recorder, blob) {
-                  axios({
-                    method: "post",
-                    url: "/jsidplay2service/JSIDPlay2REST/speech2text",
-                    data: blob,
-                    auth: {
-                      username: outer.username,
-                      password: outer.password,
-                    },
-                  }).then((response) => {
-                    let result = response.data;
-                    console.log(result);
-                    outer.msg = result.text;
-                  });
-                };
-                recorder.setOptions({
-                  timeLimit: 10,
-                  encodeAfterRecord: true,
-                });
-                recorder.startRecording();
-              })
-              .catch(function (err) {
-                console.log(err);
-              });
-          },
-          stopRecording: function () {
-            console.log("stopRecording() called");
-            //stop microphone access
-            gumStream.getAudioTracks()[0].stop();
-            //tell the recorder to finish the recording (stop recording + encode the recorded audio)
-            recorder.finishRecording();
-          },
-          openiframe: function (url) {
-            this.pause();
-            closeiframe();
-            document.getElementById("main").classList.add("hide");
-
-            var iframe = document.createElement("iframe");
-            iframe.setAttribute("id", "c64");
-            iframe.setAttribute("name", Date.now());
-            iframe.setAttribute("data-isloaded", "0");
-            iframe.classList.add("iframe_c64");
-            iframe.onload = function () {
-              window.scrollTo(0, 0);
-              iframe.onload = function () {
-                var isLoaded = iframe.getAttribute("data-isloaded");
-                if (isLoaded != "1") {
-                  setTimeout(() => closeiframe(), 5000);
-                }
+              o.audiosection = {
+                getBufferSize: () => {},
+                getAudioBufferSize: () => {},
+                getSamplingRate: () => {},
+                getSamplingMethodResample: () => {},
+                getReverbBypass: () => {},
               };
-              iframe.src = url;
-            };
-            iframe.src =
-              "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='${baseUrl}/static/please_wait.css' /></head><body><div class='loading'><p>" +
-              this.$t("pleaseWait") +
-              "</p><span><i></i><i></i></span></div></body>";
+              o.emulationsection = {
+                getDefaultClockSpeed: () => {},
+              };
+              o.audiodriver = {
+                processSamples: () => {},
+                processPixels: () => {},
+                processSidWrite: () => {},
+                timerEnd: () => {},
+              };
+              o.c1541section = {
+                isJiffyDosInstalled: () => {},
+              };
+            },
+          })
+          .then((teavm) => {
+            window.instance = teavm.instance;
+      teavm.main();
+          });
 
-            document.getElementById("app").appendChild(iframe);
-          },
-          hardware_hardsid_init: function () {
-            HardwareFunctions.init = init_hardsid;
-            HardwareFunctions.reset = reset_hardsid;
-            HardwareFunctions.write = write_hardsid;
-            HardwareFunctions.next = next_hardsid;
-            HardwareFunctions.quit = quit_hardsid;
-            HardwareFunctions.mapping = "hardsid-mapping/";
-            this.init();
-          },
-          hardware_exsid_init: function () {
-            HardwareFunctions.init = init_exsid;
-            HardwareFunctions.reset = reset_exsid;
-            HardwareFunctions.write = write_exsid;
-            HardwareFunctions.next = next_exsid;
-            HardwareFunctions.quit = quit_exsid;
-            HardwareFunctions.mapping = "exsid-mapping/";
-            this.init();
-          },
-          hardware_sidblaster_init: function () {
-            HardwareFunctions.init = init_sidblaster;
-            HardwareFunctions.reset = reset_sidblaster;
-            HardwareFunctions.write = write_sidblaster;
-            HardwareFunctions.next = next_sidblaster;
-            HardwareFunctions.quit = quit_sidblaster;
-            HardwareFunctions.mapping = "sidblaster-mapping/";
-            this.init();
-          },
-          init: async function () {
-            sidWriteQueue.clear();
-            if (typeof timer !== "undefined") {
-              clearTimeout(timer);
-            }
-            if ((await HardwareFunctions.init()) == 0) {
-              sidWriteQueue.enqueue({
-                chip: Chip.RESET,
-              });
-              // regularly process SID write queue from now on!
-              timer = setTimeout(() => this.doPlay());
-              this.showAudio = false;
-              this.showHardwarePlayer = true;
-            }
-          },
-          doPlay: async function () {
-            while (sidWriteQueue.isNotEmpty()) {
-              write = sidWriteQueue.dequeue();
-
-              if (write.chip == Chip.QUIT) {
-                await HardwareFunctions.quit();
-                if (ajaxRequest) {
-                  ajaxRequest.cancel();
-                }
-                return;
-              } else if (write.chip == Chip.RESET) {
-                await HardwareFunctions.reset();
-                timer = setTimeout(() => this.doPlay(), 250);
-                return;
-              } else if (write.chip == Chip.NEXT) {
-                if ((await HardwareFunctions.next()) == 0) {
-                  Vue.nextTick(() => this.setNextPlaylistEntry());
-                } else {
-                  sidWriteQueue.enqueue({
-                    chip: Chip.NEXT,
-                  });
-                  timer = setTimeout(() => this.doPlay(), 250);
-                  return;
-                }
-              } else {
-                await HardwareFunctions.write(write);
-              }
-            }
-            timer = setTimeout(() => this.doPlay());
-          },
-          play: function (autostart, entry, itemId, categoryId) {
-            if (deviceCount > 0) {
-              // Hardware PLAY
-              this.showAudio = false;
-              this.pause();
-
-              axios({
-                method: "get",
-                url: this.createSIDMappingUrl(entry, itemId, categoryId),
-                auth: {
-                  username: this.username,
-                  password: this.password,
+        let app = Vue.createApp({
+          data: function () {
+            return {
+              modalIndex: 0,
+              modalFavoriteIndex: 0,
+              msg: "",
+              timeoutId: undefined,
+              theaterMode: false,
+              carouselImageHeight:
+                window.innerHeight > window.innerWidth ? window.innerHeight * 0.3 : window.innerHeight * 0.8,
+              showAudio: false,
+              showHardwarePlayer: false,
+              langs: ["de", "en"],
+              // ABOUT
+              username: "jsidplay2",
+              password: "jsidplay2!",
+              // SIDS (directories containing SIDS)
+              directory: [],
+              rootDir: {
+                filename: "/",
+                loading: false,
+              },
+              top200Dir: {
+                filename: "/Assembly64/Demos/CSDB/Top200",
+                loading: false,
+              },
+              oneFilerTop200Dir: {
+                filename: "/Assembly64/Demos/CSDB/Onefile-top200",
+                loading: false,
+              },
+              toolsTop200Dir: {
+                filename: "/Assembly64/Tools/CSDB/Top100",
+                loading: false,
+              },
+              musicTop200Dir: {
+                filename: "/Assembly64/Music/CSDB/Top200",
+                loading: false,
+              },
+              graphicsTop200Dir: {
+                filename: "/Assembly64/Graphics/CSDB/Top200",
+                loading: false,
+              },
+              gamesTop200Dir: {
+                filename: "/Assembly64/Games/CSDB/Top200",
+                loading: false,
+              },
+              // SID (info + picture)
+              infos: "",
+              stil: [],
+              maxResults: 100,
+              tooMuchLogging: false,
+              order: "ASC",
+              logs: [],
+              logsCount: 0,
+              hasHardware: false,
+              picture: "",
+              currentSid: "",
+              // ASSEMBLY64
+              category: "",
+              categories: [],
+              searchResults: [],
+              searchFields: [
+                {
+                  key: "category",
                 },
-              }).then((response) => {
-                mapping = response.data;
-
-                // cancel  previous ajax if exists
-                if (ajaxRequest) {
-                  ajaxRequest.cancel();
+                {
+                  key: "name",
+                },
+                {
+                  key: "event",
+                },
+                {
+                  key: "released",
+                },
+                {
+                  key: "handle",
+                },
+                {
+                  key: "rating",
+                },
+                { key: "actions" },
+              ],
+              name: "",
+              event: "",
+              released: "",
+              rating: "",
+              handle: "",
+              Logs: {
+                date: "",
+                time: "",
+                sourceClassName: "",
+                sourceMethodName: "",
+                level: "",
+                message: "",
+              },
+              // PL (Playlist)
+              importFile: null,
+              importExportVisible: false,
+              playlist: [],
+              playlistIndex: 0,
+              favoritesNames: [],
+              random: true,
+              filterText: "",
+              filterText2: "",
+              // CFG (configuration)
+              // pre-fetched filter definitions
+              reSIDFilters6581: [],
+              reSIDFilters8580: [],
+              reSIDfpFilters6581: [],
+              reSIDfpFilters8580: [],
+              cbrs: [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320],
+              vbrQualities: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+              // Misc.
+              tabIndex: 0,
+              loadingSid: false,
+              loadingStil: false,
+              loadingLogs: false,
+              loadingAssembly64: false,
+              loadingPl: false,
+              loadingCfg: false,
+              convertOptions: ${convertOptions},
+              defaultConvertOptions: ${convertOptions},
+            };
+          },
+          computed: {
+            instant: {
+              get: function () {
+                try {
+                  var date;
+                  if (this.Logs.date && this.Logs.time) {
+                    date = new Date(this.Logs.date + "T" + this.Logs.time);
+                  } else if (this.Logs.date) {
+                    date = new Date(this.Logs.date + "T00:00:00");
+                  } else if (this.Logs.time) {
+                    date = new Date("1070-01-01T" + this.Logs.time);
+                  }
+                  return date.getTime();
+                } catch (e) {
+                  return 0;
                 }
-                // creates a new token for upcoming ajax (overwrite the previous one)
-                ajaxRequest = axios.CancelToken.source();
+              },
+            },
+            stereoMode: {
+              set: function (val) {
+                if (val === "FORCE_3SID") {
+                  this.convertOptions.config.emulationSection.forceStereoTune = true;
+                  this.convertOptions.config.emulationSection.force3SIDTune = true;
+                } else if (val === "FORCE_2SID") {
+                  this.convertOptions.config.emulationSection.forceStereoTune = true;
+                  this.convertOptions.config.emulationSection.force3SIDTune = false;
+                } else {
+                  this.convertOptions.config.emulationSection.forceStereoTune = false;
+                  this.convertOptions.config.emulationSection.force3SIDTune = false;
+                }
+              },
+              get: function () {
+                if (this.convertOptions.config.emulationSection.force3SIDTune) {
+                  return "FORCE_3SID";
+                } else if (this.convertOptions.config.emulationSection.forceStereoTune) {
+                  return "FORCE_2SID";
+                } else {
+                  return "AUTO";
+                }
+              },
+            },
+            translatedInfos: function () {
+              if (!this.infos) {
+                return [];
+              }
+              let outer = this;
+              return this.infos.map(function (obj) {
+                return {
+                  Name: outer.$t(obj.Name),
+                  Value: obj.Value,
+                  opacity: obj.Name == "HVSCEntry.path",
+                };
+              });
+            },
+          },
+          methods: {
+            toDateTime: function (millis) {
+              return new Date(millis * 1000).toLocaleString(this.$i18n.locale);
+            },
+            startRecording: function () {
+              let outer = this;
+              navigator.mediaDevices
+                .getUserMedia({
+                  audio: true,
+                  video: false,
+                })
+                .then(function (stream) {
+                  var AudioContext = window.AudioContext || window.webkitAudioContext;
+                  var audioContext = new AudioContext();
 
-                lastChipModel = undefined;
-                let start = 1;
-                sidWriteQueue.clear();
+                  //assign to gumStream for later use
+                  gumStream = stream;
+                  /* use the stream */
+                  var input = audioContext.createMediaStreamSource(stream);
+                  //stop the input from playing back through the speakers
+                  input.connect(audioContext.destination);
+
+                  recorder = new WebAudioRecorder(input, {
+                    workerDir: "../webjars/web-audio-recorder-js/0.0.2/${lib}/",
+                    encoding: "wav",
+                  });
+                  recorder.onComplete = function (recorder, blob) {
+                    axios({
+                      method: "post",
+                      url: "/jsidplay2service/JSIDPlay2REST/speech2text",
+                      data: blob,
+                      auth: {
+                        username: outer.username,
+                        password: outer.password,
+                      },
+                    }).then((response) => {
+                      let result = response.data;
+                      console.log(result);
+                      outer.msg = result.text;
+                    });
+                  };
+                  recorder.setOptions({
+                    timeLimit: 10,
+                    encodeAfterRecord: true,
+                  });
+                  recorder.startRecording();
+                })
+                .catch(function (err) {
+                  console.log(err);
+                });
+            },
+            stopRecording: function () {
+              console.log("stopRecording() called");
+              //stop microphone access
+              gumStream.getAudioTracks()[0].stop();
+              //tell the recorder to finish the recording (stop recording + encode the recorded audio)
+              recorder.finishRecording();
+            },
+            openiframe: function (url) {
+              this.pause();
+              closeiframe();
+              document.getElementById("main").classList.add("hide");
+
+              var iframe = document.createElement("iframe");
+              iframe.setAttribute("id", "c64");
+              iframe.setAttribute("name", Date.now());
+              iframe.setAttribute("data-isloaded", "0");
+              iframe.classList.add("iframe_c64");
+              iframe.onload = function () {
+                window.scrollTo(0, 0);
+                iframe.onload = function () {
+                  var isLoaded = iframe.getAttribute("data-isloaded");
+                  if (isLoaded != "1") {
+                    setTimeout(() => closeiframe(), 5000);
+                  }
+                };
+                iframe.src = url;
+              };
+              iframe.src =
+                "data:text/html;charset=utf-8,<!DOCTYPE html> <html> <head><link type='text/css' rel='Stylesheet' href='${baseUrl}/static/please_wait.css' /></head><body><div class='loading'><p>" +
+                this.$t("pleaseWait") +
+                "</p><span><i></i><i></i></span></div></body>";
+
+              document.getElementById("app").appendChild(iframe);
+            },
+            hardware_hardsid_init: function () {
+              HardwareFunctions.init = init_hardsid;
+              HardwareFunctions.reset = reset_hardsid;
+              HardwareFunctions.write = write_hardsid;
+              HardwareFunctions.next = next_hardsid;
+              HardwareFunctions.quit = quit_hardsid;
+              HardwareFunctions.mapping = "hardsid-mapping/";
+              this.init();
+            },
+            hardware_exsid_init: function () {
+              HardwareFunctions.init = init_exsid;
+              HardwareFunctions.reset = reset_exsid;
+              HardwareFunctions.write = write_exsid;
+              HardwareFunctions.next = next_exsid;
+              HardwareFunctions.quit = quit_exsid;
+              HardwareFunctions.mapping = "exsid-mapping/";
+              this.init();
+            },
+            hardware_sidblaster_init: function () {
+              HardwareFunctions.init = init_sidblaster;
+              HardwareFunctions.reset = reset_sidblaster;
+              HardwareFunctions.write = write_sidblaster;
+              HardwareFunctions.next = next_sidblaster;
+              HardwareFunctions.quit = quit_sidblaster;
+              HardwareFunctions.mapping = "sidblaster-mapping/";
+              this.init();
+            },
+            init: async function () {
+              sidWriteQueue.clear();
+              if (typeof timer !== "undefined") {
+                clearTimeout(timer);
+              }
+              if ((await HardwareFunctions.init()) == 0) {
                 sidWriteQueue.enqueue({
                   chip: Chip.RESET,
                 });
+                // regularly process SID write queue from now on!
+                timer = setTimeout(() => this.doPlay());
+                this.showAudio = false;
+                this.showHardwarePlayer = true;
+              }
+            },
+            doPlay: async function () {
+              while (sidWriteQueue.isNotEmpty()) {
+                write = sidWriteQueue.dequeue();
 
-                axios({
-                  method: "get",
-                  url:
-                    this.createConvertUrl(autostart, entry, itemId, categoryId) +
-                    "&audio=SID_REG&sidRegFormat=C64_JUKEBOX",
-                  cancelToken: ajaxRequest.token,
-                  onDownloadProgress: (progressEvent) => {
-                    const dataChunk = progressEvent.event.currentTarget.response;
-
-                    var i = start;
-                    while ((i = dataChunk.indexOf("\n", start)) != -1) {
-                      const cells = dataChunk.substring(start, i).split(",");
-                      const address = parseInt(cells[1], 16);
-                      sidWriteQueue.enqueue({
-                        chip: mapping[address & 0xffe0] || mapping[0xd400],
-                        cycles: parseInt(cells[0]),
-                        reg: address & 0x1f,
-                        value: parseInt(cells[2], 16),
-                      });
-                      start = i + 1;
-                    }
-                  },
-                })
-                  .then((response) => {
+                if (write.chip == Chip.QUIT) {
+                  await HardwareFunctions.quit();
+                  if (ajaxRequest) {
+                    ajaxRequest.cancel();
+                  }
+                  return;
+                } else if (write.chip == Chip.RESET) {
+                  await HardwareFunctions.reset();
+                  timer = setTimeout(() => this.doPlay(), 250);
+                  return;
+                } else if (write.chip == Chip.NEXT) {
+                  if ((await HardwareFunctions.next()) == 0) {
+                    Vue.nextTick(() => this.setNextPlaylistEntry());
+                  } else {
                     sidWriteQueue.enqueue({
                       chip: Chip.NEXT,
                     });
-                  })
-                  .catch((err) => {
-                    if (axios.isCancel(err)) {
-                      sidWriteQueue.clear();
-                      sidWriteQueue.enqueue({
-                        chip: Chip.RESET,
-                      });
-                    }
-                  });
-              });
-            } else {
-              // Software PLAY
-              this.showAudio = true;
-
-              this.$refs.audioElm.src = this.createConvertUrl(autostart, entry, itemId, categoryId);
-              this.$refs.audioElm.play();
-            }
-          },
-          end: function () {
-            sidWriteQueue.clear();
-            sidWriteQueue.enqueue({
-              chip: Chip.RESET,
-            });
-            sidWriteQueue.enqueue({
-              chip: Chip.QUIT,
-            });
-            deviceCount = 0;
-            this.showAudio = true;
-            this.showHardwarePlayer = false;
-          },
-          updateLanguage() {
-            localStorage.locale = this.$i18n.locale;
-          },
-          shortEntry: function (filename) {
-            return filename
-              .split("/")
-              .slice(filename.endsWith("/") ? -2 : -1)
-              .join("/");
-          },
-          pathEntry: function (filename) {
-            const files = filename.split("/");
-            return "/" + files.slice(-files.length + 1, filename.endsWith("/") ? -2 : -1).join("/");
-          },
-          getVariant: function (entry) {
-            if (this.isDirectory(entry)) {
-              return "";
-            } else if (this.isMusic(entry)) {
-              return "primary";
-            } else if (this.isVideo(entry)) {
-              return "success";
-            }
-            return "secondary";
-          },
-          pause: function () {
-            this.$refs.audioElm.pause();
-            if (deviceCount > 0) {
-              if (ajaxRequest) {
-                ajaxRequest.cancel();
+                    timer = setTimeout(() => this.doPlay(), 250);
+                    return;
+                  }
+                } else {
+                  await HardwareFunctions.write(write);
+                }
               }
+              timer = setTimeout(() => this.doPlay());
+            },
+            play: function (autostart, entry, itemId, categoryId) {
+              if (deviceCount > 0) {
+                // Hardware PLAY
+                this.showAudio = false;
+                this.pause();
+
+                axios({
+                  method: "get",
+                  url: this.createSIDMappingUrl(entry, itemId, categoryId),
+                  auth: {
+                    username: this.username,
+                    password: this.password,
+                  },
+                }).then((response) => {
+                  mapping = response.data;
+
+                  // cancel  previous ajax if exists
+                  if (ajaxRequest) {
+                    ajaxRequest.cancel();
+                  }
+                  // creates a new token for upcoming ajax (overwrite the previous one)
+                  ajaxRequest = axios.CancelToken.source();
+
+                  lastChipModel = undefined;
+                  let start = 1;
+                  sidWriteQueue.clear();
+                  sidWriteQueue.enqueue({
+                    chip: Chip.RESET,
+                  });
+
+                  axios({
+                    method: "get",
+                    url:
+                      this.createConvertUrl(autostart, entry, itemId, categoryId) +
+                      "&audio=SID_REG&sidRegFormat=C64_JUKEBOX",
+                    cancelToken: ajaxRequest.token,
+                    onDownloadProgress: (progressEvent) => {
+                      const dataChunk = progressEvent.event.currentTarget.response;
+
+                      var i = start;
+                      while ((i = dataChunk.indexOf("\n", start)) != -1) {
+                        const cells = dataChunk.substring(start, i).split(",");
+                        const address = parseInt(cells[1], 16);
+                        sidWriteQueue.enqueue({
+                          chip: mapping[address & 0xffe0] || mapping[0xd400],
+                          cycles: parseInt(cells[0]),
+                          reg: address & 0x1f,
+                          value: parseInt(cells[2], 16),
+                        });
+                        start = i + 1;
+                      }
+                    },
+                  })
+                    .then((response) => {
+                      sidWriteQueue.enqueue({
+                        chip: Chip.NEXT,
+                      });
+                    })
+                    .catch((err) => {
+                      if (axios.isCancel(err)) {
+                        sidWriteQueue.clear();
+                        sidWriteQueue.enqueue({
+                          chip: Chip.RESET,
+                        });
+                      }
+                    });
+                });
+              } else {
+                // Software PLAY
+                this.showAudio = true;
+
+                this.$refs.audioElm.src = this.createConvertUrl(autostart, entry, itemId, categoryId);
+                this.$refs.audioElm.play();
+              }
+            },
+            end: function () {
               sidWriteQueue.clear();
               sidWriteQueue.enqueue({
                 chip: Chip.RESET,
               });
-            }
-          },
-          isDirectory: function (entry) {
-            return entry.filename.endsWith("/");
-          },
-          isParentDirectory: function (entry) {
-            return entry.filename.endsWith("../");
-          },
-          isMusic: function (entry) {
-            let filename = entry.filename.toLowerCase();
-            if (this.convertOptions.videoTuneAsAudio) {
+              sidWriteQueue.enqueue({
+                chip: Chip.QUIT,
+              });
+              deviceCount = 0;
+              this.showAudio = true;
+              this.showHardwarePlayer = false;
+            },
+            updateLanguage() {
+              localStorage.locale = this.$i18n.locale;
+            },
+            shortEntry: function (filename) {
+              return filename
+                .split("/")
+                .slice(filename.endsWith("/") ? -2 : -1)
+                .join("/");
+            },
+            pathEntry: function (filename) {
+              const files = filename.split("/");
+              return "/" + files.slice(-files.length + 1, filename.endsWith("/") ? -2 : -1).join("/");
+            },
+            getVariant: function (entry) {
+              if (this.isDirectory(entry)) {
+                return "";
+              } else if (this.isMusic(entry)) {
+                return "primary";
+              } else if (this.isVideo(entry)) {
+                return "success";
+              }
+              return "secondary";
+            },
+            pause: function () {
+              this.$refs.audioElm.pause();
+              if (deviceCount > 0) {
+                if (ajaxRequest) {
+                  ajaxRequest.cancel();
+                }
+                sidWriteQueue.clear();
+                sidWriteQueue.enqueue({
+                  chip: Chip.RESET,
+                });
+              }
+            },
+            isDirectory: function (entry) {
+              return entry.filename.endsWith("/");
+            },
+            isParentDirectory: function (entry) {
+              return entry.filename.endsWith("../");
+            },
+            isMusic: function (entry) {
+              let filename = entry.filename.toLowerCase();
+              if (this.convertOptions.videoTuneAsAudio) {
+                return (
+                  filename.endsWith(".sid") ||
+                  filename.endsWith(".dat") ||
+                  filename.endsWith(".mus") ||
+                  filename.endsWith(".str") ||
+                  filename.endsWith(".c64") ||
+                  filename.endsWith(".prg") ||
+                  filename.endsWith(".p00") ||
+                  filename.endsWith(".mp3")
+                );
+              } else {
+                return (
+                  filename.endsWith(".sid") ||
+                  filename.endsWith(".dat") ||
+                  filename.endsWith(".mus") ||
+                  filename.endsWith(".str") ||
+                  filename.endsWith(".mp3")
+                );
+              }
+            },
+            isPicture: function (entry) {
+              let filename = entry.filename.toLowerCase();
               return (
-                filename.endsWith(".sid") ||
-                filename.endsWith(".dat") ||
-                filename.endsWith(".mus") ||
-                filename.endsWith(".str") ||
-                filename.endsWith(".c64") ||
+                (filename.endsWith(".apng") ||
+                  filename.endsWith(".gif") ||
+                  filename.endsWith(".ico") ||
+                  filename.endsWith(".cur") ||
+                  filename.endsWith(".jpg") ||
+                  filename.endsWith(".jpeg") ||
+                  filename.endsWith(".jfif") ||
+                  filename.endsWith(".pjpeg") ||
+                  filename.endsWith(".pjp") ||
+                  filename.endsWith(".png") ||
+                  filename.endsWith(".svg")) &&
+                !filename.endsWith("small.jpg")
+              );
+            },
+            isVideo: function (entry) {
+              let filename = entry.filename.toLowerCase();
+              return (
                 filename.endsWith(".prg") ||
+                filename.endsWith(".c64") ||
                 filename.endsWith(".p00") ||
-                filename.endsWith(".mp3")
+                filename.endsWith(".d64") ||
+                filename.endsWith(".g64") ||
+                filename.endsWith(".nib") ||
+                filename.endsWith(".tap") ||
+                filename.endsWith(".t64") ||
+                filename.endsWith(".reu") ||
+                filename.endsWith(".ima") ||
+                filename.endsWith(".crt") ||
+                filename.endsWith(".img")
               );
-            } else {
-              return (
-                filename.endsWith(".sid") ||
-                filename.endsWith(".dat") ||
-                filename.endsWith(".mus") ||
-                filename.endsWith(".str") ||
-                filename.endsWith(".mp3")
-              );
-            }
-          },
-          isPicture: function (entry) {
-            let filename = entry.filename.toLowerCase();
-            return (
-              (filename.endsWith(".apng") ||
-                filename.endsWith(".gif") ||
-                filename.endsWith(".ico") ||
-                filename.endsWith(".cur") ||
-                filename.endsWith(".jpg") ||
-                filename.endsWith(".jpeg") ||
-                filename.endsWith(".jfif") ||
-                filename.endsWith(".pjpeg") ||
-                filename.endsWith(".pjp") ||
-                filename.endsWith(".png") ||
-                filename.endsWith(".svg")) &&
-              !filename.endsWith("small.jpg")
-            );
-          },
-          isVideo: function (entry) {
-            let filename = entry.filename.toLowerCase();
-            return (
-              filename.endsWith(".prg") ||
-              filename.endsWith(".c64") ||
-              filename.endsWith(".p00") ||
-              filename.endsWith(".d64") ||
-              filename.endsWith(".g64") ||
-              filename.endsWith(".nib") ||
-              filename.endsWith(".tap") ||
-              filename.endsWith(".t64") ||
-              filename.endsWith(".reu") ||
-              filename.endsWith(".ima") ||
-              filename.endsWith(".crt") ||
-              filename.endsWith(".img")
-            );
-          },
-          isMP3: function (entry) {
-            let filename = entry.filename.toLowerCase();
-            return filename.endsWith(".mp3");
-          },
-          canFastload: function (entry) {
-            let filename = entry.filename.toLowerCase();
-            return filename.endsWith(".d64") || filename.endsWith(".g64") || filename.endsWith(".nib");
-          },
-          isValidStil: function (entry) {
-            return entry.name || entry.author || entry.title || entry.artist || entry.comment;
-          },
-          remove: function (index) {
-            this.playlist.splice(index, 1);
-          },
-          removePlaylist: function () {
-            this.playlist = [];
-          },
-          importPlaylist: function () {
-            const reader = new FileReader();
-            reader.onerror = (err) => console.log(err);
-            var extension = this.importFile.name.split(".").pop().toLowerCase();
+            },
+            isMP3: function (entry) {
+              let filename = entry.filename.toLowerCase();
+              return filename.endsWith(".mp3");
+            },
+            canFastload: function (entry) {
+              let filename = entry.filename.toLowerCase();
+              return filename.endsWith(".d64") || filename.endsWith(".g64") || filename.endsWith(".nib");
+            },
+            isValidStil: function (entry) {
+              return entry.name || entry.author || entry.title || entry.artist || entry.comment;
+            },
+            remove: function (index) {
+              this.playlist.splice(index, 1);
+            },
+            removePlaylist: function () {
+              this.playlist = [];
+            },
+            importPlaylist: function () {
+              const reader = new FileReader();
+              reader.onerror = (err) => console.log(err);
+              var extension = this.importFile.name.split(".").pop().toLowerCase();
 
-            if (extension === "js2") {
-              reader.onload = (res) => {
-                var content = res.target.result;
-                var lines = content.split("\n");
+              if (extension === "js2") {
+                reader.onload = (res) => {
+                  var content = res.target.result;
+                  var lines = content.split("\n");
 
-                this.playlist = [];
-                for (var i = 0; i < lines.length; i++) {
-                  if (lines[i].length > 0) {
-                    if (
-                      !(
-                        lines[i].startsWith("/C64Music/") ||
-                        lines[i].startsWith("/CGSC/") ||
-                        lines[i].startsWith("/Assembly64/") ||
-                        lines[i].startsWith("/REU/")
-                      )
-                    ) {
-                      lines[i] = "/C64Music" + lines[i];
+                  this.playlist = [];
+                  for (var i = 0; i < lines.length; i++) {
+                    if (lines[i].length > 0) {
+                      if (
+                        !(
+                          lines[i].startsWith("/C64Music/") ||
+                          lines[i].startsWith("/CGSC/") ||
+                          lines[i].startsWith("/Assembly64/") ||
+                          lines[i].startsWith("/REU/")
+                        )
+                      ) {
+                        lines[i] = "/C64Music" + lines[i];
+                      }
+                      this.playlist.push({
+                        filename: lines[i],
+                      });
                     }
-                    this.playlist.push({
-                      filename: lines[i],
-                    });
+                  }
+                  this.playlistIndex = 0;
+                  this.importFile = null;
+                  this.$refs.formFileSm.value = null;
+                  if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+                    return;
+                  }
+                  this.currentSid =
+                    this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+                  this.updateSid(
+                    this.playlist[this.playlistIndex].filename,
+                    this.playlist[this.playlistIndex].itemId,
+                    this.playlist[this.playlistIndex].categoryId
+                  );
+                  this.showAudio = true;
+                  this.importExportVisible = false;
+                };
+                reader.readAsText(this.importFile);
+              } else if (extension === "json") {
+                reader.onload = (res) => {
+                  this.playlist = JSON.parse(res.target.result);
+                  this.playlistIndex = 0;
+                  this.importFile = null;
+                  this.$refs.formFileSm.value = null;
+                  if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+                    return;
+                  }
+                  this.currentSid =
+                    this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+                  this.updateSid(
+                    this.playlist[this.playlistIndex].filename,
+                    this.playlist[this.playlistIndex].itemId,
+                    this.playlist[this.playlistIndex].categoryId
+                  );
+                  this.showAudio = true;
+                  this.importExportVisible = false;
+                };
+                reader.readAsText(this.importFile);
+              } else {
+                let files = new FormData();
+                files.append("file", this.importFile, this.importFile.name);
+                axios({
+                  method: "post",
+                  url: "/jsidplay2service/JSIDPlay2REST/upload/" + this.importFile.name,
+                  data: files,
+                  auth: {
+                    username: this.username,
+                    password: this.password,
+                  },
+                })
+                  .then((response) => {
+                    if (response.data != "null") {
+                      this.importFile = null;
+                      this.$refs.formFileSm.value = null;
+                      this.importExportVisible = false;
+                      let entry = {
+                        filename: response.data,
+                      };
+                      if (this.isMusic(entry)) {
+                        this.currentSid = this.shortEntry(entry.filename);
+                        this.updateSid(entry.filename);
+                        this.play(undefined, entry.filename);
+                      } else if (this.isVideo(entry)) {
+                        this.openiframe(this.createConvertUrl(undefined, entry.filename) + "&audioTuneAsVideo=true");
+                      }
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              }
+            },
+            exportPlaylist: function () {
+              this.importExportVisible = false;
+              download("jsidplay2.json", "application/json; charset=utf-8; ", JSON.stringify(this.playlist));
+            },
+            setNextPlaylistEntry: function () {
+              this.pause();
+
+              if (deviceCount <= 0 && this.convertOptions.config.sidplay2Section.loop) {
+                this.$refs.audioElm.currentTime = 0;
+                this.$refs.audioElm.play();
+              } else {
+                if (this.theaterMode) {
+                  this.playRandomHVSC();
+                  return;
+                }
+                if (this.playlist.length === 0) {
+                  return;
+                }
+                if (this.random) {
+                  this.playlistIndex = getRandomInt(0, this.playlist.length - 1);
+                } else {
+                  if (this.playlistIndex === this.playlist.length - 1) {
+                    this.playlistIndex = 0;
+                  } else {
+                    this.playlistIndex++;
                   }
                 }
-                this.playlistIndex = 0;
-                this.importFile = null;
-                this.$refs.formFileSm.value = null;
                 if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
                   return;
                 }
-                this.currentSid =
-                  this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
-                this.updateSid(
+                this.play(
+                  "",
                   this.playlist[this.playlistIndex].filename,
                   this.playlist[this.playlistIndex].itemId,
                   this.playlist[this.playlistIndex].categoryId
                 );
-                this.showAudio = true;
-                this.importExportVisible = false;
-              };
-              reader.readAsText(this.importFile);
-            } else if (extension === "json") {
-              reader.onload = (res) => {
-                this.playlist = JSON.parse(res.target.result);
-                this.playlistIndex = 0;
-                this.importFile = null;
-                this.$refs.formFileSm.value = null;
-                if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-                  return;
-                }
-                this.currentSid =
-                  this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
-                this.updateSid(
-                  this.playlist[this.playlistIndex].filename,
-                  this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
-                );
-                this.showAudio = true;
-                this.importExportVisible = false;
-              };
-              reader.readAsText(this.importFile);
-            } else {
-              let files = new FormData();
-              files.append("file", this.importFile, this.importFile.name);
+              }
+              this.currentSid =
+                this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+              this.updateSid(
+                this.playlist[this.playlistIndex].filename,
+                this.playlist[this.playlistIndex].itemId,
+                this.playlist[this.playlistIndex].categoryId
+              );
+            },
+            setDefault: function () {
+              this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
+              this.convertOptions.useHls = true;
+              this.convertOptions.config.sidplay2Section.single = true;
+              this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
+              this.convertOptions.config.audioSection.reverbBypass = false;
+              this.convertOptions.config.audioSection.mainBalance = 0.3;
+              this.convertOptions.config.audioSection.secondBalance = 0.7;
+              this.convertOptions.config.audioSection.thirdBalance = 0.5;
+              this.convertOptions.config.audioSection.secondDelay = 10;
+              this.convertOptions.config.audioSection.sampling = "RESAMPLE";
+              this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
+              this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
+              this.convertOptions.textToSpeechLocale = "en";
+              this.mobileProfile();
+            },
+            setDefaultUser: function () {
+              this.username = "jsidplay2";
+              this.password = "jsidplay2!";
+            },
+            mobileProfile: function () {
+              this.convertOptions.config.audioSection.vbr = false;
+              this.convertOptions.config.audioSection.cbr = 64;
+              this.convertOptions.config.audioSection.audioCoderBitRate = 64000;
+              this.convertOptions.config.audioSection.videoCoderBitRate = 480000;
+            },
+            wifiProfile: function () {
+              this.convertOptions.config.audioSection.vbr = true;
+              this.convertOptions.config.audioSection.vbrQuality = 0;
+              this.convertOptions.config.audioSection.audioCoderBitRate = 320000;
+              this.convertOptions.config.audioSection.videoCoderBitRate = 1000000;
+            },
+            updateFilters: function () {
+              this.convertOptions.config.emulationSection.reSIDfpFilter6581 = this.reSIDfpFilters6581[1];
+              this.convertOptions.config.emulationSection.reSIDfpFilter8580 = this.reSIDfpFilters8580[1];
+              this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 = this.reSIDfpFilters6581[1];
+              this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 = this.reSIDfpFilters8580[1];
+              this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 = this.reSIDfpFilters6581[1];
+              this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 = this.reSIDfpFilters8580[1];
+
+              this.convertOptions.config.emulationSection.filter6581 = this.reSIDFilters6581[3];
+              this.convertOptions.config.emulationSection.filter8580 = this.reSIDFilters8580[1];
+              this.convertOptions.config.emulationSection.stereoFilter6581 = this.reSIDFilters6581[3];
+              this.convertOptions.config.emulationSection.stereoFilter8580 = this.reSIDFilters8580[1];
+              this.convertOptions.config.emulationSection.thirdSIDFilter6581 = this.reSIDFilters6581[3];
+              this.convertOptions.config.emulationSection.thirdSIDFilter8580 = this.reSIDFilters8580[1];
+            },
+            updateSid: function (entry, itemId, categoryId) {
+              if (entry) {
+                this.fetchInfo(entry, itemId, categoryId);
+                this.fetchStil(entry, itemId, categoryId);
+                this.fetchPhoto(entry, itemId, categoryId);
+              }
+            },
+            createDownloadUrl: function (entry, itemId, categoryId) {
+              return (
+                window.location.protocol +
+                "//" +
+                window.location.host +
+                "/jsidplay2service/JSIDPlay2REST/convert/" +
+                uriEncode(entry) +
+                "?itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId
+              );
+            },
+            createConvertUrl: function (autostart, entry, itemId, categoryId) {
+              return (
+                window.location.protocol +
+                "//" +
+                window.location.host +
+                "/jsidplay2service/JSIDPlay2REST/convert/" +
+                uriEncode(entry) +
+                "?enableSidDatabase=" +
+                this.convertOptions.config.sidplay2Section.enableDatabase +
+                "&startTime=" +
+                (this.showHardwarePlayer ? "0" : this.convertOptions.config.sidplay2Section.startTime) +
+                "&defaultLength=" +
+                this.convertOptions.config.sidplay2Section.defaultPlayLength +
+                "&fadeIn=" +
+                this.convertOptions.config.sidplay2Section.fadeInTime +
+                "&fadeOut=" +
+                this.convertOptions.config.sidplay2Section.fadeOutTime +
+                "&loop=" +
+                "false" + // this.convertOptions.config.sidplay2Section.loop +
+                "&single=" +
+                this.convertOptions.config.sidplay2Section.single +
+                "&frequency=" +
+                this.convertOptions.config.audioSection.samplingRate +
+                "&sampling=" +
+                this.convertOptions.config.audioSection.sampling +
+                "&mainVolume=" +
+                this.convertOptions.config.audioSection.mainVolume +
+                "&secondVolume=" +
+                this.convertOptions.config.audioSection.secondVolume +
+                "&thirdVolume=" +
+                this.convertOptions.config.audioSection.thirdVolume +
+                "&mainBalance=" +
+                this.convertOptions.config.audioSection.mainBalance +
+                "&secondBalance=" +
+                this.convertOptions.config.audioSection.secondBalance +
+                "&thirdBalance=" +
+                this.convertOptions.config.audioSection.thirdBalance +
+                "&mainDelay=" +
+                this.convertOptions.config.audioSection.mainDelay +
+                "&secondDelay=" +
+                this.convertOptions.config.audioSection.secondDelay +
+                "&thirdDelay=" +
+                this.convertOptions.config.audioSection.thirdDelay +
+                "&bufferSize=" +
+                this.convertOptions.config.audioSection.bufferSize +
+                "&audioBufferSize=" +
+                this.convertOptions.config.audioSection.audioBufferSize +
+                "&cbr=" +
+                this.convertOptions.config.audioSection.cbr +
+                "&vbrQuality=" +
+                this.convertOptions.config.audioSection.vbrQuality +
+                "&vbr=" +
+                this.convertOptions.config.audioSection.vbr +
+                "&acBitRate=" +
+                this.convertOptions.config.audioSection.audioCoderBitRate +
+                "&vcBitRate=" +
+                this.convertOptions.config.audioSection.videoCoderBitRate +
+                "&vcAudioDelay=" +
+                this.convertOptions.config.audioSection.videoCoderAudioDelay +
+                "&delayBypass=" +
+                this.convertOptions.config.audioSection.delayBypass +
+                "&reverbBypass=" +
+                this.convertOptions.config.audioSection.reverbBypass +
+                "&defaultEmulation=" +
+                this.convertOptions.config.emulationSection.defaultEmulation +
+                "&defaultClock=" +
+                this.convertOptions.config.emulationSection.defaultClockSpeed +
+                "&defaultModel=" +
+                this.convertOptions.config.emulationSection.defaultSidModel +
+                "&sidToRead=" +
+                this.convertOptions.config.emulationSection.sidToRead +
+                "&digiBoosted8580=" +
+                this.convertOptions.config.emulationSection.digiBoosted8580 +
+                "&fakeStereo=" +
+                this.convertOptions.config.emulationSection.fakeStereo +
+                "&muteVoice1=" +
+                this.convertOptions.config.emulationSection.muteVoice1 +
+                "&muteVoice2=" +
+                this.convertOptions.config.emulationSection.muteVoice2 +
+                "&muteVoice3=" +
+                this.convertOptions.config.emulationSection.muteVoice3 +
+                "&muteVoice4=" +
+                this.convertOptions.config.emulationSection.muteVoice4 +
+                "&muteStereoVoice1=" +
+                this.convertOptions.config.emulationSection.muteStereoVoice1 +
+                "&muteStereoVoice2=" +
+                this.convertOptions.config.emulationSection.muteStereoVoice2 +
+                "&muteStereoVoice3=" +
+                this.convertOptions.config.emulationSection.muteStereoVoice3 +
+                "&muteStereoVoice4=" +
+                this.convertOptions.config.emulationSection.muteStereoVoice4 +
+                "&muteThirdSidVoice1=" +
+                this.convertOptions.config.emulationSection.muteThirdSIDVoice1 +
+                "&muteThirdSidVoice2=" +
+                this.convertOptions.config.emulationSection.muteThirdSIDVoice2 +
+                "&muteThirdSidVoice3=" +
+                this.convertOptions.config.emulationSection.muteThirdSIDVoice3 +
+                "&muteThirdSidVoice4=" +
+                this.convertOptions.config.emulationSection.muteThirdSIDVoice4 +
+                "&filter6581=" +
+                this.convertOptions.config.emulationSection.filter6581 +
+                "&stereoFilter6581=" +
+                this.convertOptions.config.emulationSection.stereoFilter6581 +
+                "&thirdFilter6581=" +
+                this.convertOptions.config.emulationSection.thirdSIDFilter6581 +
+                "&filter8580=" +
+                this.convertOptions.config.emulationSection.filter8580 +
+                "&stereoFilter8580=" +
+                this.convertOptions.config.emulationSection.stereoFilter8580 +
+                "&thirdFilter8580=" +
+                this.convertOptions.config.emulationSection.thirdSIDFilter8580 +
+                "&reSIDfpFilter6581=" +
+                this.convertOptions.config.emulationSection.reSIDfpFilter6581 +
+                "&reSIDfpStereoFilter6581=" +
+                this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 +
+                "&reSIDfpThirdFilter6581=" +
+                this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 +
+                "&reSIDfpFilter8580=" +
+                this.convertOptions.config.emulationSection.reSIDfpFilter8580 +
+                "&reSIDfpStereoFilter8580=" +
+                this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 +
+                "&reSIDfpThirdFilter8580=" +
+                this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
+                "&detectPSID64ChipModel=" +
+                this.convertOptions.config.emulationSection.detectPSID64ChipModel +
+                (this.showHardwarePlayer
+                  ? ""
+                  : "&dualSID=" +
+                    this.convertOptions.config.emulationSection.forceStereoTune +
+                    "&dualSIDBase=" +
+                    this.convertOptions.config.emulationSection.dualSidBase +
+                    "&thirdSID=" +
+                    this.convertOptions.config.emulationSection.force3SIDTune +
+                    "&thirdSIDBase=" +
+                    this.convertOptions.config.emulationSection.thirdSIDBase) +
+                "&videoTuneAsAudio=" +
+                this.convertOptions.videoTuneAsAudio +
+                "&hls=" +
+                this.convertOptions.useHls +
+                "&hlsType=" +
+                this.convertOptions.hlsType +
+                "&pressSpaceInterval=" +
+                this.convertOptions.pressSpaceInterval +
+                "&status=" +
+                this.convertOptions.showStatus +
+                "&jiffydos=" +
+                this.convertOptions.config.c1541Section.jiffyDosInstalled +
+                "&sfxSoundExpander=" +
+                this.convertOptions.sfxSoundExpander +
+                "&sfxSoundExpanderType=" +
+                this.convertOptions.sfxSoundExpanderType +
+                "&reuSize=" +
+                this.convertOptions.reuSize +
+                "&textToSpeechType=" +
+                this.convertOptions.textToSpeechType +
+                "&textToSpeechLocale=" +
+                this.convertOptions.textToSpeechLocale +
+                "&locale=" +
+                this.$i18n.locale +
+                "&itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId +
+                "&autostart=" +
+                uriEncode(autostart) +
+                "&devtools=" +
+                ("${min}" !== ".min")
+              );
+            },
+            createSIDMappingUrl: function (entry, itemId, categoryId) {
+              return (
+                window.location.protocol +
+                "//" +
+                window.location.host +
+                "/jsidplay2service/JSIDPlay2REST/" +
+                HardwareFunctions.mapping +
+                uriEncode(entry) +
+                "?defaultModel=" +
+                this.convertOptions.config.emulationSection.defaultSidModel +
+                "&fakeStereo=" +
+                this.convertOptions.config.emulationSection.fakeStereo +
+                "&exsidFakeStereo=" +
+                this.convertOptions.config.emulationSection.fakeStereo +
+                "&hardSid6581=" +
+                this.convertOptions.config.emulationSection.hardsid6581 +
+                "&hardSid8580=" +
+                this.convertOptions.config.emulationSection.hardsid8580 +
+                (HardwareFunctions.mapping === "hardsid-mapping/" ? "&chipCount=" + chipCount : "") +
+                "&itemId=" +
+                itemId +
+                "&categoryId=" +
+                categoryId
+              );
+            },
+            openDownloadMP3Url: function (entry, itemId, categoryId) {
+              window.open(this.createConvertUrl(undefined, entry, itemId, categoryId) + "&download=true");
+            },
+            openDownloadSIDUrl: function (entry, itemId, categoryId) {
+              window.open(
+                window.location.protocol +
+                  "//" +
+                  this.username +
+                  ":" +
+                  this.password +
+                  "@" +
+                  window.location.host +
+                  "/jsidplay2service/JSIDPlay2REST/download/" +
+                  uriEncode(entry) +
+                  "?itemId=" +
+                  itemId +
+                  "&categoryId=" +
+                  categoryId
+              );
+            },
+            openDownloadUrl: function (entry, itemId, categoryId) {
+              window.open(this.createDownloadUrl(entry, itemId, categoryId));
+            },
+            delayedFetchDirectory: function (entry) {
+              let outer = this;
+              clearTimeout(this.timeoutId);
+              this.timeoutId = setTimeout(function () {
+                outer.fetchDirectory(entry);
+              }, 1000);
+            },
+            fetchLogs: function () {
+              this.loadingLogs = true; //the loading begin
               axios({
-                method: "post",
-                url: "/jsidplay2service/JSIDPlay2REST/upload/" + this.importFile.name,
-                data: files,
+                method: "get",
+                url:
+                  "/jsidplay2service/JSIDPlay2REST/logs" +
+                  "?instant=" +
+                  this.instant +
+                  "&sourceClassName=" +
+                  uriEncode(this.Logs.sourceClassName) +
+                  "&sourceMethodName=" +
+                  uriEncode(this.Logs.sourceMethodName) +
+                  "&level=" +
+                  uriEncode(this.Logs.level) +
+                  "&message=" +
+                  uriEncode(this.Logs.message) +
+                  "&maxResults=" +
+                  this.maxResults +
+                  "&order=" +
+                  this.order +
+                  "&tooMuchLogging=" +
+                  this.tooMuchLogging,
                 auth: {
                   username: this.username,
                   password: this.password,
                 },
               })
                 .then((response) => {
-                  if (response.data != "null") {
-                    this.importFile = null;
-                    this.$refs.formFileSm.value = null;
-                    this.importExportVisible = false;
-                    let entry = {
-                      filename: response.data,
-                    };
-                    if (this.isMusic(entry)) {
-                      this.currentSid = this.shortEntry(entry.filename);
-                      this.updateSid(entry.filename);
-                      this.play(undefined, entry.filename);
-                    } else if (this.isVideo(entry)) {
-                      this.openiframe(this.createConvertUrl(undefined, entry.filename) + "&audioTuneAsVideo=true");
-                    }
+                  this.logs = response.data;
+                  if (!this.logs) {
+                    this.logs = [];
                   }
                 })
                 .catch((error) => {
+                  this.logs = [];
                   console.log(error);
-                });
-            }
-          },
-          exportPlaylist: function () {
-            this.importExportVisible = false;
-            download("jsidplay2.json", "application/json; charset=utf-8; ", JSON.stringify(this.playlist));
-          },
-          setNextPlaylistEntry: function () {
-            this.pause();
-
-            if (deviceCount <= 0 && this.convertOptions.config.sidplay2Section.loop) {
-              this.$refs.audioElm.currentTime = 0;
-              this.$refs.audioElm.play();
-            } else {
-              if (this.theaterMode) {
-                this.playRandomHVSC();
-                return;
-              }
-              if (this.playlist.length === 0) {
-                return;
-              }
-              if (this.random) {
-                this.playlistIndex = getRandomInt(0, this.playlist.length - 1);
-              } else {
-                if (this.playlistIndex === this.playlist.length - 1) {
+                })
+                .finally(() => (this.loadingLogs = false));
+            },
+            countLogs: function () {
+              this.loadingLogs = true; //the loading begin
+              axios({
+                method: "get",
+                url:
+                  "/jsidplay2service/JSIDPlay2REST/count-logs" +
+                  "?instant=" +
+                  this.instant +
+                  "&sourceClassName=" +
+                  uriEncode(this.Logs.sourceClassName) +
+                  "&sourceMethodName=" +
+                  uriEncode(this.Logs.sourceMethodName) +
+                  "&level=" +
+                  uriEncode(this.Logs.level) +
+                  "&message=" +
+                  uriEncode(this.Logs.message) +
+                  "&order=" +
+                  this.order +
+                  "&tooMuchLogging=" +
+                  this.tooMuchLogging,
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  this.logsCount = response.data;
+                  if (!this.logs) {
+                    this.logsCount = 0;
+                  }
+                })
+                .catch((error) => {
+                  logsCount = 0;
+                  console.log(error);
+                })
+                .finally(() => (this.loadingLogs = false));
+            },
+            fetchDirectory: function (entry) {
+              entry.loading = true; //the loading begin
+              axios({
+                method: "get",
+                url: "/jsidplay2service/JSIDPlay2REST/directory" + uriEncode(entry.filename) + "?filter=.*",
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  this.directory = response.data.map((file) => {
+                    return {
+                      filename: file,
+                      diskDirectory: [],
+                      directoryMode: 0,
+                      loading: false,
+                      loadingDisk: false,
+                    };
+                  });
+                })
+                .catch((error) => {
+                  console.log(error);
+                })
+                .finally(() => (entry.loading = false));
+            },
+            fetchInfo: function (entry, itemId, categoryId) {
+              this.loadingSid = true; //the loading begin
+              axios({
+                method: "get",
+                url:
+                  "/jsidplay2service/JSIDPlay2REST/info/" +
+                  uriEncode(entry) +
+                  "?list=true" +
+                  "&itemId=" +
+                  itemId +
+                  "&categoryId=" +
+                  categoryId,
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  this.infos = response.data;
+                })
+                .catch((error) => {
+                  this.infos = [];
+                  console.log(error);
+                })
+                .finally(() => (this.loadingSid = false));
+            },
+            fetchStil: function (entry, itemId, categoryId) {
+              this.loadingStil = true; //the loading begin
+              axios({
+                method: "get",
+                url:
+                  "/jsidplay2service/JSIDPlay2REST/stil/" +
+                  uriEncode(entry) +
+                  "?itemId=" +
+                  itemId +
+                  "&categoryId=" +
+                  categoryId,
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  this.stil = response.data;
+                  if (!this.stil) {
+                    this.stil = [];
+                  }
+                })
+                .catch((error) => {
+                  this.stil = [];
+                  console.log(error);
+                })
+                .finally(() => (this.loadingStil = false));
+            },
+            fetchPhoto: function (entry, itemId, categoryId) {
+              this.loadingSid = true; //the loading begin
+              axios({
+                method: "get",
+                url:
+                  "/jsidplay2service/JSIDPlay2REST/photo/" +
+                  uriEncode(entry) +
+                  "?itemId=" +
+                  itemId +
+                  "&categoryId=" +
+                  categoryId,
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+                responseType: "blob",
+              })
+                .then((response) => {
+                  var reader = new window.FileReader();
+                  reader.readAsDataURL(response.data);
+                  reader.onload = function () {
+                    this.picture = reader.result;
+                    var imgSrc = this.picture;
+                    Vue.nextTick(function () {
+                      if (document.getElementById("img")) {
+                        document.getElementById("img").setAttribute("src", imgSrc);
+                      }
+                    });
+                  };
+                })
+                .catch((error) => {
+                  this.picture = "";
+                  console.log(error);
+                })
+                .finally(() => (this.loadingSid = false));
+            },
+            fetchFavorites: function (number) {
+              this.loadingPl = true; //the loading begin
+              axios({
+                method: "get",
+                url: "/jsidplay2service/JSIDPlay2REST/favorites?favoritesNumber=" + number,
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  this.playlist = response.data;
                   this.playlistIndex = 0;
+                  if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+                    return;
+                  }
+                  this.currentSid =
+                    this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+                  this.updateSid(
+                    this.playlist[this.playlistIndex].filename,
+                    this.playlist[this.playlistIndex].itemId,
+                    this.playlist[this.playlistIndex].categoryId
+                  );
+                  this.$refs.audioElm.src = this.createConvertUrl(
+                    "",
+                    this.playlist[this.playlistIndex].filename,
+                    this.playlist[this.playlistIndex].itemId,
+                    this.playlist[this.playlistIndex].categoryId
+                  );
+                  this.showAudio = true;
+                  this.importExportVisible = false;
+                })
+                .catch((error) => {
+                  this.playlist = [];
+                  this.playlistIndex = 0;
+                  console.log(error);
+                })
+                .finally(() => (this.loadingPl = false));
+            },
+            fetchFavoritesNames: function () {
+              this.loadingPl = true; //the loading begin
+              axios({
+                method: "get",
+                url: "/jsidplay2service/JSIDPlay2REST/favorite_names",
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  this.favoritesNames = response.data;
+                })
+                .catch((error) => {
+                  this.favoritesNames = [];
+                  console.log(error);
+                })
+                .finally(() => (this.loadingPl = false));
+            },
+            playRandomHVSC: function () {
+              this.loadingCfg = true; //the loading begin
+              axios({
+                method: "get",
+                url: "/jsidplay2service/JSIDPlay2REST/random-hvsc",
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  this.currentSid = this.shortEntry(response.data);
+                  this.updateSid(response.data);
+                  this.fetchDirectory({
+                    filename: response.data.substring(0, response.data.lastIndexOf("/")),
+                    loading: false,
+                  });
+                  this.play(undefined, response.data);
+                })
+                .catch((error) => {
+                  console.log(error);
+                })
+                .finally(() => (this.loadingCfg = false));
+            },
+            fetchFilters: function () {
+              this.loadingCfg = true; //the loading begin
+              axios({
+                method: "get",
+                url: "/jsidplay2service/JSIDPlay2REST/filters",
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  const filters = response.data;
+                  this.reSIDFilters6581 = filters
+                    .filter((filter) => filter.startsWith("RESID_MOS6581_"))
+                    .map((filter) => filter.substring("RESID_MOS6581_".length));
+                  this.reSIDFilters8580 = filters
+                    .filter((filter) => filter.startsWith("RESID_MOS8580_"))
+                    .map((filter) => filter.substring("RESID_MOS8580_".length));
+                  this.reSIDfpFilters6581 = filters
+                    .filter((filter) => filter.startsWith("RESIDFP_MOS6581_"))
+                    .map((filter) => filter.substring("RESIDFP_MOS6581_".length));
+                  this.reSIDfpFilters8580 = filters
+                    .filter((filter) => filter.startsWith("RESIDFP_MOS8580_"))
+                    .map((filter) => filter.substring("RESIDFP_MOS8580_".length));
+
+                  this.updateFilters();
+                })
+                .catch((error) => {
+                  this.reSIDFilters6581 = [];
+                  this.reSIDFilters8580 = [];
+                  this.reSIDfpFilters6581 = [];
+                  this.reSIDfpFilters8580 = [];
+                  console.log(error);
+                })
+                .finally(() => (this.loadingCfg = false));
+            },
+            fetchDiskDirectory: function (entry, itemId, categoryId) {
+              if (entry.directoryMode) {
+                if (entry.directoryMode === 0xe000) {
+                  entry.directoryMode = 0xe100;
                 } else {
-                  this.playlistIndex++;
+                  entry.diskDirectoryHeader = null;
+                  entry.diskDirectory = [];
+                  entry.directoryMode = 0;
+                  return;
                 }
+              } else {
+                entry.directoryMode = 0xe000;
               }
-              if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
+              entry.loadingDisk = true; //the loading begin
+              axios({
+                method: "get",
+                url:
+                  "/jsidplay2service/JSIDPlay2REST/disk-directory/" +
+                  uriEncode(entry.filename) +
+                  "?itemId=" +
+                  itemId +
+                  "&categoryId=" +
+                  categoryId,
+                auth: {
+                  username: this.username,
+                  password: this.password,
+                },
+              })
+                .then((response) => {
+                  entry.diskDirectoryHeader = petsciiToFont(response.data.title, entry.directoryMode | 0x200);
+                  entry.diskDirectory = response.data.dirEntries.map((dirEntry) => {
+                    return {
+                      directoryLine: dirEntry.directoryLine,
+                      formatted: petsciiToFont(dirEntry.directoryLine, entry.directoryMode),
+                    };
+                  });
+                })
+                .catch((error) => {
+                  entry.diskDirectoryHeader = null;
+                  entry.diskDirectory = [];
+                  entry.directoryMode = 0;
+                  console.log(error);
+                })
+                .finally(() => (entry.loadingDisk = false));
+            },
+            assembly64SearchUrl: function (token) {
+              var parameterList = [];
+              if (typeof token !== "undefined") {
+                this.name = "";
+                this.category = "hvscmusic";
+                this.event = "";
+                this.released = "";
+                this.rating = "";
+                this.handle = token;
+              }
+              if (this.name !== "") {
+                parameterList.push('name:"' + uriEncode(this.name) + '"');
+              }
+              if (this.category !== "") {
+                parameterList.push("subcat:" + this.category);
+              }
+              if (this.event !== "") {
+                parameterList.push('event:"' + uriEncode(this.event) + '"');
+              }
+              if (this.released.length === 4) {
+                parameterList.push("date:" + this.released + "0101-" + this.released + "1231");
+              }
+              if (this.released.length === 7) {
+                var splitted = this.released.split("-");
+                var year = splitted[0];
+                var month = splitted[1];
+                parameterList.push("date:" + year + month + "01-" + year + month + daysInMonth(month, year));
+              }
+              if (this.released.length === 10) {
+                var splitted = this.released.split("-");
+                var year = splitted[0];
+                var month = splitted[1];
+                var day = splitted[2];
+                parameterList.push("date:" + year + month + day + "-" + year + month + day);
+              }
+              if (this.rating !== "") {
+                parameterList.push("rating:>=" + this.rating);
+              }
+              if (this.handle !== "") {
+                parameterList.push('handle:"' + uriEncode(this.handle) + '"');
+              }
+              return parameterList.length > 0 ? "?query=" + parameterList.join("+") : "";
+            },
+            fetchCategories: function () {
+              this.loadingAssembly64 = true; //the loading begin
+              axios({
+                method: "get",
+                url: "${assembly64Url}/leet/search/aql/presets",
+              })
+                .then((response) => {
+                  let presets = response.data;
+                  this.categories = presets.filter(function (item) {
+                    return item.type == "subcat";
+                  })[0].values;
+                  this.categories.sort((a, b) => {
+                    return a.name.localeCompare(b.name);
+                  });
+                })
+                .catch((error) => {
+                  this.categories = [];
+                  console.log(error);
+                })
+                .finally(() => (this.loadingAssembly64 = false));
+            },
+            resetSearchResults: function (event) {
+              this.name = "";
+              this.category = "";
+              this.event = "";
+              this.released = "";
+              this.rating = "";
+              this.handle = "";
+            },
+            requestSearchResults: function (event, token) {
+              var url = this.assembly64SearchUrl(token);
+              if (url.length === 0) {
+                this.searchResults = [];
                 return;
               }
-              this.play(
+              this.loadingAssembly64 = true; //the loading begin
+              axios({
+                method: "get",
+                url: "${assembly64Url}/leet/search/aql/0/200" + url,
+              })
+                .then((response) => {
+                  if (response.status === 200) {
+                    this.searchResults = response.data;
+
+                    var data = this;
+                    this.searchResults = this.searchResults.map((obj) => {
+                      return {
+                        id: obj.id,
+                        category: data.categories.filter(function (item) {
+                          return item.id === obj.category;
+                        })[0]?.name,
+                        categoryId: obj.category,
+                        name: obj.name,
+                        group: obj.group,
+                        event: obj.event,
+                        released: obj.released,
+                        handle: obj.handle,
+                        rating: obj.rating,
+                        _showDetails: false,
+                      };
+                    });
+                  } else {
+                    this.searchResults = [];
+                  }
+                })
+                .catch((error) => {
+                  this.searchResults = [];
+                  console.log(error);
+                })
+                .finally(() => (this.loadingAssembly64 = false));
+            },
+            requestContentEntries: function (searchResult) {
+              if (searchResult._showDetails === true) {
+                searchResult._showDetails = false;
+                return;
+              }
+              if (searchResult.contentEntries) {
+                searchResult._showDetails = true;
+                return;
+              }
+              this.loadingAssembly64 = true; //the loading begin
+              axios({
+                method: "get",
+                url: "${assembly64Url}/leet/search/legacy/entries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
+              })
+                .then((response) => {
+                  if (response.status === 200) {
+                    searchResult.contentEntries = response.data.contentEntry.map((contentEntry) => {
+                      return {
+                        filename: contentEntry.id,
+                        diskDirectory: [],
+                        directoryMode: 0,
+                        loadingDisk: false,
+                      };
+                    });
+                    searchResult._showDetails = true;
+                  }
+                })
+                .catch((error) => {
+                  searchResult.contentEntries = [];
+                  console.log(error);
+                })
+                .finally(() => (this.loadingAssembly64 = false));
+            },
+          },
+          mounted: function () {
+            window.addEventListener("resize", () => {
+              let outer = this;
+              clearTimeout(window.resizedFinished);
+              window.resizedFinished = setTimeout(function () {
+                outer.carouselImageHeight =
+                  window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
+              }, 1000);
+            });
+
+            this.hasHardware = typeof navigator.usb !== "undefined";
+
+            if (localStorage.locale) {
+              this.$i18n.locale = localStorage.locale;
+            }
+            if (localStorage.username) {
+              this.username = JSON.parse(localStorage.username);
+            }
+            if (localStorage.password) {
+              this.password = JSON.parse(localStorage.password);
+            }
+            if (localStorage.directory) {
+              this.directory = JSON.parse(localStorage.directory);
+            } else {
+              this.fetchDirectory(this.rootDir);
+            }
+            this.fetchFilters();
+            this.fetchFavoritesNames();
+            this.fetchCategories();
+            if (localStorage.convertOptions) {
+              // restore configuration from last run
+              this.convertOptions = JSON.parse(localStorage.convertOptions);
+              // migration:
+              if (typeof this.convertOptions.textToSpeechType === "undefined") {
+                this.convertOptions.textToSpeechType = "PICO2WAVE";
+              }
+              if (typeof this.convertOptions.textToSpeechLocale === "undefined") {
+                this.convertOptions.textToSpeechLocale = "en";
+              }
+            } else {
+              // initialize configuration (if they differ from the default settings)
+              this.convertOptions.useHls = true;
+              this.convertOptions.config.sidplay2Section.single = true;
+              this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
+              this.convertOptions.config.audioSection.reverbBypass = false;
+              this.convertOptions.config.audioSection.mainBalance = 0.3;
+              this.convertOptions.config.audioSection.secondBalance = 0.7;
+              this.convertOptions.config.audioSection.thirdBalance = 0.5;
+              this.convertOptions.config.audioSection.secondDelay = 10;
+              this.convertOptions.config.audioSection.sampling = "RESAMPLE";
+              this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
+              this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
+              this.convertOptions.textToSpeechLocale = "en";
+              this.mobileProfile();
+            }
+            if (localStorage.random) {
+              this.random = JSON.parse(localStorage.random);
+            }
+            if (localStorage.playlistV2) {
+              this.playlist = JSON.parse(localStorage.playlistV2);
+            }
+            if (localStorage.playlistIndex) {
+              this.playlistIndex = JSON.parse(localStorage.playlistIndex);
+              if (this.playlistIndex >= this.playlist.length) {
+                this.playlistIndex = 0;
+              }
+            }
+            if (this.playlist.length !== 0) {
+              this.currentSid =
+                this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
+              this.updateSid(
+                this.playlist[this.playlistIndex].filename,
+                this.playlist[this.playlistIndex].itemId,
+                this.playlist[this.playlistIndex].categoryId
+              );
+
+              this.showAudio = true;
+              this.$refs.audioElm.src = this.createConvertUrl(
                 "",
                 this.playlist[this.playlistIndex].filename,
                 this.playlist[this.playlistIndex].itemId,
                 this.playlist[this.playlistIndex].categoryId
               );
             }
-            this.currentSid =
-              this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
-            this.updateSid(
-              this.playlist[this.playlistIndex].filename,
-              this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
-            );
-          },
-          setDefault: function () {
-            this.convertOptions = JSON.parse(JSON.stringify(this.defaultConvertOptions));
-            this.convertOptions.useHls = true;
-            this.convertOptions.config.sidplay2Section.single = true;
-            this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
-            this.convertOptions.config.audioSection.reverbBypass = false;
-            this.convertOptions.config.audioSection.mainBalance = 0.3;
-            this.convertOptions.config.audioSection.secondBalance = 0.7;
-            this.convertOptions.config.audioSection.thirdBalance = 0.5;
-            this.convertOptions.config.audioSection.secondDelay = 10;
-            this.convertOptions.config.audioSection.sampling = "RESAMPLE";
-            this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
-            this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
-            this.convertOptions.textToSpeechLocale = "en";
-            this.mobileProfile();
-          },
-          setDefaultUser: function () {
-            this.username = "jsidplay2";
-            this.password = "jsidplay2!";
-          },
-          mobileProfile: function () {
-            this.convertOptions.config.audioSection.vbr = false;
-            this.convertOptions.config.audioSection.cbr = 64;
-            this.convertOptions.config.audioSection.audioCoderBitRate = 64000;
-            this.convertOptions.config.audioSection.videoCoderBitRate = 480000;
-          },
-          wifiProfile: function () {
-            this.convertOptions.config.audioSection.vbr = true;
-            this.convertOptions.config.audioSection.vbrQuality = 0;
-            this.convertOptions.config.audioSection.audioCoderBitRate = 320000;
-            this.convertOptions.config.audioSection.videoCoderBitRate = 1000000;
-          },
-          updateFilters: function () {
-            this.convertOptions.config.emulationSection.reSIDfpFilter6581 = this.reSIDfpFilters6581[1];
-            this.convertOptions.config.emulationSection.reSIDfpFilter8580 = this.reSIDfpFilters8580[1];
-            this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 = this.reSIDfpFilters6581[1];
-            this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 = this.reSIDfpFilters8580[1];
-            this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 = this.reSIDfpFilters6581[1];
-            this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 = this.reSIDfpFilters8580[1];
-
-            this.convertOptions.config.emulationSection.filter6581 = this.reSIDFilters6581[3];
-            this.convertOptions.config.emulationSection.filter8580 = this.reSIDFilters8580[1];
-            this.convertOptions.config.emulationSection.stereoFilter6581 = this.reSIDFilters6581[3];
-            this.convertOptions.config.emulationSection.stereoFilter8580 = this.reSIDFilters8580[1];
-            this.convertOptions.config.emulationSection.thirdSIDFilter6581 = this.reSIDFilters6581[3];
-            this.convertOptions.config.emulationSection.thirdSIDFilter8580 = this.reSIDFilters8580[1];
-          },
-          updateSid: function (entry, itemId, categoryId) {
-            if (entry) {
-              this.fetchInfo(entry, itemId, categoryId);
-              this.fetchStil(entry, itemId, categoryId);
-              this.fetchPhoto(entry, itemId, categoryId);
+            if (localStorage.category) {
+              this.category = JSON.parse(localStorage.category);
             }
+            if (localStorage.name) {
+              this.name = JSON.parse(localStorage.name);
+            }
+            if (localStorage.event) {
+              this.event = JSON.parse(localStorage.event);
+            }
+            if (localStorage.released) {
+              this.released = JSON.parse(localStorage.released);
+            }
+            if (localStorage.rating) {
+              this.rating = JSON.parse(localStorage.rating);
+            }
+            if (localStorage.handle) {
+              this.handle = JSON.parse(localStorage.handle);
+            }
+            this.requestSearchResults();
           },
-          createDownloadUrl: function (entry, itemId, categoryId) {
-            return (
-              window.location.protocol +
-              "//" +
-              window.location.host +
-              "/jsidplay2service/JSIDPlay2REST/convert/" +
-              uriEncode(entry) +
-              "?itemId=" +
-              itemId +
-              "&categoryId=" +
-              categoryId
-            );
-          },
-          createConvertUrl: function (autostart, entry, itemId, categoryId) {
-            return (
-              window.location.protocol +
-              "//" +
-              window.location.host +
-              "/jsidplay2service/JSIDPlay2REST/convert/" +
-              uriEncode(entry) +
-              "?enableSidDatabase=" +
-              this.convertOptions.config.sidplay2Section.enableDatabase +
-              "&startTime=" +
-              (this.showHardwarePlayer ? "0" : this.convertOptions.config.sidplay2Section.startTime) +
-              "&defaultLength=" +
-              this.convertOptions.config.sidplay2Section.defaultPlayLength +
-              "&fadeIn=" +
-              this.convertOptions.config.sidplay2Section.fadeInTime +
-              "&fadeOut=" +
-              this.convertOptions.config.sidplay2Section.fadeOutTime +
-              "&loop=" +
-              "false" + // this.convertOptions.config.sidplay2Section.loop +
-              "&single=" +
-              this.convertOptions.config.sidplay2Section.single +
-              "&frequency=" +
-              this.convertOptions.config.audioSection.samplingRate +
-              "&sampling=" +
-              this.convertOptions.config.audioSection.sampling +
-              "&mainVolume=" +
-              this.convertOptions.config.audioSection.mainVolume +
-              "&secondVolume=" +
-              this.convertOptions.config.audioSection.secondVolume +
-              "&thirdVolume=" +
-              this.convertOptions.config.audioSection.thirdVolume +
-              "&mainBalance=" +
-              this.convertOptions.config.audioSection.mainBalance +
-              "&secondBalance=" +
-              this.convertOptions.config.audioSection.secondBalance +
-              "&thirdBalance=" +
-              this.convertOptions.config.audioSection.thirdBalance +
-              "&mainDelay=" +
-              this.convertOptions.config.audioSection.mainDelay +
-              "&secondDelay=" +
-              this.convertOptions.config.audioSection.secondDelay +
-              "&thirdDelay=" +
-              this.convertOptions.config.audioSection.thirdDelay +
-              "&bufferSize=" +
-              this.convertOptions.config.audioSection.bufferSize +
-              "&audioBufferSize=" +
-              this.convertOptions.config.audioSection.audioBufferSize +
-              "&cbr=" +
-              this.convertOptions.config.audioSection.cbr +
-              "&vbrQuality=" +
-              this.convertOptions.config.audioSection.vbrQuality +
-              "&vbr=" +
-              this.convertOptions.config.audioSection.vbr +
-              "&acBitRate=" +
-              this.convertOptions.config.audioSection.audioCoderBitRate +
-              "&vcBitRate=" +
-              this.convertOptions.config.audioSection.videoCoderBitRate +
-              "&vcAudioDelay=" +
-              this.convertOptions.config.audioSection.videoCoderAudioDelay +
-              "&delayBypass=" +
-              this.convertOptions.config.audioSection.delayBypass +
-              "&reverbBypass=" +
-              this.convertOptions.config.audioSection.reverbBypass +
-              "&defaultEmulation=" +
-              this.convertOptions.config.emulationSection.defaultEmulation +
-              "&defaultClock=" +
-              this.convertOptions.config.emulationSection.defaultClockSpeed +
-              "&defaultModel=" +
-              this.convertOptions.config.emulationSection.defaultSidModel +
-              "&sidToRead=" +
-              this.convertOptions.config.emulationSection.sidToRead +
-              "&digiBoosted8580=" +
-              this.convertOptions.config.emulationSection.digiBoosted8580 +
-              "&fakeStereo=" +
-              this.convertOptions.config.emulationSection.fakeStereo +
-              "&muteVoice1=" +
-              this.convertOptions.config.emulationSection.muteVoice1 +
-              "&muteVoice2=" +
-              this.convertOptions.config.emulationSection.muteVoice2 +
-              "&muteVoice3=" +
-              this.convertOptions.config.emulationSection.muteVoice3 +
-              "&muteVoice4=" +
-              this.convertOptions.config.emulationSection.muteVoice4 +
-              "&muteStereoVoice1=" +
-              this.convertOptions.config.emulationSection.muteStereoVoice1 +
-              "&muteStereoVoice2=" +
-              this.convertOptions.config.emulationSection.muteStereoVoice2 +
-              "&muteStereoVoice3=" +
-              this.convertOptions.config.emulationSection.muteStereoVoice3 +
-              "&muteStereoVoice4=" +
-              this.convertOptions.config.emulationSection.muteStereoVoice4 +
-              "&muteThirdSidVoice1=" +
-              this.convertOptions.config.emulationSection.muteThirdSIDVoice1 +
-              "&muteThirdSidVoice2=" +
-              this.convertOptions.config.emulationSection.muteThirdSIDVoice2 +
-              "&muteThirdSidVoice3=" +
-              this.convertOptions.config.emulationSection.muteThirdSIDVoice3 +
-              "&muteThirdSidVoice4=" +
-              this.convertOptions.config.emulationSection.muteThirdSIDVoice4 +
-              "&filter6581=" +
-              this.convertOptions.config.emulationSection.filter6581 +
-              "&stereoFilter6581=" +
-              this.convertOptions.config.emulationSection.stereoFilter6581 +
-              "&thirdFilter6581=" +
-              this.convertOptions.config.emulationSection.thirdSIDFilter6581 +
-              "&filter8580=" +
-              this.convertOptions.config.emulationSection.filter8580 +
-              "&stereoFilter8580=" +
-              this.convertOptions.config.emulationSection.stereoFilter8580 +
-              "&thirdFilter8580=" +
-              this.convertOptions.config.emulationSection.thirdSIDFilter8580 +
-              "&reSIDfpFilter6581=" +
-              this.convertOptions.config.emulationSection.reSIDfpFilter6581 +
-              "&reSIDfpStereoFilter6581=" +
-              this.convertOptions.config.emulationSection.reSIDfpStereoFilter6581 +
-              "&reSIDfpThirdFilter6581=" +
-              this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter6581 +
-              "&reSIDfpFilter8580=" +
-              this.convertOptions.config.emulationSection.reSIDfpFilter8580 +
-              "&reSIDfpStereoFilter8580=" +
-              this.convertOptions.config.emulationSection.reSIDfpStereoFilter8580 +
-              "&reSIDfpThirdFilter8580=" +
-              this.convertOptions.config.emulationSection.reSIDfpThirdSIDFilter8580 +
-              "&detectPSID64ChipModel=" +
-              this.convertOptions.config.emulationSection.detectPSID64ChipModel +
-              (this.showHardwarePlayer
-                ? ""
-                : "&dualSID=" +
-                  this.convertOptions.config.emulationSection.forceStereoTune +
-                  "&dualSIDBase=" +
-                  this.convertOptions.config.emulationSection.dualSidBase +
-                  "&thirdSID=" +
-                  this.convertOptions.config.emulationSection.force3SIDTune +
-                  "&thirdSIDBase=" +
-                  this.convertOptions.config.emulationSection.thirdSIDBase) +
-              "&videoTuneAsAudio=" +
-              this.convertOptions.videoTuneAsAudio +
-              "&hls=" +
-              this.convertOptions.useHls +
-              "&hlsType=" +
-              this.convertOptions.hlsType +
-              "&pressSpaceInterval=" +
-              this.convertOptions.pressSpaceInterval +
-              "&status=" +
-              this.convertOptions.showStatus +
-              "&jiffydos=" +
-              this.convertOptions.config.c1541Section.jiffyDosInstalled +
-              "&sfxSoundExpander=" +
-              this.convertOptions.sfxSoundExpander +
-              "&sfxSoundExpanderType=" +
-              this.convertOptions.sfxSoundExpanderType +
-              "&reuSize=" +
-              this.convertOptions.reuSize +
-              "&textToSpeechType=" +
-              this.convertOptions.textToSpeechType +
-              "&textToSpeechLocale=" +
-              this.convertOptions.textToSpeechLocale +
-              "&locale=" +
-              this.$i18n.locale +
-              "&itemId=" +
-              itemId +
-              "&categoryId=" +
-              categoryId +
-              "&autostart=" +
-              uriEncode(autostart) +
-              "&devtools=" +
-              ("${min}" !== ".min")
-            );
-          },
-          createSIDMappingUrl: function (entry, itemId, categoryId) {
-            return (
-              window.location.protocol +
-              "//" +
-              window.location.host +
-              "/jsidplay2service/JSIDPlay2REST/" +
-              HardwareFunctions.mapping +
-              uriEncode(entry) +
-              "?defaultModel=" +
-              this.convertOptions.config.emulationSection.defaultSidModel +
-              "&fakeStereo=" +
-              this.convertOptions.config.emulationSection.fakeStereo +
-              "&exsidFakeStereo=" +
-              this.convertOptions.config.emulationSection.fakeStereo +
-              "&hardSid6581=" +
-              this.convertOptions.config.emulationSection.hardsid6581 +
-              "&hardSid8580=" +
-              this.convertOptions.config.emulationSection.hardsid8580 +
-              (HardwareFunctions.mapping === "hardsid-mapping/" ? "&chipCount=" + chipCount : "") +
-              "&itemId=" +
-              itemId +
-              "&categoryId=" +
-              categoryId
-            );
-          },
-          openDownloadMP3Url: function (entry, itemId, categoryId) {
-            window.open(this.createConvertUrl(undefined, entry, itemId, categoryId) + "&download=true");
-          },
-          openDownloadSIDUrl: function (entry, itemId, categoryId) {
-            window.open(
-              window.location.protocol +
-                "//" +
-                this.username +
-                ":" +
-                this.password +
-                "@" +
-                window.location.host +
-                "/jsidplay2service/JSIDPlay2REST/download/" +
-                uriEncode(entry) +
-                "?itemId=" +
-                itemId +
-                "&categoryId=" +
-                categoryId
-            );
-          },
-          openDownloadUrl: function (entry, itemId, categoryId) {
-            window.open(this.createDownloadUrl(entry, itemId, categoryId));
-          },
-          delayedFetchDirectory: function (entry) {
-            let outer = this;
-            clearTimeout(this.timeoutId);
-            this.timeoutId = setTimeout(function () {
-              outer.fetchDirectory(entry);
-            }, 1000);
-          },
-          fetchLogs: function () {
-            this.loadingLogs = true; //the loading begin
-            axios({
-              method: "get",
-              url:
-                "/jsidplay2service/JSIDPlay2REST/logs" +
-                "?instant=" +
-                this.instant +
-                "&sourceClassName=" +
-                uriEncode(this.Logs.sourceClassName) +
-                "&sourceMethodName=" +
-                uriEncode(this.Logs.sourceMethodName) +
-                "&level=" +
-                uriEncode(this.Logs.level) +
-                "&message=" +
-                uriEncode(this.Logs.message) +
-                "&maxResults=" +
-                this.maxResults +
-                "&order=" +
-                this.order +
-                "&tooMuchLogging=" +
-                this.tooMuchLogging,
-              auth: {
-                username: this.username,
-                password: this.password,
+          watch: {
+            username(newValue, oldValue) {
+              localStorage.username = JSON.stringify(this.username);
+            },
+            password(newValue, oldValue) {
+              localStorage.password = JSON.stringify(this.password);
+            },
+            directory: {
+              handler: function (after, before) {
+                localStorage.directory = JSON.stringify(this.directory);
               },
-            })
-              .then((response) => {
-                this.logs = response.data;
-                if (!this.logs) {
-                  this.logs = [];
-                }
-              })
-              .catch((error) => {
-                this.logs = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingLogs = false));
-          },
-          countLogs: function () {
-            this.loadingLogs = true; //the loading begin
-            axios({
-              method: "get",
-              url:
-                "/jsidplay2service/JSIDPlay2REST/count-logs" +
-                "?instant=" +
-                this.instant +
-                "&sourceClassName=" +
-                uriEncode(this.Logs.sourceClassName) +
-                "&sourceMethodName=" +
-                uriEncode(this.Logs.sourceMethodName) +
-                "&level=" +
-                uriEncode(this.Logs.level) +
-                "&message=" +
-                uriEncode(this.Logs.message) +
-                "&order=" +
-                this.order +
-                "&tooMuchLogging=" +
-                this.tooMuchLogging,
-              auth: {
-                username: this.username,
-                password: this.password,
+              deep: true,
+            },
+            category(newValue, oldValue) {
+              localStorage.category = JSON.stringify(this.category);
+            },
+            name(newValue, oldValue) {
+              localStorage.name = JSON.stringify(this.name);
+            },
+            event(newValue, oldValue) {
+              localStorage.event = JSON.stringify(this.event);
+            },
+            released(newValue, oldValue) {
+              localStorage.released = JSON.stringify(this.released);
+            },
+            rating(newValue, oldValue) {
+              localStorage.rating = JSON.stringify(this.rating);
+            },
+            handle(newValue, oldValue) {
+              localStorage.handle = JSON.stringify(this.handle);
+            },
+            random(newValue, oldValue) {
+              localStorage.random = JSON.stringify(this.random);
+            },
+            playlistIndex(newValue, oldValue) {
+              localStorage.playlistIndex = JSON.stringify(this.playlistIndex);
+            },
+            playlist: {
+              handler: function (after, before) {
+                localStorage.playlistV2 = JSON.stringify(this.playlist);
               },
-            })
-              .then((response) => {
-                this.logsCount = response.data;
-                if (!this.logs) {
-                  this.logsCount = 0;
-                }
-              })
-              .catch((error) => {
-                logsCount = 0;
-                console.log(error);
-              })
-              .finally(() => (this.loadingLogs = false));
-          },
-          fetchDirectory: function (entry) {
-            entry.loading = true; //the loading begin
-            axios({
-              method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/directory" + uriEncode(entry.filename) + "?filter=.*",
-              auth: {
-                username: this.username,
-                password: this.password,
+              deep: true,
+            },
+            convertOptions: {
+              handler: function (after, before) {
+                localStorage.convertOptions = JSON.stringify(this.convertOptions);
               },
-            })
-              .then((response) => {
-                this.directory = response.data.map((file) => {
-                  return {
-                    filename: file,
-                    diskDirectory: [],
-                    directoryMode: 0,
-                    loading: false,
-                    loadingDisk: false,
-                  };
-                });
-              })
-              .catch((error) => {
-                console.log(error);
-              })
-              .finally(() => (entry.loading = false));
+              deep: true,
+            },
           },
-          fetchInfo: function (entry, itemId, categoryId) {
-            this.loadingSid = true; //the loading begin
-            axios({
-              method: "get",
-              url:
-                "/jsidplay2service/JSIDPlay2REST/info/" +
-                uriEncode(entry) +
-                "?list=true" +
-                "&itemId=" +
-                itemId +
-                "&categoryId=" +
-                categoryId,
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-            })
-              .then((response) => {
-                this.infos = response.data;
-              })
-              .catch((error) => {
-                this.infos = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingSid = false));
-          },
-          fetchStil: function (entry, itemId, categoryId) {
-            this.loadingStil = true; //the loading begin
-            axios({
-              method: "get",
-              url:
-                "/jsidplay2service/JSIDPlay2REST/stil/" +
-                uriEncode(entry) +
-                "?itemId=" +
-                itemId +
-                "&categoryId=" +
-                categoryId,
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-            })
-              .then((response) => {
-                this.stil = response.data;
-                if (!this.stil) {
-                  this.stil = [];
-                }
-              })
-              .catch((error) => {
-                this.stil = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingStil = false));
-          },
-          fetchPhoto: function (entry, itemId, categoryId) {
-            this.loadingSid = true; //the loading begin
-            axios({
-              method: "get",
-              url:
-                "/jsidplay2service/JSIDPlay2REST/photo/" +
-                uriEncode(entry) +
-                "?itemId=" +
-                itemId +
-                "&categoryId=" +
-                categoryId,
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-              responseType: "blob",
-            })
-              .then((response) => {
-                var reader = new window.FileReader();
-                reader.readAsDataURL(response.data);
-                reader.onload = function () {
-                  this.picture = reader.result;
-                  var imgSrc = this.picture;
-                  Vue.nextTick(function () {
-                    if (document.getElementById("img")) {
-                      document.getElementById("img").setAttribute("src", imgSrc);
-                    }
-                  });
-                };
-              })
-              .catch((error) => {
-                this.picture = "";
-                console.log(error);
-              })
-              .finally(() => (this.loadingSid = false));
-          },
-          fetchFavorites: function (number) {
-            this.loadingPl = true; //the loading begin
-            axios({
-              method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/favorites?favoritesNumber=" + number,
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-            })
-              .then((response) => {
-                this.playlist = response.data;
-                this.playlistIndex = 0;
-                if (this.playlist.length === 0 || this.playlistIndex >= this.playlist.length) {
-                  return;
-                }
-                this.currentSid =
-                  this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
-                this.updateSid(
-                  this.playlist[this.playlistIndex].filename,
-                  this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
-                );
-                this.$refs.audioElm.src = this.createConvertUrl(
-                  "",
-                  this.playlist[this.playlistIndex].filename,
-                  this.playlist[this.playlistIndex].itemId,
-                  this.playlist[this.playlistIndex].categoryId
-                );
-                this.showAudio = true;
-                this.importExportVisible = false;
-              })
-              .catch((error) => {
-                this.playlist = [];
-                this.playlistIndex = 0;
-                console.log(error);
-              })
-              .finally(() => (this.loadingPl = false));
-          },
-          fetchFavoritesNames: function () {
-            this.loadingPl = true; //the loading begin
-            axios({
-              method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/favorite_names",
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-            })
-              .then((response) => {
-                this.favoritesNames = response.data;
-              })
-              .catch((error) => {
-                this.favoritesNames = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingPl = false));
-          },
-          playRandomHVSC: function () {
-            this.loadingCfg = true; //the loading begin
-            axios({
-              method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/random-hvsc",
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-            })
-              .then((response) => {
-                this.currentSid = this.shortEntry(response.data);
-                this.updateSid(response.data);
-                this.fetchDirectory({
-                  filename: response.data.substring(0, response.data.lastIndexOf("/")),
-                  loading: false,
-                });
-                this.play(undefined, response.data);
-              })
-              .catch((error) => {
-                console.log(error);
-              })
-              .finally(() => (this.loadingCfg = false));
-          },
-          fetchFilters: function () {
-            this.loadingCfg = true; //the loading begin
-            axios({
-              method: "get",
-              url: "/jsidplay2service/JSIDPlay2REST/filters",
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-            })
-              .then((response) => {
-                const filters = response.data;
-                this.reSIDFilters6581 = filters
-                  .filter((filter) => filter.startsWith("RESID_MOS6581_"))
-                  .map((filter) => filter.substring("RESID_MOS6581_".length));
-                this.reSIDFilters8580 = filters
-                  .filter((filter) => filter.startsWith("RESID_MOS8580_"))
-                  .map((filter) => filter.substring("RESID_MOS8580_".length));
-                this.reSIDfpFilters6581 = filters
-                  .filter((filter) => filter.startsWith("RESIDFP_MOS6581_"))
-                  .map((filter) => filter.substring("RESIDFP_MOS6581_".length));
-                this.reSIDfpFilters8580 = filters
-                  .filter((filter) => filter.startsWith("RESIDFP_MOS8580_"))
-                  .map((filter) => filter.substring("RESIDFP_MOS8580_".length));
+        })
+          .use(i18n)
+          .mount("#app");
 
-                this.updateFilters();
-              })
-              .catch((error) => {
-                this.reSIDFilters6581 = [];
-                this.reSIDFilters8580 = [];
-                this.reSIDfpFilters6581 = [];
-                this.reSIDfpFilters8580 = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingCfg = false));
-          },
-          fetchDiskDirectory: function (entry, itemId, categoryId) {
-            if (entry.directoryMode) {
-              if (entry.directoryMode === 0xe000) {
-                entry.directoryMode = 0xe100;
-              } else {
-                entry.diskDirectoryHeader = null;
-                entry.diskDirectory = [];
-                entry.directoryMode = 0;
-                return;
-              }
+
+        var noSleep = new NoSleep();
+
+        var wakeLockEnabled = false;
+        var toggleEl = document.querySelector("#toggle");
+        toggleEl.addEventListener(
+          "click",
+          function () {
+            if (!wakeLockEnabled) {
+              noSleep.enable(); // keep the screen on!
+              wakeLockEnabled = true;
+              toggleEl.value = "Wake Lock is enabled";
+              document.body.style.backgroundColor = "lightblue";
             } else {
-              entry.directoryMode = 0xe000;
+              noSleep.disable(); // let the screen turn off.
+              wakeLockEnabled = false;
+              toggleEl.value = "Wake Lock is disabled";
+              document.body.style.backgroundColor = "";
             }
-            entry.loadingDisk = true; //the loading begin
-            axios({
-              method: "get",
-              url:
-                "/jsidplay2service/JSIDPlay2REST/disk-directory/" +
-                uriEncode(entry.filename) +
-                "?itemId=" +
-                itemId +
-                "&categoryId=" +
-                categoryId,
-              auth: {
-                username: this.username,
-                password: this.password,
-              },
-            })
-              .then((response) => {
-                entry.diskDirectoryHeader = petsciiToFont(response.data.title, entry.directoryMode | 0x200);
-                entry.diskDirectory = response.data.dirEntries.map((dirEntry) => {
-                  return {
-                    directoryLine: dirEntry.directoryLine,
-                    formatted: petsciiToFont(dirEntry.directoryLine, entry.directoryMode),
-                  };
-                });
-              })
-              .catch((error) => {
-                entry.diskDirectoryHeader = null;
-                entry.diskDirectory = [];
-                entry.directoryMode = 0;
-                console.log(error);
-              })
-              .finally(() => (entry.loadingDisk = false));
           },
-          assembly64SearchUrl: function (token) {
-            var parameterList = [];
-            if (typeof token !== "undefined") {
-              this.name = "";
-              this.category = "hvscmusic";
-              this.event = "";
-              this.released = "";
-              this.rating = "";
-              this.handle = token;
-            }
-            if (this.name !== "") {
-              parameterList.push('name:"' + uriEncode(this.name) + '"');
-            }
-            if (this.category !== "") {
-              parameterList.push("subcat:" + this.category);
-            }
-            if (this.event !== "") {
-              parameterList.push('event:"' + uriEncode(this.event) + '"');
-            }
-            if (this.released.length === 4) {
-              parameterList.push("date:" + this.released + "0101-" + this.released + "1231");
-            }
-            if (this.released.length === 7) {
-              var splitted = this.released.split("-");
-              var year = splitted[0];
-              var month = splitted[1];
-              parameterList.push("date:" + year + month + "01-" + year + month + daysInMonth(month, year));
-            }
-            if (this.released.length === 10) {
-              var splitted = this.released.split("-");
-              var year = splitted[0];
-              var month = splitted[1];
-              var day = splitted[2];
-              parameterList.push("date:" + year + month + day + "-" + year + month + day);
-            }
-            if (this.rating !== "") {
-              parameterList.push("rating:>=" + this.rating);
-            }
-            if (this.handle !== "") {
-              parameterList.push('handle:"' + uriEncode(this.handle) + '"');
-            }
-            return parameterList.length > 0 ? "?query=" + parameterList.join("+") : "";
-          },
-          fetchCategories: function () {
-            this.loadingAssembly64 = true; //the loading begin
-            axios({
-              method: "get",
-              url: "${assembly64Url}/leet/search/aql/presets",
-            })
-              .then((response) => {
-                let presets = response.data;
-                this.categories = presets.filter(function (item) {
-                  return item.type == "subcat";
-                })[0].values;
-                this.categories.sort((a, b) => {
-                  return a.name.localeCompare(b.name);
-                });
-              })
-              .catch((error) => {
-                this.categories = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingAssembly64 = false));
-          },
-          resetSearchResults: function (event) {
-            this.name = "";
-            this.category = "";
-            this.event = "";
-            this.released = "";
-            this.rating = "";
-            this.handle = "";
-          },
-          requestSearchResults: function (event, token) {
-            var url = this.assembly64SearchUrl(token);
-            if (url.length === 0) {
-              this.searchResults = [];
-              return;
-            }
-            this.loadingAssembly64 = true; //the loading begin
-            axios({
-              method: "get",
-              url: "${assembly64Url}/leet/search/aql/0/200" + url,
-            })
-              .then((response) => {
-                if (response.status === 200) {
-                  this.searchResults = response.data;
+          false
+        );
 
-                  var data = this;
-                  this.searchResults = this.searchResults.map((obj) => {
-                    return {
-                      id: obj.id,
-                      category: data.categories.filter(function (item) {
-                        return item.id === obj.category;
-                      })[0]?.name,
-                      categoryId: obj.category,
-                      name: obj.name,
-                      group: obj.group,
-                      event: obj.event,
-                      released: obj.released,
-                      handle: obj.handle,
-                      rating: obj.rating,
-                      _showDetails: false,
-                    };
-                  });
-                } else {
-                  this.searchResults = [];
-                }
-              })
-              .catch((error) => {
-                this.searchResults = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingAssembly64 = false));
-          },
-          requestContentEntries: function (searchResult) {
-            if (searchResult._showDetails === true) {
-              searchResult._showDetails = false;
-              return;
-            }
-            if (searchResult.contentEntries) {
-              searchResult._showDetails = true;
-              return;
-            }
-            this.loadingAssembly64 = true; //the loading begin
-            axios({
-              method: "get",
-              url: "${assembly64Url}/leet/search/legacy/entries/" + btoa(searchResult.id) + "/" + searchResult.categoryId,
-            })
-              .then((response) => {
-                if (response.status === 200) {
-                  searchResult.contentEntries = response.data.contentEntry.map((contentEntry) => {
-                    return {
-                      filename: contentEntry.id,
-                      diskDirectory: [],
-                      directoryMode: 0,
-                      loadingDisk: false,
-                    };
-                  });
-                  searchResult._showDetails = true;
-                }
-              })
-              .catch((error) => {
-                searchResult.contentEntries = [];
-                console.log(error);
-              })
-              .finally(() => (this.loadingAssembly64 = false));
-          },
-        },
-        mounted: function () {
-          window.addEventListener("resize", () => {
-            let outer = this;
-            clearTimeout(window.resizedFinished);
-            window.resizedFinished = setTimeout(function () {
-              outer.carouselImageHeight =
-                window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerHeight * 0.8;
-            }, 1000);
-          });
-
-          this.hasHardware = typeof navigator.usb !== "undefined";
-
-          if (localStorage.locale) {
-            this.$i18n.locale = localStorage.locale;
-          }
-          if (localStorage.username) {
-            this.username = JSON.parse(localStorage.username);
-          }
-          if (localStorage.password) {
-            this.password = JSON.parse(localStorage.password);
-          }
-          if (localStorage.directory) {
-            this.directory = JSON.parse(localStorage.directory);
-          } else {
-            this.fetchDirectory(this.rootDir);
-          }
-          this.fetchFilters();
-          this.fetchFavoritesNames();
-          this.fetchCategories();
-          if (localStorage.convertOptions) {
-            // restore configuration from last run
-            this.convertOptions = JSON.parse(localStorage.convertOptions);
-            // migration:
-            if (typeof this.convertOptions.textToSpeechType === "undefined") {
-              this.convertOptions.textToSpeechType = "PICO2WAVE";
-            }
-            if (typeof this.convertOptions.textToSpeechLocale === "undefined") {
-              this.convertOptions.textToSpeechLocale = "en";
-            }
-          } else {
-            // initialize configuration (if they differ from the default settings)
-            this.convertOptions.useHls = true;
-            this.convertOptions.config.sidplay2Section.single = true;
-            this.convertOptions.config.sidplay2Section.defaultPlayLength = 240;
-            this.convertOptions.config.audioSection.reverbBypass = false;
-            this.convertOptions.config.audioSection.mainBalance = 0.3;
-            this.convertOptions.config.audioSection.secondBalance = 0.7;
-            this.convertOptions.config.audioSection.thirdBalance = 0.5;
-            this.convertOptions.config.audioSection.secondDelay = 10;
-            this.convertOptions.config.audioSection.sampling = "RESAMPLE";
-            this.convertOptions.config.emulationSection.defaultSidModel = "MOS8580";
-            this.convertOptions.config.c1541Section.jiffyDosInstalled = true;
-            this.convertOptions.textToSpeechLocale = "en";
-            this.mobileProfile();
-          }
-          if (localStorage.random) {
-            this.random = JSON.parse(localStorage.random);
-          }
-          if (localStorage.playlistV2) {
-            this.playlist = JSON.parse(localStorage.playlistV2);
-          }
-          if (localStorage.playlistIndex) {
-            this.playlistIndex = JSON.parse(localStorage.playlistIndex);
-            if (this.playlistIndex >= this.playlist.length) {
-              this.playlistIndex = 0;
-            }
-          }
-          if (this.playlist.length !== 0) {
-            this.currentSid =
-              this.playlistIndex + 1 + ". " + this.shortEntry(this.playlist[this.playlistIndex].filename);
-            this.updateSid(
-              this.playlist[this.playlistIndex].filename,
-              this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
-            );
-
-            this.showAudio = true;
-            this.$refs.audioElm.src = this.createConvertUrl(
-              "",
-              this.playlist[this.playlistIndex].filename,
-              this.playlist[this.playlistIndex].itemId,
-              this.playlist[this.playlistIndex].categoryId
-            );
-          }
-          if (localStorage.category) {
-            this.category = JSON.parse(localStorage.category);
-          }
-          if (localStorage.name) {
-            this.name = JSON.parse(localStorage.name);
-          }
-          if (localStorage.event) {
-            this.event = JSON.parse(localStorage.event);
-          }
-          if (localStorage.released) {
-            this.released = JSON.parse(localStorage.released);
-          }
-          if (localStorage.rating) {
-            this.rating = JSON.parse(localStorage.rating);
-          }
-          if (localStorage.handle) {
-            this.handle = JSON.parse(localStorage.handle);
-          }
-          this.requestSearchResults();
-        },
-        watch: {
-          username(newValue, oldValue) {
-            localStorage.username = JSON.stringify(this.username);
-          },
-          password(newValue, oldValue) {
-            localStorage.password = JSON.stringify(this.password);
-          },
-          directory: {
-            handler: function (after, before) {
-              localStorage.directory = JSON.stringify(this.directory);
-            },
-            deep: true,
-          },
-          category(newValue, oldValue) {
-            localStorage.category = JSON.stringify(this.category);
-          },
-          name(newValue, oldValue) {
-            localStorage.name = JSON.stringify(this.name);
-          },
-          event(newValue, oldValue) {
-            localStorage.event = JSON.stringify(this.event);
-          },
-          released(newValue, oldValue) {
-            localStorage.released = JSON.stringify(this.released);
-          },
-          rating(newValue, oldValue) {
-            localStorage.rating = JSON.stringify(this.rating);
-          },
-          handle(newValue, oldValue) {
-            localStorage.handle = JSON.stringify(this.handle);
-          },
-          random(newValue, oldValue) {
-            localStorage.random = JSON.stringify(this.random);
-          },
-          playlistIndex(newValue, oldValue) {
-            localStorage.playlistIndex = JSON.stringify(this.playlistIndex);
-          },
-          playlist: {
-            handler: function (after, before) {
-              localStorage.playlistV2 = JSON.stringify(this.playlist);
-            },
-            deep: true,
-          },
-          convertOptions: {
-            handler: function (after, before) {
-              localStorage.convertOptions = JSON.stringify(this.convertOptions);
-            },
-            deep: true,
-          },
-        },
-      })
-        .use(i18n)
-        .mount("#app");
-
-
-      var noSleep = new NoSleep();
-
-      var wakeLockEnabled = false;
-      var toggleEl = document.querySelector("#toggle");
-      toggleEl.addEventListener(
-        "click",
-        function () {
-          if (!wakeLockEnabled) {
-            noSleep.enable(); // keep the screen on!
-            wakeLockEnabled = true;
-            toggleEl.value = "Wake Lock is enabled";
-            document.body.style.backgroundColor = "lightblue";
-          } else {
-            noSleep.disable(); // let the screen turn off.
-            wakeLockEnabled = false;
-            toggleEl.value = "Wake Lock is disabled";
-            document.body.style.backgroundColor = "";
-          }
-        },
-        false
-      );
-
-      // prevent back button
-      history.pushState(null, null, document.URL);
-      window.addEventListener("popstate", function () {
-        closeiframe();
+        // prevent back button
         history.pushState(null, null, document.URL);
-      });
-      window.addEventListener("message", messageListener, false);
+        window.addEventListener("popstate", function () {
+          closeiframe();
+          history.pushState(null, null, document.URL);
+        });
+        window.addEventListener("message", messageListener, false);
 
-      document.getElementById("main").addEventListener(
-        "keypress",
-        function (e) {
-          if (e.keyCode == 13) {
-            e.preventDefault();
-            return false;
-          }
-        },
-        false
-      );
+        document.getElementById("main").addEventListener(
+          "keypress",
+          function (e) {
+            if (e.keyCode == 13) {
+              e.preventDefault();
+              return false;
+            }
+          },
+          false
+        );
     </script>
   </body>
 </html>

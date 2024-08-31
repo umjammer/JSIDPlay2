@@ -17,7 +17,7 @@ import mp3.Version;
 /**
  * Wrapper for the jump3r encoder.
  * 
- * @author Ken Händel
+ * @author Ken Hèˆ…del
  */
 public class LameEncoder {
 

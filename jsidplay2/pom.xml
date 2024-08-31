@@ -62,7 +62,12 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
+		<repository>
+			<id>Dcm4Che</id>
+			<url>https://maven.dcm4che.org/</url>
+		</repository>
 	</repositories>
+
 	<profiles>
 		<profile>
 			<id>development-java8</id>
@@ -142,7 +147,7 @@
 		<dependency>
 			<groupId>kickassembler</groupId>
 			<artifactId>kickassembler</artifactId>
-			<version>5.23</version>
+			<version>5.25</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
@@ -363,6 +368,7 @@
 			<version>0.10.1</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.testfx</groupId>
@@ -409,6 +415,7 @@
 				</excludes>
 			</resource>
 		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.teavm</groupId>
@@ -659,8 +666,7 @@
 					<debug>${debug}</debug>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<debuglevel>${debuglevel}</debuglevel>
-					<source>17</source>
-					<target>17</target>
+					<release>17</release>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -9,11 +9,7 @@
 
 	<name>jump3r</name>
 	<url>http://kenchis.t15.org/jsidplay2/javafx/</url>
-
-	<properties>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-	</properties>
-
+	<description>Java Unofficial MP3 EncodeR</description>
 	<scm>
 		<url>http://sourceforge.net/p/jsidplay2/code/HEAD/tree/trunk/jump3r</url>
 		<developerConnection>scm:svn:svn+ssh://kenchis@svn.code.sf.net/p/jsidplay2/code/trunk/jump3r</developerConnection>
@@ -23,9 +19,30 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-web</artifactId>
+			<version>22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+			<version>22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-swing</artifactId>
+			<version>22</version>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -36,19 +53,17 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.1</version>
+				<version>3.12.1</version>
 				<configuration>
 					<debug>true</debug>
-					<encoding>ISO-8859-1</encoding>
 					<debuglevel>lines,vars,source</debuglevel>
-					<source>1.8</source>
-					<target>1.8</target>
+					<release>17</release>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>3.4.2</version>
 				<executions>
 					<execution>
 						<id>default-jar</id>
@@ -72,7 +87,7 @@
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
 				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>1.5.2</version>
+				<version>2.5.1</version>
 				<executions>
 					<execution>
 						<id>launch4j</id>
@@ -90,7 +105,6 @@
 							<priority>high</priority>
 							<downloadUrl>http://java.com/download</downloadUrl>
 							<supportUrl>http://jsidplay2.sourceforge.net/</supportUrl>
-							<customProcName>false</customProcName>
 							<stayAlive>false</stayAlive>
 							<icon>src/main/launch4j/jsidplay2.ico</icon>
 							<classPath>
@@ -100,7 +114,7 @@
 							</classPath>
 							<jre>
 								<minVersion>1.8.0_00</minVersion>
-								<jdkPreference>preferJre</jdkPreference>
+								<requiresJdk>preferJre</requiresJdk>
 							</jre>
 						</configuration>
 					</execution>
@@ -108,5 +122,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<description>Java Unofficial MP3 EncodeR</description>
 </project>

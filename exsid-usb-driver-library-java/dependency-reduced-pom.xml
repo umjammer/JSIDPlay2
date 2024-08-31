@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>exsid</groupId>
+  <artifactId>exsid-usb-driver-library-java</artifactId>
+  <name>exSID/exSID+ USB I/O library</name>
+  <version>1.0</version>
+  <description>This is a library to use ExSID USB devices in Java</description>
+  <developers>
+    <developer>
+      <name>api calls Written Thibaut VARENE, Java port by Ken Händel</name>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>GPLv2</name>
+      <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+    </license>
+  </licenses>
+  <organization />
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.12.1</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <release>17</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/maven/**</exclude>
+                    <exclude>com/sun/jna/**</exclude>
+                    <exclude>com/ftdi/**</exclude>
+                    <exclude>natives/**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

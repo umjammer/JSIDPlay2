@@ -21,7 +21,7 @@
  *
  * Discrete Cosine Transform (DCT) for subband synthesis.
  * 
- * @author Ken Händel
+ * @author Ken Hèˆ…del
  */
 package mpg;
 
