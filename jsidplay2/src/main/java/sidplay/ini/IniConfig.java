@@ -146,6 +146,7 @@ public class IniConfig implements IConfig {
 
 		readInternal();
 		if (iniPath != null && !iniPath.exists() && createIfNotExists) {
+			if (!iniPath.getParentFile().exists()) iniPath.getParentFile().mkdirs();
 			write();
 		}
 	}
@@ -171,7 +172,7 @@ public class IniConfig implements IConfig {
 				return configPlace;
 			}
 		}
-		return new File(System.getProperty("user.home"), FILE_NAME);
+		return new File(System.getProperty("user.home") + "/.config/jsidplay2", FILE_NAME);
 	}
 
 	/**

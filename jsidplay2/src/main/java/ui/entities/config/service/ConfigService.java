@@ -104,6 +104,7 @@ public class ConfigService {
 	}
 
 	private void save(Configuration configuration, final File configPath) {
+		if (!configPath.getParentFile().exists()) configPath.getParentFile().mkdirs();
 		switch (configurationType) {
 		case DATABASE:
 			persist(configuration);
@@ -314,7 +315,7 @@ public class ConfigService {
 			}
 		}
 		// default directory
-		return new File(System.getProperty("user.home"), CONFIG_FILE + configurationType.fileExt);
+		return new File(System.getProperty("user.home") + "/.config/jsidplay2", CONFIG_FILE + configurationType.fileExt);
 	}
 
 	/**
