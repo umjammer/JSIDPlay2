@@ -1,5 +1,7 @@
 package libsidplay.common;
 
+import java.util.Arrays;
+
 public enum SamplingRate {
 	/** 8 KHz */
 	VERY_LOW(8000, 3600),
@@ -23,5 +25,9 @@ public enum SamplingRate {
 
 	public int getMiddleFrequency() {
 		return middleFrequency;
+	}
+
+	public static SamplingRate getByFrequency(int frequency) {
+		return Arrays.stream(values()).filter(e -> e.frequency == frequency).findFirst().get();
 	}
 }

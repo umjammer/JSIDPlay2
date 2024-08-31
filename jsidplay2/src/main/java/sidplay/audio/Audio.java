@@ -17,6 +17,7 @@ import sidplay.audio.AVIDriver.AVIFileDriver;
 import sidplay.audio.FLACDriver.FLACFileDriver;
 import sidplay.audio.FLVDriver.FLVFileDriver;
 import sidplay.audio.FLVDriver.FLVStreamDriver;
+import sidplay.audio.JWAVDriver.JWAVStreamDriver;
 import sidplay.audio.MP3Driver.MP3FileDriver;
 import sidplay.audio.MP4Driver.MP4FileDriver;
 import sidplay.audio.SIDDumpDriver.SIDDumpFileDriver;
@@ -81,7 +82,9 @@ public enum Audio {
 	/** Java Sound API plus SID dump file write. */
 	LIVE_SID_DUMP(ProxyDriver.class, JavaSound.class, SIDDumpFileDriver.class),
 	/** Java Sound API plus MP3 recording comparison. */
-	COMPARE_MP3(CmpToMP3FileDriver.class);
+	COMPARE_MP3(CmpToMP3FileDriver.class),
+	/** */
+	STREAM(JWAVStreamDriver.class);
 
 	private final Class<? extends AudioDriver> audioDriverClass, parameterClasses[];
 	private AudioDriver audioDriver;

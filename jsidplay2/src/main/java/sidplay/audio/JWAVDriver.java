@@ -74,7 +74,7 @@ public abstract class JWAVDriver implements AudioDriver {
 		 *
 		 * @param out Output stream to write the encoded WAV to
 		 */
-		public JWAVStreamDriver(OutputStream out) {
+		public void setOut(OutputStream out) {
 			this.out = out;
 		}
 
